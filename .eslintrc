@@ -1,0 +1,14 @@
+{
+  "extends": "airbnb",
+  "env": {
+    "node": true
+  },
+  "parser": "babel-eslint",
+  "rules": {
+    "prefer-const": 0,
+    "no-param-reassign": 0,
+    "comma-dangle": [1, "never"], // 不对数组或对象末尾逗号做强制要求
+    "spaced-comment": [0, "always"], // 不对注释前的空格做强制要求
+    "func-names": 0 // 允许使用匿名函数
+  }
+}
