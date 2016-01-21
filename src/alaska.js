@@ -1,15 +1,12 @@
 /**
- * alaska.js
  * @copyright Maichong Software Ltd. 2016 http://maichong.it
  * @date 2016-01-18
  * @author Liang <liang@maichong.it>
  */
 
-'use strict';
-
-import koa from 'koa';
-import collie from 'collie';
-import { isFile, isDirectory, include, noop } from './util';
+const Koa = require('koa');
+const collie = require('collie');
+const util = require('./util');
 
 const debug = require('debug')('alaska');
 let defaultAlaska;
@@ -31,7 +28,7 @@ let defaultAlaska;
  * ```
  * @extends events.EventEmitter
  */
-export class Alaska {
+class Alaska {
 
   /**
    * HTTP状态码200 REST接口show/list方法成功
@@ -84,7 +81,7 @@ export class Alaska {
   _routed = false;
   _started = false;
   _app = null;
-  noop = noop;
+  noop = util.noop;
   Alaska = Alaska;
 
   /**
@@ -184,7 +181,7 @@ export class Alaska {
    * @returns {Promise}
    */
   async launch(options) {
-    this.launch = noop;
+    this.launch = util.noop;
     debug('start');
 
     if (!this._mainService) {
@@ -211,5 +208,6 @@ export class Alaska {
 }
 
 defaultAlaska = new Alaska();
+defaultAlaska.default = defaultAlaska;
 
-export default defaultAlaska;
+module.exports = defaultAlaska;

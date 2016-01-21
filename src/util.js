@@ -4,46 +4,46 @@
  * @author Liang <liang@maichong.it>
  */
 
-import { statSync, readdirSync } from 'fs';
+const fs = require('fs');
 
 /**
  * 判断指定路径是否是文件
  * @param path
  * @returns {boolean}
  */
-export function isFile(path) {
+exports.isFile = function isFile(path) {
   try {
-    return statSync(path).isFile();
+    return fs.statSync(path).isFile();
   } catch (e) {
     return false;
   }
-}
+};
 
 /**
  * 判断指定路径是否是文件夹
  * @param path
  * @returns {boolean}
  */
-export function isDirectory(path) {
+exports.isDirectory = function isDirectory(path) {
   try {
-    return statSync(path).isDirectory();
+    return fs.statSync(path).isDirectory();
   } catch (e) {
     return false;
   }
-}
+};
 
 /**
  * 智能导入
  * @param path 文件或文件夹路径
  * @returns {Object}
  */
-export function include(path) {
-  if (isFile(path)) {
+exports.include = function include(path) {
+  if (exports.isFile(path)) {
     return require(path).default;
   }
-  if (isDirectory(path)) {
+  if (exports.isDirectory(path)) {
     let result = {};
-    readdirSync(path).forEach(file => {
+    fs.readdirSync(path).forEach(file => {
       if (file.endsWith('.js')) {
         let name = file.slice(0, -3);
         let obj = require(path + '/' + file);
@@ -53,9 +53,10 @@ export function include(path) {
     return result;
   }
   return null;
-}
+};
 
 const resolved = Promise.resolve();
-export function noop() {
+exports.noop = function noop() {
   return resolved;
-}
+};
+

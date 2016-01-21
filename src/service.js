@@ -4,13 +4,12 @@
  * @author Liang <liang@maichong.it>
  */
 
-import * as _ from 'lodash';
-import Router from 'koa-router';
-import compose from 'koa-compose';
-import collie from 'collie';
-import { include, noop } from './util';
-
-import defaultConfig from './config';
+const _ = require('lodash');
+const Router = require('koa-router');
+const compose = require('koa-compose');
+const collie = require('collie');
+const util = require('./util');
+const defaultConfig = require('config');
 const debug = require('debug')('alaska');
 
 /**
@@ -28,7 +27,7 @@ class Service {
   _models = {};
   _db = null;
   _config = {};
-  noop = noop;
+  noop = util.noop;
 
   /**
    * 实例化一个Service对象
@@ -69,7 +68,7 @@ class Service {
     {
       //载入配置
       let configFilePath = this._options.dir + '/configs/' + this._options.configFile;
-      let config = include(configFilePath);
+      let config = util.include(configFilePath);
       if (config) {
         this._config = config;
       } else {
@@ -111,7 +110,7 @@ class Service {
    */
   async init() {
     debug('%s load', this.id);
-    this.init = noop;
+    this.init = util.noop;
 
     let depends = this.dependsIds();
     for (let serviceId of depends) {
@@ -136,11 +135,11 @@ class Service {
    */
   async load() {
     debug('%s load', this.id);
-    this.load = noop;
+    this.load = util.noop;
 
     if (this.config('db') !== false) {
       global.__service = this;
-      this._models = include(this._options.dir + '/models');
+      this._models = util.include(this._options.dir + '/models');
     }
 
     let serivces = this.depends();
@@ -325,7 +324,7 @@ class Service {
    */
   async route() {
     debug('route %s', this.id);
-    this.route = noop;
+    this.route = util.noop;
 
     let app = this.alaska.app();
     let router = this.router();
@@ -410,7 +409,7 @@ class Service {
    */
   async launch() {
     debug('%s start', this.id);
-    this.launch = noop;
+    this.launch = util.noop;
 
     await this.load();
     await this.route();
