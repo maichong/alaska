@@ -236,41 +236,20 @@ class Service {
    * @private
    */
   _loadApiControllers() {
+    let alaska = this.alaska;
+    let service = this;
     let router = this.router();
 
     this._apiControllers = util.include(this._options.dir + '/api');
-    let api = require('./api');
+    let defaultApiController = require('./api');
     let bodyParser = require('koa-bodyparser')();
 
+    //TODO 优化性能
     function restApi(action) {
       return function (ctx, next) {
-        if (['show', 'update', 'remove'].indexOf(action) > -1) {
-          if (!/^[a-f0-9]{24}$/.test(ctx.params.id)) {
-            ctx.status = this.alaska.BAD_REQUEST;
-            return;
-          }
-        }
-        let Model = this.model(ctx.params.model);
-        if (!Model) {
-          //404
-          return;
-        }
-        let modelId = ctx.params.model.toLowerCase();
-        let middlewares = [];
 
-        // api 目录下定义的中间件
-        if (this._apiControllers[modelId] && this._apiControllers[modelId][api]) {
-          middlewares.push(this._apiControllers[modelId][api]);
-        }
-
-        if (!middlewares.length) {
-          //404
-          return;
-        }
-        ctx.Model = Model;
-
-        return compose(middlewares)(ctx).catch(function (error) {
-          console.error(this.id + ' API ' + error.stack);
+        function onError(error) {
+          console.error(service.id + ' API ' + error.stack);
           if (!ctx.body) {
             if (ctx.status === 404) {
               ctx.status = 500;
@@ -279,7 +258,48 @@ class Service {
               error: error.message
             };
           }
-        });
+        }
+
+        try {
+          if (['show', 'update', 'remove'].indexOf(action) > -1) {
+            if (!/^[a-f0-9]{24}$/.test(ctx.params.id)) {
+              ctx.status = alaska.BAD_REQUEST;
+              return;
+            }
+          }
+          //console.log(ctx.params.model);
+          //console.log(service);
+          //console.log(service._models);
+          let Model = service.model(ctx.params.model);
+          //console.log(Model);
+          if (!Model) {
+            //404
+            return;
+          }
+          let modelId = ctx.params.model.toLowerCase();
+          let middlewares = [];
+
+          // api 目录下定义的中间件
+          if (service._apiControllers[modelId] && service._apiControllers[modelId][action]) {
+            middlewares.push(service._apiControllers[modelId][action]);
+          }
+
+          // Model.options.rest参数定义的中间件
+          if (Model.api && Model.api[action]) {
+            middlewares.push(defaultApiController[action]);
+          }
+
+          if (!middlewares.length) {
+            //404
+            return;
+          }
+          ctx.Model = Model;
+          return compose(middlewares)(ctx).catch(onError);
+        } catch (error) {
+          onError(error);
+          return;
+        }
+
       };
     }
 
@@ -489,16 +509,15 @@ class Service {
    * @returns {Model|null}
    */
   model(name) {
-    let me = this;
-    if (me._models[name]) {
-      return me._models[name];
+    if (this._models[name]) {
+      return this._models[name];
     }
 
     let index = name.indexOf('.');
     if (index > -1) {
       let serviceId = name.substr(0, index);
       name = name.substr(index + 1);
-      let service = me.alaska.service(serviceId);
+      let service = this.alaska.service(serviceId);
       if (service) {
         return service.model(name);
       }
