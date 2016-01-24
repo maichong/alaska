@@ -24,7 +24,7 @@ const debug = require('debug')('alaska');
 class Service {
   _router = false;
   _controllers = {};
-  _restControllers = {};
+  _apiControllers = {};
   _models = {};
   _db = null;
   _config = {};
@@ -59,7 +59,7 @@ class Service {
     this.debug('init');
 
     if (!this._options.dir) {
-      this._options.dir = process.cwd();
+      throw new Error('Service dir is not specified.');
     }
 
     if (!this._options.configFile) {
@@ -168,8 +168,11 @@ class Service {
   _loadAppMiddlewares() {
     this._loadAppMiddlewares = util.noop;
     let app = this.alaska.app();
+    let alaska = this.alaska;
+    let service = this;
     app.use(function (ctx, next) {
-      ctx.alaska = this.alaska;
+      ctx.service = service;
+      ctx.alaska = alaska;
       return next();
     });
     this.config('appMiddlewares', []).forEach(function (name) {
@@ -208,7 +211,7 @@ class Service {
       }
       let name = item.name;
       if (name.startsWith('.')) {
-        name = this._options.serviceDir + name;
+        name = this._options.dir + name;
       }
       let middleware = require(name);
       let path = item.path;
@@ -229,19 +232,19 @@ class Service {
   }
 
   /**
-   * 载入REST接口控制器
+   * 载入API接口控制器
    * @private
    */
-  _loadRestControllers() {
+  _loadApiControllers() {
     let router = this.router();
 
-    this._restControllers = util.include(this._options.dir + '/api');
+    this._apiControllers = util.include(this._options.dir + '/api');
     let api = require('./api');
     let bodyParser = require('koa-bodyparser')();
 
-    function restApi(api) {
+    function restApi(action) {
       return function (ctx, next) {
-        if (['show', 'update', 'remove'].indexOf(api) != -1) {
+        if (['show', 'update', 'remove'].indexOf(action) > -1) {
           if (!/^[a-f0-9]{24}$/.test(ctx.params.id)) {
             ctx.status = this.alaska.BAD_REQUEST;
             return;
@@ -252,17 +255,12 @@ class Service {
           //404
           return;
         }
-        let id = ctx.params.model.toLowerCase();
+        let modelId = ctx.params.model.toLowerCase();
         let middlewares = [];
 
-        // rest 目录下定义的中间件
-        if (this._restControllers[id] && this._restControllers[id][api]) {
-          middlewares.push(this._restControllers[id][api]);
-        }
-
-        // Model.options.rest参数定义的中间件
-        if (Model.options.rest && Model.options.rest[api]) {
-          middlewares.push(rest[api]);
+        // api 目录下定义的中间件
+        if (this._apiControllers[modelId] && this._apiControllers[modelId][api]) {
+          middlewares.push(this._apiControllers[modelId][api]);
         }
 
         if (!middlewares.length) {
@@ -272,7 +270,7 @@ class Service {
         ctx.Model = Model;
 
         return compose(middlewares)(ctx).catch(function (error) {
-          console.error(this.id + ' REST API ' + error.stack);
+          console.error(this.id + ' API ' + error.stack);
           if (!ctx.body) {
             if (ctx.status === 404) {
               ctx.status = 500;
@@ -285,12 +283,12 @@ class Service {
       };
     }
 
-    router.get('/rest/:model/count', restApi('count'));
-    router.get('/rest/:model/:id', restApi('show'));
-    router.get('/rest/:model', restApi('list'));
-    router.post('/rest/:model', bodyParser, restApi('create'));
-    router.put('/rest/:model/:id', bodyParser, restApi('update'));
-    router.del('/rest/:model/:id', restApi('remove'));
+    router.get('/api/:model/count', restApi('count'));
+    router.get('/api/:model/:id', restApi('show'));
+    router.get('/api/:model', restApi('list'));
+    router.post('/api/:model', bodyParser, restApi('create'));
+    router.put('/api/:model/:id', bodyParser, restApi('update'));
+    router.del('/api/:model/:id', restApi('remove'));
   }
 
   /**
@@ -299,15 +297,16 @@ class Service {
    */
   _loadControllers() {
     let router = this.router();
+    let service = this;
 
     this._controllers = util.include(this._options.dir + '/controllers', false);
 
-    router.register('/:controller?/:action?', ['GET', 'POST'], function (ctx, next) {
-      let controller = ctx.params.controller || this.config('defaultController');
-      let action = ctx.params.action || this.config('defaultAction');
-      this.debug('route %s:%s', controller, action);
-      if (this._controllers[controller] && this._controllers[controller][action] && action[0] !== '_') {
-        return this._controllers[controller][action](ctx, next);
+    router.register('/:controller?/:action?', ['GET', 'HEAD', 'POST'], function (ctx, next) {
+      let controller = ctx.params.controller || service.config('defaultController');
+      let action = ctx.params.action || service.config('defaultAction');
+      service.debug('route %s:%s', controller, action);
+      if (service._controllers[controller] && service._controllers[controller][action] && action[0] !== '_') {
+        return service._controllers[controller][action](ctx, next);
       }
       next();
     });
@@ -335,9 +334,9 @@ class Service {
 
     this._loadServiceMiddlewares();
 
-    //REST 接口
+    //API 接口
     if (this.config('api')) {
-      this._loadRestControllers();
+      this._loadApiControllers();
     }
 
     //控制器
@@ -392,7 +391,7 @@ class Service {
         let json = toJSON.call(ctx);
         json.subdomain = ctx.subdomain;
         json.alaska = ctx.alaska.toJSON();
-        json.service = ctx.this.toJSON();
+        json.service = ctx.service.toJSON();
         return json;
       };
 
@@ -480,7 +479,7 @@ class Service {
       id: this.id,
       options: this._options,
       config: this._config,
-      service: _.keys(this._alias)
+      services: _.keys(this._alias)
     };
   }
 
@@ -508,6 +507,7 @@ class Service {
   }
 
   async registerModel(Model) {
+    console.log('registerModel', Model.name);
     global.__service = this;
     Model.register();
     return Model;

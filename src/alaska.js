@@ -79,6 +79,7 @@ class Alaska {
   _routed = false;
   _started = false;
   _app = null;
+  _services = {};
   noop = util.noop;
   Alaska = Alaska;
 
@@ -91,9 +92,7 @@ class Alaska {
     debug('constructor');
     collie(this, 'launch');
     collie(this, 'registerService');
-    //this.Field = require('./field');
     this.Service = require('./service');
-    //this.model = require('./model');
     this.defaultAlaska = defaultAlaska ? defaultAlaska : this;
   }
 
@@ -118,14 +117,14 @@ class Alaska {
    * @return {Service|null}
    */
   service(id) {
-    let service = this._services[id] || this._serviceAlias[id];
+    let service = this._services[id];
 
     if (!service) {
       try {
         let ServiceClass = require(id).default;
         service = new ServiceClass({}, this);
       } catch (error) {
-        console.error('alaska:service load "%s" failed by %s', service);
+        console.error('Load service "%s" failed', id);
         console.error(error.stack);
         process.exit();
       }
