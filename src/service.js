@@ -4,12 +4,13 @@
  * @author Liang <liang@maichong.it>
  */
 
+const assert = require('assert');
 const _ = require('lodash');
 const Router = require('koa-router');
 const compose = require('koa-compose');
 const collie = require('collie');
 const util = require('./util');
-const defaultConfig = require('config');
+const defaultConfig = require('./config');
 const debug = require('debug')('alaska');
 
 /**
@@ -27,7 +28,11 @@ class Service {
   _models = {};
   _db = null;
   _config = {};
+  _services = [];
+  _alias = {};
+  util = util;
   noop = util.noop;
+  Model = require('./model');
 
   /**
    * 实例化一个Service对象
@@ -39,6 +44,7 @@ class Service {
     collie(this, 'load');
     collie(this, 'route');
     collie(this, 'launch');
+    collie(this, 'registerModel');
 
     if (typeof options === 'string') {
       this._options = {
@@ -61,8 +67,6 @@ class Service {
       this._options.configFile = this._options.id + '.js';
     }
     this.id = this._options.id;
-    this.parent = this._options.parent || null;
-    this.options = options;
     this.alaska = alaska;
 
     {
@@ -106,24 +110,32 @@ class Service {
 
   /**
    * 初始化
-   * @returns {Promise}
    */
   async init() {
     debug('%s load', this.id);
     this.init = util.noop;
 
-    let depends = this.dependsIds();
-    for (let serviceId of depends) {
+    let services = this.config('services') || [];
+    if (typeof services === 'string') {
+      services = [services];
+    }
+
+    for (let service of services) {
+      let serviceId = service;
+      let serviceAlias = '';
+      if (service.alias) {
+        //如果Service配置有别名
+        serviceAlias = service.alias;
+        serviceId = service.id;
+      }
+      assert(typeof serviceId === 'string', 'Sub service id should be string.');
       let sub = this.alaska.service(serviceId);
-      if (!sub) {
-        try {
-          let ServiceClass = require(serviceId).default;
-          sub = new ServiceClass({}, this.alaska);
-        } catch (error) {
-          console.error('alaska:service load "%s" failed by %s', serviceId, this.id);
-          console.error(error.stack);
-          process.exit();
-        }
+      this._services.push(sub);
+      assert(!this._alias[serviceId], 'Service alias is exists.');
+      this._alias[serviceId] = sub;
+      if (serviceAlias) {
+        assert(!this._alias[serviceAlias], 'Service alias is exists.');
+        this._alias[serviceAlias] = sub;
       }
       await sub.init();
     }
@@ -131,20 +143,21 @@ class Service {
 
   /**
    * 加载
-   * @returns {Promise}
    */
   async load() {
     debug('%s load', this.id);
     this.load = util.noop;
 
+    for (let service of this._services) {
+      await service.load();
+    }
+
     if (this.config('db') !== false) {
       global.__service = this;
       this._models = util.include(this._options.dir + '/models');
-    }
-
-    let serivces = this.depends();
-    for (let service of serivces) {
-      await service.load();
+      for (let name in this._models) {
+        await this.registerModel(this._models[name]);
+      }
     }
   }
 
@@ -153,36 +166,30 @@ class Service {
    * @private
    */
   _loadAppMiddlewares() {
+    this._loadAppMiddlewares = util.noop;
     let app = this.alaska.app();
     app.use(function (ctx, next) {
       ctx.alaska = this.alaska;
       return next();
     });
     this.config('appMiddlewares', []).forEach(function (name) {
+      if (typeof name === 'function') {
+        //数组中直接就是一个中间件函数
+        app.use(name);
+        return;
+      }
       let options;
       if (typeof name === 'object') {
         options = name.options;
         name = name.name;
       }
       if (name.startsWith('.')) {
-        name = this._options.serviceDir + name;
+        //如果是一个文件路径
+        name = this._options.dir + '/' + name;
       }
       let middleware = require(name);
       app.use(middleware(options));
     });
-  }
-
-  /**
-   * 配置子模块路由
-   * @private
-   * @returns {Promise}
-   */
-  async _loadDependsRouter() {
-    let depends = this.depends();
-    for (let sub of depends) {
-      await sub.route();
-    }
-    return promise;
   }
 
   /**
@@ -228,8 +235,8 @@ class Service {
   _loadRestControllers() {
     let router = this.router();
 
-    this._restControllers = this.requireDir(this._options.restDir);
-    let rest = require('./rest');
+    this._restControllers = util.include(this._options.dir + '/api');
+    let api = require('./api');
     let bodyParser = require('koa-bodyparser')();
 
     function restApi(api) {
@@ -247,12 +254,6 @@ class Service {
         }
         let id = ctx.params.model.toLowerCase();
         let middlewares = [];
-
-        //Model.rest 方法定义的中间件
-        let tmp = Model.restMiddlewares();
-        if (tmp[api].length) {
-          middlewares = middlewares.concat(tmp[api]);
-        }
 
         // rest 目录下定义的中间件
         if (this._restControllers[id] && this._restControllers[id][api]) {
@@ -299,12 +300,7 @@ class Service {
   _loadControllers() {
     let router = this.router();
 
-    this._controllers = this.requireDir(this._options.controllersDir);
-
-    _.each(this._controllers, function (ctrl, id) {
-      ctrl.__id = id;
-      this.emit('register-controller', ctrl);
-    });
+    this._controllers = util.include(this._options.dir + '/controllers', false);
 
     router.register('/:controller?/:action?', ['GET', 'POST'], function (ctx, next) {
       let controller = ctx.params.controller || this.config('defaultController');
@@ -320,7 +316,6 @@ class Service {
   /**
    * 配置路由
    * @fires Service#route
-   * @returns {Promise}
    */
   async route() {
     debug('route %s', this.id);
@@ -333,12 +328,15 @@ class Service {
       this._loadAppMiddlewares();
     }
 
-    await this._loadDependsRouter();
+    //配置子Service路由
+    for (let sub of this._services) {
+      await sub.route();
+    }
 
     this._loadServiceMiddlewares();
 
     //REST 接口
-    if (this.config('rest')) {
+    if (this.config('api')) {
       this._loadRestControllers();
     }
 
@@ -405,12 +403,12 @@ class Service {
   /**
    * 启动Service
    * @fires Service#start
-   * @returns {Promise}
    */
   async launch() {
     debug('%s start', this.id);
     this.launch = util.noop;
 
+    await this.init();
     await this.load();
     await this.route();
   }
@@ -466,46 +464,11 @@ class Service {
   }
 
   /**
-   * 获取当前Service的依赖的其他Service的名称列表
-   * ```
-   * let depends = this.depends(); // ['alaska-user','alaska-admin']
-   * ```
-   * @returns {Array}
+   * 获取当前Service所依赖的子Service
+   * @returns {Service}
    */
-  dependsIds() {
-    let depends = this.config('depends');
-    if (!depends) {
-      return [];
-    }
-    if (typeof depends === 'string') {
-      return [depends];
-    }
-    return depends;
-  }
-
-  /**
-   * 获取当前Service所依赖的子Service列表
-   * @returns {Array}
-   */
-  depends() {
-    let me = this;
-    return me.dependsIds().map(function (id) {
-      return me.alaska.service(id);
-    });
-  }
-
-  /**
-   * 获取当前Service的父Service列表
-   * @returns {Array}
-   */
-  parents() {
-    let parents = [];
-    let p = this;
-    while (p.parent) {
-      parents.push(p.parent);
-      p = p.parent;
-    }
-    return parents;
+  service(name) {
+    return this._alias[name];
   }
 
   /**
@@ -515,18 +478,18 @@ class Service {
   toJSON() {
     return {
       id: this.id,
-      options: this.options,
-      config: this._config
+      options: this._options,
+      config: this._config,
+      service: _.keys(this._alias)
     };
   }
 
   /**
    * 找回此Service下定义的Model
    * @param {string} name 模型名称,例如User或blog.User
-   * @param {Boolean} [recursion] 递归查找,如果为true,则查找子Service中定义的Model
    * @returns {Model|null}
    */
-  model(name, recursion) {
+  model(name) {
     let me = this;
     if (me._models[name]) {
       return me._models[name];
@@ -538,22 +501,18 @@ class Service {
       name = name.substr(index + 1);
       let service = me.alaska.service(serviceId);
       if (service) {
-        return this.model(name);
+        return service.model(name);
       }
     }
-
-    if (recursion) {
-      let depends = me.depends();
-      for (let i in depends) {
-        let model = depends[i].model(name, true);
-        if (model) {
-          return model;
-        }
-      }
-    }
-
-    return null;
+    throw new Error(`"${name}" model not found`);
   }
+
+  async registerModel(Model) {
+    global.__service = this;
+    Model.register();
+    return Model;
+  }
+
 }
 
 module.exports = Service;

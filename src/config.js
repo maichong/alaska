@@ -97,7 +97,7 @@ module.exports = {
    * [Service] 该Service依赖的子Service列表
    * @type {Array}
    */
-  depends: [],
+  services: [],
   /**
    * [Service] 该Service的路由中间件
    * @type {Array}

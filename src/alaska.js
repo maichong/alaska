@@ -75,8 +75,6 @@ class Alaska {
    */
   UNPROCESSABLE_ENTITY = 422;
 
-  _services = {};
-  _serviceAlias = {};
   _loaded = false;
   _routed = false;
   _started = false;
@@ -120,7 +118,19 @@ class Alaska {
    * @return {Service|null}
    */
   service(id) {
-    return this._services[id] || this._serviceAlias[id];
+    let service = this._services[id] || this._serviceAlias[id];
+
+    if (!service) {
+      try {
+        let ServiceClass = require(id).default;
+        service = new ServiceClass({}, this);
+      } catch (error) {
+        console.error('alaska:service load "%s" failed by %s', service);
+        console.error(error.stack);
+        process.exit();
+      }
+    }
+    return service;
   }
 
   /**
@@ -128,15 +138,11 @@ class Alaska {
    * @fires Alaska#registerService
    * @param {Service} service Service对象
    */
-  async registerService(service) {
+  registerService(service) {
     if (!this._mainService) {
       this._mainService = service;
     }
-
     this._services[service.id] = service;
-    (service.alias || []).forEach(function (name) {
-      this._serviceAlias[name] = service;
-    });
   }
 
   /**
@@ -182,7 +188,7 @@ class Alaska {
    */
   async launch(options) {
     this.launch = util.noop;
-    debug('start');
+    debug('launch');
 
     if (!this._mainService) {
       this._mainService = new this.Service(options, this);
