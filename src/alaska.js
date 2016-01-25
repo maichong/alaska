@@ -75,6 +75,27 @@ class Alaska {
    */
   UNPROCESSABLE_ENTITY = 422;
 
+  /**
+   * 接口关闭
+   * @type {number}
+   */
+  CLOSED = 0;
+
+  /**
+   * 允许所有用户访问接口
+   */
+  PUBLIC = 1;
+
+  /**
+   * 允许已经认证的用户访问接口
+   */
+  AUTHENTICATED = 2;
+
+  /**
+   * 允许资源所有者访问接口
+   */
+  OWNER = 3;
+
   _loaded = false;
   _routed = false;
   _started = false;

@@ -20,150 +20,157 @@ const alaska = require(__dirname + '/alaska');
  * > remove接口 1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许用户删除自己的资源
  * @module rest
  */
-module.exports = {
-  /**
-   * 统计接口
-   */
-  count: async function (ctx) {
-    let Model = ctx.Model;
-    let code = Model.api.count;
-    if (code > 1 && !ctx.user) {
-      //未登录,需要认证
-      ctx.status = alaska.UNAUTHORIZED;
-      return;
-    }
-    //TODO filters keyword
-    let filters = ctx.query.filters || {};
-    ctx.status = alaska.OK;
-    if (code === 3) {
-      //只允许用户列出自己的资源
-      let userField = Model.options.userField;
-      filters[userField] = ctx.user;
-    }
-    let count = await Model.count(filters);
-    ctx.body = {
-      count
-    };
-  },
-  /**
-   * 列表接口
-   */
-  list: async function list(ctx) {
-    let Model = ctx.Model;
-    let code = Model.api.list;
-    if (code > 1 && !ctx.user) {
-      //未登录,需要认证
-      ctx.status = alaska.UNAUTHORIZED;
-      return;
-    }
 
-    //TODO filters
-    let filters = ctx.query.filters || {};
-    ctx.status = alaska.OK;
-    if (code === 3) {
-      //只允许用户列出自己的资源
-      let userField = Model.options.userField;
-      filters[userField] = ctx.user;
-    }
-
-    let results = await Model.paginate({
-      page: parseInt(ctx.query.page) || 1,
-      perPage: parseInt(ctx.query.perPage) || 10,
-      search: (ctx.query.search || '').trim(),
-      filters
-    });
-    results.results = results.results.map(function (doc) {
-      return doc.data('list');
-    });
-    ctx.body = results;
-  },
-  /**
-   * 获取单个对象详细信息
-   */
-  show: async function show(ctx) {
-    let Model = ctx.Model;
-    let code = Model.api.show;
-    if (code > 1 && !ctx.user) {
-      //未登录,需要认证
-      ctx.status = alaska.UNAUTHORIZED;
-      return;
-    }
-    let doc = await Model.findById(ctx.params.id);
-    if (!doc) {
-      //404
-      return;
-    }
-    if (code === 3 && doc[Model.options.userField].toString() !== ctx.user.id) {
-      //404
-      return;
-    }
-    ctx.body = doc.data('show');
-  },
-  /**
-   * 创建一个对象
-   */
-  create: async function (ctx) {
-    let Model = ctx.Model;
-    let code = Model.api.create;
-    if (code > 1 && !ctx.user) {
-      //未登录,需要认证
-      ctx.status = alaska.UNAUTHORIZED;
-      return;
-    }
-    let doc = new Model(ctx.request.body);
-    if (code > 1) {
-      let userField = Model.options.userField;
-      doc.set(userField, ctx.user);
-    }
-    await doc.save();
-    ctx.status = alaska.CREATED;
-  },
-  /**
-   * 更新一个对象
-   */
-  update: async function (ctx) {
-    let Model = ctx.Model;
-    let code = Model.api.update;
-    if (code > 1 && !ctx.user) {
-      //未登录,需要认证
-      ctx.status = alaska.UNAUTHORIZED;
-      return resolve();
-    }
-    let doc = await Model.findById(ctx.params.id);
-    if (!doc) {
-      //404
-      return;
-    }
-    if (code === 3 && doc[Model.options.userField].toString() !== ctx.user.id) {
-      //404
-      return;
-    }
-    doc.set(ctx.request.body);
-    await doc.save();
-    ctx.status = alaska.CREATED;
-  },
-  /**
-   * 删除一个对象
-   */
-  remove: async function (ctx) {
-    let Model = ctx.Model;
-    let code = Model.api.remove;
-    if (code > 1 && !ctx.user) {
-      //未登录,需要认证
-      ctx.status = alaska.UNAUTHORIZED;
-      return;
-    }
-    let doc = await Model.findById(ctx.params.id);
-    if (!doc) {
-      //204 删除成功
-      ctx.status = alaska.NO_CONTENT;
-      return;
-    }
-    if (code === 3 && doc[Model.options.userField].toString() !== ctx.user.id) {
-      ctx.status = alaska.NO_CONTENT;
-      return;
-    }
-    await doc.remove();
-    ctx.status = alaska.NO_CONTENT;
+/**
+ * 统计接口
+ */
+exports.count = async function (ctx) {
+  let Model = ctx.Model;
+  let code = Model.api.count;
+  if (code > alaska.PUBLIC && !ctx.user) {
+    //未登录,需要认证
+    ctx.status = alaska.UNAUTHORIZED;
+    return;
   }
+  //TODO filters keyword
+  let filters = ctx.query.filters || {};
+  ctx.status = alaska.OK;
+  if (code === alaska.OWNER) {
+    //只允许用户列出自己的资源
+    let userField = Model.options.userField;
+    filters[userField] = ctx.user;
+  }
+  let count = await Model.count(filters);
+  ctx.body = {
+    count
+  };
+};
+
+/**
+ * 列表接口
+ */
+exports.list = async function list(ctx) {
+  let Model = ctx.Model;
+  let code = Model.api.list;
+  if (code > alaska.PUBLIC && !ctx.user) {
+    //未登录,需要认证
+    ctx.status = alaska.UNAUTHORIZED;
+    return;
+  }
+
+  //TODO filters
+  let filters = ctx.query.filters || {};
+  ctx.status = alaska.OK;
+  if (code === alaska.OWNER) {
+    //只允许用户列出自己的资源
+    let userField = Model.options.userField;
+    filters[userField] = ctx.user;
+  }
+
+  let results = await Model.paginate({
+    page: parseInt(ctx.query.page) || 1,
+    perPage: parseInt(ctx.query.perPage) || 10,
+    search: (ctx.query.search || '').trim(),
+    filters
+  });
+  results.results = results.results.map(function (doc) {
+    return doc.data('list');
+  });
+  ctx.body = results;
+};
+
+/**
+ * 获取单个对象详细信息
+ */
+exports.show = async function show(ctx) {
+  let Model = ctx.Model;
+  let code = Model.api.show;
+  if (code > alaska.PUBLIC && !ctx.user) {
+    //未登录,需要认证
+    ctx.status = alaska.UNAUTHORIZED;
+    return;
+  }
+  let doc = await Model.findById(ctx.params.id);
+  if (!doc) {
+    //404
+    return;
+  }
+  if (code === alaska.OWNER && doc[Model.options.userField].toString() !== ctx.user.id) {
+    //404
+    return;
+  }
+  ctx.body = doc.data('show');
+};
+
+/**
+ * 创建一个对象
+ */
+exports.create = async function (ctx) {
+  let Model = ctx.Model;
+  let code = Model.api.create;
+  if (code > alaska.PUBLIC && !ctx.user) {
+    //未登录,需要认证
+    ctx.status = alaska.UNAUTHORIZED;
+    return;
+  }
+  let doc = new Model(ctx.request.body);
+  if (code > alaska.PUBLIC) {
+    let userField = Model.options.userField;
+    doc.set(userField, ctx.user);
+  }
+  await doc.save();
+  ctx.status = alaska.CREATED;
+  ctx.body = {
+    id: doc.id
+  };
+};
+
+/**
+ * 更新一个对象
+ */
+exports.update = async function (ctx) {
+  let Model = ctx.Model;
+  let code = Model.api.update;
+  if (code > alaska.PUBLIC && !ctx.user) {
+    //未登录,需要认证
+    ctx.status = alaska.UNAUTHORIZED;
+    return;
+  }
+  let doc = await Model.findById(ctx.params.id);
+  if (!doc) {
+    //404
+    return;
+  }
+  if (code === alaska.OWNER && doc[Model.options.userField].toString() !== ctx.user.id) {
+    //404
+    return;
+  }
+  doc.set(ctx.request.body);
+  await doc.save();
+  ctx.status = alaska.CREATED;
+};
+
+/**
+ * 删除一个对象
+ */
+exports.remove = async function (ctx) {
+  let Model = ctx.Model;
+  let code = Model.api.remove;
+  if (code > alaska.PUBLIC && !ctx.user) {
+    //未登录,需要认证
+    ctx.status = alaska.UNAUTHORIZED;
+    return;
+  }
+  let doc = await Model.findById(ctx.params.id);
+  if (!doc) {
+    //204 删除成功
+    ctx.status = alaska.NO_CONTENT;
+    return;
+  }
+  if (code === alaska.OWNER && doc[Model.options.userField].toString() !== ctx.user.id) {
+    ctx.status = alaska.NO_CONTENT;
+    return;
+  }
+  await doc.remove();
+  ctx.status = alaska.NO_CONTENT;
 };

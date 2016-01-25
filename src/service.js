@@ -271,7 +271,7 @@ class Service {
           //console.log(service);
           //console.log(service._models);
           let Model = service.model(ctx.params.model);
-          //console.log(Model);
+          console.log(Model);
           if (!Model) {
             //404
             return;
@@ -284,10 +284,11 @@ class Service {
             middlewares.push(service._apiControllers[modelId][action]);
           }
 
-          // Model.options.rest参数定义的中间件
+          // Model.api参数定义的中间件
           if (Model.api && Model.api[action]) {
             middlewares.push(defaultApiController[action]);
           }
+          console.log(middlewares);
 
           if (!middlewares.length) {
             //404

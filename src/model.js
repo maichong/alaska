@@ -100,7 +100,7 @@ class Model {
       };
 
       query.exec = function (callback) {
-        callback = callback || noop;
+        callback = callback || _.noop;
 
         return new Promise(function (resolve, reject) {
           query.exec = query.originalExec;
