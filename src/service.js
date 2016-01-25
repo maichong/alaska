@@ -271,7 +271,7 @@ class Service {
           //console.log(service);
           //console.log(service._models);
           let Model = service.model(ctx.params.model);
-          console.log(Model);
+          //console.log(Model);
           if (!Model) {
             //404
             return;
@@ -288,7 +288,7 @@ class Service {
           if (Model.api && Model.api[action]) {
             middlewares.push(defaultApiController[action]);
           }
-          console.log(middlewares);
+          //console.log(middlewares);
 
           if (!middlewares.length) {
             //404

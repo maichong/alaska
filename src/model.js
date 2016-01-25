@@ -5,20 +5,32 @@
  */
 
 const _ = require('lodash');
+const collie = require('collie');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+
+function panic() {
+  throw new Error('Can not call the function after Model register.');
+}
 
 class Model {
   constructor() {
     throw new Error('Can not initialize a Model before register.');
   }
 
-  static pre() {
-    console.error('开发中...');
+  //placeholder
+  static fields = null;
+
+  static pre(action, fn) {
+    this._pre || (this._pre = {});
+    this._pre[action] || (this._pre[action] = []);
+    this._pre[action].push(fn);
   }
 
-  static post() {
-    console.error('开发中...');
+  static post(action, fn) {
+    this._post || (this._post = {});
+    this._post[action] || (this._post[action] = []);
+    this._post[action].push(fn);
   }
 
   static register() {
@@ -28,14 +40,43 @@ class Model {
 
     let MongooseModel;
     let name = Model.name;
-    //let Model = panic;
-    //eval('Model=function ' + name + '() {assert(this instanceof Model, "Please create model by \'new ' + name + '()\'");MongooseModel.apply(this, arguments);}');
+    if (!Model.fields) {
+      throw new Error(name + ' model has no fields.');
+    }
 
-    let schema = new Schema({
-      title: 'string'
-    });
-    let groups = {};
+    //整理字段列表
     let fields = {};
+    for (let key in Model.fields) {
+      let field = Model.fields[key];
+      if (!field.type) {
+        throw new Error('Field type is not specified. ' + name);
+      }
+      let FieldType;
+      if (field.type === String) {
+        FieldType = require('alaska-field-text');
+      } else if (field.type === Date) {
+        FieldType = require('alaska-field-date');
+      } else if (field.type === Boolean) {
+        FieldType = require('alaska-field-checkbox');
+      } else if (field.type === Number) {
+        FieldType = require('alaska-field-number');
+      } else {
+        FieldType = field.type;
+      }
+      field.type = FieldType;
+      let options = {
+        type: FieldType.plain
+      };
+      //将用户定义的选项传给Mongoose
+      FieldType.update && FieldType.update(field, options);
+      if (_.has(field, 'default')) {
+        options.default = field.default;
+      }
+      fields[key] = options;
+    }
+
+    let schema = Model.schema = new Schema(fields);
+    let groups = {};
     _.defaults(Model, {
       userField: 'user',
       api: false,
@@ -53,25 +94,70 @@ class Model {
       };
     }
 
-    Model.pre = function (event, callback) {
-      schema.pre(event, function (next) {
-        let res = callback.call(this);
-        if (res && res.then) {
-          res.then(function () {
-            next();
-          }, function (error) {
-            next(error);
-          });
-        } else {
-          next();
+    Model._pre || (Model._pre = []);
+    Model._post || (Model._post = []);
+    ['Init', 'Validate', 'Save', 'Remove'].forEach(Action => {
+      let action = Action.toLowerCase();
+      {
+        let preHooks = Model._pre[action] || [];
+        if (Model.prototype['pre' + Action]) {
+          preHooks.push(Model.prototype['pre' + Action]);
         }
-      });
-      return this;
-    };
 
-    Model.post = function (event, callback) {
-      schema.post(event, callback);
-    };
+        if (preHooks.length) {
+          schema.pre(action, function (next) {
+            try {
+              let promise = collie.compose(preHooks, [], this);
+              promise.then(() => {
+                next();
+              }, next);
+            } catch (error) {
+              next(error);
+            }
+          });
+        }
+        delete Model._pre[action];
+      }
+      {
+        let postHooks = [];
+        if (Model.prototype['post' + Action]) {
+          postHooks.push(Model.prototype['post' + Action]);
+        }
+        if (Model._post[action]) {
+          postHooks = postHooks.concat(Model._post[action]);
+        }
+        if (postHooks.length) {
+          schema.post(action, function () {
+            try {
+              let promise = collie.compose(postHooks, [], this);
+              promise.catch(function (error) {
+                console.error(error.stack);
+              });
+            } catch (error) {
+              console.error(error.stack);
+            }
+          });
+        }
+        delete Model._post[action];
+      }
+    });
+
+    {
+      let keys = _.keys(Model._pre);
+      if (keys.length) {
+        console.warn('Unknown pre hooks ' + keys + ' of ' + name);
+      }
+    }
+
+    {
+      let keys = _.keys(Model._post);
+      if (keys.length) {
+        console.warn('Unknown post hooks ' + keys + ' of ' + name);
+      }
+    }
+
+    Model.pre = panic;
+    Model.post = panic;
 
     /**
      *
