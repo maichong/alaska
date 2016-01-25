@@ -16,10 +16,8 @@ const debug = require('debug')('alaska');
 /**
  * Service指代一个项目中某些功能组件的集合,包括控制器/数据模型/视图和配置信息等
  * 一个Alaska实例包含一个主Service实例
- * Service实例可以以树状依赖关系加载其他Service
- * 在一个Alaska实例中,同一个Service,只能被依赖一次,但是可以被引用多次
- * 依赖是Service之间组装/调用的强关系,多个Service之间不能循环依赖,只能树状依赖
- * 如果A依赖B,B依赖C,那么A不能依赖C,不能依赖A
+ * Service实例可以依赖其他Service
+ * 一个Service实例可以同时被多个Service依赖
  */
 class Service {
   _router = false;

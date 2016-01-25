@@ -19,13 +19,10 @@
     "babel-plugin-transform-es2015-destructuring": "^6.4.0",
     "babel-plugin-transform-es2015-parameters": "^6.4.2",
     "babel-plugin-transform-object-rest-spread": "^6.3.13",
-    "grunt": "^0.4.5",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-shell": "^1.1.2",
-    "load-grunt-tasks": "^3.4.0",
     "rimraf": "*"
   },
   "scripts": {
+    "watch": "babel ./src --out-dir ./lib -w",
     "build": "babel ./src --out-dir ./lib",
     "prebuild": "rimraf lib",
     "prepublish": "npm run build"
