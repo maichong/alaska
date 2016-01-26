@@ -79,7 +79,6 @@ class Service {
     }
 
     _.defaultsDeep(this._config, defaultConfig);
-    this.alias = this._config.alias || [];
 
     this.alaska.registerService(this);
   }
@@ -268,7 +267,7 @@ class Service {
           //console.log(ctx.params.model);
           //console.log(service);
           //console.log(service._models);
-          let Model = service.model(ctx.params.model);
+          let Model = service._models[ctx.params.model];
           //console.log(Model);
           if (!Model) {
             //404
@@ -516,7 +515,10 @@ class Service {
     if (index > -1) {
       let serviceId = name.substr(0, index);
       name = name.substr(index + 1);
-      let service = this.alaska.service(serviceId);
+      let service = this._alias[serviceId];
+      if (!service) {
+        service = this.alaska.service(serviceId);
+      }
       if (service) {
         return service.model(name);
       }
@@ -525,7 +527,6 @@ class Service {
   }
 
   async registerModel(Model) {
-    console.log('registerModel', Model.name);
     global.__service = this;
     Model.register();
     return Model;
