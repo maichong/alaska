@@ -148,6 +148,7 @@ exports.update = async function (ctx) {
   doc.set(ctx.request.body);
   await doc.save();
   ctx.status = alaska.CREATED;
+  ctx.body = {};
 };
 
 /**
@@ -173,4 +174,5 @@ exports.remove = async function (ctx) {
   }
   await doc.remove();
   ctx.status = alaska.NO_CONTENT;
+  ctx.body = {};
 };
