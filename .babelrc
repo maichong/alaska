@@ -3,13 +3,11 @@
 	],
 	"plugins": [
 		"syntax-async-functions",
-		"syntax-export-extensions",
 		"transform-async-to-generator",
 		"transform-class-properties",
 		"transform-es2015-modules-commonjs",
 		"transform-es2015-destructuring",
 		"transform-es2015-parameters",
-		"transform-export-extensions",
 		"transform-object-rest-spread"
 	]
 }
