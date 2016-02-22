@@ -83,6 +83,10 @@ class Service {
     this.alaska.registerService(this);
   }
 
+  applyConfig(config) {
+    this._config = _.assign({}, this._config, config);
+  }
+
   /**
    * 判断当前Service是否是主Service
    * @returns Boolean
@@ -109,7 +113,7 @@ class Service {
    * 初始化
    */
   async init() {
-    debug('%s load', this.id);
+    debug('%s init', this.id);
     this.init = util.noop;
 
     let services = this.config('services') || [];
@@ -133,6 +137,11 @@ class Service {
       if (serviceAlias) {
         assert(!this._alias[serviceAlias], 'Service alias is exists.');
         this._alias[serviceAlias] = sub;
+      }
+      let subConfigFile = this._options.dir + '/config/' + serviceId + '.js';
+      if (util.isFile(subConfigFile)) {
+        let subConfig = require(subConfigFile).default;
+        sub.applyConfig(subConfig);
       }
       await sub.init();
     }

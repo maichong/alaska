@@ -2,7 +2,7 @@
   "name": "alaska",
   "version": "0.0.5",
   "description": "Modern web framework for Node.js",
-  "main": "index.js",
+  "main": "lib/alaska.js",
   "dependencies": {
     "collie": "^0.2.0",
     "koa": "^2.0.0-alpha.3",

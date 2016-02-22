@@ -57,12 +57,6 @@ module.exports = {
   //
 
   /**
-   * [Service] 别名列表
-   * @type {Array}
-   */
-  alias: [],
-
-  /**
    * [Service] 域名,如果不指定,子Service将使用主Service的域名
    * 例如 docs.google.com *.58.com
    * 如果设置为泛域名,则koa.Context 对象将有subdomian变量
@@ -120,5 +114,4 @@ module.exports = {
    * @type {Boolean}
    */
   api: true,
-
 };
