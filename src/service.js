@@ -69,7 +69,7 @@ class Service {
 
     {
       //载入配置
-      let configFilePath = this._options.dir + '/configs/' + this._options.configFile;
+      let configFilePath = this._options.dir + '/config/' + this._options.configFile;
       let config = util.include(configFilePath);
       if (config) {
         this._config = config;
