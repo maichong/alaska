@@ -1,5 +1,9 @@
 
-.idea
-docs
-bak
+logs
+*.log
+npm-debug.log*
+pids
+*.pid
+*.seed
 node_modules
+.idea

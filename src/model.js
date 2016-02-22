@@ -68,7 +68,7 @@ class Model {
         type: FieldType.plain
       };
       //将用户定义的选项传给Mongoose
-      FieldType.update && FieldType.update(field, options);
+      FieldType.init && FieldType.init(field, options);
       if (_.has(field, 'default')) {
         options.default = field.default;
       }
