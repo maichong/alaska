@@ -20,13 +20,49 @@ const debug = require('debug')('alaska');
  * 一个Service实例可以同时被多个Service依赖
  */
 class Service {
-  _router = false;
+  /**
+   * 路由器
+   * @type {Router}
+   * @private
+   */
+  _router = null;
   _controllers = {};
   _apiControllers = {};
+  /**
+   * 本Service数据模型列表
+   * @type {{}}
+   * @private
+   */
   _models = {};
+  /**
+   * 数据库连接实例
+   * @type {mongoose.Connection}
+   * @private
+   */
   _db = null;
+  /**
+   * 本Service的配置项
+   * @type {{}}
+   * @private
+   */
   _config = {};
+  /**
+   * 本Service的所有额外配置目录
+   * @type {Array}
+   * @private
+   */
+  _configDirs = [];
+  /**
+   * 所依赖的子Service实例对象列表
+   * @type {Array}
+   * @private
+   */
   _services = [];
+  /**
+   * 所依赖的子Service实例对象别名映射表
+   * @type {{}}
+   * @private
+   */
   _alias = {};
   util = util;
   noop = util.noop;
@@ -83,6 +119,10 @@ class Service {
     this.alaska.registerService(this);
   }
 
+  /**
+   * 追加配置项
+   * @param {{}} config
+   */
   applyConfig(config) {
     this._config = _.assign({}, this._config, config);
   }
@@ -116,19 +156,25 @@ class Service {
     debug('%s init', this.id);
     this.init = util.noop;
 
+    //加载扩展配置
+    for (let dir of this._configDirs) {
+      let configFile = dir + '/config.js';
+      if (util.isFile(configFile)) {
+        this.applyConfig(require(configFile).default);
+      }
+    }
+
     let services = this.config('services') || [];
     if (typeof services === 'string') {
       services = [services];
     }
 
     for (let service of services) {
-      let serviceId = service;
-      let serviceAlias = '';
-      if (service.alias) {
-        //如果Service配置有别名
-        serviceAlias = service.alias;
-        serviceId = service.id;
+      if (typeof service === 'string') {
+        service = {id: service};
       }
+      let serviceId = service.id;
+      let serviceAlias = service.alias;
       assert(typeof serviceId === 'string', 'Sub service id should be string.');
       let sub = this.alaska.service(serviceId);
       this._services.push(sub);
@@ -138,10 +184,9 @@ class Service {
         assert(!this._alias[serviceAlias], 'Service alias is exists.');
         this._alias[serviceAlias] = sub;
       }
-      let subConfigFile = this._options.dir + '/config/' + serviceId + '.js';
-      if (util.isFile(subConfigFile)) {
-        let subConfig = require(subConfigFile).default;
-        sub.applyConfig(subConfig);
+      let configDir = this._options.dir + '/config/' + serviceId;
+      if (util.isDirectory(configDir)) {
+        sub._configDirs.push(configDir);
       }
       await sub.init();
     }
@@ -161,9 +206,37 @@ class Service {
     if (this.config('db') !== false) {
       global.__service = this;
       this._models = util.include(this._options.dir + '/models');
+      //遍历模型
       for (let name in this._models) {
-        await this.registerModel(this._models[name]);
-      }
+        let Model = this._models[name];
+        //加载扩展配置
+        for (let dir of this._configDirs) {
+          let file = dir + '/models/' + name + '.js';
+          if (util.isFile(file)) {
+            let ext = require(file);
+            ['fields', 'groups', 'api'].forEach(key => {
+              if (typeof ext[key] !== 'undefined') {
+                _.assign(Model[key], ext[key]);
+              }
+            });
+            //扩展模型事件
+            ['Init', 'Validate', 'Save', 'Remove'].forEach(Action => {
+              let pre = ext['pre' + Action];
+              if (pre) {
+                Model.pre(Action.toLowerCase(), pre);
+              }
+              let post = ext['post' + Action];
+              if (post) {
+                Model.post(Action.toLowerCase(), post);
+              }
+            });
+            if (ext['default']) {
+              ext['default'](Model);
+            }
+          }
+        } //end of 加载扩展配置
+        await this.registerModel(Model);
+      } //end of 遍历模型
     }
   }
 
@@ -344,7 +417,7 @@ class Service {
    * @fires Service#route
    */
   async route() {
-    debug('route %s', this.id);
+    debug('%s route', this.id);
     this.route = util.noop;
 
     let app = this.alaska.app();
@@ -428,10 +501,10 @@ class Service {
 
   /**
    * 启动Service
-   * @fires Service#start
+   * @fires Service#launch
    */
   async launch() {
-    debug('%s start', this.id);
+    debug('%s launch', this.id);
     this.launch = util.noop;
 
     await this.init();
