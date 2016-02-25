@@ -10,7 +10,8 @@
     "koa-compose": "^3.0.0",
     "koa-router": "^7.0.1",
     "lodash": "^4.0.0",
-    "mongoose": "^4.3.6"
+    "mongoose": "^4.4.5",
+    "swig": "^1.4.2"
   },
   "devDependencies": {
     "babel-plugin-syntax-async-functions": "^6.3.13",

@@ -4,6 +4,7 @@
  * @author Liang <liang@maichong.it>
  */
 
+const path = require('path');
 const assert = require('assert');
 const _ = require('lodash');
 const Router = require('koa-router');
@@ -100,7 +101,6 @@ class Service {
       //Service默认配置文件
       this._options.configFile = this._options.id + '.js';
     }
-    this.id = this._options.id;
     this.alaska = alaska;
 
     {
@@ -117,6 +117,14 @@ class Service {
     _.defaultsDeep(this._config, defaultConfig);
 
     this.alaska.registerService(this);
+  }
+
+  get id() {
+    return this._options.id;
+  }
+
+  get dir() {
+    return this._options.dir;
   }
 
   /**
@@ -184,7 +192,7 @@ class Service {
         assert(!this._alias[serviceAlias], 'Service alias is exists.');
         this._alias[serviceAlias] = sub;
       }
-      let configDir = this._options.dir + '/config/' + serviceId;
+      let configDir = this.dir + '/config/' + serviceId;
       if (util.isDirectory(configDir)) {
         sub._configDirs.push(configDir);
       }
@@ -205,7 +213,7 @@ class Service {
 
     if (this.config('db') !== false) {
       global.__service = this;
-      this._models = util.include(this._options.dir + '/models');
+      this._models = util.include(this.dir + '/models');
       //遍历模型
       for (let name in this._models) {
         let Model = this._models[name];
@@ -267,7 +275,7 @@ class Service {
       }
       if (name.startsWith('.')) {
         //如果是一个文件路径
-        name = this._options.dir + '/' + name;
+        name = this.dir + '/' + name;
       }
       let middleware = require(name);
       app.use(middleware(options));
@@ -290,7 +298,7 @@ class Service {
       }
       let name = item.name;
       if (name.startsWith('.')) {
-        name = this._options.dir + name;
+        name = this.dir + name;
       }
       let middleware = require(name);
       let path = item.path;
@@ -319,7 +327,7 @@ class Service {
     let service = this;
     let router = this.router();
 
-    this._apiControllers = util.include(this._options.dir + '/api');
+    this._apiControllers = util.include(this.dir + '/api');
     let defaultApiController = require('./api');
     let bodyParser = require('koa-bodyparser')();
 
@@ -399,14 +407,32 @@ class Service {
     let router = this.router();
     let service = this;
 
-    this._controllers = util.include(this._options.dir + '/controllers', false) || {};
+    this._controllers = util.include(this.dir + '/controllers', false) || {};
 
     router.register('/:controller?/:action?', ['GET', 'HEAD', 'POST'], function (ctx, next) {
       let controller = ctx.params.controller || service.config('defaultController');
       let action = ctx.params.action || service.config('defaultAction');
       service.debug('route %s:%s', controller, action);
       if (service._controllers[controller] && service._controllers[controller][action] && action[0] !== '_') {
-        return service._controllers[controller][action](ctx, next);
+        let promise = service._controllers[controller][action](ctx, next);
+        //异步函数
+        if (promise && promise.then) {
+          return new Promise((resolve, reject) => {
+            promise.then(() => {
+              if (ctx._showing) {
+                ctx._showing.then(resolve, reject);
+              } else {
+                resolve();
+              }
+            }, reject);
+          });
+        }
+        //同步函数,并且正在渲染中
+        if (ctx._showing) {
+          return ctx._showing;
+        }
+        //同步函数,直接返回,并且没有渲染页面
+        return;
       }
       next();
     });
@@ -461,6 +487,7 @@ class Service {
     }
 
     let service = this;
+    let templatesDir = path.join(this.dir, this.config('templates')) + '/';
 
     app.use(function (ctx, next) {
       ctx.subdomain = '';
@@ -493,6 +520,37 @@ class Service {
         json.alaska = ctx.alaska.toJSON();
         json.service = ctx.service.toJSON();
         return json;
+      };
+
+      ctx.locals = {};
+      ctx.render = function (template, locals) {
+        let engine = service.engine();
+        let path = templatesDir + template;
+        if (!util.isFile(path)) {
+          throw new Error(`Template is not exist: ${path}`);
+        }
+        return new Promise((resolve, reject) => {
+          engine.renderFile(path, _.assign({}, ctx.locals, locals), (error, result) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+            resolve(result);
+          });
+        });
+      };
+
+      ctx.show = function (template, locals) {
+        ctx._showing = new Promise(function (resolve, reject) {
+          ctx.render(template, locals).then(html => {
+            delete ctx._showing;
+            ctx.body = html;
+            resolve(html);
+          }, error => {
+            delete ctx._showing;
+            reject(error);
+          });
+        });
       };
 
       return routes(ctx, next);
@@ -560,6 +618,17 @@ class Service {
       process.exit();
     });
     return me._db;
+  }
+
+  /**
+   * 获取模板引擎
+   * @returns {*}
+   */
+  engine() {
+    if (!this._engine) {
+      this._engine = require(this.config('render'));
+    }
+    return this._engine;
   }
 
   /**
