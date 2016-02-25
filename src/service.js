@@ -181,7 +181,7 @@ class Service {
 
     for (let service of services) {
       if (typeof service === 'string') {
-        service = {id: service};
+        service = { id: service };
       }
       let serviceId = service.id;
       let serviceAlias = service.alias;
@@ -263,27 +263,28 @@ class Service {
       ctx.set('X-Powered-By', 'Alaska');
       ctx.service = service;
       ctx.alaska = alaska;
+
       /**
        * 发送文件
-       * @param {string} path
+       * @param {string} filePath
        * @param {{}} options
        */
-      ctx.sendfile = async function (path, options) {
+      ctx.sendfile = async function (filePath, options) {
         options = options || {};
-        let trailingSlash = '/' == path[path.length - 1];
+        let trailingSlash = '/' == filePath[filePath.length - 1];
         let index = options.index;
-        if (index && trailingSlash) path += index;
+        if (index && trailingSlash) filePath += index;
         let maxage = options.maxage || options.maxAge || 0;
         let hidden = options.hidden || false;
-        if (!hidden && util.isHidden(path)) return;
+        if (!hidden && util.isHidden(filePath)) return;
 
         let stats;
         try {
-          stats = await fs.stat(path);
+          stats = await fs.stat(filePath);
           if (stats.isDirectory()) {
             if (index) {
-              path += '/' + index;
-              stats = await fs.stat(path);
+              filePath += '/' + index;
+              stats = await fs.stat(filePath);
             } else {
               return;
             }
@@ -294,22 +295,11 @@ class Service {
           err.status = 500;
           throw err;
         }
-        let type = options.type;
-        if (!type) {
-          type = mime.lookup(path);
-          if (options.charset !== false) {
-            if (options.charset) {
-              type += '; charset=' + options.charset;
-            } else {
-              type += '; charset=utf-8';
-            }
-          }
-          ctx.type = type;
-        }
         ctx.set('Last-Modified', stats.mtime.toUTCString());
         ctx.set('Content-Length', stats.size);
         ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
-        ctx.body = fs.createReadStream(path);
+        ctx.type = options.type || mime.lookup(filePath);
+        ctx.body = fs.createReadStream(filePath);
       };
       return next();
     });
@@ -326,7 +316,7 @@ class Service {
       }
       if (name.startsWith('.')) {
         //如果是一个文件路径
-        name = this.dir + '/' + name;
+        name = service.dir + '/' + name;
       }
       let middleware = require(name);
       app.use(middleware(options));
@@ -460,7 +450,7 @@ class Service {
 
     this._controllers = util.include(this.dir + '/controllers', false) || {};
 
-    router.register('/:controller?/:action?', ['GET', 'HEAD', 'POST'], function (ctx, next) {
+    router.register('/:controller?/:action?', ['GET', 'HEAD', 'POST'], async function (ctx, next) {
       let controller = ctx.params.controller || service.config('defaultController');
       let action = ctx.params.action || service.config('defaultAction');
       service.debug('route %s:%s', controller, action);
@@ -468,15 +458,12 @@ class Service {
         let promise = service._controllers[controller][action](ctx, next);
         //异步函数
         if (promise && promise.then) {
-          return new Promise((resolve, reject) => {
-            promise.then(() => {
-              if (ctx._showing) {
-                ctx._showing.then(resolve, reject);
-              } else {
-                resolve();
-              }
-            }, reject);
-          });
+          await promise;
+
+          //正在渲染页面
+          if (ctx._showing) {
+            await ctx._showing;
+          }
         }
         //同步函数,并且正在渲染中
         if (ctx._showing) {
@@ -485,8 +472,55 @@ class Service {
         //同步函数,直接返回,并且没有渲染页面
         return;
       }
-      next();
-    });
+      await next();
+    });//end of register
+  }
+
+  /**
+   * 加载资源服务
+   * @private
+   */
+  _loadStatics() {
+    let service = this;
+    let router = this.router();
+    let statics = [];
+    {
+      let tmp = this.config('statics');
+      if (tmp && typeof tmp === 'string') {
+        statics.push({ root: tmp, prefix: '' });
+      } else if (_.isArray(tmp)) {
+        tmp.forEach(t => {
+          if (t && typeof t === 'string') {
+            statics.push({ root: t, prefix: '' });
+          } else if (_.isObject(t) && t.root) {
+            statics.push(t);
+          }
+        });
+      } else if (_.isObject(tmp) && tmp.root) {
+        statics.push(tmp);
+      }
+    }
+    if (statics.length) {
+      statics.forEach(c => {
+        let root = path.resolve(service.dir, c.root);
+        let prefix = (c.prefix || '') + '/*';
+        let index = c.index === false ? false : (c.index || 'index.html');
+        router.register(prefix, ['GET', 'HEAD'], async function (ctx, next) {
+          await next();
+          if (ctx.body != null || ctx.status != 404) return;
+          let filePath = root;
+          if (c.prefix) {
+            filePath += ctx.path.substr(c.prefix.length);
+          } else {
+            filePath += ctx.path;
+          }
+          await ctx.sendfile(filePath, {
+            index,
+            maxAge: c.maxAge
+          });
+        });
+      });
+    }
   }
 
   /**
@@ -498,6 +532,7 @@ class Service {
     this.route = util.noop;
 
     let app = this.alaska.app();
+    let service = this;
     let router = this.router();
 
     if (this.isMain()) {
@@ -521,6 +556,9 @@ class Service {
       this._loadControllers();
     }
 
+    //静态服务
+    this._loadStatics();
+
     //路由表
     let routes = router.routes();
     //精确匹配域名
@@ -537,7 +575,6 @@ class Service {
       redirect = this.config('redirect', '');
     }
 
-    let service = this;
     let templatesDir = path.join(this.dir, this.config('templates')) + '/';
 
     app.use(function (ctx, next) {

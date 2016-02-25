@@ -88,6 +88,11 @@ module.exports = {
    */
   methods: ['GET', 'POST'],
   /**
+   * [Service] 静态目录列表
+   * @type {Array|string|object}
+   */
+  statics: [],
+  /**
    * [Service] 模板引擎
    * @type {string}
    */
