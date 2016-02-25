@@ -4,12 +4,14 @@
  * @author Liang <liang@maichong.it>
  */
 
-const path = require('path');
 const assert = require('assert');
+const path = require('path');
+const fs = require('mz/fs');
 const _ = require('lodash');
 const Router = require('koa-router');
 const compose = require('koa-compose');
 const collie = require('collie');
+const mime = require('mime');
 const util = require('./util');
 const defaultConfig = require('./config');
 const debug = require('debug')('alaska');
@@ -258,8 +260,57 @@ class Service {
     let alaska = this.alaska;
     let service = this;
     app.use(function (ctx, next) {
+      ctx.set('X-Powered-By', 'Alaska');
       ctx.service = service;
       ctx.alaska = alaska;
+      /**
+       * 发送文件
+       * @param {string} path
+       * @param {{}} options
+       */
+      ctx.sendfile = async function (path, options) {
+        options = options || {};
+        let trailingSlash = '/' == path[path.length - 1];
+        let index = options.index;
+        if (index && trailingSlash) path += index;
+        let maxage = options.maxage || options.maxAge || 0;
+        let hidden = options.hidden || false;
+        if (!hidden && util.isHidden(path)) return;
+
+        let stats;
+        try {
+          stats = await fs.stat(path);
+          if (stats.isDirectory()) {
+            if (index) {
+              path += '/' + index;
+              stats = await fs.stat(path);
+            } else {
+              return;
+            }
+          }
+        } catch (err) {
+          let notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR'];
+          if (~notfound.indexOf(err.code)) return;
+          err.status = 500;
+          throw err;
+        }
+        let type = options.type;
+        if (!type) {
+          type = mime.lookup(path);
+          if (options.charset !== false) {
+            if (options.charset) {
+              type += '; charset=' + options.charset;
+            } else {
+              type += '; charset=utf-8';
+            }
+          }
+          ctx.type = type;
+        }
+        ctx.set('Last-Modified', stats.mtime.toUTCString());
+        ctx.set('Content-Length', stats.size);
+        ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
+        ctx.body = fs.createReadStream(path);
+      };
       return next();
     });
     this.config('appMiddlewares', []).forEach(function (name) {

@@ -56,6 +56,15 @@ exports.include = function include(path, importDefault = true) {
   return null;
 };
 
+/**
+ * 判断某路径是否是隐藏的
+ * @param path
+ * @returns {boolean}
+ */
+exports.isHidden = function isHidden(path) {
+  return /[\\\/]\.\w/.test(path);
+};
+
 const resolved = Promise.resolve();
 exports.noop = function noop() {
   return resolved;
