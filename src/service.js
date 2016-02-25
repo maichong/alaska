@@ -504,13 +504,14 @@ class Service {
       statics.forEach(c => {
         let root = path.resolve(service.dir, c.root);
         let prefix = (c.prefix || '') + '/*';
+        let prefixLength = this.config('prefix').length + c.prefix.length;
         let index = c.index === false ? false : (c.index || 'index.html');
         router.register(prefix, ['GET', 'HEAD'], async function (ctx, next) {
           await next();
           if (ctx.body != null || ctx.status != 404) return;
           let filePath = root;
-          if (c.prefix) {
-            filePath += ctx.path.substr(c.prefix.length);
+          if (prefixLength) {
+            filePath += ctx.path.substr(prefixLength);
           } else {
             filePath += ctx.path;
           }
