@@ -4,6 +4,7 @@
   "description": "Modern web framework for Node.js",
   "main": "lib/alaska.js",
   "dependencies": {
+    "alaska-lru": "^0.1.1",
     "collie": "^0.2.0",
     "koa": "^2.0.0-alpha.3",
     "koa-bodyparser": "^3.0.0",

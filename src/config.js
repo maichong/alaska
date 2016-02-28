@@ -120,6 +120,15 @@ module.exports = {
    */
   db: '',
   /**
+   * [Service] 缓存设置或已经实例化的缓存驱动对象
+   * @type {Object|string}
+   */
+  cache: {
+    type: 'alaska-lru',
+    prefix: false,
+    options: {}
+  },
+  /**
    * 是否开启控制器路由
    * @type {Boolean}
    */
