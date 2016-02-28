@@ -37,6 +37,18 @@ module.exports = {
    * @type {string}
    */
   env: 'development',
+
+  /**
+   * [APP] session
+   * @type {object|string}
+   */
+  session: {
+    type: 'alaska-cache-lru',
+    cookie: {},
+    store: {
+      maxAge: 1000 * 60 * 60
+    }
+  },
   //
   // KOA settings
   //
@@ -124,9 +136,9 @@ module.exports = {
    * @type {Object|string}
    */
   cache: {
-    type: 'alaska-lru',
+    type: 'alaska-cache-lru',
     prefix: false,
-    options: {}
+    store: {}
   },
   /**
    * 是否开启控制器路由

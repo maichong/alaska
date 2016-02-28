@@ -21,6 +21,8 @@ class Model {
   //placeholder
   static fields = null;
 
+  static cache = 0;
+
   static pre(action, fn) {
     this._pre || (this._pre = {});
     this._pre[action] || (this._pre[action] = []);
@@ -60,8 +62,13 @@ class Model {
         FieldType = require('alaska-field-checkbox');
       } else if (field.type === Number) {
         FieldType = require('alaska-field-number');
+      } else if (field.type === 'relationship') {
+        //TODO
+        FieldType = require('alaska-field-text');
       } else {
-        FieldType = field.type;
+        //TODO
+        FieldType = require('alaska-field-text');
+        //FieldType = field.type;
       }
       field.type = FieldType;
       let options = {
@@ -92,6 +99,17 @@ class Model {
         update: 1,
         remove: 1
       };
+    }
+
+    //允许自动缓存
+    if (Model.cache) {
+      //保存成功后更新缓存
+      Model.post('save', function () {
+        Model.setCache(this);
+      });
+      Model.post('remove', function () {
+        Model.delCache(this);
+      });
     }
 
     Model._pre || (Model._pre = []);
@@ -159,64 +177,6 @@ class Model {
     Model.pre = panic;
     Model.post = panic;
 
-    /**
-     *
-     * @param Object options
-     * @returns {mongoose.Query}
-     */
-    Model.paginate = function (options) {
-      options = options || {};
-      let page = parseInt(options.page) || 1;
-      let perPage = parseInt(options.perPage) || 10;
-      let skip = (page - 1) * perPage;
-      let search = options.search || '';
-
-      //TODO search & filter
-      let query = this.find(options.filters);
-
-      query.originalExec = query.exec;
-
-      let results = {
-        total: 0,
-        page: page,
-        perPage: perPage,
-        previous: page <= 1 ? false : page - 1,
-        next: false,
-        results: []
-      };
-
-      query.exec = function (callback) {
-        callback = callback || _.noop;
-
-        return new Promise(function (resolve, reject) {
-          query.exec = query.originalExec;
-          query.count(function (error, total) {
-            if (error) {
-              return reject(error);
-            }
-            if (!total) {
-              callback(null, results);
-              resolve(results);
-              return;
-            }
-            results.total = total;
-            results.next = Math.ceil(total / perPage) > page ? page + 1 : false;
-
-            query.find().limit(perPage).skip(skip).exec(function (error, res) {
-              if (error) {
-                return reject(error);
-              }
-              results.results = res;
-              callback(null, results);
-              resolve(results);
-            });
-          });
-        });
-      };
-
-      return query;
-    };
-
     //register
 
     let db = service.db();
@@ -227,8 +187,144 @@ class Model {
     Model.prototype.data = function () {
       //TODO data()
       let doc = this;
+      doc.id = doc._id;
+      delete doc._id;
       return doc.toObject();
     };
+  }
+
+  /**
+   * 分页查询
+   * @param Object options
+   * @returns {mongoose.Query}
+   */
+  static paginate(options) {
+    options = options || {};
+    let page = parseInt(options.page) || 1;
+    let perPage = parseInt(options.perPage) || 10;
+    let skip = (page - 1) * perPage;
+    let search = options.search || '';
+
+    //TODO search & filter
+    let query = this.find(options.filters);
+
+    query.originalExec = query.exec;
+
+    let results = {
+      total: 0,
+      page: page,
+      perPage: perPage,
+      previous: page <= 1 ? false : page - 1,
+      next: false,
+      results: []
+    };
+
+    query.exec = function (callback) {
+      callback = callback || _.noop;
+
+      return new Promise(function (resolve, reject) {
+        query.exec = query.originalExec;
+        query.count(function (error, total) {
+          if (error) {
+            return reject(error);
+          }
+          if (!total) {
+            callback(null, results);
+            resolve(results);
+            return;
+          }
+          results.total = total;
+          results.next = Math.ceil(total / perPage) > page ? page + 1 : false;
+
+          query.find().limit(perPage).skip(skip).exec(function (error, res) {
+            if (error) {
+              return reject(error);
+            }
+            results.results = res;
+            callback(null, results);
+            resolve(results);
+          });
+        });
+      });
+    };
+
+    return query;
+  }
+
+  /**
+   * 依据记录ID,生成数据缓存所使用的cache key
+   * @param id
+   * @returns {*}
+   */
+  static createCacheKey(id) {
+    return `model_cache_${this.service.name}.${this.name}_${id}`;
+  }
+
+  /**
+   * 获取某条记录的缓存,如果没有找到缓存数据,则查询数据库
+   * @param id
+   * @returns {Model}
+   */
+  static async getCache(id) {
+    //if (typeof id === 'object') {
+    //  id = id.toString();
+    //}
+    let cache;
+    let cacheKey;
+    if (this.cache) {
+      //模型允许自动缓存
+      cache = this.service.cache();
+      cacheKey = this.createCacheKey(id);
+      let data = await cache.get(cacheKey);
+      if (data) {
+        return this.castCache(data);
+      }
+    }
+
+    //没有找到缓存数据
+    let record = await this.findById(id);
+    if (record && cache) {
+      this.setCache(record);
+    }
+
+    return record;
+  }
+
+  /**
+   * 设置模型缓存
+   * @param record
+   */
+  static async setCache(record) {
+    let cacheKey = this.createCacheKey(record.id);
+    let cache = this.service.cache();
+    await cache.set(cacheKey, cache.noSerialization ? record : record.toObject(), this.cache);
+  }
+
+  /**
+   * 删除模型缓存
+   * @param id
+   */
+  static async delCache(id) {
+    let cacheKey = this.createCacheKey(id);
+    let cache = this.service.cache();
+    await cache.del(cacheKey);
+  }
+
+  /**
+   * 将object数据转为Model对象
+   * @param data
+   * @returns {*}
+   */
+  static castCache(data) {
+    let cache = this.service.cache();
+    if (cache.noSerialization) {
+      //缓存驱动不需要序列化
+      return data;
+    }
+    //缓存驱动需要序列化
+    let record = new this(null, null, true);
+    record.init(data);
+    return record;
   }
 
 }

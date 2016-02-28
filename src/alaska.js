@@ -215,7 +215,7 @@ class Alaska {
     }
 
     await this._mainService.init();
-    await this._mainService.load();
+    await this._mainService.loadModels();
     await this._mainService.route();
     await this._mainService.launch();
 
@@ -230,6 +230,23 @@ class Alaska {
     return {
       services: Object.keys(this._services)
     };
+  }
+
+  /**
+   * 抛出异常
+   * @param message
+   * @param code
+   * @param print
+   */
+  panic(message, code, print) {
+    let error = new Error(message);
+    if (code) {
+      error.code = code;
+    }
+    if (print) {
+      console.error(error.stack);
+    }
+    throw error;
   }
 }
 
