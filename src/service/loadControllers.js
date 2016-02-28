@@ -22,17 +22,8 @@ module.exports = function loadControllers() {
       //异步函数
       if (promise && promise.then) {
         await promise;
-
-        //正在渲染页面
-        if (ctx._showing) {
-          await ctx._showing;
-        }
       }
-      //同步函数,并且正在渲染中
-      if (ctx._showing) {
-        return ctx._showing;
-      }
-      //同步函数,直接返回,并且没有渲染页面
+      //同步函数,直接返回
       return;
     }
     await next();

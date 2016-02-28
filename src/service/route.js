@@ -5,6 +5,7 @@
  */
 
 const path = require('path');
+const _ = require('lodash');
 const util = require('../util');
 
 module.exports = async function route() {
@@ -183,17 +184,8 @@ module.exports = async function route() {
       });
     };
 
-    ctx.show = function (template, locals) {
-      ctx._showing = new Promise(function (resolve, reject) {
-        ctx.render(template, locals).then(html => {
-          delete ctx._showing;
-          ctx.body = html;
-          resolve(html);
-        }, error => {
-          delete ctx._showing;
-          reject(error);
-        });
-      });
+    ctx.show = async function (template, locals) {
+      ctx.body = await ctx.render(template, locals);
     };
 
     return routes(ctx, next);
