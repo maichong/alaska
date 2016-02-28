@@ -74,6 +74,7 @@ class Service {
    * @param {Alaska} alaska Service所属的Alaska实例
    */
   constructor(options, alaska) {
+    this.panic = alaska.panic;
     collie(this, 'init', require('./service/init'));
     collie(this, 'loadModels', require('./service/loadModels'));
     collie(this, 'route', require('./service/route'));

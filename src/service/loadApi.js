@@ -4,8 +4,9 @@
  * @author Liang <liang@maichong.it>
  */
 
-const util = require('../util');
+const _ = require('lodash');
 const compose = require('koa-compose');
+const util = require('../util');
 
 module.exports = function loadApi() {
   this.loadApi = util.noop;
@@ -15,9 +16,13 @@ module.exports = function loadApi() {
 
   this._apiControllers = util.include(this.dir + '/api');
   let defaultApiController = require('../api');
-  let bodyParser = require('koa-bodyparser')();
 
-  //TODO 优化性能
+  let models = _.reduce(this._models, (res, Model, name) => {
+    name = name.replace(/([a-z])([A-Z])/g, (matchs, b, c) => (b + '-' + c.toLowerCase())).toLowerCase();
+    res[name] = Model;
+    return res;
+  }, {});
+
   function restApi(action) {
     return function (ctx, next) {
 
@@ -43,7 +48,7 @@ module.exports = function loadApi() {
         //console.log(ctx.params.model);
         //console.log(service);
         //console.log(service._models);
-        let Model = service._models[ctx.params.model];
+        let Model = models[ctx.params.model];
         //console.log(Model);
         if (!Model) {
           //404
@@ -80,7 +85,39 @@ module.exports = function loadApi() {
   router.get('/api/:model/count', restApi('count'));
   router.get('/api/:model/:id', restApi('show'));
   router.get('/api/:model', restApi('list'));
-  router.post('/api/:model', bodyParser, restApi('create'));
-  router.put('/api/:model/:id', bodyParser, restApi('update'));
+  router.post('/api/:model', restApi('create'));
+  router.put('/api/:model/:id', restApi('update'));
   router.del('/api/:model/:id', restApi('remove'));
+
+  router.post('/api/:controller/:action', async function (ctx, next) {
+    let controller = ctx.params.controller;
+    let action = ctx.params.action;
+    service.debug('api %s:%s', controller, action);
+
+    if (service._apiControllers[controller] && service._apiControllers[controller][action] && action[0] !== '_') {
+      try {
+        let promise = service._apiControllers[controller][action](ctx, next);
+        //异步函数
+        if (promise && promise.then) {
+          await promise;
+        }
+        //同步函数,直接返回
+      } catch (error) {
+        if (!ctx.body) {
+          if (ctx.status === 404) {
+            ctx.status = 500;
+          }
+          let body = {
+            error: error.message
+          };
+          if (error.code) {
+            body.code = error.code;
+          }
+          ctx.body = body;
+        }
+      }
+      return;
+    }
+    await next();
+  });
 };

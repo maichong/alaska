@@ -24,7 +24,10 @@ module.exports = {
    * [APP] APP中间件列表
    * @type {Array}
    */
-  appMiddlewares: [],
+  appMiddlewares: ['koa-logger', {
+    name: 'koa-bodyparser',
+    options: {}
+  }],
 
   /**
    * [APP] 监听端口

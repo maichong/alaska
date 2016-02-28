@@ -17,7 +17,7 @@ module.exports = async function loadModels() {
 
   if (this.config('db') !== false) {
     global.__service = this;
-    this._models = util.include(this.dir + '/models');
+    this._models = util.include(this.dir + '/models') || {};
     //遍历模型
     for (let name in this._models) {
       let Model = this._models[name];
