@@ -13,7 +13,7 @@ function panic() {
   throw new Error('Can not call the function after Model register.');
 }
 
-class Model {
+class BaseModel {
   constructor() {
     throw new Error('Can not initialize a Model before register.');
   }
@@ -182,6 +182,12 @@ class Model {
 
     Model.pre = panic;
     Model.post = panic;
+    delete Model._pre;
+    delete Model._post;
+
+    ['paginate', 'createCacheKey', 'getCache', 'setCache', 'delCache', 'castCache', 'castCacheArray', 'castModelArray'].forEach(key=> {
+      Model[key] = BaseModel[key];
+    });
 
     //register
 
@@ -333,6 +339,33 @@ class Model {
     return record;
   }
 
+  /**
+   * 将object数组转为Model对象数组
+   * @param array
+   * @returns {Array}
+   */
+  static castCacheArray(array) {
+    let cache = this.service.cache();
+    if (cache.noSerialization) {
+      //缓存驱动不需要序列化
+      return array;
+    }
+    return _.map(array, data => this.castCache(data));
+  }
+
+  /**
+   * 将模型数组转为plain object数组
+   * @param array
+   * @returns {Array}
+   */
+  static castModelArray(array) {
+    let cache = this.service.cache();
+    if (cache.noSerialization) {
+      //缓存驱动不需要序列化
+      return array;
+    }
+    return _.map(array, record => record.toObject());
+  }
 }
 
-module.exports = Model;
+module.exports = BaseModel;
