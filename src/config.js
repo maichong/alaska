@@ -106,7 +106,7 @@ module.exports = {
    * [Service] 静态目录列表
    * @type {Array|string|object}
    */
-  statics: [],
+  statics: '',
   /**
    * [Service] 模板引擎
    * @type {string}
@@ -134,6 +134,11 @@ module.exports = {
    * @type {Boolean|string}
    */
   db: '',
+  /**
+   * [Service] 数据库collection前缀
+   * @type {Boolean|string}
+   */
+  dbPrefix: false,
   /**
    * [Service] 缓存设置或已经实例化的缓存驱动对象
    * @type {Object|string}

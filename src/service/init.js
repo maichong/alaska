@@ -19,6 +19,17 @@ module.exports = async function init() {
     }
   }
 
+  //数据库collection前缀
+  let dbPrefix = this.config('dbPrefix');
+  if (dbPrefix === false) {
+    this.dbPrefix = '';
+  } else if (typeof dbPrefix === 'string') {
+    this.dbPrefix = dbPrefix;
+  } else {
+    this.dbPrefix = this.id.replace('alaska-', '') + '_';
+  }
+
+
   let services = this.config('services') || [];
   if (typeof services === 'string') {
     services = [services];

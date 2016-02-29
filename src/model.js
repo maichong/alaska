@@ -23,6 +23,10 @@ class Model {
 
   static cache = 0;
 
+  static prefix = '';
+
+  static collection = '';
+
   static pre(action, fn) {
     this._pre || (this._pre = {});
     this._pre[action] || (this._pre[action] = []);
@@ -82,7 +86,9 @@ class Model {
       fields[key] = options;
     }
 
-    let schema = Model.schema = new Schema(fields);
+    let schema = Model.schema = new Schema(fields, {
+      collection: Model.collection || ((Model.prefix || service.dbPrefix) + name.replace(/([a-z])([A-Z])/g, (a, b, c) => (b + '_' + c)).toLowerCase())
+    });
     let groups = {};
     _.defaults(Model, {
       userField: 'user',
