@@ -44,19 +44,21 @@ module.exports = async function route() {
           } catch (e) {
             json = null;
           }
+        } else {
+          sid = ctx.sessionId = random(24);
+          ctx.cookies.set(key, sid, cookieOpts);
         }
 
         if (json) {
           ctx.sessionId = sid;
           try {
-            session = new Session(ctx, JSON.parse(json));
+            session = new Session(ctx, json);
           } catch (err) {
             if (!(err instanceof SyntaxError)) throw err;
-            session = new Session(ctx);
+            session = new Session(ctx, {});
           }
         } else {
-          sid = ctx.sessionId = random(24);
-          session = new Session(ctx);
+          session = new Session(ctx, {});
         }
 
         ctx.__defineGetter__('session', function () {
@@ -70,6 +72,8 @@ module.exports = async function route() {
           throw new Error('ctx.session can only be set as null or an object.');
         });
 
+        let jsonString = JSON.stringify(json);
+
         try {
           await next();
         } catch (err) {
@@ -81,7 +85,7 @@ module.exports = async function route() {
             await store.del(sid);
           } else if (!json && !session.length) {
             // 未更改
-          } else if (session.isChanged(json)) {
+          } else if (session.isChanged(jsonString)) {
             // 保存
             json = session.toJSON();
             await store.set(sid, json);
