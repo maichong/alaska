@@ -11,7 +11,10 @@ module.exports = function loadControllers() {
   let router = this.router();
   let service = this;
 
+  let original = global.__service;
+  global.__service = this;
   this._controllers = util.include(this.dir + '/controllers', false) || {};
+  global.__service = original;
 
   router.register('/:controller?/:action?', ['GET', 'HEAD', 'POST'], async function (ctx, next) {
     let controller = ctx.params.controller || service.config('defaultController');

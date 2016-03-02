@@ -8,6 +8,7 @@ const _ = require('lodash');
 const collie = require('collie');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const BaseField = require('./field');
 
 function panic() {
   throw new Error('Can not call the function after Model register.');
@@ -50,45 +51,61 @@ class BaseModel {
       throw new Error(name + ' model has no fields.');
     }
 
-    //整理字段列表
-    let fields = {};
-    for (let key in Model.fields) {
-      let field = Model.fields[key];
+    let schema = Model.schema = new Schema({}, {
+      collection: Model.collection || ((Model.prefix || service.dbPrefix) + name.replace(/([a-z])([A-Z])/g, (a, b, c) => (b + '_' + c)).toLowerCase())
+    });
+
+    //将Model字段注册到Mongoose.Schema中
+    for (let path in Model.fields) {
+      let field = Model.fields[path];
+      if (typeof field === 'function') {
+        Model.fields[path] = field = { type: field };
+      }
+      if (_.isArray(field.type) && field.type.length === 1) {
+        // type : [ OtherModel ]
+        let OtherModel = field.type[0];
+        field.type = 'relationship';
+        field.ref = OtherModel;
+        field.many = true;
+      }
+      if (field.type.isModel) {
+        let OtherModel = field.type;
+        field.type = 'relationship';
+        field.ref = OtherModel;
+      }
+      field.path = path;
+
       if (!field.type) {
         throw new Error('Field type is not specified. ' + name);
       }
-      let FieldType;
+      let AlaskaFieldType;
       if (field.type === String) {
-        FieldType = require('alaska-field-text');
+        AlaskaFieldType = require('alaska-field-text');
       } else if (field.type === Date) {
-        FieldType = require('alaska-field-date');
+        AlaskaFieldType = require('alaska-field-date');
       } else if (field.type === Boolean) {
-        FieldType = require('alaska-field-checkbox');
+        AlaskaFieldType = require('alaska-field-checkbox');
       } else if (field.type === Number) {
-        FieldType = require('alaska-field-number');
-      } else if (field.type === 'relationship') {
-        //TODO
-        FieldType = require('alaska-field-text');
+        AlaskaFieldType = require('alaska-field-number');
+      } else if (typeof field.type === 'string') {
+        AlaskaFieldType = require('alaska-field-' + field.type);
+      } else if (typeof field.type === 'string' && field.type.init) {
+        AlaskaFieldType = field.type;
       } else {
-        //TODO
-        FieldType = require('alaska-field-text');
-        //FieldType = field.type;
+        throw new Error(`Unsupported field type for ${Model.name}.${path}`);
       }
-      field.type = FieldType;
-      let options = {
-        type: FieldType.plain
-      };
       //将用户定义的选项传给Mongoose
-      FieldType.init && FieldType.init(field, options);
-      if (_.has(field, 'default')) {
-        options.default = field.default;
+      //console.log(AlaskaFieldType, field);
+      field.type = AlaskaFieldType;
+      field.label = field.label || path.toUpperCase();
+      console.log(Model.name, path);
+      if (AlaskaFieldType.initSchema) {
+        AlaskaFieldType.initSchema(field, schema, Model);
+      } else {
+        BaseField.initSchema.call(AlaskaFieldType, field, schema, Model);
       }
-      fields[key] = options;
     }
 
-    let schema = Model.schema = new Schema(fields, {
-      collection: Model.collection || ((Model.prefix || service.dbPrefix) + name.replace(/([a-z])([A-Z])/g, (a, b, c) => (b + '_' + c)).toLowerCase())
-    });
     let groups = {};
     _.defaults(Model, {
       userField: 'user',
@@ -180,6 +197,7 @@ class BaseModel {
       }
     }
 
+    Model.isModel = true;
     Model.pre = panic;
     Model.post = panic;
     delete Model._pre;
@@ -194,6 +212,7 @@ class BaseModel {
     let db = service.db();
     MongooseModel = db.model(name, schema);
 
+    Model.MongooseModel = MongooseModel;
     Model.__proto__ = MongooseModel;
     Model.prototype.__proto__ = MongooseModel.prototype;
     Model.prototype.data = function () {

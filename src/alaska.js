@@ -114,6 +114,7 @@ class Alaska {
     collie(this, 'launch');
     collie(this, 'registerService');
     this.Service = require('./service');
+    this.Field = require('./field');
     this.defaultAlaska = defaultAlaska ? defaultAlaska : this;
   }
 
@@ -256,7 +257,6 @@ class Alaska {
     if (code) {
       error.code = code;
     }
-    console.error('Panic ' + error.stack);
     throw error;
   }
 }
