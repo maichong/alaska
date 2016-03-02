@@ -98,7 +98,6 @@ class BaseModel {
       //console.log(AlaskaFieldType, field);
       field.type = AlaskaFieldType;
       field.label = field.label || path.toUpperCase();
-      console.log(Model.name, path);
       if (AlaskaFieldType.initSchema) {
         AlaskaFieldType.initSchema(field, schema, Model);
       } else {
