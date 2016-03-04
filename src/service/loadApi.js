@@ -16,7 +16,7 @@ module.exports = function loadApi() {
 
   let original = global.__service;
   global.__service = this;
-  this._apiControllers = util.include(this.dir + '/api');
+  this._apiControllers = util.include(this.dir + '/api', false);
   global.__service = original;
 
   let defaultApiController = require('../api');
@@ -67,7 +67,7 @@ module.exports = function loadApi() {
         //console.log(Model);
         if (!Model) {
           //404
-          return;
+          return next();
         }
         let modelId = ctx.params.model.toLowerCase();
         let middlewares = [];
@@ -85,7 +85,7 @@ module.exports = function loadApi() {
 
         if (!middlewares.length) {
           //404
-          return;
+          return next();
         }
         ctx.Model = Model;
         return compose(middlewares)(ctx).catch(error => onError(ctx, error));
@@ -95,20 +95,12 @@ module.exports = function loadApi() {
     };
   }
 
-  router.get('/api/:model/count', restApi('count'));
-  router.get('/api/:model/:id', restApi('show'));
-  router.get('/api/:model', restApi('list'));
-  router.post('/api/:model', restApi('create'));
-  router.put('/api/:model/:id', restApi('update'));
-  router.del('/api/:model/:id', restApi('remove'));
-
-  router.post('/api/:controller/:action', async function (ctx, next) {
+  router.register('/api/:controller?/:action?', ['POST'], async function (ctx, next) {
     let controller = ctx.params.controller;
-    let action = ctx.params.action;
+    let action = ctx.params.action || 'default';
     service.debug('api %s:%s', controller, action);
     let ctrl = service._apiControllers[controller];
-
-    if (ctrl && ctrl[action] && action[0] !== '_') {
+    if (ctrl && ctrl[action] && action[0] !== '_' && action != 'create') {
       try {
         let promise = ctrl[action](ctx, next);
         //异步函数
@@ -123,4 +115,12 @@ module.exports = function loadApi() {
     }
     await next();
   });
+
+  router.get('/api/:model/count', restApi('count'));
+  router.get('/api/:model/:id', restApi('show'));
+  router.get('/api/:model', restApi('list'));
+  router.post('/api/:model', restApi('create'));
+  router.put('/api/:model/:id', restApi('update'));
+  router.del('/api/:model/:id', restApi('remove'));
+
 };

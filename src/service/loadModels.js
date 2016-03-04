@@ -26,7 +26,10 @@ module.exports = async function loadModels() {
         let file = dir + '/models/' + name + '.js';
         if (util.isFile(file)) {
           let ext = require(file);
-          ['fields', 'groups', 'api'].forEach(key => {
+          [
+            'fields',
+            'groups'
+          ].forEach(key => {
             if (typeof ext[key] !== 'undefined') {
               _.assign(Model[key], ext[key]);
             }
@@ -42,6 +45,12 @@ module.exports = async function loadModels() {
               Model.post(Action.toLowerCase(), post);
             }
           });
+          for (let key in ext) {
+            if (key === 'fields' || key === 'groups' || /^(pre|post)(Init|Validate|Save|Remove)$/.test(key)) {
+              continue;
+            }
+            Model[key] = ext[key];
+          }
           if (ext['default']) {
             ext['default'](Model);
           }
