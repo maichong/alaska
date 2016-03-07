@@ -30,7 +30,9 @@ exports.viewOptions = function (field, Model) {
     label: field.label,
     path: field.path,
     hidden: field.hidden,
-    depends: field.depends
+    group: field.group,
+    depends: field.depends,
+    fullWidth: field.fullWidth,
   };
 
   if (this.views) {

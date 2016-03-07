@@ -118,12 +118,14 @@ class BaseModel {
       }
     }
 
-    let groups = {};
     _.defaults(Model, {
       userField: 'user',
       api: false,
       searchFields: '',
-      defaultSort: ''
+      defaultSort: '',
+      defaultColumns: '',
+      label: Model.name,
+      groups: {}
     });
     if (Model.api === 1) {
       Model.api = {
@@ -218,10 +220,6 @@ class BaseModel {
     ['paginate', 'createCacheKey', 'getCache', 'setCache', 'delCache', 'castCache', 'castCacheArray', 'castModelArray'].forEach(key=> {
       Model[key] = BaseModel[key];
     });
-
-    if (!Model.label) {
-      Model.label = Model.name;
-    }
 
     //register
 

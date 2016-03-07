@@ -26,14 +26,18 @@ module.exports = async function loadModels() {
         let file = dir + '/models/' + name + '.js';
         if (util.isFile(file)) {
           let ext = require(file);
-          [
-            'fields',
-            'groups'
-          ].forEach(key => {
-            if (typeof ext[key] !== 'undefined') {
-              _.assign(Model[key], ext[key]);
+          if (typeof ext.groups !== 'undefined') {
+            _.assign(Model.groups, ext.groups);
+          }
+          if (ext.fields) {
+            for (let key in ext.fields) {
+              if (Model.fields[key]) {
+                _.assign(Model.fields[key], ext.fields[key]);
+              } else {
+                Model.fields[key] = ext.fields[key];
+              }
             }
-          });
+          }
           //扩展模型事件
           ['Init', 'Validate', 'Save', 'Remove'].forEach(Action => {
             let pre = ext['pre' + Action];
