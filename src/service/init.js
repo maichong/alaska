@@ -13,7 +13,11 @@ module.exports = async function init() {
 
   //加载扩展配置
   for (let dir of this._configDirs) {
-    let configFile = dir + '/config.js';
+    let configFile = dir + '.js';
+    if (util.isFile(configFile)) {
+      this.applyConfig(require(configFile).default);
+    }
+    configFile = dir + '/config.js';
     if (util.isFile(configFile)) {
       this.applyConfig(require(configFile).default);
     }
