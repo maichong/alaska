@@ -14,9 +14,7 @@ exports.plain = String;
  * @param Model
  */
 exports.initSchema = function (field, schema, Model) {
-  let options = field.options || {};
-  options.type = options.type || this.plain;
-  schema.path(field.path, options);
+  schema.path(field.path, field.dataType || this.plain);
 };
 
 /**
@@ -30,7 +28,10 @@ exports.viewOptions = function (field, Model) {
     path: field.path,
     hidden: field.hidden,
     group: field.group,
+    disabled: field.disabled,
+    note: field.note,
     depends: field.depends,
+    required: field.required,
     fullWidth: field.fullWidth,
   };
 
