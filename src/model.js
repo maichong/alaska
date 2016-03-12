@@ -212,6 +212,7 @@ class BaseModel {
     }
 
     Model.isModel = true;
+    Model.title = Model.title || 'title';
     Model.pre = panic;
     Model.post = panic;
     delete Model._pre;
