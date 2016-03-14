@@ -259,6 +259,14 @@ class Alaska {
     }
     throw error;
   }
+
+  async try(promise) {
+    try {
+      return await promise;
+    } catch (error) {
+      this.error(error);
+    }
+  }
 }
 
 defaultAlaska = new Alaska();

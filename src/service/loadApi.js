@@ -114,6 +114,10 @@ module.exports = function loadApi() {
       return;
     }
     await next();
+    if (!ctx.body && ctx.status == 404) {
+      ctx.status = 400;
+      ctx.body = { error: 'Bad Request' };
+    }
   });
 
   router.get('/api/:model/count', restApi('count'));
