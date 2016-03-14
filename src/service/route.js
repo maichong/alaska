@@ -7,6 +7,7 @@
 const path = require('path');
 const _ = require('lodash');
 const util = require('../util');
+const asyncBusboy = require('async-busboy');
 
 module.exports = async function route() {
   this.route = util.noop;
@@ -93,6 +94,29 @@ module.exports = async function route() {
         }
       });
     }
+
+    //upload
+    app.use(async function (ctx, next) {
+      ctx.files = {};
+      if (ctx.method != 'POST') return await next();
+      if (!ctx.request.is('multipart/*')) return await next();
+      const { files, fields } = await asyncBusboy(ctx.req);
+      ctx.files = {};
+      files.forEach(file => {
+        let fieldname = file.fieldname;
+        if (ctx.files[fieldname]) {
+          if (_.isArray(ctx.files[fieldname])) {
+            ctx.files[fieldname].push(file);
+          } else {
+            ctx.files[fieldname] = [ctx.files[fieldname], file];
+          }
+        } else {
+          ctx.files[fieldname] = file;
+        }
+      });
+      ctx.request.body = fields;
+      await next();
+    });
     await this.loadAppMiddlewares();
   }
 

@@ -5,6 +5,7 @@
   "main": "lib/alaska.js",
   "dependencies": {
     "alaska-cache-lru": "^0.1.3",
+    "async-busboy": "0.0.4",
     "collie": "^0.2.1",
     "koa": "^2.0.0-alpha.3",
     "koa-bodyparser": "^3.0.0",

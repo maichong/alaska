@@ -158,4 +158,11 @@ module.exports = {
    * @type {Boolean}
    */
   api: true,
+  /**
+   * 默认Image字段类型
+   * @type {Object}
+   */
+  //'alaska-field-image': {
+  //  type: 'alaska-field-image'
+  //}
 };

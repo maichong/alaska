@@ -5,6 +5,7 @@
  */
 
 const fs = require('fs');
+const _ = require('lodash');
 
 /**
  * 判断指定路径是否是文件
@@ -70,3 +71,14 @@ exports.noop = function noop() {
   return resolved;
 };
 
+exports.bindMethods = function bindMethods(obj, scope) {
+  let bound = {};
+  for (let key in obj) {
+    if (typeof obj[key] === 'function') {
+      bound[key] = obj[key].bind(scope);
+    } else if (_.isObject(obj[key])) {
+      bound[key] = bindMethods(obj[key], scope);
+    }
+  }
+  return bound;
+};

@@ -9,6 +9,7 @@ const collie = require('collie');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const BaseField = require('./field');
+const util = require('./util');
 
 function panic() {
   throw new Error('Can not call the function after Model register.');
@@ -53,6 +54,12 @@ class BaseModel {
     this._post[action].push(fn);
   }
 
+  static underscoreMethod(field, name, fn) {
+    this._underscore || (this._underscore = {});
+    this._underscore[field] || (this._underscore[field] = {});
+    this._underscore[field][name] = fn;
+  }
+
   static register() {
     let service = __service;
     let Model = this;
@@ -74,6 +81,9 @@ class BaseModel {
       if (typeof field === 'function') {
         Model.fields[path] = field = { type: field };
       }
+      if (!field.type) {
+        throw new Error(Model.name + '.' + path + ' field type not specified');
+      }
       if (_.isArray(field.type) && field.type.length === 1) {
         // type : [ OtherModel ]
         let OtherModel = field.type[0];
@@ -92,20 +102,31 @@ class BaseModel {
         throw new Error('Field type is not specified. ' + name);
       }
       let AlaskaFieldType;
-      if (field.type === String) {
-        AlaskaFieldType = require('alaska-field-text');
-      } else if (field.type === Date) {
-        AlaskaFieldType = require('alaska-field-date');
-      } else if (field.type === Boolean) {
-        AlaskaFieldType = require('alaska-field-checkbox');
-      } else if (field.type === Number) {
-        AlaskaFieldType = require('alaska-field-number');
-      } else if (typeof field.type === 'string') {
-        AlaskaFieldType = require('alaska-field-' + field.type);
-      } else if (typeof field.type === 'string' && field.type.init) {
+      if (typeof field.type === 'object' && field.type.plain) {
         AlaskaFieldType = field.type;
       } else {
-        throw new Error(`Unsupported field type for ${Model.name}.${path}`);
+        let fieldTypeName;
+        if (field.type === String) {
+          fieldTypeName = 'alaska-field-text';
+        } else if (field.type === Date) {
+          fieldTypeName = 'alaska-field-date';
+        } else if (field.type === Boolean) {
+          fieldTypeName = 'alaska-field-checkbox';
+        } else if (field.type === Number) {
+          fieldTypeName = 'alaska-field-number';
+        } else if (typeof field.type === 'string') {
+          fieldTypeName = 'alaska-field-' + field.type;
+        } else {
+          throw new Error(`Unsupported field type for ${Model.name}.${path}`);
+        }
+        let config = service.config(true, fieldTypeName);
+        if (config) {
+          if (config.type) {
+            fieldTypeName = config.type;
+          }
+          _.assign(field, _.omit(config, 'type'));
+        }
+        AlaskaFieldType = require(fieldTypeName);
       }
       //将用户定义的选项传给Mongoose
       //console.log(AlaskaFieldType, field);
@@ -118,7 +139,15 @@ class BaseModel {
       }
     }
 
+    schema.virtual('_').get(function () {
+      if (!this.__methods) {
+        this.__methods = util.bindMethods(Model._underscore, this);
+      }
+      return this.__methods;
+    });
+
     _.defaults(Model, {
+      title: 'title',
       userField: 'user',
       api: false,
       searchFields: '',
@@ -212,7 +241,6 @@ class BaseModel {
     }
 
     Model.isModel = true;
-    Model.title = Model.title || 'title';
     Model.pre = panic;
     Model.post = panic;
     delete Model._pre;
@@ -237,7 +265,11 @@ class BaseModel {
         if (key[0] == '_' || !Model.fields[key] || Model.fields[key].private) {
           continue;
         }
-        doc[key] = this.get(key);
+        if (this._[key] && this._[key].data) {
+          doc[key] = this._[key].data();
+        } else {
+          doc[key] = this.get(key);
+        }
       }
       doc.id = this.id;
       doc.__proto__ = Data;
