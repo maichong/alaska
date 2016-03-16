@@ -109,7 +109,7 @@ class BaseModel {
         if (field.type === String) {
           fieldTypeName = 'alaska-field-text';
         } else if (field.type === Date) {
-          fieldTypeName = 'alaska-field-date';
+          fieldTypeName = 'alaska-field-datetime';
         } else if (field.type === Boolean) {
           fieldTypeName = 'alaska-field-checkbox';
         } else if (field.type === Number) {
