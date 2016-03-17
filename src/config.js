@@ -22,7 +22,7 @@ module.exports = {
 
   /**
    * [APP] APP中间件列表
-   * @type {Array}
+   * @type {array}
    */
   appMiddlewares: ['koa-logger', {
     name: 'koa-bodyparser',
@@ -58,7 +58,7 @@ module.exports = {
 
   /**
    * [KOA] 代理模式
-   * @type {Boolean}
+   * @type {boolean}
    */
   proxy: false,
 
@@ -99,7 +99,7 @@ module.exports = {
   defaultAction: 'index',
   /**
    * [Service] 控制器路由接受的HTTP方法列表
-   * @type {Array}
+   * @type {array}
    */
   methods: ['GET', 'POST'],
   /**
@@ -119,12 +119,12 @@ module.exports = {
   templates: 'templates',
   /**
    * [Service] 该Service依赖的子Service列表
-   * @type {Array}
+   * @type {array}
    */
   services: [],
   /**
    * [Service] 该Service的路由中间件
-   * @type {Array}
+   * @type {array}
    */
   middlewares: [],
   /**
@@ -146,23 +146,18 @@ module.exports = {
   cache: {
     type: 'alaska-cache-lru',
     prefix: false,
-    store: {}
+    store: {
+      maxAge: 3600 * 24 * 1000
+    }
   },
   /**
    * 是否开启控制器路由
-   * @type {Boolean}
+   * @type {boolean}
    */
   controllers: true,
   /**
    * 是否开启rest api
-   * @type {Boolean}
+   * @type {boolean}
    */
-  api: true,
-  /**
-   * 默认Image字段类型
-   * @type {Object}
-   */
-  //'alaska-field-image': {
-  //  type: 'alaska-field-image'
-  //}
+  api: true
 };

@@ -37,7 +37,7 @@ exports.isDirectory = function isDirectory(path) {
  * 智能导入
  * @param path 文件或文件夹路径
  * @param importDefault
- * @returns {Object}
+ * @returns {object}
  */
 exports.include = function include(path, importDefault = true) {
   if (exports.isFile(path)) {
@@ -71,6 +71,12 @@ exports.noop = function noop() {
   return resolved;
 };
 
+/**
+ * 递归将obj上所有的方法绑定至scope
+ * @param obj
+ * @param scope
+ * @returns {object}
+ */
 exports.bindMethods = function bindMethods(obj, scope) {
   let bound = {};
   for (let key in obj) {

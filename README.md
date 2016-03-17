@@ -2,8 +2,6 @@
 
 Modern web framework for Node.js
 
-*Warning. This module is not stable yet.*
-
 ## Contribute
 [Maichong Software](http://maichong.it)
 

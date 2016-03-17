@@ -12,9 +12,13 @@ const BaseField = require('./field');
 const util = require('./util');
 
 function panic() {
-  throw new Error('Can not call the function after Model register.');
+  throw new Error('Can not call the function when Model has been registered.');
 }
 
+/**
+ * Data
+ * @type {{pick: (function()), omit: (function())}}
+ */
 const Data = {
   pick() {
     let data = _.pick.apply(_, [this].concat(Array.prototype.slice.call(arguments))) || {};
@@ -28,6 +32,9 @@ const Data = {
   }
 };
 
+/**
+ * @class Model
+ */
 class BaseModel {
   constructor() {
     throw new Error('Can not initialize a Model before register.');
@@ -42,28 +49,58 @@ class BaseModel {
 
   static collection = '';
 
+  /**
+   * 注册前置钩子
+   * @param {string} action 动作名称,Init|Validate|Save|Remove
+   * @param {function} fn
+   */
   static pre(action, fn) {
     this._pre || (this._pre = {});
     this._pre[action] || (this._pre[action] = []);
     this._pre[action].push(fn);
   }
 
+  /**
+   * 注册后置钩子
+   * @param {string} action 动作名称,Init|Validate|Save|Remove
+   * @param {function} fn
+   */
   static post(action, fn) {
     this._post || (this._post = {});
     this._post[action] || (this._post[action] = []);
     this._post[action].push(fn);
   }
 
+  /**
+   * 注册underscore方法
+   * @param {string} field 绑定的字段
+   * @param {string} name 方法名
+   * @param {Function} fn 方法
+   */
   static underscoreMethod(field, name, fn) {
     this._underscore || (this._underscore = {});
     this._underscore[field] || (this._underscore[field] = {});
     this._underscore[field][name] = fn;
   }
 
+  /**
+   * 注册
+   */
   static register() {
     let service = __service;
     let Model = this;
+
+    /**
+     * 模型所属服务
+     * @type {alaska.Service}
+     */
     Model.service = service;
+
+    /**
+     * 标识模型对象
+     * @type {boolean}
+     */
+    Model.isModel = true;
 
     let MongooseModel;
     let name = Model.name;
@@ -74,6 +111,18 @@ class BaseModel {
     let schema = Model.schema = new Schema({}, {
       collection: Model.collection || ((Model.prefix || service.dbPrefix) + name.replace(/([a-z])([A-Z])/g, (a, b, c) => (b + '_' + c)).toLowerCase())
     });
+
+    function loadFieldConfig(fieldTypeName) {
+      let config = service.config(true, fieldTypeName);
+      if (!config) {
+        return {};
+      }
+      if (config.type && config.type != fieldTypeName) {
+        let otherConfig = loadFieldConfig(config.type);
+        return _.assign({}, config, otherConfig);
+      }
+      return _.clone(config);
+    }
 
     //将Model字段注册到Mongoose.Schema中
     for (let path in Model.fields) {
@@ -119,14 +168,9 @@ class BaseModel {
         } else {
           throw new Error(`Unsupported field type for ${Model.name}.${path}`);
         }
-        let config = service.config(true, fieldTypeName);
-        if (config) {
-          if (config.type) {
-            fieldTypeName = config.type;
-          }
-          _.assign(field, _.omit(config, 'type'));
-        }
-        AlaskaFieldType = require(fieldTypeName);
+        field.type = fieldTypeName;
+        _.assign(field, loadFieldConfig(fieldTypeName));
+        AlaskaFieldType = require(field.type);
       }
       //将用户定义的选项传给Mongoose
       //console.log(AlaskaFieldType, field);
@@ -240,7 +284,7 @@ class BaseModel {
       }
     }
 
-    Model.isModel = true;
+    Model.register = panic;
     Model.pre = panic;
     Model.post = panic;
     delete Model._pre;
@@ -255,9 +299,18 @@ class BaseModel {
     let db = service.db();
     MongooseModel = db.model(name, schema);
 
+    /**
+     * 原始Mongoose模型
+     * @type mongoose.Model
+     */
     Model.MongooseModel = MongooseModel;
     Model.__proto__ = MongooseModel;
     Model.prototype.__proto__ = MongooseModel.prototype;
+
+    /**
+     * 返回格式化数据
+     * @returns {Data}
+     */
     Model.prototype.data = function () {
       //TODO data()
       let doc = {};
@@ -279,7 +332,7 @@ class BaseModel {
 
   /**
    * 分页查询
-   * @param Object options
+   * @param {object} options
    * @returns {mongoose.Query}
    */
   static paginate(options) {
@@ -337,7 +390,7 @@ class BaseModel {
 
   /**
    * 依据记录ID,生成数据缓存所使用的cache key
-   * @param id
+   * @param {string} id
    * @returns {*}
    */
   static createCacheKey(id) {
@@ -346,13 +399,10 @@ class BaseModel {
 
   /**
    * 获取某条记录的缓存,如果没有找到缓存数据,则查询数据库
-   * @param id
+   * @param {string} id
    * @returns {Model}
    */
   static async getCache(id) {
-    //if (typeof id === 'object') {
-    //  id = id.toString();
-    //}
     let cache;
     let cacheKey;
     if (this.cache) {
@@ -376,7 +426,7 @@ class BaseModel {
 
   /**
    * 设置模型缓存
-   * @param record
+   * @param {Model} record
    */
   static async setCache(record) {
     let cacheKey = this.createCacheKey(record.id);
@@ -386,7 +436,7 @@ class BaseModel {
 
   /**
    * 删除模型缓存
-   * @param id
+   * @param {string} id
    */
   static async delCache(id) {
     let cacheKey = this.createCacheKey(id);
@@ -397,7 +447,7 @@ class BaseModel {
   /**
    * 将object数据转为Model对象
    * @param data
-   * @returns {*}
+   * @returns {Model}
    */
   static castCache(data) {
     let cache = this.service.cache();
@@ -413,8 +463,8 @@ class BaseModel {
 
   /**
    * 将object数组转为Model对象数组
-   * @param array
-   * @returns {Array}
+   * @param {[Object]} array
+   * @returns {[Model]}
    */
   static castCacheArray(array) {
     let cache = this.service.cache();
@@ -427,8 +477,8 @@ class BaseModel {
 
   /**
    * 将模型数组转为plain object数组
-   * @param array
-   * @returns {Array}
+   * @param {[Model]} array
+   * @returns {array}
    */
   static castModelArray(array) {
     let cache = this.service.cache();

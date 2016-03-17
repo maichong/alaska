@@ -17,16 +17,15 @@ let defaultAlaska;
  * ```javascript
  * const alaska = require('alaska');
  *
- * alaska.start('blog').then(function(){
- *     console.log('blog started');
+ * alaska.launch('blog').then(function(){
+ *     console.log('blog launched');
  * });
  *
  * let other = new alaska.Alaska();
- * other.start('shop').then(function(){
- *     console.log('shop started);
+ * other.launch('shop').then(function(){
+ *     console.log('shop launched);
  * });
  * ```
- * @extends events.EventEmitter
  */
 class Alaska {
 
@@ -96,9 +95,6 @@ class Alaska {
    */
   OWNER = 3;
 
-  _loaded = false;
-  _routed = false;
-  _started = false;
   _app = null;
   _services = {};
   noop = util.noop;
@@ -107,7 +103,6 @@ class Alaska {
   /**
    * 初始化一个新的Alaska实例对象
    * @constructor
-   * @fires Alaska#create
    */
   constructor() {
     debug('constructor');
@@ -156,7 +151,6 @@ class Alaska {
 
   /**
    * 注册新的Service
-   * @fires Alaska#registerService
    * @param {Service} service Service对象
    */
   registerService(service) {
@@ -185,15 +179,6 @@ class Alaska {
   }
 
   /**
-   * 定义或者找回此Alaska实例下的Model
-   * @param {string} name 模型名称
-   * @param {Object} [options] 模型定义
-   * @returns {Model|null}
-   */
-  model(name, options) {
-  }
-
-  /**
    * 获取当前主配置的数据库链接
    * @returns {mongoose.Connection | null}
    */
@@ -202,10 +187,8 @@ class Alaska {
   }
 
   /**
-   * 启动Alaska实例
-   * @fires Alaska#start
+   * [async]启动Alaska实例
    * @param {string|Object} options 默认Service配置信息,此参数将传递给Service的初始化函数
-   * @returns {Promise}
    */
   async launch(options) {
     this.launch = util.noop;
@@ -225,7 +208,7 @@ class Alaska {
 
   /**
    * 输出Alaska实例JSON调试信息
-   * @returns {Object}
+   * @returns {object}
    */
   toJSON() {
     return {
@@ -234,7 +217,7 @@ class Alaska {
   }
 
   /**
-   * 抛出严重错误
+   * 抛出严重错误,并输出调用栈
    * @param message
    * @param code
    */
@@ -249,8 +232,8 @@ class Alaska {
 
   /**
    * 抛出普通异常
-   * @param message
-   * @param code
+   * @param {string|Error} message
+   * @param {string|number} code
    */
   error(message, code) {
     let error = new defaultAlaska.NormalError(message);
@@ -260,6 +243,11 @@ class Alaska {
     throw error;
   }
 
+  /**
+   * [async]执行一个异步任务,如果失败则抛出NormalError
+   * @param {Promise} promise
+   * @returns {*}
+   */
   async try(promise) {
     try {
       return await promise;
@@ -271,12 +259,22 @@ class Alaska {
 
 defaultAlaska = new Alaska();
 defaultAlaska.default = defaultAlaska;
+
+/**
+ * 一般错误
+ * @class {NormalError}
+ */
 defaultAlaska.NormalError = class NormalError extends Error {
   constructor(message, code) {
     super(message);
     this.code = code;
   }
 };
+
+/**
+ * 严重错误
+ * @class {PanicError}
+ */
 defaultAlaska.PanicError = class PanicError extends Error {
   constructor(message, code) {
     super(message);

@@ -8,9 +8,9 @@ const alaska = require(__dirname + '/alaska');
 
 /**
  * REST接口默认控制器
- * 本控制器默认关闭,开启默认REST接口,需要将PKG配置中的rest项设置为true,并且打开各个模型的设置
- * 例如 `UserModel.options.rest=false` 将关闭UserModel模型所有的默认REST接口
- * `UserModel.options.rest={list:1,show:1}` 将只打开list和show接口
+ * 本控制器默认关闭,开启默认REST接口,需要将Service配置中的rest项设置为true,并且打开各个模型的设置
+ * 例如 `User.rest=false` 将关闭User模型所有的默认REST接口
+ * `User.rest={list:1,show:1}` 将只打开list和show接口
  * 不同的数值代表:
  * > list接口   1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许用户列出自己的资源
  * > show接口   1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许资源所有者调用

@@ -4,7 +4,17 @@
  * @author Liang <liang@maichong.it>
  */
 
+/**
+ * @class Session
+ * @property {boolean} isNew
+ * @property {number} length
+ */
 class Session {
+  /**
+   * @constructor
+   * @param ctx
+   * @param obj
+   */
   constructor(ctx, obj) {
     this._ctx = ctx;
     if (!obj) {
@@ -20,6 +30,10 @@ class Session {
     return Object.keys(this.toJSON()).length;
   }
 
+  /**
+   * 返回格式化后的对象
+   * @returns {object}
+   */
   toJSON() {
     let me = this;
     let obj = {};
@@ -32,6 +46,11 @@ class Session {
     return obj;
   }
 
+  /**
+   * 判断是否发生变化
+   * @param {string} prev 之前数据的json字符串
+   * @returns {boolean}
+   */
   isChanged(prev) {
     if (!prev) {
       return true;

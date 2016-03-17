@@ -5,13 +5,17 @@
  * @author Liang <liang@maichong.it>
  */
 
+/**
+ * Mongoose 原始数据类型
+ * @type {*}
+ */
 exports.plain = String;
 
 /**
  * 初始化Schema
- * @param field   alaksa.Model中的字段配置
- * @param schema
- * @param Model
+ * @param {field} field   alaksa.Model中的字段配置
+ * @param {mongoose.Schema} schema
+ * @param {alaska.Model} Model
  */
 exports.initSchema = function (field, schema, Model) {
   let options = {
@@ -25,8 +29,8 @@ exports.initSchema = function (field, schema, Model) {
 
 /**
  * alaska-admin-view 前端控件初始化参数
- * @param field
- * @param Model
+ * @param {field} field   alaksa.Model中的字段配置
+ * @param {alaska.Model} Model
  */
 exports.viewOptions = function (field, Model) {
   let options = {
@@ -59,8 +63,8 @@ exports.viewOptions = function (field, Model) {
 
 /**
  * 格式化数据
- * @param field   alaksa.Model中的字段配置
- * @param record  模型记录
+ * @param {field} field   alaksa.Model中的字段配置
+ * @param {Model} record  模型记录
  * @returns {*}
  */
 exports.format = function (field, record) {

@@ -21,7 +21,7 @@ module.exports = function loadAppMiddlewares() {
     /**
      * 发送文件
      * @param {string} filePath
-     * @param {{}} options
+     * @param {object} options
      */
     ctx.sendfile = async function (filePath, options) {
       options = options || {};
