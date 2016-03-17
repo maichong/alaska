@@ -78,6 +78,8 @@ class Service {
    */
   constructor(options, alaska) {
     this.panic = alaska.panic;
+    this.error = alaska.error;
+    this.try = alaska.try;
     collie(this, 'init', require('./service/init'));
     collie(this, 'loadModels', require('./service/loadModels'));
     collie(this, 'route', require('./service/route'));
@@ -170,6 +172,27 @@ class Service {
     }
     return this._router;
   }
+
+  /**
+   * 抛出严重错误,并输出调用栈
+   * @method panic
+   * @param message
+   * @param code
+   */
+
+  /**
+   * 抛出普通异常
+   * @method error
+   * @param {string|Error} message
+   * @param {string|number} code
+   */
+
+  /**
+   * [async] 执行一个异步任务,如果失败则抛出NormalError
+   * @method try
+   * @param {Promise} promise
+   * @returns {*}
+   */
 
   /**
    * [async] 初始化

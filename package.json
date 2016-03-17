@@ -1,6 +1,6 @@
 {
   "name": "alaska",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Modern web framework for Node.js",
   "main": "lib/alaska.js",
   "dependencies": {
