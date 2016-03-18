@@ -21,9 +21,19 @@ exports.initSchema = function (field, schema, Model) {
   let options = {
     type: field.dataType || this.plain
   };
-  if (field.default !== undefined) {
-    options.default = field.default;
-  }
+  [
+    'get',
+    'set',
+    'default',
+    'index',
+    'required',
+    'select'
+  ].forEach(function (key) {
+    if (field[key] !== undefined) {
+      options[key] = field[key];
+    }
+  });
+
   schema.path(field.path, options);
 };
 
