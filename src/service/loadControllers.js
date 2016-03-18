@@ -8,7 +8,6 @@ const util = require('../util');
 
 module.exports = function loadControllers() {
   this.loadControllers = util.noop;
-  let router = this.router();
   let service = this;
 
   let original = global.__service;
@@ -16,7 +15,7 @@ module.exports = function loadControllers() {
   this._controllers = util.include(this.dir + '/controllers', false) || {};
   global.__service = original;
 
-  router.register('/:controller?/:action?', ['GET', 'HEAD', 'POST'], async function (ctx, next) {
+  this.router.register('/:controller?/:action?', ['GET', 'HEAD', 'POST'], async function (ctx, next) {
     let controller = ctx.params.controller || service.config('defaultController');
     let action = ctx.params.action || service.config('defaultAction');
     service.debug('route %s:%s', controller, action);

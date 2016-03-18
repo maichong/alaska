@@ -12,7 +12,7 @@ module.exports = function loadApi() {
   this.loadApi = util.noop;
   let alaska = this.alaska;
   let service = this;
-  let router = this.router();
+  let router = this.router;
 
   let original = global.__service;
   global.__service = this;

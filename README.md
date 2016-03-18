@@ -1,6 +1,6 @@
 #[alaska](https://github.com/maichong/alaska)
 
-Modern web framework for Node.js
+Alaska is componentized and pluggable web framework for Node.js based on Koa , Mongoose and React
 
 ## Contribute
 [Maichong Software](http://maichong.it)

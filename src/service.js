@@ -156,14 +156,14 @@ class Service {
    * @returns Boolean
    */
   isMain() {
-    return this.alaska.mainService() === this;
+    return this.alaska.main === this;
   }
 
   /**
    * 获取Service实例路由器
    * @returns {Router}
    */
-  router() {
+  get router() {
     if (!this._router) {
       this._router = new Router({
         prefix: this.config('prefix'),
@@ -272,7 +272,7 @@ class Service {
    * 如果返回false,代表本Service不需要数据库支持
    * @returns {mongoose.Connection | Boolean}
    */
-  db() {
+  get db() {
     let me = this;
     if (me._db) {
       return me._db;
@@ -285,7 +285,7 @@ class Service {
       if (me.isMain()) {
         console.log('No database config');
       } else {
-        me._db = me.alaska.db();
+        me._db = me.alaska.db;
         return me._db;
       }
     }
@@ -301,7 +301,7 @@ class Service {
    * 获取缓存驱动
    * @returns {LruDriver|*}
    */
-  cache() {
+  get cache() {
     if (!this._cache) {
       let options = this.config('cache');
       if (_.isString(options)) {
@@ -322,7 +322,7 @@ class Service {
    * 获取模板引擎
    * @returns {*}
    */
-  engine() {
+  get engine() {
     if (!this._engine) {
       this._engine = require(this.config('render'));
     }
@@ -348,6 +348,14 @@ class Service {
       config: this._config,
       services: _.keys(this._alias)
     };
+  }
+
+  /**
+   * 获取所有Model
+   * @returns {Object}
+   */
+  get models() {
+    return this._models;
   }
 
   /**

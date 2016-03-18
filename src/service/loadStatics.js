@@ -11,7 +11,6 @@ const util = require('../util');
 module.exports = function loadStatics() {
   this.loadStatics = util.noop;
   let service = this;
-  let router = this.router();
   let statics = [];
   {
     let tmp = this.config('statics');
@@ -30,6 +29,7 @@ module.exports = function loadStatics() {
     }
   }
   if (statics.length) {
+    let router = this.router;
     statics.forEach(c => {
       let root = path.resolve(service.dir, c.root);
       let prefix = (c.prefix || '') + '/*';

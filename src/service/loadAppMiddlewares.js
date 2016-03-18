@@ -10,7 +10,7 @@ const mime = require('mime');
 
 module.exports = function loadAppMiddlewares() {
   this.loadAppMiddlewares = util.noop;
-  let app = this.alaska.app();
+  let app = this.alaska.app;
   let alaska = this.alaska;
   let service = this;
   app.use(function (ctx, next) {

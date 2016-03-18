@@ -89,6 +89,8 @@ class BaseModel {
   static register() {
     let service = __service;
     let Model = this;
+    let db = service.db;
+    Model.db = db;
 
     /**
      * 模型所属服务
@@ -215,10 +217,10 @@ class BaseModel {
     if (Model.cache) {
       //保存成功后更新缓存
       Model.post('save', function () {
-        Model.setCache(this);
+        Model.saveCache(this);
       });
       Model.post('remove', function () {
-        Model.delCache(this);
+        Model.removeCache(this);
       });
     }
 
@@ -290,13 +292,12 @@ class BaseModel {
     delete Model._pre;
     delete Model._post;
 
-    ['paginate', 'createCacheKey', 'getCache', 'setCache', 'delCache', 'castCache', 'castCacheArray', 'castModelArray'].forEach(key=> {
+    ['paginate', 'createCacheKey', 'findCache', 'saveCache', 'removeCache', 'castCache', 'castCacheArray', 'castModelArray'].forEach(key=> {
       Model[key] = BaseModel[key];
     });
 
     //register
 
-    let db = service.db();
     MongooseModel = db.model(name, schema);
 
     /**
@@ -402,12 +403,12 @@ class BaseModel {
    * @param {string} id
    * @returns {Model}
    */
-  static async getCache(id) {
+  static async findCache(id) {
     let cache;
     let cacheKey;
     if (this.cache) {
       //模型允许自动缓存
-      cache = this.service.cache();
+      cache = this.service.cache;
       cacheKey = this.createCacheKey(id);
       let data = await cache.get(cacheKey);
       if (data) {
@@ -418,7 +419,7 @@ class BaseModel {
     //没有找到缓存数据
     let record = await this.findById(id);
     if (record && cache) {
-      this.setCache(record);
+      this.saveCache(record);
     }
 
     return record;
@@ -428,9 +429,9 @@ class BaseModel {
    * 设置模型缓存
    * @param {Model} record
    */
-  static async setCache(record) {
+  static async saveCache(record) {
     let cacheKey = this.createCacheKey(record.id);
-    let cache = this.service.cache();
+    let cache = this.service.cache;
     await cache.set(cacheKey, cache.noSerialization ? record : record.toObject(), this.cache);
   }
 
@@ -438,9 +439,9 @@ class BaseModel {
    * 删除模型缓存
    * @param {string} id
    */
-  static async delCache(id) {
+  static async removeCache(id) {
     let cacheKey = this.createCacheKey(id);
-    let cache = this.service.cache();
+    let cache = this.service.cache;
     await cache.del(cacheKey);
   }
 
@@ -450,7 +451,7 @@ class BaseModel {
    * @returns {Model}
    */
   static castCache(data) {
-    let cache = this.service.cache();
+    let cache = this.service.cache;
     if (cache.noSerialization) {
       //缓存驱动不需要序列化
       return data;
@@ -467,7 +468,7 @@ class BaseModel {
    * @returns {[Model]}
    */
   static castCacheArray(array) {
-    let cache = this.service.cache();
+    let cache = this.service.cache;
     if (cache.noSerialization) {
       //缓存驱动不需要序列化
       return array;
@@ -481,7 +482,7 @@ class BaseModel {
    * @returns {array}
    */
   static castModelArray(array) {
-    let cache = this.service.cache();
+    let cache = this.service.cache;
     if (cache.noSerialization) {
       //缓存驱动不需要序列化
       return array;

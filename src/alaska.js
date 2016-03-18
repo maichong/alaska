@@ -117,7 +117,7 @@ class Alaska {
    * 返回当前koa APP对象
    * @returns {koa.Application}
    */
-  app() {
+  get app() {
     if (!this._app) {
       this._app = new Koa();
       this._app.name = this.config('name');
@@ -126,6 +126,14 @@ class Alaska {
       this._app.subdomainOffset = this.config('subdomainOffset');
     }
     return this._app;
+  }
+
+  /**
+   * 获取所有service
+   * @returns {{}}
+   */
+  get services() {
+    return this._services;
   }
 
   /**
@@ -154,8 +162,8 @@ class Alaska {
    * @param {Service} service Service对象
    */
   registerService(service) {
-    if (!this._mainService) {
-      this._mainService = service;
+    if (!this._main) {
+      this._main = service;
     }
     this._services[service.id] = service;
   }
@@ -164,8 +172,8 @@ class Alaska {
    * 获取当前Alaska实例的主Service
    * @returns {Service}
    */
-  mainService() {
-    return this._mainService;
+  get main() {
+    return this._main;
   }
 
   /**
@@ -175,15 +183,15 @@ class Alaska {
    * @returns {*}
    */
   config(path, defaultValue) {
-    return this._mainService.config(path, defaultValue);
+    return this._main.config(path, defaultValue);
   }
 
   /**
    * 获取当前主配置的数据库链接
    * @returns {mongoose.Connection | null}
    */
-  db() {
-    return this._mainService.db();
+  get db() {
+    return this._main.db;
   }
 
   /**
@@ -194,16 +202,16 @@ class Alaska {
     this.launch = util.noop;
     debug('launch');
 
-    if (!this._mainService) {
-      this._mainService = new this.Service(options, this);
+    if (!this._main) {
+      this._main = new this.Service(options, this);
     }
 
-    await this._mainService.init();
-    await this._mainService.loadModels();
-    await this._mainService.route();
-    await this._mainService.launch();
+    await this._main.init();
+    await this._main.loadModels();
+    await this._main.route();
+    await this._main.launch();
 
-    this.app().listen(this.config('port'));
+    this.app.listen(this.config('port'));
   }
 
   /**

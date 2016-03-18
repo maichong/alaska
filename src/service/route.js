@@ -13,9 +13,9 @@ module.exports = async function route() {
   this.route = util.noop;
   this.debug('%s route', this.id);
 
-  let app = this.alaska.app();
+  let app = this.alaska.app;
   let service = this;
-  let router = this.router();
+  let router = this.router;
 
   if (this.isMain()) {
     //session
@@ -196,13 +196,12 @@ module.exports = async function route() {
 
     ctx.locals = {};
     ctx.render = function (template, locals) {
-      let engine = service.engine();
       let path = templatesDir + template;
       if (!util.isFile(path)) {
         throw new Error(`Template is not exist: ${path}`);
       }
       return new Promise((resolve, reject) => {
-        engine.renderFile(path, _.assign({}, ctx.locals, locals), (error, result) => {
+        service.engine.renderFile(path, _.assign({}, ctx.locals, locals), (error, result) => {
           if (error) {
             reject(error);
             return;
