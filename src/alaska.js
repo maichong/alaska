@@ -97,6 +97,7 @@ class Alaska {
 
   _app = null;
   _services = {};
+  util = util;
   noop = util.noop;
   Alaska = Alaska;
 

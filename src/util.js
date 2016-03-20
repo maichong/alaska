@@ -88,3 +88,14 @@ exports.bindMethods = function bindMethods(obj, scope) {
   }
   return bound;
 };
+
+/**
+ * 生成安全的正则
+ * @param str
+ * @returns {*}
+ */
+exports.escapeRegExp = function escapeRegExp(str) {
+  if (str && str.toString) str = str.toString();
+  if (typeof str !== 'string' || !str.length) return '';
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+};

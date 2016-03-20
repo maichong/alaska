@@ -32,8 +32,7 @@ exports.count = async function (ctx) {
     ctx.status = alaska.UNAUTHORIZED;
     return;
   }
-  //TODO filters keyword
-  let filters = ctx.query.filters || {};
+  let filters = Model.createFilters((ctx.query.search || '').trim(), ctx.query.filters);
   ctx.status = alaska.OK;
   if (code === alaska.OWNER) {
     //只允许用户列出自己的资源
@@ -58,8 +57,7 @@ exports.list = async function list(ctx) {
     return;
   }
 
-  //TODO filters
-  let filters = ctx.query.filters || {};
+  let filters = Model.createFilters((ctx.query.search || '').trim(), ctx.query.filters);
   ctx.status = alaska.OK;
   if (code === alaska.OWNER) {
     //只允许用户列出自己的资源
@@ -70,7 +68,6 @@ exports.list = async function list(ctx) {
   let results = await Model.paginate({
     page: parseInt(ctx.query.page) || 1,
     perPage: parseInt(ctx.query.perPage) || 10,
-    search: (ctx.query.search || '').trim(),
     filters
   });
   results.results = results.results.map(function (doc) {
