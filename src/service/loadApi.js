@@ -53,7 +53,6 @@ module.exports = function loadApi() {
 
   function restApi(action) {
     return function (ctx, next) {
-      console.log(action, ctx.path);
       try {
         if (['show', 'update', 'remove'].indexOf(action) > -1) {
           if (!/^[a-f0-9]{24}$/.test(ctx.params.id)) {

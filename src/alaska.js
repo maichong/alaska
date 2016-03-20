@@ -261,7 +261,11 @@ class Alaska {
     try {
       return await promise;
     } catch (error) {
-      this.error(error);
+      if (error instanceof TypeError || error instanceof SyntaxError || error instanceof ReferenceError) {
+        throw error;
+      } else {
+        this.error(error);
+      }
     }
   }
 }

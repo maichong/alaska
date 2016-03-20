@@ -7,6 +7,7 @@
 const _ = require('lodash');
 const collie = require('collie');
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 const Schema = mongoose.Schema;
 const util = require('./util');
 
@@ -30,6 +31,36 @@ const Data = {
     return data;
   }
 };
+
+function objectToData(value) {
+  if (!value) {
+    return value;
+  }
+  if (value instanceof Date) {
+    //时间
+  } else if (value instanceof Array) {
+    //数组数据
+    let newValue = [];
+    for (let i in value) {
+      if (i * 1 != i) {
+        continue;
+      }
+      let val = value[i];
+      if (typeof val === 'object') {
+        val = objectToData(val);
+      }
+      newValue[i] = val;
+    }
+    return newValue;
+  } else if (value.data && typeof value.data === 'function') {
+    //如果也有data 函数，判定为document
+    value = value.data();
+  } else {
+    //无法判断
+    //console.log(value);
+  }
+  return value;
+}
 
 /**
  * @class Model
@@ -206,14 +237,7 @@ class Model {
       field.initSchema();
     }
 
-    schema.virtual('_').get(function () {
-      if (!this.__methods) {
-        this.__methods = util.bindMethods(model._underscore, this);
-      }
-      return this.__methods;
-    });
-
-    _.defaults(Model, {
+    _.defaults(model, {
       title: 'title',
       userField: 'user',
       api: false,
@@ -271,6 +295,7 @@ class Model {
         let preHooks = model._pre[action] || [];
         if (model.prototype['pre' + Action]) {
           preHooks.push(model.prototype['pre' + Action]);
+          delete model.prototype['pre' + Action];
         }
 
         if (preHooks.length) {
@@ -291,6 +316,7 @@ class Model {
         let postHooks = [];
         if (model.prototype['post' + Action]) {
           postHooks.push(model.prototype['post' + Action]);
+          delete model.prototype['post' + Action];
         }
         if (model._post[action]) {
           postHooks = postHooks.concat(model._post[action]);
@@ -309,6 +335,47 @@ class Model {
         }
         delete model._post[action];
       }
+    });
+
+    schema.virtual('_').get(function () {
+      if (!this.__methods) {
+        this.__methods = util.bindMethods(model._underscore, this);
+      }
+      return this.__methods;
+    });
+
+    /**
+     * 返回格式化数据
+     * @returns {Data}
+     */
+    schema.methods.data = function () {
+      let doc = {};
+      for (let key in this.schema.tree) {
+        if (key[0] == '_' || !model.fields[key] || model.fields[key].private) {
+          continue;
+        }
+        if (this._[key] && this._[key].data) {
+          doc[key] = this._[key].data();
+        } else {
+          let value = this.get(key);
+          if (typeof value === 'object') {
+            doc[key] = objectToData(value);
+          } else {
+            doc[key] = value;
+          }
+        }
+      }
+      doc.id = this.id;
+      doc.__proto__ = Data;
+      return doc;
+    };
+
+    Object.getOwnPropertyNames(model.prototype).forEach(key => {
+      if (key == 'constructor') {
+        return;
+      }
+      schema.methods[key] = model.prototype[key];
+      delete model.prototype[key];
     });
 
     {
@@ -357,28 +424,6 @@ class Model {
     model.MongooseModel = MongooseModel;
     model.__proto__ = MongooseModel;
     model.prototype.__proto__ = MongooseModel.prototype;
-
-    /**
-     * 返回格式化数据
-     * @returns {Data}
-     */
-    model.prototype.data = function () {
-      //TODO data()
-      let doc = {};
-      for (let key in this.schema.tree) {
-        if (key[0] == '_' || !model.fields[key] || model.fields[key].private) {
-          continue;
-        }
-        if (this._[key] && this._[key].data) {
-          doc[key] = this._[key].data();
-        } else {
-          doc[key] = this.get(key);
-        }
-      }
-      doc.id = this.id;
-      doc.__proto__ = Data;
-      return doc;
-    };
   }
 
   /**

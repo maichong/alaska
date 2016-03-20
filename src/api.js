@@ -65,11 +65,17 @@ exports.list = async function list(ctx) {
     filters[userField] = ctx.user;
   }
 
-  let results = await Model.paginate({
+  let query = Model.paginate({
     page: parseInt(ctx.query.page) || 1,
     perPage: parseInt(ctx.query.perPage) || 10,
     filters
   });
+  if (Model.population) {
+    Model.population.forEach(p => {
+      query.populate(p);
+    });
+  }
+  let results = await query;
   results.results = results.results.map(function (doc) {
     return doc.data('list');
   });
@@ -87,7 +93,13 @@ exports.show = async function show(ctx) {
     ctx.status = alaska.UNAUTHORIZED;
     return;
   }
-  let doc = await Model.findById(ctx.params.id);
+  let query = Model.findById(ctx.params.id);
+  if (Model.population) {
+    Model.population.forEach(p => {
+      query.populate(p);
+    });
+  }
+  let doc = await query;
   if (!doc) {
     //404
     return;
