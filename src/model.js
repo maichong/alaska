@@ -416,7 +416,7 @@ class Model {
     }
     filters && _.forEach(filters, (value, key) => {
       if (model.fields[key] && model.fields[key].createFilter) {
-        let filter = model.fields[key].createFilter(value);
+        let filter = model.fields[key].createFilter(value, result);
         if (filter !== undefined) {
           result[key] = filter;
         }
