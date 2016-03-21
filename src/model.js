@@ -228,7 +228,11 @@ class Model {
         } else {
           throw new Error(`Unsupported field type for ${model.name}.${path}`);
         }
+        delete options.type;
         _.assign(options, loadFieldConfig(fieldTypeName));
+        if (options.type) {
+          fieldTypeName = options.type;
+        }
         AlaskaFieldType = options.type = require(fieldTypeName);
       }
       options.label = options.label || path.toUpperCase();
