@@ -69,7 +69,7 @@ class Field {
       hidden: field.hidden,
       group: field.group,
       disabled: field.disabled,
-      note: field.note,
+      help: field.help,
       depends: field.depends,
       required: field.required,
       fullWidth: field.fullWidth,
