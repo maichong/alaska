@@ -55,9 +55,7 @@ module.exports = async function init() {
       this._alias[serviceAlias] = sub;
     }
     let configDir = this.dir + '/config/' + serviceId;
-    if (util.isDirectory(configDir)) {
-      sub._configDirs.push(configDir);
-    }
+    sub._configDirs.push(configDir);
     await sub.init();
   }
 };

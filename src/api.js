@@ -70,9 +70,12 @@ exports.list = async function list(ctx) {
     perPage: parseInt(ctx.query.perPage) || 10,
     filters
   });
-  if (Model.population) {
-    Model.population.forEach(p => {
-      query.populate(p);
+  if (Model.populations) {
+    Model.populations.forEach(p => {
+      if (!p.nolist) {
+        //判断population选项是否不允许列表接口自动populate
+        query.populate(p);
+      }
     });
   }
   let results = await query;
@@ -94,8 +97,8 @@ exports.show = async function show(ctx) {
     return;
   }
   let query = Model.findById(ctx.params.id);
-  if (Model.population) {
-    Model.population.forEach(p => {
+  if (Model.populations) {
+    Model.populations.forEach(p => {
       query.populate(p);
     });
   }

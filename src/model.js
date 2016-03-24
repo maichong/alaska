@@ -64,12 +64,9 @@ function objectToData(value) {
 
 /**
  * @class Model
+ * @extends mongoose.Model
  */
 class Model {
-  constructor() {
-    throw new Error('Can not initialize a Model before register.');
-  }
-
   //placeholder
   static fields = null;
 
@@ -80,6 +77,10 @@ class Model {
   static collection = '';
 
   static isModel = true;
+
+  constructor() {
+    throw new Error('Can not initialize a Model before register.');
+  }
 
   /**
    * 注册前置钩子
@@ -355,7 +356,9 @@ class Model {
      * @returns {Data}
      */
     schema.methods.data = function () {
-      let doc = {};
+      let doc = {
+        id: this.id
+      };
       for (let key in this.schema.tree) {
         if (key[0] == '_' || !model.fields[key] || model.fields[key].private) {
           continue;
@@ -371,7 +374,6 @@ class Model {
           }
         }
       }
-      doc.id = this.id;
       doc.__proto__ = Data;
       return doc;
     };
