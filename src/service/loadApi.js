@@ -21,9 +21,8 @@ module.exports = function loadApi() {
 
   let defaultApiController = require('../api');
 
-  let models = _.reduce(this._models, (res, Model, name) => {
-    name = name.replace(/([a-z])([A-Z])/g, (a, b, c) => (b + '-' + c.toLowerCase())).toLowerCase();
-    res[name] = Model;
+  let models = _.reduce(this._models, (res, Model) => {
+    res[Model.id] = Model;
     return res;
   }, {});
 
