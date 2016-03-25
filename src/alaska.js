@@ -125,6 +125,7 @@ class Alaska {
       this._app.env = this.config('env');
       this._app.proxy = this.config('proxy');
       this._app.subdomainOffset = this.config('subdomainOffset');
+      require('koa-qs')(this._app)
     }
     return this._app;
   }

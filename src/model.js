@@ -256,6 +256,30 @@ class Model {
       label: model.name,
       groups: {}
     });
+    model.relationships = _.map(model.relationships, r=> {
+      //'Model'
+      let res = {
+        service: service.id,
+        ref: r.ref,
+        path: r.path,
+        title: r.title,
+        filters: r.filters
+      };
+
+      if (typeof r.ref === 'function') {
+        res.ref = r.ref.name;
+        if (r.ref.service) {
+          res.service = r.ref.service.id;
+        }
+      }
+      //{ref:'user.User'}
+      if (res.ref.indexOf('.') > -1) {
+        let arr = res.ref.split('.');
+        res.service = arr[0];
+        res.ref = arr[1];
+      }
+      return res;
+    });
     if (model.api === 1) {
       model.api = {
         list: 1,
