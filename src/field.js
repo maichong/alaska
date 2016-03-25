@@ -73,24 +73,28 @@ class Field {
       depends: field.depends,
       required: field.required,
       fullWidth: field.fullWidth,
+      cell: field.cell,
+      view: field.view,
     };
 
-    if (this.type.views) {
-      if (field.cell) {
-        options.cell = field.cell;
-      } else if (this.type.views.cell) {
-        options.cell = this.type.views.cell.name;
+    let type = this.type;
+
+    if (type.views) {
+      if (!options.cell && type.views.cell) {
+        options.cell = type.views.cell.name;
       }
-      if (field.view) {
-        options.view = field.view;
-      } else if (this.type.views.view) {
-        options.view = this.type.views.view.name;
+      if (!options.view && type.views.view) {
+        options.view = type.views.view.name;
       }
     }
 
     if (this.type.viewOptions && this.type.viewOptions.length) {
       this.type.viewOptions.forEach(function (key) {
-        if (field[key] !== undefined) {
+        if (typeof key === 'function') {
+          key(options, field);
+        } else if (typeof key === 'object' && key.key) {
+          options[key.key] = key.value;
+        } else if (field[key] !== undefined) {
           options[key] = field[key];
         }
       });
