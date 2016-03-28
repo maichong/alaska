@@ -18,30 +18,66 @@ class Sled {
     this.data = data || {};
   }
 
+  /**
+   * 获取sled所属service
+   * @returns {*}
+   */
   get service() {
     return this.constructor.service;
   }
 
+  /**
+   * 获取Sled name
+   * @returns {*}
+   */
   get name() {
     return this.constructor.name;
   }
 
+  /**
+   * 获取Sled key
+   */
   get key() {
     return this.constructor.key;
   }
 
+  /**
+   * 获取sled配置
+   * @returns {object}
+   */
   get config() {
     return this.constructor.config;
   }
 
+  /**
+   * 获取缓存驱动
+   * @returns {LruCacheDriver}
+   */
   get cache() {
     return this.constructor.cache;
   }
 
+  /**
+   * 获取队列驱动
+   * @returns {ArrayQueueDriver}
+   */
   get queue() {
     return this.constructor.queue;
   }
 
+  /**
+   * alias for service.model
+   * @param name
+   * @returns {*}
+   */
+  model(name) {
+    return this.service.model(name);
+  }
+
+  /**
+   * 注册 Sled 运行前置钩子
+   * @param fn
+   */
   static pre(fn) {
     if (!this._pre) {
       this._pre = [];
@@ -49,6 +85,10 @@ class Sled {
     this._pre.push(fn);
   }
 
+  /**
+   * 注册 Sled 运行后置钩子
+   * @param fn
+   */
   static post(fn) {
     if (!this._post) {
       this._post = [];
@@ -102,6 +142,16 @@ class Sled {
     let config = this.config;
     let QueueDriver = require(config.queue.type);
     return QueueDriver.instance(this.key, config.queue);
+  }
+
+  /**
+   * [async] alias for sled.run()
+   * @param data
+   * @returns {*}
+   */
+  static run(data) {
+    let sled = new this(data);
+    return sled.run();
   }
 
   /**
@@ -198,7 +248,7 @@ class Sled {
 
     let result;
     try {
-      result = this.exec();
+      result = this.exec(this.data);
       if (result && result.then) {
         result = await result;
       }
@@ -207,6 +257,7 @@ class Sled {
       this.run = function () {
         return Promise.reject(error);
       };
+      throw error;
       return;
     }
     this.result = result;

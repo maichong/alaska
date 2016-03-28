@@ -451,13 +451,13 @@ class Service {
   /**
    * 运行一个Sled
    * @param {string} name
-   * @param {object} options
+   * @param {object} data
    * @returns {*}
    */
-  run(name, options) {
+  run(name, data) {
     try {
       let Sled = this.sled(name);
-      let sled = new Sled(options);
+      let sled = new Sled(data);
       return sled.run();
     } catch (error) {
       return Promise.reject(error);
