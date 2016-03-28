@@ -9,7 +9,6 @@ const _ = require('lodash');
 
 module.exports = async function loadModels() {
   this.loadModels = util.noop;
-  this.debug('%s load', this.id);
 
   for (let service of this._services) {
     await service.loadModels();

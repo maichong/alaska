@@ -27,6 +27,12 @@ class Service {
   _controllers = {};
   _apiControllers = {};
   /**
+   * 本ServiceSled列表
+   * @type {object}
+   * @private
+   */
+  _sleds = {};
+  /**
    * 本Service数据模型列表
    * @type {object}
    * @private
@@ -72,6 +78,12 @@ class Service {
   Model = require('./model');
 
   /**
+   * Model基类
+   * @type {Model}
+   */
+  Sled = require('./sled');
+
+  /**
    * 实例化一个Service对象
    * @param {Object|string} options 初始化参数,如果为string,则代表Service的id
    * @param {Alaska} alaska Service所属的Alaska实例
@@ -80,8 +92,10 @@ class Service {
     this.panic = alaska.panic;
     this.error = alaska.error;
     this.try = alaska.try;
+
     collie(this, 'init', require('./service/init'));
     collie(this, 'loadModels', require('./service/loadModels'));
+    collie(this, 'loadSleds', require('./service/loadSleds'));
     collie(this, 'route', require('./service/route'));
     collie(this, 'loadAppMiddlewares', require('./service/loadAppMiddlewares'));
     collie(this, 'loadMiddlewares', require('./service/loadMiddlewares'));
@@ -205,6 +219,11 @@ class Service {
    */
 
   /**
+   * [async] 加载Sled列表
+   * @method loadSleds
+   */
+
+  /**
    * [async]配置路由
    * @method route
    */
@@ -244,6 +263,7 @@ class Service {
 
     await this.init();
     await this.loadModels();
+    await this.loadSleds();
     await this.route();
   }
 
@@ -380,7 +400,7 @@ class Service {
         return service.model(name);
       }
     }
-    throw new Error(`"${name}" model not found`);
+    this.panic(`"${name}" model not found`);
   }
 
   /**
@@ -392,6 +412,43 @@ class Service {
     global.__service = this;
     Model.register();
     return Model;
+  }
+
+  /**
+   * 找回此Service下定义的Sled
+   * @param {string} name sled名称,例如Register或user.Register
+   * @returns {Sled|null}
+   */
+  sled(name) {
+    if (this._sleds[name]) {
+      return this._sleds[name];
+    }
+
+    let index = name.indexOf('.');
+    if (index > -1) {
+      let serviceId = name.substr(0, index);
+      name = name.substr(index + 1);
+      let service = this._alias[serviceId];
+      if (!service) {
+        service = this.alaska.service(serviceId);
+      }
+      if (service) {
+        return service.sled(name);
+      }
+    }
+    this.panic(`"${name}" sled not found`);
+  }
+
+  /**
+   * 运行一个Sled
+   * @param {string} name
+   * @param {object} options
+   * @returns {*}
+   */
+  run(name, options) {
+    let Sled = this.sled(name);
+    let sled = new Sled(options);
+    return sled.run();
   }
 
 }
