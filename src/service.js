@@ -9,6 +9,7 @@ const Router = require('koa-router');
 const collie = require('collie');
 const util = require('./util');
 const defaultConfig = require('./config');
+const Sled = require('./Sled');
 const debug = require('debug')('alaska');
 
 /**
@@ -81,7 +82,7 @@ class Service {
    * Model基类
    * @type {Model}
    */
-  Sled = require('./sled');
+  Sled = null;
 
   /**
    * 实例化一个Service对象
@@ -89,9 +90,17 @@ class Service {
    * @param {Alaska} alaska Service所属的Alaska实例
    */
   constructor(options, alaska) {
+    const service = this;
     this.panic = alaska.panic;
     this.error = alaska.error;
     this.try = alaska.try;
+
+    this.Sled = class ServiceSled extends Sled {
+    };
+    this.Sled.service = service;
+    this.Sled.__defineGetter__('key', function () {
+      return util.nameToKey(service.id + '.' + this.name);
+    });
 
     collie(this, 'init', require('./service/init'));
     collie(this, 'loadModels', require('./service/loadModels'));
@@ -319,7 +328,7 @@ class Service {
 
   /**
    * 获取缓存驱动
-   * @returns {LruDriver|*}
+   * @returns {LruCacheDriver|*}
    */
   get cache() {
     if (!this._cache) {
@@ -332,7 +341,7 @@ class Service {
         this._cache = options;
       } else {
         let Driver = require(options.type);
-        this._cache = new Driver(options.store || {});
+        this._cache = new Driver(options);
       }
     }
     return this._cache;
@@ -446,11 +455,14 @@ class Service {
    * @returns {*}
    */
   run(name, options) {
-    let Sled = this.sled(name);
-    let sled = new Sled(options);
-    return sled.run();
+    try {
+      let Sled = this.sled(name);
+      let sled = new Sled(options);
+      return sled.run();
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
-
 }
 
 module.exports = Service;

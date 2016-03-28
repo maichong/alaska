@@ -21,16 +21,11 @@ module.exports = async function route() {
     //session
     let sessionOpts = this.config('session');
     if (sessionOpts) {
-      if (typeof sessionOpts === 'string') {
-        sessionOpts = {
-          type: sessionOpts
-        };
-      }
       let storeOpts = sessionOpts.store || {};
       let cookieOpts = sessionOpts.cookie || {};
-      let key = sessionOpts.key || 'alaska.sid';
+      let key = cookieOpts.key || 'alaska.sid';
       let Session = require('../session');
-      let Store = require(sessionOpts.type);
+      let Store = require(storeOpts.type);
       let store = new Store(storeOpts);
       let random = require('string-random');
       app.use(async function (ctx, next) {

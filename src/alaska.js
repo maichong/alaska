@@ -208,9 +208,6 @@ class Alaska {
       this._main = new this.Service(options, this);
     }
 
-    await this._main.init();
-    await this._main.loadModels();
-    await this._main.route();
     await this._main.launch();
 
     this.app.listen(this.config('port'));

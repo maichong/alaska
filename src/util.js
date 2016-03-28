@@ -107,3 +107,12 @@ exports.escapeRegExp = function escapeRegExp(str) {
 exports.isMongoId = function (input) {
   return /^[a-f0-9]{24}$/.test(input);
 };
+
+/**
+ * 将驼峰样式字符串转为小写字符串样式
+ * @param {string} name
+ * @returns {string}
+ */
+exports.nameToKey = function (name) {
+  return name.replace(/([a-z])([A-Z])/g, (a, b, c) => (b + '-' + c.toLowerCase())).toLowerCase();
+};

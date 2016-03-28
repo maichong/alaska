@@ -46,9 +46,9 @@ module.exports = {
    * @type {object|string}
    */
   session: {
-    type: 'alaska-cache-lru',
     cookie: {},
     store: {
+      type: 'alaska-cache-lru',
       maxAge: 1000 * 60 * 60
     }
   },
@@ -146,9 +146,7 @@ module.exports = {
   cache: {
     type: 'alaska-cache-lru',
     prefix: false,
-    store: {
-      maxAge: 3600 * 24 * 1000
-    }
+    maxAge: 3600 * 24
   },
   /**
    * 是否开启控制器路由
