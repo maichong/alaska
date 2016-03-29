@@ -9,7 +9,7 @@ const Router = require('koa-router');
 const collie = require('collie');
 const util = require('./util');
 const defaultConfig = require('./config');
-const Sled = require('./Sled');
+const Sled = require('./sled');
 const debug = require('debug')('alaska');
 
 /**
