@@ -4,27 +4,29 @@
  * @author Liang <liang@maichong.it>
  */
 
-const util = require('../util');
-const _ = require('lodash');
+import _ from 'lodash';
+import * as util from '../util';
 
-module.exports = async function loadModels() {
+export default async function loadModels() {
   this.loadModels = util.noop;
+  const service = this;
+  const alaska = this.alaska;
 
-  for (let service of this._services) {
-    await service.loadModels();
+  for (let s of this._services) {
+    await s.loadModels();
   }
 
   if (this.config('db') !== false) {
-    global.__service = this;
-    this._models = util.include(this.dir + '/models') || {};
+    this._models = util.include(this.dir + '/models', true, { alaska, service }) || {};
     //遍历模型
     for (let name in this._models) {
       let Model = this._models[name];
+      Model.service = service;
       //加载扩展配置
       for (let dir of this._configDirs) {
         let file = dir + '/models/' + name + '.js';
         if (util.isFile(file)) {
-          let ext = require(file);
+          let ext = util.include(file, false, { alaska, service });
           if (typeof ext.groups !== 'undefined') {
             _.assign(Model.groups, ext.groups);
           }
@@ -54,8 +56,8 @@ module.exports = async function loadModels() {
             }
             Model[key] = ext[key];
           }
-          if (ext['default']) {
-            ext['default'](Model);
+          if (ext.default) {
+            ext.default(Model);
           }
         }
       } //end of 加载扩展配置

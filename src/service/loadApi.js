@@ -4,20 +4,17 @@
  * @author Liang <liang@maichong.it>
  */
 
-const _ = require('lodash');
-const compose = require('koa-compose');
-const util = require('../util');
+import _ from 'lodash';
+import compose from 'koa-compose';
+import * as util from '../util';
 
-module.exports = function loadApi() {
+export default function loadApi() {
   this.loadApi = util.noop;
   let alaska = this.alaska;
   let service = this;
   let router = this.router;
 
-  let original = global.__service;
-  global.__service = this;
-  this._apiControllers = util.include(this.dir + '/api', false) || {};
-  global.__service = original;
+  this._apiControllers = util.include(this.dir + '/api', false, { alaska, service }) || {};
 
   let defaultApiController = require('../api');
 
@@ -46,7 +43,7 @@ module.exports = function loadApi() {
     //如果不是普通错误,则输出错误信息
     console.error(`URL: ${ctx.path} ${service.id} API ${error.stack}`);
     ctx.body = {
-      error: 'Internal Server Error'
+      error: ctx.t('Internal Server Error')
     };
   }
 
@@ -113,7 +110,7 @@ module.exports = function loadApi() {
     await next();
     if (!ctx.body && ctx.status == 404) {
       ctx.status = 400;
-      ctx.body = { error: 'Bad Request' };
+      ctx.body = { error: ctx.t('Bad Request') };
     }
   });
 
@@ -123,5 +120,4 @@ module.exports = function loadApi() {
   router.post('/api/:model', restApi('create'));
   router.put('/api/:model/:id', restApi('update'));
   router.del('/api/:model/:id', restApi('remove'));
-
-};
+}

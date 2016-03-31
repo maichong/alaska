@@ -4,20 +4,21 @@
  * @author Liang <liang@maichong.it>
  */
 
-const util = require('../util');
+import * as util from '../util';
 
-module.exports = function loadControllers() {
+export default function loadControllers() {
   this.loadControllers = util.noop;
-  let service = this;
+  const service = this;
+  const alaska = this.alaska;
 
-  let original = global.__service;
-  global.__service = this;
-  this._controllers = util.include(this.dir + '/controllers', false) || {};
-  global.__service = original;
+  this._controllers = util.include(this.dir + '/controllers', false, { alaska, service }) || {};
+
+  const defaultController = this.config('defaultController');
+  const defaultAction = this.config('defaultAction');
 
   this.router.register('/:controller?/:action?', ['GET', 'HEAD', 'POST'], async function (ctx, next) {
-    let controller = ctx.params.controller || service.config('defaultController');
-    let action = ctx.params.action || service.config('defaultAction');
+    let controller = ctx.params.controller || defaultController;
+    let action = ctx.params.action || defaultAction;
     service.debug('route %s:%s', controller, action);
     if (service._controllers[controller] && service._controllers[controller][action] && action[0] !== '_') {
       let promise = service._controllers[controller][action](ctx, next);

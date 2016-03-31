@@ -4,10 +4,10 @@
  * @author Liang <liang@maichong.it>
  */
 
-const assert = require('assert');
-const util = require('../util');
+import assert from 'assert';
+import * as util from '../util';
 
-module.exports = async function init() {
+export default async function init() {
   this.debug('%s init', this.id);
   this.init = util.noop;
 

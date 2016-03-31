@@ -4,11 +4,9 @@
  * @author Liang <liang@maichong.it>
  */
 
-'use strict';
+import * as util from '../util';
 
-const util = require('../util');
-
-module.exports = function loadMiddlewares() {
+export default function loadMiddlewares() {
   this.loadMiddlewares = util.noop;
   let router = this.router;
   this.config('middlewares', []).forEach(function (item) {

@@ -5,12 +5,12 @@
  * @author Liang <liang@maichong.it>
  */
 
-class Field {
+export default class Field {
 
   static plain = String;
 
   /**
-   * @param {object} options
+   * @param {Object} options
    * @param {mongoose.Schema} schema
    * @param {Model} model
    */
@@ -59,7 +59,7 @@ class Field {
 
   /**
    * 获取前端控件参数
-   * @returns {object}
+   * @returns {Object}
    */
   viewOptions() {
     let field = this;
@@ -107,10 +107,8 @@ class Field {
    * 创建查询过滤器,传入客户端提交的值,返回格式化的/安全的MongoDB查询值
    * 如果返回undefined,则视为此过滤器无效
    * @method createFilter
-   * @param {object} filter   客户端提交的值
-   * @param {object} filters  此次查询所有的filters,特殊情况下可以不返回值,而直接修改此对象
-   * @returns {object}        返回格式化后的值
+   * @param {Object} filter   客户端提交的值
+   * @param {Object} filters  此次查询所有的filters,特殊情况下可以不返回值,而直接修改此对象
+   * @returns {Object}        返回格式化后的值
    */
 }
-
-module.exports = Field;

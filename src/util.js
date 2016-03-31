@@ -4,47 +4,84 @@
  * @author Liang <liang@maichong.it>
  */
 
-const fs = require('fs');
-const _ = require('lodash');
+import fs from 'fs';
+import _ from 'lodash';
 
 /**
  * 判断指定路径是否是文件
- * @param path
+ * @param {string} path
  * @returns {boolean}
  */
-exports.isFile = function isFile(path) {
+export function isFile(path) {
   try {
     return fs.statSync(path).isFile();
   } catch (e) {
     return false;
   }
-};
+}
 
 /**
  * 判断指定路径是否是文件夹
- * @param path
+ * @param {string} path
  * @returns {boolean}
  */
-exports.isDirectory = function isDirectory(path) {
+export function isDirectory(path) {
   try {
     return fs.statSync(path).isDirectory();
   } catch (e) {
     return false;
   }
-};
+}
 
 /**
  * 智能导入
- * @param path 文件或文件夹路径
- * @param importDefault
- * @returns {object}
+ * @param {string} path 文件或文件夹路径
+ * @param {boolean} [importDefault]
+ * @param {Object} [vars] 加载时,要向脚本注入的变量列表
+ * @returns {Object}
  */
-exports.include = function include(path, importDefault = true) {
-  if (exports.isFile(path)) {
-    return require(path).default;
+export function include(path, importDefault = true, vars) {
+  let result = null;
+  let oldRequire;
+  if (vars) {
+    oldRequire = require.extensions['.js'];
+    require.extensions['.js'] = function (m, filename) {
+      let compile = m._compile;
+      m._compile = function (content, file) {
+        if (!/(config|api|controllers|models|sleds)\/[a-z0-9\-\_]+\.js$/i.test(file)) {
+          compile.call(m, content, file);
+          return;
+        }
+        Object.assign(global, vars);
+        let injection = "'use strict';";
+        for (let key in vars) {
+          if (vars.hasOwnProperty(key)) {
+            injection += `const ${key}=global.${key}; `;
+          }
+        }
+        if (content.indexOf("'use strict';") === 0) {
+          content = content.replace("'use strict';", injection);
+        } else {
+          content = injection + content;
+        }
+        try {
+          compile.call(m, content, file);
+        } catch (error) {
+          console.error('load file failed: ' + file);
+          throw error;
+        }
+      };
+      oldRequire(m, filename);
+    };
   }
-  if (exports.isDirectory(path)) {
-    let result = {};
+  if (isFile(path)) {
+    result = require(path);
+    if (importDefault && result.default) {
+      result = result.default;
+    }
+  }
+  if (isDirectory(path)) {
+    result = {};
     fs.readdirSync(path).forEach(file => {
       if (file.endsWith('.js')) {
         let name = file.slice(0, -3);
@@ -52,32 +89,39 @@ exports.include = function include(path, importDefault = true) {
         result[name] = importDefault && obj.default ? obj.default : obj;
       }
     });
-    return result;
   }
-  return null;
-};
+  if (oldRequire) {
+    require.extensions['.js'] = oldRequire;
+  }
+  return result;
+}
 
 /**
  * 判断某路径是否是隐藏的
- * @param path
+ * @param {string} path
  * @returns {boolean}
  */
-exports.isHidden = function isHidden(path) {
+export function isHidden(path) {
   return /[\\\/]\.\w/.test(path);
-};
+}
 
 const resolved = Promise.resolve();
-exports.noop = function noop() {
+
+/**
+ * noop
+ * @returns {Promise}
+ */
+export function noop() {
   return resolved;
-};
+}
 
 /**
  * 递归将obj上所有的方法绑定至scope
- * @param obj
- * @param scope
- * @returns {object}
+ * @param {Object} obj
+ * @param {Object} scope
+ * @returns {Object}
  */
-exports.bindMethods = function bindMethods(obj, scope) {
+export function bindMethods(obj, scope) {
   let bound = {};
   for (let key in obj) {
     if (typeof obj[key] === 'function') {
@@ -87,32 +131,53 @@ exports.bindMethods = function bindMethods(obj, scope) {
     }
   }
   return bound;
-};
+}
 
 /**
- * 生成安全的正则
- * @param str
- * @returns {*}
+ * 生成安全的正则字符串
+ * @param {string} str
+ * @returns {string}
  */
-exports.escapeRegExp = function escapeRegExp(str) {
+export function escapeRegExp(str) {
   if (str && str.toString) str = str.toString();
   if (typeof str !== 'string' || !str.length) return '';
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-};
+}
 
 /**
  * 判断字符串是否是合法的MongoID格式
- * @param input
+ * @param {string} input
+ * @returns {boolean}
  */
-exports.isMongoId = function (input) {
+export function isMongoId(input) {
   return /^[a-f0-9]{24}$/.test(input);
-};
+}
 
 /**
  * 将驼峰样式字符串转为小写字符串样式
  * @param {string} name
  * @returns {string}
  */
-exports.nameToKey = function (name) {
+export function nameToKey(name) {
   return name.replace(/([a-z])([A-Z])/g, (a, b, c) => (b + '-' + c.toLowerCase())).toLowerCase();
-};
+}
+
+/**
+ * 解析Accept Language
+ * @param {string} header
+ * @returns {Array}
+ */
+export function pareseAcceptLanguage(header) {
+  if (!header) {
+    return [];
+  }
+  return header.split(',').map(item => {
+    let lang = item.split(';q=');
+    if (lang.length < 2) {
+      lang[1] = 1;
+    } else {
+      lang[1] = parseFloat(lang[1]) || 0;
+    }
+    return lang;
+  }).filter(lang => lang[1] > 0).sort((a, b) => a[1] < b[1]).map(lang => lang[0]);
+}

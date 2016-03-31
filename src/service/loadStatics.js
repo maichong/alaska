@@ -4,11 +4,11 @@
  * @author Liang <liang@maichong.it>
  */
 
-const path = require('path');
-const _ = require('lodash');
-const util = require('../util');
+import _ from 'lodash';
+import path from 'path';
+import * as util from '../util';
 
-module.exports = function loadStatics() {
+export default function loadStatics() {
   this.loadStatics = util.noop;
   let service = this;
   let statics = [];

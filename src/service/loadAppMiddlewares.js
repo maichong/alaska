@@ -4,24 +4,40 @@
  * @author Liang <liang@maichong.it>
  */
 
-const util = require('../util');
-const fs = require('mz/fs');
-const mime = require('mime');
+import fs from 'mz/fs';
+import mime from 'mime';
+import * as util from '../util';
 
-module.exports = function loadAppMiddlewares() {
+export default function loadAppMiddlewares() {
   this.loadAppMiddlewares = util.noop;
   let app = this.alaska.app;
   let alaska = this.alaska;
   let service = this;
+  const locales = this.config('locales');
+  const localeCookieKey = this.config('localeCookieKey');
+  const localeQueryKey = this.config('localeQueryKey');
   app.use(function (ctx, next) {
     ctx.set('X-Powered-By', 'Alaska');
     ctx.service = service;
     ctx.alaska = alaska;
 
+    //切换语言
+    if (localeQueryKey) {
+      if (ctx.query[localeQueryKey]) {
+        let locale = ctx.query[localeQueryKey];
+        if (locales.indexOf(locale) > -1) {
+          ctx._locale = locale;
+          ctx.cookies.set(localeCookieKey, locale, {
+            maxAge: 365 * 86400 * 1000
+          });
+        }
+      }
+    }
+
     /**
      * 发送文件
      * @param {string} filePath
-     * @param {object} options
+     * @param {Object} options
      */
     ctx.sendfile = async function (filePath, options) {
       options = options || {};
@@ -75,4 +91,4 @@ module.exports = function loadAppMiddlewares() {
     let middleware = require(name);
     app.use(middleware(options));
   });
-};
+}

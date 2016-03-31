@@ -4,7 +4,7 @@
  * @author Liang <liang@maichong.it>
  */
 
-const alaska = require(__dirname + '/alaska');
+import alaska from './alaska';
 
 /**
  * REST接口默认控制器
@@ -24,7 +24,7 @@ const alaska = require(__dirname + '/alaska');
 /**
  * 统计接口
  */
-exports.count = async function (ctx) {
+export async function count(ctx) {
   let Model = ctx.Model;
   let code = Model.api.count;
   if (code > alaska.PUBLIC && !ctx.user) {
@@ -39,16 +39,15 @@ exports.count = async function (ctx) {
     let userField = Model.options.userField;
     filters[userField] = ctx.user;
   }
-  let count = await Model.count(filters);
   ctx.body = {
-    count
+    count: await Model.count(filters)
   };
-};
+}
 
 /**
  * 列表接口
  */
-exports.list = async function list(ctx) {
+export async function list(ctx) {
   let Model = ctx.Model;
   let code = Model.api.list;
   if (code > alaska.PUBLIC && !ctx.user) {
@@ -66,8 +65,8 @@ exports.list = async function list(ctx) {
   }
 
   let query = Model.paginate({
-    page: parseInt(ctx.query.page) || 1,
-    perPage: parseInt(ctx.query.perPage) || 10,
+    page: parseInt(ctx.query.page, 10) || 1,
+    perPage: parseInt(ctx.query.perPage, 10) || 10,
     filters
   });
   if (Model.populations) {
@@ -79,16 +78,14 @@ exports.list = async function list(ctx) {
     });
   }
   let results = await query;
-  results.results = results.results.map(function (doc) {
-    return doc.data('list');
-  });
+  results.results = results.results.map(doc => doc.data('list'));
   ctx.body = results;
-};
+}
 
 /**
  * 获取单个对象详细信息
  */
-exports.show = async function show(ctx) {
+export async function show(ctx) {
   let Model = ctx.Model;
   let code = Model.api.show;
   if (code > alaska.PUBLIC && !ctx.user) {
@@ -112,12 +109,12 @@ exports.show = async function show(ctx) {
     return;
   }
   ctx.body = doc.data('show');
-};
+}
 
 /**
  * 创建一个对象
  */
-exports.create = async function (ctx) {
+export async function create(ctx) {
   let Model = ctx.Model;
   let code = Model.api.create;
   if (code > alaska.PUBLIC && !ctx.user) {
@@ -135,12 +132,12 @@ exports.create = async function (ctx) {
   ctx.body = {
     id: doc.id
   };
-};
+}
 
 /**
  * 更新一个对象
  */
-exports.update = async function (ctx) {
+export async function update(ctx) {
   let Model = ctx.Model;
   let code = Model.api.update;
   if (code > alaska.PUBLIC && !ctx.user) {
@@ -161,12 +158,12 @@ exports.update = async function (ctx) {
   await doc.save();
   ctx.status = alaska.CREATED;
   ctx.body = {};
-};
+}
 
 /**
  * 删除一个对象
  */
-exports.remove = async function (ctx) {
+export async function remove(ctx) {
   let Model = ctx.Model;
   let code = Model.api.remove;
   if (code > alaska.PUBLIC && !ctx.user) {
@@ -187,4 +184,4 @@ exports.remove = async function (ctx) {
   await doc.remove();
   ctx.status = alaska.NO_CONTENT;
   ctx.body = {};
-};
+}

@@ -3,6 +3,10 @@
   "env": {
     "node": true
   },
+  "globals":{
+    "alaska": true,
+    "service": true
+  },
   "parser": "babel-eslint",
   "rules": {
     "prefer-const": 0,

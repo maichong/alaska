@@ -4,12 +4,12 @@
  * @author Liang <liang@maichong.it>
  */
 
-const _ = require('lodash');
-const collie = require('collie');
-const mongoose = require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;
+import _ from 'lodash';
+import collie from 'collie';
+import mongoose from 'mongoose';
+import * as util from './util';
+
 const Schema = mongoose.Schema;
-const util = require('./util');
 
 function panic() {
   throw new Error('Can not call the function when Model has been registered.');
@@ -66,7 +66,7 @@ function objectToData(value) {
  * @class Model
  * @extends mongoose.Model
  */
-class Model {
+export default class Model {
   //placeholder
   static fields = null;
 
@@ -120,7 +120,7 @@ class Model {
    * 注册
    */
   static register() {
-    let service = __service;
+    let service = this.service;
     let model = this;
     let db = service.db;
     model.db = db;
@@ -256,7 +256,7 @@ class Model {
       label: model.name,
       groups: {}
     });
-    model.relationships = _.map(model.relationships, r=> {
+    model.relationships = _.map(model.relationships, r => {
       //'Model'
       let res = {
         service: service.id,
@@ -386,7 +386,7 @@ class Model {
         id: this.id
       };
       for (let key in this.schema.tree) {
-        if (key[0] == '_' || !model.fields[key] || model.fields[key].private) {
+        if (key[0] === '_' || !model.fields[key] || model.fields[key].private) {
           continue;
         }
         if (this._[key] && this._[key].data) {
@@ -405,7 +405,7 @@ class Model {
     };
 
     Object.getOwnPropertyNames(model.prototype).forEach(key => {
-      if (key == 'constructor') {
+      if (key === 'constructor') {
         return;
       }
       schema.methods[key] = model.prototype[key];
@@ -462,8 +462,8 @@ class Model {
 
   /**
    * 创建查询过滤器
-   * @param {string} search
-   * @param {object|json} filters
+   * @param {string} [search]
+   * @param {object|json} [filters]
    */
   static createFilters(search, filters) {
     if (filters && typeof filters === 'string') {
@@ -506,7 +506,7 @@ class Model {
 
   /**
    * 分页查询
-   * @param {object} options
+   * @param {Object} options
    * @returns {mongoose.Query}
    */
   static paginate(options) {
@@ -540,11 +540,12 @@ class Model {
     query.exec = function (callback) {
       callback = callback || _.noop;
 
-      return new Promise(function (resolve, reject) {
+      return new Promise((resolve, reject) => {
         query.exec = query.originalExec;
-        query.count(function (error, total) {
+        query.count((error, total) => {
           if (error) {
-            return reject(error);
+            reject(error);
+            return
           }
           if (!total) {
             callback(null, results);
@@ -554,9 +555,10 @@ class Model {
           results.total = total;
           results.next = Math.ceil(total / perPage) > page ? page + 1 : false;
 
-          query.find().limit(perPage).skip(skip).exec(function (error, res) {
-            if (error) {
-              return reject(error);
+          query.find().limit(perPage).skip(skip).exec((err, res) => {
+            if (err) {
+              reject(err);
+              return
             }
             results.results = res;
             callback(null, results);
@@ -627,7 +629,7 @@ class Model {
 
   /**
    * 将object数据转为Model对象
-   * @param data
+   * @param {Object} data
    * @returns {Model}
    */
   static castCache(data) {
@@ -659,7 +661,7 @@ class Model {
   /**
    * 将模型数组转为plain object数组
    * @param {[Model]} array
-   * @returns {array}
+   * @returns {[Object]}
    */
   static castModelArray(array) {
     let cache = this.service.cache;
@@ -670,5 +672,3 @@ class Model {
     return _.map(array, record => record.toObject());
   }
 }
-
-module.exports = Model;

@@ -4,9 +4,11 @@
  * @author Liang <liang@maichong.it>
  */
 
-const Koa = require('koa');
-const collie = require('collie');
-const util = require('./util');
+import Koa from 'koa';
+import collie from 'collie';
+import * as util from './util';
+import Service from './service';
+import Field from './field';
 
 const debug = require('debug')('alaska');
 let defaultAlaska;
@@ -100,6 +102,8 @@ class Alaska {
   util = util;
   noop = util.noop;
   Alaska = Alaska;
+  Service = Service;
+  Field = Field;
 
   /**
    * 初始化一个新的Alaska实例对象
@@ -109,8 +113,6 @@ class Alaska {
     debug('constructor');
     collie(this, 'launch');
     collie(this, 'registerService');
-    this.Service = require('./service');
-    this.Field = require('./field');
     this.defaultAlaska = defaultAlaska ? defaultAlaska : this;
   }
 
@@ -132,7 +134,7 @@ class Alaska {
 
   /**
    * 获取所有service
-   * @returns {{}}
+   * @returns {Object}
    */
   get services() {
     return this._services;
@@ -225,8 +227,8 @@ class Alaska {
 
   /**
    * 抛出严重错误,并输出调用栈
-   * @param message
-   * @param code
+   * @param {string|Error} message
+   * @param {string|number} [code]
    */
   panic(message, code) {
     let error = new defaultAlaska.PanicError(message);
@@ -240,7 +242,7 @@ class Alaska {
   /**
    * 抛出普通异常
    * @param {string|Error} message
-   * @param {string|number} code
+   * @param {string|number} [code]
    */
   error(message, code) {
     let error = new defaultAlaska.NormalError(message);

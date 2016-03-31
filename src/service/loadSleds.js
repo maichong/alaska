@@ -4,18 +4,16 @@
  * @author Liang <liang@maichong.it>
  */
 
-'use strict';
+import * as util from '../util';
 
-
-const util = require('../util');
-
-module.exports = async function loadSleds() {
+export default async function loadSleds() {
   this.loadSleds = util.noop;
+  const service = this;
+  const alaska = this.alaska;
 
-  for (let service of this._services) {
-    await service.loadSleds();
+  for (let s of this._services) {
+    await s.loadSleds();
   }
 
-  global.__service = this;
-  this._sleds = util.include(this.dir + '/sleds') || {};
+  this._sleds = util.include(this.dir + '/sleds', true, { alaska, service }) || {};
 };

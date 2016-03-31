@@ -4,12 +4,13 @@
  * @author Liang <liang@maichong.it>
  */
 
-const path = require('path');
-const _ = require('lodash');
-const util = require('../util');
-const asyncBusboy = require('async-busboy');
+import _ from 'lodash';
+import path from 'path';
+import asyncBusboy from 'async-busboy';
+import * as util from '../util';
+import Session from '../session';
 
-module.exports = async function route() {
+export default async function route() {
   this.route = util.noop;
   this.debug('%s route', this.id);
 
@@ -24,7 +25,6 @@ module.exports = async function route() {
       let storeOpts = sessionOpts.store || {};
       let cookieOpts = sessionOpts.cookie || {};
       let key = cookieOpts.key || 'alaska.sid';
-      let Session = require('../session');
       let Store = require(storeOpts.type);
       let store = new Store(storeOpts);
       let random = require('string-random');
@@ -93,7 +93,7 @@ module.exports = async function route() {
     //upload
     app.use(async function (ctx, next) {
       ctx.files = {};
-      if (ctx.method != 'POST') return await next();
+      if (ctx.method !== 'POST') return await next();
       if (!ctx.request.is('multipart/*')) return await next();
       const { files, fields } = await asyncBusboy(ctx.req);
       ctx.files = {};
@@ -156,7 +156,12 @@ module.exports = async function route() {
 
   let templatesDir = path.join(this.dir, this.config('templates')) + '/';
 
-  app.use(function (ctx, next) {
+  const MAIN = this.alaska.main;
+  const locales = MAIN.config('locales');
+  const defaultLocale = MAIN.config('defaultLocale');
+  const localeCookieKey = MAIN.config('localeCookieKey');
+
+  app.use((ctx, next) => {
     ctx.subdomain = '';
     ctx.service = service;
 
@@ -189,7 +194,44 @@ module.exports = async function route() {
       return json;
     };
 
-    ctx.locals = {};
+    ctx.__defineGetter__('locale', () => {
+      let locale = ctx._locale;
+      if (locale) {
+        return locale;
+      }
+      locale = ctx.cookies.get(localeCookieKey) || '';
+      if (!locale || locales.indexOf(locale) < 0) {
+        //没有cookie设置
+        //自动判断
+        locale = defaultLocale;
+        let languages = util.pareseAcceptLanguage(ctx.get('accept-language'));
+        for (let lang of languages) {
+          if (locales.indexOf(lang) > -1) {
+            locale = lang;
+            break;
+          }
+        }
+        if (locale) {
+          ctx._locale = locale;
+        }
+      }
+      return locale;
+    });
+
+    ctx.t = (message, locale, values) => {
+      if (_.isObject(locale)) {
+        values = locale;
+        locale = null;
+      }
+      if (!locale) {
+        locale = ctx.locale;
+      }
+      return service.t(message, locale, values);
+    };
+
+    ctx.locals = {
+      t: ctx.t
+    };
     ctx.render = function (template, locals) {
       let path = templatesDir + template;
       if (!util.isFile(path)) {

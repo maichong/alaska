@@ -4,16 +4,15 @@
  * @author Liang <liang@maichong.it>
  */
 
-'use strict';
+import collie from 'collie';
+import random from 'string-random';
 
-const collie = require('collie');
+export default class Sled {
 
-const util = require('./util');
-
-const random = require('string-random');
-
-class Sled {
-
+  /**
+   * Sled构造函数
+   * @param {Object} [data]
+   */
   constructor(data) {
     this.data = data || {};
     //队列item数据,只有从队列中读取的Sled或将Sled发送到队列后才有此属性
@@ -28,7 +27,7 @@ class Sled {
 
   /**
    * 获取sled所属service
-   * @returns {*}
+   * @returns {Service}
    */
   get service() {
     return this.constructor.service;
@@ -36,7 +35,7 @@ class Sled {
 
   /**
    * 获取Sled name
-   * @returns {*}
+   * @returns {string}
    */
   get name() {
     return this.constructor.name;
@@ -44,6 +43,7 @@ class Sled {
 
   /**
    * 获取Sled key
+   * @returns {string}
    */
   get key() {
     return this.constructor.key;
@@ -52,7 +52,7 @@ class Sled {
   /**
    * 获取sled配置
    * @private
-   * @returns {object}
+   * @returns {Object}
    */
   get config() {
     return this.constructor.config;
@@ -86,16 +86,7 @@ class Sled {
   }
 
   /**
-   * alias for service.model
-   * @param name
-   * @returns {*}
-   */
-  model(name) {
-    return this.service.model(name);
-  }
-
-  /**
-   * 注册 Sled 运行前置钩子
+   * 注册 Sled 前置钩子
    * @param fn
    */
   static pre(fn) {
@@ -106,7 +97,7 @@ class Sled {
   }
 
   /**
-   * 注册 Sled 运行后置钩子
+   * 注册 Sled 后置钩子
    * @param fn
    */
   static post(fn) {
@@ -119,7 +110,7 @@ class Sled {
   /**
    * 获取Sled设置
    * @private
-   * @returns {{}}
+   * @returns {Object}
    */
   static get config() {
     if (!this._config) {
@@ -186,7 +177,7 @@ class Sled {
 
   /**
    * [async] alias for sled.run()
-   * @param data
+   * @param {Object} [data]
    * @returns {*}
    */
   static run(data) {
@@ -196,7 +187,7 @@ class Sled {
 
   /**
    * 从队列中读取一个sled
-   * @param timeout 读取超时,单位秒,默认Infinity
+   * @param {number} [timeout] 读取超时,单位秒,默认Infinity
    */
   static async read(timeout) {
     let queue = this.createQueueDriver();
@@ -231,8 +222,8 @@ class Sled {
 
   /**
    * 将sled发送到队列
-   * @param {number} timeout Sled超时时间,单位秒,默认60天
-   * @param {boolean} notify Sled执行后是否需要通知,默认false
+   * @param {number} [timeout] Sled超时时间,单位秒,默认60天
+   * @param {boolean} [notify] Sled执行后是否需要通知,默认false
    */
   async send(timeout, notify) {
     if (this.result || this.error) {
@@ -259,7 +250,7 @@ class Sled {
       id,
       key,
       notify,
-      data: data,
+      data,
       name: this.name,
       result: null,
       error: null,
@@ -288,8 +279,8 @@ class Sled {
 
   /**
    * [async]等待队列中sled执行
-   * @param {number} waitTimeout 超时时间,单位秒,默认为Infinity,超时后将返回null
-   * @param {number} sledTimeout Sled执行超时时间,单位秒,默认为60天
+   * @param {number} [waitTimeout] 超时时间,单位秒,默认为Infinity,超时后将返回null
+   * @param {number} [sledTimeout] Sled执行超时时间,单位秒,默认为60天
    */
   async wait(waitTimeout, sledTimeout) {
     if (this.result) {
@@ -401,5 +392,3 @@ class Sled {
    * @method exec
    */
 }
-
-module.exports = Sled;

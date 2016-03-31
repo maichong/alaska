@@ -9,7 +9,7 @@
  * @property {boolean} isNew
  * @property {number} length
  */
-class Session {
+export default class Session {
   /**
    * @constructor
    * @param ctx
@@ -32,7 +32,7 @@ class Session {
 
   /**
    * 返回格式化后的对象
-   * @returns {object}
+   * @returns {Object}
    */
   toJSON() {
     let me = this;
@@ -60,5 +60,3 @@ class Session {
   }
 
 }
-
-module.exports = Session;

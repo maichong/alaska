@@ -9,7 +9,7 @@
  * 默认配置
  * @module config
  */
-module.exports = {
+export default {
   //
   // APP settings
   //
@@ -22,7 +22,7 @@ module.exports = {
 
   /**
    * [APP] APP中间件列表
-   * @type {array}
+   * @type {Array}
    */
   appMiddlewares: ['koa-logger', {
     name: 'koa-bodyparser',
@@ -52,6 +52,31 @@ module.exports = {
       maxAge: 1000 * 60 * 60
     }
   },
+
+  /**
+   * 当前App支持的语言列表
+   * @type {[]}
+   */
+  locales: ['en', 'zh-CN'],
+
+  /**
+   * 当前App默认语言
+   * @type {string}
+   */
+  defaultLocale: 'en',
+
+  /**
+   * 修改Locale的GET请求查询键
+   * @type string
+   */
+  localeQueryKey: 'locale',
+
+  /**
+   * 保存Locale cookie
+   * @type string
+   */
+  localeCookieKey: 'alaska.locale',
+
   //
   // KOA settings
   //
@@ -91,15 +116,15 @@ module.exports = {
   /** [Service] 默认控制器名称
    * @type {string}
    */
-  defaultController: 'index',
+  defaultController: 'default',
   /**
    * [Service] 控制器中默认Action名称
    * @type {string}
    */
-  defaultAction: 'index',
+  defaultAction: 'default',
   /**
    * [Service] 控制器路由接受的HTTP方法列表
-   * @type {array}
+   * @type {Array}
    */
   methods: ['GET', 'POST'],
   /**
@@ -119,12 +144,12 @@ module.exports = {
   templates: 'templates',
   /**
    * [Service] 该Service依赖的子Service列表
-   * @type {array}
+   * @type {Array}
    */
   services: [],
   /**
    * [Service] 该Service的路由中间件
-   * @type {array}
+   * @type {Array}
    */
   middlewares: [],
   /**

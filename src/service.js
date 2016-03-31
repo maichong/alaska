@@ -4,12 +4,15 @@
  * @author Liang <liang@maichong.it>
  */
 
-const _ = require('lodash');
-const Router = require('koa-router');
-const collie = require('collie');
-const util = require('./util');
-const defaultConfig = require('./config');
-const Sled = require('./sled');
+import _ from 'lodash';
+import Router from 'koa-router';
+import collie from 'collie';
+import IntlMessageFormat from 'intl-messageformat';
+import * as util from './util';
+import defaultConfig from './config';
+import Sled from './sled';
+import Model from './model';
+
 const debug = require('debug')('alaska');
 
 /**
@@ -18,7 +21,7 @@ const debug = require('debug')('alaska');
  * Service实例可以依赖其他Service
  * 一个Service实例可以同时被多个Service依赖
  */
-class Service {
+export default class Service {
   /**
    * 路由器
    * @type {Router}
@@ -27,15 +30,17 @@ class Service {
   _router = null;
   _controllers = {};
   _apiControllers = {};
+  _locales = {};
+  _messageCache = {};
   /**
    * 本ServiceSled列表
-   * @type {object}
+   * @type {Object}
    * @private
    */
   _sleds = {};
   /**
    * 本Service数据模型列表
-   * @type {object}
+   * @type {Object}
    * @private
    */
   _models = {};
@@ -47,7 +52,7 @@ class Service {
   _db = null;
   /**
    * 本Service的配置项
-   * @type {object}
+   * @type {Object}
    * @private
    */
   _config = {};
@@ -65,7 +70,7 @@ class Service {
   _services = [];
   /**
    * 所依赖的子Service实例对象别名映射表
-   * @type {object}
+   * @type {Object}
    * @private
    */
   _alias = {};
@@ -76,7 +81,7 @@ class Service {
    * Model基类
    * @type {Model}
    */
-  Model = require('./model');
+  Model = Model;
 
   /**
    * Model基类
@@ -102,15 +107,16 @@ class Service {
       return util.nameToKey(service.id + '.' + this.name);
     });
 
-    collie(this, 'init', require('./service/init'));
-    collie(this, 'loadModels', require('./service/loadModels'));
-    collie(this, 'loadSleds', require('./service/loadSleds'));
-    collie(this, 'route', require('./service/route'));
-    collie(this, 'loadAppMiddlewares', require('./service/loadAppMiddlewares'));
-    collie(this, 'loadMiddlewares', require('./service/loadMiddlewares'));
-    collie(this, 'loadApi', require('./service/loadApi'));
-    collie(this, 'loadControllers', require('./service/loadControllers'));
-    collie(this, 'loadStatics', require('./service/loadStatics'));
+    collie(this, 'init', require('./service/init').default);
+    collie(this, 'loadLocales', require('./service/loadLocales').default);
+    collie(this, 'loadModels', require('./service/loadModels').default);
+    collie(this, 'loadSleds', require('./service/loadSleds').default);
+    collie(this, 'route', require('./service/route').default);
+    collie(this, 'loadAppMiddlewares', require('./service/loadAppMiddlewares').default);
+    collie(this, 'loadMiddlewares', require('./service/loadMiddlewares').default);
+    collie(this, 'loadApi', require('./service/loadApi').default);
+    collie(this, 'loadControllers', require('./service/loadControllers').default);
+    collie(this, 'loadStatics', require('./service/loadStatics').default);
     collie(this, 'launch');
     collie(this, 'registerModel');
 
@@ -137,7 +143,7 @@ class Service {
     {
       //载入配置
       let configFilePath = this._options.dir + '/config/' + this._options.configFile;
-      let config = util.include(configFilePath);
+      let config = util.include(configFilePath, true, { alaska, service });
       if (config) {
         this._config = config;
       } else {
@@ -167,8 +173,16 @@ class Service {
   }
 
   /**
+   * 获取语言配置列表
+   * @returns {Object}
+   */
+  get locales() {
+    return this._locales;
+  }
+
+  /**
    * 追加配置项
-   * @param {object} config
+   * @param {Object} config
    */
   applyConfig(config) {
     this._config = _.assign({}, this._config, config);
@@ -199,15 +213,15 @@ class Service {
   /**
    * 抛出严重错误,并输出调用栈
    * @method panic
-   * @param message
-   * @param code
+   * @param {string|Error} message
+   * @param {string|number} [code]
    */
 
   /**
    * 抛出普通异常
    * @method error
    * @param {string|Error} message
-   * @param {string|number} code
+   * @param {string|number} [code]
    */
 
   /**
@@ -220,6 +234,11 @@ class Service {
   /**
    * [async] 初始化
    * @method init
+   */
+
+  /**
+   * [async] 加载多语言
+   * @method loadLocales
    */
 
   /**
@@ -271,6 +290,7 @@ class Service {
     this.launch = util.noop;
 
     await this.init();
+    await this.loadLocales();
     await this.loadModels();
     await this.loadSleds();
     await this.route();
@@ -319,7 +339,7 @@ class Service {
       }
     }
     me._db = require('mongoose').createConnection(config);
-    me._db.on('error', function (error) {
+    me._db.on('error', error => {
       console.error(error);
       process.exit();
     });
@@ -368,7 +388,7 @@ class Service {
 
   /**
    * 输出Service实例JSON调试信息
-   * @returns {object}
+   * @returns {Object}
    */
   toJSON() {
     return {
@@ -418,7 +438,6 @@ class Service {
    * @returns {Model}
    */
   async registerModel(Model) {
-    global.__service = this;
     Model.register();
     return Model;
   }
@@ -451,18 +470,43 @@ class Service {
   /**
    * 运行一个Sled
    * @param {string} name
-   * @param {object} data
+   * @param {Object} data
    * @returns {*}
    */
   run(name, data) {
     try {
-      let Sled = this.sled(name);
-      let sled = new Sled(data);
+      let SledClass = this.sled(name);
+      let sled = new SledClass(data);
       return sled.run();
     } catch (error) {
       return Promise.reject(error);
     }
   }
-}
 
-module.exports = Service;
+  /**
+   * 翻译消息
+   * @param {string} message
+   * @param {string} [locale]
+   * @param {Object} [values]
+   * @param {Object} [formats]
+   * @returns {string}
+   */
+  t(message, locale, values, formats) {
+    if (!locale) {
+      locale = this.config('defaultLocale');
+    }
+    if (!this._locales[locale] || !this._locales[locale][message]) {
+      return message;
+    }
+    if (!values) {
+      return this._locales[locale][message];
+    }
+    if (!this._messageCache[locale]) {
+      this._messageCache[locale] = {};
+    }
+    if (!this._messageCache[locale][message]) {
+      this._messageCache[locale][message] = new IntlMessageFormat(this._locales[locale][message], locale, formats);
+    }
+    return this._messageCache[locale][message].format(values);
+  }
+}
