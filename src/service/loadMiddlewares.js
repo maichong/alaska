@@ -35,4 +35,12 @@ export default function loadMiddlewares() {
     }
     router.register(path, methods, middleware(item.options));
   });
+  let middlewaresFile = this.dir + '/middlewares/index.js';
+  if (util.isFile(middlewaresFile)) {
+    let middlewares = util.include(middlewaresFile, true, {
+      service: this,
+      alaska: this.alaska
+    });
+    middlewares(router);
+  }
 };

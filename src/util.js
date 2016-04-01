@@ -48,7 +48,7 @@ export function include(path, importDefault = true, vars) {
     require.extensions['.js'] = function (m, filename) {
       let compile = m._compile;
       m._compile = function (content, file) {
-        if (!/(config|api|controllers|models|sleds)\/[a-z0-9\-\_]+\.js$/i.test(file)) {
+        if (!/(config|api|controllers|models|sleds|updates|middlewares)\/[a-z0-9\-\_]+\.js$/i.test(file)) {
           compile.call(m, content, file);
           return;
         }
