@@ -197,6 +197,22 @@ export default class Service {
   }
 
   /**
+   * 获取koa app实例
+   * @returns {koa.Application}
+   */
+  get app() {
+    return this.alaska.app;
+  }
+
+  /**
+   * 获取主Service实例
+   * @returns {Service}
+   */
+  get main() {
+    return this.alaska.main;
+  }
+
+  /**
    * 获取Service实例路由器
    * @returns {Router}
    */
