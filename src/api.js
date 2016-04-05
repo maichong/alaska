@@ -36,7 +36,7 @@ export async function count(ctx) {
   ctx.status = alaska.OK;
   if (code === alaska.OWNER) {
     //只允许用户列出自己的资源
-    let userField = Model.options.userField;
+    let userField = Model.userField;
     filters[userField] = ctx.user;
   }
   ctx.body = {
@@ -60,7 +60,7 @@ export async function list(ctx) {
   ctx.status = alaska.OK;
   if (code === alaska.OWNER) {
     //只允许用户列出自己的资源
-    let userField = Model.options.userField;
+    let userField = Model.userField;
     filters[userField] = ctx.user;
   }
 
@@ -104,7 +104,7 @@ export async function show(ctx) {
     //404
     return;
   }
-  if (code === alaska.OWNER && doc[Model.options.userField].toString() !== ctx.user.id) {
+  if (code === alaska.OWNER && doc[Model.userField].toString() !== ctx.user.id) {
     //404
     return;
   }
@@ -124,7 +124,7 @@ export async function create(ctx) {
   }
   let doc = new Model(ctx.request.body);
   if (code > alaska.PUBLIC) {
-    let userField = Model.options.userField;
+    let userField = Model.userField;
     doc.set(userField, ctx.user);
   }
   await doc.save();
@@ -150,7 +150,7 @@ export async function update(ctx) {
     //404
     return;
   }
-  if (code === alaska.OWNER && doc[Model.options.userField].toString() !== ctx.user.id) {
+  if (code === alaska.OWNER && doc[Model.userField].toString() !== ctx.user.id) {
     //404
     return;
   }
@@ -171,17 +171,14 @@ export async function remove(ctx) {
     ctx.status = alaska.UNAUTHORIZED;
     return;
   }
+  ctx.body = {};
   let doc = await Model.findById(ctx.params.id);
   if (!doc) {
-    //204 删除成功
-    ctx.status = alaska.NO_CONTENT;
+    //删除成功
     return;
   }
-  if (code === alaska.OWNER && doc[Model.options.userField].toString() !== ctx.user.id) {
-    ctx.status = alaska.NO_CONTENT;
+  if (code === alaska.OWNER && doc[Model.userField].toString() !== ctx.user.id) {
     return;
   }
   await doc.remove();
-  ctx.status = alaska.NO_CONTENT;
-  ctx.body = {};
 }

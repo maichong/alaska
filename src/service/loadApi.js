@@ -47,6 +47,21 @@ export default function loadApi() {
     };
   }
 
+  router.all('/api/*', async function (ctx, next) {
+    await next();
+    if (!ctx.body) {
+      if (ctx.status == 404) {
+        ctx.body = { error: 'Not found' };
+      }
+      if (ctx.status == 401) {
+        ctx.body = { error: 'Unauthorized' };
+      }
+      if (ctx.status == 403) {
+        ctx.body = { error: 'Forbidden' };
+      }
+    }
+  });
+
   function restApi(action) {
     return function (ctx, next) {
       try {
@@ -108,10 +123,6 @@ export default function loadApi() {
       return;
     }
     await next();
-    if (!ctx.body && ctx.status == 404) {
-      ctx.status = 400;
-      ctx.body = { error: ctx.t('Bad Request') };
-    }
   });
 
   router.get('/api/:model/count', restApi('count'));
