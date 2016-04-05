@@ -16,7 +16,6 @@ export default async function route() {
 
   let app = this.alaska.app;
   let service = this;
-  let router = this.router;
 
   if (this.isMain()) {
     //session
@@ -30,8 +29,7 @@ export default async function route() {
       let random = require('string-random');
       app.use(async function (ctx, next) {
         ctx.sessionKey = key;
-        ctx.sessionId = null;
-        let sid = ctx.cookies.get(key, cookieOpts);
+        let sid = ctx.sessionId = ctx.cookies.get(key, cookieOpts);
         let json;
         let session;
         if (sid) {
@@ -120,8 +118,16 @@ export default async function route() {
     await sub.route();
   }
 
+  if (this.config('prefix') === false) {
+    return;
+  }
+
+  let router = this.router;
+
   //中间件
-  await this.loadMiddlewares();
+  if (this.config('middlewares')) {
+    await this.loadMiddlewares();
+  }
 
   //API 接口
   if (this.config('api')) {

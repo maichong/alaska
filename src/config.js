@@ -109,8 +109,8 @@ export default {
    */
   redirect: '',
   /**
-   * [Service] Service的URL访问地址PATH中前缀
-   * @type {string}
+   * [Service] Service的URL访问地址PATH中前缀,若为false则该Service不挂载任何中间件或控制器
+   * @type {string|boolean}
    */
   prefix: '',
   /** [Service] 默认控制器名称
