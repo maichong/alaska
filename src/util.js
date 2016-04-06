@@ -105,14 +105,21 @@ export function isHidden(path) {
   return /[\\\/]\.\w/.test(path);
 }
 
-const resolved = Promise.resolve();
+const _resolved = Promise.resolve();
+
+/**
+ * resolved
+ * @returns {Promise}
+ */
+export function resolved() {
+  return _resolved;
+}
 
 /**
  * noop
  * @returns {Promise}
  */
 export function noop() {
-  return resolved;
 }
 
 /**

@@ -23,11 +23,12 @@ export default {
   /**
    * [APP] APP中间件列表
    * @type {Array}
+   * [{
+   *   id:'alaska-session',
+   *   options:{}
+   * }]
    */
-  appMiddlewares: ['koa-logger', {
-    name: 'koa-bodyparser',
-    options: {}
-  }],
+  appMiddlewares: [],
 
   /**
    * [APP] 监听端口
@@ -98,11 +99,11 @@ export default {
 
   /**
    * [Service] 域名,如果不指定,子Service将使用主Service的域名
-   * 例如 docs.google.com *.58.com
+   * 例如 docs.google.com
    * 如果设置为泛域名,则koa.Context 对象将有subdomian变量
    * @type {string}
    */
-  domain: '',
+  domain: undefined,
   /**
    * [Service] 跳转地址,如果主域名不匹配将跳转至此地址
    * @type {string}

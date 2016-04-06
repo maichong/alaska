@@ -8,8 +8,17 @@ import _ from 'lodash';
 import compose from 'koa-compose';
 import * as util from '../util';
 
-export default function loadApi() {
-  this.loadApi = util.noop;
+export default async function loadApi() {
+  this.loadApi = util.resolved;
+
+  for (let s of this._services) {
+    await s.loadApi();
+  }
+  if (this.config('prefix') === false || this.config('api') === false) {
+    return;
+  }
+  this.debug('loadApi');
+
   let alaska = this.alaska;
   let service = this;
   let router = this.router;
@@ -107,9 +116,8 @@ export default function loadApi() {
   router.register('/api/:controller?/:action?', ['POST'], async function (ctx, next) {
     let controller = ctx.params.controller;
     let action = ctx.params.action || 'default';
-    service.debug('api %s:%s', controller, action);
     let ctrl = service._apiControllers[controller];
-    if (ctrl && ctrl[action] && action[0] !== '_' && action != 'create') {
+    if (ctrl && ctrl[action] && action[0] !== '_') {
       try {
         let promise = ctrl[action](ctx, next);
         //异步函数

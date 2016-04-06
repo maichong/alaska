@@ -8,8 +8,8 @@ import assert from 'assert';
 import * as util from '../util';
 
 export default async function init() {
-  this.debug('%s init', this.id);
-  this.init = util.noop;
+  this.debug('init');
+  this.init = util.resolved;
 
   //加载扩展配置
   for (let dir of this._configDirs) {

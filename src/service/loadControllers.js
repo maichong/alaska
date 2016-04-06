@@ -6,8 +6,17 @@
 
 import * as util from '../util';
 
-export default function loadControllers() {
-  this.loadControllers = util.noop;
+export default async function loadControllers() {
+  this.loadControllers = util.resolved;
+
+  for (let s of this._services) {
+    await s.loadControllers();
+  }
+  if (this.config('prefix') === false || this.config('controllers') === false) {
+    return;
+  }
+  this.debug('loadControllers');
+
   const service = this;
   const alaska = this.alaska;
 

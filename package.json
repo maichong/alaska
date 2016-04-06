@@ -1,6 +1,6 @@
 {
   "name": "alaska",
-  "version": "0.6.5",
+  "version": "0.7.0",
   "description": "Componentized and pluggable web framework for Node.js",
   "keywords": [
     "alaska",
@@ -12,12 +12,9 @@
   "main": "lib/alaska.js",
   "dependencies": {
     "alaska-cache-lru": "^0.2.2",
-    "async-busboy": "0.0.4",
     "collie": "^0.2.1",
     "koa": "^2.0.0-alpha.3",
-    "koa-bodyparser": "^3.0.0",
     "koa-compose": "^3.0.0",
-    "koa-logger": "^2.0.0",
     "koa-router": "^7.0.1",
     "koa-qs": "^2.0.0",
     "lodash": "^4.6.1",

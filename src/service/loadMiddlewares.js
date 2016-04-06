@@ -6,9 +6,19 @@
 
 import * as util from '../util';
 
-export default function loadMiddlewares() {
-  this.loadMiddlewares = util.noop;
+export default async function loadMiddlewares() {
+  this.loadMiddlewares = util.resolved;
+
+  for (let s of this._services) {
+    await s.loadMiddlewares();
+  }
+  if (this.config('prefix') === false || !this.config('middlewares')) {
+    return;
+  }
+  this.debug('loadMiddlewares');
+
   let router = this.router;
+
   this.config('middlewares', []).forEach(function (item) {
     if (typeof item === 'string') {
       item = {

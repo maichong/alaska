@@ -8,8 +8,18 @@ import _ from 'lodash';
 import path from 'path';
 import * as util from '../util';
 
-export default function loadStatics() {
-  this.loadStatics = util.noop;
+export default async function loadStatics() {
+  this.loadStatics = util.resolved;
+
+  for (let s of this._services) {
+    await s.loadStatics();
+  }
+  if (this.config('prefix') === false || !this.config('statics')) {
+    return;
+  }
+
+  this.debug('loadStatics');
+
   let service = this;
   let statics = [];
   {

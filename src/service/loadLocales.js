@@ -10,12 +10,13 @@ import path from 'path';
 import _ from 'lodash';
 
 export default async function loadLocales() {
-  this.loadLocales = util.noop;
+  this.loadLocales = util.resolved;
   const alaska = this.alaska;
 
   for (let s of this._services) {
     await s.loadLocales();
   }
+  this.debug('loadLocales');
 
   const locales = this._locales = {};
 

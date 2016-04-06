@@ -7,13 +7,15 @@
 import * as util from '../util';
 
 export default async function loadSleds() {
-  this.loadSleds = util.noop;
+  this.loadSleds = util.resolved;
   const service = this;
   const alaska = this.alaska;
 
   for (let s of this._services) {
     await s.loadSleds();
   }
+
+  this.debug('loadSleds');
 
   this._sleds = util.include(this.dir + '/sleds', true, { alaska, service }) || {};
 };

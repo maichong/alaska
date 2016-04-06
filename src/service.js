@@ -5,6 +5,7 @@
  */
 
 import _ from 'lodash';
+import DEBUG from 'debug';
 import Router from 'koa-router';
 import collie from 'collie';
 import IntlMessageFormat from 'intl-messageformat';
@@ -12,8 +13,6 @@ import * as util from './util';
 import defaultConfig from './config';
 import Sled from './sled';
 import Model from './model';
-
-const debug = require('debug')('alaska');
 
 /**
  * Service指代一个项目中某些功能组件的集合,包括控制器/数据模型/视图和配置信息等
@@ -75,7 +74,6 @@ export default class Service {
    */
   _alias = {};
   util = util;
-  noop = util.noop;
 
   /**
    * Model基类
@@ -96,6 +94,22 @@ export default class Service {
    */
   constructor(options, alaska) {
     const service = this;
+    this._options = options;
+
+    if (!options.id) {
+      throw new Error('Service id is not specified.');
+    }
+
+    if (!options.dir) {
+      throw new Error('Service dir is not specified.');
+    }
+
+    if (!options.configFile) {
+      //Service默认配置文件
+      options.configFile = options.id + '.js';
+    }
+    this.alaska = alaska;
+    this.debug = DEBUG(options.id);
     this.panic = alaska.panic;
     this.error = alaska.error;
     this.try = alaska.try;
@@ -111,34 +125,13 @@ export default class Service {
     collie(this, 'loadLocales', require('./service/loadLocales').default);
     collie(this, 'loadModels', require('./service/loadModels').default);
     collie(this, 'loadSleds', require('./service/loadSleds').default);
-    collie(this, 'route', require('./service/route').default);
-    collie(this, 'loadAppMiddlewares', require('./service/loadAppMiddlewares').default);
     collie(this, 'loadMiddlewares', require('./service/loadMiddlewares').default);
     collie(this, 'loadApi', require('./service/loadApi').default);
     collie(this, 'loadControllers', require('./service/loadControllers').default);
     collie(this, 'loadStatics', require('./service/loadStatics').default);
+    collie(this, 'mount', require('./service/mount').default);
     collie(this, 'launch');
     collie(this, 'registerModel');
-
-    if (typeof options === 'string') {
-      this._options = {
-        id: options
-      };
-    } else {
-      this._options = options ? options : {};
-    }
-
-    this.debug = debug;
-
-    if (!this._options.dir) {
-      throw new Error('Service dir is not specified.');
-    }
-
-    if (!this._options.configFile) {
-      //Service默认配置文件
-      this._options.configFile = this._options.id + '.js';
-    }
-    this.alaska = alaska;
 
     {
       //载入配置
@@ -185,7 +178,52 @@ export default class Service {
    * @param {Object} config
    */
   applyConfig(config) {
-    this._config = _.assign({}, this._config, config);
+    for (let key in config) {
+      if (!config.hasOwnProperty(key)) {
+        return;
+      }
+      let value = config[key];
+
+      //增加配置项
+      if (key[0] === '+') {
+        key = key.slice(1);
+        if (Array.isArray(this._config[key])) {
+          this._config[key] = this._config[key].concat(value);
+        } else if (typeof this._config[key] === 'object') {
+          _.assign(this._config[key], value);
+        } else {
+          throw new Error(`Apply config error at '+${key}'`);
+        }
+      } else
+
+      //移除配置项
+      if (key[0] === '-') {
+        key = key.slice(1);
+        if (Array.isArray(this._config[key])) {
+          this._config[key] = _.without.apply(_, [this._config[key]].concat(value));
+        } else if (typeof this._config[key] === 'object') {
+          let keys = [];
+          if (typeof value === 'string') {
+            keys = [value];
+          } else if (Array.isArray(value)) {
+            keys = value;
+          } else {
+            throw new Error(`Apply config error at '+${key}'`);
+          }
+          this._config[key] = _.omit.apply(_, [this._config[key]].concat(keys));
+        } else {
+          throw new Error(`Apply config error at '${key}'`);
+        }
+      } else
+
+      //深度继承
+      if (key[0] === '*') {
+        key = key.slice(1);
+        this._config[key] = _.defaultsDeep({}, value, this._config[key]);
+      } else {
+        this._config[key] = value;
+      }
+    }
   }
 
   /**
@@ -268,16 +306,6 @@ export default class Service {
    */
 
   /**
-   * [async]配置路由
-   * @method route
-   */
-
-  /**
-   * [async] 载入APP中间件
-   * @method loadAppMiddlewares
-   */
-
-  /**
    * [async] 载入Service中间件
    * @method loadMiddlewares
    */
@@ -298,18 +326,34 @@ export default class Service {
    */
 
   /**
+   * [async] 挂载路由
+   * @method mount
+   */
+
+  /**
    * [async] 启动Service
    * @method launch
    */
   async launch() {
-    debug('%s launch', this.id);
-    this.launch = util.noop;
-
-    await this.init();
-    await this.loadLocales();
-    await this.loadModels();
-    await this.loadSleds();
-    await this.route();
+    this.debug('launch');
+    this.launch = util.resolved;
+    try {
+      await this.init();
+      await this.loadLocales();
+      await this.loadModels();
+      await this.loadSleds();
+      await this.alaska.loadMiddlewares();
+      await this.loadMiddlewares();
+      await this.loadApi();
+      await this.loadControllers();
+      await this.loadStatics();
+      await this.mount();
+      await this.alaska.listen();
+    } catch (error) {
+      console.error('Alaska launch failed!');
+      console.error(error.stack);
+      throw error;
+    }
   }
 
   /**
