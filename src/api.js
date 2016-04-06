@@ -5,6 +5,7 @@
  */
 
 import alaska from './alaska';
+import _ from 'lodash';
 
 /**
  * REST接口默认控制器
@@ -33,6 +34,9 @@ export async function count(ctx) {
     return;
   }
   let filters = Model.createFilters((ctx.query.search || '').trim(), ctx.query.filters);
+  if (Model.defaultFilters) {
+    _.assign(filters, Model.defaultFilters);
+  }
   ctx.status = alaska.OK;
   if (code === alaska.OWNER) {
     //只允许用户列出自己的资源
@@ -57,6 +61,9 @@ export async function list(ctx) {
   }
 
   let filters = Model.createFilters((ctx.query.search || '').trim(), ctx.query.filters);
+  if (Model.defaultFilters) {
+    _.assign(filters, Model.defaultFilters);
+  }
   ctx.status = alaska.OK;
   if (code === alaska.OWNER) {
     //只允许用户列出自己的资源
@@ -94,6 +101,9 @@ export async function show(ctx) {
     return;
   }
   let query = Model.findById(ctx.params.id);
+  if (Model.defaultFilters) {
+    query.where(Model.defaultFilters);
+  }
   if (Model.populations) {
     Model.populations.forEach(p => {
       query.populate(p);

@@ -353,6 +353,13 @@ class Alaska {
 
       //translate
       {
+        /**
+         * 翻译
+         * @param {string} message 原文
+         * @param {string} [locale] 目标语言
+         * @param {object} [values] 翻译值
+         * @returns {string} 返回翻译结果
+         */
         ctx.t = (message, locale, values) => {
           if (locale && typeof locale === 'object') {
             values = locale;
@@ -364,14 +371,18 @@ class Alaska {
           return ctx.service.t(message, locale, values);
         };
 
-        ctx.locals = {
-          t: ctx.t
-        };
+        ctx.state.t = ctx.t;
       }
 
       //render
       {
-        ctx.render = function (template, locals) {
+        /**
+         * [async] 渲染模板
+         * @param {string} template 模板文件
+         * @param {Object} [state]  模板变量
+         * @returns {string} 返回渲染结果
+         */
+        ctx.render = function (template, state) {
           const service = ctx.service;
           const templatesDir = path.join(service.dir, service.config('templates')) + '/';
           let file = templatesDir + template;
@@ -379,7 +390,7 @@ class Alaska {
             throw new Error(`Template is not exist: ${file}`);
           }
           return new Promise((resolve, reject) => {
-            service.engine.renderFile(file, _.assign({}, ctx.locals, locals), (error, result) => {
+            service.engine.renderFile(file, _.assign({}, ctx.state, state), (error, result) => {
               if (error) {
                 reject(error);
                 return;
@@ -389,8 +400,17 @@ class Alaska {
           });
         };
 
-        ctx.show = async function (template, locals) {
-          ctx.body = await ctx.render(template, locals);
+        /**
+         * [async] 渲染并显示模板
+         * @param {string} template 模板文件
+         * @param {Object} [state]  模板变量
+         * @returns {string} 返回渲染结果
+         */
+        ctx.show = function (template, state) {
+          return ctx.render(template, state).then(html => {
+            ctx.body = html;
+            return html;
+          });
         };
       }
 

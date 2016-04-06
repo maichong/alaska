@@ -251,6 +251,7 @@ export default class Model {
       userField: 'user',
       api: false,
       searchFields: '',
+      defaultFilters: null,
       defaultSort: '',
       defaultColumns: '',
       label: model.name,
@@ -577,7 +578,7 @@ export default class Model {
    * @returns {*}
    */
   static createCacheKey(id) {
-    return `model_cache_${this.service.name}.${this.name}_${id}`;
+    return `record.${this.service.id}.${this.name}.${id}`;
   }
 
   /**
