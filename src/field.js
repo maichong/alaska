@@ -66,6 +66,7 @@ export default class Field {
     let options = {
       label: field.label,
       path: field.path,
+      default: field.default,
       hidden: field.hidden,
       group: field.group,
       disabled: field.disabled,
