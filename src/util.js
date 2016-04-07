@@ -152,11 +152,11 @@ export function escapeRegExp(str) {
 }
 
 /**
- * 判断字符串是否是合法的MongoID格式
+ * 判断字符串是否是合法的ObjectID格式
  * @param {string} input
  * @returns {boolean}
  */
-export function isMongoId(input) {
+export function isObjectId(input) {
   return /^[a-f0-9]{24}$/.test(input);
 }
 

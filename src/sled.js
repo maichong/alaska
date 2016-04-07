@@ -363,22 +363,31 @@ export default class Sled {
     if (this.result !== null) {
       return this.result;
     }
+    if (this.validate) {
+      let promise = this.validate(this.data);
+      if (promise && promise.then) {
+        await promise();
+      }
+    }
     if (this.constructor._pre) {
       await collie.compose(this.constructor._pre, [], this);
     }
 
-    let result;
-    try {
-      result = this.exec(this.data);
-      if (result && result.then) {
-        result = await result;
+    let result = this.result;
+    //如果已经有result,说明在前置hooks中已经执行完成任务
+    if (!this.result) {
+      try {
+        result = this.exec(this.data);
+        if (result && result.then) {
+          result = await result;
+        }
+      } catch (error) {
+        this.error = error;
+        this.payload && this.update();
+        throw error;
       }
-    } catch (error) {
-      this.error = error;
-      this.payload && this.update();
-      throw error;
+      this.result = result;
     }
-    this.result = result;
     this.payload && this.update();
 
     if (this.constructor._post) {
@@ -387,6 +396,10 @@ export default class Sled {
 
     return result;
   }
+
+  /**
+   * @method validate
+   */
 
   /**
    * @method exec
