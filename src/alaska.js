@@ -147,11 +147,16 @@ class Alaska {
 
   /**
    * 获取本Alaska实例中注册的Service
-   * @param  {string} id Service ID 或 别名
+   * @param {string} id Service ID 或 别名
+   * @param {boolean} [optional] 可选,默认false,如果为true则不会主动加载,并且未找到时不抛出异常
    * @return {Service|null}
    */
-  service(id) {
+  service(id, optional) {
     let service = this._services[id];
+
+    if (!service && optional) {
+      return null;
+    }
 
     if (!service) {
       try {

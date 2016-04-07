@@ -470,9 +470,10 @@ export default class Service {
   /**
    * 找回此Service下定义的Model
    * @param {string} name 模型名称,例如User或blog.User
+   * @param {boolean} [optional] 可选,默认false,如果为true则未找到时不抛出异常
    * @returns {Model|null}
    */
-  model(name) {
+  model(name, optional) {
     if (this._models[name]) {
       return this._models[name];
     }
@@ -483,13 +484,15 @@ export default class Service {
       name = name.substr(index + 1);
       let service = this._alias[serviceId];
       if (!service) {
-        service = this.alaska.service(serviceId);
+        service = this.alaska.service(serviceId, optional);
       }
       if (service) {
-        return service.model(name);
+        return service.model(name, optional);
       }
     }
-    this.panic(`"${name}" model not found`);
+    if (!optional) {
+      this.panic(`"${name}" model not found`);
+    }
   }
 
   /**
