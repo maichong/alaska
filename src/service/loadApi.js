@@ -19,15 +19,48 @@ export default async function loadApi() {
   }
   this.debug('loadApi');
 
-  let alaska = this.alaska;
-  let service = this;
-  let router = this.router;
+  const alaska = this.alaska;
+  const service = this;
+  const router = this.router;
 
-  this._apiControllers = util.include(this.dir + '/api', false, { alaska, service }) || {};
+  const apis = this._apiControllers = util.include(this.dir + '/api', false, { alaska, service }) || {};
 
-  let defaultApiController = require('../api');
+  this._configDirs.forEach(dir => {
+    dir += '/api';
+    if (util.isDirectory(dir)) {
+      let patches = util.include(dir, false, { alaska, service }) || {};
+      _.forEach(patches, (patch, c) => {
+        if (!apis[c]) {
+          apis[c] = {};
+        }
+        _.forEach(patch, (fn, name) => {
+          if (name[0] === '_' || typeof fn !== 'function') {
+            return;
+          }
+          if (!apis[c][name]) {
+            apis[c][name] = fn;
+          } else if (typeof apis[c][name] === 'function') {
+            apis[c][name] = [fn, apis[c][name]];
+          } else if (Array.isArray(apis[c][name])) {
+            apis[c][name].unshift(fn);
+          }
+        });
+      });
+    }
+  });
 
-  let models = _.reduce(this._models, (res, Model) => {
+  //将某些API的多个中间件转换成一个
+  _.forEach(apis, api => {
+    _.forEach(api, (fn, key) => {
+      if (Array.isArray(fn) && key[0] !== '_') {
+        api[key] = compose(fn);
+      }
+    });
+  });
+
+  const defaultApiController = require('../api');
+
+  const models = _.reduce(this._models, (res, Model) => {
     res[Model.id] = Model;
     return res;
   }, {});
@@ -40,10 +73,14 @@ export default async function loadApi() {
     if ((error instanceof alaska.NormalError)) {
       if (!ctx.body) {
         let body = {
-          error: error.message
+          error: ctx.t(error.message)
         };
         if (error.code) {
           body.code = error.code;
+          if (error.code >= 200 && error.code < 600) {
+            //HTTP status
+            ctx.status = error.code;
+          }
         }
         ctx.body = body;
       }
@@ -52,7 +89,8 @@ export default async function loadApi() {
     //如果不是普通错误,则输出错误信息
     console.error(`URL: ${ctx.path} ${service.id} API ${error.stack}`);
     ctx.body = {
-      error: ctx.t('Internal Server Error')
+      error: ctx.t('Internal Server Error'),
+      code: 500
     };
   }
 
@@ -71,15 +109,26 @@ export default async function loadApi() {
     }
   });
 
+  const REST_ACTIONS = ['count', 'show', 'list', 'create', 'remove', 'update'];
+  let restApis = {};
+  _.forEach(this._models, model => {
+    if (!model.api) {
+      return;
+    }
+    REST_ACTIONS.forEach(action => {
+      restApis[action] = restApis[action] || !!model.api[action];
+    });
+  });
+
+  _.forEach(apis, api => {
+    REST_ACTIONS.forEach(action => {
+      restApis[action] = restApis[action] || !!api[action];
+    });
+  });
+
   function restApi(action) {
     return function (ctx, next) {
       try {
-        if (['show', 'update', 'remove'].indexOf(action) > -1) {
-          if (!/^[a-f0-9]{24}$/.test(ctx.params.id)) {
-            ctx.status = alaska.BAD_REQUEST;
-            return;
-          }
-        }
         let modelId = ctx.params.model;
         //console.log(service);
         //console.log(service._models);
@@ -92,8 +141,8 @@ export default async function loadApi() {
         let middlewares = [];
 
         // api 目录下定义的中间件
-        if (service._apiControllers[modelId] && service._apiControllers[modelId][action]) {
-          middlewares.push(service._apiControllers[modelId][action]);
+        if (apis[modelId] && apis[modelId][action]) {
+          middlewares.push(apis[modelId][action]);
         }
 
         // Model.api参数定义的中间件
@@ -106,37 +155,54 @@ export default async function loadApi() {
           //404
           return next();
         }
-        return compose(middlewares)(ctx).catch(error => onError(ctx, error));
+        return compose(middlewares)(ctx, next).catch(error => onError(ctx, error));
       } catch (error) {
         onError(ctx, error);
       }
     };
   }
 
-  router.register('/api/:controller?/:action?', ['POST'], async function (ctx, next) {
-    let controller = ctx.params.controller;
-    let action = ctx.params.action || 'default';
-    let ctrl = service._apiControllers[controller];
-    if (ctrl && ctrl[action] && action[0] !== '_') {
-      try {
-        let promise = ctrl[action](ctx, next);
-        //异步函数
-        if (promise && promise.then) {
-          await promise;
-        }
-        //同步函数,直接返回
-      } catch (error) {
-        onError(ctx, error);
+  //扩展接口
+  let extension = false;
+  _.forEach(apis, api => {
+    if (extension) return;
+    _.forEach(api, (fn, key) => {
+      if (extension || key[0] === '_') return;
+      if (REST_ACTIONS.indexOf(key) < 0) {
+        extension = true;
       }
-      return;
-    }
-    await next();
+    });
   });
 
-  router.get('/api/:model/count', restApi('count'));
-  router.get('/api/:model/:id', restApi('show'));
-  router.get('/api/:model', restApi('list'));
-  router.post('/api/:model', restApi('create'));
-  router.put('/api/:model/:id', restApi('update'));
-  router.del('/api/:model/:id', restApi('remove'));
+  if (extension) {
+    router.register('/api/:controller?/:action?', ['POST', 'GET'], function (ctx, next) {
+      let controller = ctx.params.controller;
+      let action = ctx.params.action || 'default';
+      let ctrl = service._apiControllers[controller];
+      if (ctrl && ctrl[action] && action[0] !== '_') {
+        try {
+          let promise = ctrl[action](ctx, next);
+          //异步函数
+          if (promise && promise.then) {
+            return promise.catch(error => {
+              onError(ctx, error);
+            });
+          }
+          //同步函数,直接返回
+        } catch (error) {
+          onError(ctx, error);
+        }
+        return;
+      }
+      return next();
+    });
+  }
+
+  //Restful接口
+  if (restApis.count) router.get('/api/:model/count', restApi('count'));
+  if (restApis.show) router.get('/api/:model/:id', restApi('show'));
+  if (restApis.list) router.get('/api/:model', restApi('list'));
+  if (restApis.create) router.post('/api/:model', restApi('create'));
+  if (restApis.update) router.put('/api/:model/:id', restApi('update'));
+  if (restApis.remove) router.del('/api/:model/:id', restApi('remove'));
 }

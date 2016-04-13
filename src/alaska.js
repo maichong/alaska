@@ -9,6 +9,7 @@ import path from 'path';
 import fs from 'mz/fs';
 import mime from 'mime';
 import Koa from 'koa';
+import statuses from 'statuses';
 import collie from 'collie';
 import * as util from './util';
 import Service from './service';
@@ -165,7 +166,7 @@ class Alaska {
       } catch (error) {
         console.error('Load service "%s" failed', id);
         console.error(error.stack);
-        process.exit();
+        process.exit(1);
       }
     }
     return service;
@@ -243,8 +244,10 @@ class Alaska {
           ctx.service = service;
           return service.routes(ctx, next);
         }
+        if (ctx.path + '/' === service.prefix) {
+          return ctx.redirect(service.prefix);
+        }
       }
-      //TODO 404
     });
     this.app.listen(this.config('port'));
   }
@@ -389,13 +392,13 @@ class Alaska {
          */
         ctx.render = function (template, state) {
           const service = ctx.service;
-          const templatesDir = path.join(service.dir, service.config('templates')) + '/';
-          let file = templatesDir + template;
-          if (!util.isFile(file)) {
-            throw new Error(`Template is not exist: ${file}`);
-          }
+          //const templatesDir = path.join(service.dir, service.config('templates')) + '/';
+          //let file = templatesDir + template;
+          //if (!util.isFile(file)) {
+          //  throw new Error(`Template is not exist: ${file}`);
+          //}
           return new Promise((resolve, reject) => {
-            service.engine.renderFile(file, _.assign({}, ctx.state, state), (error, result) => {
+            service.engine.renderFile(template, _.assign({}, ctx.state, state), (error, result) => {
               if (error) {
                 reject(error);
                 return;
@@ -485,6 +488,13 @@ class Alaska {
    * @param {string|number} [code]
    */
   panic(message, code) {
+    if (!code && Number.isInteger(message)) {
+      let msg = statuses[message];
+      if (msg) {
+        code = message;
+        message = msg;
+      }
+    }
     let error = new defaultAlaska.PanicError(message);
     if (code) {
       error.code = code;
@@ -499,6 +509,13 @@ class Alaska {
    * @param {string|number} [code]
    */
   error(message, code) {
+    if (!code && Number.isInteger(message)) {
+      let msg = statuses[message];
+      if (msg) {
+        code = message;
+        message = msg;
+      }
+    }
     let error = new defaultAlaska.NormalError(message);
     if (code) {
       error.code = code;

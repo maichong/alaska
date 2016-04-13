@@ -135,9 +135,11 @@ export default {
   statics: '',
   /**
    * [Service] 模板引擎
-   * @type {string}
+   * @type {string|Object}
    */
-  render: 'swig',
+  render: {
+    type: 'alaska-render-swig'
+  },
   /**
    * [Service] 模板目录
    * @type {string}
@@ -148,11 +150,6 @@ export default {
    * @type {Array}
    */
   services: [],
-  /**
-   * [Service] 该Service的路由中间件
-   * @type {Array}
-   */
-  middlewares: [],
   /**
    * [Service] 数据库链接设置
    * 如果为false则表明该Service不使用数据库链接
@@ -174,6 +171,11 @@ export default {
     prefix: false,
     maxAge: 3600 * 24
   },
+  /**
+   * [Service] 该Service的路由中间件,如果为false,则不加载middlewares/index.js
+   * @type {Array|boolean}
+   */
+  middlewares: [],
   /**
    * 是否开启控制器路由
    * @type {boolean}

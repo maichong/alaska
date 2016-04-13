@@ -38,6 +38,9 @@ export default class Field {
       'set',
       'default',
       'index',
+      'unique',
+      'text',
+      'sparse',
       'required',
       'select'
     ].concat(this.type.options).forEach(key => {

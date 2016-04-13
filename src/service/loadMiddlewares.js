@@ -17,7 +17,8 @@ export default async function loadMiddlewares() {
   }
   this.debug('loadMiddlewares');
 
-  let router = this.router;
+  const service = this;
+  const router = this.router;
 
   this.config('middlewares', []).forEach(function (item) {
     if (typeof item === 'string') {
@@ -45,12 +46,18 @@ export default async function loadMiddlewares() {
     }
     router.register(path, methods, middleware(item.options));
   });
-  let middlewaresFile = this.dir + '/middlewares/index.js';
-  if (util.isFile(middlewaresFile)) {
-    let middlewares = util.include(middlewaresFile, true, {
-      service: this,
-      alaska: this.alaska
-    });
-    middlewares(router);
+
+  function load(dir) {
+    let file = dir + '/middlewares/index.js';
+    if (util.isFile(file)) {
+      let middlewares = util.include(file, true, {
+        service,
+        alaska: service.alaska
+      });
+      middlewares(router);
+    }
   }
+
+  this._configDirs.forEach(dir => load(dir));
+  load(this.dir);
 };

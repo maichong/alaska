@@ -24,6 +24,10 @@ export default async function mount() {
     prefix = '';
   }
 
+  if (!prefix.endsWith('/')) {
+    prefix += '/';
+  }
+
   let point = domain + prefix;
   if (alaska._mounts[point]) {
     throw new Error(`Service mount error at ${point}, ${this.id} conflict to ${alaska._mounts[point].id}`);

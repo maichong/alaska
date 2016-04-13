@@ -11,28 +11,6 @@ export default async function init() {
   this.debug('init');
   this.init = util.resolved;
 
-  //加载扩展配置
-  for (let dir of this._configDirs) {
-    let configFile = dir + '.js';
-    if (util.isFile(configFile)) {
-      this.applyConfig(require(configFile).default);
-    }
-    configFile = dir + '/config.js';
-    if (util.isFile(configFile)) {
-      this.applyConfig(require(configFile).default);
-    }
-  }
-
-  //数据库collection前缀
-  let dbPrefix = this.config('dbPrefix');
-  if (dbPrefix === false) {
-    this.dbPrefix = '';
-  } else if (typeof dbPrefix === 'string') {
-    this.dbPrefix = dbPrefix;
-  } else {
-    this.dbPrefix = this.id.replace('alaska-', '') + '_';
-  }
-
 
   let services = this.config('services') || [];
   if (typeof services === 'string') {
@@ -56,6 +34,9 @@ export default async function init() {
     }
     let configDir = this.dir + '/config/' + serviceId;
     sub._configDirs.push(configDir);
+    if (util.isDirectory(configDir + '/templates')) {
+      sub._templatesDirs.unshift(configDir + '/templates');
+    }
     await sub.init();
   }
 };

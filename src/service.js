@@ -62,6 +62,12 @@ export default class Service {
    */
   _configDirs = [];
   /**
+   * 本Service的所有模板目录
+   * @type {[string]}
+   * @private
+   */
+  _templatesDirs = [];
+  /**
    * 所依赖的子Service实例对象列表
    * @type {[Service]}
    * @private
@@ -113,6 +119,7 @@ export default class Service {
     this.panic = alaska.panic;
     this.error = alaska.error;
     this.try = alaska.try;
+    this.debug('constructor');
 
     this.Sled = class ServiceSled extends Sled {
     };
@@ -122,6 +129,7 @@ export default class Service {
     });
 
     collie(this, 'init', require('./service/init').default);
+    collie(this, 'loadConfig', require('./service/loadConfig').default);
     collie(this, 'loadLocales', require('./service/loadLocales').default);
     collie(this, 'loadModels', require('./service/loadModels').default);
     collie(this, 'loadSleds', require('./service/loadSleds').default);
@@ -339,6 +347,7 @@ export default class Service {
     this.launch = util.resolved;
     try {
       await this.init();
+      await this.loadConfig();
       await this.loadLocales();
       await this.loadModels();
       await this.loadSleds();
@@ -401,7 +410,7 @@ export default class Service {
     me._db = require('mongoose').createConnection(config);
     me._db.on('error', error => {
       console.error(error);
-      process.exit();
+      process.exit(1);
     });
     return me._db;
   }
@@ -433,7 +442,12 @@ export default class Service {
    */
   get engine() {
     if (!this._engine) {
-      this._engine = require(this.config('render'));
+      let config = this.config('render');
+      if (typeof config === 'string') {
+        config = { type: config };
+      }
+      let Engine = require(config.type);
+      this._engine = new Engine(this, config);
     }
     return this._engine;
   }

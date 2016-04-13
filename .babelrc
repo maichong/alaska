@@ -3,11 +3,16 @@
 	],
 	"plugins": [
 		"syntax-async-functions",
-		"transform-async-to-generator",
+		"syntax-export-extensions",
 		"transform-class-properties",
 		"transform-es2015-modules-commonjs",
 		"transform-es2015-destructuring",
 		"transform-es2015-parameters",
-		"transform-object-rest-spread"
+		"transform-export-extensions",
+		"transform-object-rest-spread",
+		["transform-async-to-module-method",{
+		  "module": "co",
+		  "method": "wrap"
+		}]
 	]
 }
