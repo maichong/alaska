@@ -56,4 +56,11 @@ export default async function loadLocales() {
   for (let dir of this._configDirs) {
     readLocales(dir + '/locales');
   }
+
+  for (let locale in locales) {
+    if (!alaska.locales[locale]) {
+      alaska.locales[locale] = {};
+    }
+    _.assign(alaska.locales[locale], locales[locale]);
+  }
 }

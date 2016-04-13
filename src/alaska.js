@@ -105,6 +105,7 @@ class Alaska {
   _app = null;
   _services = {};
   _mounts = {};
+  locales = {};
   util = util;
   Alaska = Alaska;
   Service = Service;
@@ -381,6 +382,9 @@ class Alaska {
 
         ctx.state.t = ctx.t;
       }
+
+      //config
+      ctx.state.c = (a, b, c) => ctx.service.config(a, b, c);
 
       //render
       {

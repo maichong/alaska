@@ -569,20 +569,28 @@ export default class Service {
    * @returns {string}
    */
   t(message, locale, values, formats) {
+    const alaska = this.alaska;
     if (!locale) {
       locale = this.config('defaultLocale');
     }
-    if (!this._locales[locale] || !this._locales[locale][message]) {
-      return message;
+    let messages = this._locales[locale];
+    if (!messages) {
+      messages = alaska.locales[locale];
+      if (!messages) return message;
+    }
+    let template = messages[message];
+    if (!template) {
+      if (alaska.locales[locale]) template = alaska.locales[locale][message];
+      if (!template) return message;
     }
     if (!values) {
-      return this._locales[locale][message];
+      return template;
     }
     if (!this._messageCache[locale]) {
       this._messageCache[locale] = {};
     }
     if (!this._messageCache[locale][message]) {
-      this._messageCache[locale][message] = new IntlMessageFormat(this._locales[locale][message], locale, formats);
+      this._messageCache[locale][message] = new IntlMessageFormat(template, locale, formats);
     }
     return this._messageCache[locale][message].format(values);
   }
