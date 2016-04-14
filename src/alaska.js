@@ -386,6 +386,9 @@ class Alaska {
       //config
       ctx.state.c = (a, b, c) => ctx.service.config(a, b, c);
 
+      //env
+      ctx.state.env = process.env.NODE_ENV;
+
       //render
       {
         /**
