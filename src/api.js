@@ -33,7 +33,7 @@ export async function count(ctx) {
     ctx.status = alaska.UNAUTHORIZED;
     return;
   }
-  let filters = Model.createFilters((ctx.query.search || '').trim(), ctx.query.filters);
+  let filters = Model.createFilters((ctx.state.search || ctx.query.search || '').trim(), ctx.state.filters || ctx.query.filters);
   if (Model.defaultFilters) {
     _.assign(filters, typeof Model.defaultFilters === 'function' ? Model.defaultFilters() : Model.defaultFilters);
   }
@@ -60,7 +60,7 @@ export async function list(ctx) {
     return;
   }
 
-  let filters = Model.createFilters((ctx.query.search || '').trim(), ctx.query.filters);
+  let filters = Model.createFilters((ctx.state.search || ctx.query.search || '').trim(), ctx.state.filters || ctx.query.filters);
   if (Model.defaultFilters) {
     _.assign(filters, typeof Model.defaultFilters === 'function' ? Model.defaultFilters() : Model.defaultFilters);
   }
@@ -72,8 +72,8 @@ export async function list(ctx) {
   }
 
   let query = Model.paginate({
-    page: parseInt(ctx.query.page, 10) || 1,
-    perPage: parseInt(ctx.query.perPage, 10) || 10,
+    page: parseInt(ctx.state.page || ctx.query.page, 10) || 1,
+    perPage: parseInt(ctx.state.perPage || ctx.query.perPage, 10) || 10,
     filters
   });
   if (Model.populations) {
@@ -100,7 +100,7 @@ export async function show(ctx) {
     ctx.status = alaska.UNAUTHORIZED;
     return;
   }
-  let query = Model.findById(ctx.params.id);
+  let query = Model.findById(ctx.state.id || ctx.params.id);
   if (Model.defaultFilters) {
     query.where(typeof Model.defaultFilters === 'function' ? Model.defaultFilters() : Model.defaultFilters);
   }
@@ -132,7 +132,7 @@ export async function create(ctx) {
     ctx.status = alaska.UNAUTHORIZED;
     return;
   }
-  let doc = new Model(ctx.request.body);
+  let doc = new Model(ctx.state.data || ctx.request.body);
   if (code > alaska.PUBLIC) {
     let userField = Model.userField;
     doc.set(userField, ctx.user);
@@ -155,7 +155,7 @@ export async function update(ctx) {
     ctx.status = alaska.UNAUTHORIZED;
     return;
   }
-  let doc = await Model.findById(ctx.params.id);
+  let doc = await Model.findById(ctx.state.id || ctx.params.id);
   if (!doc) {
     //404
     return;
@@ -164,7 +164,7 @@ export async function update(ctx) {
     //404
     return;
   }
-  doc.set(ctx.request.body);
+  doc.set(ctx.state.data || ctx.request.body);
   await doc.save();
   ctx.status = alaska.CREATED;
   ctx.body = {};
@@ -182,7 +182,7 @@ export async function remove(ctx) {
     return;
   }
   ctx.body = {};
-  let doc = await Model.findById(ctx.params.id);
+  let doc = await Model.findById(ctx.state.id || ctx.params.id);
   if (!doc) {
     //删除成功
     return;
