@@ -35,7 +35,7 @@ export async function count(ctx) {
   }
   let filters = Model.createFilters((ctx.state.search || ctx.query.search || '').trim(), ctx.state.filters || ctx.query.filters);
   if (Model.defaultFilters) {
-    _.assign(filters, typeof Model.defaultFilters === 'function' ? Model.defaultFilters() : Model.defaultFilters);
+    _.assign(filters, typeof Model.defaultFilters === 'function' ? Model.defaultFilters(ctx) : Model.defaultFilters);
   }
   ctx.status = alaska.OK;
   if (code === alaska.OWNER) {
@@ -62,7 +62,7 @@ export async function list(ctx) {
 
   let filters = Model.createFilters((ctx.state.search || ctx.query.search || '').trim(), ctx.state.filters || ctx.query.filters);
   if (Model.defaultFilters) {
-    _.assign(filters, typeof Model.defaultFilters === 'function' ? Model.defaultFilters() : Model.defaultFilters);
+    _.assign(filters, typeof Model.defaultFilters === 'function' ? Model.defaultFilters(ctx) : Model.defaultFilters);
   }
   ctx.status = alaska.OK;
   if (code === alaska.OWNER) {
@@ -102,7 +102,7 @@ export async function show(ctx) {
   }
   let query = Model.findById(ctx.state.id || ctx.params.id);
   if (Model.defaultFilters) {
-    query.where(typeof Model.defaultFilters === 'function' ? Model.defaultFilters() : Model.defaultFilters);
+    query.where(typeof Model.defaultFilters === 'function' ? Model.defaultFilters(ctx) : Model.defaultFilters);
   }
   if (Model.populations) {
     Model.populations.forEach(p => {
