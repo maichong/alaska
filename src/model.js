@@ -479,7 +479,7 @@ export default class Model {
       if (keywords.length > 1) {
         rx = new RegExp(_.map(keywords, keyword => util.escapeRegExp(keyword)).join('|'), 'i');
       } else {
-        rx = new RegExp(util.escapeRegExp(search));
+        rx = new RegExp(util.escapeRegExp(search), 'i');
       }
       _.forEach(model.searchFields, key => {
         searchFilters.push({

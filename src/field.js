@@ -72,11 +72,13 @@ export default class Field {
       default: field.default,
       hidden: field.hidden,
       group: field.group,
+      static: field.static,
       disabled: field.disabled,
       help: field.help,
       depends: field.depends,
       required: field.required,
       fullWidth: field.fullWidth,
+      nolabel: field.nolabel,
       cell: field.cell,
       view: field.view,
     };
