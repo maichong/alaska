@@ -77,7 +77,7 @@ export default class Field {
       help: field.help,
       depends: field.depends,
       required: field.required,
-      fullWidth: field.fullWidth,
+      horizontal: field.horizontal,
       nolabel: field.nolabel,
       cell: field.cell,
       view: field.view,
