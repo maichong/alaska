@@ -21,13 +21,21 @@ function panic() {
  */
 const Data = {
   pick() {
+    let getRecord = this.getRecord;
     let data = _.pick.apply(_, [this].concat(Array.prototype.slice.call(arguments))) || {};
     data.__proto__ = Data;
+    if (getRecord) {
+      data.getRecord = getRecord;
+    }
     return data;
   },
   omit() {
+    let getRecord = this.getRecord;
     let data = _.omit.apply(_, [this].concat(Array.prototype.slice.call(arguments))) || {};
     data.__proto__ = Data;
+    if (getRecord) {
+      data.getRecord = getRecord;
+    }
     return data;
   }
 };
@@ -402,6 +410,7 @@ export default class Model {
         }
       }
       doc.__proto__ = Data;
+      doc.getRecord = ()=> this;
       return doc;
     };
 
