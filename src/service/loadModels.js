@@ -54,6 +54,21 @@ export default async function loadModels() {
             });
           }
         }
+        if (ext.virtuals) {
+          if (!Model.virtuals) {
+            Model.virtuals = {};
+          }
+          for (let path in ext.virtuals) {
+            let getter = ext.virtuals.__lookupGetter__(path);
+            if (getter) {
+              Model.virtuals.__defineGetter__(path, getter);
+            }
+            let setter = ext.virtuals.__lookupSetter__(path);
+            if (setter) {
+              Model.virtuals.__defineSetter__(path, setter);
+            }
+          }
+        }
         //扩展模型事件
         ['Init', 'Validate', 'Save', 'Remove'].forEach(Action => {
           let pre = ext['pre' + Action];
@@ -66,7 +81,7 @@ export default async function loadModels() {
           }
         });
         for (let key in ext) {
-          if (['fields', 'groups', 'scopes'].indexOf(key) > -1 || /^(pre|post)(Init|Validate|Save|Remove)$/.test(key)) {
+          if (['fields', 'virtuals', 'groups', 'scopes'].indexOf(key) > -1 || /^(pre|post)(Init|Validate|Save|Remove)$/.test(key)) {
             continue;
           }
           Model[key] = ext[key];
