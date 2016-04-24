@@ -72,6 +72,9 @@ export default async function loadModels() {
         if (ext.populations) {
           Model.populations = _.defaultsDeep({}, Model.populations, ext.populations);
         }
+        if (ext.relationships) {
+          Model.relationships = _.defaultsDeep({}, Model.relationships, ext.relationships);
+        }
         //扩展模型事件
         ['Init', 'Validate', 'Save', 'Remove'].forEach(Action => {
           let pre = ext['pre' + Action];

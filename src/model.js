@@ -319,30 +319,39 @@ export default class Model {
     if (model.autoSelect !== false) {
       model.autoSelect = true;
     }
-    model.relationships = _.map(model.relationships, r => {
-      //'Model'
-      let res = {
-        service: service.id,
-        ref: r.ref,
-        path: r.path,
-        title: r.title,
-        filters: r.filters
-      };
 
-      if (typeof r.ref === 'function') {
-        res.ref = r.ref.name;
-        if (r.ref.service) {
-          res.service = r.ref.service.id;
+    let relationships = {};
+    if (model.relationships) {
+      _.forEach(model.relationships, (r, key) => {
+        //'Model'
+        let res = {
+          service: service.id,
+          ref: r.ref,
+          path: r.path,
+          title: r.title,
+          filters: r.filters
+        };
+
+        if (typeof r.ref === 'function') {
+          res.ref = r.ref.name;
+          if (r.ref.service) {
+            res.service = r.ref.service.id;
+          }
         }
-      }
-      //{ref:'user.User'}
-      if (res.ref.indexOf('.') > -1) {
-        let arr = res.ref.split('.');
-        res.service = arr[0];
-        res.ref = arr[1];
-      }
-      return res;
-    });
+        //{ref:'user.User'}
+        if (res.ref.indexOf('.') > -1) {
+          let arr = res.ref.split('.');
+          let refService = service.service(arr[0]);
+          if (!refService) {
+            refService = service.alaska.service(arr[0]);
+          }
+          res.service = refService.id;
+          res.ref = arr[1];
+        }
+        relationships[key] = res;
+      });
+    }
+    model.relationships = relationships;
 
     if (model.api === 1) {
       model.api = {
