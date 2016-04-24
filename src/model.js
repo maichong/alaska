@@ -393,6 +393,9 @@ export default class Model {
       if (!p.path && typeof key === 'string') {
         p.path = key;
       }
+      if (p.filters) {
+        p.match = p.filters;
+      }
       let field = model.fields[p.path];
       if (!field) {
         throw new Error(`${service.id}.${model.name}.populations error, can not populate '${p.path}'`);
