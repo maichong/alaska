@@ -14,9 +14,7 @@ export default async function loadControllers() {
   for (let s of this._services) {
     await s.loadControllers();
   }
-  if (this.config('prefix') === false || this.config('controllers') === false) {
-    return;
-  }
+  if (this.config('prefix') === false || this.config('controllers') === false) return;
   this.debug('loadControllers');
 
   const service = this;
@@ -33,9 +31,7 @@ export default async function loadControllers() {
           controllers[c] = {};
         }
         _.forEach(patch, (fn, name) => {
-          if (name[0] === '_' || typeof fn !== 'function') {
-            return;
-          }
+          if (name[0] === '_' || typeof fn !== 'function') return;
           if (!controllers[c][name]) {
             controllers[c][name] = fn;
           } else if (typeof controllers[c][name] === 'function') {

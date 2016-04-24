@@ -187,9 +187,7 @@ export default class Service {
    */
   applyConfig(config) {
     for (let key in config) {
-      if (!config.hasOwnProperty(key)) {
-        return;
-      }
+      if (!config.hasOwnProperty(key)) return;
       let value = config[key];
 
       //增加配置项

@@ -11,7 +11,6 @@ export default async function init() {
   this.debug('init');
   this.init = util.resolved;
 
-
   let services = this.config('services') || [];
   if (typeof services === 'string') {
     services = [services];

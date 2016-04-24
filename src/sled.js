@@ -330,9 +330,7 @@ export default class Sled {
    */
   async update() {
     let payload = this.payload;
-    if (!payload) {
-      return;
-    }
+    if (!payload) return;
     payload.result = this.result;
     if (this.error) {
       payload.error = this.error.message;

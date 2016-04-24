@@ -24,7 +24,7 @@ export default {
    * [APP] APP中间件列表
    * @type {Array}
    * [{
-   *   id:'alaska-session',
+   *   id:'alaska-middleware-session',
    *   options:{}
    * }]
    */

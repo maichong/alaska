@@ -12,9 +12,7 @@ export default async function loadMiddlewares() {
   for (let s of this._services) {
     await s.loadMiddlewares();
   }
-  if (this.config('prefix') === false || !this.config('middlewares')) {
-    return;
-  }
+  if (this.config('prefix') === false || !this.config('middlewares')) return;
   this.debug('loadMiddlewares');
 
   const service = this;

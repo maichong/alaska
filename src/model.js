@@ -15,6 +15,36 @@ function panic() {
   throw new Error('Can not call the function when Model has been registered.');
 }
 
+function processScope(fields, Model) {
+  let keys = {};
+  fields.replace(/,/g, ' ').split(' ').map(s => s.trim()).filter(s => s).forEach(s => {
+    if (s === '*') {
+      _.keys(Model.defaultScope).forEach(f => {
+        keys[f] = 1;
+      });
+    } else if (s[0] === '-') {
+      s = s.substr(1);
+      if (!Model.defaultScope[s] && !Model.fields[s]) {
+        throw new Error(`Can not find field ${Model.name}.'${s}' when init scopes`);
+      }
+      delete keys[s];
+    } else if (s[0] === '@') {
+      s = s.substr(1);
+      let scope = Model.scopes[s];
+      if (!scope) {
+        throw new Error(`Can not find scope ${Model.name}.'${s}' when init scopes`);
+      }
+      _.assign(keys, scope);
+    } else {
+      if (!Model.defaultScope[s] && !Model.fields[s]) {
+        throw new Error(`Can not find field ${Model.name}.'${s}' when init scopes`);
+      }
+      keys[s] = 1;
+    }
+  });
+  return keys;
+}
+
 /**
  * Data
  * @type {{pick: (function()), omit: (function())}}
@@ -40,7 +70,7 @@ const Data = {
   }
 };
 
-function objectToData(value) {
+function objectToData(value, fields) {
   if (!value) {
     return value;
   }
@@ -55,14 +85,14 @@ function objectToData(value) {
       }
       let val = value[i];
       if (typeof val === 'object') {
-        val = objectToData(val);
+        val = objectToData(val, fields);
       }
       newValue[i] = val;
     }
     return newValue;
   } else if (value.data && typeof value.data === 'function') {
     //如果也有data 函数，判定为document
-    value = value.data();
+    value = value.data(fields);
   } else {
     //无法判断
     //console.log(value);
@@ -169,6 +199,7 @@ export default class Model {
       return _.clone(config);
     }
 
+    model.defaultScope = {};
     //将Model字段注册到Mongoose.Schema中
     for (let path in model.fields) {
       let options = model.fields[path];
@@ -252,6 +283,26 @@ export default class Model {
       let field = new AlaskaFieldType(options, schema, model);
       model.fields[path] = field;
       field.initSchema();
+      if (!field.private) {
+        model.defaultScope[path] = 1;
+      }
+    }
+
+    model._virtuals = {};
+
+    if (model.virtuals) {
+      for (let path in model.virtuals) {
+        model._virtuals[path] = true;
+        let getter = model.virtuals.__lookupGetter__(path);
+        if (getter) {
+          model.defaultScope[path] = 1;
+          schema.virtual(path).get(getter);
+        }
+        let setter = model.virtuals.__lookupSetter__(path);
+        if (setter) {
+          schema.virtual(path).set(setter);
+        }
+      }
     }
 
     _.defaults(model, {
@@ -265,6 +316,9 @@ export default class Model {
       label: model.name,
       groups: {}
     });
+    if (model.autoSelect !== false) {
+      model.autoSelect = true;
+    }
     model.relationships = _.map(model.relationships, r => {
       //'Model'
       let res = {
@@ -289,6 +343,7 @@ export default class Model {
       }
       return res;
     });
+
     if (model.api === 1) {
       model.api = {
         list: 1,
@@ -300,7 +355,6 @@ export default class Model {
       };
     }
 
-
     if (!model.defaultColumns) {
       model.defaultColumns = ['_id'];
       if (model.title && model.fields[model.title]) {
@@ -309,13 +363,67 @@ export default class Model {
       if (model.fields.createdAt) {
         model.defaultColumns.push('createdAt');
       }
+    } else {
+      model.defaultColumns = model.defaultColumns.replace(/,/g, ' ').split(' ').filter(f => f);
     }
-    if (typeof model.defaultColumns === 'string') {
-      model.defaultColumns = model.defaultColumns.replace(/ /g, '').split(',');
+    model.searchFields = model.searchFields.replace(/,/g, ' ').split(' ').filter(k => k && model.fields[k]);
+
+    if (model.scopes) {
+      if (model.scopes['*']) {
+        model.defaultScope = processScope(model.scopes['*'], model);
+      }
+      for (let scope in model.scopes) {
+        if (scope === '*') continue;
+        model.scopes[scope] = processScope(model.scopes[scope], model);
+      }
+    } else {
+      model.scopes = {};
+    }
+    if (!model.scopes.show) {
+      model.scopes.show = model.defaultScope;
     }
 
-    if (typeof model.searchFields === 'string') {
-      model.searchFields = _.filter(model.searchFields.replace(/ /g, '').split(','), key => key && model.fields[key]);
+    let populations = {};
+    let needRef = false;
+
+    _.forEach(model.populations, (p, key) => {
+      if (typeof p === 'string') {
+        p = { path: p };
+      }
+      if (!p.path && typeof key === 'string') {
+        p.path = key;
+      }
+      let field = model.fields[p.path];
+      if (!field) {
+        throw new Error(`${service.id}.${model.name}.populations error, can not populate '${p.path}'`);
+      }
+      populations[p.path] = p;
+      if (p.select || p.scopes) {
+        needRef = true;
+      }
+    });
+    model.populations = populations;
+
+    if (needRef) {
+      service.pre('loadSleds', () => {
+        _.forEach(model.populations, p => {
+          let Ref = model.fields[p.path].ref;
+          //if (!Ref.autoSelect) {
+          //  delete p.select;
+          //  delete p.scopes;
+          //}
+          p.ref = Ref;
+          p.autoSelect = Ref.autoSelect;
+          if (p.select) {
+            p.select = processScope(p.select, Ref);
+          }
+          if (p.scopes) {
+            for (let i in p.scopes) {
+              p.scopes[i] = processScope(p.scopes[i], Ref);
+            }
+          }
+        });
+      });
     }
 
     //允许自动缓存
@@ -388,36 +496,54 @@ export default class Model {
 
     /**
      * 返回格式化数据
+     * @param {string} [scope]
      * @returns {Data}
      */
-    schema.methods.data = function () {
+    schema.methods.data = function (scope) {
       let doc = {
         id: this.id
       };
-      for (let key in this.schema.tree) {
-        if (key[0] === '_' || !model.fields[key] || model.fields[key].private) {
-          continue;
+      let fields = this.schema.tree;
+      if (scope) {
+        if (typeof scope === 'object') {
+          fields = scope;
+          scope = null;
+        } else if (model.scopes[scope]) {
+          fields = model.scopes[scope];
+        }
+      }
+      for (let key in fields) {
+        if (key[0] === '_') continue;
+        if (!model._virtuals[key]) {
+          if (!model.fields[key] || model.fields[key].private || !this.isSelected(key))continue;
         }
         if (this._[key] && this._[key].data) {
           doc[key] = this._[key].data();
         } else {
           let value = this.get(key);
           if (typeof value === 'object') {
-            doc[key] = objectToData(value);
+            let p = model.populations[key];
+            let _fields;
+            if (p) {
+              if (p.scopes && p.scopes[scope]) {
+                _fields = p.scopes[scope];
+              } else if (p.select) {
+                _fields = p.select;
+              }
+            }
+            doc[key] = objectToData(value, _fields);
           } else {
             doc[key] = value;
           }
         }
       }
       doc.__proto__ = Data;
-      doc.getRecord = ()=> this;
+      doc.getRecord = () => this;
       return doc;
     };
 
     Object.getOwnPropertyNames(model.prototype).forEach(key => {
-      if (key === 'constructor') {
-        return;
-      }
+      if (key === 'constructor') return;
       schema.methods[key] = model.prototype[key];
       delete model.prototype[key];
     });

@@ -16,9 +16,7 @@ export default async function loadModels() {
     await s.loadModels();
   }
 
-  if (this.config('db') === false) {
-    return;
-  }
+  if (this.config('db') === false) return;
   this.debug('loadModels');
 
   this._models = util.include(this.dir + '/models', true, { alaska, service }) || {};
@@ -43,6 +41,19 @@ export default async function loadModels() {
             }
           }
         }
+        if (ext.scopes) {
+          if (!Model.scopes) {
+            Model.scopes = ext.scopes;
+          } else {
+            _.forEach(ext.scopes, (fields, key) => {
+              if (Model.scopes[key]) {
+                Model.scopes[key] += ',' + fields;
+              } else {
+                Model.scopes[key] = fields;
+              }
+            });
+          }
+        }
         //扩展模型事件
         ['Init', 'Validate', 'Save', 'Remove'].forEach(Action => {
           let pre = ext['pre' + Action];
@@ -55,7 +66,7 @@ export default async function loadModels() {
           }
         });
         for (let key in ext) {
-          if (key === 'fields' || key === 'groups' || /^(pre|post)(Init|Validate|Save|Remove)$/.test(key)) {
+          if (['fields', 'groups', 'scopes'].indexOf(key) > -1 || /^(pre|post)(Init|Validate|Save|Remove)$/.test(key)) {
             continue;
           }
           Model[key] = ext[key];

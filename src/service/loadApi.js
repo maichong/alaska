@@ -14,9 +14,7 @@ export default async function loadApi() {
   for (let s of this._services) {
     await s.loadApi();
   }
-  if (this.config('prefix') === false || this.config('api') === false) {
-    return;
-  }
+  if (this.config('prefix') === false || this.config('api') === false) return;
   this.debug('loadApi');
 
   const alaska = this.alaska;
@@ -34,9 +32,7 @@ export default async function loadApi() {
           apis[c] = {};
         }
         _.forEach(patch, (fn, name) => {
-          if (name[0] === '_' || typeof fn !== 'function') {
-            return;
-          }
+          if (name[0] === '_' || typeof fn !== 'function') return;
           if (!apis[c][name]) {
             apis[c][name] = fn;
           } else if (typeof apis[c][name] === 'function') {
@@ -112,9 +108,7 @@ export default async function loadApi() {
   const REST_ACTIONS = ['count', 'show', 'list', 'create', 'remove', 'update'];
   let restApis = {};
   _.forEach(this._models, model => {
-    if (!model.api) {
-      return;
-    }
+    if (!model.api) return;
     REST_ACTIONS.forEach(action => {
       restApis[action] = restApis[action] || !!model.api[action];
     });
@@ -137,8 +131,11 @@ export default async function loadApi() {
           //404
           return next();
         }
-        ctx.Model = Model;
+        ctx.state.Model = Model;
         let middlewares = [];
+        if (ctx.params.id) {
+          ctx.state.id = ctx.params.id;
+        }
 
         // api 目录下定义的中间件
         if (apis[modelId] && apis[modelId][action]) {

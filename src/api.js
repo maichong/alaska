@@ -26,7 +26,7 @@ import _ from 'lodash';
  * 统计接口
  */
 export async function count(ctx) {
-  let Model = ctx.Model;
+  let Model = ctx.state.Model;
   let code = Model.api.count;
   if (code > alaska.PUBLIC && !ctx.user) {
     //未登录,需要认证
@@ -52,7 +52,7 @@ export async function count(ctx) {
  * 列表接口
  */
 export async function list(ctx) {
-  let Model = ctx.Model;
+  let Model = ctx.state.Model;
   let code = Model.api.list;
   if (code > alaska.PUBLIC && !ctx.user) {
     //未登录,需要认证
@@ -76,16 +76,27 @@ export async function list(ctx) {
     perPage: parseInt(ctx.state.perPage || ctx.query.perPage, 10) || 10,
     filters
   });
-  if (Model.populations) {
-    Model.populations.forEach(p => {
-      if (!p.nolist) {
-        //判断population选项是否不允许列表接口自动populate
-        query.populate(p);
-      }
-    });
+
+  const scopeKey = ctx.state.scope || ctx.query.scope || 'list';
+  if (Model.autoSelect && Model.scopes[scopeKey]) {
+    //仅仅查询scope指定的字段,优化性能
+    query.select(Model.scopes[scopeKey]);
   }
+
+  _.forEach(Model.populations, p => {
+    //判断scope是否不需要返回此path
+    if (Model.scopes.list && !Model.scopes.list[p.path]) return;
+    if (p.scopes && p.scopes[scopeKey]) {
+      query.populate(_.assign({}, p, {
+        select: p.scopes[scopeKey]
+      }));
+    } else {
+      query.populate(p);
+    }
+  });
+
   let results = await query;
-  results.results = results.results.map(doc => doc.data('list'));
+  results.results = results.results.map(doc => doc.data(scopeKey));
   ctx.body = results;
 }
 
@@ -93,22 +104,38 @@ export async function list(ctx) {
  * 获取单个对象详细信息
  */
 export async function show(ctx) {
-  let Model = ctx.Model;
+  let Model = ctx.state.Model;
   let code = Model.api.show;
   if (code > alaska.PUBLIC && !ctx.user) {
     //未登录,需要认证
     ctx.status = alaska.UNAUTHORIZED;
     return;
   }
-  let query = Model.findById(ctx.state.id || ctx.params.id);
+  let query = Model.findById(ctx.state.id);
   if (Model.defaultFilters) {
     query.where(typeof Model.defaultFilters === 'function' ? Model.defaultFilters(ctx) : Model.defaultFilters);
   }
-  if (Model.populations) {
-    Model.populations.forEach(p => {
-      query.populate(p);
-    });
+
+  const scopeKey = ctx.state.scope || ctx.query.scope || 'show';
+  if (Model.autoSelect && Model.scopes[scopeKey]) {
+    //仅仅查询scope指定的字段,优化性能
+    query.select(Model.scopes[scopeKey]);
   }
+
+  _.forEach(Model.populations, p => {
+    //判断scope是否不需要返回此path
+    if (Model.scopes.show && !Model.scopes.show[p.path]) return;
+    if (!p.autoSelect && p.select) {
+      query.populate(_.omit(p, 'select'));
+    } else if (p.autoSelect && p.scopes && p.scopes[scopeKey]) {
+      query.populate(_.assign({}, p, {
+        select: p.scopes[scopeKey]
+      }));
+    } else {
+      query.populate(p);
+    }
+  });
+
   let doc = await query;
   if (!doc) {
     //404
@@ -118,14 +145,14 @@ export async function show(ctx) {
     //404
     return;
   }
-  ctx.body = doc.data('show');
+  ctx.body = doc.data(ctx.state.scope || ctx.query.scope || scopeKey);
 }
 
 /**
  * 创建一个对象
  */
 export async function create(ctx) {
-  let Model = ctx.Model;
+  let Model = ctx.state.Model;
   let code = Model.api.create;
   if (code > alaska.PUBLIC && !ctx.user) {
     //未登录,需要认证
@@ -148,7 +175,7 @@ export async function create(ctx) {
  * 更新一个对象
  */
 export async function update(ctx) {
-  let Model = ctx.Model;
+  let Model = ctx.state.Model;
   let code = Model.api.update;
   if (code > alaska.PUBLIC && !ctx.user) {
     //未登录,需要认证
@@ -174,7 +201,7 @@ export async function update(ctx) {
  * 删除一个对象
  */
 export async function remove(ctx) {
-  let Model = ctx.Model;
+  let Model = ctx.state.Model;
   let code = Model.api.remove;
   if (code > alaska.PUBLIC && !ctx.user) {
     //未登录,需要认证
@@ -183,12 +210,7 @@ export async function remove(ctx) {
   }
   ctx.body = {};
   let doc = await Model.findById(ctx.state.id || ctx.params.id);
-  if (!doc) {
-    //删除成功
-    return;
-  }
-  if (code === alaska.OWNER && doc[Model.userField].toString() !== ctx.user.id) {
-    return;
-  }
+  if (!doc) return;
+  if (code === alaska.OWNER && doc[Model.userField].toString() !== ctx.user.id) return;
   await doc.remove();
 }

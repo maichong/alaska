@@ -30,9 +30,7 @@ export default async function loadLocales() {
   }
 
   function readLocales(dir) {
-    if (!util.isDirectory(dir)) {
-      return;
-    }
+    if (!util.isDirectory(dir)) return;
     let names = fs.readdirSync(dir);
     for (let name of names) {
       if (allowed.indexOf(name) === -1) {
