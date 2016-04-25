@@ -17,7 +17,7 @@ function panic() {
 
 function processScope(fields, Model) {
   let keys = {};
-  fields.replace(/,/g, ' ').split(' ').map(s => s.trim()).filter(s => s).forEach(s => {
+  fields.split(' ').map(s => s.trim()).filter(s => s).forEach(s => {
     if (s === '*') {
       _.keys(Model.defaultScope).forEach(f => {
         keys[f] = 1;
@@ -35,6 +35,13 @@ function processScope(fields, Model) {
         throw new Error(`Can not find scope ${Model.name}.'${s}' when init scopes`);
       }
       _.assign(keys, scope);
+    } else if (s[0] === '_') {
+      s = s.substr(1);
+      if (!Model.fields[s]) {
+        throw new Error(`Can not find field ${Model.name}.'${s}' when init scopes`);
+      }
+      keys[s] = 1;
+      keys['_' + s] = 1;
     } else {
       if (!Model.defaultScope[s] && !Model.fields[s]) {
         throw new Error(`Can not find field ${Model.name}.'${s}' when init scopes`);
@@ -373,9 +380,9 @@ export default class Model {
         model.defaultColumns.push('createdAt');
       }
     } else {
-      model.defaultColumns = model.defaultColumns.replace(/,/g, ' ').split(' ').filter(f => f);
+      model.defaultColumns = model.defaultColumns.split(' ').filter(f => f);
     }
-    model.searchFields = model.searchFields.replace(/,/g, ' ').split(' ').filter(k => k && model.fields[k]);
+    model.searchFields = model.searchFields.split(' ').filter(k => k && model.fields[k]);
 
     if (model.scopes) {
       if (model.scopes['*']) {
@@ -529,6 +536,7 @@ export default class Model {
         if (!model._virtuals[key]) {
           if (!model.fields[key] || model.fields[key].private || !this.isSelected(key))continue;
         }
+        if (fields['_' + key]) continue;
         if (this._[key] && this._[key].data) {
           doc[key] = this._[key].data();
         } else {

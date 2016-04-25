@@ -87,7 +87,7 @@ export default async function loadModels() {
           }
         });
         for (let key in ext) {
-          if (['fields', 'virtuals', 'groups', 'scopes'].indexOf(key) > -1 || /^(pre|post)(Init|Validate|Save|Remove)$/.test(key)) {
+          if (['fields', 'virtuals', 'groups', 'scopes', 'populations', 'relationships'].indexOf(key) > -1 || /^(pre|post)(Init|Validate|Save|Remove)$/.test(key)) {
             continue;
           }
           Model[key] = ext[key];

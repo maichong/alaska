@@ -81,6 +81,7 @@ export default class Field {
       nolabel: field.nolabel,
       cell: field.cell,
       view: field.view,
+      filter: field.filter,
     };
 
     let type = this.type;
@@ -91,6 +92,9 @@ export default class Field {
       }
       if (!options.view && type.views.view) {
         options.view = type.views.view.name;
+      }
+      if (!options.filter && options.filter !== false && type.views.filter) {
+        options.filter = type.views.filter.name;
       }
     }
 
