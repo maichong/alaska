@@ -73,7 +73,7 @@ export async function list(ctx) {
 
   let query = Model.paginate({
     page: parseInt(ctx.state.page || ctx.query.page, 10) || 1,
-    perPage: parseInt(ctx.state.perPage || ctx.query.perPage, 10) || 10,
+    perPage: parseInt(ctx.state.perPage || ctx.query.perPage, 10) || Model.perPage || 10,
     filters
   });
 
