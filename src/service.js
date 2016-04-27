@@ -141,18 +141,18 @@ export default class Service {
     collie(this, 'launch');
     collie(this, 'registerModel');
 
+    this._config = _.defaultsDeep({}, defaultConfig);
+
     {
       //载入配置
       let configFilePath = this._options.dir + '/config/' + this._options.configFile;
       let config = util.include(configFilePath, true, { alaska, service });
       if (config) {
-        this._config = config;
+        this.applyConfig(config);
       } else {
         console.warn('Missing config file %s', configFilePath);
       }
     }
-
-    _.defaultsDeep(this._config, defaultConfig);
 
     this.alaska.registerService(this);
   }

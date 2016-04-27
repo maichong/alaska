@@ -19,4 +19,6 @@ export default {
   Service: '服务',
   Type: '类型',
   Activated: '激活',
+  Content: '内容',
+  Default: '默认'
 };

@@ -19,4 +19,6 @@ export default {
   Service: 'Service',
   Type: 'Type',
   Activated: 'Activated',
+  Content: 'Content',
+  Default: 'Default'
 };
