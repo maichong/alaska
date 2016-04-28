@@ -151,6 +151,10 @@ export default {
    */
   services: [],
   /**
+   * [Service] 插件列表
+   */
+  plugins: {},
+  /**
    * [Service] 数据库链接设置
    * 如果为false则表明该Service不使用数据库链接
    * 如果不配置,则使用主Service的链接

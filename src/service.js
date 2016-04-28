@@ -130,6 +130,7 @@ export default class Service {
 
     collie(this, 'init', require('./service/init').default);
     collie(this, 'loadConfig', require('./service/loadConfig').default);
+    collie(this, 'loadPlugins', require('./service/loadPlugins').default);
     collie(this, 'loadLocales', require('./service/loadLocales').default);
     collie(this, 'loadModels', require('./service/loadModels').default);
     collie(this, 'loadSleds', require('./service/loadSleds').default);
@@ -179,6 +180,17 @@ export default class Service {
    */
   get locales() {
     return this._locales;
+  }
+
+  /**
+   * 为Service增加配置目录,Service启动后再调用此方法将无效果
+   * @param {string} dir
+   */
+  addConfigDir(dir) {
+    this._configDirs.push(dir);
+    if (util.isDirectory(dir + '/templates')) {
+      this._templatesDirs.unshift(dir + '/templates');
+    }
   }
 
   /**
@@ -302,6 +314,11 @@ export default class Service {
    */
 
   /**
+   * [async] 加载插件
+   * @method loadPlugins
+   */
+
+  /**
    * [async] 加载数据模型
    * @method loadModels
    */
@@ -346,6 +363,7 @@ export default class Service {
     try {
       await this.init();
       await this.loadConfig();
+      await this.loadPlugins();
       await this.loadLocales();
       await this.loadModels();
       await this.loadSleds();
@@ -445,6 +463,9 @@ export default class Service {
         config = { type: config };
       }
       let Engine = require(config.type);
+      if (Engine.default) {
+        Engine = Engine.default;
+      }
       this._engine = new Engine(this, config);
     }
     return this._engine;

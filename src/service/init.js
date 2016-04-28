@@ -32,10 +32,7 @@ export default async function init() {
       this._alias[serviceAlias] = sub;
     }
     let configDir = this.dir + '/config/' + serviceId;
-    sub._configDirs.push(configDir);
-    if (util.isDirectory(configDir + '/templates')) {
-      sub._templatesDirs.unshift(configDir + '/templates');
-    }
+    sub.addConfigDir(configDir);
     await sub.init();
   }
 };
