@@ -178,6 +178,9 @@ export default async function loadApi() {
       let ctrl = service._apiControllers[controller];
       if (ctrl && ctrl[action] && action[0] !== '_') {
         try {
+          if (REST_ACTIONS.indexOf(action) > -1) {
+            service.error(400);
+          }
           let promise = ctrl[action](ctx, next);
           //异步函数
           if (promise && promise.then) {
