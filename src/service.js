@@ -501,6 +501,14 @@ export default class Service {
   }
 
   /**
+   * 获取所有Sleds
+   * @returns {Object}
+   */
+  get sleds() {
+    return this._sleds;
+  }
+
+  /**
    * 找回此Service下定义的Model
    * @param {string} name 模型名称,例如User或blog.User
    * @param {boolean} [optional] 可选,默认false,如果为true则未找到时不抛出异常
