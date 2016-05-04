@@ -95,12 +95,15 @@ export default async function loadApi() {
     if (!ctx.body) {
       if (ctx.status == 404) {
         ctx.body = { error: 'Not found' };
+        ctx.status = 404;
       }
       if (ctx.status == 401) {
         ctx.body = { error: 'Unauthorized' };
+        ctx.status = 401;
       }
       if (ctx.status == 403) {
         ctx.body = { error: 'Forbidden' };
+        ctx.status = 403;
       }
     }
   });
