@@ -102,6 +102,7 @@ class Alaska {
    */
   OWNER = 3;
 
+  _callbackMode = false;
   _app = null;
   _services = {};
   _mounts = {};
@@ -250,7 +251,14 @@ class Alaska {
         }
       }
     });
-    this.app.listen(this.config('port'));
+    if (!this._callbackMode) {
+      this.app.listen(this.config('port'));
+    }
+  }
+
+  callback() {
+    this._callbackMode = true;
+    return this.app.callback();
   }
 
   /**

@@ -95,6 +95,11 @@ export async function list(ctx) {
     }
   });
 
+  let sort = ctx.state.sort || ctx.query.sort || Model.defaultSort;
+  if (sort) {
+    query.sort(sort);
+  }
+
   let results = await query;
   results.results = results.results.map(doc => doc.data(scopeKey));
   ctx.body = results;
@@ -162,13 +167,11 @@ export async function create(ctx) {
   let doc = new Model(ctx.state.data || ctx.request.body);
   if (code > alaska.PUBLIC) {
     let userField = Model.userField;
-    doc.set(userField, ctx.user);
+    doc.set(userField, ctx.user._id);
   }
   await doc.save();
   ctx.status = alaska.CREATED;
-  ctx.body = {
-    id: doc.id
-  };
+  ctx.body = doc.data('create');
 }
 
 /**
