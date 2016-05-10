@@ -227,6 +227,10 @@ export default class Model {
          */
         if (options.ref) {
           options.type = 'relationship';
+          if (_.isArray(options.ref) && options.ref.length === 1) {
+            options.ref = options.ref[0];
+            options.multi = true;
+          }
         } else {
           throw new Error(model.name + '.' + path + ' field type not specified');
         }
