@@ -85,12 +85,6 @@ export default class Service {
    * Model基类
    * @type {Model}
    */
-  Model = Model;
-
-  /**
-   * Model基类
-   * @type {Model}
-   */
   Sled = null;
 
   /**
@@ -127,6 +121,10 @@ export default class Service {
     this.Sled.__defineGetter__('key', function () {
       return util.nameToKey(service.id + '.' + this.name);
     });
+
+    this.Model = class ServiceModel extends Model {
+    };
+    this.Model.service = service;
 
     collie(this, 'init', require('./service/init').default);
     collie(this, 'loadConfig', require('./service/loadConfig').default);

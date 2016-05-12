@@ -12,6 +12,10 @@ export default async function loadModels() {
   const service = this;
   const alaska = this.alaska;
 
+  if (this.config('db') !== false) {
+    this._models = util.include(this.dir + '/models', true, { alaska, service }) || {};
+  }
+
   for (let s of this._services) {
     await s.loadModels();
   }
@@ -19,7 +23,6 @@ export default async function loadModels() {
   if (this.config('db') === false) return;
   this.debug('loadModels');
 
-  this._models = util.include(this.dir + '/models', true, { alaska, service }) || {};
   //遍历模型
   for (let name in this._models) {
     let Model = this._models[name];
