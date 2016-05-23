@@ -78,6 +78,9 @@ export default async function loadModels() {
         if (ext.relationships) {
           Model.relationships = _.defaultsDeep({}, Model.relationships, ext.relationships);
         }
+        if (ext.methods) {
+          _.assign(Model.prototype, ext.methods);
+        }
         //扩展模型事件
         ['Init', 'Validate', 'Save', 'Remove'].forEach(Action => {
           let pre = ext['pre' + Action];
@@ -90,7 +93,7 @@ export default async function loadModels() {
           }
         });
         for (let key in ext) {
-          if (['fields', 'virtuals', 'groups', 'scopes', 'populations', 'relationships'].indexOf(key) > -1 || /^(pre|post)(Init|Validate|Save|Remove)$/.test(key)) {
+          if (['fields', 'virtuals', 'groups', 'scopes', 'populations', 'relationships', 'methods'].indexOf(key) > -1 || /^(pre|post)(Init|Validate|Save|Remove)$/.test(key)) {
             continue;
           }
           Model[key] = ext[key];
