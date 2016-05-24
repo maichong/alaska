@@ -2,6 +2,8 @@
 
 Alaska is componentized and pluggable web framework for Node.js based on Koa , Mongoose and React
 
+[中文入门指导 https://github.com/maichong/alaska-book-chinese](https://github.com/maichong/alaska-book-chinese)
+
 ## Contribute
 [Maichong Software](http://maichong.it)
 

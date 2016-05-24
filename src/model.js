@@ -325,6 +325,7 @@ export default class Model {
       defaultSort: '',
       defaultColumns: '',
       label: model.name,
+      actions: {},
       groups: {}
     });
     if (model.autoSelect !== false) {
