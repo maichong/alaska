@@ -32,55 +32,30 @@ export default async function loadModels() {
       let file = dir + '/models/' + name + '.js';
       if (util.isFile(file)) {
         let ext = util.include(file, false, { alaska, service });
-        if (typeof ext.groups !== 'undefined') {
-          _.assign(Model.groups, ext.groups);
-        }
-        if (ext.fields) {
-          for (let key in ext.fields) {
-            if (Model.fields[key]) {
-              _.assign(Model.fields[key], ext.fields[key]);
-            } else {
-              Model.fields[key] = ext.fields[key];
-            }
-          }
-        }
-        if (ext.scopes) {
-          if (!Model.scopes) {
-            Model.scopes = ext.scopes;
-          } else {
-            _.forEach(ext.scopes, (fields, key) => {
-              if (Model.scopes[key]) {
-                Model.scopes[key] += ',' + fields;
-              } else {
-                Model.scopes[key] = fields;
-              }
-            });
-          }
-        }
         if (ext.virtuals) {
           if (!Model.virtuals) {
-            Model.virtuals = {};
-          }
-          for (let path in ext.virtuals) {
-            let getter = ext.virtuals.__lookupGetter__(path);
-            if (getter) {
-              Model.virtuals.__defineGetter__(path, getter);
+            Model.virtuals = ext.virtuals;
+          } else {
+            for (let path in ext.virtuals) {
+              let getter = ext.virtuals.__lookupGetter__(path);
+              if (getter) {
+                Model.virtuals.__defineGetter__(path, getter);
+              }
+              let setter = ext.virtuals.__lookupSetter__(path);
+              if (setter) {
+                Model.virtuals.__defineSetter__(path, setter);
+              }
             }
-            let setter = ext.virtuals.__lookupSetter__(path);
-            if (setter) {
-              Model.virtuals.__defineSetter__(path, setter);
-            }
           }
-        }
-        if (ext.populations) {
-          Model.populations = _.defaultsDeep({}, Model.populations, ext.populations);
-        }
-        if (ext.relationships) {
-          Model.relationships = _.defaultsDeep({}, Model.relationships, ext.relationships);
         }
         if (ext.methods) {
           _.assign(Model.prototype, ext.methods);
         }
+        ['fields', 'groups', 'scopes', 'populations', 'relationships', 'actions'].forEach(key => {
+          if (ext[key]) {
+            Model[key] = _.defaultsDeep({}, Model[key], ext[key]);
+          }
+        });
         //扩展模型事件
         ['Init', 'Validate', 'Save', 'Remove'].forEach(Action => {
           let pre = ext['pre' + Action];
@@ -93,7 +68,7 @@ export default async function loadModels() {
           }
         });
         for (let key in ext) {
-          if (['fields', 'virtuals', 'groups', 'scopes', 'populations', 'relationships', 'methods'].indexOf(key) > -1 || /^(pre|post)(Init|Validate|Save|Remove)$/.test(key)) {
+          if (['fields', 'groups', 'scopes', 'populations', 'relationships', 'actions', 'methods', 'virtuals'].indexOf(key) > -1 || /^(pre|post)(Init|Validate|Save|Remove)$/.test(key)) {
             continue;
           }
           Model[key] = ext[key];
