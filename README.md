@@ -1,4 +1,4 @@
-#[alaska](https://github.com/maichong/alaska)
+#[Alaska](https://github.com/maichong/alaska)
 
 Alaska is componentized and pluggable web framework for Node.js based on Koa , Mongoose and React
 
