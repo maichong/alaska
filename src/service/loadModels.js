@@ -51,11 +51,25 @@ export default async function loadModels() {
         if (ext.methods) {
           _.assign(Model.prototype, ext.methods);
         }
-        ['fields', 'groups', 'scopes', 'populations', 'relationships', 'actions'].forEach(key => {
+        ['fields', 'groups', 'populations', 'relationships', 'actions'].forEach(key => {
           if (ext[key]) {
-            Model[key] = _.defaultsDeep({}, Model[key], ext[key]);
+            Model[key] = _.defaultsDeep({}, ext[key], Model[key]);
           }
         });
+
+        if (ext.scopes) {
+          if (!Model.scopes) {
+            Model.scopes = ext.scopes;
+          } else {
+            _.forEach(ext.scopes, (fields, key) => {
+              if (Model.scopes[key]) {
+                Model.scopes[key] += ' ' + fields;
+              } else {
+                Model.scopes[key] = fields;
+              }
+            });
+          }
+        }
         //扩展模型事件
         ['Init', 'Validate', 'Save', 'Remove'].forEach(Action => {
           let pre = ext['pre' + Action];
