@@ -7,6 +7,18 @@
 import _ from 'lodash';
 import * as util from '../util';
 
+function deepCopy(dst, src) {
+  dst = dst || {};
+  for (let key in src) {
+    if (typeof dst[key] !== 'object' || Array.isArray(dst[key])) {
+      dst[key] = src[key];
+    } else {
+      dst[key] = _.defaultsDeep({}, src[key], dst[key]);
+    }
+  }
+  return dst;
+}
+
 export default async function loadModels() {
   this.loadModels = util.resolved;
   const service = this;
@@ -51,9 +63,10 @@ export default async function loadModels() {
         if (ext.methods) {
           _.assign(Model.prototype, ext.methods);
         }
+
         ['fields', 'groups', 'populations', 'relationships', 'actions'].forEach(key => {
           if (ext[key]) {
-            Model[key] = _.defaultsDeep({}, ext[key], Model[key]);
+            Model[key] = deepCopy(Model[key], ext[key]);
           }
         });
 

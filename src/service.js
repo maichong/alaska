@@ -471,10 +471,12 @@ export default class Service {
 
   /**
    * 获取当前Service所依赖的子Service
+   * @param {string} id Service ID 或 别名
+   * @param {boolean} [optional] 可选,默认false,如果为true则不会主动加载,并且未找到时不抛出异常
    * @returns {Service}
    */
-  service(name) {
-    return this._alias[name];
+  service(id, optional) {
+    return this._alias[id] || this.alaska.service(id, optional);
   }
 
   /**
