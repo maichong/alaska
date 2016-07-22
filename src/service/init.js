@@ -12,25 +12,14 @@ export default async function init() {
   this.init = util.resolved;
 
   let services = this.config('services') || [];
-  if (typeof services === 'string') {
-    services = [services];
-  }
 
-  for (let service of services) {
-    if (typeof service === 'string') {
-      service = { id: service };
-    }
-    let serviceId = service.id;
-    let serviceAlias = service.alias;
-    assert(typeof serviceId === 'string', 'Sub service id should be string.');
+  for (let serviceId in services) {
+    let config = services[serviceId];
+    if (!config) continue;
     let sub = this.alaska.service(serviceId);
-    this._services.push(sub);
-    assert(!this._alias[serviceId], 'Service alias is exists.');
-    this._alias[serviceId] = sub;
-    if (serviceAlias) {
-      assert(!this._alias[serviceAlias], 'Service alias is exists.');
-      this._alias[serviceAlias] = sub;
-    }
+    assert(!this._services[serviceId], 'Service alias is exists.');
+    sub.applyConfig(config);
+    this._services[serviceId] = sub;
     let configDir = this.dir + '/config/' + serviceId;
     sub.addConfigDir(configDir);
     await sub.init();

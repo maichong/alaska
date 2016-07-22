@@ -22,14 +22,19 @@ function deepCopy(dst, src) {
 export default async function loadModels() {
   this.loadModels = util.resolved;
   const service = this;
-  const alaska = this.alaska;
 
   if (this.config('db') !== false) {
-    this._models = util.include(this.dir + '/models', true, { alaska, service }) || {};
+    this._models = util.include(this.dir + '/models', true) || {};
+  }
+  //设置service属性
+  for (let name in this._models) {
+    let Model = this._models[name];
+    Model.service = service;
   }
 
-  for (let s of this._services) {
-    await s.loadModels();
+  for (let serviceId in this._services) {
+    let sub = this._services[serviceId];
+    await sub.loadModels();
   }
 
   if (this.config('db') === false) return;
@@ -38,12 +43,11 @@ export default async function loadModels() {
   //遍历模型
   for (let name in this._models) {
     let Model = this._models[name];
-    Model.service = service;
     //加载扩展配置
     for (let dir of this._configDirs) {
       let file = dir + '/models/' + name + '.js';
       if (util.isFile(file)) {
-        let ext = util.include(file, false, { alaska, service });
+        let ext = util.include(file, false);
         if (ext.virtuals) {
           if (!Model.virtuals) {
             Model.virtuals = ext.virtuals;

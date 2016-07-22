@@ -11,8 +11,9 @@ import compose from 'koa-compose';
 export default async function loadControllers() {
   this.loadControllers = util.resolved;
 
-  for (let s of this._services) {
-    await s.loadControllers();
+  for (let serviceId in this._services) {
+    let sub = this._services[serviceId];
+    await sub.loadControllers();
   }
   if (this.config('prefix') === false || this.config('controllers') === false) return;
   this.debug('loadControllers');
@@ -20,12 +21,12 @@ export default async function loadControllers() {
   const service = this;
   const alaska = this.alaska;
 
-  const controllers = this._controllers = util.include(this.dir + '/controllers', false, { alaska, service }) || {};
+  const controllers = this._controllers = util.include(this.dir + '/controllers', false) || {};
 
   this._configDirs.forEach(dir => {
     dir += '/controllers';
     if (util.isDirectory(dir)) {
-      let patches = util.include(dir, false, { alaska, service }) || {};
+      let patches = util.include(dir, false) || {};
       _.forEach(patches, (patch, c) => {
         if (!controllers[c]) {
           controllers[c] = {};

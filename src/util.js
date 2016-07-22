@@ -37,43 +37,10 @@ export function isDirectory(path) {
  * 智能导入
  * @param {string} path 文件或文件夹路径
  * @param {boolean} [importDefault]
- * @param {Object} [vars] 加载时,要向脚本注入的变量列表
  * @returns {Object}
  */
-export function include(path, importDefault = true, vars) {
+export function include(path, importDefault = true) {
   let result = null;
-  let oldRequire;
-  if (vars) {
-    oldRequire = require.extensions['.js'];
-    require.extensions['.js'] = function (m, filename) {
-      let compile = m._compile;
-      m._compile = function (content, file) {
-        if (!/(config|api|controllers|models|sleds|updates|middlewares)\/[a-z0-9\-\_\.]+\.js$/i.test(file)) {
-          compile.call(m, content, file);
-          return;
-        }
-        Object.assign(global, vars);
-        let injection = "'use strict';";
-        for (let key in vars) {
-          if (vars.hasOwnProperty(key)) {
-            injection += `const ${key}=global.${key}; `;
-          }
-        }
-        if (content.indexOf("'use strict';") === 0) {
-          content = content.replace("'use strict';", injection);
-        } else {
-          content = injection + content;
-        }
-        try {
-          compile.call(m, content, file);
-        } catch (error) {
-          console.error('load file failed: ' + file);
-          throw error;
-        }
-      };
-      oldRequire(m, filename);
-    };
-  }
   if (isFile(path)) {
     result = require(path);
     if (importDefault && result.default) {
@@ -89,9 +56,6 @@ export function include(path, importDefault = true, vars) {
         result[name] = importDefault && obj.default ? obj.default : obj;
       }
     });
-  }
-  if (oldRequire) {
-    require.extensions['.js'] = oldRequire;
   }
   return result;
 }

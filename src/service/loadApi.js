@@ -11,8 +11,9 @@ import * as util from '../util';
 export default async function loadApi() {
   this.loadApi = util.resolved;
 
-  for (let s of this._services) {
-    await s.loadApi();
+  for (let serviceId in this._services) {
+    let sub = this._services[serviceId];
+    await sub.loadApi();
   }
   if (this.config('prefix') === false || this.config('api') === false) return;
   this.debug('loadApi');
@@ -21,12 +22,12 @@ export default async function loadApi() {
   const service = this;
   const router = this.router;
 
-  const apis = this._apiControllers = util.include(this.dir + '/api', false, { alaska, service }) || {};
+  const apis = this._apiControllers = util.include(this.dir + '/api', false) || {};
 
   this._configDirs.forEach(dir => {
     dir += '/api';
     if (util.isDirectory(dir)) {
-      let patches = util.include(dir, false, { alaska, service }) || {};
+      let patches = util.include(dir, false) || {};
       _.forEach(patches, (patch, c) => {
         if (!apis[c]) {
           apis[c] = {};

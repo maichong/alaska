@@ -12,8 +12,8 @@ import Koa from 'koa';
 import statuses from 'statuses';
 import collie from 'collie';
 import * as util from './util';
-import Service from './service';
-import Field from './field';
+import Sled from './sled';
+import Model from './model';
 
 const debug = require('debug')('alaska');
 let defaultAlaska;
@@ -109,8 +109,8 @@ class Alaska {
   locales = {};
   util = util;
   Alaska = Alaska;
-  Service = Service;
-  Field = Field;
+  Model = Model;
+  Sled = Sled;
 
   /**
    * 初始化一个新的Alaska实例对象
@@ -163,8 +163,7 @@ class Alaska {
 
     if (!service) {
       try {
-        let ServiceClass = require(id).default;
-        service = new ServiceClass({}, this);
+        service = require(id).default;
       } catch (error) {
         console.error('Load service "%s" failed', id);
         console.error(error.stack);
@@ -582,3 +581,8 @@ defaultAlaska.PanicError = class PanicError extends Error {
 };
 
 module.exports = defaultAlaska;
+
+export default defaultAlaska;
+
+defaultAlaska.Service = require('./service').default;
+defaultAlaska.Field = require('./field').default;

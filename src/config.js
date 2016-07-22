@@ -147,9 +147,9 @@ export default {
   templates: 'templates',
   /**
    * [Service] 该Service依赖的子Service列表
-   * @type {Array}
+   * @type {Object}
    */
-  services: [],
+  services: {},
   /**
    * [Service] 插件列表
    */

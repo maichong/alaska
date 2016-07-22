@@ -8,24 +8,25 @@ import * as util from '../util';
 
 export default async function loadSleds() {
   this.loadSleds = util.resolved;
-  const service = this;
-  const alaska = this.alaska;
 
-  for (let s of this._services) {
-    await s.loadSleds();
+  for (let serviceId in this._services) {
+    let sub = this._services[serviceId];
+    await sub.loadSleds();
   }
 
   this.debug('loadSleds');
 
-  this._sleds = util.include(this.dir + '/sleds', true, { alaska, service }) || {};
+  this._sleds = util.include(this.dir + '/sleds', true) || {};
 
   for (let name in this._sleds) {
     let Sled = this._sleds[name];
+    Sled.service = this;
+    Sled.key = util.nameToKey(this.id + '.' + Sled.name);
     //加载扩展配置
     for (let dir of this._configDirs) {
       let file = dir + '/sleds/' + name + '.js';
       if (util.isFile(file)) {
-        let ext = util.include(file, false, { alaska, service });
+        let ext = util.include(file, false);
         if (ext.pre) {
           Sled.pre(ext.pre);
         }

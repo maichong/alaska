@@ -9,10 +9,9 @@ import DEBUG from 'debug';
 import Router from 'koa-router';
 import collie from 'collie';
 import IntlMessageFormat from 'intl-messageformat';
+import alaska from './alaska';
 import * as util from './util';
 import defaultConfig from './config';
-import Sled from './sled';
-import Model from './model';
 
 /**
  * Service指代一个项目中某些功能组件的集合,包括控制器/数据模型/视图和配置信息等
@@ -68,31 +67,18 @@ export default class Service {
    */
   _templatesDirs = [];
   /**
-   * 所依赖的子Service实例对象列表
-   * @type {[Service]}
-   * @private
-   */
-  _services = [];
-  /**
    * 所依赖的子Service实例对象别名映射表
    * @type {Object}
    * @private
    */
-  _alias = {};
+  _services = {};
   util = util;
-
-  /**
-   * Model基类
-   * @type {Model}
-   */
-  Sled = null;
 
   /**
    * 实例化一个Service对象
    * @param {Object|string} options 初始化参数,如果为string,则代表Service的id
-   * @param {Alaska} alaska Service所属的Alaska实例
    */
-  constructor(options, alaska) {
+  constructor(options) {
     const service = this;
     this._options = options;
 
@@ -115,17 +101,6 @@ export default class Service {
     this.try = alaska.try;
     this.debug('constructor');
 
-    this.Sled = class ServiceSled extends Sled {
-    };
-    this.Sled.service = service;
-    this.Sled.__defineGetter__('key', function () {
-      return util.nameToKey(service.id + '.' + this.name);
-    });
-
-    this.Model = class ServiceModel extends Model {
-    };
-    this.Model.service = service;
-
     collie(this, 'init', require('./service/init').default);
     collie(this, 'loadConfig', require('./service/loadConfig').default);
     collie(this, 'loadPlugins', require('./service/loadPlugins').default);
@@ -145,7 +120,7 @@ export default class Service {
     {
       //载入配置
       let configFilePath = this._options.dir + '/config/' + this._options.configFile;
-      let config = util.include(configFilePath, true, { alaska, service });
+      let config = util.include(configFilePath, true);
       if (config) {
         this.applyConfig(config);
       } else {
@@ -153,7 +128,7 @@ export default class Service {
       }
     }
 
-    this.alaska.registerService(this);
+    alaska.registerService(this);
   }
 
   /**
@@ -247,7 +222,7 @@ export default class Service {
    * @returns Boolean
    */
   isMain() {
-    return this.alaska.main === this;
+    return alaska.main === this;
   }
 
   /**
@@ -255,7 +230,7 @@ export default class Service {
    * @returns {koa.Application}
    */
   get app() {
-    return this.alaska.app;
+    return alaska.app;
   }
 
   /**
@@ -263,7 +238,7 @@ export default class Service {
    * @returns {Service}
    */
   get main() {
-    return this.alaska.main;
+    return alaska.main;
   }
 
   /**
@@ -365,13 +340,13 @@ export default class Service {
       await this.loadLocales();
       await this.loadModels();
       await this.loadSleds();
-      await this.alaska.loadMiddlewares();
+      await alaska.loadMiddlewares();
       await this.loadMiddlewares();
       await this.loadApi();
       await this.loadControllers();
       await this.loadStatics();
       await this.mount();
-      await this.alaska.listen();
+      await alaska.listen();
     } catch (error) {
       console.error('Alaska launch failed!');
       console.error(error.stack);
@@ -395,7 +370,7 @@ export default class Service {
     if (!mainAsDefault || value !== undefined || this.isMain()) {
       return value;
     }
-    return this.alaska.config(path);
+    return alaska.config(path);
   }
 
   /**
@@ -470,16 +445,6 @@ export default class Service {
   }
 
   /**
-   * 获取当前Service所依赖的子Service
-   * @param {string} id Service ID 或 别名
-   * @param {boolean} [optional] 可选,默认false,如果为true则不会主动加载,并且未找到时不抛出异常
-   * @returns {Service}
-   */
-  service(id, optional) {
-    return this._alias[id] || this.alaska.service(id, optional);
-  }
-
-  /**
    * 输出Service实例JSON调试信息
    * @returns {Object}
    */
@@ -488,7 +453,7 @@ export default class Service {
       id: this.id,
       options: this._options,
       config: this._config,
-      services: _.keys(this._alias)
+      services: _.keys(this._services)
     };
   }
 
@@ -523,9 +488,9 @@ export default class Service {
     if (index > -1) {
       let serviceId = name.substr(0, index);
       name = name.substr(index + 1);
-      let service = this._alias[serviceId];
+      let service = this._services[serviceId];
       if (!service) {
-        service = this.alaska.service(serviceId, optional);
+        service = alaska.service(serviceId, optional);
       }
       if (service) {
         return service.model(name, optional);
@@ -560,9 +525,9 @@ export default class Service {
     if (index > -1) {
       let serviceId = name.substr(0, index);
       name = name.substr(index + 1);
-      let service = this._alias[serviceId];
+      let service = this._services[serviceId];
       if (!service) {
-        service = this.alaska.service(serviceId);
+        service = alaska.service(serviceId);
       }
       if (service) {
         return service.sled(name);
@@ -596,7 +561,6 @@ export default class Service {
    * @returns {string}
    */
   t(message, locale, values, formats) {
-    const alaska = this.alaska;
     if (!locale) {
       locale = this.config('defaultLocale');
     }

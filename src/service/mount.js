@@ -10,8 +10,9 @@ export default async function mount() {
   this.mount = util.resolved;
   const alaska = this.alaska;
 
-  for (let s of this._services) {
-    await s.mount('mount');
+  for (let serviceId in this._services) {
+    let sub = this._services[serviceId];
+    await sub.mount('mount');
   }
 
   const domain = this.config(true, 'domain') || '';

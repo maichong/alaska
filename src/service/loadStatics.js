@@ -11,8 +11,9 @@ import * as util from '../util';
 export default async function loadStatics() {
   this.loadStatics = util.resolved;
 
-  for (let s of this._services) {
-    await s.loadStatics();
+  for (let serviceId in this._services) {
+    let sub = this._services[serviceId];
+    await sub.loadStatics();
   }
   if (this.config('prefix') === false || !this.config('statics')) return;
 

@@ -10,8 +10,9 @@ import _ from 'lodash';
 export default async function loadPlugins() {
   this.loadPlugins = util.resolved;
 
-  for (let s of this._services) {
-    await s.loadPlugins();
+  for (let serviceId in this._services) {
+    let sub = this._services[serviceId];
+    await sub.loadPlugins();
   }
   this.debug('loadPlugins');
 

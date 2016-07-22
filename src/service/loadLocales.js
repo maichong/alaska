@@ -13,8 +13,9 @@ export default async function loadLocales() {
   this.loadLocales = util.resolved;
   const alaska = this.alaska;
 
-  for (let s of this._services) {
-    await s.loadLocales();
+  for (let serviceId in this._services) {
+    let sub = this._services[serviceId];
+    await sub.loadLocales();
   }
   this.debug('loadLocales');
 

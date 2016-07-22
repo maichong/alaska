@@ -9,8 +9,9 @@ import * as util from '../util';
 export default async function loadMiddlewares() {
   this.loadMiddlewares = util.resolved;
 
-  for (let s of this._services) {
-    await s.loadMiddlewares();
+  for (let serviceId in this._services) {
+    let sub = this._services[serviceId];
+    await sub.loadMiddlewares();
   }
   if (this.config('prefix') === false || !this.config('middlewares')) return;
   this.debug('loadMiddlewares');
@@ -48,10 +49,7 @@ export default async function loadMiddlewares() {
   function load(dir) {
     let file = dir + '/middlewares/index.js';
     if (util.isFile(file)) {
-      let middlewares = util.include(file, true, {
-        service,
-        alaska: service.alaska
-      });
+      let middlewares = util.include(file, true);
       middlewares(router);
     }
   }

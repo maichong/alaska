@@ -11,8 +11,9 @@ export default async function loadConfig() {
   this.debug('loadConfig');
   this.loadConfig = util.resolved;
 
-  for (let s of this._services) {
-    await s.loadConfig();
+  for (let serviceId in this._services) {
+    let sub = this._services[serviceId];
+    await sub.loadConfig();
   }
 
   //加载扩展配置
