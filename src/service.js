@@ -30,6 +30,7 @@ export default class Service {
   _apiControllers = {};
   _locales = {};
   _messageCache = {};
+  _cacheDrivers = {};
   /**
    * 本ServiceSled列表
    * @type {Object}
@@ -405,24 +406,31 @@ export default class Service {
   }
 
   /**
-   * 获取缓存驱动
+   * 获取默认缓存驱动
    * @returns {LruCacheDriver|*}
    */
   get cache() {
-    if (!this._cache) {
-      let options = this.config('cache');
-      if (_.isString(options)) {
-        options = { type: options };
-      }
-      if (options.isCacheDriver) {
-        //已经实例化的缓存驱动
-        this._cache = options;
-      } else {
-        let Driver = require(options.type);
-        this._cache = new Driver(options);
-      }
+    return this.createCacheDriver(this.config('cache'));
+  }
+
+  /**
+   * 获取缓存驱动
+   * @param options
+   * @returns {LruCacheDriver|*}
+   */
+  createCacheDriver(options) {
+    if (typeof options === 'string') {
+      options = { type: options };
     }
-    return this._cache;
+    if (options.isCacheDriver) {
+      return options;
+    }
+    let id = options.id || JSON.stringify(options);
+    if (!this._cacheDrivers[id]) {
+      let Driver = require(options.type);
+      this._cacheDrivers[id] = new Driver(options);
+    }
+    return this._cacheDrivers[id];
   }
 
   /**
