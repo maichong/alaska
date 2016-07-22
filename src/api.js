@@ -59,49 +59,21 @@ export async function list(ctx) {
     ctx.status = alaska.UNAUTHORIZED;
     return;
   }
-
-  let filters = Model.createFilters((ctx.state.search || ctx.query.search || '').trim(), ctx.state.filters || ctx.query.filters);
-  if (Model.defaultFilters) {
-    _.assign(filters, typeof Model.defaultFilters === 'function' ? Model.defaultFilters(ctx) : Model.defaultFilters);
-  }
   ctx.status = alaska.OK;
+
+  const scope = ctx.state.scope || ctx.query.scope || 'list';
+
+  let query = Model.list(ctx, { scope });
+
   if (code === alaska.OWNER) {
     //只允许用户列出自己的资源
     let userField = Model.userField;
-    filters[userField] = ctx.user;
-  }
-
-  let query = Model.paginate({
-    page: parseInt(ctx.state.page || ctx.query.page, 10) || 1,
-    perPage: parseInt(ctx.state.perPage || ctx.query.perPage, 10) || Model.perPage || 10,
-    filters
-  });
-
-  const scopeKey = ctx.state.scope || ctx.query.scope || 'list';
-  if (Model.autoSelect && Model.scopes[scopeKey]) {
-    //仅仅查询scope指定的字段,优化性能
-    query.select(Model.scopes[scopeKey]);
-  }
-
-  _.forEach(Model.populations, p => {
-    //判断scope是否不需要返回此path
-    if (Model.scopes.list && !Model.scopes.list[p.path]) return;
-    if (p.scopes && p.scopes[scopeKey]) {
-      query.populate(_.assign({}, p, {
-        select: p.scopes[scopeKey]
-      }));
-    } else {
-      query.populate(p);
-    }
-  });
-
-  let sort = ctx.state.sort || ctx.query.sort || Model.defaultSort;
-  if (sort) {
-    query.sort(sort);
+    query.where(userField, ctx.user._id);
   }
 
   let results = await query;
-  results.results = results.results.map(doc => doc.data(scopeKey));
+
+  results.results = results.results.map(doc => doc.data(scope));
   ctx.body = results;
 }
 
@@ -116,32 +88,10 @@ export async function show(ctx) {
     ctx.status = alaska.UNAUTHORIZED;
     return;
   }
-  let query = Model.findById(ctx.state.id || ctx.params.id);
-  if (Model.defaultFilters) {
-    query.where(typeof Model.defaultFilters === 'function' ? Model.defaultFilters(ctx) : Model.defaultFilters);
-  }
 
-  const scopeKey = ctx.state.scope || ctx.query.scope || 'show';
-  if (Model.autoSelect && Model.scopes[scopeKey]) {
-    //仅仅查询scope指定的字段,优化性能
-    query.select(Model.scopes[scopeKey]);
-  }
+  const scope = ctx.state.scope || ctx.query.scope || 'list';
 
-  _.forEach(Model.populations, p => {
-    //判断scope是否不需要返回此path
-    if (Model.scopes.show && !Model.scopes.show[p.path]) return;
-    if (!p.autoSelect && p.select) {
-      query.populate(_.omit(p, 'select'));
-    } else if (p.autoSelect && p.scopes && p.scopes[scopeKey]) {
-      query.populate(_.assign({}, p, {
-        select: p.scopes[scopeKey]
-      }));
-    } else {
-      query.populate(p);
-    }
-  });
-
-  let doc = await query;
+  let doc = await Model.show(ctx, { scope });
   if (!doc) {
     //404
     return;
@@ -150,7 +100,7 @@ export async function show(ctx) {
     //404
     return;
   }
-  ctx.body = doc.data(ctx.state.scope || ctx.query.scope || scopeKey);
+  ctx.body = doc.data(ctx.state.scope || ctx.query.scope || scope);
 }
 
 /**

@@ -595,6 +595,8 @@ export default class Model {
     delete model._post;
 
     [
+      'list',
+      'show',
       'createFilters',
       'paginate',
       'createCacheKey',
@@ -728,6 +730,93 @@ export default class Model {
         });
       });
     };
+
+    return query;
+  }
+
+  /**
+   * 获取数据列表高级接口
+   * @param {Context} ctx
+   * @param {object} [state]
+   * @returns {mongoose.Query}
+   */
+  static list(ctx, state) {
+    let Model = this;
+
+    state = _.defaultsDeep({}, state, ctx.state);
+
+    let filters = Model.createFilters((state.search || ctx.query.search || '').trim(), state.filters || ctx.query.filters);
+    if (Model.defaultFilters) {
+      _.assign(filters, typeof Model.defaultFilters === 'function' ? Model.defaultFilters(ctx) : Model.defaultFilters);
+    }
+
+    let query = Model.paginate({
+      page: parseInt(state.page || ctx.query.page, 10) || 1,
+      perPage: parseInt(state.perPage || ctx.query.perPage, 10) || Model.perPage || 10,
+      filters
+    });
+
+    const scopeKey = state.scope || ctx.query.scope || 'list';
+    if (scopeKey && Model.autoSelect && Model.scopes[scopeKey]) {
+      //仅仅查询scope指定的字段,优化性能
+      query.select(Model.scopes[scopeKey]);
+    }
+
+    _.forEach(Model.populations, p => {
+      //判断scope是否不需要返回此path
+      if (Model.scopes.list && !Model.scopes.list[p.path]) return;
+      if (scopeKey && p.scopes && p.scopes[scopeKey]) {
+        query.populate(_.assign({}, p, {
+          select: p.scopes[scopeKey]
+        }));
+      } else {
+        query.populate(p);
+      }
+    });
+
+    let sort = state.sort || ctx.query.sort || Model.defaultSort;
+    if (sort) {
+      query.sort(sort);
+    }
+
+    return query;
+  }
+
+  /**
+   * 获取单条数据高级接口
+   * @param {Context} ctx
+   * @param {object} [state]
+   * @returns {mongoose.Query}
+   */
+  static show(ctx, state) {
+    let Model = this;
+
+    state = _.defaultsDeep({}, state, ctx.state);
+
+    let query = Model.findById(state.id || ctx.params.id);
+    if (Model.defaultFilters) {
+      query.where(typeof Model.defaultFilters === 'function' ? Model.defaultFilters(ctx) : Model.defaultFilters);
+    }
+
+    const scopeKey = state.scope || ctx.query.scope || 'show';
+    if (Model.autoSelect && Model.scopes[scopeKey]) {
+      //仅仅查询scope指定的字段,优化性能
+      query.select(Model.scopes[scopeKey]);
+    }
+
+    _.forEach(Model.populations, p => {
+      //判断scope是否不需要返回此path
+      if (Model.scopes.show && !Model.scopes.show[p.path]) return;
+      if (!p.autoSelect && p.select) {
+        query.populate(_.omit(p, 'select'));
+      } else if (p.autoSelect && p.scopes && p.scopes[scopeKey]) {
+        query.populate(_.assign({}, p, {
+          select: p.scopes[scopeKey]
+        }));
+      } else {
+        query.populate(p);
+      }
+    });
 
     return query;
   }
