@@ -11,6 +11,8 @@ import * as util from './util';
 
 const Schema = mongoose.Schema;
 
+mongoose.Promise = global.Promise;
+
 function panic() {
   throw new Error('Can not call the function when Model has been registered.');
 }

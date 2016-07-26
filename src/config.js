@@ -49,6 +49,7 @@ export default {
   session: {
     cookie: {},
     store: {
+      id: 'session-store', // cache name
       type: 'alaska-cache-lru',
       maxAge: 1000 * 60 * 60
     }
@@ -167,13 +168,14 @@ export default {
    */
   dbPrefix: false,
   /**
-   * [Service] 缓存设置或已经实例化的缓存驱动对象
+   * [Service] Service默认缓存设置或已经实例化的缓存驱动对象
    * @type {Object|string}
    */
   cache: {
+    id: 'default-of-service',
     type: 'alaska-cache-lru',
     prefix: false,
-    maxAge: 3600 * 24
+    maxAge: 3600 * 1000
   },
   /**
    * [Service] 该Service的路由中间件,如果为false,则不加载middlewares/index.js

@@ -20,6 +20,8 @@ node index.js
 
 [中文入门指导 https://github.com/maichong/alaska-book-chinese](https://github.com/maichong/alaska-book-chinese)
 
+[Demo https://github.com/maichong/alaska-demo](https://github.com/maichong/alaska-demo)
+
 ## Contribute
 
 [Maichong Software](http://maichong.it)

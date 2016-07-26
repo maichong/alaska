@@ -31,6 +31,8 @@ export default class Service {
   _locales = {};
   _messageCache = {};
   _cacheDrivers = {};
+  _idleDrivers = {};
+  _freeIdleTimer = 0;
   /**
    * 本ServiceSled列表
    * @type {Object}
@@ -410,27 +412,109 @@ export default class Service {
    * @returns {LruCacheDriver|*}
    */
   get cache() {
-    return this.createCacheDriver(this.config('cache'));
+    if (!this._cache) {
+      this._cache = this.createCacheDriver(this.config('cache'));
+    }
+    return this._cache;
   }
 
   /**
-   * 获取缓存驱动
-   * @param options
+   * 创建或获取缓存驱动
+   * @param {object|string} options 驱动初始化设置,如果为字符串,则获取指定id的当前实例
+   * @param {boolean} [createNew] 如果为true则创建新驱动,否则使用之前的实例
    * @returns {LruCacheDriver|*}
    */
-  createCacheDriver(options) {
+  createCacheDriver(options, createNew) {
+    //options is driver id
     if (typeof options === 'string') {
-      options = { type: options };
+      if (!this._cacheDrivers[options]) {
+        throw new Error('Can not get cache driver ' + options);
+      }
+      return this._cacheDrivers[options];
     }
     if (options.isCacheDriver) {
       return options;
     }
+    let driver;
     let id = options.id || JSON.stringify(options);
-    if (!this._cacheDrivers[id]) {
+    if (createNew || !this._cacheDrivers[id]) {
       let Driver = require(options.type);
-      this._cacheDrivers[id] = new Driver(options);
+      driver = new Driver(options);
     }
-    return this._cacheDrivers[id];
+    if (!this._cacheDrivers[id]) {
+      this._cacheDrivers[id] = driver;
+    }
+    return driver;
+  }
+
+  /**
+   * 通用创建驱动方法
+   * @param options
+   * @returns {Driver|*}
+   */
+  createDriver(options) {
+    let idleId = '';
+    if (options.idle) {
+      //允许空闲
+      idleId = JSON.stringify(options);
+      //当前有空闲驱动
+      if (this._idleDrivers[idleId] && this._idleDrivers[idleId].length) {
+        let d = this._idleDrivers[idleId].shift();
+        d.idle = 0;
+        return d;
+      }
+    }
+
+    //当前无空闲驱动,创建新驱动
+    const Driver = require(options.type);
+    let driver = new Driver(options);
+    driver.idleId = idleId;
+    driver.service = this;
+    driver.idle = 0;
+    return driver;
+  }
+
+  /**
+   * 释放驱动
+   * @param {Driver|*} driver
+   */
+  freeDriver(driver) {
+    if (driver.idleId) {
+      //允许空闲
+      let idleId = driver.idleId;
+      if (!this._idleDrivers[idleId]) {
+        this._idleDrivers[idleId] = [];
+      }
+      if (this._idleDrivers[idleId].length > driver.options.idle) {
+        this._idleDrivers[idleId].shift().destroy();
+      }
+      driver.free();
+      driver.idle = Date.now();
+      this._idleDrivers[idleId].push(driver);
+      if (!this._freeIdleTimer) {
+        this._freeIdleTimer = setInterval(() => this._destroyIdleDrivers(), 60 * 1000);
+      }
+    }
+    driver.destroy();
+  }
+
+  /**
+   * 销毁过期空闲驱动
+   * @private
+   */
+  _destroyIdleDrivers() {
+    for (let idleId in this._idleDrivers) {
+      let drivers = this._idleDrivers[idleId];
+      for (let i in drivers) {
+        let d = drivers[i];
+        if (d.idle && Date.now() - d.idle > 5 * 60 * 1000) {
+          drivers.splice(i, 1);
+          d.destroy();
+          setImmediate(() => this._destroyIdleDrivers());
+          return;
+        }
+      }
+    }
   }
 
   /**

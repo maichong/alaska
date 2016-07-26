@@ -87,7 +87,7 @@ export default class Field {
     let type = this.type;
 
     if (type.views) {
-      if (!options.cell && type.views.cell) {
+      if (!options.cell && options.cell !== false && type.views.cell) {
         options.cell = type.views.cell.name;
       }
       if (!options.view && type.views.view) {

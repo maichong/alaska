@@ -6,6 +6,7 @@
 
 import collie from 'collie';
 import random from 'string-random';
+import _ from 'lodash';
 
 export default class Sled {
 
@@ -79,10 +80,11 @@ export default class Sled {
   /**
    * 获取队列驱动
    * @private
+   * @param {string} channel 频道ID
    * @returns {RedisSubscribeDriver}
    */
-  createSubscribeDriver(id) {
-    return this.constructor.createSubscribeDriver(id);
+  createSubscribeDriver(channel) {
+    return this.constructor.createSubscribeDriver(channel);
   }
 
   /**
@@ -139,8 +141,7 @@ export default class Sled {
       let config = this.config;
       let cache = false;
       if (config.cache) {
-        let CacheDriver = require(config.cache.type);
-        cache = new CacheDriver(config.cache);
+        cache = this.service.createCacheDriver(config.cache);
       }
       this._cache = cache;
     }
@@ -157,22 +158,21 @@ export default class Sled {
     if (!config.queue) {
       throw new ReferenceError('sled queue config not found');
     }
-    let QueueDriver = require(config.queue.type);
-    return new QueueDriver(this.key, config.queue);
+    return this.service.createDriver(_.defaults({}, config.queue, { key: this.key }));
   }
 
   /**
    * 获取Sled订阅驱动
    * @private
+   * @param {string} channel 频道ID
    * @returns {RedisSubscribeDriver}
    */
-  static createSubscribeDriver(id) {
+  static createSubscribeDriver(channel) {
     let config = this.config;
     if (!config.subscribe) {
       throw new ReferenceError('sled subscribe config not found');
     }
-    let SubscribeDriver = require(config.subscribe.type);
-    return new SubscribeDriver(id, config.subscribe);
+    return this.service.createDriver(_.defaults({ channel }, config.subscribe));
   }
 
   /**
@@ -187,11 +187,12 @@ export default class Sled {
 
   /**
    * 从队列中读取一个sled
-   * @param {number} [timeout] 读取超时,单位秒,默认Infinity
+   * @param {number} [timeout] 读取超时,单位毫秒,默认Infinity
    */
   static async read(timeout) {
     let queue = this.createQueueDriver();
     let item = await queue.pop(timeout);
+    this.service.freeDriver(queue);
     if (!item) {
       return null;
     }
@@ -273,7 +274,7 @@ export default class Sled {
 
     let queue = this.createQueueDriver();
     await queue.push(item);
-
+    this.service.freeDriver(queue);
     return item;
   }
 
@@ -302,6 +303,7 @@ export default class Sled {
     }
 
     let msg = await subscribe.once(waitTimeout);
+    this.service.freeDriver(subscribe);
     if (!msg) {
       return msg;
     }
@@ -347,6 +349,7 @@ export default class Sled {
         error: payload.error,
         result: payload.result
       });
+      this.service.freeDriver(subscribe);
     }
   }
 
