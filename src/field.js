@@ -18,11 +18,33 @@ export default class Field {
     this._options = options;
     this._schema = schema;
     this._model = model;
-    for (let key in options) {
-      if (options.hasOwnProperty(key)) {
-        this[key] = options[key];
+
+    let keys = [
+      'get',
+      'set',
+      'default',
+      'index',
+      'unique',
+      'text',
+      'sparse',
+      'required',
+      'select'
+    ].concat(options.type.options);
+
+    Object.keys(options).forEach(key => {
+      let value = options[key];
+      if (value && value instanceof Promise) {
+        value.then(v => {
+          this[key] = v;
+          if (keys.indexOf(key) > -1) {
+            this.initSchema();
+          }
+        });
+      } else {
+        this[key] = value;
       }
-    }
+    });
+
     if (this.init) {
       this.init();
     }
@@ -33,7 +55,8 @@ export default class Field {
     let options = {
       type: this.dataType || this.type.plain
     };
-    [
+
+    let keys = [
       'get',
       'set',
       'default',
@@ -43,7 +66,9 @@ export default class Field {
       'sparse',
       'required',
       'select'
-    ].concat(this.type.options).forEach(key => {
+    ].concat(this.type.options);
+
+    keys.forEach(key => {
       if (this[key] !== undefined) {
         options[key] = this[key];
       }
