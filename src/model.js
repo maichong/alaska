@@ -158,6 +158,7 @@ export default class Model {
    * @param {Function} fn 方法
    */
   static underscoreMethod(field, name, fn) {
+    delete this.__methods;
     this._underscore || (this._underscore = {});
     this._underscore[field] || (this._underscore[field] = {});
     this._underscore[field][name] = fn;
@@ -336,6 +337,8 @@ export default class Model {
         actions: {},
         groups: {}
       });
+
+      //自动查询仅仅需要的字段
       if (model.autoSelect !== false) {
         model.autoSelect = true;
       }
