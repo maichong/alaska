@@ -89,7 +89,7 @@ export async function show(ctx) {
     return;
   }
 
-  const scope = ctx.state.scope || ctx.query.scope || 'list';
+  const scope = ctx.state.scope || ctx.query.scope || 'show';
 
   let doc = await Model.show(ctx, { scope });
   if (!doc) {
