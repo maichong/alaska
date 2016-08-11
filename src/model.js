@@ -679,6 +679,9 @@ export default class Model {
         }
       }
     });
+    if (filters && filters.$or) {
+      result.$or = filters.$or;
+    }
     return result;
   }
 
