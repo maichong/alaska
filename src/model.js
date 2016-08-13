@@ -27,31 +27,108 @@ function processScope(fields, Model) {
     } else if (s[0] === '-') {
       s = s.substr(1);
       if (!Model.defaultScope[s] && !Model.fields[s]) {
-        throw new Error(`Can not find field ${Model.name}.'${s}' when init scopes`);
+        throw new Error(`Can not find field ${Model.path}.scopes.${s} when process scopes`);
       }
       delete keys[s];
     } else if (s[0] === '@') {
       s = s.substr(1);
       let scope = Model.scopes[s];
       if (!scope) {
-        throw new Error(`Can not find scope ${Model.name}.'${s}' when init scopes`);
+        throw new Error(`Can not find scope ${Model.path}.scopes.${s} when process scopes`);
       }
       _.assign(keys, scope);
     } else if (s[0] === '_') {
       s = s.substr(1);
       if (!Model.fields[s]) {
-        throw new Error(`Can not find field ${Model.name}.'${s}' when init scopes`);
+        throw new Error(`Can not find field ${Model.path}.scopes.${s} when process scopes`);
       }
       keys[s] = 1;
       keys['_' + s] = 1;
     } else {
       if (!Model.defaultScope[s] && !Model.fields[s]) {
-        throw new Error(`Can not find field ${Model.name}.'${s}' when init scopes`);
+        throw new Error(`Can not find field ${Model.path}.scopes.${s} when process scopes`);
       }
       keys[s] = 1;
     }
   });
   return keys;
+}
+
+function processSelect(obj, Model) {
+  if (obj.select) {
+    obj.select = processScope(obj.select, Model);
+  }
+  if (obj.scopes) {
+    for (let i in obj.scopes) {
+      obj.scopes[i] = processScope(obj.scopes[i], Model);
+    }
+  }
+}
+
+function processPopulation(query, pop, Model, scopeKey) {
+  //判断scope是否不需要返回此path
+  if (Model.scopes[scopeKey] && !Model.scopes[scopeKey][pop.path]) return;
+  let config = pop;
+  if (pop.autoSelect === false && pop.select) {
+    config = _.omit(pop, 'select');
+  } else if (pop.autoSelect !== false && pop.scopes && pop.scopes[scopeKey]) {
+    config = _.assign({}, pop, {
+      select: pop.scopes[scopeKey]
+    });
+  }
+  query.populate(config);
+  return config;
+}
+
+function createRelationshipQuery(r, res, scopeKey) {
+  let Ref = r.ref;
+  let q = Ref.find({
+    [r.path]: res._id
+  });
+  let sort = Ref.defaultSort;
+  if (r.options) {
+    sort = r.options.sort || sort;
+    if (r.options.limit) {
+      q.limit(r.options.limit);
+    }
+  }
+  if (sort) {
+    q.sort(sort);
+  }
+  if (r.filters) {
+    q.where(r.filters);
+  }
+  if (Ref.autoSelect) {
+    //自动select字段,优化查询性能
+    if (r.scopes && r.scopes[scopeKey]) {
+      q.select(r.scopes[scopeKey]);
+    } else if (r.select) {
+      q.select(r.select);
+    } else if (Ref.scopes[scopeKey]) {
+      q.select(Ref.scopes[scopeKey]);
+    }
+  }
+  let popConfig = {};
+  if (r.populations) {
+    _.forEach(r.populations, (pop, key) => {
+      if (Ref.populations[key]) {
+        popConfig[key] = processPopulation(q, _.assign({ path: key }, Ref.populations[key], pop), Ref, scopeKey);
+      }
+    });
+  }
+  return q.then(list => {
+    if (list && list.length) {
+      _.forEach(popConfig, pop => {
+        if (pop.select) {
+          _.forEach(list, record => {
+            if (!record[pop.path]) return;
+            [].concat(record[pop.path]).forEach(tmp => tmp.___fields = pop.select);
+          });
+        }
+      });
+    }
+    res[r.key] = list;
+  });
 }
 
 /**
@@ -168,10 +245,10 @@ export default class Model {
    * 注册
    */
   static register() {
-    let service = this.service;
-    let model = this;
+    const service = this.service;
+    const model = this;
     try {
-      let db = service.db;
+      const db = service.db;
       model.db = db;
 
       /**
@@ -186,144 +263,10 @@ export default class Model {
        */
       model.isModel = true;
 
-      let MongooseModel;
       let name = model.name;
       model.id = util.nameToKey(name);
       model.key = service.id + '.' + model.id;
-      if (!model.fields) {
-        throw new Error(name + ' model has no fields.');
-      }
-
-      let schema = model.schema = new Schema({}, {
-        collection: model.collection || ((model.prefix || service.dbPrefix) + model.id.replace(/\-/g, '_'))
-      });
-
-      function loadFieldConfig(fieldTypeName) {
-        let config = service.config(true, fieldTypeName);
-        if (!config) {
-          return {};
-        }
-        if (config.type && config.type != fieldTypeName) {
-          let otherConfig = loadFieldConfig(config.type);
-          return _.assign({}, config, otherConfig);
-        }
-        return _.clone(config);
-      }
-
-      model.defaultScope = {};
-      //将Model字段注册到Mongoose.Schema中
-      for (let path in model.fields) {
-        try {
-          let options = model.fields[path];
-
-          /**
-           * eg.
-           * name : String
-           */
-          if (typeof options === 'function') {
-            model.fields[path] = options = { type: options };
-          }
-          if (!options.type) {
-            /**
-             * eg.
-             * user : {
-         *   ref: User
-         * }
-             */
-            if (options.ref) {
-              options.type = 'relationship';
-              if (_.isArray(options.ref) && options.ref.length === 1) {
-                options.ref = options.ref[0];
-                options.multi = true;
-              }
-            } else {
-              throw new Error(model.name + '.' + path + ' field type not specified');
-            }
-          }
-
-          /**
-           * eg.
-           * users : {
-       *   type: [User]
-       * }
-           */
-          if (_.isArray(options.type) && options.type.length === 1) {
-            options.ref = options.type[0];
-            options.type = 'relationship';
-            options.multi = true;
-          }
-
-          /**
-           * eg.
-           * users : {
-       *   type: User
-       * }
-           */
-          if (options.type.isModel) {
-            options.ref = options.type;
-            options.type = 'relationship';
-          }
-          options.path = path;
-
-          if (!options.type) {
-            throw new Error('Field type is not specified. ' + name);
-          }
-          let AlaskaFieldType;
-          if (typeof options.type === 'object' && options.type.plain) {
-            AlaskaFieldType = options.type;
-          } else {
-            let fieldTypeName;
-            if (options.type === String) {
-              fieldTypeName = 'alaska-field-text';
-            } else if (options.type === Date) {
-              fieldTypeName = 'alaska-field-datetime';
-            } else if (options.type === Boolean) {
-              fieldTypeName = 'alaska-field-checkbox';
-            } else if (options.type === Object) {
-              fieldTypeName = 'alaska-field-mixed';
-            } else if (options.type === Number) {
-              fieldTypeName = 'alaska-field-number';
-            } else if (typeof options.type === 'string') {
-              fieldTypeName = 'alaska-field-' + options.type;
-            } else {
-              throw new Error(`Unsupported field type for ${model.name}.${path}`);
-            }
-            delete options.type;
-            _.assign(options, loadFieldConfig(fieldTypeName));
-            if (options.type) {
-              fieldTypeName = options.type;
-            }
-            AlaskaFieldType = options.type = require(fieldTypeName);
-          }
-          options.label = options.label || path.toUpperCase();
-          let field = new AlaskaFieldType(options, schema, model);
-          model.fields[path] = field;
-          field.initSchema();
-          if (!field.private) {
-            model.defaultScope[path] = 1;
-          }
-        } catch (e) {
-          console.error(`${service.id}.${model.name}.fields.${path} init failed!`);
-          throw e;
-        }
-      }
-
-      model._virtuals = {};
-
-      if (model.virtuals) {
-        for (let path in model.virtuals) {
-          model._virtuals[path] = true;
-          let getter = model.virtuals.__lookupGetter__(path);
-          if (getter) {
-            model.defaultScope[path] = 1;
-            schema.virtual(path).get(getter);
-          }
-          let setter = model.virtuals.__lookupSetter__(path);
-          if (setter) {
-            schema.virtual(path).set(setter);
-          }
-        }
-      }
+      model.path = service.id + '.' + model.name;
 
       _.defaults(model, {
         title: 'title',
@@ -343,39 +286,6 @@ export default class Model {
         model.autoSelect = true;
       }
 
-      let relationships = {};
-      if (model.relationships) {
-        _.forEach(model.relationships, (r, key) => {
-          //'Model'
-          let res = {
-            service: service.id,
-            ref: r.ref,
-            path: r.path,
-            title: r.title,
-            filters: r.filters
-          };
-
-          if (typeof r.ref === 'function') {
-            res.ref = r.ref.name;
-            if (r.ref.service) {
-              res.service = r.ref.service.id;
-            }
-          }
-          //{ref:'user.User'}
-          if (res.ref.indexOf('.') > -1) {
-            let arr = res.ref.split('.');
-            let refService = service.service(arr[0]);
-            if (!refService) {
-              refService = service.alaska.service(arr[0]);
-            }
-            res.service = refService.id;
-            res.ref = arr[1];
-          }
-          relationships[key] = res;
-        });
-      }
-      model.relationships = relationships;
-
       if (model.api === 1) {
         model.api = {
           list: 1,
@@ -385,6 +295,240 @@ export default class Model {
           update: 1,
           remove: 1
         };
+      }
+
+      let schema = model.schema = new Schema({}, {
+        collection: model.collection || ((model.prefix || service.dbPrefix) + model.id.replace(/\-/g, '_'))
+      });
+
+      /**
+       * init fields
+       */
+      try {
+        if (!model.fields) {
+          throw new Error(name + ' model has no fields.');
+        }
+
+        function loadFieldConfig(fieldTypeName) {
+          let config = service.config(true, fieldTypeName);
+          if (!config) {
+            return {};
+          }
+          if (config.type && config.type != fieldTypeName) {
+            let otherConfig = loadFieldConfig(config.type);
+            return _.assign({}, config, otherConfig);
+          }
+          return _.clone(config);
+        }
+
+        model.defaultScope = {};
+        //将Model字段注册到Mongoose.Schema中
+        for (let path in model.fields) {
+          try {
+            let options = model.fields[path];
+
+            /**
+             * eg.
+             * name : String
+             */
+            if (typeof options === 'function') {
+              model.fields[path] = options = { type: options };
+            }
+            if (!options.type) {
+              /**
+               * eg.
+               * user : {
+             *   ref: User
+             * }
+               */
+              if (options.ref) {
+                options.type = 'relationship';
+                if (_.isArray(options.ref) && options.ref.length === 1) {
+                  options.ref = options.ref[0];
+                  options.multi = true;
+                }
+              } else {
+                throw new Error(model.name + '.' + path + ' field type not specified');
+              }
+            }
+
+            /**
+             * eg.
+             * users : {
+           *   type: [User]
+           * }
+             */
+            if (_.isArray(options.type) && options.type.length === 1) {
+              options.ref = options.type[0];
+              options.type = 'relationship';
+              options.multi = true;
+            }
+
+            /**
+             * eg.
+             * users : {
+           *   type: User
+           * }
+             */
+            if (options.type.isModel) {
+              options.ref = options.type;
+              options.type = 'relationship';
+            }
+            options.path = path;
+
+            if (!options.type) {
+              throw new Error('Field type is not specified. ' + name);
+            }
+            let AlaskaFieldType;
+            if (typeof options.type === 'object' && options.type.plain) {
+              AlaskaFieldType = options.type;
+            } else {
+              let fieldTypeName;
+              if (options.type === String) {
+                fieldTypeName = 'alaska-field-text';
+              } else if (options.type === Date) {
+                fieldTypeName = 'alaska-field-datetime';
+              } else if (options.type === Boolean) {
+                fieldTypeName = 'alaska-field-checkbox';
+              } else if (options.type === Object) {
+                fieldTypeName = 'alaska-field-mixed';
+              } else if (options.type === Number) {
+                fieldTypeName = 'alaska-field-number';
+              } else if (typeof options.type === 'string') {
+                fieldTypeName = 'alaska-field-' + options.type;
+              } else {
+                throw new Error(`Unsupported field type for ${model.name}.${path}`);
+              }
+              delete options.type;
+              _.assign(options, loadFieldConfig(fieldTypeName));
+              if (options.type) {
+                fieldTypeName = options.type;
+              }
+              AlaskaFieldType = options.type = require(fieldTypeName);
+            }
+            options.label = options.label || path.toUpperCase();
+            let field = new AlaskaFieldType(options, schema, model);
+            model.fields[path] = field;
+            field.initSchema();
+            if (!field.private) {
+              model.defaultScope[path] = 1;
+            }
+          } catch (e) {
+            console.error(`${service.id}.${model.name}.fields.${path} init failed!`);
+            throw e;
+          }
+        }
+      } catch (e) {
+        console.error(`${service.path} init fields failed!`);
+        throw e;
+      }
+
+      /**
+       * init virtual fields
+       */
+      try {
+        model._virtuals = {};
+
+        if (model.virtuals) {
+          for (let path in model.virtuals) {
+            model._virtuals[path] = true;
+            let getter = model.virtuals.__lookupGetter__(path);
+            if (getter) {
+              model.defaultScope[path] = 1;
+              schema.virtual(path).get(getter);
+            }
+            let setter = model.virtuals.__lookupSetter__(path);
+            if (setter) {
+              schema.virtual(path).set(setter);
+            }
+          }
+        }
+      } catch (e) {
+        console.error(`${service.path} init virtual fields failed!`);
+      }
+
+      let needRef = false;
+      /**
+       * init relationships
+       */
+      try {
+        let relationships = {};
+        if (model.relationships) {
+          _.forEach(model.relationships, (r, key) => {
+            //'Model'
+            let Ref = r.ref || service.error(`${service.path}.relationships.${key}.ref is undefined`);
+            if (typeof Ref === 'string') {
+              Ref = service.model(r.ref);
+            }
+            r.key = key;
+            r.ref = Ref;
+            if (!r.private) {
+              model.defaultScope[key] = 1;
+            }
+            if (r.populations) {
+              //有深层嵌套 populations
+              needRef = true;
+            }
+            relationships[key] = r;
+          });
+        }
+        model.relationships = relationships;
+      } catch (e) {
+        console.error(`${service.path} init relationships failed!`);
+      }
+
+      /**
+       * init populations
+       */
+      try {
+        let populations = {};
+
+        _.forEach(model.populations, (p, key) => {
+          if (!p.path && typeof key === 'string') {
+            p.path = key;
+          }
+          if (p.filters) {
+            p.match = p.filters;
+          }
+          let field = model.fields[p.path];
+          if (!field) {
+            throw new Error(`${service.id}.${model.name}.populations error, can not populate '${p.path}'`);
+          }
+          p.model = model.fields[p.path].ref;
+          populations[p.path] = p;
+          if (p.select || p.scopes || p.populations) {
+            needRef = true;
+          }
+        });
+        model.populations = populations;
+      } catch (e) {
+        console.error(`${service.path} init populations failed!`);
+      }
+
+      if (needRef) {
+        service.pre('loadSleds', () => {
+          _.forEach(model.populations, p => {
+            let Ref = model.fields[p.path].ref;
+            p.ref = Ref;
+            p.autoSelect = Ref.autoSelect;
+            processSelect(p, Ref);
+            //有多层嵌套 populations
+            if (p.populations && p.model) {
+              for (let k in p.populations) {
+                let SubRef = p.model.fields[k].ref;
+                processSelect(p.populations[k], SubRef);
+              }
+            }
+          });
+
+          _.forEach(model.relationships, r => {
+            if (!r.populations) return;
+            for (let k in r.populations) {
+              let SubRef = r.ref.fields[k].ref;
+              processSelect(r.populations[k], SubRef);
+            }
+          });
+        });
       }
 
       if (!model.defaultColumns) {
@@ -413,52 +557,6 @@ export default class Model {
       }
       if (!model.scopes.show) {
         model.scopes.show = model.defaultScope;
-      }
-
-      let populations = {};
-      let needRef = false;
-
-      _.forEach(model.populations, (p, key) => {
-        if (typeof p === 'string') {
-          p = { path: p };
-        }
-        if (!p.path && typeof key === 'string') {
-          p.path = key;
-        }
-        if (p.filters) {
-          p.match = p.filters;
-        }
-        let field = model.fields[p.path];
-        if (!field) {
-          throw new Error(`${service.id}.${model.name}.populations error, can not populate '${p.path}'`);
-        }
-        populations[p.path] = p;
-        if (p.select || p.scopes) {
-          needRef = true;
-        }
-      });
-      model.populations = populations;
-
-      if (needRef) {
-        service.pre('loadSleds', () => {
-          _.forEach(model.populations, p => {
-            let Ref = model.fields[p.path].ref;
-            //if (!Ref.autoSelect) {
-            //  delete p.select;
-            //  delete p.scopes;
-            //}
-            p.ref = Ref;
-            p.autoSelect = Ref.autoSelect;
-            if (p.select) {
-              p.select = processScope(p.select, Ref);
-            }
-            if (p.scopes) {
-              for (let i in p.scopes) {
-                p.scopes[i] = processScope(p.scopes[i], Ref);
-              }
-            }
-          });
-        });
       }
 
       //允许自动缓存
@@ -538,7 +636,7 @@ export default class Model {
         let doc = {
           id: this.id
         };
-        let fields = this.schema.tree;
+        let fields = model.defaultScope;
         if (scope) {
           if (typeof scope === 'object') {
             fields = scope;
@@ -550,17 +648,18 @@ export default class Model {
         for (let key in fields) {
           if (key[0] === '_') continue;
           if (!model._virtuals[key]) {
-            if (!model.fields[key] || model.fields[key].private || !this.isSelected(key))continue;
+            if (model.fields[key] && (model.fields[key].private || !this.isSelected(key))) continue;
+            if (!model.fields[key] && (!model.relationships[key] || model.relationships[key].private)) continue;
           }
           if (fields['_' + key]) continue;
           if (this._[key] && this._[key].data) {
             doc[key] = this._[key].data();
           } else {
-            let value = this.get(key);
-            if (typeof value === 'object') {
+            let value = this[key];
+            if (value && typeof value === 'object') {
               let p = model.populations[key];
-              let _fields;
-              if (p) {
+              let _fields = value.___fields;
+              if (!_fields && p) {
                 if (p.scopes && p.scopes[scope]) {
                   _fields = p.scopes[scope];
                 } else if (p.select) {
@@ -623,7 +722,7 @@ export default class Model {
 
       //register
 
-      MongooseModel = db.model(name, schema);
+      let MongooseModel = db.model(name, schema);
 
       /**
        * 原始Mongoose模型
@@ -713,6 +812,7 @@ export default class Model {
       total: 0,
       page: page,
       perPage: perPage,
+      totalPage: 0,
       previous: page <= 1 ? false : page - 1,
       next: false,
       results: []
@@ -734,7 +834,8 @@ export default class Model {
             return;
           }
           results.total = total;
-          results.next = Math.ceil(total / perPage) > page ? page + 1 : false;
+          results.totalPage = Math.ceil(total / perPage);
+          results.next = results.totalPage > page ? page + 1 : false;
 
           query.find().limit(perPage).skip(skip).exec((err, res) => {
             if (err) {
@@ -780,23 +881,70 @@ export default class Model {
       query.select(Model.scopes[scopeKey]);
     }
 
-    _.forEach(Model.populations, p => {
-      //判断scope是否不需要返回此path
-      if (Model.scopes.list && !Model.scopes.list[p.path]) return;
-      if (scopeKey && p.scopes && p.scopes[scopeKey]) {
-        query.populate(_.assign({}, p, {
-          select: p.scopes[scopeKey]
-        }));
-      } else {
-        query.populate(p);
+    let populations = [];
+    _.forEach(Model.populations, pop => {
+      if (processPopulation(query, pop, Model, scopeKey) && pop.populations) {
+        populations.push(pop);
       }
     });
+
+    let scope = Model.scopes[scopeKey] || Model.defaultScope;
+    let relationships = _.reduce(Model.relationships, (res, r) => {
+      if (!r.private && scope[r.key]) {
+        res.push(r);
+      }
+      return res;
+    }, []);
 
     let sort = state.sort || ctx.query.sort || Model.defaultSort;
     if (sort) {
       query.sort(sort);
     }
 
+    if (!relationships.length && !populations.length) {
+      return query;
+    }
+    query._then = query.then;
+    query.then = function (resolve, reject) {
+      query._then(res => {
+        if (!res.results.length) {
+          return Promise.resolve(res);
+        }
+        //处理关联查询
+        let promises = [];
+        res.results.forEach(res => {
+          relationships.forEach(r => {
+            promises.push(createRelationshipQuery(r, res, scopeKey));
+          });
+
+          //populations
+          populations.forEach(pop => {
+            _.forEach(pop.populations, (p, path) => {
+              if (res[pop.path]) {
+                let Ref = pop.model;
+                if (Ref && Ref.populations && Ref.populations[path]) {
+                  let record = res[pop.path];
+                  let config = _.assign({}, Ref.populations[path], p);
+                  let promise = record.populate(config).execPopulate();
+                  if (config.select) {
+                    promise.then(() => {
+                      if (record[path]) {
+                        let poplated = Array.isArray(record[path]) ? record[path] : [record[path]];
+                        poplated.forEach(tmp => tmp.___fields = config.select);
+                      }
+                    });
+                  }
+                  promises.push(promise);
+                }
+              }
+            });
+          });
+        });
+        return Promise.all(promises).then(() => {
+          return Promise.resolve(res);
+        });
+      }).then(resolve, reject);
+    };
     return query;
   }
 
@@ -822,20 +970,60 @@ export default class Model {
       query.select(Model.scopes[scopeKey]);
     }
 
-    _.forEach(Model.populations, p => {
-      //判断scope是否不需要返回此path
-      if (Model.scopes.show && !Model.scopes.show[p.path]) return;
-      if (!p.autoSelect && p.select) {
-        query.populate(_.omit(p, 'select'));
-      } else if (p.autoSelect && p.scopes && p.scopes[scopeKey]) {
-        query.populate(_.assign({}, p, {
-          select: p.scopes[scopeKey]
-        }));
-      } else {
-        query.populate(p);
+    let populations = [];
+    _.forEach(Model.populations, pop => {
+      if (processPopulation(query, pop, Model, scopeKey) && pop.populations) {
+        populations.push(pop);
       }
     });
 
+    let scope = Model.scopes[scopeKey] || Model.defaultScope;
+    let relationships = _.reduce(Model.relationships, (res, r) => {
+      if (!r.private && scope[r.key]) {
+        res.push(r);
+      }
+      return res;
+    }, []);
+
+    if (!relationships.length && !populations.length) {
+      return query;
+    }
+
+    query._then = query.then;
+    query.then = function (resolve, reject) {
+      query._then(res => {
+        if (!res) {
+          return Promise.resolve(res);
+        }
+        //处理关联查询 relationships
+        let promises = relationships.map(r => createRelationshipQuery(r, res, scopeKey));
+        //populations
+        populations.forEach(pop => {
+          _.forEach(pop.populations, (p, path) => {
+            if (res[pop.path]) {
+              let Ref = pop.model;
+              if (Ref && Ref.populations && Ref.populations[path]) {
+                let record = res[pop.path];
+                let config = _.assign({}, Ref.populations[path], p);
+                let promise = record.populate(config).execPopulate();
+                if (config.select) {
+                  promise.then(() => {
+                    if (record[path]) {
+                      let poplated = Array.isArray(record[path]) ? record[path] : [record[path]];
+                      poplated.forEach(tmp => tmp.___fields = config.select);
+                    }
+                  });
+                }
+                promises.push(promise);
+              }
+            }
+          });
+        });
+        return Promise.all(promises).then(() => {
+          return Promise.resolve(res);
+        });
+      }).then(resolve, reject);
+    };
     return query;
   }
 
