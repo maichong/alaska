@@ -581,6 +581,9 @@ export default class Service {
       let serviceId = name.substr(0, index);
       name = name.substr(index + 1);
       let service = this._services[serviceId];
+      if (serviceId === 'main') {
+        service = this.main;
+      }
       if (!service) {
         service = alaska.service(serviceId, optional);
       }
@@ -618,6 +621,9 @@ export default class Service {
       let serviceId = name.substr(0, index);
       name = name.substr(index + 1);
       let service = this._services[serviceId];
+      if (serviceId === 'main') {
+        service = this.main;
+      }
       if (!service) {
         service = alaska.service(serviceId);
       }

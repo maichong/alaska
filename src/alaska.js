@@ -278,6 +278,9 @@ class Alaska {
       ctx.alaska = alaska;
       ctx.main = MAIN;
       ctx.service = MAIN;
+      ctx.panic = alaska.panic;
+      ctx.error = alaska.error;
+      ctx.try = alaska.try;
 
       /**
        * 发送文件
