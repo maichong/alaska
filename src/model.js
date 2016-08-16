@@ -419,7 +419,7 @@ export default class Model {
           }
         }
       } catch (e) {
-        console.error(`${service.path} init fields failed!`);
+        console.error(`${model.path} init fields failed!`);
         throw e;
       }
 
@@ -444,7 +444,7 @@ export default class Model {
           }
         }
       } catch (e) {
-        console.error(`${service.path} init virtual fields failed!`);
+        console.error(`${model.path} init virtual fields failed!`);
       }
 
       let needRef = false;
@@ -456,7 +456,7 @@ export default class Model {
         if (model.relationships) {
           _.forEach(model.relationships, (r, key) => {
             //'Model'
-            let Ref = r.ref || service.error(`${service.path}.relationships.${key}.ref is undefined`);
+            let Ref = r.ref || service.error(`${model.path}.relationships.${key}.ref is undefined`);
             if (typeof Ref === 'string') {
               Ref = service.model(r.ref);
             }
@@ -474,7 +474,7 @@ export default class Model {
         }
         model.relationships = relationships;
       } catch (e) {
-        console.error(`${service.path} init relationships failed!`);
+        console.error(`${model.path} init relationships failed!`);
       }
 
       /**
@@ -502,7 +502,7 @@ export default class Model {
         });
         model.populations = populations;
       } catch (e) {
-        console.error(`${service.path} init populations failed!`);
+        console.error(`${model.path} init populations failed!`);
       }
 
       if (needRef) {
