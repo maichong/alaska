@@ -107,6 +107,7 @@ export default class Field {
       cell: field.cell,
       view: field.view,
       filter: field.filter,
+      super: field.super,
     };
 
     let type = this.type;
@@ -124,7 +125,7 @@ export default class Field {
     }
 
     if (this.type.viewOptions && this.type.viewOptions.length) {
-      this.type.viewOptions.forEach(function (key) {
+      this.type.viewOptions.forEach((key) => {
         if (typeof key === 'function') {
           key(options, field);
         } else if (typeof key === 'object' && key.key) {
