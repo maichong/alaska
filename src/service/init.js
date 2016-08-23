@@ -11,17 +11,28 @@ export default async function init() {
   this.debug('init');
   this.init = util.resolved;
 
-  let services = this.config('services') || [];
+  try {
+    let services = this.config('services') || [];
 
-  for (let serviceId in services) {
-    let config = services[serviceId];
-    if (!config) continue;
-    let sub = this.alaska.service(serviceId);
-    assert(!this._services[serviceId], 'Service alias is exists.');
-    sub.applyConfig(config);
-    this._services[serviceId] = sub;
-    let configDir = this.dir + '/config/' + serviceId;
-    sub.addConfigDir(configDir);
-    await sub.init();
+    for (let serviceId in services) {
+      let config = services[serviceId];
+      if (!config) continue;
+      let sub = this.alaska.service(serviceId, true);
+      if (!sub) {
+        if (!config.dir) {
+          throw new Error(`Can not find sub service '${serviceId}'`);
+        } else {
+          sub = require(config.dir).default;
+        }
+      }
+      sub.applyConfig(config);
+      this._services[serviceId] = sub;
+      let configDir = this.dir + '/config/' + serviceId;
+      sub.addConfigDir(configDir);
+      await sub.init();
+    }
+  } catch (error) {
+    console.error(`${this.id} init field:`, error.message);
+    throw error;
   }
 };

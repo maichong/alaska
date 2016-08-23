@@ -105,6 +105,7 @@ class Alaska {
   _callbackMode = false;
   _app = null;
   _services = {};
+  _missingService = {};
   _mounts = {};
   locales = {};
   util = util;
@@ -157,7 +158,11 @@ class Alaska {
   service(id, optional) {
     let service = this._services[id];
 
-    if (!service && optional) {
+    if (service) {
+      return service;
+    }
+
+    if (optional && this._missingService[id]) {
       return null;
     }
 
@@ -165,6 +170,8 @@ class Alaska {
       try {
         service = require(id).default;
       } catch (error) {
+        this._missingService[id] = true;
+        if (optional) return null;
         console.error('Load service "%s" failed', id);
         console.error(error.stack);
         process.exit(1);
