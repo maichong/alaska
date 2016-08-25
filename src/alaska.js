@@ -332,6 +332,8 @@ class Alaska {
         let toJSON = ctx.toJSON;
         ctx.toJSON = function () {
           let json = toJSON.call(ctx);
+          json.session = ctx.session || null;
+          json.state = ctx.state;
           json.alaska = ctx.alaska.toJSON();
           json.service = ctx.service.toJSON();
           return json;
@@ -404,7 +406,7 @@ class Alaska {
       ctx.state.c = (a, b, c) => ctx.service.config(a, b, c);
 
       //env
-      ctx.state.env = process.env.NODE_ENV;
+      ctx.state.env = process.env.NODE_ENV || 'production';
 
       //render
       {
@@ -501,9 +503,11 @@ class Alaska {
    * @returns {object}
    */
   toJSON() {
-    return {
-      services: Object.keys(this._services)
-    };
+    let res = {};
+    for (let key in this._services) {
+      res[key] = this._services[key].toJSON();
+    }
+    return res;
   }
 
   /**

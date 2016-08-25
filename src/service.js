@@ -76,6 +76,7 @@ export default class Service {
    */
   _services = {};
   util = util;
+  version = '';
 
   /**
    * 实例化一个Service对象
@@ -91,6 +92,11 @@ export default class Service {
 
     if (!options.dir) {
       throw new Error('Service dir is not specified.');
+    }
+
+    try {
+      this.version = require(options.dir + '/package.json').version;
+    } catch (e) {
     }
 
     if (!options.configFile) {
@@ -541,12 +547,40 @@ export default class Service {
    * @returns {Object}
    */
   toJSON() {
-    return {
+    let res = {
       id: this.id,
+      version: this.version,
       options: this._options,
       config: this._config,
+      configDirs: this._configDirs,
+      api: {},
+      controllers: {},
+      models: {},
       services: _.keys(this._services)
     };
+    for (let key in this._apiControllers) {
+      let c = this._apiControllers[key];
+      res.api[key] = [];
+      for (let name in c) {
+        if (name[0] === '_') continue;
+        res.api[key].push(name);
+      }
+    }
+    for (let key in this._controllers) {
+      let c = this._controllers[key];
+      res.controllers[key] = [];
+      for (let name in c) {
+        if (name[0] === '_') continue;
+        res.controllers[key].push(name);
+      }
+    }
+    for (let key in this._models) {
+      let m = this._models[key];
+      res.models[key] = {
+        api: m.api
+      };
+    }
+    return res;
   }
 
   /**

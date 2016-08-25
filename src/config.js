@@ -40,7 +40,7 @@ export default {
    * [APP] 运行环境
    * @type {string}
    */
-  env: 'development',
+  env: process.env.NODE_ENV || 'production',
 
   /**
    * [APP] session
