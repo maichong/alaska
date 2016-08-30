@@ -1,6 +1,6 @@
 {
   "name": "alaska",
-  "version": "0.10.9",
+  "version": "0.10.10",
   "description": "Componentized and pluggable web framework for Node.js",
   "keywords": [
     "alaska",

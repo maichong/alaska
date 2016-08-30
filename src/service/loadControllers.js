@@ -19,7 +19,6 @@ export default async function loadControllers() {
   this.debug('loadControllers');
 
   const service = this;
-  const alaska = this.alaska;
 
   const controllers = this._controllers = util.include(this.dir + '/controllers', false) || {};
 
@@ -57,9 +56,13 @@ export default async function loadControllers() {
   const defaultController = this.config('defaultController');
   const defaultAction = this.config('defaultAction');
 
-  this.router.register('/:controller?/:action?', ['GET', 'HEAD', 'POST'], function (ctx, next) {
+  const suffix = this.config('suffix');
+  this.router.register('/:controller?/:action?', this.config('methods'), function (ctx, next) {
     let controller = ctx.params.controller || defaultController;
     let action = ctx.params.action || defaultAction;
+    if (suffix && action && action.endsWith(suffix)) {
+      action = action.substr(0, action.length - suffix.length);
+    }
     service.debug('route %s:%s', controller, action);
     if (service._controllers[controller] && service._controllers[controller][action] && action[0] !== '_') {
       //TODO 错误页面

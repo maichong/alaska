@@ -610,6 +610,8 @@ export default class Service {
       return this._models[name];
     }
 
+    //TODO 抛出异常
+
     let index = name.indexOf('.');
     if (index > -1) {
       let serviceId = name.substr(0, index);
@@ -649,6 +651,8 @@ export default class Service {
     if (this._sleds[name]) {
       return this._sleds[name];
     }
+
+    //TODO 抛出异常
 
     let index = name.indexOf('.');
     if (index > -1) {

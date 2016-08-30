@@ -115,6 +115,11 @@ export default {
    * @type {string|boolean}
    */
   prefix: '',
+  /**
+   * [Service] Service的控制器访问地址PATH中后缀
+   * @type {string}
+   */
+  suffix: '.html',
   /** [Service] 默认控制器名称
    * @type {string}
    */
@@ -128,7 +133,7 @@ export default {
    * [Service] 控制器路由接受的HTTP方法列表
    * @type {Array}
    */
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'HEAD'],
   /**
    * [Service] 静态目录列表
    * @type {Array|string|object}
