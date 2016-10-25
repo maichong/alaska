@@ -31,10 +31,10 @@ export default class Field {
       'select'
     ].concat(options.type.options);
 
-    Object.keys(options).forEach(key => {
+    Object.keys(options).forEach((key) => {
       let value = options[key];
       if (value && value instanceof Promise) {
-        value.then(v => {
+        value.then((v) => {
           this[key] = v;
           if (keys.indexOf(key) > -1) {
             this.initSchema();
@@ -68,7 +68,7 @@ export default class Field {
       'select'
     ].concat(this.type.options);
 
-    keys.forEach(key => {
+    keys.forEach((key) => {
       if (this[key] !== undefined) {
         options[key] = this[key];
       }
@@ -107,7 +107,7 @@ export default class Field {
       cell: field.cell,
       view: field.view,
       filter: field.filter,
-      super: field.super,
+      super: field.super
     };
 
     let type = this.type;

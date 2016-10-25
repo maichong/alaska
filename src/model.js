@@ -4,6 +4,8 @@
  * @author Liang <liang@maichong.it>
  */
 
+/* eslint no-proto:0 no-unused-expressions:0 */
+
 import _ from 'lodash';
 import collie from 'collie';
 import mongoose from 'mongoose';
@@ -19,9 +21,9 @@ function panic() {
 
 function processScope(fields, Model) {
   let keys = {};
-  fields.split(' ').map(s => s.trim()).filter(s => s).forEach(s => {
+  fields.split(' ').map(s => s.trim()).filter(s => s).forEach((s) => {
     if (s === '*') {
-      _.keys(Model.defaultScope).forEach(f => {
+      Object.keys(Model.defaultScope).forEach((f) => {
         keys[f] = 1;
       });
     } else if (s[0] === '-') {
@@ -36,7 +38,7 @@ function processScope(fields, Model) {
       if (!scope) {
         throw new Error(`Can not find scope ${Model.path}.scopes.${s} when process scopes`);
       }
-      _.assign(keys, scope);
+      Object.assign(keys, scope);
     } else if (s[0] === '_') {
       s = s.substr(1);
       if (!Model.fields[s]) {
@@ -59,20 +61,20 @@ function processSelect(obj, Model) {
     obj.select = processScope(obj.select, Model);
   }
   if (obj.scopes) {
-    for (let i in obj.scopes) {
+    Object.keys(obj.scopes).forEach((i) => {
       obj.scopes[i] = processScope(obj.scopes[i], Model);
-    }
+    });
   }
 }
 
 function processPopulation(query, pop, Model, scopeKey) {
   //判断scope是否不需要返回此path
-  if (Model.scopes[scopeKey] && !Model.scopes[scopeKey][pop.path]) return;
+  if (Model.scopes[scopeKey] && !Model.scopes[scopeKey][pop.path]) return null;
   let config = pop;
   if (pop.autoSelect === false && pop.select) {
     config = _.omit(pop, 'select');
   } else if (pop.autoSelect !== false && pop.scopes && pop.scopes[scopeKey]) {
-    config = _.assign({}, pop, {
+    config = Object.assign({}, pop, {
       select: pop.scopes[scopeKey]
     });
   }
@@ -112,17 +114,23 @@ function createRelationshipQuery(r, res, scopeKey) {
   if (r.populations) {
     _.forEach(r.populations, (pop, key) => {
       if (Ref.populations[key]) {
-        popConfig[key] = processPopulation(q, _.assign({ path: key }, Ref.populations[key], pop), Ref, scopeKey);
+        popConfig[key] = processPopulation(q, Object.assign(
+          { path: key },
+          Ref.populations[key],
+          pop
+        ), Ref, scopeKey);
       }
     });
   }
-  return q.then(list => {
+  return q.then((list) => {
     if (list && list.length) {
-      _.forEach(popConfig, pop => {
+      _.forEach(popConfig, (pop) => {
         if (pop.select) {
-          _.forEach(list, record => {
+          _.forEach(list, (record) => {
             if (!record[pop.path]) return;
-            [].concat(record[pop.path]).forEach(tmp => tmp.___fields = pop.select);
+            [].concat(record[pop.path]).forEach((tmp) => {
+              tmp.___fields = pop.select;
+            });
           });
         }
       });
@@ -136,18 +144,18 @@ function createRelationshipQuery(r, res, scopeKey) {
  * @type {{pick: (function()), omit: (function())}}
  */
 const Data = {
-  pick() {
+  pick(...args) {
     let getRecord = this.getRecord;
-    let data = _.pick.apply(_, [this].concat(Array.prototype.slice.call(arguments))) || {};
+    let data = _.pick(this, ...args) || {};
     data.__proto__ = Data;
     if (getRecord) {
       data.getRecord = getRecord;
     }
     return data;
   },
-  omit() {
+  omit(...args) {
     let getRecord = this.getRecord;
-    let data = _.omit.apply(_, [this].concat(Array.prototype.slice.call(arguments))) || {};
+    let data = _.omit(this, ...args) || {};
     data.__proto__ = Data;
     if (getRecord) {
       data.getRecord = getRecord;
@@ -164,18 +172,12 @@ function objectToData(value, fields) {
     //时间
   } else if (value instanceof Array) {
     //数组数据
-    let newValue = [];
-    for (let i in value) {
-      if (i * 1 != i) {
-        continue;
+    return value.map((val) => {
+      if (val === 'object') {
+        return objectToData(val, fields);
       }
-      let val = value[i];
-      if (typeof val === 'object') {
-        val = objectToData(val, fields);
-      }
-      newValue[i] = val;
-    }
-    return newValue;
+      return val;
+    });
   } else if (value.data && typeof value.data === 'function') {
     //如果也有data 函数，判定为document
     value = value.data(fields);
@@ -247,6 +249,19 @@ export default class Model {
   static register() {
     const service = this.service;
     const model = this;
+
+    function loadFieldConfig(fieldTypeName) {
+      let config = service.config(true, fieldTypeName);
+      if (!config) {
+        return {};
+      }
+      if (config.type && config.type !== fieldTypeName) {
+        let otherConfig = loadFieldConfig(config.type);
+        return Object.assign({}, config, otherConfig);
+      }
+      return _.clone(config);
+    }
+
     try {
       const db = service.db;
       model.db = db;
@@ -309,21 +324,9 @@ export default class Model {
           throw new Error(name + ' model has no fields.');
         }
 
-        function loadFieldConfig(fieldTypeName) {
-          let config = service.config(true, fieldTypeName);
-          if (!config) {
-            return {};
-          }
-          if (config.type && config.type != fieldTypeName) {
-            let otherConfig = loadFieldConfig(config.type);
-            return _.assign({}, config, otherConfig);
-          }
-          return _.clone(config);
-        }
-
         model.defaultScope = {};
         //将Model字段注册到Mongoose.Schema中
-        for (let path in model.fields) {
+        Object.keys(model.fields).forEach((path) => {
           try {
             let options = model.fields[path];
 
@@ -338,8 +341,8 @@ export default class Model {
               /**
                * eg.
                * user : {
-             *   ref: User
-             * }
+               *   ref: User
+               * }
                */
               if (options.ref) {
                 options.type = 'relationship';
@@ -355,8 +358,8 @@ export default class Model {
             /**
              * eg.
              * users : {
-           *   type: [User]
-           * }
+             *   type: [User]
+             * }
              */
             if (_.isArray(options.type) && options.type.length === 1) {
               options.ref = options.type[0];
@@ -367,8 +370,8 @@ export default class Model {
             /**
              * eg.
              * users : {
-           *   type: User
-           * }
+             *   type: User
+             * }
              */
             if (options.type.isModel) {
               options.ref = options.type;
@@ -400,7 +403,7 @@ export default class Model {
                 throw new Error(`Unsupported field type for ${model.name}.${path}`);
               }
               delete options.type;
-              _.assign(options, loadFieldConfig(fieldTypeName));
+              Object.assign(options, loadFieldConfig(fieldTypeName));
               if (options.type) {
                 fieldTypeName = options.type;
               }
@@ -417,7 +420,7 @@ export default class Model {
             console.error(`${service.id}.${model.name}.fields.${path} init failed!`);
             throw e;
           }
-        }
+        });
       } catch (e) {
         console.error(`${model.path} init fields failed!`);
         throw e;
@@ -428,9 +431,8 @@ export default class Model {
        */
       try {
         model._virtuals = {};
-
         if (model.virtuals) {
-          for (let path in model.virtuals) {
+          Object.keys(model.virtuals).forEach((path) => {
             model._virtuals[path] = true;
             let getter = model.virtuals.__lookupGetter__(path);
             if (getter) {
@@ -441,7 +443,7 @@ export default class Model {
             if (setter) {
               schema.virtual(path).set(setter);
             }
-          }
+          });
         }
       } catch (e) {
         console.error(`${model.path} init virtual fields failed!`);
@@ -507,26 +509,24 @@ export default class Model {
 
       if (needRef) {
         service.pre('loadSleds', () => {
-          _.forEach(model.populations, p => {
+          _.forEach(model.populations, (p) => {
             let Ref = model.fields[p.path].ref;
             p.ref = Ref;
             p.autoSelect = Ref.autoSelect;
             processSelect(p, Ref);
             //有多层嵌套 populations
             if (p.populations && p.model) {
-              for (let k in p.populations) {
-                let SubRef = p.model.fields[k].ref;
-                processSelect(p.populations[k], SubRef);
-              }
+              _.forEach(p.populations, (item, k) => {
+                processSelect(item, p.model.fields[k].ref);
+              });
             }
           });
 
-          _.forEach(model.relationships, r => {
+          _.forEach(model.relationships, (r) => {
             if (!r.populations) return;
-            for (let k in r.populations) {
-              let SubRef = r.ref.fields[k].ref;
-              processSelect(r.populations[k], SubRef);
-            }
+            _.forEach(r.populations, (item, k) => {
+              processSelect(item, r.ref.fields[k].ref);
+            });
           });
         });
       }
@@ -548,10 +548,10 @@ export default class Model {
         if (model.scopes['*']) {
           model.defaultScope = processScope(model.scopes['*'], model);
         }
-        for (let scope in model.scopes) {
-          if (scope === '*') continue;
-          model.scopes[scope] = processScope(model.scopes[scope], model);
-        }
+        _.forEach(model.scopes, (config, scope) => {
+          if (scope === '*') return;
+          model.scopes[scope] = processScope(config, model);
+        });
       } else {
         model.scopes = {};
       }
@@ -572,7 +572,7 @@ export default class Model {
 
       model._pre || (model._pre = []);
       model._post || (model._post = []);
-      ['Init', 'Validate', 'Save', 'Remove'].forEach(Action => {
+      ['Init', 'Validate', 'Save', 'Remove'].forEach((Action) => {
         let action = Action.toLowerCase();
         {
           let preHooks = model._pre[action] || [];
@@ -608,7 +608,7 @@ export default class Model {
             schema.post(action, function () {
               try {
                 let promise = collie.compose(postHooks, [], this);
-                promise.catch(function (error) {
+                promise.catch((error) => {
                   console.error(error.stack);
                 });
               } catch (error) {
@@ -645,13 +645,13 @@ export default class Model {
             fields = model.scopes[scope];
           }
         }
-        for (let key in fields) {
-          if (key[0] === '_') continue;
+        _.forEach(fields, (any, key) => {
+          if (key[0] === '_') return;
           if (!model._virtuals[key]) {
-            if (model.fields[key] && (model.fields[key].private || !this.isSelected(key))) continue;
-            if (!model.fields[key] && (!model.relationships[key] || model.relationships[key].private)) continue;
+            if (model.fields[key] && (model.fields[key].private || !this.isSelected(key))) return;
+            if (!model.fields[key] && (!model.relationships[key] || model.relationships[key].private)) return;
           }
-          if (fields['_' + key]) continue;
+          if (fields['_' + key]) return;
           if (this._[key] && this._[key].data) {
             doc[key] = this._[key].data();
           } else {
@@ -671,27 +671,27 @@ export default class Model {
               doc[key] = value;
             }
           }
-        }
+        });
         doc.__proto__ = Data;
         doc.getRecord = () => this;
         return doc;
       };
 
-      Object.getOwnPropertyNames(model.prototype).forEach(key => {
+      Object.getOwnPropertyNames(model.prototype).forEach((key) => {
         if (key === 'constructor') return;
         schema.methods[key] = model.prototype[key];
         delete model.prototype[key];
       });
 
       {
-        let keys = _.keys(model._pre);
+        let keys = Object.keys(model._pre);
         if (keys.length) {
           console.warn('Unknown pre hooks ' + keys + ' of ' + name);
         }
       }
 
       {
-        let keys = _.keys(model._post);
+        let keys = Object.keys(model._post);
         if (keys.length) {
           console.warn('Unknown post hooks ' + keys + ' of ' + name);
         }
@@ -716,7 +716,7 @@ export default class Model {
         'castCache',
         'castCacheArray',
         'castModelArray'
-      ].forEach(key => {
+      ].forEach((key) => {
         model[key] = Model[key];
       });
 
@@ -757,7 +757,7 @@ export default class Model {
       } else {
         rx = new RegExp(util.escapeRegExp(search), 'i');
       }
-      _.forEach(model.searchFields, key => {
+      _.forEach(model.searchFields, (key) => {
         searchFilters.push({
           [key]: rx
         });
@@ -770,7 +770,7 @@ export default class Model {
         result = searchFilters[0];
       }
     }
-    filters && _.forEach(filters, (value, key) => {
+    _.forEach(filters, (value, key) => {
       if (model.fields[key] && model.fields[key].createFilter) {
         let filter = model.fields[key].createFilter(value, result);
         if (filter !== undefined) {
@@ -810,8 +810,8 @@ export default class Model {
 
     let results = {
       total: 0,
-      page: page,
-      perPage: perPage,
+      page,
+      perPage,
       totalPage: 0,
       previous: page <= 1 ? false : page - 1,
       next: false,
@@ -826,7 +826,7 @@ export default class Model {
         query.count((error, total) => {
           if (error) {
             reject(error);
-            return
+            return;
           }
           if (!total) {
             callback(null, results);
@@ -840,7 +840,7 @@ export default class Model {
           query.find().limit(perPage).skip(skip).exec((err, res) => {
             if (err) {
               reject(err);
-              return
+              return;
             }
             results.results = res;
             callback(null, results);
@@ -864,9 +864,15 @@ export default class Model {
 
     state = _.defaultsDeep({}, state, ctx.state);
 
-    let filters = Model.createFilters((state.search || ctx.query.search || '').trim(), state.filters || ctx.query.filters);
+    let filters = Model.createFilters(
+      (state.search || ctx.query.search || '').trim(),
+      state.filters || ctx.query.filters
+    );
     if (Model.defaultFilters) {
-      _.assign(filters, typeof Model.defaultFilters === 'function' ? Model.defaultFilters(ctx) : Model.defaultFilters);
+      Object.assign(
+        filters,
+        typeof Model.defaultFilters === 'function' ? Model.defaultFilters(ctx) : Model.defaultFilters
+      );
     }
 
     let query = Model.paginate({
@@ -882,7 +888,7 @@ export default class Model {
     }
 
     let populations = [];
-    _.forEach(Model.populations, pop => {
+    _.forEach(Model.populations, (pop) => {
       if (processPopulation(query, pop, Model, scopeKey) && pop.populations) {
         populations.push(pop);
       }
@@ -906,31 +912,31 @@ export default class Model {
     }
     query._then = query.then;
     query.then = function (resolve, reject) {
-      query._then(res => {
+      query._then((res) => {
         if (!res.results.length) {
           return Promise.resolve(res);
         }
         //处理关联查询
         let promises = [];
-        res.results.forEach(res => {
-          relationships.forEach(r => {
+        res.results.forEach((res) => {
+          relationships.forEach((r) => {
             promises.push(createRelationshipQuery(r, res, scopeKey));
           });
 
           //populations
-          populations.forEach(pop => {
+          populations.forEach((pop) => {
             _.forEach(pop.populations, (p, path) => {
               if (res[pop.path]) {
                 let Ref = pop.model;
                 if (Ref && Ref.populations && Ref.populations[path]) {
                   let record = res[pop.path];
-                  let config = _.assign({}, Ref.populations[path], p);
+                  let config = Object.assign({}, Ref.populations[path], p);
                   let promise = record.populate(config).execPopulate();
                   if (config.select) {
                     promise.then(() => {
                       if (record[path]) {
                         let poplated = Array.isArray(record[path]) ? record[path] : [record[path]];
-                        poplated.forEach(tmp => tmp.___fields = config.select);
+                        poplated.forEach((tmp) => tmp.___fields = config.select);
                       }
                     });
                   }
@@ -940,9 +946,7 @@ export default class Model {
             });
           });
         });
-        return Promise.all(promises).then(() => {
-          return Promise.resolve(res);
-        });
+        return Promise.all(promises).then(() => Promise.resolve(res));
       }).then(resolve, reject);
     };
     return query;
@@ -971,7 +975,7 @@ export default class Model {
     }
 
     let populations = [];
-    _.forEach(Model.populations, pop => {
+    _.forEach(Model.populations, (pop) => {
       if (processPopulation(query, pop, Model, scopeKey) && pop.populations) {
         populations.push(pop);
       }
@@ -991,26 +995,28 @@ export default class Model {
 
     query._then = query.then;
     query.then = function (resolve, reject) {
-      query._then(res => {
+      query._then((res) => {
         if (!res) {
           return Promise.resolve(res);
         }
         //处理关联查询 relationships
         let promises = relationships.map(r => createRelationshipQuery(r, res, scopeKey));
         //populations
-        populations.forEach(pop => {
+        populations.forEach((pop) => {
           _.forEach(pop.populations, (p, path) => {
             if (res[pop.path]) {
               let Ref = pop.model;
               if (Ref && Ref.populations && Ref.populations[path]) {
                 let record = res[pop.path];
-                let config = _.assign({}, Ref.populations[path], p);
+                let config = Object.assign({}, Ref.populations[path], p);
                 let promise = record.populate(config).execPopulate();
                 if (config.select) {
                   promise.then(() => {
                     if (record[path]) {
                       let poplated = Array.isArray(record[path]) ? record[path] : [record[path]];
-                      poplated.forEach(tmp => tmp.___fields = config.select);
+                      poplated.forEach((tmp) => {
+                        tmp.___fields = config.select;
+                      });
                     }
                   });
                 }
@@ -1019,9 +1025,7 @@ export default class Model {
             }
           });
         });
-        return Promise.all(promises).then(() => {
-          return Promise.resolve(res);
-        });
+        return Promise.all(promises).then(() => Promise.resolve(res));
       }).then(resolve, reject);
     };
     return query;

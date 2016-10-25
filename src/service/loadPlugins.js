@@ -4,24 +4,23 @@
  * @author Liang <liang@maichong.it>
  */
 
-import * as util from '../util';
 import _ from 'lodash';
+import * as util from '../util';
 
 export default async function loadPlugins() {
   this.loadPlugins = util.resolved;
 
-  for (let serviceId in this._services) {
-    let sub = this._services[serviceId];
+  for (let sub of this.serviceList) {
     await sub.loadPlugins();
   }
   this.debug('loadPlugins');
 
   this._plugins = {};
 
-  _.forEach(this.config('plugins', {}), (plugin, key)=> {
-    if (typeof plugin === 'string') {
-      plugin = require(plugin).default;
+  _.forEach(this.config('plugins', {}), (Plugin, key) => {
+    if (typeof Plugin === 'string') {
+      Plugin = require(Plugin).default;
     }
-    this._plugins[key] = new plugin(this);
+    this._plugins[key] = new Plugin(this);
   });
 }

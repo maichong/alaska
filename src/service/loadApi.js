@@ -4,6 +4,8 @@
  * @author Liang <liang@maichong.it>
  */
 
+/* eslint prefer-arrow-callback:0 */
+
 import _ from 'lodash';
 import compose from 'koa-compose';
 import * as util from '../util';
@@ -11,8 +13,7 @@ import * as util from '../util';
 export default async function loadApi() {
   this.loadApi = util.resolved;
 
-  for (let serviceId in this._services) {
-    let sub = this._services[serviceId];
+  for (let sub of this.serviceList) {
     await sub.loadApi();
   }
   if (this.config('prefix') === false || this.config('api') === false) return;
@@ -24,7 +25,7 @@ export default async function loadApi() {
 
   const apis = this._apiControllers = util.include(this.dir + '/api', false) || {};
 
-  this._configDirs.forEach(dir => {
+  this._configDirs.forEach((dir) => {
     dir += '/api';
     if (util.isDirectory(dir)) {
       let patches = util.include(dir, false) || {};
@@ -47,7 +48,7 @@ export default async function loadApi() {
   });
 
   //将某些API的多个中间件转换成一个
-  _.forEach(apis, api => {
+  _.forEach(apis, (api) => {
     _.forEach(api, (fn, key) => {
       if (Array.isArray(fn) && key[0] !== '_') {
         api[key] = compose(fn);
@@ -94,15 +95,15 @@ export default async function loadApi() {
   router.all('/api/*', async function (ctx, next) {
     await next();
     if (!ctx.body) {
-      if (ctx.status == 404) {
+      if (ctx.status === 404) {
         ctx.body = { error: 'Not found' };
         ctx.status = 404;
       }
-      if (ctx.status == 401) {
+      if (ctx.status === 401) {
         ctx.body = { error: 'Unauthorized' };
         ctx.status = 401;
       }
-      if (ctx.status == 403) {
+      if (ctx.status === 403) {
         ctx.body = { error: 'Forbidden' };
         ctx.status = 403;
       }
@@ -111,15 +112,15 @@ export default async function loadApi() {
 
   const REST_ACTIONS = ['count', 'show', 'list', 'create', 'remove', 'update'];
   let restApis = {};
-  _.forEach(this._models, model => {
+  _.forEach(this._models, (model) => {
     if (!model.api) return;
-    REST_ACTIONS.forEach(action => {
+    REST_ACTIONS.forEach((action) => {
       restApis[action] = restApis[action] || !!model.api[action];
     });
   });
 
-  _.forEach(apis, api => {
-    REST_ACTIONS.forEach(action => {
+  _.forEach(apis, (api) => {
+    REST_ACTIONS.forEach((action) => {
       restApis[action] = restApis[action] || !!api[action];
     });
   });
@@ -160,12 +161,13 @@ export default async function loadApi() {
       } catch (error) {
         onError(ctx, error);
       }
+      return null;
     };
   }
 
   //扩展接口
   let extension = false;
-  _.forEach(apis, api => {
+  _.forEach(apis, (api) => {
     if (extension) return;
     _.forEach(api, (fn, key) => {
       if (extension || key[0] === '_') return;
@@ -188,7 +190,7 @@ export default async function loadApi() {
           let promise = ctrl[action](ctx, next);
           //异步函数
           if (promise && promise.then) {
-            return promise.catch(error => {
+            return promise.catch((error) => {
               onError(ctx, error);
             });
           }
@@ -196,7 +198,7 @@ export default async function loadApi() {
         } catch (error) {
           onError(ctx, error);
         }
-        return;
+        return null;
       }
       return next();
     });

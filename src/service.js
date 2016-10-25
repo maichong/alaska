@@ -83,7 +83,6 @@ export default class Service {
    * @param {Object|string} options 初始化参数,如果为string,则代表Service的id
    */
   constructor(options) {
-    const service = this;
     this._options = options;
 
     if (!options.id) {
@@ -97,6 +96,7 @@ export default class Service {
     try {
       this.version = require(options.dir + '/package.json').version;
     } catch (e) {
+      //
     }
 
     if (!options.configFile) {
@@ -104,6 +104,7 @@ export default class Service {
       options.configFile = options.id + '.js';
     }
     this.alaska = alaska;
+    /* eslint new-cap:0 */
     this.debug = DEBUG(options.id);
     this.panic = alaska.panic;
     this.error = alaska.error;
@@ -156,75 +157,6 @@ export default class Service {
     return this._options.dir;
   }
 
-  /**
-   * 获取语言配置列表
-   * @returns {Object}
-   */
-  get locales() {
-    return this._locales;
-  }
-
-  /**
-   * 为Service增加配置目录,Service启动后再调用此方法将无效果
-   * @param {string} dir
-   */
-  addConfigDir(dir) {
-    this._configDirs.push(dir);
-    if (util.isDirectory(dir + '/templates')) {
-      this._templatesDirs.unshift(dir + '/templates');
-    }
-  }
-
-  /**
-   * 追加配置项
-   * @param {Object} config
-   */
-  applyConfig(config) {
-    for (let key in config) {
-      if (!config.hasOwnProperty(key)) return;
-      let value = config[key];
-
-      //增加配置项
-      if (key[0] === '+') {
-        key = key.slice(1);
-        if (Array.isArray(this._config[key])) {
-          this._config[key] = this._config[key].concat(value);
-        } else if (typeof this._config[key] === 'object') {
-          _.assign(this._config[key], value);
-        } else {
-          throw new Error(`Apply config error at '+${key}'`);
-        }
-      } else
-
-      //移除配置项
-      if (key[0] === '-') {
-        key = key.slice(1);
-        if (Array.isArray(this._config[key])) {
-          this._config[key] = _.without.apply(_, [this._config[key]].concat(value));
-        } else if (typeof this._config[key] === 'object') {
-          let keys = [];
-          if (typeof value === 'string') {
-            keys = [value];
-          } else if (Array.isArray(value)) {
-            keys = value;
-          } else {
-            throw new Error(`Apply config error at '+${key}'`);
-          }
-          this._config[key] = _.omit.apply(_, [this._config[key]].concat(keys));
-        } else {
-          throw new Error(`Apply config error at '${key}'`);
-        }
-      } else
-
-      //深度继承
-      if (key[0] === '*') {
-        key = key.slice(1);
-        this._config[key] = _.defaultsDeep({}, value, this._config[key]);
-      } else {
-        this._config[key] = value;
-      }
-    }
-  }
 
   /**
    * 判断当前Service是否是主Service
@@ -248,6 +180,122 @@ export default class Service {
    */
   get main() {
     return alaska.main;
+  }
+
+  /**
+   * 获取语言配置列表
+   * @returns {Object}
+   */
+  get locales() {
+    return this._locales;
+  }
+
+  /**
+   * 获取子Service列表数组
+   * @returns {[Service]}
+   */
+  get serviceList() {
+    return _.values(this._services);
+  }
+
+  /**
+   * 获取Model列表数组
+   * @returns {[Model]}
+   */
+  get modelList() {
+    return _.values(this._models);
+  }
+
+  /**
+   * 获取Sled列表数组
+   * @returns {[Sled]}
+   */
+  get sledList() {
+    return _.values(this._sleds);
+  }
+
+  /**
+   * 获取所有子Service
+   * @returns {Object}
+   */
+  get services() {
+    return this._services;
+  }
+
+  /**
+   * 获取所有Model
+   * @returns {Object}
+   */
+  get models() {
+    return this._models;
+  }
+
+  /**
+   * 获取所有Sleds
+   * @returns {Object}
+   */
+  get sleds() {
+    return this._sleds;
+  }
+
+  /**
+   * 为Service增加配置目录,Service启动后再调用此方法将无效果
+   * @param {string} dir
+   */
+  addConfigDir(dir) {
+    this._configDirs.push(dir);
+    if (util.isDirectory(dir + '/templates')) {
+      this._templatesDirs.unshift(dir + '/templates');
+    }
+  }
+
+  /**
+   * 追加配置项
+   * @param {Object} config
+   */
+  applyConfig(config) {
+    Object.keys(config).forEach((key) => {
+      let value = config[key];
+      //增加配置项
+      if (key[0] === '+') {
+        key = key.slice(1);
+        if (Array.isArray(this._config[key])) {
+          this._config[key] = this._config[key].concat(value);
+        } else if (typeof this._config[key] === 'object') {
+          Object.assign(this._config[key], value);
+        } else {
+          throw new Error(`Apply config error at '+${key}'`);
+        }
+      } else
+
+      //移除配置项
+      if (key[0] === '-') {
+        key = key.slice(1);
+        if (Array.isArray(this._config[key])) {
+          this._config[key] = _.without(this._config[key], ...value);
+        } else if (typeof this._config[key] === 'object') {
+          let keys = [];
+          if (typeof value === 'string') {
+            keys = [value];
+          } else if (Array.isArray(value)) {
+            keys = value;
+          } else {
+            throw new Error(`Apply config error at '+${key}'`);
+          }
+          this._config[key] = _.omit(this._config[key], ...keys);
+        } else {
+          throw new Error(`Apply config error at '${key}'`);
+        }
+      } else
+
+      //深度继承
+      if (key[0] === '*') {
+        key = key.slice(1);
+        this._config[key] = _.defaultsDeep({}, value, this._config[key]);
+      } else {
+        this._config[key] = value;
+      }
+    });
   }
 
   /**
@@ -366,20 +414,20 @@ export default class Service {
   /**
    * 获取当前Service配置
    * @param {boolean} [mainAsDefault] 如果当前Service中不存在配置,则获取主Service的配置
-   * @param {string} path 配置名
+   * @param {string} key 配置名
    * @param {*} [defaultValue] 默认值
    */
-  config(mainAsDefault, path, defaultValue) {
+  config(mainAsDefault, key, defaultValue) {
     if (mainAsDefault !== true) {
-      defaultValue = path;
-      path = mainAsDefault;
+      defaultValue = key;
+      key = mainAsDefault;
       mainAsDefault = false;
     }
-    let value = _.get(this._config, path, defaultValue);
+    let value = _.get(this._config, key, defaultValue);
     if (!mainAsDefault || value !== undefined || this.isMain()) {
       return value;
     }
-    return alaska.config(path);
+    return alaska.config(key);
   }
 
   /**
@@ -406,7 +454,7 @@ export default class Service {
       }
     }
     me._db = require('mongoose').createConnection(config);
-    me._db.on('error', error => {
+    me._db.on('error', (error) => {
       console.error(error);
       process.exit(1);
     });
@@ -509,18 +557,15 @@ export default class Service {
    * @private
    */
   _destroyIdleDrivers() {
-    for (let idleId in this._idleDrivers) {
+    Object.keys(this._idleDrivers).forEach((idleId) => {
       let drivers = this._idleDrivers[idleId];
-      for (let i in drivers) {
-        let d = drivers[i];
+      for (let d of drivers) {
         if (d.idle && Date.now() - d.idle > 5 * 60 * 1000) {
-          drivers.splice(i, 1);
+          _.pull(drivers, d);
           d.destroy();
-          setImmediate(() => this._destroyIdleDrivers());
-          return;
         }
       }
-    }
+    });
   }
 
   /**
@@ -556,47 +601,22 @@ export default class Service {
       api: {},
       controllers: {},
       models: {},
-      services: _.keys(this._services)
+      services: Object.keys(this._services)
     };
-    for (let key in this._apiControllers) {
+    Object.keys(this._apiControllers).forEach((key) => {
       let c = this._apiControllers[key];
-      res.api[key] = [];
-      for (let name in c) {
-        if (name[0] === '_') continue;
-        res.api[key].push(name);
-      }
-    }
-    for (let key in this._controllers) {
+      res.api[key] = Object.keys(c).filter(name => name[0] !== '_');
+    });
+    Object.keys(this._controllers).forEach((key) => {
       let c = this._controllers[key];
-      res.controllers[key] = [];
-      for (let name in c) {
-        if (name[0] === '_') continue;
-        res.controllers[key].push(name);
-      }
-    }
-    for (let key in this._models) {
-      let m = this._models[key];
-      res.models[key] = {
+      res.controllers[key] = Object.keys(c).filter(name => name[0] !== '_');
+    });
+    for (let m of this.modelList) {
+      res.models[m.name] = {
         api: m.api
       };
     }
     return res;
-  }
-
-  /**
-   * 获取所有Model
-   * @returns {Object}
-   */
-  get models() {
-    return this._models;
-  }
-
-  /**
-   * 获取所有Sleds
-   * @returns {Object}
-   */
-  get sleds() {
-    return this._sleds;
   }
 
   /**
@@ -610,7 +630,7 @@ export default class Service {
       return this._models[name];
     }
 
-    //TODO 抛出异常
+    //TODO 抛出友好异常
 
     let index = name.indexOf('.');
     if (index > -1) {
@@ -630,6 +650,7 @@ export default class Service {
     if (!optional) {
       this.panic(`"${name}" model not found`);
     }
+    return null;
   }
 
   /**
@@ -652,7 +673,7 @@ export default class Service {
       return this._sleds[name];
     }
 
-    //TODO 抛出异常
+    //TODO 抛出友好异常
 
     let index = name.indexOf('.');
     if (index > -1) {
@@ -669,7 +690,7 @@ export default class Service {
         return service.sled(name);
       }
     }
-    this.panic(`"${name}" sled not found`);
+    return this.panic(`"${name}" sled not found`);
   }
 
   /**

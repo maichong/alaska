@@ -4,7 +4,6 @@
  * @author Liang <liang@maichong.it>
  */
 
-import _ from 'lodash';
 import path from 'path';
 import fs from 'mz/fs';
 import mime from 'mime';
@@ -16,21 +15,38 @@ import Sled from './sled';
 import Model from './model';
 
 const debug = require('debug')('alaska');
-let defaultAlaska;
+
+
+/**
+ * 一般错误
+ * @class {NormalError}
+ */
+class NormalError extends Error {
+  constructor(message, code) {
+    super(message);
+    this.code = code;
+  }
+}
+
+/**
+ * 严重错误
+ * @class {PanicError}
+ */
+class PanicError extends Error {
+  constructor(message, code) {
+    super(message);
+    this.code = code;
+  }
+}
 
 /**
  * Alaska主类,一个项目运行时可以实例化多个Alaska对象,每个Alaska对象会监听一个端口
  * 默认情况下通过 `require('alaska')` 获取默认Alaska实例
- * ```javascript
+ * ```js
  * const alaska = require('alaska');
  *
  * alaska.launch('blog').then(function(){
  *     console.log('blog launched');
- * });
- *
- * let other = new alaska.Alaska();
- * other.launch('shop').then(function(){
- *     console.log('shop launched);
  * });
  * ```
  */
@@ -122,7 +138,6 @@ class Alaska {
     collie(this, 'loadMiddlewares');
     collie(this, 'registerService');
     collie(this, 'listen');
-    this.defaultAlaska = defaultAlaska ? defaultAlaska : this;
   }
 
   /**
@@ -201,12 +216,12 @@ class Alaska {
 
   /**
    * 获取当前Alaska实例的主Service配置
-   * @param {string} path 配置名
+   * @param {string} key 配置名
    * @param {*} [defaultValue] 默认值
    * @returns {*}
    */
-  config(path, defaultValue) {
-    return this._main.config(path, defaultValue);
+  config(key, defaultValue) {
+    return this._main.config(key, defaultValue);
   }
 
   /**
@@ -239,29 +254,35 @@ class Alaska {
     this.launch = util.resolved;
     const alaska = this;
     debug('listen');
-    this.app.use(function (ctx, next) {
+    const mountKeys = Object.keys(this._mounts);
+
+    this.app.use(async(ctx, next) => {
       const hostname = ctx.hostname;
-      //test
-      for (let point in alaska._mounts) {
+      for (let point of mountKeys) {
         debug('test', point);
         let service = alaska._mounts[point];
-        if (service.domain && service.domain !== hostname) {
-          continue;
-        }
-        if (ctx.path.startsWith(service.prefix)) {
-          ctx.service = service;
-          return service.routes(ctx, next);
-        }
-        if (ctx.path + '/' === service.prefix) {
-          return ctx.redirect(service.prefix);
+        if (!service.domain || service.domain === hostname) {
+          if (ctx.path.startsWith(service.prefix)) {
+            ctx.service = service;
+            return service.routes(ctx, next);
+          }
+          if (ctx.path + '/' === service.prefix) {
+            return ctx.redirect(service.prefix);
+          }
         }
       }
+      return null;
     });
+
     if (!this._callbackMode) {
       this.app.listen(this.config('port'));
     }
   }
 
+  /**
+   * 返回 http.createServer() 回调函数
+   * @returns {Function}
+   */
   callback() {
     this._callbackMode = true;
     return this.app.callback();
@@ -280,7 +301,7 @@ class Alaska {
     const localeCookieKey = this.config('localeCookieKey');
     const localeQueryKey = this.config('localeQueryKey');
     const defaultLocale = MAIN.config('defaultLocale');
-    app.use(function (ctx, next) {
+    app.use((ctx, next) => {
       ctx.set('X-Powered-By', 'Alaska');
       ctx.alaska = alaska;
       ctx.main = MAIN;
@@ -296,7 +317,7 @@ class Alaska {
        */
       ctx.sendfile = async function (filePath, options) {
         options = options || {};
-        let trailingSlash = '/' === filePath[filePath.length - 1];
+        let trailingSlash = filePath[filePath.length - 1] === '/';
         let index = options.index;
         if (index && trailingSlash) filePath += index;
         let maxage = options.maxage || options.maxAge || 0;
@@ -316,13 +337,13 @@ class Alaska {
           }
         } catch (err) {
           let notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR'];
-          if (~notfound.indexOf(err.code)) return;
+          if (notfound.indexOf(err.code) > -1) return;
           err.status = 500;
           throw err;
         }
         ctx.set('Last-Modified', stats.mtime.toUTCString());
         ctx.set('Content-Length', stats.size);
-        ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
+        ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 || 0));
         ctx.type = options.type || mime.lookup(filePath);
         ctx.body = fs.createReadStream(filePath);
       };
@@ -340,21 +361,20 @@ class Alaska {
         };
       }
 
-      //locale
-      {
-        //切换语言
-        if (localeQueryKey) {
-          if (ctx.query[localeQueryKey]) {
-            let locale = ctx.query[localeQueryKey];
-            if (locales.indexOf(locale) > -1) {
-              ctx._locale = locale;
-              ctx.cookies.set(localeCookieKey, locale, {
-                maxAge: 365 * 86400 * 1000
-              });
-            }
+      //切换语言
+      if (localeQueryKey) {
+        if (ctx.query[localeQueryKey]) {
+          let locale = ctx.query[localeQueryKey];
+          if (locales.indexOf(locale) > -1) {
+            ctx._locale = locale;
+            ctx.cookies.set(localeCookieKey, locale, {
+              maxAge: 365 * 86400 * 1000
+            });
           }
         }
-        ctx.__defineGetter__('locale', () => {
+      }
+      Object.defineProperty(ctx, 'locale', {
+        get: () => {
           let locale = ctx._locale;
           if (locale) {
             return locale;
@@ -376,31 +396,28 @@ class Alaska {
             }
           }
           return locale;
-        });
-      }
+        }
+      });
 
       //translate
-      {
-        /**
-         * 翻译
-         * @param {string} message 原文
-         * @param {string} [locale] 目标语言
-         * @param {object} [values] 翻译值
-         * @returns {string} 返回翻译结果
-         */
-        ctx.t = (message, locale, values) => {
-          if (locale && typeof locale === 'object') {
-            values = locale;
-            locale = null;
-          }
-          if (!locale) {
-            locale = ctx.locale;
-          }
-          return ctx.service.t(message, locale, values);
-        };
-
-        ctx.state.t = ctx.t;
-      }
+      /**
+       * 翻译
+       * @param {string} message 原文
+       * @param {string} [locale] 目标语言
+       * @param {object} [values] 翻译值
+       * @returns {string} 返回翻译结果
+       */
+      ctx.t = (message, locale, values) => {
+        if (locale && typeof locale === 'object') {
+          values = locale;
+          locale = null;
+        }
+        if (!locale) {
+          locale = ctx.locale;
+        }
+        return ctx.service.t(message, locale, values);
+      };
+      ctx.state.t = ctx.t;
 
       //config
       ctx.state.c = (a, b, c) => ctx.service.config(a, b, c);
@@ -409,93 +426,98 @@ class Alaska {
       ctx.state.env = process.env.NODE_ENV || 'production';
 
       //render
-      {
-        /**
-         * [async] 渲染模板
-         * @param {string} template 模板文件
-         * @param {Object} [state]  模板变量
-         * @returns {string} 返回渲染结果
-         */
-        ctx.render = function (template, state) {
-          const service = ctx.service;
-          //const templatesDir = path.join(service.dir, service.config('templates')) + '/';
-          //let file = templatesDir + template;
-          //if (!util.isFile(file)) {
-          //  throw new Error(`Template is not exist: ${file}`);
-          //}
-          return new Promise((resolve, reject) => {
-            service.engine.renderFile(template, _.assign({}, ctx.state, state), (error, result) => {
+      /**
+       * [async] 渲染模板
+       * @param {string} template 模板文件
+       * @param {Object} [state]  模板变量
+       * @returns {string} 返回渲染结果
+       */
+      ctx.render = function (template, state) {
+        const service = ctx.service;
+        //const templatesDir = path.join(service.dir, service.config('templates')) + '/';
+        //let file = templatesDir + template;
+        //if (!util.isFile(file)) {
+        //  throw new Error(`Template is not exist: ${file}`);
+        //}
+        return new Promise((resolve, reject) => {
+          service.engine.renderFile(
+            template,
+            Object.assign({}, ctx.state, state), (error, result) => {
               if (error) {
                 reject(error);
                 return;
               }
               resolve(result);
-            });
-          });
-        };
+            }
+          );
+        });
+      };
 
-        /**
-         * [async] 渲染并显示模板
-         * @param {string} template 模板文件
-         * @param {Object} [state]  模板变量
-         * @returns {string} 返回渲染结果
-         */
-        ctx.show = function (template, state) {
-          return ctx.render(template, state).then(html => {
-            ctx.body = html;
-            return html;
-          });
-        };
-      }
+      /**
+       * [async] 渲染并显示模板
+       * @param {string} template 模板文件
+       * @param {Object} [state]  模板变量
+       * @returns {string} 返回渲染结果
+       */
+      ctx.show = function (template, state) {
+        return ctx.render(template, state).then((html) => {
+          ctx.body = html;
+          return html;
+        });
+      };
 
       return next();
     });
 
     let _middlewares = {};
-    this.config('appMiddlewares', []).map(id => {
-      if (typeof id === 'function') {
-        //数组中直接就是一个中间件函数
-        return {
-          fn: id,
-          sort: id.sort || 0,
-          id: id.name || Math.random(),
-          name: id.name || '-'
-        };
-      }
-      let options;
-      let sort = 0;
-      if (typeof id === 'object') {
-        options = id.options;
-        sort = id.sort || 0;
-        id = id.id;
-      }
-      if (id.startsWith('.')) {
-        //如果是一个文件路径
-        id = path.join(service.dir, id);
-      }
-      return {
-        id,
-        sort,
-        options
-      };
-    }).filter(item => {
-      if (_middlewares[item.id]) {
-        return false;
-      }
-      _middlewares[item.id] = item;
-      return true;
-    }).sort((a, b) => a.sort < b.sort).forEach(item => {
-      debug('middleware', item.name || item.id);
-      if (item.fn) {
-        app.use(item.fn);
-      } else {
-        let middleware = require(item.id);
-        if (middleware.default) {
-          middleware = middleware.default;
+    this.config('appMiddlewares', [])
+      .map((id) => {
+        if (typeof id === 'function') {
+          //数组中直接就是一个中间件函数
+          return {
+            fn: id,
+            sort: id.sort || 0,
+            id: id.name || Math.random(),
+            name: id.name || '-'
+          };
         }
-        app.use(middleware(item.options));
-      }
-    });
+        let options;
+        let sort = 0;
+        if (typeof id === 'object') {
+          options = id.options;
+          sort = id.sort || 0;
+          id = id.id;
+        }
+        if (id.startsWith('.')) {
+          //如果是一个文件路径
+          id = path.join(MAIN.dir, id);
+        }
+        return {
+          id,
+          sort,
+          options
+        };
+      })
+      .filter((item) => {
+        if (_middlewares[item.id]) {
+          return false;
+        }
+        _middlewares[item.id] = item;
+        return true;
+      })
+      .sort((a, b) => a.sort < b.sort)
+      .forEach((item) => {
+        debug('middleware', item.name || item.id);
+        if (item.fn) {
+          app.use(item.fn);
+        } else {
+          let middleware = require(item.id);
+          if (middleware.default) {
+            middleware = middleware.default;
+          }
+          app.use(middleware(item.options));
+        }
+      });
   }
 
   /**
@@ -503,11 +525,10 @@ class Alaska {
    * @returns {object}
    */
   toJSON() {
-    let res = {};
-    for (let key in this._services) {
+    return Object.keys(this._services).reduce((res, key) => {
       res[key] = this._services[key].toJSON();
-    }
-    return res;
+      return res;
+    }, {});
   }
 
   /**
@@ -523,7 +544,7 @@ class Alaska {
         message = msg;
       }
     }
-    let error = new defaultAlaska.PanicError(message);
+    let error = new PanicError(message);
     if (code) {
       error.code = code;
     }
@@ -544,7 +565,7 @@ class Alaska {
         message = msg;
       }
     }
-    let error = new defaultAlaska.NormalError(message);
+    let error = new NormalError(message);
     if (code) {
       error.code = code;
     }
@@ -560,43 +581,26 @@ class Alaska {
     try {
       return await promise;
     } catch (error) {
-      if (error instanceof TypeError || error instanceof SyntaxError || error instanceof ReferenceError) {
+      if (
+        error instanceof TypeError ||
+        error instanceof SyntaxError ||
+        error instanceof ReferenceError
+      ) {
         throw error;
       } else {
         this.error(error);
       }
     }
+    return null;
   }
 }
 
-defaultAlaska = new Alaska();
-defaultAlaska.default = defaultAlaska;
+const alaska = new Alaska();
+alaska.default = alaska;
+alaska.NormalError = NormalError;
+alaska.PanicError = PanicError;
 
-/**
- * 一般错误
- * @class {NormalError}
- */
-defaultAlaska.NormalError = class NormalError extends Error {
-  constructor(message, code) {
-    super(message);
-    this.code = code;
-  }
-};
+module.exports = alaska;
 
-/**
- * 严重错误
- * @class {PanicError}
- */
-defaultAlaska.PanicError = class PanicError extends Error {
-  constructor(message, code) {
-    super(message);
-    this.code = code;
-  }
-};
-
-module.exports = defaultAlaska;
-
-export default defaultAlaska;
-
-defaultAlaska.Service = require('./service').default;
-defaultAlaska.Field = require('./field').default;
+alaska.Service = require('./service').default;
+alaska.Field = require('./field').default;

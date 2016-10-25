@@ -9,8 +9,7 @@ import * as util from '../util';
 export default async function loadSleds() {
   this.loadSleds = util.resolved;
 
-  for (let serviceId in this._services) {
-    let sub = this._services[serviceId];
+  for (let sub of this.serviceList) {
     await sub.loadSleds();
   }
 
@@ -18,13 +17,12 @@ export default async function loadSleds() {
 
   this._sleds = util.include(this.dir + '/sleds', true) || {};
 
-  for (let name in this._sleds) {
-    let Sled = this._sleds[name];
+  for (let Sled of this.sledList) {
     Sled.service = this;
     Sled.key = util.nameToKey(this.id + '.' + Sled.name);
     //加载扩展配置
     for (let dir of this._configDirs) {
-      let file = dir + '/sleds/' + name + '.js';
+      let file = dir + '/sleds/' + Sled.name + '.js';
       if (util.isFile(file)) {
         let ext = util.include(file, false);
         if (ext.pre) {

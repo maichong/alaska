@@ -256,8 +256,8 @@ export default class Sled {
       result: null,
       error: null,
       timeout: timeout || 0,
-      createdAt: new Date,
-      expiredAt: new Date(Date.now() + timeout * 1000)
+      createdAt: new Date(),
+      expiredAt: new Date(Date.now() + (timeout * 1000))
     };
     let item = this.item = {
       id,
@@ -384,12 +384,16 @@ export default class Sled {
         }
       } catch (error) {
         this.error = error;
-        this.payload && this.update();
+        if (this.payload) {
+          this.update();
+        }
         throw error;
       }
       this.result = result;
     }
-    this.payload && this.update();
+    if (this.payload) {
+      this.update();
+    }
 
     if (this.constructor._post) {
       await collie.compose(this.constructor._post, [result], this);

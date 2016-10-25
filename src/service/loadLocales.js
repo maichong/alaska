@@ -4,17 +4,16 @@
  * @author Liang <liang@maichong.it>
  */
 
-import * as util from '../util';
 import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
+import * as util from '../util';
 
 export default async function loadLocales() {
   this.loadLocales = util.resolved;
   const alaska = this.alaska;
 
-  for (let serviceId in this._services) {
-    let sub = this._services[serviceId];
+  for (let sub of this.serviceList) {
     await sub.loadLocales();
   }
   this.debug('loadLocales');
@@ -34,19 +33,16 @@ export default async function loadLocales() {
     if (!util.isDirectory(dir)) return;
     let names = fs.readdirSync(dir);
     for (let name of names) {
-      if (allowed.indexOf(name) === -1) {
-        //不允许的语言,直接跳过
-        continue;
-      }
-      let file = dir + '/' + name + '/messages.js';
-      if (!util.isFile(file)) {
-        continue;
-      }
-      let messages = require(file).default;
-      if (locales[name]) {
-        _.assign(locales[name], messages);
-      } else {
-        locales[name] = messages;
+      if (allowed.indexOf(name) > -1) {
+        let file = dir + '/' + name + '/messages.js';
+        if (util.isFile(file)) {
+          let messages = require(file).default;
+          if (locales[name]) {
+            Object.assign(locales[name], messages);
+          } else {
+            locales[name] = messages;
+          }
+        }
       }
     }
   }
@@ -56,10 +52,10 @@ export default async function loadLocales() {
     readLocales(dir + '/locales');
   }
 
-  for (let locale in locales) {
+  Object.keys(locales).forEach((locale) => {
     if (!alaska.locales[locale]) {
       alaska.locales[locale] = {};
     }
-    _.assign(alaska.locales[locale], locales[locale]);
-  }
+    Object.assign(alaska.locales[locale], locales[locale]);
+  });
 }

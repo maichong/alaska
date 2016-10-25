@@ -4,15 +4,14 @@
  * @author Liang <liang@maichong.it>
  */
 
-import * as util from '../util';
 import _ from 'lodash';
 import compose from 'koa-compose';
+import * as util from '../util';
 
 export default async function loadControllers() {
   this.loadControllers = util.resolved;
 
-  for (let serviceId in this._services) {
-    let sub = this._services[serviceId];
+  for (let sub of this.serviceList) {
     await sub.loadControllers();
   }
   if (this.config('prefix') === false || this.config('controllers') === false) return;
@@ -22,7 +21,7 @@ export default async function loadControllers() {
 
   const controllers = this._controllers = util.include(this.dir + '/controllers', false) || {};
 
-  this._configDirs.forEach(dir => {
+  this._configDirs.forEach((dir) => {
     dir += '/controllers';
     if (util.isDirectory(dir)) {
       let patches = util.include(dir, false) || {};
@@ -45,7 +44,7 @@ export default async function loadControllers() {
   });
 
   //将某些控制器的多个中间件转换成一个
-  _.forEach(controllers, ctrl => {
+  _.forEach(controllers, (ctrl) => {
     _.forEach(ctrl, (fn, key) => {
       if (Array.isArray(fn) && key[0] !== '_') {
         ctrl[key] = compose(fn);
@@ -57,6 +56,7 @@ export default async function loadControllers() {
   const defaultAction = this.config('defaultAction');
 
   const suffix = this.config('suffix');
+  /* eslint prefer-arrow-callback:0 */
   this.router.register('/:controller?/:action?', this.config('methods'), function (ctx, next) {
     let controller = ctx.params.controller || defaultController;
     let action = ctx.params.action || defaultAction;

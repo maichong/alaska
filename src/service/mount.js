@@ -10,8 +10,7 @@ export default async function mount() {
   this.mount = util.resolved;
   const alaska = this.alaska;
 
-  for (let serviceId in this._services) {
-    let sub = this._services[serviceId];
+  for (let sub of this.serviceList) {
     await sub.mount('mount');
   }
 

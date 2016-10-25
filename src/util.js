@@ -4,6 +4,8 @@
  * @author Liang <liang@maichong.it>
  */
 
+// @flow
+
 import fs from 'fs';
 import _ from 'lodash';
 
@@ -49,7 +51,7 @@ export function include(path, importDefault = true) {
   }
   if (isDirectory(path)) {
     result = {};
-    fs.readdirSync(path).forEach(file => {
+    fs.readdirSync(path).forEach((file) => {
       if (file.endsWith('.js')) {
         let name = file.slice(0, -3);
         let obj = require(path + '/' + file);
@@ -94,13 +96,13 @@ export function noop() {
  */
 export function bindMethods(obj, scope) {
   let bound = {};
-  for (let key in obj) {
+  Object.keys(obj).forEach((key) => {
     if (typeof obj[key] === 'function') {
       bound[key] = obj[key].bind(scope);
     } else if (_.isObject(obj[key])) {
       bound[key] = bindMethods(obj[key], scope);
     }
-  }
+  });
   return bound;
 }
 
@@ -142,13 +144,17 @@ export function pareseAcceptLanguage(header) {
   if (!header) {
     return [];
   }
-  return header.split(',').map(item => {
-    let lang = item.split(';q=');
-    if (lang.length < 2) {
-      lang[1] = 1;
-    } else {
-      lang[1] = parseFloat(lang[1]) || 0;
-    }
-    return lang;
-  }).filter(lang => lang[1] > 0).sort((a, b) => a[1] < b[1]).map(lang => lang[0]);
+  return header.split(',')
+    .map((item) => {
+      let lang = item.split(';q=');
+      if (lang.length < 2) {
+        lang[1] = 1;
+      } else {
+        lang[1] = parseFloat(lang[1]) || 0;
+      }
+      return lang;
+    })
+    .filter(lang => lang[1] > 0)
+    .sort((a, b) => a[1] < b[1])
+    .map(lang => lang[0]);
 }

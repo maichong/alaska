@@ -5,7 +5,6 @@
  */
 
 import alaska from './alaska';
-import _ from 'lodash';
 
 /**
  * REST接口默认控制器
@@ -35,7 +34,7 @@ export async function count(ctx) {
   }
   let filters = Model.createFilters((ctx.state.search || ctx.query.search || '').trim(), ctx.state.filters || ctx.query.filters);
   if (Model.defaultFilters) {
-    _.assign(filters, typeof Model.defaultFilters === 'function' ? Model.defaultFilters(ctx) : Model.defaultFilters);
+    Object.assign(filters, typeof Model.defaultFilters === 'function' ? Model.defaultFilters(ctx) : Model.defaultFilters);
   }
   ctx.status = alaska.OK;
   if (code === alaska.OWNER) {

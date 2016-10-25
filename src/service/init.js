@@ -4,7 +4,6 @@
  * @author Liang <liang@maichong.it>
  */
 
-import assert from 'assert';
 import * as util from '../util';
 
 export default async function init() {
@@ -14,9 +13,8 @@ export default async function init() {
   try {
     let services = this.config('services') || [];
 
-    for (let serviceId in services) {
+    Object.keys(services).forEach((serviceId) => {
       let config = services[serviceId];
-      if (!config) continue;
       let sub = this.alaska.service(serviceId, true);
       if (!sub) {
         if (!config.dir) {
@@ -29,6 +27,9 @@ export default async function init() {
       this._services[serviceId] = sub;
       let configDir = this.dir + '/config/' + serviceId;
       sub.addConfigDir(configDir);
+    });
+
+    for (let sub of this.serviceList) {
       await sub.init();
     }
   } catch (error) {

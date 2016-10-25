@@ -4,15 +4,14 @@
  * @author Liang <liang@maichong.it>
  */
 
-import * as util from '../util';
 import path from 'path';
+import * as util from '../util';
 
 export default async function loadConfig() {
   this.debug('loadConfig');
   this.loadConfig = util.resolved;
 
-  for (let serviceId in this._services) {
-    let sub = this._services[serviceId];
+  for (let sub of this.serviceList) {
     await sub.loadConfig();
   }
 

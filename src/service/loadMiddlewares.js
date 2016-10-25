@@ -9,14 +9,12 @@ import * as util from '../util';
 export default async function loadMiddlewares() {
   this.loadMiddlewares = util.resolved;
 
-  for (let serviceId in this._services) {
-    let sub = this._services[serviceId];
+  for (let sub of this.serviceList) {
     await sub.loadMiddlewares();
   }
   if (this.config('prefix') === false || !this.config('middlewares')) return;
   this.debug('loadMiddlewares');
 
-  const service = this;
   const router = this.router;
 
   this.config('middlewares', []).forEach(function (item) {

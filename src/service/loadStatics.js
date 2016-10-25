@@ -11,10 +11,10 @@ import * as util from '../util';
 export default async function loadStatics() {
   this.loadStatics = util.resolved;
 
-  for (let serviceId in this._services) {
-    let sub = this._services[serviceId];
+  for (let sub of this.serviceList) {
     await sub.loadStatics();
   }
+
   if (this.config('prefix') === false || !this.config('statics')) return;
 
   this.debug('loadStatics');
@@ -26,7 +26,7 @@ export default async function loadStatics() {
     if (tmp && typeof tmp === 'string') {
       statics.push({ root: tmp, prefix: '' });
     } else if (_.isArray(tmp)) {
-      tmp.forEach(t => {
+      tmp.forEach((t) => {
         if (t && typeof t === 'string') {
           statics.push({ root: t, prefix: '' });
         } else if (_.isObject(t) && t.root) {
@@ -39,14 +39,15 @@ export default async function loadStatics() {
   }
   if (statics.length) {
     let router = this.router;
-    statics.forEach(c => {
+    statics.forEach((c) => {
       let root = path.resolve(service.dir, c.root);
       let prefix = (c.prefix || '') + '/*';
       let prefixLength = this.config('prefix').length + c.prefix.length;
       let index = c.index === false ? false : (c.index || 'index.html');
+      /* eslint prefer-arrow-callback:0 */
       router.register(prefix, ['GET', 'HEAD'], async function (ctx, next) {
         await next();
-        if (ctx.body != null || ctx.status != 404) return;
+        if (ctx.body != null || ctx.status !== 404) return;
         let filePath = root;
         if (prefixLength) {
           filePath += ctx.path.substr(prefixLength);
