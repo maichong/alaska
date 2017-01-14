@@ -7,6 +7,4 @@ pids
 *.seed
 node_modules
 .idea
-/lib/
-/locales/
-/service/
+temp/

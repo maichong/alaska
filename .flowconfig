@@ -1,0 +1,20 @@
+[ignore]
+.*/build/.*
+.*/dist/.*
+.*/node_modules/.*
+node_modules/.*
+
+[libs]
+flow/
+packages/flow-alaska/
+#node_modules/flow-mongoose/flow/
+node_modules/flow-mime/flow/
+node_modules/flow-statuses/flow/
+node_modules/flow-koa-compose/flow/
+node_modules/flow-koa-router/flow/
+node_modules/flow-intl-messageformat/flow/
+
+[options]
+strip_root=true
+suppress_comment= \\(.\\|\n\\)*\\$Flow
+unsafe.enable_getters_and_setters=true
