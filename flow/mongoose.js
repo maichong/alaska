@@ -69,7 +69,9 @@ declare class Mongoose$Connection extends events$EventEmitter {
 
 declare class Mongoose$Schema {
   static reserved:{};
-  static Types:{};
+  static Types:{
+    [key:string]:Function
+  };
   static ObjectId:Object;
 
   obj:Object;

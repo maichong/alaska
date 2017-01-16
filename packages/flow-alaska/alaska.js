@@ -253,7 +253,7 @@ declare class Alaska$Plugin {
 
 declare class Alaska$Sled {
   constructor(params?: Object):void;
-  run():Promise<any>
+  run():Promise<any>;
   static run(params?: Object):Promise<any>;
 }
 
@@ -566,7 +566,7 @@ declare class Alaska$Service {
   panic:(message: string|number, code?: number) => void;
   error:(message: string|number, code?: number) => void;
   try: <T>(promise: Promise<T>) => Promise<T>;
-  settings?:(ctx: Alaska$Context, user: User, result: Object)=>Promise<Object|void>;
+  adminSettings?:(ctx: Alaska$Context, user: User, result: Object) => Promise <void>;
   applyConfig(config: Alaska$Config): void;
   config(key: string, defaultValue?: any, mainAsDefault?: boolean): any;
   model(name: string, optional?: boolean): Class<Alaska$Model>;

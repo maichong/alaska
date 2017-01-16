@@ -19,6 +19,7 @@
     "no-param-reassign": 0,
     "no-prototype-builtins": 0,
     "no-underscore-dangle": 0,
+    "no-continue": 0,
     "comma-dangle": [1, "never"],
     "spaced-comment": [0, "always"],
     "func-names": 0,
