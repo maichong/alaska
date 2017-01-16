@@ -1,7 +1,9 @@
-import alaska from 'alaska';
+// @flow
+
+import { Sled } from 'alaska';
 import SETTINGS from 'alaska-settings';
 
-export default class Init extends alaska.Sled {
+export default class Init extends Sled {
   async exec() {
     SETTINGS.register({
       id: 'user.closeRegister',

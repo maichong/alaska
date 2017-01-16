@@ -1,4 +1,3 @@
-
 import collie from 'collie';
 import random from 'string-random';
 import _ from 'lodash';
@@ -171,11 +170,11 @@ export default class Sled {
   }
 
   /**
-   * [async] alias for sled.run()
+   * alias for sled.run()
    * @param {Object} [data]
-   * @returns {*}
+   * @returns {Promise<any>}
    */
-  static run(data) {
+  static run(data): Promise<any> {
     let sled = new this(data);
     return sled.run();
   }
@@ -349,10 +348,10 @@ export default class Sled {
   }
 
   /**
-   * [async] 执行sled
+   * 执行sled
    * @returns {*}
    */
-  async run() {
+  async run(): Promise<any> {
     if (this.error) {
       throw this.error;
     }

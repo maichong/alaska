@@ -30,13 +30,14 @@ class UserService extends Service {
   }
 
   /**
-   * [async] 获取所有权限列表
+   * 获取所有权限列表
    * @returns {Ability[]}
    */
-  async abilities() {
+  async abilities(): Promise<Ability[]> {
     let cache = this.cache;
     let data = await cache.get('abilities_list');
     if (data) {
+      // $Flow
       return Ability.fromObjectArray(data);
     }
     // $Flow
@@ -49,13 +50,14 @@ class UserService extends Service {
   }
 
   /**
-   * [async] 获取角色列表
+   * 获取角色列表
    * @returns {Role[]}
    */
-  async roles() {
+  async roles(): Promise<Role[]> {
     let cache = this.cache;
     let data = await cache.get('roles_list');
     if (data) {
+      // $Flow
       return Role.fromObjectArray(data);
     }
     // $Flow
@@ -68,9 +70,9 @@ class UserService extends Service {
   }
 
   /**
-   * [async] 清空本模块缓存
+   * 清空本模块缓存
    */
-  async clearCache() {
+  async clearCache(): Promise<void> {
     let cache = this.cache;
     await cache.del('abilities_list');
     await cache.del('roles_list');

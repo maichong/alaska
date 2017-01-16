@@ -89,9 +89,9 @@ export default class User extends Model {
   }
 
   /**
-   * [async] 判断用户是否有指定权限
+   * 判断用户是否有指定权限
    * @param id
-   * @returns {boolean}
+   * @returns {Promise<boolean>}
    */
   async hasAbility(id: string): Promise<boolean> {
     //查找用户特殊权限
