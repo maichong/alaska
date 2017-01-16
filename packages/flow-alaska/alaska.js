@@ -395,7 +395,7 @@ declare class Alaska$Model extends events$EventEmitter {
   static id:string;
   static key:string;
   static path:string;
-  static title:string;
+  static label:string;
   static icon:string;
   static nocreate:boolean;
   static noedit:boolean;
@@ -409,6 +409,8 @@ declare class Alaska$Model extends events$EventEmitter {
   static autoSelect:boolean;
   static defaultScope:{ [field:string]:boolean };
   static defaultSort?:string;
+  static titleField:string;
+  static userField:string;
   static searchFields:string[] | string;
   static defaultColumns:string[] | string;
   static defaultFilters?:Object | (ctx: Alaska$Context)=>Object;

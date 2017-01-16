@@ -306,7 +306,7 @@ export default class Model {
       model.path = service.id + '.' + model.name;
 
       _.defaults(model, {
-        title: 'title',
+        titleField: 'title',
         userField: 'user',
         api: false,
         searchFields: '',
@@ -519,8 +519,8 @@ export default class Model {
 
       if (!model.defaultColumns) {
         model.defaultColumns = ['_id'];
-        if (model.title && model.fields[model.title]) {
-          model.defaultColumns.push(model.title);
+        if (model.titleField && model.fields[model.titleField]) {
+          model.defaultColumns.push(model.titleField);
         }
         if (model.fields.createdAt) {
           model.defaultColumns.push('createdAt');

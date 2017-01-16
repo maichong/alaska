@@ -7,7 +7,7 @@ export default class User extends Model {
 
   static label = 'User';
   static icon = 'user';
-  static title = 'username';
+  static titleField = 'username';
   static defaultColumns = 'avatar username email roles createdAt';
   static searchFields = 'username email';
   static defaultSort = '-createdAt';
