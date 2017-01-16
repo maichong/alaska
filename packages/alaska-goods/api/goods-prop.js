@@ -3,7 +3,7 @@
 import _ from 'lodash';
 
 export async function list(ctx: Alaska$Context, next: Function) {
-  let filters:Object = ctx.state.filters || ctx.query.filters || {};
+  let filters:any = ctx.state.filters || ctx.query.filters || {};
   let cat = ctx.state.cat || ctx.query.cat;
   filters.activated = true;
   if (cat) {
