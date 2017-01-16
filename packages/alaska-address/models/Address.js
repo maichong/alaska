@@ -5,7 +5,7 @@ import { Model } from 'alaska';
 export default class Address extends Model {
   static label = 'Address';
   static icon = 'map-marker';
-  static title = 'name';
+  static titleField = 'name';
   static defaultColumns = 'user name tel geo province city createdAt';
   static defaultSort = '-createdAt';
   static api = {

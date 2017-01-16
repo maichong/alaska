@@ -1,3 +1,4 @@
+// @flow
 
 import React from 'react';
 
@@ -23,6 +24,13 @@ class SettingsEditor extends React.Component {
     views: object,
     settings: object,
     t: func
+  };
+
+  state: {
+    values: {},
+    fields: {},
+    map: {},
+    groups: {}
   };
 
   constructor(props) {
@@ -106,20 +114,20 @@ class SettingsEditor extends React.Component {
     const { t, views } = this.context;
     const { lists } = this.props;
     const { values, groups, fields } = this.state;
-    let content;
+    let content: any;
     if (!lists[KEY]) {
       content = <div className="loading">Loading...</div>;
     } else {
       content = [];
       _.forEach(groups, (group, index) => {
-        let items = _.map(group.items, (item, index) => {
+        let items = _.map(group.items, (item, itemIndex) => {
           let FieldView = views[item.type] || views.MixedFieldView;
           let value = values[item._id];
           if (value === undefined) {
             value = item.value;
           }
           return (<FieldView
-            key={index}
+            key={itemIndex}
             field={fields[item._id]}
             value={value}
             onChange={this.handleChange.bind(this, item._id)}
