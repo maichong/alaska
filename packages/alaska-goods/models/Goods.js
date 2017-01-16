@@ -283,9 +283,9 @@ export default class Goods extends Model {
 
     //如果在后台修改了SKU,更新SKU记录
     if (this.isModified('sku')) {
-      let skuIds = [];
+      let skuIds:Object[] = [];
       // $Flow
-      let skus = await Sku.find({
+      let skus:Sku[] = await Sku.find({
         goods: this.id
       });
       let skusMap = {};

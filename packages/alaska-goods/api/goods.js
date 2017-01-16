@@ -11,7 +11,7 @@ import Goods from '../models/Goods';
  */
 export function list(ctx: Alaska$Context, next: Function): Function {
   let cid = ctx.query.cid || '';
-  let filters:Object = ctx.state.filters || ctx.query.filters || {};
+  let filters:any = ctx.state.filters || ctx.query.filters || {};
   if (cid) {
     filters.cats = cid;
   }
