@@ -272,9 +272,9 @@ declare type Alaska$Data={
 declare type Alaska$Model$relationships={
   [key:string]:{
     key:string;
-    ref:Class<Alaska$Model>;
+    ref:Class<Alaska$Model> | string;
     populations:Alaska$Model$populations;
-  }
+  };
 };
 
 declare type Alaska$Model$populations={
