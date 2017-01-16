@@ -8,10 +8,11 @@ export default class Settings extends Model {
   static defaultColumns = '_id title group service';
   static cache = 600; //缓存10分钟
 
-  static defaultFilters = ctx => {
+  static defaultFilters = (ctx) => {
     if (!ctx.state.superMode) {
       return { super: { $ne: true } };
     }
+    return {};
   };
 
   static fields = {

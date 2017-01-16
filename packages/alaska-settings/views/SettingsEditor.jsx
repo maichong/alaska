@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import _forEach from 'lodash/forEach';
 import _map from 'lodash/map';
@@ -45,11 +43,11 @@ class SettingsEditor extends React.Component {
       const { t } = this.context;
       const results = props.lists[KEY].results;
       const map = newState.map = {};
-      _forEach(results, item => map[item._id] = item);
+      _forEach(results, (item) => map[item._id] = item);
 
       const fields = newState.fields = {};
       const groups = newState.groups = {};
-      _forEach(results, item => {
+      _forEach(results, (item) => {
         let groupKey = item.group || 'Basic Settings';
         if (!groups[groupKey]) {
           groups[groupKey] = {
@@ -158,6 +156,6 @@ class SettingsEditor extends React.Component {
   }
 }
 
-export default connect(({ lists }) => ({ lists }), dispatch => ({
+export default connect(({ lists }) => ({ lists }), (dispatch) => ({
   actions: bindActionCreators(actions, dispatch)
 }))(SettingsEditor);
