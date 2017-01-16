@@ -504,15 +504,18 @@ declare class Alaska$Field {
   fixed:void|boolean;
   horizontal:void|boolean;
   nolabel:void|boolean;
-  disabled:void|boolean;
+  disabled:void|boolean | Alaska$Field$depends;
   super:void|boolean;
   help:void|string;
   cell:void|string;
   view:void|string;
   filter:void|string;
   depends:void|Alaska$Field$depends;
+  _model:Class<Alaska$Model>;
 
   viewOptions():{ label:string;plain:Object|string };
+  init():void;
+  createFilter(filter: Object, filters: Object): Object;
 }
 
 declare type Alaska$Field$options={
@@ -538,7 +541,7 @@ declare type Alaska$Field$options={
   fixed?:boolean;
   horizontal?:boolean;
   nolabel?:boolean;
-  disabled?:boolean;
+  disabled?:boolean | Alaska$Field$depends;
   super?:boolean;
   help?:string;
   cell?:string;
