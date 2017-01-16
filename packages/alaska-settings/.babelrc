@@ -1,0 +1,18 @@
+{
+	"presets": [
+	],
+	"plugins": [
+		"syntax-async-functions",
+		"syntax-export-extensions",
+		"transform-class-properties",
+		"transform-es2015-modules-commonjs",
+		"transform-es2015-destructuring",
+		"transform-es2015-parameters",
+		"transform-export-extensions",
+		"transform-object-rest-spread",
+		["transform-async-to-module-method",{
+		  "module": "co",
+		  "method": "wrap"
+		}]
+	]
+}
