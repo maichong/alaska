@@ -14,7 +14,7 @@ declare class Settings extends Alaska$Model {
   group: string;
   value: Object;
   help: string;
-  type: any;
+  type: string;
   super: boolean;
   options: Object;
 }
