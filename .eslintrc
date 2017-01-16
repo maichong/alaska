@@ -20,7 +20,15 @@
     "no-prototype-builtins": 0,
     "no-underscore-dangle": 0,
     "no-continue": 0,
-    "comma-dangle": [1, "never"],
+    "comma-dangle": [
+      "error", {
+        "arrays": "only-multiline",
+        "objects": "only-multiline",
+        "imports": "never",
+        "exports": "never",
+        "functions": "never"
+      }
+    ],
     "spaced-comment": [0, "always"],
     "func-names": 0,
     "import/extensions": 0,
@@ -31,6 +39,8 @@
     "radix": 0,
     "max-len": [2, {"code": 120, "ignoreComments": true}],
     "require-yield": 1,
+    "jsx-a11y/label-has-for": 0,
+    "jsx-a11y/no-static-element-interactions": 1,
     "react/forbid-prop-types": 0,
     "react/no-unused-prop-types": 1,
     "react/prefer-stateless-function": 0,
@@ -51,6 +61,7 @@
             "mixins",
             "statics",
             "defaultProps",
+            "props",
             "state",
             "constructor",
             "getDefaultProps",
