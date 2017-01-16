@@ -18,7 +18,7 @@ type CookiesSetOptions = {
 
 declare type Cookies = {
   get(name: string, options?: CookiesGetOptions):void;
-  set(name: string, value: string, options?: CookiesSetOptions):void;
+  set(name: string, value?: string, options?: CookiesSetOptions):void;
 }
 
 declare type Alaska$Request = {
@@ -85,7 +85,6 @@ declare type Alaska$Context = {
   res: Object;
   request: Alaska$Request;
   response: Alaska$Response;
-  user: User;
   state: Object;
   cookies: Cookies;
   header: { [key: string]: string };
@@ -138,6 +137,9 @@ declare type Alaska$Context = {
   service: Alaska$Service;
   locale: string;
   _locale: string;
+  session:{ [key:string]:any };
+  user?: User;
+  checkAbility:(id: string) => Promise<void>;
   state:{
     c:Function;
     t:Function;
@@ -196,6 +198,8 @@ declare type Alaska$Config$services = {
 
 
 declare type Alaska$Config = {
+  [name:string]:any;
+
   // project
   name?: string;
   appMiddlewares?: Alaska$Config$appMiddleware[];
@@ -241,11 +245,10 @@ declare type Alaska$Filters={
 declare type Alaska$Service$options = {
   id:string,
   dir:string,
-  configFile:string
+  configFile?:string
 };
 
 declare class Alaska$Plugin {
-
 }
 
 declare class Alaska$Sled {
@@ -253,12 +256,39 @@ declare class Alaska$Sled {
   run():Promise<any>
 }
 
-declare class Alaska$Model extends events$EventEmitter {
+declare type Alaska$Data={
+  [key:string]:any;
+  pick(...fields: string[]):Alaska$Data;
+  omit(...fields: string[]):Alaska$Data;
+  getRecord():Alaska$Model;
+}
 
-  // extends of Mongoose$Document
+declare type Alaska$Model$relationships={
+  [key:string]:{
+    key:string;
+    ref:Class<Alaska$Model>;
+    populations:Alaska$Model$populations;
+  }
+};
+
+declare type Alaska$Model$populations={
+  [path:string]:{
+    path:string;
+    match?:Object;
+    filters?:Object;
+    model:Class<Alaska$Model>;
+    //TODO check
+    select?:string;
+    scopes?:string;
+    populations?:Alaska$Model$populations;
+  }
+};
+
+declare class Alaska$Model extends events$EventEmitter {
 
 [field:string]:any;
 
+  // extends of Mongoose$Document
   schema:Mongoose$Schema;
   isNew:boolean;
   id:string;
@@ -302,7 +332,7 @@ declare class Alaska$Model extends events$EventEmitter {
   discriminators:Alaska$Model[];
 
   static remove(conditions: Object, callback?: Function):Mongoose$Query;
-  static find(conditions?: Object, projection?: Object, options?: Object, callback?: Function):Mongoose$Query|Promise<Alaska$Model[]>;
+  static find(conditions?: Object, projection?: Object, options?: Object, callback?: Function):Mongoose$Query & Promise<Alaska$Model[]>;
   static findById(id: Object|string|number, projection?: Object, options?: Object, callback?: Function):Mongoose$Query|Promise<Alaska$Model>;
   static findByIdAndUpdate(id: Object|string|number, update: Object, options?: Object, callback?: Function):Mongoose$Query;
   static findByIdAndRemove(id: Object|string|number, options?: Object, callback?: Function):Mongoose$Query;
@@ -336,6 +366,9 @@ declare class Alaska$Model extends events$EventEmitter {
   ensureIndexes(options?: Object, fn?: Function):Promise<void>;
 
   // Alaska$Model
+
+  _:{ [path:string]:Function };
+  data(scope: string):Alaska$Data;
 
   static _pre: {
     [action:string]:Function[]
@@ -391,25 +424,8 @@ declare class Alaska$Model extends events$EventEmitter {
     //TODO akita
   };
 
-  static relationships:{
-    [key:string]:{
-      key:string;
-      ref:any;
-      populations:Object;
-    }
-  };
-  static populations:{
-    [path:string]:{
-      path:string;
-      match?:Object;
-      filters?:Object;
-      model:Class<Alaska$Model>;
-      //TODO check
-      select?:string;
-      scopes?:string;
-      populations?:Object;
-    }
-  };
+  static relationships:Alaska$Model$relationships;
+  static populations:Alaska$Model$populations;
 
   static pre(action: string, fn: Function): void;
   static post(action: string, fn: Function): void;
@@ -436,6 +452,8 @@ declare class Alaska$Model extends events$EventEmitter {
   }>;
   static show(ctx: Alaska$Context, state?: Object): Promise<Alaska$Model>;
   static fromObject(data: Object): Alaska$Model;
+  static fromObjectArray(array: Object[]): Alaska$Model[];
+  static toObjectArray(array: Alaska$Model[]): Object[];
 }
 
 declare class Alaska$Field {
@@ -492,8 +510,8 @@ declare type Alaska$Field$options={
   select?:boolean;
 
   // Alaska
-  type:Class<Alaska$Field> | 'string';
-  ref?: Class<Alaska$Model> | [Class<Alaska$Model>] | string | [string];
+  type?: Class<Alaska$Field> | string | Function | void;
+  ref?: Class<Alaska$Model> | string | [string];
   label?:string;
   path?:string;
   group?:string;
@@ -531,11 +549,13 @@ declare class Alaska$Service {
   renderer: Alaska$Renderer;
   db: Mongoose$Connection;
 
+  constructor(options?: Alaska$Service$options):void;
   pre(action: string, fn: Function): void;
   post(action: string, fn: Function): void;
   panic:(message: string|number, code?: number) => void;
   error:(message: string|number, code?: number) => void;
   try: <T>(promise: Promise<T>) => Promise<T>;
+  applyConfig(config: Alaska$Config): void;
   config(key: string, defaultValue?: any, mainAsDefault?: boolean): any;
   model(name: string, optional?: boolean): Class<Alaska$Model>;
   sled(name: string): Class<Alaska$Sled>;
@@ -546,6 +566,7 @@ declare class Alaska$Service {
 
 declare class Alaska$Alaska {
   db: Mongoose$Connection;
+  main:Alaska$Service;
   config(key: string, defaultValue: any): any;
   toJSON():Object;
   panic:(message: string|number, code?: number) => void;
@@ -563,7 +584,15 @@ declare class Alaska$Driver {
 }
 
 declare class Alaska$CacheDriver extends Alaska$Driver {
-
+  get(key: string): Promise<any>;
+  set(key: string, value: any, lifetime?: number): Promise<void>;
+  del(key: string): Promise<void>;
+  has(key: string): Promise<boolean>;
+  inc(key: string): Promise<number>;
+  dec(key: string): Promise<number>;
+  size(): Promise<number>;
+  prune(): Promise<void>;
+  flush(): Promise<void>;
 }
 
 declare class Alaska$Renderer {
@@ -571,13 +600,18 @@ declare class Alaska$Renderer {
   renderFile(template: string, state: Object, callback: Function):void;
 }
 
-declare module alaska {
+declare class Alaska$NormalError extends Error {
+}
 
+declare module alaska {
+  declare export var NormalError: Class<Alaska$NormalError>;
   declare export var Alaska: Class<Alaska$Alaska>;
   declare export var Service: Class<Alaska$Service>;
   declare export var Model: Class<Alaska$Model>;
   declare export var Sled: Class<Alaska$Sled>;
   declare export var Field: Class<Alaska$Field>;
   declare export var Plugin: Class<Alaska$Plugin>;
+  declare export var utils: Object;
   declare var exports: Alaska$Alaska;
+  declare export default Alaska$Alaska;
 }

@@ -339,7 +339,6 @@ export default class Model {
         //将Model字段注册到Mongoose.Schema中
         Object.keys(model.fields).forEach((path) => {
           try {
-            // $Flow
             let options: Alaska$Field$options = model.fields[path];
 
             /**
@@ -358,10 +357,6 @@ export default class Model {
                */
               if (options.ref) {
                 options.type = 'relationship';
-                if (Array.isArray(options.ref) && options.ref.length === 1) {
-                  options.ref = options.ref[0];
-                  options.multi = true;
-                }
               } else {
                 throw new Error(model.name + '.' + path + ' field type not specified');
               }
@@ -1015,8 +1010,29 @@ export default class Model {
    * @returns {Model}
    */
   static fromObject(data: Object): Alaska$Model {
+    if (data && data.instanceOfModel) {
+      return data;
+    }
     let record = new this(null, null, true);
     record.init(data);
     return record;
+  }
+
+  /**
+   * 将object数据转为Model对象
+   * @param {Array} array
+   * @returns {Model[]}
+   */
+  static fromObjectArray(array: Object[]): Alaska$Model[] {
+    return array.map((data) => this.fromObject(data));
+  }
+
+  /**
+   * 将模型数组转为plain object数组
+   * @param {[Model]} array
+   * @returns {[Object]}
+   */
+  static toObjectArray(array: Alaska$Model[]): Object[] {
+    return _.map(array, (record) => record.toObject());
   }
 }

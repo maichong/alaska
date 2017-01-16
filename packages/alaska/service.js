@@ -153,6 +153,7 @@ export default class Service {
 
     {
       //载入配置
+      // $Flow
       let configFilePath = this.options.dir + '/config/' + this.options.configFile;
       let config = utils.include(configFilePath, true);
       if (config) {
@@ -246,7 +247,7 @@ export default class Service {
    * 追加配置项
    * @param {Object} config
    */
-  applyConfig(config: Object) {
+  applyConfig(config: Alaska$Config): void {
     Object.keys(config).forEach((key) => {
       let value = config[key];
       //增加配置项

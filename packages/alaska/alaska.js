@@ -130,7 +130,6 @@ class Alaska {
   _missingService = {};
   _mounts = {};
   locales = {};
-  utils = utils;
 
   /**
    * 初始化一个新的Alaska实例对象
@@ -581,6 +580,7 @@ class Alaska {
 
 export default new Alaska();
 
+exports.utils = utils;
 exports.Field = require('./field');
 exports.Model = require('./model');
 exports.Sled = require('./sled');
