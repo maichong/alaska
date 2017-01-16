@@ -91,7 +91,6 @@ export default class Service {
    * @private
    */
   _templatesDirs = [];
-  utils = utils;
   version = '';
 
   /**

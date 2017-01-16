@@ -252,8 +252,9 @@ declare class Alaska$Plugin {
 }
 
 declare class Alaska$Sled {
-  constructor(data?: Object):void;
+  constructor(params?: Object):void;
   run():Promise<any>
+  static run(params?: Object):Promise<any>;
 }
 
 declare type Alaska$Data={
@@ -396,6 +397,10 @@ declare class Alaska$Model extends events$EventEmitter {
   static path:string;
   static title:string;
   static icon:string;
+  static nocreate:boolean;
+  static noedit:boolean;
+  static noremove:boolean;
+  static groups:{ [key:string]: string| { title:string;panle?:boolean;className?:string } };
   static service:Alaska$Service;
   static db:Mongoose$Connection;
   static MongooseModel:Mongoose$Model;
@@ -495,6 +500,8 @@ declare class Alaska$Field {
   view:void|string;
   filter:void|string;
   depends:void|Alaska$Field$depends;
+
+  viewOptions():{ label:string;plain:Object|string };
 }
 
 declare type Alaska$Field$options={
@@ -541,6 +548,7 @@ declare type Alaska$Field$depends= {
 declare class Alaska$Service {
   id:string;
   dir:string;
+  version: string;
   alaska: Alaska$Alaska;
   debug: Debugger;
   options: Alaska$Service$options;
@@ -548,6 +556,9 @@ declare class Alaska$Service {
   cache: Alaska$CacheDriver;
   renderer: Alaska$Renderer;
   db: Mongoose$Connection;
+  sleds:{ [name:string]:Class<Alaska$Sled> };
+  models:{ [name:string]:Class<Alaska$Model> };
+  locales: { [locale:string]:Object };
 
   constructor(options?: Alaska$Service$options):void;
   pre(action: string, fn: Function): void;
@@ -555,6 +566,7 @@ declare class Alaska$Service {
   panic:(message: string|number, code?: number) => void;
   error:(message: string|number, code?: number) => void;
   try: <T>(promise: Promise<T>) => Promise<T>;
+  settings?:(ctx: Alaska$Context, user: User, result: Object)=>Promise<Object|void>;
   applyConfig(config: Alaska$Config): void;
   config(key: string, defaultValue?: any, mainAsDefault?: boolean): any;
   model(name: string, optional?: boolean): Class<Alaska$Model>;
@@ -567,6 +579,8 @@ declare class Alaska$Service {
 declare class Alaska$Alaska {
   db: Mongoose$Connection;
   main:Alaska$Service;
+  services:{ [id:string]:Alaska$Service };
+  service(id: string):Alaska$Service;
   config(key: string, defaultValue: any): any;
   toJSON():Object;
   panic:(message: string|number, code?: number) => void;
