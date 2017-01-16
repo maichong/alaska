@@ -1,10 +1,12 @@
-import alaska from 'alaska';
+// @Flow
+
+import { Sled } from 'alaska';
 import Ability from '../models/Ability';
 
 /**
  * 注册权限
  */
-export default class RegisterAbility extends alaska.Sled {
+export default class RegisterAbility extends Sled {
   /**
    * @param data
    *        data.id
@@ -15,7 +17,7 @@ export default class RegisterAbility extends alaska.Sled {
    */
   async exec(data) {
     let id = data._id || data.id;
-    let ability = await Ability.findCache(id);
+    let ability = await Ability.findById(id);
     if (ability) {
       //权限已经存在
       return ability;

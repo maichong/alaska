@@ -1,4 +1,7 @@
 declare module 'alaska-user' {
+  declare class UserService extends Alaska$Service {
+  }
+  declare var exports: Class<UserService>
 }
 
 
@@ -19,4 +22,10 @@ declare class User extends Alaska$Model {
 
 declare module 'alaska-user/models/User' {
   declare var exports: Class<User>
+}
+
+declare module 'alaska-user/models/Role' {
+  declare class Role extends Alaska$Model {
+  }
+  declare var exports: Class<Role>
 }

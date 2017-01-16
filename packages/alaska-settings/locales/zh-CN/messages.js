@@ -1,4 +1,3 @@
-
 export default{
   Settings: '设置',
   Group: '组',

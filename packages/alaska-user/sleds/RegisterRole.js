@@ -1,22 +1,32 @@
+// @flow
+
 import _ from 'lodash';
-import alaska from 'alaska';
+import { Sled } from 'alaska';
+import service from '../';
 import Role from '../models/Role';
 
 /**
  * 注册角色
  */
-export default class RegisterRole extends alaska.Sled {
+export default class RegisterRole extends Sled {
   /**
-   * @param data
-   *        data.id
-   *        data.title
-   *        data.sort
-   *        data.abilities 角色默认权限id列表
+   * @param {Object} data
+   * @param {string} [data._id]
+   * @param {string} [data.id]
+   * @param {string} data.title
+   * @param {number} data.sort
+   * @param {string[]} data.abilities
    * @returns {Role}
    */
-  async exec(data) {
-    let id = data._id || data.id;
-    let roles = await this.service.roles();
+  async exec(data: {
+    _id?:string;
+    id:string;
+    title:string;
+    sort:number;
+    abilities:string[]
+  }): Promise<Role> {
+    let id: string = data._id || data.id;
+    let roles: Role[] = await service.roles();
     let role = _.find(roles, (r) => r._id === id);
     if (role) {
       //角色已经存在

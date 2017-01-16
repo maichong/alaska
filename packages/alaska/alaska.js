@@ -222,7 +222,7 @@ class Alaska {
   }
 
   /**
-   * [async] 监听
+   * 监听
    */
   async listen(): Promise<void> {
     // $Flow
@@ -405,12 +405,12 @@ class Alaska {
 
       //render
       /**
-       * [async] 渲染模板
+       * 渲染模板
        * @param {string} template 模板文件
        * @param {Object} [state]  模板变量
-       * @returns {string} 返回渲染结果
+       * @returns {Promise<string>} 返回渲染结果
        */
-      ctx.render = function (template, state) {
+      ctx.render = function (template: string, state?: Object): Promise<string> {
         const service = ctx.service;
         //const templatesDir = path.join(service.dir, service.config('templates')) + '/';
         //let file = templatesDir + template;
@@ -433,12 +433,12 @@ class Alaska {
       };
 
       /**
-       * [async] 渲染并显示模板
+       * 渲染并显示模板
        * @param {string} template 模板文件
        * @param {Object} [state]  模板变量
-       * @returns {string} 返回渲染结果
+       * @returns {Promise<string>} 返回渲染结果
        */
-      ctx.show = function (template, state) {
+      ctx.show = function (template: string, state?: Object): Promise<string> {
         return ctx.render(template, state).then((html) => {
           ctx.body = html;
           return html;

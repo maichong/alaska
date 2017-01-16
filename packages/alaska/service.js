@@ -323,81 +323,81 @@ export default class Service {
   error: (message: string|number, code?: number) => void;
 
   /**
-   * [async] 执行一个异步任务,如果失败则抛出NormalError
+   * 执行一个异步任务,如果失败则抛出NormalError
    * @method try
    * @param {Promise} promise
-   * @returns {*}
+   * @returns {Promise<T>}
    */
   try: <T>(promise: Promise<T>)=> Promise<T>;
 
   /**
-   * [async] 初始化
+   * 初始化
    * @method init
    */
   init: () => Promise<void>;
 
   /**
-   * [async] 加载配置
+   * 加载配置
    * @method loadConfig
    */
   loadConfig: () => Promise<void>;
 
   /**
-   * [async] 加载多语言
+   * 加载多语言
    * @method loadLocales
    */
   loadLocales: () => Promise<void>;
 
   /**
-   * [async] 加载插件
+   * 加载插件
    * @method loadPlugins
    */
   loadPlugins: () => Promise<void>;
 
   /**
-   * [async] 加载数据模型
+   * 加载数据模型
    * @method loadModels
    */
   loadModels: () => Promise<void>;
 
   /**
-   * [async] 加载Sled列表
+   * 加载Sled列表
    * @method loadSleds
    */
   loadSleds: () => Promise<void>;
 
   /**
-   * [async] 载入Service中间件
+   * 载入Service中间件
    * @method loadMiddlewares
    */
   loadMiddlewares: () => Promise<void>;
 
   /**
-   * [async] 载入API接口控制器
+   * 载入API接口控制器
    * @method loadApi
    */
   loadApi: () => Promise<void>;
 
   /**
-   * [async] 载入控制器
+   * 载入控制器
    * @method loadControllers
    */
   loadControllers: () => Promise<void>;
 
   /**
-   * [async] 加载资源服务
+   * 加载资源服务
    * @method loadStatics
    */
   loadStatics: () => Promise<void>;
 
   /**
-   * [async] 挂载路由
+   * 挂载路由
    * @method mount
    */
   mount: () => Promise<void>;
 
   /**
-   * [async] 启动Service
+   * 启动Service
    * @method launch
    */
   async launch() {
