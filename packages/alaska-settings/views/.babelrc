@@ -1,0 +1,4 @@
+{
+  "presets": ["es2015","stage-0","react"],
+  "plugins": ["transform-export-extensions","syntax-export-extensions","transform-runtime"]
+}
