@@ -1,7 +1,7 @@
 declare module 'alaska-user' {
   declare class UserService extends Alaska$Service {
   }
-  declare var exports: Class<UserService>
+  declare var exports: UserService
 }
 
 

@@ -28,27 +28,27 @@ declare module 'lodash' {
   };
 
   declare type NestedArray<T> = Array<Array<T>>;
-  
+
   declare type matchesIterateeShorthand = Object;
   declare type matchesPropertyIterateeShorthand = [string, any];
   declare type propertyIterateeShorthand = string;
 
   declare type OPredicate<A, O> =
     | ((value: A, key: string, object: O) => any)
-    | matchesIterateeShorthand
-    | matchesPropertyIterateeShorthand
-    | propertyIterateeShorthand;
-  
+      | matchesIterateeShorthand
+      | matchesPropertyIterateeShorthand
+      | propertyIterateeShorthand;
+
   declare type OIterateeWithResult<V, O, R> = Object|string|((value: V, key: string, object: O) => R);
   declare type OIteratee<O> = OIterateeWithResult<any, O, any>;
   declare type OFlatMapIteratee<T, U> = OIterateeWithResult<any, T, Array<U>>;
 
   declare type Predicate<T> =
     | ((value: T, index: number, array: Array<T>) => any)
-    | matchesIterateeShorthand
-    | matchesPropertyIterateeShorthand
-    | propertyIterateeShorthand;
-  
+      | matchesIterateeShorthand
+      | matchesPropertyIterateeShorthand
+      | propertyIterateeShorthand;
+
   declare type _Iteratee<T> = (item: T, index: number, array: ?Array<T>) => mixed;
   declare type Iteratee<T> = _Iteratee<T>|Object|string;
   declare type Iteratee2<T, U> = ((item: T, index: number, array: ?Array<T>) => U)|Object|string;
@@ -57,11 +57,11 @@ declare module 'lodash' {
 
   declare type MapIterator<T,U> =
     | ((item: T, index: number, array: Array<T>) => U)
-    | propertyIterateeShorthand;
+      | propertyIterateeShorthand;
 
   declare type OMapIterator<T,O,U> =
     | ((item: T, key: string, object: O) => U)
-    | propertyIterateeShorthand;
+      | propertyIterateeShorthand;
 
   declare class Lodash {
     // Array
@@ -177,11 +177,11 @@ declare module 'lodash' {
     every<T>(array: ?Array<T>, iteratee?: Iteratee<T>): bool;
     every<T: Object>(object: T, iteratee?: OIteratee<T>): bool;
     filter<T>(array: ?Array<T>, predicate?: Predicate<T>): Array<T>;
-    filter<A, T: {[id: string]: A}>(object: T, predicate?: OPredicate<A, T>): Array<A>;
+    filter<A, T: { [id: string]: A }>(object: T, predicate?: OPredicate<A, T>): Array<A>;
     find<T>(array: ?Array<T>, predicate?: Predicate<T>): T;
-    find<V, A, T: {[id: string]: A}>(object: T, predicate?: OPredicate<A, T>): V;
+    find<V, A, T: { [id: string]: A }>(object: T, predicate?: OPredicate<A, T>): V;
     findLast<T>(array: ?Array<T>, predicate?: Predicate<T>): T;
-    findLast<V, A, T: {[id: string]: A}>(object: T, predicate?: OPredicate<A, T>): V;
+    findLast<V, A, T: { [id: string]: A }>(object: T, predicate?: OPredicate<A, T>): V;
     flatMap<T, U>(array: ?Array<T>, iteratee?: FlatMapIteratee<T, U>): Array<U>;
     flatMap<T: Object, U>(object: T, iteratee?: OFlatMapIteratee<T, U>): Array<U>;
     flatMapDeep<T, U>(array: ?Array<T>, iteratee?: FlatMapIteratee<T, U>): Array<U>;
@@ -199,7 +199,7 @@ declare module 'lodash' {
     includes(str: string, value: string, fromIndex?: number): bool;
     invokeMap<T>(array: ?Array<T>, path: ((value: T) => Array<string>|string)|Array<string>|string, ...args?: Array<any>): Array<any>;
     invokeMap<T: Object>(object: T, path: ((value: any) => Array<string>|string)|Array<string>|string, ...args?: Array<any>): Array<any>;
-    keyBy<T, V>(array: ?Array<T>, iteratee?: Iteratee2<T, V>): {[key: V]: T};
+    keyBy<T, V>(array: ?Array<T>, iteratee?: Iteratee2<T, V>): { [key: V]: T };
     keyBy<V, T: Object>(object: T, iteratee?: OIteratee<T>): Object;
     map<T, U>(array: ?Array<T>, iteratee?: MapIterator<T, U>): Array<U>;
     map<V, T: Object, U>(object: ?T, iteratee?: OMapIterator<V, T, U>): Array<U>;
@@ -207,13 +207,13 @@ declare module 'lodash' {
     orderBy<T>(array: ?Array<T>, iteratees?: Array<Iteratee<T>>|string, orders?: Array<'asc'|'desc'>|string): Array<T>;
     orderBy<V, T: Object>(object: T, iteratees?: Array<OIteratee<*>>|string, orders?: Array<'asc'|'desc'>|string): Array<V>;
     partition<T>(array: ?Array<T>, predicate?: Predicate<T>): NestedArray<T>;
-    partition<V, A, T: {[id: string]: A}>(object: T, predicate?: OPredicate<A, T>): NestedArray<V>;
+    partition<V, A, T: { [id: string]: A }>(object: T, predicate?: OPredicate<A, T>): NestedArray<V>;
     reduce<T, U>(array: ?Array<T>, iteratee?: (accumulator: U, value: T, index: number, array: ?Array<T>) => U, accumulator?: U): U;
     reduce<T: Object, U>(object: T, iteratee?: (accumulator: U, value: any, key: string, object: T) => U, accumulator?: U): U;
     reduceRight<T, U>(array: ?Array<T>, iteratee?: (accumulator: U, value: T, index: number, array: ?Array<T>) => U, accumulator?: U): U;
     reduceRight<T: Object, U>(object: T, iteratee?: (accumulator: U, value: any, key: string, object: T) => U, accumulator?: U): U;
     reject<T>(array: ?Array<T>, predicate?: Predicate<T>): Array<T>;
-    reject<V: Object, A, T: {[id: string]: A}>(object: T, predicate?: OPredicate<A, T>): Array<V>;
+    reject<V: Object, A, T: { [id: string]: A }>(object: T, predicate?: OPredicate<A, T>): Array<V>;
     sample<T>(array: ?Array<T>): T;
     sample<V, T: Object>(object: T): V;
     sampleSize<T>(array: ?Array<T>, n?: number): Array<T>;
@@ -222,7 +222,7 @@ declare module 'lodash' {
     shuffle<V, T: Object>(object: T): Array<V>;
     size(collection: Array<any>|Object): number;
     some<T>(array: ?Array<T>, predicate?: Predicate<T>): bool;
-    some<A, T: {[id: string]: A}>(object?: ?T, predicate?: OPredicate<A, T>): bool;
+    some<A, T: { [id: string]: A }>(object?: ?T, predicate?: OPredicate<A, T>): bool;
     sortBy<T>(array: ?Array<T>, ...iteratees?: Array<Iteratee<T>>): Array<T>;
     sortBy<T>(array: ?Array<T>, iteratees?: Array<Iteratee<T>>): Array<T>;
     sortBy<V, T: Object>(object: T, ...iteratees?: Array<OIteratee<T>>): Array<V>;
@@ -265,7 +265,7 @@ declare module 'lodash' {
     cloneDeep<T>(value: T): T;
     cloneDeepWith<T, U>(value: T, customizer?: ?(value: T, key: number|string, object: T, stack: any) => U): U;
     cloneWith<T, U>(value: T, customizer?: ?(value: T, key: number|string, object: T, stack: any) => U): U;
-    conformsTo<T:{[key:string]:mixed}>(source: T, predicates: T&{[key:string]:(x:any)=>boolean}): boolean;
+    conformsTo<T:{ [key:string]:mixed }>(source: T, predicates: T&{ [key:string]:(x: any)=>boolean }): boolean;
     eq(value: any, other: any): bool;
     gt(value: any, other: any): bool;
     gte(value: any, other: any): bool;
@@ -373,8 +373,8 @@ declare module 'lodash' {
     extendWith<T: Object, A: Object, B: Object>(object: T, s1: A, s2: B, customizer?: (objValue: any, srcValue: any, key: string, object: T, source: A|B) => any|void): Object;
     extendWith<T: Object, A: Object, B: Object, C: Object>(object: T, s1: A, s2: B, s3: C, customizer?: (objValue: any, srcValue: any, key: string, object: T, source: A|B|C) => any|void): Object;
     extendWith<T: Object, A: Object, B: Object, C: Object, D: Object>(object: T, s1: A, s2: B, s3: C, s4: D, customizer?: (objValue: any, srcValue: any, key: string, object: T, source: A|B|C|D) => any|void): Object;
-    findKey<A, T: {[id: string]: A}>(object?: ?T, predicate?: OPredicate<A, T>): string|void;
-    findLastKey<A, T: {[id: string]: A}>(object?: ?T, predicate?: OPredicate<A, T>): string|void;
+    findKey<A, T: { [id: string]: A }>(object?: ?T, predicate?: OPredicate<A, T>): string|void;
+    findLastKey<A, T: { [id: string]: A }>(object?: ?T, predicate?: OPredicate<A, T>): string|void;
     forIn(object?: ?Object, iteratee?: OIteratee<*>): Object;
     forInRight(object?: ?Object, iteratee?: OIteratee<*>): Object;
     forOwn(object?: ?Object, iteratee?: OIteratee<*>): Object;
@@ -398,10 +398,10 @@ declare module 'lodash' {
     mergeWith<T: Object, A: Object, B: Object, C: Object, D: Object>(object: T, s1: A, s2: B, s3: C, s4: D, customizer?: (objValue: any, srcValue: any, key: string, object: T, source: A|B|C|D) => any|void): Object;
     omit(object?: ?Object, ...props: Array<string>): Object;
     omit(object?: ?Object, props: Array<string>): Object;
-    omitBy<A, T: {[id: string]: A}>(object?: ?T, predicate?: OPredicate<A, T>): Object;
+    omitBy<A, T: { [id: string]: A }>(object?: ?T, predicate?: OPredicate<A, T>): Object;
     pick(object?: ?Object, ...props: Array<string>): Object;
     pick(object?: ?Object, props: Array<string>): Object;
-    pickBy<A, T: {[id: string]: A}>(object?: ?T, predicate?: OPredicate<A, T>): Object;
+    pickBy<A, T: { [id: string]: A }>(object?: ?T, predicate?: OPredicate<A, T>): Object;
     result(object?: ?Object, path?: ?Array<string>|string, defaultValue?: any): any;
     set(object?: ?Object, path?: ?Array<string>|string, value: any): Object;
     setWith<T>(object: T, path?: ?Array<string>|string, value: any, customizer?: (nsValue: any, key: string, nsObject: T) => any): Object;
@@ -418,8 +418,8 @@ declare module 'lodash' {
     // harder to read, but this is _()
     (value: any): any;
     chain<T>(value: T): any;
-    tap<T>(value: T, interceptor: (value:T)=>any): T;
-    thru<T1,T2>(value: T1, interceptor: (value:T1)=>T2): T2;
+    tap<T>(value: T, interceptor: (value: T)=>any): T;
+    thru<T1,T2>(value: T1, interceptor: (value: T1)=>T2): T2;
     // TODO: _.prototype.*
 
     // String

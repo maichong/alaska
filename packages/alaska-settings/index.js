@@ -1,12 +1,12 @@
 // @flow
 
-import alaska, { Service } from 'alaska';
+import { Service } from 'alaska';
 
 const debug = require('debug')('alaska-settings');
 
 //为 alaska-admin-view 注入设置编辑器
 export const routes = [{
-  component: __dirname + '/views/SettingsEditor',
+  component: `${__dirname}/views/SettingsEditor`,
   path: 'settings'
 }];
 
