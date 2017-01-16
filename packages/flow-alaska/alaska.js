@@ -2,6 +2,10 @@ import type { WriteStream } from 'fs';
 import type Debugger from 'debug';
 import type Router from 'koa-router';
 
+declare type Indexed={
+  [key:string]:any
+}
+
 type CookiesGetOptions = {
   signed?: boolean;
 };
@@ -132,6 +136,7 @@ declare type Alaska$Context = {
   redirect(url: string, alt?: string):void;
   attachment(filename?: string):void;
 
+  files:{ [name:string]:Object };
   alaska: Alaska$Alaska;
   main: Alaska$Service;
   service: Alaska$Service;
@@ -296,10 +301,10 @@ declare class Alaska$Model extends events$EventEmitter {
   _id:string|number|Object|any;
   errors:Object[];
 
-  constructor(obj: Object, fields?: Object, skipId?: boolean):void;
+  constructor(obj?: Object, fields?: Object, skipId?: boolean):void;
   init(doc: Object, opts?: Object, fn?: Function):this;
   update(doc: Object, options: Object, fn: Function):Mongoose$Query;
-  set(path: string, val: any, type?: any, options?: Object):this;
+  set(path: string|Object, val: any, type?: any, options?: Object):this;
   get(path: string, type?: any):any;
   markModified(path: string):void;
   unmarkModified(path: string):void;
@@ -369,7 +374,7 @@ declare class Alaska$Model extends events$EventEmitter {
   // Alaska$Model
 
   _:{ [path:string]:Function };
-  data(scope: string):Alaska$Data;
+  data(scope?: string):Alaska$Data;
 
   static _pre: {
     [action:string]:Function[]
@@ -430,6 +435,16 @@ declare class Alaska$Model extends events$EventEmitter {
     remove?: number
     //TODO akita
   };
+  static actions:{
+    [key:string]:{
+      title:string;
+      style?:string;
+      sled:string;
+      depends?:Alaska$Field$depends;
+      pre?:Alaska$Field$depends;
+      post?:Alaska$Field$depends;
+    }
+  };
 
   static relationships:Alaska$Model$relationships;
   static populations:Alaska$Model$populations;
@@ -439,29 +454,23 @@ declare class Alaska$Model extends events$EventEmitter {
   static register():void;
   static underscoreMethod(field: string, name: string, fn: Function):void;
   static createFilters(search: string, filters?: Object|string): Alaska$Filters;
-  static paginate(options: Object): Mongoose$Query & Promise<{
-    page:number;
-    perPage:number;
-    total:number;
-    totalPage:number;
-    next:number;
-    previous:number;
-    results:Alaska$Model[]
-  }>;
-  static list(ctx: Alaska$Context, state?: Object): Promise<{
-    page:number;
-    perPage:number;
-    total:number;
-    totalPage:number;
-    next:number;
-    previous:number;
-    results:Alaska$Model[]
-  }>;
+  static paginate(options: Object): Mongoose$Query & Promise<Alaska$ListResult>;
+  static list(ctx: Alaska$Context, state?: Object): Promise<Alaska$ListResult>;
   static show(ctx: Alaska$Context, state?: Object): Promise<Alaska$Model>;
   static fromObject(data: Object): Alaska$Model;
   static fromObjectArray(array: Object[]): Alaska$Model[];
   static toObjectArray(array: Alaska$Model[]): Object[];
 }
+
+declare type Alaska$ListResult = {
+  page:number;
+  perPage:number;
+  total:number;
+  totalPage:number;
+  next:number;
+  previous:number;
+  results:Alaska$Model[]
+};
 
 declare class Alaska$Field {
   static classOfField:true;
@@ -573,7 +582,7 @@ declare class Alaska$Service {
   config(key: string, defaultValue?: any, mainAsDefault?: boolean): any;
   model(name: string, optional?: boolean): Class<Alaska$Model>;
   sled(name: string): Class<Alaska$Sled>;
-  run(name: string, data?: Object): Promise<any>;
+  run(name: string, params?: Object): Promise<any>;
   t(message: string, locale?: string, values?: Object, formats?: Object): string;
   toJSON():Object;
 }

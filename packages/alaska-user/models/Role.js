@@ -57,9 +57,9 @@ export default class Role extends Model {
   /**
    * 判断角色是否具有某权限
    * @param id
-   * @returns {boolean}
+   * @returns {Promise<boolean>}
    */
-  async hasAbility(id: string|Object) {
+  async hasAbility(id: string|Object): Promise<boolean> {
     if (this.abilities) {
       for (let aid of this.abilities) {
         //如果abilities属性中储存的是Ability对象
