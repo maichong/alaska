@@ -1,4 +1,3 @@
-
 export default{
   Settings: 'Settings',
   Group: 'Group',
