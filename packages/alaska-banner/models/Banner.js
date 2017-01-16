@@ -16,12 +16,12 @@ export default class Banner extends alaska.Model {
     list: 1
   };
 
-  static defaultFilters = ctx => {
+  static defaultFilters = (ctx) => {
     if (ctx.service.id === 'alaska-admin') return null;
     return {
       activated: true,
-      startAt: { $lte: new Date },
-      endAt: { $gte: new Date }
+      startAt: { $lte: new Date() },
+      endAt: { $gte: new Date() }
     };
   };
 
@@ -106,18 +106,18 @@ export default class Banner extends alaska.Model {
 
   preSave() {
     if (!this.startAt) {
-      this.startAt = new Date;
+      this.startAt = new Date();
     }
     if (!this.endAt) {
-      this.endAt = new Date;
+      this.endAt = new Date();
     }
     if (!this.createdAt) {
-      this.createdAt = new Date;
+      this.createdAt = new Date();
     }
   }
 
   isValid() {
-    let now = new Date;
+    let now = new Date();
     return this.activated && this.startAt < now && this.endAt > now;
   }
 }

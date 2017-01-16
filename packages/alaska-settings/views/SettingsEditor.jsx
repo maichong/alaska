@@ -1,6 +1,7 @@
+
 import React from 'react';
-import _forEach from 'lodash/forEach';
-import _map from 'lodash/map';
+
+import _ from 'lodash';
 
 import { actions } from 'alaska-admin-view';
 
@@ -15,7 +16,7 @@ class SettingsEditor extends React.Component {
 
   static propTypes = {
     lists: object,
-    actions: object,
+    actions: object
   };
 
   static contextTypes = {
@@ -29,7 +30,8 @@ class SettingsEditor extends React.Component {
     this.state = {
       values: {},
       fields: {},
-      map: {}
+      map: {},
+      groups: {}
     };
   }
 
@@ -43,11 +45,11 @@ class SettingsEditor extends React.Component {
       const { t } = this.context;
       const results = props.lists[KEY].results;
       const map = newState.map = {};
-      _forEach(results, (item) => map[item._id] = item);
+      _.forEach(results, (item) => (map[item._id] = item));
 
       const fields = newState.fields = {};
       const groups = newState.groups = {};
-      _forEach(results, (item) => {
+      _.forEach(results, (item) => {
         let groupKey = item.group || 'Basic Settings';
         if (!groups[groupKey]) {
           groups[groupKey] = {
@@ -88,7 +90,7 @@ class SettingsEditor extends React.Component {
   handleSave = () => {
     const { values, map } = this.state;
     const save = this.props.actions.save;
-    _forEach(values, (value, id) => {
+    _.forEach(values, (value, id) => {
       let data = Object.assign({}, map[id], { id, value });
       save({
         service: 'alaska-settings',
@@ -109,8 +111,8 @@ class SettingsEditor extends React.Component {
       content = <div className="loading">Loading...</div>;
     } else {
       content = [];
-      _forEach(groups, (group, index) => {
-        let items = _map(group.items, (item, index) => {
+      _.forEach(groups, (group, index) => {
+        let items = _.map(group.items, (item, index) => {
           let FieldView = views[item.type] || views.MixedFieldView;
           let value = values[item._id];
           if (value === undefined) {

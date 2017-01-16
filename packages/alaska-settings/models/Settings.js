@@ -87,7 +87,7 @@ export default class Settings extends Model {
   group: string;
   value: Object;
   help: string;
-  type: any;
+  type: string;
   super: boolean;
   options: Object;
 }
