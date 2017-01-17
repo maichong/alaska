@@ -37,7 +37,9 @@ export default class Send extends Sled {
     }
     let sms = params.sms;
     if (sms && typeof sms === 'string') {
-      sms = await Sms.findCache(sms);
+      // $Flow
+      let s:Sms = await Sms.findById(sms);
+      sms = s;
     }
     if (!message) {
       if (!sms) alaska.panic('Can not find sms');
