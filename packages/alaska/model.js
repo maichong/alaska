@@ -271,6 +271,7 @@ export default class Model {
     const service = this.service;
     // $Flow
     const model: Class<Alaska$Model> = this;
+    model._fields = {};
 
     function loadFieldConfig(fieldTypeName) {
       let config = service.config(fieldTypeName, undefined, true);
@@ -339,15 +340,8 @@ export default class Model {
         //将Model字段注册到Mongoose.Schema中
         Object.keys(model.fields).forEach((path) => {
           try {
-            let options: Alaska$Field$options = model.fields[path];
+            let options: Alaska$Field$options = _.clone(model.fields[path]);
 
-            /**
-             * eg.
-             * name : String
-             */
-            if (typeof options === 'function') {
-              model.fields[path] = options = { type: options };
-            }
             if (!options.type) {
               /**
                * eg.
@@ -362,13 +356,9 @@ export default class Model {
               }
             }
 
-            // $Flow
             options.path = path;
 
-            if (!options.type) {
-              throw new Error('Field type is not specified. ' + name);
-            }
-            let FieldClass;
+            let FieldClass: ?Class<Alaska$Field> = null;
             if (typeof options.type === 'object' && options.type.classOfField) {
               FieldClass = options.type;
             } else {
@@ -398,7 +388,7 @@ export default class Model {
             }
             options.label = options.label || path.toUpperCase();
             let field = new FieldClass(options, schema, model);
-            model.fields[path] = field;
+            model._fields[path] = field;
             field.initSchema();
             if (!field.private) {
               model.defaultScope[path] = true;
@@ -478,11 +468,11 @@ export default class Model {
           if (p.filters) {
             p.match = p.filters;
           }
-          let field = model.fields[p.path];
+          let field: Alaska$Field = model._fields[p.path];
           if (!field) {
             throw new Error(`${service.id}.${model.name}.populations error, can not populate '${p.path}'`);
           }
-          p.model = model.fields[p.path].ref;
+          p.model = model._fields[p.path].ref;
           populations[p.path] = p;
           if (p.select || p.scopes || p.populations) {
             needRef = true;
@@ -496,14 +486,14 @@ export default class Model {
       if (needRef) {
         service.pre('loadSleds', () => {
           _.forEach(model.populations, (p) => {
-            let Ref = model.fields[p.path].ref;
+            let Ref: Class<Alaska$Model> = model._fields[p.path].ref;
             p.ref = Ref;
             p.autoSelect = Ref.autoSelect;
             processSelect(p, Ref);
             //有多层嵌套 populations
             if (p.populations && p.model) {
               _.forEach(p.populations, (item, k) => {
-                processSelect(item, p.model.fields[k].ref);
+                processSelect(item, p.model._fields[k].ref);
               });
             }
           });
@@ -511,7 +501,7 @@ export default class Model {
           _.forEach(model.relationships, (r) => {
             if (!r.populations) return;
             _.forEach(r.populations, (item, k) => {
-              processSelect(item, r.ref.fields[k].ref);
+              processSelect(item, r.ref._fields[k].ref);
             });
           });
         });
@@ -519,10 +509,10 @@ export default class Model {
 
       if (!model.defaultColumns) {
         model.defaultColumns = ['_id'];
-        if (model.titleField && model.fields[model.titleField]) {
+        if (model.titleField && model._fields[model.titleField]) {
           model.defaultColumns.push(model.titleField);
         }
-        if (model.fields.createdAt) {
+        if (model._fields.createdAt) {
           model.defaultColumns.push('createdAt');
         }
       } else if (typeof model.defaultColumns === 'string') {
@@ -531,7 +521,7 @@ export default class Model {
 
       if (model.searchFields) {
         if (typeof model.searchFields === 'string') {
-          model.searchFields = model.searchFields.split(' ').filter((k) => k && model.fields[k]);
+          model.searchFields = model.searchFields.split(' ').filter((k) => k && model._fields[k]);
         }
       } else {
         model.searchFields = [];
@@ -631,8 +621,8 @@ export default class Model {
         _.forEach(fields, (any, key) => {
           if (key[0] === '_') return;
           if (!model._virtuals[key]) {
-            if (model.fields[key] && (model.fields[key].private || !this.isSelected(key))) return;
-            if (!model.fields[key] && (!model.relationships[key] || model.relationships[key].private)) return;
+            if (model._fields[key] && (model._fields[key].private || !this.isSelected(key))) return;
+            if (!model._fields[key] && (!model.relationships[key] || model.relationships[key].private)) return;
           }
           if (fields['_' + key]) return;
           if (this._[key] && this._[key].data) {
@@ -756,8 +746,8 @@ export default class Model {
     }
     // $Flow
     _.forEach(filters, (value, key) => {
-      if (model.fields[key] && model.fields[key].createFilter) {
-        let filter = model.fields[key].createFilter(value, result);
+      if (model._fields[key] && model._fields[key].createFilter) {
+        let filter = model._fields[key].createFilter(value, result);
         if (filter !== undefined) {
           result[key] = filter;
         }

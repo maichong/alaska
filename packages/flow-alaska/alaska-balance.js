@@ -21,7 +21,7 @@ declare module 'alaska-balance/models/Income' {
     createdAt: Date;
   }
 
-  declare var exports: Class<Income>
+  declare var exports: Class<Income>;
 }
 
 declare module 'alaska-balance/models/Withdraw' {
@@ -36,5 +36,5 @@ declare module 'alaska-balance/models/Withdraw' {
     reason: string;
   }
 
-  declare var exports: Class<Withdraw>
+  declare var exports: Class<Withdraw>;
 }

@@ -26,13 +26,12 @@ export default async function (ctx: Alaska$Context) {
     }
     await ctx.checkAbility(ability);
 
-    // $Flow
-    let FieldType: Alaska$Field = Model.fields[path].type;
+    let FieldType: Class<Alaska$Field> = Model._fields[path].type;
     if (!FieldType || !FieldType.upload) {
       alaska.error('Invalid field');
     }
     // $Flow
-    let img = await FieldType.upload(ctx.files.file, Model.fields[path]);
+    let img = await FieldType.upload(ctx.files.file, Model._fields[path]);
     if (ctx.state.editor || ctx.query.editor) {
       ctx.body = {
         success: true,

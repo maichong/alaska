@@ -432,7 +432,10 @@ declare class Alaska$Model extends events$EventEmitter {
     [scope:string]:string | { [field:string]:boolean }
   };
   static fields:{
-    [path:string]:Alaska$Field$options | Alaska$Field
+    [path:string]:Alaska$Field$options
+  };
+  static _fields:{
+    [path:string]: Alaska$Field
   };
   static virtuals:{};
   static api:{
@@ -484,7 +487,7 @@ declare type Alaska$ListResult = {
 declare class Alaska$Field {
   static classOfField:true;
   static plain:any;
-  static options:string[];
+  static dbOptions:string[];
   static viewOptions:string[];
   static views:{
     cell?:Alaska$Field$View;
@@ -505,10 +508,10 @@ declare class Alaska$Field {
   select:void|boolean;
 
   // Alaska
-  Class:Class<Alaska$Field>;
-  type?: Class<Alaska$Field> | string | Function | void;
-  label:void|string;
-  path:void|string;
+  type:Class<Alaska$Field>;
+  label:string;
+  path:string;
+  ref?: Class<Alaska$Model>;
   group:void|string;
   hidden:void|boolean;
   fixed:void|boolean;
@@ -524,6 +527,7 @@ declare class Alaska$Field {
   private:boolean;
   _model:Class<Alaska$Model>;
   _schema: Mongoose$Schema;
+  _options: Alaska$Field$options;
 
   viewOptions():{ label:string;plain:Object|string };
   init():void;
@@ -543,6 +547,7 @@ declare type Alaska$Field$options={
   select?:boolean;
 
   // Alaska
+  options?: Alaska$SelectField$option[];
   type?: Class<Alaska$Field> | string | Function | void;
   ref?: Class<Alaska$Model> | string | [string];
   label?:string;
@@ -639,6 +644,7 @@ declare class Alaska$CacheDriver extends Alaska$Driver {
 declare class Alaska$Renderer {
   constructor(service: Alaska$Service, options: Alaska$Config$renderer):void;
   renderFile(template: string, state: Object, callback: Function):void;
+  render(template: string, state: Object):string;
 }
 
 declare class Alaska$NormalError extends Error {

@@ -11,7 +11,7 @@ export default class Withdraw extends alaska.Model {
 
   static label = 'Withdraw';
   static icon = 'share-square';
-  static title = 'title';
+  static titleField = 'title';
   static defaultColumns = 'title user currency amount state createdAt';
   static defaultSort = '-createdAt';
 
