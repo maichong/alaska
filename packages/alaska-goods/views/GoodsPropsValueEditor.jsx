@@ -74,6 +74,6 @@ class GoodsPropsValueEditor extends React.Component {
   }
 }
 
-export default connect({}, (dispatch) => ({
+export default connect(null, (dispatch) => ({
   actions: bindActionCreators(actions, dispatch)
 }))(GoodsPropsValueEditor);
