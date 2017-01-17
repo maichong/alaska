@@ -271,18 +271,18 @@ declare type Alaska$Data={
 
 declare type Alaska$Model$relationships={
   [key:string]:{
-    key:string;
+    key?:string;
     ref:Class<Alaska$Model> | string;
-    populations:Alaska$Model$populations;
+    populations?:Alaska$Model$populations;
   };
 };
 
 declare type Alaska$Model$populations={
   [path:string]:{
-    path:string;
+    path?:string;
     match?:Object;
     filters?:Object;
-    model:Class<Alaska$Model>;
+    model?:Class<Alaska$Model>;
     //TODO check
     select?:string;
     scopes?:string;
@@ -497,6 +497,7 @@ declare class Alaska$Field {
 
   // Alaska
   Class:Class<Alaska$Field>;
+  type?: Class<Alaska$Field> | string | Function | void;
   label:void|string;
   path:void|string;
   group:void|string;
@@ -507,10 +508,11 @@ declare class Alaska$Field {
   disabled:void|boolean | Alaska$Field$depends;
   super:void|boolean;
   help:void|string;
-  cell:void|string;
+  cell:void|string|boolean;
   view:void|string;
-  filter:void|string;
+  filter:void|string|boolean;
   depends:void|Alaska$Field$depends;
+  private:boolean;
   _model:Class<Alaska$Model>;
 
   viewOptions():{ label:string;plain:Object|string };
@@ -541,7 +543,7 @@ declare type Alaska$Field$options={
   fixed?:boolean;
   horizontal?:boolean;
   nolabel?:boolean;
-  disabled?:boolean | Alaska$Field$depends;
+  disabled?:boolean | Alaska$Field$depends | string;
   super?:boolean;
   help?:string;
   cell?:string;

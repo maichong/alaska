@@ -1,11 +1,8 @@
 // @flow
 
 import React from 'react';
-
 import '../goods.less';
-
 import Modal from 'react-bootstrap/lib/Modal';
-
 import _ from 'lodash';
 
 /**
@@ -119,11 +116,11 @@ export default class GoodsSkuEditor extends React.Component {
 
   static propTypes = {
     data: object,
-    value: array,
+    value: array
   };
 
   static contextTypes = {
-    t: func,
+    t: func
   };
 
   state: {
@@ -168,6 +165,7 @@ export default class GoodsSkuEditor extends React.Component {
   _skuIndex:number;
   handlePic = (event:MouseEvent) => {
     const data = this.props.data;
+    // $Flow MouseEvent.target中是有dataset属性的 line 172
     this._skuIndex = parseInt(event.target.dataset.index);
     let pics = [data.pic].concat(data.pics);
     this.setState({
@@ -236,6 +234,7 @@ export default class GoodsSkuEditor extends React.Component {
           disabled = 'disabled';
           remove = function () {
             delete trCache[s.key];
+            // $Flow _without这个方法是做什么用的，找不到在哪写的 line 238
             me.props.onChange(_without(value, s));
           };
         }

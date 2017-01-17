@@ -13,7 +13,7 @@ export default class GoodsPropsEditor extends React.Component {
 
   static contextTypes = {
     settings: object,
-    t: func,
+    t: func
   };
 
   state: {
@@ -63,6 +63,7 @@ export default class GoodsPropsEditor extends React.Component {
   };
 
   fetchProps = (cat: any) => {
+    let me = this;
     cat = cat || this.props.data.cat;
     if (this._cat === cat) return;
     this._cat = cat;
@@ -72,10 +73,11 @@ export default class GoodsPropsEditor extends React.Component {
         map[prop.id] = prop;
         prop.options = _.map(prop.values, (v) => ({ label: v.title, value: v.id }));
       });
-      this.setState({
+      me.setState({
         goodsProps: res.results,
         goodsPropsMap: map
-      }, this.update);
+        // $Flow 没找到update方法 不知道有什么用
+      }, me.update);
     });
   };
 
