@@ -17,6 +17,7 @@ export async function create(ctx:Alaska$Context, next:Function) {
     if (!record) service.error('missing favorite target record');
     let modelTitle:string = Model.title || '';
     body.title = body.title || record.get(modelTitle);
+    // $Flow avatar 只有user中有 Alaska$Model中不要加avatar
     body.pic = body.pic || record.pic || record.avatar;
   }
   await next();

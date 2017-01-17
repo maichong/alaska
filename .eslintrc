@@ -52,6 +52,7 @@
           "type-annotations",
           "lifecycle",
           "everything-else",
+          "/^handle.+$/",
           "render"
         ],
         "groups": {
