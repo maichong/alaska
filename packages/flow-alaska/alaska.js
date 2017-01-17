@@ -309,7 +309,6 @@ declare class Alaska$Model extends events$EventEmitter {
   id:string;
   _id:string|number|Object|any;
   errors:Object[];
-  avatar?:Object;
 
   constructor(obj?: Object, fields?: Object, skipId?: boolean):void;
   init(doc: Object, opts?: Object, fn?: Function):this;

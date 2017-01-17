@@ -1,0 +1,32 @@
+{
+  "name": "alaska-email-smtp",
+  "version": "0.10.0",
+  "description": "Alaska smtp driver",
+  "keywords": [
+    "alaska",
+    "alaska-email"
+  ],
+  "main": "index.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-email-smtp.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-email-smtp/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-email-smtp#readme",
+  "peerDependencies": {
+    "alaska": "*"
+  },
+  "dependencies": {
+    "nodemailer": "^2.4.2"
+  }
+}
