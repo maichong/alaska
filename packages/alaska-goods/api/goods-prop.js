@@ -23,6 +23,7 @@ export async function list(ctx: Alaska$Context, next: Function) {
   ctx.state.filters = filters;
   await next();
   if (cat) {
+    // $Flow body类型不确定 body为object时属性和值也不固定 results确定不了类型 line 27
     _.forEach(ctx.body.results, (prop) => {
       prop.values = _.filter(prop.values, (value) => {
         let record;

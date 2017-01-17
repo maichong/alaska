@@ -69,7 +69,7 @@ export default class Sku extends Model {
     }
   };
 
-  _id: Object;
+  _id: Object|string|number|any;
   pic: Object;
   goods: Object;
   key: string;
