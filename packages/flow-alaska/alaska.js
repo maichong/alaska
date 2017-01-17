@@ -482,7 +482,7 @@ declare type Alaska$ListResult = {
 declare class Alaska$Field {
   static classOfField:true;
   static plain:any;
-  static options:string[]|Object[];
+  static options:string[];
   static viewOptions:string[];
   static views:{
     cell?:Alaska$Field$View;
@@ -503,6 +503,7 @@ declare class Alaska$Field {
   select:void|boolean;
 
   // Alaska
+  options?: Object[];
   Class:Class<Alaska$Field>;
   type?: Class<Alaska$Field> | string | Function | void;
   label:void|string;
@@ -541,6 +542,7 @@ declare type Alaska$Field$options={
   select?:boolean;
 
   // Alaska
+  options?: Object[];
   type?: Class<Alaska$Field> | string | Function | void;
   ref?: Class<Alaska$Model> | string | [string];
   label?:string;
