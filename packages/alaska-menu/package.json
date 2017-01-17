@@ -1,0 +1,38 @@
+{
+  "name": "alaska-menu",
+  "version": "0.10.0",
+  "description": "Alaska menu service",
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "build": "babel ./src --out-dir ./",
+    "watch": "babel ./src --out-dir ./ -w",
+    "prebuild": "rimraf lib api controllers config locales middlewares models sleds views",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-menu.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-menu/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-menu#readme",
+  "peerDependencies": {
+    "alaska": "*"
+  },
+  "dependencies": {
+    "alaska-field-datetime": "^0.10.0",
+    "alaska-field-mixed": "^0.10.0",
+    "alaska-field-text": "^0.10.0"
+  }
+}
