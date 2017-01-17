@@ -1,9 +1,10 @@
 // @flow
 
 import React from 'react';
-import '../goods.less';
 import Modal from 'react-bootstrap/lib/Modal';
 import _ from 'lodash';
+// $Flow
+import '../goods.less';
 
 /**
  * @param value

@@ -2,9 +2,11 @@ import type { WriteStream } from 'fs';
 import type Debugger from 'debug';
 import type Router from 'koa-router';
 
-declare type Indexed={
+declare type Indexed = {
   [key:string]:any
 }
+
+declare type Alaska$style= 'default' | 'primary' | 'success' | 'warning' | 'info' | 'danger';
 
 type CookiesGetOptions = {
   signed?: boolean;
@@ -444,7 +446,7 @@ declare class Alaska$Model extends events$EventEmitter {
   };
   static actions:{
     [key:string]:{
-      title:string;
+      title?:string;
       style?:string;
       sled:string;
       depends?:Alaska$Field$depends;
@@ -513,7 +515,7 @@ declare class Alaska$Field {
   fixed:void|boolean;
   horizontal:void|boolean;
   nolabel:void|boolean;
-  disabled:void|boolean | Alaska$Field$depends | string;
+  disabled:void|boolean | Alaska$Field$depends;
   super:void|boolean;
   help:void|string;
   cell:void|string|boolean;
@@ -567,7 +569,7 @@ declare type Alaska$Field$View= {
   path:string;
 };
 
-declare type Alaska$Field$depends= {
+declare type Alaska$Field$depends= string | {
   [path:string]:any
 };
 
@@ -639,6 +641,7 @@ declare class Alaska$CacheDriver extends Alaska$Driver {
 declare class Alaska$Renderer {
   constructor(service: Alaska$Service, options: Alaska$Config$renderer):void;
   renderFile(template: string, state: Object, callback: Function):void;
+  render(template: string, state: Object):string;
 }
 
 declare class Alaska$NormalError extends Error {
