@@ -1,6 +1,6 @@
 {
   "name": "alaska-settings",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "description": "Alaska settings service",
   "keywords": [
     "alaska",
@@ -8,25 +8,10 @@
   ],
   "main": "index.js",
   "scripts": {
-    "build": "babel ./src --out-dir ./",
-    "watch": "babel ./src --out-dir ./ -w",
-    "prebuild": "rimraf lib api controllers config locales middlewares models sleds views",
-    "prepublish": "npm run build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-settings.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-settings",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-settings/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-settings#readme",
   "peerDependencies": {
     "alaska": "^0.10.6"
   },
