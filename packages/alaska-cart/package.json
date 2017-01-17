@@ -1,6 +1,6 @@
 {
   "name": "alaska-cart",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Alaska cart service",
   "keywords": [
     "alaska",
@@ -8,29 +8,11 @@
   ],
   "main": "index.js",
   "scripts": {
-    "build": "babel ./src --out-dir ./",
-    "watch": "babel ./src --out-dir ./ -w",
-    "prebuild": "rimraf lib api controllers config locales middlewares models sleds views",
-    "prepublish": "npm run build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-cart.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-cart",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-cart/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-cart#readme",
-  "peerDependencies": {
-    "alaska": "^0.10.0"
-  },
   "dependencies": {
-    "alaska-goods": "^0.10.0"
+    "alaska-goods": "^0.11.0"
   }
 }

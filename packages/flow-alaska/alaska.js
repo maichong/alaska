@@ -309,6 +309,7 @@ declare class Alaska$Model extends events$EventEmitter {
   id:string;
   _id:string|number|Object|any;
   errors:Object[];
+  avatar?:Object;
 
   constructor(obj?: Object, fields?: Object, skipId?: boolean):void;
   init(doc: Object, opts?: Object, fn?: Function):this;
@@ -404,6 +405,7 @@ declare class Alaska$Model extends events$EventEmitter {
   static _virtuals:{ [path:string]:boolean };
 
   static classOfModel:true;
+  static title?:string;
   static registered:boolean;
   static name:string;
   static id:string;
@@ -531,6 +533,7 @@ declare class Alaska$Field {
 
   viewOptions():{ label:string;plain:Object|string };
   init():void;
+  underscoreMethod(name: string, fn: Function):void;
   createFilter(filter: Object, filters: Object): any | void;
 }
 
