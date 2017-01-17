@@ -12,12 +12,12 @@ export default class UpdateCatRef extends Sled {
    * @param {string|ObjectId} params.cat 父分类ID
    */
   async exec(params: Object) {
-    // $Flow
-    let cat: Object = await GoodsCat.findById(params.cat);
+    // $Flow findById
+    let cat:?GoodsCat = await GoodsCat.findById(params.cat);
     if (!cat) return;
-    // $Flow
-    let subs: Object[] = await GoodsCat.find({ cat: cat._id });
-    cat.subCats = subs.map((sub) => sub._id);
+    // $Flow  find
+    let subs = await GoodsCat.find({ cat: cat._id });
+    cat.subCats = subs.map((sub:Object) => sub._id);
     await cat.save();
   }
 }

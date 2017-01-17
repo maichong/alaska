@@ -79,7 +79,7 @@ export default class GoodsCat extends Model {
   pic: Object;
   desc: string;
   parent: Object;
-  subCats: Object;
+  subCats: Object[];
   sort: number;
   createdAt: Date;
 

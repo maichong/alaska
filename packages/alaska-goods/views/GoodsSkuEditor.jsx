@@ -234,8 +234,7 @@ export default class GoodsSkuEditor extends React.Component {
           disabled = 'disabled';
           remove = function () {
             delete trCache[s.key];
-            // $Flow _without这个方法是做什么用的，找不到在哪写的 line 238
-            me.props.onChange(_without(value, s));
+            me.props.onChange(_.without(value, s));
           };
         }
         let pic = s.pic || this.props.data.pic;
