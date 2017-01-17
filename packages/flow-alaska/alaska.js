@@ -639,6 +639,7 @@ declare class Alaska$CacheDriver extends Alaska$Driver {
 declare class Alaska$Renderer {
   constructor(service: Alaska$Service, options: Alaska$Config$renderer):void;
   renderFile(template: string, state: Object, callback: Function):void;
+  render(template: string, state: Object):string;
 }
 
 declare class Alaska$NormalError extends Error {
