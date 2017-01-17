@@ -1,0 +1,36 @@
+{
+  "name": "alaska-sms",
+  "version": "0.10.0",
+  "description": "Alaska sms service",
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "build": "babel ./src --out-dir ./",
+    "watch": "babel ./src --out-dir ./ -w",
+    "prebuild": "rimraf lib api controllers config locales middlewares models sleds views",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-sms.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-sms/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-sms#readme",
+  "peerDependencies": {
+    "alaska": "*"
+  },
+  "dependencies": {
+    "alaska-sms-test": "^0.10.0"
+  }
+}

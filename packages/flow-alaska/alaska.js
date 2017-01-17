@@ -533,6 +533,7 @@ declare class Alaska$Field {
 
   viewOptions():{ label:string;plain:Object|string };
   init():void;
+  underscoreMethod(name: string, fn: Function):void;
   createFilter(filter: Object, filters: Object): any | void;
 }
 
