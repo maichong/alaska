@@ -57,7 +57,6 @@ export default class SelectField extends Field {
       }
     });
 
-    // $Flow
     schema.path(this.path, options);
   }
 

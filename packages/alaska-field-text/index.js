@@ -5,7 +5,7 @@ import path from 'path';
 
 export default class TextFeild extends Field {
   static plain = String;
-  static options = ['trim', 'match', 'lowercase', 'uppercase', 'maxlength', 'minlength'];
+  static dbOptions = ['trim', 'match', 'lowercase', 'uppercase', 'maxlength', 'minlength'];
   static viewOptions = [
     'trim', 'match', 'lowercase', 'uppercase', 'maxlength', 'minlength',
     'addonBefore', 'addonAfter', 'placeholder', 'multiLine', 'translate'
@@ -27,7 +27,6 @@ export default class TextFeild extends Field {
 
   init() {
     if (this.match && !(this.match instanceof RegExp)) {
-      // $Flow
       throw new Error(`${this._model.name}.${this.path} field "match" option must be instance of RegExp`);
     }
   }

@@ -104,35 +104,34 @@ class AdminService extends Service {
         };
         if (!model.defaultColumns) {
           model.defaultColumns = ['_id'];
-          if (Model.titleField && Model.fields[Model.titleField]) {
+          if (Model.titleField && Model._fields[Model.titleField]) {
             model.defaultColumns.push(model.titleField);
           }
-          if (Model.fields.createdAt) {
+          if (Model._fields.createdAt) {
             model.defaultColumns.push('createdAt');
           }
         }
         if (typeof model.defaultColumns === 'string') {
           model.defaultColumns = model.defaultColumns.replace(/ /g, '').split(',');
         }
-        for (let path of Object.keys(Model.fields)) {
-          // $Flow
-          let field: Alaska$Field = Model.fields[path];
+        for (let path of Object.keys(Model._fields)) {
+          let field: Alaska$Field = Model._fields[path];
           let options = field.viewOptions();
           if (options.label === '_ID') {
             options.label = 'ID';
           }
           options.plain = '';
-          if (field.Class.plain === String) {
+          if (field.type.plain === String) {
             options.plain = 'string';
-          } else if (field.Class.plain === Date) {
+          } else if (field.type.plain === Date) {
             options.plain = 'date';
-          } else if (field.Class.plain === Number) {
+          } else if (field.type.plain === Number) {
             options.plain = 'number';
-          } else if (field.Class.plain === Boolean) {
+          } else if (field.type.plain === Boolean) {
             options.plain = 'bool';
-          } else if (field.Class.plain === mongoose.Schema.Types.ObjectId) {
+          } else if (field.type.plain === mongoose.Schema.Types.ObjectId) {
             options.plain = 'id';
-          } else if (field.Class.plain === mongoose.Schema.Types.Mixed) {
+          } else if (field.type.plain === mongoose.Schema.Types.Mixed) {
             options.plain = 'object';
           } else {
             options.plain = '';

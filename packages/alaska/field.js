@@ -4,7 +4,7 @@ export default class Field {
 
   static classOfField = true;
   static plain = String;
-  static options: string[];
+  static dbOptions: string[];
   static viewOptions: string[];
   static views: {
     cell?:Alaska$Field$View;
@@ -43,7 +43,7 @@ export default class Field {
   _options: Alaska$Field$options;
   _schema: Mongoose$Schema;
   _model: Class<Alaska$Model>;
-  Class: Class<Alaska$Field>;
+  type: Class<Alaska$Field>;
 
   /**
    * @param {Object} options
@@ -56,7 +56,7 @@ export default class Field {
     this._model = model;
 
     // $Flow
-    let FieldClass: Class<Alaska$Field> = this.Class = options.type;
+    let FieldClass: Class<Alaska$Field> = this.type = options.type;
 
     let keys = [
       'get',
@@ -68,7 +68,7 @@ export default class Field {
       'sparse',
       'required',
       'select'
-    ].concat(FieldClass.options);
+    ].concat(FieldClass.dbOptions);
 
     Object.keys(options).forEach((key) => {
       let value = options[key];
@@ -94,7 +94,7 @@ export default class Field {
   initSchema() {
     let schema = this._schema;
     let options = {
-      type: this.dataType || this.Class.plain
+      type: this.dataType || this.type.plain
     };
 
     let keys = [
@@ -107,7 +107,7 @@ export default class Field {
       'sparse',
       'required',
       'select'
-    ].concat(this.Class.options);
+    ].concat(this.type.dbOptions);
 
     keys.forEach((key) => {
       // $Flow
@@ -153,7 +153,7 @@ export default class Field {
       super: field.super
     };
 
-    let FieldClass = this.Class;
+    let FieldClass = this.type;
 
     if (FieldClass.views) {
       if (!options.cell && options.cell !== false && FieldClass.views.cell) {
