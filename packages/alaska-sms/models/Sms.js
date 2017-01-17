@@ -37,7 +37,7 @@ export default class Sms extends Model {
       type: Date
     }
   };
-  _id: string;
+  _id: string|number|Object|any;
   title: string;
   driver: Object;
   content: string;
@@ -53,9 +53,10 @@ export default class Sms extends Model {
 let locales = alaska.main.config('locales');
 
 if (locales && locales.length > 1) {
-  Sms.fields.content.help = 'Default';
+  let SmsModel: Class<Alaska$Model> = Sms;
+  SmsModel.fields.content.help = 'Default';
   locales.forEach((locale) => {
-    Sms.fields['content_' + locale.replace('-', '_')] = {
+    SmsModel.fields['content_' + locale.replace('-', '_')] = {
       label: 'Content',
       type: String,
       multiLine: true,
