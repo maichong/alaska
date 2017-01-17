@@ -13,6 +13,7 @@ node_modules/flow-statuses/flow/
 node_modules/flow-koa-compose/flow/
 node_modules/flow-koa-router/flow/
 node_modules/flow-intl-messageformat/flow/
+node_modules/flow-numeral/flow/
 
 [options]
 strip_root=true
