@@ -484,7 +484,7 @@ declare type Alaska$ListResult = {
 declare class Alaska$Field {
   static classOfField:true;
   static plain:any;
-  static options:string[]|Object[];
+  static options:string[];
   static viewOptions:string[];
   static views:{
     cell?:Alaska$Field$View;

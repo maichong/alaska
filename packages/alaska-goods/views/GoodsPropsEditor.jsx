@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { api } from 'alaska-admin-view';
-import Select from 'alaska-field-select/lib/Select';
-import Checkbox from 'alaska-field-select/lib/Checkbox';
-import Switch from 'alaska-field-select/lib/Switch';
+import Select from 'alaska-field-select/views/Select';
+import Checkbox from 'alaska-field-select/views/Checkbox';
+import Switch from 'alaska-field-select/views/Switch';
 import _ from 'lodash';
 
 const { func, object } = React.PropTypes;

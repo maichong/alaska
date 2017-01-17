@@ -35,7 +35,7 @@ export default class SelectFieldView extends React.Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Object) {
     if (nextProps.field !== this.props.field || nextProps.data !== this.props.data) {
       this.setState({
         options: this.filter(nextProps.field.options, nextProps.data)
@@ -43,21 +43,20 @@ export default class SelectFieldView extends React.Component {
     }
   }
 
-  shouldComponentUpdate(props, state) {
+  shouldComponentUpdate(props: Object, state: Object) {
     return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model') || state !== this.state;
   }
 
-  handleChange = (option) => {
+  handleChange = (option: Alaska$SelectField$option | Alaska$SelectField$option[]) => {
     const { onChange, field } = this.props;
     if (!onChange) return;
     let value;
-    if (field.multi) {
-      value = [];
-      _.forEach(option, (o) => {
-        value.push(getOptionValue(o));
-      });
+    if (option instanceof Array) {
+      if (field.multi) {
+        value = _.map(option, (o) => o.value);
+      }
     } else {
-      value = getOptionValue(option);
+      value = option.value;
     }
     onChange(value);
   };
@@ -115,7 +114,7 @@ export default class SelectFieldView extends React.Component {
         let valueMap = {};
         _.forEach(value, (v) => (valueMap[getOptionValue(v)] = true));
         _.forEach(this.state.options, (opt) => {
-          if (valueMap[opt.value]) {
+          if (valueMap[String(opt.value)]) {
             elements.push(<span key={opt.value}>{opt.label || opt.value}</span>);
           }
         });

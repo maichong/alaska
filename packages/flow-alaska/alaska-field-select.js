@@ -14,3 +14,15 @@ declare module 'alaska-field-select' {
 
   declare var exports: Class <SelectField>;
 }
+
+declare module 'alaska-field-select/views/Select' {
+  declare var exports: Class<React$Component<void, Object, void>>;
+}
+
+declare module 'alaska-field-select/views/Checkbox' {
+  declare var exports: Class<React$Component<void, Object, void>>;
+}
+
+declare module 'alaska-field-select/views/Switch' {
+  declare var exports: Class<React$Component<void, Object, void>>;
+}

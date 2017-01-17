@@ -30,10 +30,11 @@ export default class SelectFieldFilter extends React.Component {
 
   constructor(props: Object) {
     super(props);
-    let value = props.value || {};
-    if (typeof value === 'string') {
-      value = { value };
+    let u = props.value || {};
+    if (typeof u === 'string') {
+      u = { value: u };
     }
+    let value: Alaska$filter = u;
     this.state = {
       value: value.value,
       inverse: value.inverse === true || value.inverse === 'true',

@@ -49,9 +49,10 @@ export default class Checkbox extends React.Component {
   handleCheck(opt: Alaska$SelectField$option) {
     const { multi, onChange, value } = this.props;
     const { options } = this.state;
+    let valueStr = String(opt.value);
     if (!multi) {
       let valueId = getOptionValue(value);
-      if (valueId != opt.value) {
+      if (valueId != valueStr) {
         onChange(opt);
       }
       return;
@@ -72,7 +73,7 @@ export default class Checkbox extends React.Component {
     _.forEach(value, (v) => {
       if (!v) return;
       let vid = getOptionValue(v);
-      if (vid == opt.value) {
+      if (vid == valueStr) {
         found = true;
       } else if (optionsMap[vid]) {
         res.push(v);
@@ -80,7 +81,7 @@ export default class Checkbox extends React.Component {
     });
 
     if (!found) {
-      res.push(opt.value);
+      res.push(opt);
     }
     onChange(res);
   }
