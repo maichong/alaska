@@ -505,7 +505,7 @@ declare class Alaska$Field {
   fixed:void|boolean;
   horizontal:void|boolean;
   nolabel:void|boolean;
-  disabled:void|boolean | Alaska$Field$depends;
+  disabled:void|boolean | Alaska$Field$depends | string;
   super:void|boolean;
   help:void|string;
   cell:void|string|boolean;
@@ -546,9 +546,9 @@ declare type Alaska$Field$options={
   disabled?:boolean | Alaska$Field$depends | string;
   super?:boolean;
   help?:string;
-  cell?:string;
+  cell?:string|boolean;
   view?:string;
-  filter?:string;
+  filter?:string|boolean;
   depends?:Alaska$Field$depends;
 };
 
