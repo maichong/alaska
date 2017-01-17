@@ -598,6 +598,7 @@ declare class Alaska$Service {
   run(name: string, params?: Object): Promise<any>;
   t(message: string, locale?: string, values?: Object, formats?: Object): string;
   toJSON():Object;
+  loadModels():void;
 }
 
 declare class Alaska$Alaska {
