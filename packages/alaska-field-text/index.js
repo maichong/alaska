@@ -32,7 +32,7 @@ export default class TextFeild extends Field {
     }
   }
 
-  createFilter(filter: Object): Object {
+  createFilter(filter: Object): any|void {
     let exact = true;
     let inverse = false;
     let value = filter;

@@ -38,9 +38,10 @@ export default class Field {
   view: string | void;
   filter: string | void;
   depends: Alaska$Field$depends | void;
+  dataType: Function;
 
   _options: Alaska$Field$options;
-  _schema: Object;
+  _schema: Mongoose$Schema;
   _model: Class<Alaska$Model>;
   Class: Class<Alaska$Field>;
 

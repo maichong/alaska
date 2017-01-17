@@ -514,10 +514,11 @@ declare class Alaska$Field {
   depends:void|Alaska$Field$depends;
   private:boolean;
   _model:Class<Alaska$Model>;
+  _schema: Mongoose$Schema;
 
   viewOptions():{ label:string;plain:Object|string };
   init():void;
-  createFilter(filter: Object, filters: Object): Object;
+  createFilter(filter: Object, filters: Object): any | void;
 }
 
 declare type Alaska$Field$options={
