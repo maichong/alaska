@@ -1,0 +1,29 @@
+{
+  "name": "alaska-feedback",
+  "version": "0.10.1",
+  "description": "Alaska feedback service",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel ./src --out-dir ./",
+    "watch": "babel ./src --out-dir ./ -w",
+    "prebuild": "rimraf lib api controllers config locales middlewares models sleds views",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-feedback.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-feedback/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-feedback#readme",
+  "peerDependencies": {
+    "alaska": "*"
+  }
+}

@@ -446,7 +446,7 @@ declare class Alaska$Model extends events$EventEmitter {
   };
   static actions:{
     [key:string]:{
-      title:string;
+      title?:string;
       style?:string;
       sled:string;
       depends?:Alaska$Field$depends;
