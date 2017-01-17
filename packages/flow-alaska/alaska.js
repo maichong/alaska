@@ -527,6 +527,7 @@ declare class Alaska$Field {
   private:boolean;
   _model:Class<Alaska$Model>;
   _schema: Mongoose$Schema;
+  _options: Alaska$Field$options;
 
   viewOptions():{ label:string;plain:Object|string };
   init():void;
@@ -546,6 +547,7 @@ declare type Alaska$Field$options={
   select?:boolean;
 
   // Alaska
+  options?: Alaska$SelectField$option[];
   type?: Class<Alaska$Field> | string | Function | void;
   ref?: Class<Alaska$Model> | string | [string];
   label?:string;
