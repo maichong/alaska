@@ -1,0 +1,40 @@
+{
+  "name": "alaska-captcha",
+  "version": "0.10.2",
+  "description": "Alaska captcha service",
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "build": "babel ./src --out-dir ./",
+    "watch": "babel ./src --out-dir ./ -w",
+    "prebuild": "rimraf lib api controllers config locales middlewares models sleds views",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-captcha.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-captcha/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-captcha#readme",
+  "peerDependencies": {
+    "alaska": "*"
+  },
+  "dependencies": {
+    "alaska-field-number": "^0.10.0",
+    "alaska-field-text": "^0.10.0",
+    "alaska-field-select": "^0.10.0",
+    "alaska-field-relationship": "^0.10.0",
+    "string-random": "^0.1.0"
+  }
+}
