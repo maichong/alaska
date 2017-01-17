@@ -7,15 +7,15 @@ import service from '../';
 export default class Withdraw extends Sled {
 
   /**
-   * @param data
-   *        data.user
-   *        [data.currency]
-   *        data.amount
-   *        [data.note]
-   *        [data.title]
-   *        [data.withdraw]  前置钩子中生成的记录
+   * @param params
+   *        params.user
+   *        [params.currency]
+   *        params.amount
+   *        [params.note]
+   *        [params.title]
+   *        [params.withdraw]  前置钩子中生成的记录
    */
-  async exec(data: {
+  async exec(params: {
     ctx?:Alaska$Context;
     withdraw?:WithdrawModel;
     title?:string;
@@ -24,27 +24,26 @@ export default class Withdraw extends Sled {
     currency?:string;
     amount:number;
   }): Promise<WithdrawModel> {
-    let withdraw: ?Withdraw = data.withdraw;
+    let withdraw: ?WithdrawModel = params.withdraw;
     if (withdraw) return withdraw;
 
-    let currency = data.currency || service.defaultCurrency.value;
+    let currency = params.currency || service.defaultCurrency.value;
     if (!service.currenciesMap[currency]) service.error('Unknown currency');
 
-    let amount = Math.abs(data.amount) || service.error('Invalid amount');
+    let amount = Math.abs(params.amount) || service.error('Invalid amount');
 
-    let user: User = data.user;
+    let user: User = params.user;
 
     let balance = user.get(currency);
     if (balance < amount) service.error('Insufficient balance');
 
-    if(amount){
-      await user._[currency].income(-amount, data.title || 'Withdraw', 'withdraw');
+    if (amount) {
+      await user._[currency].income(-amount, params.title || 'Withdraw', 'withdraw');
     }
 
-    const Withdraw = service.model('Withdraw');
     withdraw = new WithdrawModel({
-      title: data.title,
-      note: data.note,
+      title: params.title,
+      note: params.note,
       user: user._id,
       currency,
       amount

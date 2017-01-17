@@ -6,14 +6,14 @@ import Withdraw from '../models/Withdraw';
 import service from '../';
 
 export default class WithdrawReject extends Sled {
-  async exec(data: {
+  async exec(params: {
     ctx?:Alaska$Context;
     withdraw:Withdraw;
     body:Object;
   }): Promise<Object> {
-    let withdraw: Withdraw = data.withdraw;
+    let withdraw: Withdraw = params.withdraw;
     if (withdraw.state === 0) {
-      let reason = data.body.reason || service.error('Missing reject reason');
+      let reason = params.body.reason || service.error('Missing reject reason');
       withdraw.state = -1;
       withdraw.reason = reason;
       await withdraw.save();

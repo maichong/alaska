@@ -11,15 +11,15 @@ import SETTINGS from 'alaska-settings';
  */
 export default class Register extends Sled {
   /**
-   * @param {Object}  data
-   * @param {Context} [data.ctx]
-   * @param {User}    [data.user]
-   * @param {string}  [data.username]
-   * @param {string}  [data.password]
+   * @param {Object}  params
+   * @param {Context} [params.ctx]
+   * @param {User}    [params.user]
+   * @param {string}  [params.username]
+   * @param {string}  [params.password]
    *                 ...
    * @returns {User}
    */
-  async exec(data: {
+  async exec(params: {
     ctx?:Alaska$Context;
     user?:User;
     username?:string;
@@ -30,28 +30,28 @@ export default class Register extends Sled {
       let closeRegisterReason = await SETTINGS.get('user.closeRegisterReason');
       service.error(closeRegisterReason || 'Register closed');
     }
-    let user = data.user;
+    let user = params.user;
     if (!user) {
       let count = await User.count({
-        username: new RegExp('^' + utils.escapeRegExp(data.username) + '$', 'i')
+        username: new RegExp('^' + utils.escapeRegExp(params.username) + '$', 'i')
       });
       if (count) {
         service.error('Username is exists');
       }
-      if (data.email) {
+      if (params.email) {
         let emailCount = await User.count({
-          email: new RegExp('^' + utils.escapeRegExp(data.email) + '$', 'i')
+          email: new RegExp('^' + utils.escapeRegExp(params.email) + '$', 'i')
         });
         if (emailCount) {
           service.error('Email is exists');
         }
       }
-      user = new User(_.omit(data, 'ctx', 'user'));
+      user = new User(_.omit(params, 'ctx', 'user'));
     }
     await user.save();
 
-    if (data.ctx) {
-      data.ctx.session.userId = user.id;
+    if (params.ctx) {
+      params.ctx.session.userId = user.id;
     }
     return user;
   }

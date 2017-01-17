@@ -50,6 +50,7 @@
     "lerna": "2.0.0-beta.32",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
+    "shallow-equal-without": "^0.1.0",
     "style-loader": "^0.13.1",
     "webpack": "^1.14.0"
   }

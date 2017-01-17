@@ -8,22 +8,22 @@ import Ability from '../models/Ability';
  */
 export default class RegisterAbility extends Sled {
   /**
-   * @param data
-   *        data.id
-   *        data.title
-   *        data.sort
-   *        data.service
+   * @param params
+   *        params.id
+   *        params.title
+   *        params.sort
+   *        params.service
    * @returns {Ability}
    */
-  async exec(data) {
-    let id = data._id || data.id;
+  async exec(params) {
+    let id = params._id || params.id;
     let ability = await Ability.findById(id);
     if (ability) {
       //权限已经存在
       return ability;
     }
     console.log(`Register ability : ${id}`);
-    ability = new Ability(data);
+    ability = new Ability(params);
     ability._id = id;
     await ability.save();
     return ability;

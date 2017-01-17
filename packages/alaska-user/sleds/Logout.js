@@ -7,14 +7,14 @@ import alaska, { Sled } from 'alaska';
  */
 export default class Logout extends Sled {
   /**
-   * @param {Object} data
-   *                 data.ctx
+   * @param {Object} params
+   *                 params.ctx
    */
-  async exec(data: { ctx:Alaska$Context }) {
+  async exec(params: { ctx:Alaska$Context }) {
     let key = alaska.main.config('autoLogin.key');
     if (key) {
-      data.ctx.cookies.set(key);
+      params.ctx.cookies.set(key);
     }
-    delete data.ctx.session.userId;
+    delete params.ctx.session.userId;
   }
 }
