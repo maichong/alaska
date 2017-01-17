@@ -24,7 +24,7 @@ export default class Withdraw extends Sled {
     currency?:string;
     amount:number;
   }): Promise<WithdrawModel> {
-    let withdraw: ?Withdraw = params.withdraw;
+    let withdraw: ?WithdrawModel = params.withdraw;
     if (withdraw) return withdraw;
 
     let currency = params.currency || service.defaultCurrency.value;
@@ -41,7 +41,6 @@ export default class Withdraw extends Sled {
       await user._[currency].income(-amount, params.title || 'Withdraw', 'withdraw');
     }
 
-    const Withdraw = service.model('Withdraw');
     withdraw = new WithdrawModel({
       title: params.title,
       note: params.note,
