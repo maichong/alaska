@@ -1,7 +1,7 @@
 {
-  "name": "alaska-field-text",
+  "name": "alaska-field-datetime",
   "version": "0.11.0",
-  "description": "Alaska text field",
+  "description": "Alaska datetime field",
   "keywords": [
     "alaska",
     "alaska-field"
@@ -9,10 +9,14 @@
   "main": "index.js",
   "scripts": {
   },
-  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-text",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-datetime",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "peerDependencies": {
     "alaska": "*"
+  },
+  "dependencies": {
+    "moment": "^2.15.1",
+    "react-datetime": "^2.6.0"
   }
 }

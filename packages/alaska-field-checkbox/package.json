@@ -1,7 +1,7 @@
 {
-  "name": "alaska-field-text",
+  "name": "alaska-field-checkbox",
   "version": "0.11.0",
-  "description": "Alaska text field",
+  "description": "Alaksa checkbox field",
   "keywords": [
     "alaska",
     "alaska-field"
@@ -9,7 +9,7 @@
   "main": "index.js",
   "scripts": {
   },
-  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-text",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-checkbox",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "peerDependencies": {

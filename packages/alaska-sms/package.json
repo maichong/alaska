@@ -1,18 +1,21 @@
 {
-  "name": "alaska-field-text",
+  "name": "alaska-sms",
   "version": "0.11.0",
-  "description": "Alaska text field",
+  "description": "Alaska sms service",
   "keywords": [
     "alaska",
-    "alaska-field"
+    "alaska-service"
   ],
   "main": "index.js",
   "scripts": {
   },
-  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-text",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-sms",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "peerDependencies": {
     "alaska": "*"
+  },
+  "dependencies": {
+    "alaska-sms-test": "^0.10.0"
   }
 }
