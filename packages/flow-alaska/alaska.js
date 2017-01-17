@@ -2,9 +2,11 @@ import type { WriteStream } from 'fs';
 import type Debugger from 'debug';
 import type Router from 'koa-router';
 
-declare type Indexed={
+declare type Indexed = {
   [key:string]:any
 }
+
+declare type Alaska$style= 'default' | 'primary' | 'success' | 'warning' | 'info' | 'danger';
 
 type CookiesGetOptions = {
   signed?: boolean;
@@ -512,7 +514,7 @@ declare class Alaska$Field {
   fixed:void|boolean;
   horizontal:void|boolean;
   nolabel:void|boolean;
-  disabled:void|boolean | Alaska$Field$depends | string;
+  disabled:void|boolean | Alaska$Field$depends;
   super:void|boolean;
   help:void|string;
   cell:void|string|boolean;
@@ -565,7 +567,7 @@ declare type Alaska$Field$View= {
   path:string;
 };
 
-declare type Alaska$Field$depends= {
+declare type Alaska$Field$depends= string | {
   [path:string]:any
 };
 
