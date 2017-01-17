@@ -44,10 +44,12 @@
     "react/forbid-prop-types": 0,
     "react/no-unused-prop-types": 1,
     "react/prefer-stateless-function": 0,
+    "react/jsx-wrap-multilines": [2, {"declaration": false, "assignment": false, "return": true}],
     "react/sort-comp": [
       2, {
         "order": [
           "static-methods",
+          "type-annotations",
           "lifecycle",
           "everything-else",
           "render"
