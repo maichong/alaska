@@ -9,7 +9,7 @@
   "main": "index.js",
   "scripts": {
   },
-  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-admin",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-checkbox",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "peerDependencies": {
