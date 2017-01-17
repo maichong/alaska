@@ -243,8 +243,15 @@ declare type Alaska$Config = {
   api?:boolean;
 };
 
-declare type Alaska$Filters={
-  [path:string]:any
+declare type Alaska$filter={
+  value?:any;
+  exact?:boolean;
+  inverse?:boolean;
+};
+
+declare type Alaska$filters={
+  [path:string]: Alaska$filter | null | string | boolean | number;
+  $or?: Alaska$filters[]
 };
 
 declare type Alaska$Service$options = {
@@ -418,7 +425,7 @@ declare class Alaska$Model extends events$EventEmitter {
   static userField:string;
   static searchFields:string[] | string;
   static defaultColumns:string[] | string;
-  static defaultFilters?:Object | (ctx: Alaska$Context)=>Object;
+  static defaultFilters?:Object | (ctx: Alaska$Context) => Alaska$filters;
   static scopes:{
     [scope:string]:string | { [field:string]:boolean }
   };
@@ -453,7 +460,7 @@ declare class Alaska$Model extends events$EventEmitter {
   static post(action: string, fn: Function): void;
   static register():void;
   static underscoreMethod(field: string, name: string, fn: Function):void;
-  static createFilters(search: string, filters?: Object|string): Alaska$Filters;
+  static createFilters(search: string, filters?: Object|string): Alaska$filters;
   static paginate(options: Object): Mongoose$Query & Promise<Alaska$ListResult>;
   static list(ctx: Alaska$Context, state?: Object): Promise<Alaska$ListResult>;
   static show(ctx: Alaska$Context, state?: Object): Promise<Alaska$Model>;

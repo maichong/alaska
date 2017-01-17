@@ -26,10 +26,11 @@ export default class TextFieldFilter extends React.Component {
 
   constructor(props: Object) {
     super(props);
-    let value = props.value || {};
-    if (typeof value === 'string') {
-      value = { value };
+    let v = props.value || {};
+    if (typeof v === 'string') {
+      v = { value: v };
     }
+    let value: Alaska$filter = v;
     this.state = {
       mode: value.exact === false || value.exact === 'false' ? 2 : 1, // 1 精确匹配 2 包含
       value: value.value || '',
@@ -62,17 +63,13 @@ export default class TextFieldFilter extends React.Component {
       return;
     }
     this.setState({ error: false });
-    let filter = value;
-    if (mode === 2) {
-      //包含
-      filter = { value, exact: 'false' };
+    let filter: Alaska$filter = { value };
+    if (mode !== 2) {
+      //不是包含：精确匹配
+      filter.exact = true;
     }
     if (inverse) {
-      if (mode === 2) {
-        filter.inverse = inverse;
-      } else {
-        filter = { value, inverse };
-      }
+      filter.inverse = true;
     }
     this.props.onChange(filter);
   };
@@ -91,14 +88,12 @@ export default class TextFieldFilter extends React.Component {
           <div className="form-group btn-group">
             <a
               className={mode === 1 ? buttonClassNameActive : buttonClassName}
-              onClick={this.handleMode1}>
-              {t('equal')}
-            </a>
+              onClick={this.handleMode1}
+            >{t('equal')}</a>
             <a
               className={mode === 2 ? buttonClassNameActive : buttonClassName}
-              onClick={this.handleMode2}>
-              {t('contain')}
-            </a>
+              onClick={this.handleMode2}
+            >{t('contain')}</a>
           </div>
           <input
             type="text"
@@ -109,8 +104,8 @@ export default class TextFieldFilter extends React.Component {
           />
           <a
             className={inverse ? buttonClassNameActive : buttonClassName}
-            onClick={this.handleInverse}>{t('inverse')}
-          </a>
+            onClick={this.handleInverse}
+          >{t('inverse')}</a>
         </div>
         <a className="btn field-filter-close" onClick={onClose}><i className="fa fa-close" /></a>
       </div>

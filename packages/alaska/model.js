@@ -724,11 +724,11 @@ export default class Model {
    * @param {string} [search]
    * @param {object|json} [filters]
    */
-  static createFilters(search: string, filters?: Object|string): Alaska$Filters {
+  static createFilters(search: string, filters?: Object|string): Alaska$filters {
     if (filters && typeof filters === 'string') {
       filters = JSON.parse(filters);
     }
-    let result: Alaska$Filters = {};
+    let result: Alaska$filters = {};
     // $Flow
     let model: Class<Alaska$Model> = this;
     if (search && model.searchFields.length) {
