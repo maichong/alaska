@@ -70,6 +70,7 @@ declare module 'alaska-goods/models/GoodsCat' {
 
 declare module 'alaska-goods/models/GoodsProp' {
   declare class GoodsProp extends Alaska$Model {
+    _id:string|number|Object|any;
     title:string;
     cats:Object;
     catsIndex:any;

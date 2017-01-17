@@ -30,7 +30,7 @@ export async function newest(ctx: Alaska$Context) {
   let cacheKey = `goods_newest_${cid}`;
   let results = await cache.get(cacheKey);
   if (!results) {
-    // $Flow
+    // $Flow find
     results = await Goods.find({ activated: true, cats: cid }).sort('-createdAt').limit(10);
     // $Flow 自己写的Model类型描述不能继承Alaska$Model ? line 35
     results = results.map((goods:Goods) => (goods.data().omit('desc', 'pics', 'skus', 'cat')));
@@ -50,7 +50,7 @@ export async function popular(ctx: Alaska$Context) {
   let cacheKey = `goods_popular_${cid}`;
   let results = await cache.get(cacheKey);
   if (!results) {
-    // $Flow
+    // $Flow find
     results = await Goods.find({ activated: true, cats: cid }).sort('-volume -sort').limit(10);
     // $Flow 自己写的Model类型描述不能继承Alaska$Model ? line 55
     results = results.map((goods:Goods) => goods.data().omit('desc', 'pics', 'skus', 'cat'));

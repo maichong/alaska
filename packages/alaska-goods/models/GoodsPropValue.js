@@ -65,7 +65,7 @@ export default class GoodsPropValue extends Model {
     if (!this.createdAt) {
       this.createdAt = new Date();
     }
-    // $Flow
+    // $Flow count
     let count = await GoodsPropValue.count({
       prop: this.prop,
       title: this.title
@@ -90,10 +90,10 @@ export default class GoodsPropValue extends Model {
    * [async] 整理相应属性的属性值
    */
   async processProp() {
-    // $Flow
+    // $Flow findById
     let prop: Object = await GoodsProp.findById(this.prop);
     if (!prop) return;
-    // $Flow
+    // $Flow find
     let values = await GoodsPropValue.find({ prop: prop._id });
     prop.values = values.map((v) => v._id);
     await prop.save();
@@ -109,8 +109,8 @@ export default class GoodsPropValue extends Model {
         if (cats[cid]) {
           continue;
         }
-        // $Flow
-        let cat = await GoodsCat.findCache(cid);
+        // $Flow findById
+        let cat:GoodsCat = await GoodsCat.findById(cid);
         cats[cid] = cat;
         let subs = await cat.allSubs();
         _.defaults(cats, subs);

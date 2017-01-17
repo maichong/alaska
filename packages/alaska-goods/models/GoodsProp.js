@@ -134,7 +134,7 @@ export default class GoodsProp extends Model {
       cell: false
     }
   };
-
+  _id:string|number|Object|any;
   title: string;
   cats: Object;
   catsIndex: any;
