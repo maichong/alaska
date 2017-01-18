@@ -76,7 +76,7 @@ export default class Payment extends Model {
   amount: number;
   type: Object;
   params: Object;
-  state: Object;
+  state: number;
   failure: string;
   createdAt: Date;
 

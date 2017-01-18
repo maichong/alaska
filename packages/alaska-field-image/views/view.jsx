@@ -28,15 +28,17 @@ export default class ImageFieldView extends React.Component {
   };
 
   state: {
-    max:number,
-    errorText:string
+    max: number,
+    errorText: string,
+    multi: any
   };
 
   constructor(props: Object) {
     super(props);
     this.state = {
       max: props.field.max || 1000,
-      errorText: ''
+      errorText: '',
+      multi: ''
     };
     if (!props.field.multi) {
       this.state.max = 1;
