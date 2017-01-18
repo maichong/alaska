@@ -1,0 +1,39 @@
+{
+  "name": "alaska-field-image",
+  "version": "0.10.2",
+  "description": "Alaska image field",
+  "keywords": [
+    "alaska",
+    "alaska-field"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "build": "babel ./src --out-dir ./lib",
+    "watch": "babel ./src --out-dir ./lib -w",
+    "prebuild": "rimraf lib",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-field-image.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-field-image/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-field-image#readme",
+  "peerDependencies": {
+    "alaska": "*"
+  },
+  "dependencies": {
+    "mime": "^1.3.4",
+    "mkdirp": "^0.5.1",
+    "moment": "^2.14.1",
+    "qs": "*"
+  }
+}
