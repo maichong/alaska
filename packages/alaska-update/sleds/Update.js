@@ -21,7 +21,6 @@ export default class Update extends Sled {
     }
     if (files.length) {
       for (let file of files) {
-        // $Flow count
         let has = await AppUpdate.count({ key: file });
         if (!has) {
           console.log('Apply update script ', file);
