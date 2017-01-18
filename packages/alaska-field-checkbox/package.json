@@ -11,8 +11,5 @@
   },
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-checkbox",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
-  "license": "MIT",
-  "peerDependencies": {
-    "alaska": "*"
-  }
+  "license": "MIT"
 }

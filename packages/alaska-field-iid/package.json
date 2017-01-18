@@ -1,32 +1,16 @@
 {
   "name": "alaska-field-iid",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Alaska auto increment ID field",
   "keywords": [
     "alaska",
     "alaska-field"
   ],
   "main": "index.js",
-  "scripts": {
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-field-iid.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-iid",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-field-iid/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-field-iid#readme",
-  "peerDependencies": {
-    "alaska": "*"
-  },
   "dependencies": {
-    "alaska-field-number": "*"
+    "alaska-field-number": "^0.11.0"
   }
 }

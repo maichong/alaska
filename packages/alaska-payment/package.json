@@ -1,33 +1,13 @@
 {
   "name": "alaska-payment",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "description": "Alaska payment service",
   "keywords": [
     "alaska",
     "alaska-service"
   ],
   "main": "index.js",
-  "scripts": {
-    "build": "babel ./src --out-dir ./",
-    "watch": "babel ./src --out-dir ./ -w",
-    "prebuild": "rimraf lib api controllers config locales middlewares models sleds views",
-    "prepublish": "npm run build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-payment.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-payment/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-payment#readme",
-  "peerDependencies": {
-    "alaska": "*"
-  }
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-payment",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT"
 }

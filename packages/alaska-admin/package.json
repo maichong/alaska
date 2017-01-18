@@ -8,19 +8,17 @@
     "admin"
   ],
   "main": "index.js",
-  "scripts": {
-  },
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-admin",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-settings": "^0.10.1",
-    "alaska-field-checkbox": "^0.10.2",
-    "alaska-field-select": "^0.10.4",
-    "alaska-field-category": "^0.10.0",
-    "alaska-field-icon": "^0.10.1",
-    "alaska-user": "^0.10.4",
-    "alaska-middleware-upload": "^0.2.0",
+    "alaska-settings": "^0.11.0",
+    "alaska-field-checkbox": "^0.11.0",
+    "alaska-field-select": "^0.11.0",
+    "alaska-field-category": "^0.11.0",
+    "alaska-field-icon": "^0.11.0",
+    "alaska-user": "^0.11.0",
+    "alaska-middleware-upload": "^0.11.0",
     "koa-bodyparser": "^3.0.0"
   }
 }

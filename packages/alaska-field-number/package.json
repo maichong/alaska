@@ -12,9 +12,6 @@
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-number",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "peerDependencies": {
-    "alaska": "*"
-  },
   "dependencies": {
     "numeral": "^2.0.2"
   }

@@ -1,33 +1,13 @@
 {
   "name": "alaska-field-filter",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Alaska filter editor field",
   "keywords": [
     "alaska",
     "alaska-field"
   ],
   "main": "index.js",
-  "scripts": {
-    "build": "babel ./src --out-dir ./lib",
-    "watch": "babel ./src --out-dir ./lib -w",
-    "prebuild": "rimraf lib",
-    "prepublish": "npm run build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-field-filter.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-field-filter/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-field-filter#readme",
-  "peerDependencies": {
-    "alaska": "*"
-  }
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-filter",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT"
 }
