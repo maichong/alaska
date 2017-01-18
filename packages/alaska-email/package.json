@@ -7,17 +7,12 @@
     "alaska-service"
   ],
   "main": "index.js",
-  "scripts": {
-  },
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-email",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "peerDependencies": {
-    "alaska": "*"
-  },
   "dependencies": {
-    "alaska-field-filter": "^0.10.0",
-    "alaska-field-html": "^0.10.1",
-    "alaska-field-mixed": "^0.10.1"
+    "alaska-field-filter": "^0.11.0",
+    "alaska-field-html": "^0.11.0",
+    "alaska-field-mixed": "^0.11.0"
   }
 }

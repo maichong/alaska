@@ -1,6 +1,6 @@
 {
   "name": "alaska",
-  "version": "0.11.0-beta",
+  "version": "0.11.0",
   "description": "Componentized and pluggable web framework for Node.js",
   "keywords": [
     "alaska",
@@ -14,8 +14,8 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-cache-lru": "^0.10.0",
-    "alaska-render-swig": "^0.10.0",
+    "alaska-cache-lru": "^0.11.0",
+    "alaska-renderer-swig": "^0.11.0",
     "co": "^4.6.0",
     "collie": "^0.2.1",
     "debug": "^2.6.0",

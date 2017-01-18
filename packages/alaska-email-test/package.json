@@ -1,29 +1,13 @@
 {
   "name": "alaska-email-test",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Alaska email test driver",
   "keywords": [
     "alaska",
     "alaska-email"
   ],
   "main": "index.js",
-  "scripts": {
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-email-test.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-email-test/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-email-test#readme",
-  "peerDependencies": {
-    "alaska": "*"
-  }
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-email",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT"
 }

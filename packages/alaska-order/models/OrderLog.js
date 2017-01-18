@@ -1,10 +1,10 @@
 // @flow
 
-import alaska from 'alaska';
+import { Model } from 'alaska';
 import service from '../';
 import Order from '../models/Order';
 
-export default class OrderLog extends alaska.Model {
+export default class OrderLog extends Model {
 
   static label = 'Order Log';
   static icon = 'hourglass-2';
@@ -39,10 +39,10 @@ export default class OrderLog extends alaska.Model {
     }
   };
 
-  title:string;
-  order:Order;
-  state:number;
-  createdAt:Date;
+  title: string;
+  order: Order;
+  state: number;
+  createdAt: Date;
 
   preSave() {
     if (!this.createdAt) {

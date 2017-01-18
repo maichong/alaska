@@ -390,7 +390,7 @@ declare class Alaska$Model extends events$EventEmitter {
   save(options?: Object, fn?: Function):Promise<void>;
   increment():this;
   remove(options?: Object, fn?: Function):Promise<void>;
-  model(name: string):Class<Alaska$Model>;
+  // model(name: string):Class<Alaska$Model>;
   discriminator(name: string, schema: Mongoose$Schema):Class<Alaska$Model>;
   ensureIndexes(options?: Object, fn?: Function):Promise<void>;
 
@@ -463,7 +463,7 @@ declare class Alaska$Model extends events$EventEmitter {
     //TODO akita
   };
   static actions:{
-    [key:string]:{
+    [key:string]:false | {
       title?:string;
       style?:string;
       sled:string;

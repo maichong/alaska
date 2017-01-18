@@ -2,14 +2,12 @@
   "name": "alaska-feedback",
   "version": "0.11.0",
   "description": "Alaska feedback service",
-  "keywords": ["alaska", "alaska-service"],
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
   "main": "index.js",
-  "scripts": {
-  },
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-feedback",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
-  "license": "MIT",
-  "peerDependencies": {
-    "alaska": "*"
-  }
+  "license": "MIT"
 }
