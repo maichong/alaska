@@ -4,7 +4,7 @@ import alaska from 'alaska';
 import NumberField from 'alaska-field-number';
 import numeral from 'numeral';
 
-class IIDField extends NumberField {
+export default class IIDField extends NumberField {
 
   init() {
     let field = this;
@@ -36,5 +36,3 @@ class IIDField extends NumberField {
     });
   }
 }
-
-module.exports = IIDField;

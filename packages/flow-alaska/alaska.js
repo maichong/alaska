@@ -1,6 +1,7 @@
 import type { WriteStream } from 'fs';
 import type Debugger from 'debug';
 import type Router from 'koa-router';
+import Koa from 'koa';
 
 declare type Indexed = {
   [key:string]:any
@@ -389,7 +390,7 @@ declare class Alaska$Model extends events$EventEmitter {
   save(options?: Object, fn?: Function):Promise<void>;
   increment():this;
   remove(options?: Object, fn?: Function):Promise<void>;
-  model(name: string):Class<Alaska$Model>;
+  // model(name: string):Class<Alaska$Model>;
   discriminator(name: string, schema: Mongoose$Schema):Class<Alaska$Model>;
   ensureIndexes(options?: Object, fn?: Function):Promise<void>;
 
@@ -628,12 +629,15 @@ declare class Alaska$Alaska {
   db: Mongoose$Connection;
   main:Alaska$Service;
   services:{ [id:string]:Alaska$Service };
+  app: Koa;
   service(id: string):Alaska$Service;
   config(key: string, defaultValue: any): any;
   toJSON():Object;
+  post(action: string, fn: Function): void;
   panic:(message: string|number, code?: number) => void;
   error:(message: string|number, code?: number) => void;
   try: <T>(promise: Promise<T>) => Promise<T>;
+  
 }
 
 declare class Alaska$Driver {
