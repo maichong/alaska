@@ -6,7 +6,8 @@ import mongoose from 'mongoose';
 const TypeObjectId = mongoose.Schema.Types.ObjectId;
 const ObjectId = mongoose.Types.ObjectId;
 
-class IDField extends Field {
+export default class IDField extends Field {
+  static plain = TypeObjectId;
 
   init() {
     let field = this;
@@ -21,7 +22,7 @@ class IDField extends Field {
     }
   }
 
-  createFilter(filter:Object) {
+  createFilter(filter: Object) {
     let value = filter;
     let inverse = false;
     if (typeof filter === 'object' && filter.value) {
@@ -36,7 +37,3 @@ class IDField extends Field {
     return inverse ? { $ne: value } : value;
   }
 }
-
-IDField.plain = TypeObjectId;
-
-module.exports = IDField;

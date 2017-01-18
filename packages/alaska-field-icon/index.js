@@ -2,20 +2,16 @@
 
 import TextField from 'alaska-field-text';
 
-class IconField extends TextField {
-
+export default class IconField extends TextField {
+  static views: Object = {
+    view: {
+      name: 'IconFieldView',
+      path: `${__dirname}/lib/view.js`
+    },
+    cell: {
+      name: 'IconFieldCell',
+      path: `${__dirname}/lib/cell.js`
+    },
+    filter: TextField.views.filter
+  };
 }
-
-IconField.views = {
-  view: {
-    name: 'IconFieldView',
-    path: `${__dirname}/lib/view.js`
-  },
-  cell: {
-    name: 'IconFieldCell',
-    path: `${__dirname}/lib/cell.js`
-  },
-  filter: TextField.views.filter
-};
-
-module.exports = IconField;
