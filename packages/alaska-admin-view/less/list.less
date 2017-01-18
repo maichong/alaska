@@ -1,0 +1,53 @@
+.scroll {
+  overflow-x: auto;
+}
+
+.data-table {
+  min-width: 600px;
+  margin-bottom: 0;
+  thead {
+    user-select: none;
+    -webkit-user-select: none;
+    th {
+      cursor: pointer;
+      .fa {
+        padding-left: 5px;
+      }
+    }
+  }
+  td.actions {
+    .fa {
+      cursor: pointer;
+      margin-right: 5px;
+    }
+  }
+}
+
+.field-filter {
+  margin: 0 15px;
+  padding: 8px 0;
+  position: relative;
+  &.error {
+    background: rgba(255, 0, 0, 0.1) !important;
+  }
+  .form-inline {
+    .form-group,
+    & > .form-control {
+      margin: 0 5px;
+    }
+    input.form-control {
+      width: 90px;
+      padding-left: 4px;
+      padding-right: 4px;
+      text-align: center;
+    }
+  }
+  .btn {
+    outline: none !important;
+  }
+  .field-filter-close {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+  }
+}
