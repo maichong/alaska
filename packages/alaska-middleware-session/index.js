@@ -1,31 +1,35 @@
 // @flow
 
-const Session = require('./session');
-const random = require('string-random');
-const pathToRegexp = require('path-to-regexp');
+/* eslint global-require:0 */
+/* eslint import/no-dynamic-require:0 */
 
-module.exports = function (options: Alaska$Config$session) {
+import random from 'string-random';
+import pathToRegexp from 'path-to-regexp';
+import Session from './session';
+
+export default function (options: Alaska$Config$session) {
   const storeOpts = options.store || {};
   const cookieOpts = options.cookie || {};
-  const key = cookieOpts.key || 'alaska.sid';
+  const key: string = cookieOpts.key || 'alaska.sid';
   // $Flow require参数需要为字符串
   const Store = require(storeOpts.type);
   const store = new Store(storeOpts);
-  let ignore = [];
+  let ignore: ?RegExp[] = null;
 
   function convert(input) {
     if (typeof input === 'string') {
+      // $Flow
       ignore.push(pathToRegexp(input));
     } else if (input.test) {
+      // $Flow
       ignore.push(input);
-    } else if (input instanceof Function) {
-      ignore.push(input);
+    } else {
+      throw new Error('Invalid session ignore option: ' + String(input));
     }
   }
 
   if (options.ignore) {
     ignore = [];
-
     if (Array.isArray(options.ignore)) {
       options.ignore.forEach(convert);
     } else {
@@ -33,86 +37,90 @@ module.exports = function (options: Alaska$Config$session) {
     }
   }
 
-  return function sessionMiddleware(ctx: Alaska$Context, next: Function) {
+  return async function sessionMiddleware(ctx: Alaska$Context, next: Function) {
     if (ignore) {
       for (let reg of ignore) {
-        if (reg.test) {
-          if (reg.test(ctx.path)) return next();
-        } else if (reg(ctx)) {
-          return next();
+        if (reg.test(ctx.path)) {
+          await next();
+          return;
         }
       }
     }
-    return new Promise((resolve, reject) => {
-      ctx.sessionKey = key;
-      let sid = '';
-      sid = ctx.sessionId =
-        (cookieOpts && cookieOpts.get) ? cookieOpts.get(ctx, key, cookieOpts) : ctx.cookies.get(key, cookieOpts);
-      let json;
-      let session;
+    ctx.sessionKey = key;
+    let sid = '';
+    if (cookieOpts && cookieOpts.get) {
+      sid = ctx.sessionId = cookieOpts.get(ctx, key, cookieOpts);
+    } else {
+      // $Flow
+      sid = ctx.sessionId = ctx.cookies.get(key, cookieOpts);
+    }
+    let json;
+    let session;
 
-      if (sid) {
-        store.get(sid).then((res) => {
-          json = res || null;
-          onGetSession();
-        }, onGetSession);
+    if (sid) {
+      json = await store.get(sid);
+    } else {
+      sid = ctx.sessionId = random(24);
+      if (cookieOpts && cookieOpts.set) {
+        cookieOpts.set(ctx, key, sid, cookieOpts);
       } else {
-        sid = ctx.sessionId = random(24);
-        (cookieOpts && cookieOpts.set) ? cookieOpts.set(ctx, key, sid, cookieOpts) : ctx.cookies.set(key, sid, cookieOpts);
-        onGetSession();
+        ctx.cookies.set(key, sid, cookieOpts);
       }
+    }
 
-      function onGetSession() {
-        if (json) {
-          ctx.sessionId = sid;
-          try {
-            session = new Session(ctx, json);
-          } catch (err) {
-            if (!(err instanceof SyntaxError)) {
-              return reject(err);
-            }
-            session = new Session(ctx, {});
-          }
-        } else {
-          session = new Session(ctx, {});
+    if (json) {
+      ctx.sessionId = sid;
+      try {
+        session = new Session(ctx, json);
+      } catch (err) {
+        if (!(err instanceof SyntaxError)) {
+          throw err;
         }
+        session = new Session(ctx, {});
+      }
+    } else {
+      session = new Session(ctx, {});
+    }
 
-        ctx.__defineGetter__('session', () => {
-          if (session) return session;
-          if (session === false) return null;
-          return null;
-        });
-
-        ctx.__defineSetter__('session', (val) => {
-          if (val === null) return (session = false);
-          if (typeof val === 'object') return (session = new Session(ctx, val));
-          throw new Error('ctx.session can only be set as null or an object.');
-        });
-
-        let jsonString = JSON.stringify(json);
-
-        function onNext() {
-          if (session === false) {
-            // 清除Session
-            (cookieOpts && cookieOpts.set) ? cookieOpts.set(ctx, key, '', cookieOpts) : ctx.cookies.set(key, '', cookieOpts);
-            store.del(sid);
-          } else if (!json && !session.length) {
-            // 未更改
-          } else if (session.isChanged(jsonString)) {
-            // 保存
-            json = session.toJSON();
-            store.set(sid, json);
-          }
-        }
-
-        next().then(() => {
-          onNext();
-          resolve();
-        }, (error) => {
-          onNext();
-          reject(error);
-        });
+    // $Flow
+    Object.defineProperty(ctx, 'session', {
+      get() {
+        if (session) return session;
+        if (session === false) return null;
+        return null;
+      },
+      set(val) {
+        if (val === null) return (session = false);
+        if (typeof val === 'object') return (session = new Session(ctx, val));
+        throw new Error('ctx.session can only be set as null or an object.');
       }
     });
+
+    let jsonString = JSON.stringify(json);
+
+    function onNext() {
+      if (session === false) {
+        // 清除Session
+        if (cookieOpts && cookieOpts.set) {
+          cookieOpts.set(ctx, key, '', cookieOpts);
+        } else {
+          ctx.cookies.set(key, '', cookieOpts);
+        }
+        store.del(sid);
+      } else if (!json && !session.length) {
+        // 未更改
+      } else if (session.isChanged(jsonString)) {
+        // 保存
+        json = session.toJSON();
+        store.set(sid, json);
+      }
+    }
+
+    try {
+      await next();
+      onNext();
+    } catch (error) {
+      onNext();
+    }
   };
 };

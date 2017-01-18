@@ -3,8 +3,11 @@
 import { Field } from 'alaska';
 
 class GeoField extends Field {
+  static options: any[] = [];
+  coordinate: string;
   init() {
     let field = this;
+    // $Flow 2dsphere 不知道有什么具体作用 但类型不匹配
     field.index = field.index || '2dsphere';
     field.coordinate = field.coordinate || 'wgs84'; // wgs84 gcj02 bd09
 

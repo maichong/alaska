@@ -127,8 +127,7 @@ export default class GoodsCat extends Model {
     }
 
     let subs = {};
-    for (let i of Object.keys(list)) {
-      let sub = list[i];
+    for (let sub of list) {
       if (subs[sub.id]) {
         continue;
       }
