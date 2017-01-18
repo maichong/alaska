@@ -1,0 +1,13 @@
+{
+  "name": "alaska-order",
+  "version": "0.11.0",
+  "description": "Alaska order service",
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-order",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT"
+}

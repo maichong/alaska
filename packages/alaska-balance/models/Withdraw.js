@@ -1,13 +1,9 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-05-24
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
-import alaska from 'alaska';
+import { Model } from 'alaska';
 import service from '../';
 
-export default class Withdraw extends alaska.Model {
+export default class Withdraw extends Model {
 
   static label = 'Withdraw';
   static icon = 'share-square';

@@ -1,35 +1,15 @@
 {
   "name": "alaska-update",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Alaska update service",
   "keywords": [
     "alaska",
     "alaska-service"
   ],
   "main": "index.js",
-  "scripts": {
-    "build": "babel ./src --out-dir ./",
-    "watch": "babel ./src --out-dir ./ -w",
-    "prebuild": "rimraf lib api controllers config locales middlewares models sleds views",
-    "prepublish": "npm run build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-update.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-update",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-update/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-update#readme",
-  "peerDependencies": {
-    "alaska": "*"
-  },
   "dependencies": {
     "mz": "^2.4.0"
   }

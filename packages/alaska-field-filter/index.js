@@ -2,7 +2,7 @@
 
 import alaska, { Field } from 'alaska';
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 class FilterField extends Field {
   init() {

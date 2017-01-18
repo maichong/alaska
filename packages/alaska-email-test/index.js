@@ -1,10 +1,10 @@
 // @flow
 
-exports.default = class EmailTestDriver {
+export default class EmailTestDriver {
   service: Alaska$Service;
-  options: Alaska$Service$options;
+  options: Object;
 
-  constructor(service: Alaska$Service, options: Alaska$Service$options) {
+  constructor(service: Alaska$Service, options: Object) {
     this.service = service;
     this.options = options;
   }

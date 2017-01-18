@@ -23,18 +23,21 @@ export default class Create extends Sled {
     quantity?:number;
   }): Promise<Object> {
     let { user, goodsId, skuId, quantity } = params;
-    let sku;
+    let sku: ?Sku;
+    let goods: ?Goods;
 
-    // $Flow
-    let goods = await Goods.findById(goodsId);
+    let goodsTmp: Goods = await Goods.findById(goodsId);
+
+    goods = goodsTmp;
+
     if (!goods) service.error('goods is not found');
     let discountValid = goods.discountValid;
     let discount = discountValid ? goods.discount : 0;
     let filters = { user: user._id, goods: goodsId, sku: '' };
     if (skuId) {
+      let skuTmp: Sku = await Sku.findById(params.skuId);
 
-      // $Flow
-      sku = await Sku.findById(skuId);
+      sku = skuTmp;
       if (!sku) service.error('Can not find sku');
       if (sku.goods.toString() !== goodsId) service.error('goods id error');
       discount = discountValid ? sku.discount : 0;
@@ -44,7 +47,7 @@ export default class Create extends Sled {
     }
 
     // $Flow
-    let record:CartItem = await CartItem.findOne(filters);
+    let record: CartItem = await CartItem.findOne(filters);
 
     if (!record) {
       record = new CartItem(filters);

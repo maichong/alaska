@@ -1,13 +1,13 @@
 // @flow
 
-const nodemailer = require('nodemailer');
+import Nodemailer from 'nodemailer';
 
-exports.default = class EmailSmtpDriver {
+export default class EmailSmtpDriver {
   service: Alaska$Service;
-  options: Alaska$Service$options;
+  options: Object;
   transporter: ?Object;
 
-  constructor(service: Alaska$Service, options: Alaska$Service$options) {
+  constructor(service: Alaska$Service, options: Object) {
     this.service = service;
     this.options = options;
     this.transporter = null;
@@ -20,11 +20,12 @@ exports.default = class EmailSmtpDriver {
   send(data: Object) {
     if (!this.transporter) {
       // $Flow
-      this.transporter = nodemailer.createTransport(this.options.smtp, this.options.defaults);
+      let transporterTmp: Object = Nodemailer.createTransport(this.options.smtp, this.options.defaults);
+      this.transporter = transporterTmp;
     }
-    let transporter:Object = this.transporter||{};
-    return new Promise(function (resolve, reject) {
-      transporter.sendMail(data, function (error, res) {
+    let transporter: Object = this.transporter || {};
+    return new Promise((resolve, reject) => {
+      transporter.sendMail(data, (error, res) => {
         if (error) {
           reject(error);
         } else {

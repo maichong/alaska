@@ -1,10 +1,12 @@
 // @flow
 
 import React from 'react';
-import { shallowEqual } from 'alaska-admin-view';
+import shallowEqualWithout from 'shallow-equal-without';
 import DateTime from 'react-datetime';
+// $Flow
 import 'react-datetime/css/react-datetime.css';
 import moment from 'moment';
+// $Flow
 import 'moment/locale/zh-cn';
 
 const { bool, object, any, func, string } = React.PropTypes;
@@ -25,10 +27,14 @@ export default class DatetimeFieldView extends React.Component {
     settings: object
   };
 
-  constructor(props) {
+  state: {
+    value:moment;
+  };
+
+  constructor(props: Object) {
     super(props);
     this.state = {
-      value: props.value ? new Date(props.value) : new Date
+      value: moment(props.value)
     };
   }
 
@@ -36,8 +42,9 @@ export default class DatetimeFieldView extends React.Component {
     moment.locale(this.context.settings.locale);
   }
 
-  shouldComponentUpdate(props, state) {
-    return !shallowEqual(props, this.props, 'data', 'onChange', 'model') || !shallowEqual(state, this.state);
+  shouldComponentUpdate(props: Object, state: Object) {
+    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model')
+      || !shallowEqualWithout(state, this.state);
   }
 
   render() {
@@ -45,8 +52,9 @@ export default class DatetimeFieldView extends React.Component {
     let value = props.value;
     let field = props.field;
     let disabled = props.disabled;
+    let valueString: string = '';
     if (field.format && value) {
-      value = moment(value).format(field.format);
+      valueString = moment(value).format(field.format);
     }
     let errorText = props.errorText;
     let help = field.help;
@@ -58,9 +66,9 @@ export default class DatetimeFieldView extends React.Component {
     let helpElement = help ? <p className="help-block">{help}</p> : null;
     let inputElement;
     if (field.static) {
-      inputElement = <p className="form-control-static">{value}</p>;
+      inputElement = <p className="form-control-static">{valueString}</p>;
     } else if (disabled) {
-      inputElement = <input type="text" className="form-control" disabled value={value}/>;
+      inputElement = <input type="text" className="form-control" disabled value={valueString} />;
     } else {
       inputElement = <DateTime
         value={value}
@@ -73,9 +81,7 @@ export default class DatetimeFieldView extends React.Component {
     let label = field.nolabel ? '' : field.label;
 
     if (field.horizontal === false) {
-      let labelElement = label ? (
-        <label className="control-label">{label}</label>
-      ) : null;
+      let labelElement = label ? <label className="control-label">{label}</label> : null;
       return (
         <div className={className}>
           {labelElement}

@@ -462,7 +462,7 @@ declare class Alaska$Model extends events$EventEmitter {
     //TODO akita
   };
   static actions:{
-    [key:string]:{
+    [key:string]:false | {
       title?:string;
       style?:string;
       sled:string;
@@ -607,6 +607,7 @@ declare class Alaska$Service {
   locales: { [locale:string]:Object };
 
   constructor(options?: Alaska$Service$options):void;
+  createCacheDriver(options: Object | string, createNew?: boolean): Alaska$CacheDriver;
   pre(action: string, fn: Function): void;
   post(action: string, fn: Function): void;
   panic:(message: string|number, code?: number) => void;

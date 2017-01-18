@@ -94,7 +94,7 @@ export default class GoodsPropValue extends Model {
     let prop: ?Object = await GoodsProp.findById(this.prop);
     if (!prop) return;
     // $Flow find
-    let values:Object = await GoodsPropValue.find({ prop: prop._id });
+    let values:Object[] = await GoodsPropValue.find({ prop: prop._id });
     prop.values = values.map((v) => v._id);
     await prop.save();
   }
