@@ -7,14 +7,9 @@
     "alaska-middleware"
   ],
   "main": "index.js",
-  "scripts": {
-  },
-  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-middleware-session",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-meddleware-session",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "peerDependencies": {
-    "alaska": "*"
-  },
   "dependencies": {
     "path-to-regexp": "*",
     "string-random": "^0.1.0"

@@ -12,14 +12,11 @@
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-captcha",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "peerDependencies": {
-    "alaska": "*"
-  },
   "dependencies": {
-    "alaska-field-number": "^0.10.0",
-    "alaska-field-text": "^0.10.0",
-    "alaska-field-select": "^0.10.0",
-    "alaska-field-relationship": "^0.10.0",
+    "alaska-field-number": "^0.11.0",
+    "alaska-field-text": "^0.11.0",
+    "alaska-field-select": "^0.11.0",
+    "alaska-field-relationship": "^0.11.0",
     "string-random": "^0.1.0"
   }
 }
