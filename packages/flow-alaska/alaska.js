@@ -462,7 +462,7 @@ declare class Alaska$Model extends events$EventEmitter {
     //TODO akita
   };
   static actions:{
-    [key:string]:{
+    [key:string]:false | {
       title?:string;
       style?:string;
       sled:string;

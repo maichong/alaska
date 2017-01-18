@@ -1,9 +1,9 @@
 // @flow
 
-import alaska from 'alaska';
+import { Model } from 'alaska';
 import service from '../';
 
-export default class Withdraw extends alaska.Model {
+export default class Withdraw extends Model {
 
   static label = 'Withdraw';
   static icon = 'share-square';
