@@ -224,7 +224,7 @@ declare class Mongoose$Query {
   findOneAndUpdate(conditions?: Object, doc?: Object, options?: Object, callback?: Function):this;
   findOneAndRemove(conditions?: Object, options?: Object, callback?: Function):this;
   update(conditions?: Object, doc?: Object, options?: Object, callback?: Function):this;
-  exec(op?: string|Function, callback: Function):Promise<any>;
+  exec(op?: string|Function, callback?: Function):Promise<any>;
   then(resolve?: Function, reject?: Function):Promise<any>;
   catch(reject?: Function):Promise<any>;
   populate(path: string|Object, select?: Object|string, model?: Mongoose$Model, match?: Object, options?: Object):this;
