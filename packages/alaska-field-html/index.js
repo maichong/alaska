@@ -14,7 +14,7 @@ export default class HtmlField extends Field {
     }
   };
   static plain: Class<String> = String;
-  static viewOptions: string[] = ['upload', 'defaultImage'];
+  static viewOptions: Array<string|(options: Object, field: Alaska$Field)=>void> = ['upload', 'defaultImage'];
 
   init() {
     if (!this.filter && this.filter !== false) {
