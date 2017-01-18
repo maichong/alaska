@@ -49,7 +49,7 @@ export default class FeedbackComment extends Model {
     }
   };
   feedback: Object;
-  user: Object;
+  user: User;
   createdAt: Date;
   fromAdmin: boolean;
   content: string;
