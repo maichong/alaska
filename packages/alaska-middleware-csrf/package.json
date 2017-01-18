@@ -1,25 +1,9 @@
 {
   "name": "alaska-csrf",
-  "version": "0.1.0",
+  "version": "0.11.0",
   "description": "Alaska csrf middleare",
   "main": "index.js",
-  "scripts": {
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-csrf.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-csrf/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-csrf#readme",
-  "peerDependencies": {
-    "alaska": "*"
-  }
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-meddleware-csrf",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT"
 }

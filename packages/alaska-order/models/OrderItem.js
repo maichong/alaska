@@ -1,12 +1,12 @@
 // @flow
 
-import alaska from 'alaska';
+import { Model } from 'alaska';
 import BALANCE from 'alaska-balance';
 import Order from '../models/Order';
 import Goods from 'alaska-goods/models/Goods';
 import Sku from 'alaska-goods/models/Sku';
 
-export default class OrderItem extends alaska.Model {
+export default class OrderItem extends Model {
   static label = 'Order Item';
   static icon = 'list-ol';
   static defaultColumns = 'title order goods skuDesc price discount total quantity createdAt';
@@ -79,19 +79,19 @@ export default class OrderItem extends alaska.Model {
     }
   };
 
-  pic:Object;
-  title:string;
-  order:Order;
-  goods:Goods;
-  sku:Sku;
-  skuDesc:string;
-  currency:string;
-  price:number;
-  discount:number;
-  quantity:number;
-  shipping:number;
-  total:number;
-  createdAt:Date;
+  pic: Object;
+  title: string;
+  order: Order;
+  goods: Goods;
+  sku: Sku;
+  skuDesc: string;
+  currency: string;
+  price: number;
+  discount: number;
+  quantity: number;
+  shipping: number;
+  total: number;
+  createdAt: Date;
 
   preSave() {
     if (!this.createdAt) {

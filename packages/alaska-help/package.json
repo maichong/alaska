@@ -1,39 +1,19 @@
 {
   "name": "alaska-help",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "description": "Alaska help service",
   "keywords": [
     "alaska",
     "alaska-service"
   ],
   "main": "index.js",
-  "scripts": {
-    "build": "babel ./src --out-dir ./",
-    "watch": "babel ./src --out-dir ./ -w",
-    "prebuild": "rimraf lib api controllers config locales middlewares models sleds views",
-    "prepublish": "npm run build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-help.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-help",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-help/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-help#readme",
-  "peerDependencies": {
-    "alaska": "^0.10.6"
-  },
   "dependencies": {
-    "alaska-field-relationship": "^0.10.1",
-    "alaska-field-text": "^0.10.3",
-    "alaska-field-html": "^0.10.1",
-    "alaska-field-datetime": "^0.10.2"
+    "alaska-field-relationship": "^0.11.0",
+    "alaska-field-text": "^0.11.0",
+    "alaska-field-html": "^0.11.0",
+    "alaska-field-datetime": "^0.11.0"
   }
 }

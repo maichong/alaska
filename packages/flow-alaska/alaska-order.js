@@ -33,6 +33,7 @@ declare class Alaska$Model$Order extends Alaska$Model {
   userDeleted:boolean;
   adminDeleted:boolean;
 
+  isNew: boolean;
   _logTotal:Alaska$Model$OrderLog;
   _logShipping:Alaska$Model$OrderLog;
 

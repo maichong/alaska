@@ -1,23 +1,18 @@
 {
   "name": "alaska-page",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "keywords": [
     "alaska",
     "alaska-service"
   ],
   "description": "Alaska page service",
   "main": "index.js",
-  "scripts": {
-  },
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-page",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "peerDependencies": {
-    "alaska": "*"
-  },
   "dependencies": {
-    "alaska-field-text": "^0.10.0",
-    "alaska-field-html": "^0.10.0",
-    "alaska-field-datetime": "^0.10.0"
+    "alaska-field-text": "^0.11.0",
+    "alaska-field-html": "^0.11.0",
+    "alaska-field-datetime": "^0.11.0"
   }
 }
