@@ -4,9 +4,7 @@ import React from 'react';
 import FilterEditor from 'alaska-admin-view/lib/components/FilterEditor';
 import DropdownButton from 'react-bootstrap/lib/DropdownButton';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
-import _reduce from 'lodash/reduce';
-import _clone from 'lodash/clone';
-import _keys from 'lodash/keys';
+import _ from 'lodash';
 
 const CHECK_ICON = <i className="fa fa-check" />;
 
@@ -27,6 +25,13 @@ export default class FilterFieldView extends React.Component {
     t: func
   };
 
+  state: {
+    ref:boolean,
+    modelPath:string,
+    model:any,
+    selectedFields:Object
+  };
+
   componentWillMount() {
     this.state = {
       ref: false,
@@ -37,11 +42,11 @@ export default class FilterFieldView extends React.Component {
     this.init(this.props);
   }
 
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps(props: Object) {
     this.init(props);
   }
 
-  init(props) {
+  init(props: Object) {
     const { field, data, value } = props;
     const { settings } = this.context;
     let state = {};
@@ -60,7 +65,7 @@ export default class FilterFieldView extends React.Component {
     }
 
     state.selectedFields = {};
-    _keys(value).forEach((key) => (state.selectedFields[key] = true));
+    _.keys(value).forEach((key) => (state.selectedFields[key] = true));
 
     this.setState(state);
   }
@@ -68,7 +73,8 @@ export default class FilterFieldView extends React.Component {
   getFilterItems() {
     const { selectedFields, model } = this.state;
     const t = this.context.t;
-    return _reduce(model.fields, (res, field, index) => {
+    // $Flow  flow不知道该用哪种描述  lodash_v4.x.x.js:211 212
+    return _.reduce(model.fields, (res, field, index) => {
       if (!field._label) {
         field._label = field.label;
         field.label = t(field.label, model.service.id);
@@ -84,13 +90,13 @@ export default class FilterFieldView extends React.Component {
     }, []);
   }
 
-  onFieldsChange = (fields) => {
+  onFieldsChange = (fields: Object) => {
     this.setState({ selectedFields: fields });
   };
 
-  handleFilter = (field) => {
+  handleFilter = (field: Object) => {
     const { selectedFields } = this.state;
-    let fields = _clone(selectedFields);
+    let fields = _.clone(selectedFields);
     if (fields[field]) {
       delete fields[field];
     } else {
@@ -132,9 +138,7 @@ export default class FilterFieldView extends React.Component {
     let label = field.nolabel ? '' : field.label;
 
     if (field.horizontal === false) {
-      let labelElement = label ? (
-        <label className="control-label">{label}</label>
-        ) : null;
+      let labelElement = label ? (<label className="control-label">{label}</label>) : null;
       return (
         <div className={className}>
           {labelElement}

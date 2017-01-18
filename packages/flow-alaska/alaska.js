@@ -23,7 +23,7 @@ type CookiesSetOptions = {
 
 
 declare type Cookies = {
-  get(name: string, options?: CookiesGetOptions):void;
+  get(name: string, options?: CookiesGetOptions):string|void;
   set(name: string, value?: string, options?: CookiesSetOptions):void;
 }
 
@@ -138,6 +138,8 @@ declare type Alaska$Context = {
   redirect(url: string, alt?: string):void;
   attachment(filename?: string):void;
 
+  sessionKey:string;
+  sessionId:string;
   files:{ [name:string]:Object };
   alaska: Alaska$Alaska;
   main: Alaska$Service;
@@ -190,8 +192,19 @@ declare type Alaska$Config$renderer={
 };
 
 declare type Alaska$Config$session={
-  cookie?:CookiesSetOptions;
+  cookie?: {
+    signed?: boolean;
+    expires?: Date;
+    path?: string;
+    domain?: string;
+    secure?: boolean;
+    httpOnly?: boolean;
+    key?:string;
+    get?:(ctx: Alaska$Context, key: string, cookieOpts: Object) => string;
+    set?:(ctx: Alaska$Context, key: string, sid: string, cookieOpts: Object) => void;
+  };
   store?:Alaska$Config$cache;
+  ignore?:RegExp|string|Array<RegExp|string>
 };
 
 declare type Alaska$Config$static = {

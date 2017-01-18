@@ -1,0 +1,36 @@
+{
+  "name": "alaska-field-html",
+  "version": "0.10.1",
+  "description": "Alaska html WYSIWYG editor field",
+  "keywords": [
+    "alaska",
+    "alaska-field"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "build": "babel ./src --out-dir ./lib",
+    "watch": "babel ./src --out-dir ./lib -w",
+    "prebuild": "rimraf lib",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-field-html.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-field-html/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-field-html#readme",
+  "peerDependencies": {
+    "alaska": "*"
+  },
+  "dependencies": {
+    "simditor": "^2.3.6"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "alaska-field-geo",
+  "version": "0.10.1",
+  "description": "Alaska geo field",
+  "keywords": [
+    "alaska",
+    "alaska-field"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "build": "babel ./src --out-dir ./lib",
+    "watch": "babel ./src --out-dir ./lib -w",
+    "prebuild": "rimraf lib",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-field-geo.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-field-geo/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-field-geo#readme",
+  "peerDependencies": {
+    "alaska": "*"
+  }
+}
