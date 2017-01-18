@@ -1,0 +1,30 @@
+{
+  "name": "alaska-queue-array",
+  "version": "0.10.0",
+  "description": "Alaska array queue driver",
+  "keywords": [
+    "alaska",
+    "alaska-queue"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "build": "babel ./src --out-dir ./",
+    "watch": "babel ./src --out-dir ./ -w",
+    "prebuild": "rimraf lib",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-queue-array.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-queue-array/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-queue-array#readme"
+}
