@@ -1,5 +1,4 @@
 const LRU = require('lru-cache');
-const _ = require('lodash');
 const debug = require('debug')('alaska-cache-lru');
 
 class LruCacheDriver {
