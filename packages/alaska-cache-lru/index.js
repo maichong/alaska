@@ -1,5 +1,4 @@
 const LRU = require('lru-cache');
-const _ = require('lodash');
 const debug = require('debug')('alaska-cache-lru');
 
 class LruCacheDriver {
@@ -123,6 +122,4 @@ class LruCacheDriver {
   }
 }
 
-LruCacheDriver.default = LruCacheDriver;
-
-module.exports = LruCacheDriver;
+module.exports = LruCacheDriver.default = LruCacheDriver;
