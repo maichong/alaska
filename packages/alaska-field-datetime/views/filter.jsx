@@ -59,7 +59,7 @@ export default class DatetimeFieldFilter extends React.Component {
     if (!value1) {
       error = true;
     }
-    if (mode === 4 && (!value2 || value1 >= value2)) {
+    if (mode === 4 && (!value2 || value1.isAfter(value2))) {
       error = true;
     }
     this.state = {

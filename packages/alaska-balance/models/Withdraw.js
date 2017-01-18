@@ -1,8 +1,4 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-05-24
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import alaska from 'alaska';
 import service from '../';
