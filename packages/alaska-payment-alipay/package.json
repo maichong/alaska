@@ -1,0 +1,35 @@
+{
+  "name": "alaska-payment-alipay",
+  "version": "0.10.0",
+  "description": "Alipay plugin for alaska.",
+  "keywords": [
+    "alaska",
+    "alaska-payment",
+    "alaska-payment-plugin"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "build": "babel ./src --out-dir ./",
+    "watch": "babel ./src --out-dir ./ -w",
+    "prebuild": "rimraf lib api controllers config locales middlewares models sleds views",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-payment-alipay.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-payment-alipay/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-payment-alipay#readme",
+  "peerDependencies": {
+    "alaska": "*",
+    "alaska-payment": "^0.10.0"
+  }
+}

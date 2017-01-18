@@ -8,7 +8,7 @@ import Payment from 'alaska-payment/models/Payment';
 import alaska from 'alaska';
 
 export default class BalancePlugin {
-  service: Alaska$Service;
+  service: typeof PAYMENT;
 
   constructor(service: typeof PAYMENT) {
     this.service = service;

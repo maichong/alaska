@@ -19,6 +19,9 @@ declare module 'alaska-payment/models/Payment' {
     createdAt: Date;
     currency:string;
     preSave():void;
+
+    alipay_trade_no:string;
+    alipay_buyer_email:string;
   }
   declare var exports: Class<Payment>;
 }
