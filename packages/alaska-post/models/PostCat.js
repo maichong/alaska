@@ -4,12 +4,14 @@ import _ from 'lodash';
 import { Model } from 'alaska';
 import service from '../';
 
-export default class GoodsCat extends Model {
-  static label = 'Goods Category';
-  static icon = 'th-list';
-  static defaultColumns = '_id icon pic title parent sort createdAt';
+export default class PostCat extends Model {
+  static label = 'Post Category';
+  static icon = 'paperclip';
+  static defaultColumns = '_id title parent sort createdAt';
   static defaultSort = '-sort';
   static searchFields = 'title';
+
+  static autoSelect = false;
 
   static api = {
     list: 1
@@ -17,14 +19,9 @@ export default class GoodsCat extends Model {
 
   static relationships = {
     subs: {
-      ref: 'GoodsCat',
+      ref: 'PostCat',
       path: 'parent',
       title: 'Sub Categories',
-      private: true
-    },
-    goods: {
-      ref: 'Goods',
-      path: 'cats',
       private: true
     }
   };
@@ -35,28 +32,15 @@ export default class GoodsCat extends Model {
       type: String,
       required: true
     },
-    icon: {
-      label: 'Icon',
-      type: 'image'
-    },
-    pic: {
-      label: 'Banner',
-      type: 'image'
-    },
-    desc: {
-      label: 'Description',
-      type: String
-    },
     parent: {
       label: 'Parent Category',
       type: 'category',
-      ref: 'GoodsCat',
+      ref: 'PostCat',
       index: true
     },
     subCats: {
       label: 'Sub Categories',
-      type: 'relationship',
-      ref: 'GoodsCat',
+      ref: 'PostCat',
       multi: true,
       hidden: true,
       private: true
@@ -73,11 +57,7 @@ export default class GoodsCat extends Model {
       private: true
     }
   };
-
   title: string;
-  icon: Object;
-  pic: Object;
-  desc: string;
   parent: Object;
   subCats: Object[];
   sort: number;
@@ -90,43 +70,39 @@ export default class GoodsCat extends Model {
   }
 
   postSave() {
-    service.clearCache();
     if (this.parent) {
       service.run('UpdateCatRef', { cat: this.parent });
     }
-    service.run('UpdatePropRef', { cat: this.id });
   }
 
   postRemove() {
-    service.clearCache();
     if (this.parent) {
       service.run('UpdateCatRef', { cat: this.parent });
     }
-    service.run('UpdatePropRef', { cat: this.id });
   }
 
   /**
-   * 获取当前分类的子分类对象列表
-   * @returns {[GoodsCat]}
+   * [async] 获取当前分类的子分类对象列表
+   * @returns {[PostCat]}
    */
   async subs() {
     if (this.populated('subCats')) {
       return this.subCats;
     }
-    return await GoodsCat.find({ parent: this._id });
+    return await PostCat.find({ parent: this._id });
   }
 
   /**
-   * 获取当前分类的所有子分类对象列表
-   * @returns {[GoodsCat]}
+   * [async] 获取当前分类的所有子分类对象列表
+   * @returns {{}}
    */
   async allSubs() {
     let list = await this.subs();
     if (!list.length) {
       return {};
     }
-
     let subs = {};
+
     for (let sub of list) {
       if (subs[sub.id]) {
         continue;
@@ -136,22 +112,5 @@ export default class GoodsCat extends Model {
       _.defaults(subs, subsubs);
     }
     return subs;
-  }
-
-  /**
-   * 获取当前分类的所有父分类对象列表
-   * @returns {[GoodsCat]}
-   */
-  async parents() {
-    let cats = [];
-    let cat = this;
-    while (cat && cat.parent) {
-      // $Flow
-      cat = await GoodsCat.findCache(cat.parent);
-      if (cat) {
-        cats.push(cat);
-      }
-    }
-    return cats;
   }
 }

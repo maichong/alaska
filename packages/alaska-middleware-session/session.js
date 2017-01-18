@@ -1,35 +1,32 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-02-28
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 /**
  * @class Session
  * @property {boolean} isNew
  * @property {number} length
  */
+export default class Session {
+  _ctx: Alaska$Context;
+  isNew: boolean;
 
-'use strict';
-
-module.exports = class Session {
   /**
    * @constructor
-   * @param ctx
-   * @param obj
+   * @param {Alaska$Context} ctx
+   * @param {Object} [obj]
    */
-  constructor(ctx, obj) {
+  constructor(ctx: Alaska$Context, obj?: Object) {
     this._ctx = ctx;
     if (!obj) {
       this.isNew = true;
     } else {
-      for (let k in obj) {
+      for (let k of Object.keys(obj)) {
+        // $Flow
         this[k] = obj[k];
       }
     }
   }
 
-  get length() {
+  get length(): number {
     return Object.keys(this.toJSON()).length;
   }
 
@@ -37,11 +34,12 @@ module.exports = class Session {
    * 返回格式化后的对象
    * @returns {Object}
    */
-  toJSON() {
+  toJSON(): Object {
     let me = this;
     let obj = {};
-    Object.keys(this).forEach(key => {
+    Object.keys(this).forEach((key) => {
       if (key === 'isNew' || key[0] === '_') return;
+      // $Flow
       obj[key] = me[key];
     });
     return obj;
@@ -52,11 +50,10 @@ module.exports = class Session {
    * @param {string} prev 之前数据的json字符串
    * @returns {boolean}
    */
-  isChanged(prev) {
+  isChanged(prev: string) {
     if (!prev) {
       return true;
     }
-    this._json = JSON.stringify(this);
-    return this._json !== prev;
+    return JSON.stringify(this) !== prev;
   }
 };

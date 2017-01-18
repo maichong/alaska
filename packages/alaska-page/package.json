@@ -8,25 +8,10 @@
   "description": "Alaska page service",
   "main": "index.js",
   "scripts": {
-    "build": "babel ./src --out-dir ./",
-    "watch": "babel ./src --out-dir ./ -w",
-    "prebuild": "rimraf lib api controllers config locales middlewares models sleds views",
-    "prepublish": "npm run build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-page.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-page",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-page/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-page#readme",
   "peerDependencies": {
     "alaska": "*"
   },
