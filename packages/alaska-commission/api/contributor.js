@@ -15,7 +15,6 @@ export default async function (ctx:Alaska$Context) {
       promoter: user._id
     }, ctx.state.filters)
   });
-  ctx.body = obj;
   // $Flow results 查询返回结果，类型不定 line 19
-  ctx.body.results = _.map(ctx.body.results, (u) => u.data(ctx.state.scope || 'tiny'));
+  ctx.body.results = _.map(obj.results, (u) => u.data(ctx.state.scope || 'tiny'));
 }

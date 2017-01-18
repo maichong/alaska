@@ -2,9 +2,24 @@
 
 import { Field } from 'alaska';
 
-class GeoField extends Field {
+export default class GeoField extends Field {
   static options: any[] = [];
+
+  static views: Object = {
+    cell: {
+      name: 'GeoFieldCell',
+      path: `${__dirname}/lib/cell.js`
+    },
+    view: {
+      name: 'GeoFieldView',
+      path: `${__dirname}/lib/view.js`
+    }
+  };
+  static plain: Class<Array> = Array;
+  static viewOptions: any[] = [];
+
   coordinate: string;
+
   init() {
     let field = this;
     // $Flow 2dsphere 不知道有什么具体作用 但类型不匹配
@@ -26,22 +41,3 @@ class GeoField extends Field {
     };
   }
 }
-
-GeoField.views = {
-  cell: {
-    name: 'GeoFieldCell',
-    path: `${__dirname}/lib/cell.js`
-  },
-  view: {
-    name: 'GeoFieldView',
-    path: `${__dirname}/lib/view.js`
-  }
-};
-
-GeoField.plain = Array;
-
-GeoField.options = [];
-
-GeoField.viewOptions = [];
-
-module.exports = GeoField;
