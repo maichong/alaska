@@ -60,11 +60,12 @@ export default class Create extends Sled {
 
     if (commissionRates.length > params.level && params.price) {
       //创建多级佣金
-      let user = params.user;
-      if (!user.save) {
+      let user:User;
+      let u = params.user;
+      if (!u.save) {
         //如果不是模型记录
         // $Flow findById
-        user = await User.findById(user);
+        user = await User.findById(u);
       }
       if (user && user.promoter) {
         //用户有上级

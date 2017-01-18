@@ -12,7 +12,7 @@
   "dependencies": {},
   "scripts": {
     "eslint": "eslint ./",
-    "flow": "pkill flow ; flow check --show-all-errors"
+    "flow": "flow check --show-all-errors && pkill flow"
   },
   "repository": {
     "type": "git",
@@ -47,6 +47,8 @@
     "flow-mongoose": "^0.1.0",
     "flow-numeral": "^0.1.1",
     "flow-path-to-regexp": "^0.1.0",
+    "flow-qs": "^0.1.0",
+    "flow-react-router": "^0.1.1",
     "flow-statuses": "^0.1.0",
     "ghooks": "^2.0.0",
     "lerna": "2.0.0-beta.32",

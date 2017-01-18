@@ -1,6 +1,7 @@
 import type { WriteStream } from 'fs';
 import type Debugger from 'debug';
 import type Router from 'koa-router';
+import Koa from 'koa';
 
 declare type Indexed = {
   [key:string]:any
@@ -502,7 +503,7 @@ declare class Alaska$Field {
   static classOfField:true;
   static plain:any;
   static dbOptions:string[];
-  static viewOptions:string[];
+  static viewOptions:Array<string|(options: Object, field: Alaska$Field)=>void>;
   static views:{
     cell?:Alaska$Field$View;
     view?:Alaska$Field$View;
@@ -523,6 +524,7 @@ declare class Alaska$Field {
 
   // Alaska
   type:Class<Alaska$Field>;
+  dataType:Function;
   label:string;
   path:string;
   ref?: Class<Alaska$Model>;
@@ -628,12 +630,15 @@ declare class Alaska$Alaska {
   db: Mongoose$Connection;
   main:Alaska$Service;
   services:{ [id:string]:Alaska$Service };
+  app: Koa;
   service(id: string):Alaska$Service;
   config(key: string, defaultValue: any): any;
   toJSON():Object;
+  post(action: string, fn: Function): void;
   panic:(message: string|number, code?: number) => void;
   error:(message: string|number, code?: number) => void;
   try: <T>(promise: Promise<T>) => Promise<T>;
+  
 }
 
 declare class Alaska$Driver {
