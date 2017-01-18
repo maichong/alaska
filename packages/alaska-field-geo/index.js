@@ -15,7 +15,7 @@ export default class GeoField extends Field {
       path: `${__dirname}/lib/view.js`
     }
   };
-  static plain: Class<Array> = Array;
+  static plain = Array;
   static viewOptions: any[] = [];
 
   coordinate: string;
