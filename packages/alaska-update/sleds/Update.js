@@ -8,7 +8,7 @@ import AppUpdate from '../models/AppUpdate';
 export default class Update extends Sled {
 
   async exec(params:Object) {
-    const dir = params.dir;
+    const dir: string = params.dir;
     if (!dir) {
       throw new ReferenceError('alaska-update sled Update data.dir is required');
     }
@@ -21,8 +21,7 @@ export default class Update extends Sled {
     }
     if (files.length) {
       for (let file of files) {
-        // $Flow count
-        let has = await AppUpdate.count({ key: file });
+        let has: number = await AppUpdate.count({ key: file });
         if (!has) {
           console.log('Apply update script ', file);
           let mod = utils.include(dir + file, true);
