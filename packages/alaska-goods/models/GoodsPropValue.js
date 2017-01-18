@@ -91,10 +91,10 @@ export default class GoodsPropValue extends Model {
    */
   async processProp() {
     // $Flow findById
-    let prop: Object = await GoodsProp.findById(this.prop);
+    let prop: ?Object = await GoodsProp.findById(this.prop);
     if (!prop) return;
     // $Flow find
-    let values = await GoodsPropValue.find({ prop: prop._id });
+    let values:Object[] = await GoodsPropValue.find({ prop: prop._id });
     prop.values = values.map((v) => v._id);
     await prop.save();
   }

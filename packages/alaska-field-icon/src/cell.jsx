@@ -8,7 +8,7 @@ export default class IconFieldCell extends React.Component {
   propTypes={
     value: string
   };
-  shouldComponentUpdate(props) {
+  shouldComponentUpdate(props:Object) {
     return props.value !== this.props.value;
   }
 
