@@ -12,7 +12,7 @@ export default class FilterField extends Field {
     }
   };
   static plain = mongoose.Schema.Types.Mixed;
-  static viewOptions: string[] = ['ref'];
+  static viewOptions: Array<string|(options: Object, field: Alaska$Field)=>void> = ['ref'];
 
   init() {
     // $Flow this.ref有可能为空
