@@ -15,6 +15,8 @@ node_modules/flow-koa-router/flow/
 node_modules/flow-intl-messageformat/flow/
 node_modules/flow-numeral/flow/
 node_modules/flow-path-to-regexp/flow/
+node_modules/flow-react-router/flow/
+node_modules/flow-qs/flow/
 
 [options]
 strip_root=true

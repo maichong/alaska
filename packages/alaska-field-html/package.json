@@ -9,7 +9,7 @@
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-html",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
-  "license": "MIT"
+  "license": "MIT",
   "dependencies": {
     "simditor": "^2.3.6"
   }

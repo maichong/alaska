@@ -503,7 +503,7 @@ declare class Alaska$Field {
   static classOfField:true;
   static plain:any;
   static dbOptions:string[];
-  static viewOptions:string[];
+  static viewOptions:Array<string|(options: Object, field: Alaska$Field)=>void>;
   static views:{
     cell?:Alaska$Field$View;
     view?:Alaska$Field$View;
@@ -524,6 +524,7 @@ declare class Alaska$Field {
 
   // Alaska
   type:Class<Alaska$Field>;
+  dataType:Function;
   label:string;
   path:string;
   ref?: Class<Alaska$Model>;

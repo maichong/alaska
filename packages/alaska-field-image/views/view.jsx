@@ -51,7 +51,7 @@ export default class ImageFieldView extends React.Component {
     }
   }
 
-  shouldComponentUpdate(props, state) {
+  shouldComponentUpdate(props:Object, state:Object) {
     return !shallowEqual(props, this.props, 'data', 'onChange', 'model') || !shallowEqual(state, this.state);
   }
 
@@ -110,11 +110,10 @@ export default class ImageFieldView extends React.Component {
   };
 
 
-  handleRemoveItem(item) {
+  handleRemoveItem(item:any) {
     let multi = this.props.field.multi;
-    let value = null;
+    let value:any[] = [];
     if (multi) {
-      value = [];
       _.forEach(this.props.value, (i) => {
         if (i !== item) {
           value.push(i);
@@ -134,6 +133,7 @@ export default class ImageFieldView extends React.Component {
     }
     let items = [];
     let readonly = disabled || field.static;
+    // $Flow 和lodash的flow不匹配
     _.forEach(value, (item, index) => {
       items.push(<div key={index} className="image-field-item">
         <img alt="" src={item.thumbUrl} />
