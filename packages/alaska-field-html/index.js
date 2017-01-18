@@ -2,7 +2,19 @@
 
 import { utils, Field } from 'alaska';
 
-class HtmlField extends Field {
+export default class HtmlField extends Field {
+  static views: Object = {
+    cell: {
+      name: 'HtmlFieldCell',
+      path: `${__dirname}/lib/cell.js`
+    },
+    view: {
+      name: 'HtmlFieldView',
+      path: `${__dirname}/lib/view.js`
+    }
+  };
+  static plain: Class<String> = String;
+  static viewOptions: string[] = ['upload', 'defaultImage'];
 
   init() {
     if (!this.filter && this.filter !== false) {
@@ -39,20 +51,3 @@ class HtmlField extends Field {
   }
 
 }
-
-HtmlField.views = {
-  cell: {
-    name: 'HtmlFieldCell',
-    path: `${__dirname}/lib/cell.js`
-  },
-  view: {
-    name: 'HtmlFieldView',
-    path: `${__dirname}/lib/view.js`
-  }
-};
-
-HtmlField.plain = String;
-
-HtmlField.viewOptions = ['upload', 'defaultImage'];
-
-module.exports = HtmlField;

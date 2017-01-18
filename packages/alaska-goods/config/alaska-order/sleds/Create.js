@@ -47,12 +47,11 @@ export async function pre() {
       if (sku.pic) {
         item.pic = sku.pic;
       }
-    }
-    //如果没有选择SKU,但是商品却又有SKU设置
-    else if (goods.skus && goods.skus.length) ORDER.error('Please select goods props');
-    //没有库存
-    else if (!goods.inventory) ORDER.error('Goods have been sold out');
-    else {
+    } else if (goods.skus && goods.skus.length) { //如果没有选择SKU,但是商品却又有SKU设置
+      ORDER.error('Please select goods props');
+    } else if (!goods.inventory) { //没有库存
+      ORDER.error('Goods have been sold out');
+    } else {
       //没有指定SKU的商品
     }
     let currency = currenciesMap[goods.currency] || BALANCE.defaultCurrency;

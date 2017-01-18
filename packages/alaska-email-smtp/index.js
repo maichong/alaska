@@ -20,7 +20,8 @@ export default class EmailSmtpDriver {
   send(data: Object) {
     if (!this.transporter) {
       // $Flow
-      this.transporter = Nodemailer.createTransport(this.options.smtp, this.options.defaults);
+      let transporterTmp: Object = Nodemailer.createTransport(this.options.smtp, this.options.defaults);
+      this.transporter = transporterTmp;
     }
     let transporter: Object = this.transporter || {};
     return new Promise((resolve, reject) => {
