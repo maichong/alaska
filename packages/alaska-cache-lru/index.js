@@ -123,6 +123,4 @@ class LruCacheDriver {
   }
 }
 
-LruCacheDriver.default = LruCacheDriver;
-
-module.exports = LruCacheDriver;
+module.exports = LruCacheDriver.default = LruCacheDriver;
