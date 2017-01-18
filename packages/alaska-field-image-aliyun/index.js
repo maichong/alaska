@@ -12,9 +12,12 @@ const ObjectId = mongoose.Types.ObjectId;
 
 export default class AliyunImageField extends Field {
   oss: ALI.OSS;
-
+  dir: string;
+  pathFormat: string;
+  prefix: string;
+  thumbSuffix: string;
+  allowed: string[];
   static plain = mongoose.Schema.Types.Mixed;
-
   static viewOptions = ['multi', 'allowed', 'cell', 'view'];
 
   /**
@@ -161,7 +164,7 @@ export default class AliyunImageField extends Field {
 
     schema.add({
       [field.path]: imageSchema
-    });
+    }, '');
 
     if (!field.dir) {
       field.dir = '';

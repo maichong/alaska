@@ -66,9 +66,9 @@ export default class MixedFieldView extends React.Component {
     // $Flow 已确认e.target.value属性存在
     let value = e.target.value;
     let json;
-    let state = {
+    let state:Object = {
       text: value,
-      value: undefined
+      style: undefined
     };
     try {
       json = JSON.parse(value);
@@ -102,7 +102,7 @@ export default class MixedFieldView extends React.Component {
       />;
     }
 
-    let className = 'form-group mixed-field ' + this.state.style;
+    let className = 'form-group mixed-field ' + (this.state.style || '');
 
     let helpElement = field.help ? <p className="help-block">{field.help}</p> : null;
 
