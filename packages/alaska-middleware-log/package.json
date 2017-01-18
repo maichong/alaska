@@ -1,0 +1,32 @@
+{
+  "name": "alaska-middleware-log",
+  "version": "0.2.0",
+  "description": "Alaska HTTP log middleware",
+  "keywords": [
+    "alaska",
+    "alaska-middleware"
+  ],
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-middleware-log.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-middleware-log/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-middleware-log#readme",
+  "peerDependencies": {
+    "alaska": "*"
+  },
+  "dependencies": {
+    "alaska-log": "*",
+    "path-to-regexp": "*"
+  }
+}
