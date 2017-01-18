@@ -1,0 +1,33 @@
+{
+  "name": "alaska-field-mixed",
+  "version": "0.10.1",
+  "description": "Alaska mixed data field",
+  "keywords": [
+    "alaska",
+    "alaska-field"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "build": "babel ./src --out-dir ./lib",
+    "watch": "babel ./src --out-dir ./lib -w",
+    "prebuild": "rimraf lib",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-field-mixed.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-field-mixed/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-field-mixed#readme",
+  "peerDependencies": {
+    "alaska": "*"
+  }
+}
