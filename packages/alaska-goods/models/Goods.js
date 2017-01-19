@@ -44,11 +44,11 @@ export default class Goods extends Model {
     inventory: 'Inventory',
     props: 'Goods Properties',
     sku: {
-      title: 'SKU',
+      label: 'SKU',
       panel: false
     },
     desc: {
-      title: 'Description',
+      label: 'Description',
       className: 'noborder'
     }
   };
@@ -210,7 +210,7 @@ export default class Goods extends Model {
       nolabel: true
     }
   };
-
+  _id:string|number|Object|any;
   title: string;
   brief: string;
   pic: Object;
@@ -257,7 +257,7 @@ export default class Goods extends Model {
     if (this.isModified('cat') || !this.cats || !this.cats.length) {
       this.cats = [];
       // $Flow
-      let cat = await GoodsCat.findById(this.cat);
+      let cat:GoodsCat = await GoodsCat.findById(this.cat);
       if (cat) {
         let cats = await cat.parents();
         cats.unshift(cat);

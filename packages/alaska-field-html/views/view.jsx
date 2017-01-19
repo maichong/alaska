@@ -50,12 +50,9 @@ export default class HtmlFieldView extends React.Component {
   init() {
     if (this._textarea && this._textarea !== this.refs.editor && this._editor) {
       this._editor.destroy();
-      // $Flow 用完即删的属性
       delete this._editor;
-      // $Flow 用完即删的属性
       delete this._textarea;
     }
-    // $Flow 用完即删的属性
     if (!this._editor && this.refs.editor) {
       let { defaultImage, upload } = this.props.field;
       let uploadConfig;
@@ -70,9 +67,7 @@ export default class HtmlFieldView extends React.Component {
           leaveConfirm: upload.leaveConfirm
         };
       }
-      // $Flow 用完即删的属性
       this._textarea = this.refs.editor;
-      // $Flow 用完即删的属性
       this._editor = new Simditor({
         textarea: this.refs.editor,
         defaultImage,
@@ -101,19 +96,15 @@ export default class HtmlFieldView extends React.Component {
           'hr'
         ]
       });
-      // $Flow 用完即删的属性
       this._editor.on('valuechanged', this.handleChange);
     }
-    // $Flow 用完即删的属性
     if (this._editor && this._editor.getValue() !== this.props.value) {
-      // $Flow 用完即删的属性
       this._editor.setValue(this.props.value || '');
     }
   }
 
   handleChange = () => {
     if (this.props.onChange) {
-      // $Flow 用完即删的属性
       let value = this._editor.getValue();
       if (value !== this.props.value) {
         this.props.onChange(value);
@@ -142,7 +133,7 @@ export default class HtmlFieldView extends React.Component {
       />);
     } else {
       this.init();
-      editor = <textarea ref="editor"/>;
+      editor = <textarea ref="editor" />;
     }
 
     let help = field.help;

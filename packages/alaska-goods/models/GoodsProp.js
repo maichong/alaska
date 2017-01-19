@@ -37,7 +37,7 @@ export default class GoodsProp extends Model {
 
   static groups = {
     editor: {
-      title: 'Create Property Values'
+      label: 'Create Property Values'
     }
   };
 
@@ -180,7 +180,7 @@ export default class GoodsProp extends Model {
           continue;
         }
         // $Flow
-        let cat = await GoodsCat.findById(cid);
+        let cat:GoodsCat = await GoodsCat.findById(cid);
         cats[cid] = cat;
         let subs = await cat.allSubs();
         _.defaults(cats, subs);

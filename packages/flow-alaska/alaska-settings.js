@@ -9,6 +9,7 @@ declare module 'alaska-settings' {
 }
 
 declare class Settings extends Alaska$Model {
+  _id: string|number|Object|any;
   title: string;
   service: string;
   group: string;

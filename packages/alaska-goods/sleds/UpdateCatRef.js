@@ -13,11 +13,11 @@ export default class UpdateCatRef extends Sled {
    */
   async exec(params: Object) {
     // $Flow findById
-    let cat:?Object = await GoodsCat.findById(params.cat);
+    let cat:GoodsCat = await GoodsCat.findById(params.cat);
     if (!cat) return;
     // $Flow  find
-    let subs:Object[] = await GoodsCat.find({ cat: cat._id });
-    cat.subCats = subs.map((sub:Object) => sub._id);
+    let subs:GoodsCat[] = await GoodsCat.find({ cat: cat._id });
+    cat.subCats = subs.map((sub:GoodsCat) => (sub._id));
     await cat.save();
   }
 }
