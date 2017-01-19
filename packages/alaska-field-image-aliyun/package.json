@@ -1,6 +1,6 @@
 {
   "name": "alaska-field-image-aliyun",
-  "version": "0.10.3",
+  "version": "0.11.0",
   "description": "Alaska aliyun image field",
   "keywords": [
     "alaska",
@@ -8,28 +8,13 @@
     "alaska-field-image"
   ],
   "main": "index.js",
-  "scripts": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-field-image-aliyun.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-image-aliyun",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-field-image-aliyun/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-field-image-aliyun#readme",
-  "peerDependencies": {
-    "alaska": "*"
-  },
   "dependencies": {
-    "alaska-field-image": "^0.10.2",
-    "aliyun-sdk": "^1.9.4",
+    "alaska-field-image": "^0.11.0",
+    "aliyun-sdk": "^1.9.17",
     "mime": "^1.3.4",
-    "moment": "^2.14.1"
+    "moment": "^2.17.1"
   }
 }
