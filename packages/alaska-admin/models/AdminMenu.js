@@ -14,7 +14,9 @@ export default class AdminMenu extends Model {
   static defaultFilters = (ctx: Alaska$Context) => (ctx.state.superMode ? {} : { super: { $ne: true } });
 
   static fields = {
-    _id: String,
+    _id: {
+      type: String
+    },
     label: {
       label: 'Title',
       type: String,

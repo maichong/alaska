@@ -6,7 +6,7 @@
 import * as utils from '../utils';
 
 export default async function loadMiddlewares() {
-  this.loadMiddlewares = Promise.resolve();
+  this.loadMiddlewares = utils.resolved;
 
   for (let sub of this.serviceList) {
     await sub.loadMiddlewares();

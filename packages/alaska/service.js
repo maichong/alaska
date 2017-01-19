@@ -99,6 +99,7 @@ export default class Service {
    */
   constructor(options: Alaska$Service$options) {
     this.options = options;
+    this.services = {};
     this.sleds = {};
     this.plugins = {};
     this.models = {};

@@ -17,7 +17,9 @@ export default class Settings extends Model {
   };
 
   static fields = {
-    _id: String,
+    _id: {
+      type: String
+    },
     title: {
       label: 'Title',
       type: String

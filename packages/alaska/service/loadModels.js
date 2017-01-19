@@ -7,7 +7,7 @@ import _ from 'lodash';
 import * as utils from '../utils';
 
 export default async function loadModels() {
-  this.loadModels = Promise.resolve();
+  this.loadModels = utils.resolved;
   const service = this;
 
   if (this.config('db') !== false) {

@@ -51,7 +51,11 @@ function processScope(fields: string|Object, Model: Class<Alaska$Model>): Object
       keys[s] = 1;
       keys['_' + s] = 1;
     } else {
-      if (!Model.defaultScope[s] && !Model.fields[s]) {
+      if (
+        !Model.defaultScope[s]
+        && !Model.fields[s]
+        && (!Model.virtuals || !Object.getOwnPropertyDescriptor(Model.virtuals, s).get)
+      ) {
         throw new Error(`Can not find field ${Model.path}.scopes.${s} when process scopes`);
       }
       keys[s] = 1;
@@ -351,6 +355,10 @@ export default class Model {
                */
               if (options.ref) {
                 options.type = 'relationship';
+                if (Array.isArray(options.ref)) {
+                  options.ref = options.ref[0];
+                  options.multi = true;
+                }
               } else {
                 throw new Error(model.name + '.' + path + ' field type not specified');
               }
@@ -384,7 +392,7 @@ export default class Model {
                 fieldTypeName = options.type;
               }
               // $Flow
-              FieldClass = options.type = require(fieldTypeName);
+              FieldClass = options.type = require(fieldTypeName).default;
             }
             options.label = options.label || path.toUpperCase();
             let field = new FieldClass(options, schema, model);
@@ -411,7 +419,7 @@ export default class Model {
         if (model.virtuals) {
           Object.keys(model.virtuals).forEach((path) => {
             model._virtuals[path] = true;
-            let descriptor = Object.getOwnPropertyDescriptor(model.virtuals);
+            let descriptor = Object.getOwnPropertyDescriptor(model.virtuals, path);
             if (descriptor.get) {
               model.defaultScope[path] = 1;
               schema.virtual(path).get(descriptor.get);
@@ -423,6 +431,7 @@ export default class Model {
         }
       } catch (e) {
         console.error(`${model.path} init virtual fields failed!`);
+        throw e;
       }
 
       let needRef = false;

@@ -12,7 +12,7 @@ export default class ArticleCat extends Model {
     },
     parent: {
       label: 'Parent Category',
-      type: ArticleCat
+      ref: ArticleCat
     }
   };
 }

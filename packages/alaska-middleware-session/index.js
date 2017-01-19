@@ -12,7 +12,7 @@ export default function (options: Alaska$Config$session) {
   const cookieOpts = options.cookie || {};
   const key: string = cookieOpts.key || 'alaska.sid';
   // $Flow require参数需要为字符串
-  const Store = require(storeOpts.type);
+  const Store = require(storeOpts.type).default;
   const store = new Store(storeOpts);
   let ignore: ?RegExp[] = null;
 

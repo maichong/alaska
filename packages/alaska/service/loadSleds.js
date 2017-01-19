@@ -3,7 +3,7 @@
 import * as utils from '../utils';
 
 export default async function loadSleds() {
-  this.loadSleds = Promise.resolve();
+  this.loadSleds = utils.resolved;
 
   for (let sub of this.serviceList) {
     await sub.loadSleds();

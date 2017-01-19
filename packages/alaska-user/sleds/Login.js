@@ -7,7 +7,7 @@ import Encryption from '../lib/encryption';
 
 const autoLogin = alaska.main.config('autoLogin');
 let encryption;
-if (autoLogin.key && autoLogin.secret) {
+if (autoLogin && autoLogin.key && autoLogin.secret) {
   encryption = new Encryption(autoLogin.secret);
 }
 

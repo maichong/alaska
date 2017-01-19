@@ -1,7 +1,9 @@
 // @flow
 
+import * as utils from '../utils';
+
 export default async function mount() {
-  this.mount = Promise.resolve();
+  this.mount = utils.resolved;
   const alaska = this.alaska;
 
   for (let sub of this.serviceList) {

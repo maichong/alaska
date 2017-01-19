@@ -8,7 +8,7 @@ import compose from 'koa-compose';
 import * as utils from '../utils';
 
 export default async function loadApi() {
-  this.loadApi = Promise.resolve();
+  this.loadApi = utils.resolved;
 
   for (let sub of this.serviceList) {
     await sub.loadApi();

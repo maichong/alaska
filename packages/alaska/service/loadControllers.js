@@ -5,7 +5,7 @@ import compose from 'koa-compose';
 import * as utils from '../utils';
 
 export default async function loadControllers() {
-  this.loadControllers = Promise.resolve();
+  this.loadControllers = utils.resolved;
 
   for (let sub of this.serviceList) {
     await sub.loadControllers();

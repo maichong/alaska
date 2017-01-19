@@ -7,7 +7,7 @@ import path from 'path';
 import * as utils from '../utils';
 
 export default async function loadConfig() {
-  this.loadConfig = Promise.resolve();
+  this.loadConfig = utils.resolved;
 
   for (let sub of this.serviceList) {
     await sub.loadConfig();

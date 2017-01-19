@@ -9,7 +9,7 @@ import _ from 'lodash';
 import * as utils from '../utils';
 
 export default async function loadLocales() {
-  this.loadLocales = Promise.resolve();
+  this.loadLocales = utils.resolved;
   const alaska = this.alaska;
 
   for (let sub of this.serviceList) {
