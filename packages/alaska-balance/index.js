@@ -8,9 +8,10 @@ import USER from 'alaska-user';
  * @class BalanceService
  */
 class BalanceService extends Service {
-  _currencies: Object[];
+  _currencies: Alaska$SelectField$option[];
   _currenciesMap: Object;
-  _defaultCurrency: Object;
+  _defaultCurrency: Alaska$SelectField$option;
+  currencies:Alaska$SelectField$option[];
 
   constructor(options?: Alaska$Service$options) {
     options = options || {};
@@ -72,7 +73,7 @@ class BalanceService extends Service {
     }
   }
 
-  get currencies(): Object[] {
+  get currencies(): Alaska$SelectField$option[] {
     return this._currencies;
   }
 
@@ -80,7 +81,7 @@ class BalanceService extends Service {
     return this._currenciesMap;
   }
 
-  get defaultCurrency(): Object {
+  get defaultCurrency(): Alaska$SelectField$option {
     return this._defaultCurrency;
   }
 

@@ -20,7 +20,6 @@ export async function pre() {
   let orderItems = [];
   for (let g of gids) {
     if (!g.id) continue;
-    // $Flow
     let goods:?Goods = await Goods.findById(g.id);
     if (!goods) continue;
     if (!goods.activated) ORDER.error('Goods is not activated');
@@ -38,7 +37,6 @@ export async function pre() {
     let sku:Sku;
     //如果选择了SKU
     if (g.sku) {
-      // $Flow
       sku = await Sku.findById(g.sku).where('goods', goods._id);
       if (!sku || !sku.inventory) ORDER.error('Goods have been sold out');
       item.price = sku.price;

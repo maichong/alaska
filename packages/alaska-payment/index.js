@@ -7,7 +7,7 @@ import { Service } from 'alaska';
  */
 class PaymentService extends Service {
 
-  payments: Object = {};
+  payments: Object;
 
   constructor(options?:Alaska$Service$options) {
     options = options || {};

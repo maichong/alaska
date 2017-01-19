@@ -7,24 +7,9 @@
     "alaska-middleware"
   ],
   "main": "index.js",
-  "scripts": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-middleware-log.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-update",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-middleware-log/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-middleware-log#readme",
-  "peerDependencies": {
-    "alaska": "*"
-  },
   "dependencies": {
     "alaska-log": "*",
     "path-to-regexp": "*"

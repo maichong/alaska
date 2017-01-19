@@ -1,4 +1,10 @@
 node_modules/
+flow/
 flow-typed/
 packages/flow-alaska/
 packages/alaska-admin/static/
+scripts/
+temp/
+example/public/
+webpack.*
+

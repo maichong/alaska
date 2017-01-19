@@ -14,11 +14,11 @@ class ShopService extends Service {
   }
 
   preLoadConfig() {
-    let ORDER = alaska.service('alaska-order', true);
+    let ORDER: any = alaska.service('alaska-order', true);
     if (ORDER) {
       ORDER.addConfigDir(__dirname + '/config/alaska-order');
     }
-    let GOODS = alaska.service('alaska-goods', true);
+    let GOODS: any = alaska.service('alaska-goods', true);
     if (GOODS) {
       GOODS.addConfigDir(__dirname + '/config/alaska-goods');
     }

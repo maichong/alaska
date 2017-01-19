@@ -1,7 +1,7 @@
 // @flow
 
 declare module 'alaska-payment' {
-  declare class PaymentService extends Alaska$Service {
+  declare export class PaymentService extends Alaska$Service {
     constructor(options?: Alaska$Service$options):void;
     payments: Object;
   }
