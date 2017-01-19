@@ -53,6 +53,7 @@ export default class GoodsPropValue extends Model {
     }
   };
 
+  _id:string|number|Object|any;
   title: string;
   prop: Object;
   cats: Object;
@@ -91,11 +92,11 @@ export default class GoodsPropValue extends Model {
    */
   async processProp() {
     // $Flow findById
-    let prop: ?Object = await GoodsProp.findById(this.prop);
+    let prop: GoodsProp = await GoodsProp.findById(this.prop);
     if (!prop) return;
     // $Flow find
-    let values:Object[] = await GoodsPropValue.find({ prop: prop._id });
-    prop.values = values.map((v) => v._id);
+    let values:GoodsPropValue[] = await GoodsPropValue.find({ prop: prop._id });
+    prop.values = values.map((v:GoodsPropValue) => (v._id));
     await prop.save();
   }
 

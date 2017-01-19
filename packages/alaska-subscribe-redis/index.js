@@ -1,8 +1,8 @@
 // @flow
 
-const redis = require('redis');
+import redis from 'redis';
 
-class RedisSubscribeDriver {
+export default class RedisSubscribeDriver {
 
   /**
    * @param {Object} options Redis连接设置
@@ -36,7 +36,7 @@ class RedisSubscribeDriver {
       return Promise.reject(new Error('can not publish message with subscribed driver.'));
     }
     return new Promise((resolve, reject) => {
-      this._driver.publish(this.channel, JSON.stringify(message), error => {
+      this._driver.publish(this.channel, JSON.stringify(message), (error) => {
         if (error) {
           reject(error);
         } else {
@@ -92,7 +92,7 @@ class RedisSubscribeDriver {
     if (timeout === undefined) {
       timeout = Infinity;
     }
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       let timer = 0;
       this._onMessage = () => {
         this._onMessage = null;
@@ -127,7 +127,7 @@ class RedisSubscribeDriver {
       timeout = Infinity;
     }
     return new Promise((resolve, reject) => {
-      this._driver.subscribe(this.channel, (error, res) => {
+      this._driver.subscribe(this.channel, (error) => {
         if (error) {
           reject(error);
         }
@@ -203,6 +203,3 @@ class RedisSubscribeDriver {
   }
 
 }
-
-// $Flow  export
-module.exports = RedisSubscribeDriver.default = RedisSubscribeDriver;

@@ -73,7 +73,7 @@ export default class GoodsCat extends Model {
       private: true
     }
   };
-
+  _id:string|number|Object|any;
   title: string;
   icon: Object;
   pic: Object;
@@ -144,7 +144,7 @@ export default class GoodsCat extends Model {
    */
   async parents() {
     let cats = [];
-    let cat = this;
+    let cat:GoodsCat = this;
     while (cat && cat.parent) {
       // $Flow
       cat = await GoodsCat.findById(cat.parent);

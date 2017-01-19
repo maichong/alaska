@@ -16,6 +16,7 @@ declare module 'alaska-goods/models/Brand' {
 
 declare module 'alaska-goods/models/Goods' {
   declare class Goods extends Alaska$Model {
+    _id:string|number|Object|any;
     title:string;
     brief:string;
     pic:Object;
@@ -50,6 +51,7 @@ declare module 'alaska-goods/models/Goods' {
 
 declare module 'alaska-goods/models/GoodsCat' {
   declare class GoodsCat extends Alaska$Model {
+    _id:string|number|Object|any;
     title:string;
     icon:Object;
     pic:Object;
@@ -97,6 +99,7 @@ declare module 'alaska-goods/models/GoodsProp' {
 
 declare module 'alaska-goods/models/GoodsPropValue' {
   declare class GoodsPropValue extends Alaska$Model {
+    _id:string|number|Object|any;
     title: string;
     prop:Object;
     cats:Object;

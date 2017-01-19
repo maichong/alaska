@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import Modal from 'react-bootstrap/lib/Modal';
+import { Modal } from 'react-bootstrap';
 import _ from 'lodash';
 // $Flow
 import '../goods.less';
@@ -131,6 +131,8 @@ export default class GoodsSkuEditor extends React.Component {
     pics:any[],
     value:any
   };
+  _trCache: Object;
+  _skuIndex: number;
 
   constructor(props: Object) {
     super(props);
@@ -144,7 +146,7 @@ export default class GoodsSkuEditor extends React.Component {
     this._trCache = {};
   }
 
-  componentWillReceiveProps(props:Object) {
+  componentWillReceiveProps(props: Object) {
     let newState = {};
     if (props.value !== undefined) {
       newState.value = props.value;
@@ -158,26 +160,11 @@ export default class GoodsSkuEditor extends React.Component {
     this.setState(newState);
   }
 
-  shouldComponentUpdate(props:Object, state:Object) {
+  shouldComponentUpdate(props: Object, state: Object) {
     return state.value !== this.state.value || state.picPicker !== this.state.picPicker;
   }
 
-  _trCache: Object;
-  _skuIndex:number;
-  handlePic = (event:MouseEvent) => {
-    const data = this.props.data;
-    // $Flow MouseEvent.target中是有dataset属性的 line 172
-    this._skuIndex = parseInt(event.target.dataset.index);
-    let pics = [data.pic].concat(data.pics);
-    this.setState({
-      picPicker: true,
-      pics
-    });
-    //console.log(this.state.value[index]);
-    //console.log('pics', pics);
-  };
-
-  selectPicture = (pic:any) => () => {
+  selectPicture = (pic: any) => () => {
     const value = this.state.value;
     const newValue = [];
     value.forEach((sku, index) => {
@@ -190,8 +177,22 @@ export default class GoodsSkuEditor extends React.Component {
     this.setState({ value: newValue, picPicker: false });
   };
 
+
   closePicker = () => {
     this.setState({ picPicker: false });
+  };
+
+  handlePic = (event: MouseEvent) => {
+    const data = this.props.data;
+    // $Flow MouseEvent.target中是有dataset属性的 line 172
+    this._skuIndex = parseInt(event.target.dataset.index);
+    let pics = [data.pic].concat(data.pics);
+    this.setState({
+      picPicker: true,
+      pics
+    });
+    //console.log(this.state.value[index]);
+    //console.log('pics', pics);
   };
 
   render() {
@@ -241,12 +242,22 @@ export default class GoodsSkuEditor extends React.Component {
         let pic = s.pic || this.props.data.pic;
         trCache[s.key] = (
           <tr key={index} className={className}>
-            <td className="sku-pic-field"><img src={pic.thumbUrl} onClick={this.handlePic} data-index={index} /></td>
+            <td className="sku-pic-field">
+              <img alt="'" src={pic.thumbUrl} onClick={this.handlePic} data-index={index} />
+            </td>
             <td className="desc" dangerouslySetInnerHTML={{ __html: s.desc.replace(/\|/g, '<br/>') }} />
-            <td><input type="number" disabled={disabled} value={s.inventory} onChange={onChangeInventory} /></td>
-            <td><input type="number" disabled={disabled} value={s.price} onChange={onChangePrice} /></td>
-            <td><input type="number" disabled={disabled} value={s.discount} onChange={onChangeDiscount} /></td>
-            <td className="text-center text-danger"><i className="fa fa-close" onClick={remove} /></td>
+            <td>
+              <input type="number" disabled={disabled} value={s.inventory} onChange={onChangeInventory} />
+            </td>
+            <td>
+              <input type="number" disabled={disabled} value={s.price} onChange={onChangePrice} />
+            </td>
+            <td>
+              <input type="number" disabled={disabled} value={s.discount} onChange={onChangeDiscount} />
+            </td>
+            <td className="text-center text-danger">
+              <i className="fa fa-close" onClick={remove} />
+            </td>
           </tr>
         );
         trs.push(trCache[s.key]);
@@ -276,8 +287,9 @@ export default class GoodsSkuEditor extends React.Component {
         <Modal show={picPicker} onHide={this.closePicker}>
           <Modal.Header>{t('Select picture')}</Modal.Header>
           <Modal.Body className="sku-pic-picker">
-            {_.map(pics, (pic, index) => (<img
-              alt="" src={pic.thumbUrl} key={index} onClick={this.selectPicture(pic)} />)
+            {_.map(pics, (pic, index) => (
+              <img alt="" src={pic.thumbUrl} key={index} onClick={this.selectPicture(pic)} />
+              )
             )}
           </Modal.Body>
         </Modal>

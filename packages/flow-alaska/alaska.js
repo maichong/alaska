@@ -429,7 +429,13 @@ declare class Alaska$Model extends events$EventEmitter {
   static nocreate:boolean;
   static noedit:boolean;
   static noremove:boolean;
-  static groups:{ [key:string]: string| { label:string;panle?:boolean;className?:string } };
+  static groups:{
+    [key:string]: string | {
+      label:string;
+      panel?:boolean;
+      className?:string;
+    }
+  };
   static service:Alaska$Service;
   static db:Mongoose$Connection;
   static MongooseModel:Mongoose$Model;
@@ -618,6 +624,7 @@ declare class Alaska$Service {
   error:(message: string|number, code?: number) => void;
   try: <T>(promise: Promise<T>) => Promise<T>;
   adminSettings?:(ctx: Alaska$Context, user: User, result: Object) => Promise <void>;
+  addConfigDir(dir: string):void;
   applyConfig(config: Alaska$Config): void;
   config(key: string, defaultValue?: any, mainAsDefault?: boolean): any;
   model(name: string, optional?: boolean): Class<Alaska$Model>;

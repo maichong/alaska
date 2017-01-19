@@ -32,7 +32,7 @@ class SettingsService extends Service {
 
     const id = data.id || data._id;
     // $Flow
-    let settings = await Settings.findById(id);
+    let settings:Settings = await Settings.findById(id);
     if (settings) {
       return settings;
     }
