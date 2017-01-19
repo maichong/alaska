@@ -1,6 +1,7 @@
 declare module 'alaska-update' {
   declare class UpdateService extends Alaska$Service {
   constructor(options?:Alaska$Service$options, alaska?:Alaska$Alaska):void;
+  postInit(): void;
   }
   declare var exports:UpdateService;
 }

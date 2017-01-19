@@ -48,7 +48,6 @@ export default class OrderItem extends Model {
     currency: {
       label: 'Currency',
       type: 'select',
-      // $Flow
       options: BALANCE.currencies,
       default: BALANCE.defaultCurrency.value
     },

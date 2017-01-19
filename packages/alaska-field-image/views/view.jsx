@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { shallowEqual } from 'alaska-admin-view';
 import { api } from 'alaska-admin-view';
 import { stringify } from 'qs';
-
+// $Flow
 import '../style.less';
 
 const { bool, object, any, func, string } = React.PropTypes;

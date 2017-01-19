@@ -28,17 +28,18 @@ export default class Withdraw extends Sled {
     if (withdraw) return withdraw;
 
     let currency = params.currency || service.defaultCurrency.value;
+
     if (!service.currenciesMap[currency]) service.error('Unknown currency');
 
     let amount = Math.abs(params.amount) || service.error('Invalid amount');
 
     let user: User = params.user;
 
-    let balance = user.get(currency);
+    let balance = user.get(currency.toString());
     if (balance < amount) service.error('Insufficient balance');
 
     if (amount) {
-      await user._[currency].income(-amount, params.title || 'Withdraw', 'withdraw');
+      await user._[currency.toString()].income(-amount, params.title || 'Withdraw', 'withdraw');
     }
 
     withdraw = new WithdrawModel({

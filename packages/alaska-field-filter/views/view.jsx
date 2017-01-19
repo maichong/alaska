@@ -1,9 +1,8 @@
 // @flow
 
 import React from 'react';
-import FilterEditor from 'alaska-admin-view/lib/components/FilterEditor';
-import DropdownButton from 'react-bootstrap/lib/DropdownButton';
-import MenuItem from 'react-bootstrap/lib/MenuItem';
+import FilterEditor from 'alaska-admin-view/views/FilterEditor';
+import { DropdownButton, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
 
 const CHECK_ICON = <i className="fa fa-check" />;

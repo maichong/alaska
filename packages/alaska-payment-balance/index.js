@@ -3,14 +3,14 @@
 import _ from 'lodash';
 import BALANCE from 'alaska-balance';
 import USER from 'alaska-user';
-import PAYMENT from 'alaska-payment';
+import type { PaymentService } from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 import alaska from 'alaska';
 
 export default class BalancePlugin {
-  service: typeof PAYMENT;
+  service: PaymentService;
 
-  constructor(service: typeof PAYMENT) {
+  constructor(service: PaymentService) {
     this.service = service;
     service.payments['balance'] = this;
     service.addConfigDir(__dirname);

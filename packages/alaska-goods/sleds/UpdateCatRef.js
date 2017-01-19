@@ -17,6 +17,7 @@ export default class UpdateCatRef extends Sled {
     if (!cat) return;
     // $Flow  find
     let subs:GoodsCat[] = await GoodsCat.find({ cat: cat._id });
+    // $Flow v._id类型太多 确认正确
     cat.subCats = subs.map((sub:GoodsCat) => (sub._id));
     await cat.save();
   }

@@ -19,6 +19,9 @@ export default class BytesField extends NumberField {
   static viewOptions: Array<string|(options: Object, field: Alaska$Field)=>void> = [
     'min', 'max', 'unit', 'size', 'precision'
   ];
+  unit: ?string;
+  precision: ?number;
+  size: ?number;
 
   init() {
     let field = this;

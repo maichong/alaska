@@ -1,6 +1,6 @@
 // @flow
 
-import { Service } from 'alaska';
+import alaska, { Service } from 'alaska';
 
 class OrderService extends Service {
   constructor(options?: Alaska$Service$options) {
@@ -11,7 +11,7 @@ class OrderService extends Service {
   }
 
   preLoadConfig() {
-    let PAYMENT = this.alaska.service('alaska-payment', true);
+    let PAYMENT: any = alaska.service('alaska-payment', true);
     if (PAYMENT) {
       PAYMENT.addConfigDir(__dirname + '/config/alaska-payment');
     }

@@ -7,7 +7,6 @@ import User from 'alaska-user/models/User';
 export default async function (ctx:Alaska$Context) {
   let _user:?Object = ctx.user || service.error(403);
   let user:Object = _user || {};
-  // $Flow find
   let obj:Object = await User.paginate({
     page: parseInt(ctx.state.page || ctx.query.page) || 1,
     perPage: parseInt(ctx.query.perPage || ctx.query.perPage) || 10,

@@ -96,6 +96,7 @@ export default class GoodsPropValue extends Model {
     if (!prop) return;
     // $Flow find
     let values:GoodsPropValue[] = await GoodsPropValue.find({ prop: prop._id });
+    // $Flow v._id类型太多 确认正确
     prop.values = values.map((v:GoodsPropValue) => (v._id));
     await prop.save();
   }
