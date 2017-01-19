@@ -1,32 +1,17 @@
 {
   "name": "alaska-cache-memcache",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "description": "Alaska memcache driver",
   "keywords": [
     "alaska",
     "alaska-cache"
   ],
   "main": "index.js",
-  "scripts": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-cache-memcache.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-cache-memcache",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-cache-memcache/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-cache-memcache#readme",
-  "peerDependencies": {
-    "alaska": "*"
-  },
   "dependencies": {
-    "debug": "^2.2.0",
+    "debug": "^2.6.0",
     "memcache": "^0.3.0"
   }
 }

@@ -7,24 +7,7 @@
     "alaska-queue"
   ],
   "main": "index.js",
-  "scripts": {
-    "build": "babel ./src --out-dir ./",
-    "watch": "babel ./src --out-dir ./ -w",
-    "prebuild": "rimraf lib",
-    "prepublish": "npm run build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-queue-array.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-queue-array/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-queue-array#readme"
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-queue-array",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT"
 }

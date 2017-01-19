@@ -1,32 +1,17 @@
 {
   "name": "alaska-cache-mongo",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "description": "Alaska MongoDB cache dirver",
   "keywords": [
     "alaska",
     "alaska-cache"
   ],
   "main": "index.js",
-  "scripts": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-cache-mongo.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-cache-mongo",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-cache-mongo/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-cache-mongo#readme",
-  "peerDependencies": {
-    "alaska": "*"
-  },
   "dependencies": {
-    "mongodb": "^2.1.18",
-    "debug": "^2.2.0"
+    "mongodb": "^2.2.21",
+    "debug": "^2.6.0"
   }
 }

@@ -1,0 +1,24 @@
+{
+  "name": "alaska-sms-test",
+  "version": "0.10.0",
+  "description": "Alaska sms test driver",
+  "keywords": [
+    "alaska",
+    "alaska-sms"
+  ],
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-sms-test.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-sms-test/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-sms-test#readme"
+}
