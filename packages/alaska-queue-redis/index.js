@@ -18,7 +18,7 @@ export default class RedisQueueDriver {
    * [async] 将元素插入队列
    * @param {*} item
    */
-  push(item: any) {
+  push(item: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this._driver.rpush(this.key, JSON.stringify(item), (error) => {
         if (error) {

@@ -2,7 +2,7 @@
 
 import Chart from '../../../models/Chart';
 
-export default async function (ctx) {
+export default async function (ctx: Alaska$Context) {
   await ctx.checkAbility('admin');
   //abilities
   let id = ctx.query.id || ctx.error(404);
@@ -13,6 +13,7 @@ export default async function (ctx) {
 
   if (chart.abilities) {
     for (let ability of chart.abilities) {
+      // $Flow ability Object string
       await ctx.checkAbility(ability);
     }
   }

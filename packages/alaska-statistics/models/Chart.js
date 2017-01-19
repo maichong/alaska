@@ -45,8 +45,7 @@ function randomColorList(count, clearer) {
     list.push(color.clone());
     color.rotate(rotate);
   }
-
-  list.sort(() => Math.random() > 0.5?1:-1).forEach((c) => {
+  list.sort(() => (Math.random() > 0.5 ? 1 : -1)).forEach((c) => {
     let c1 = c.clearer(0.2).rgbString();
     let c2 = c.clearer(0.1).rgbString();
     let c3 = c.clearer(clearer || 0.1).rgbString();

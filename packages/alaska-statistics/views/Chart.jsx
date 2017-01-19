@@ -39,7 +39,7 @@ export default class Chart extends React.Component {
   }
 
   componentWillReceiveProps(props: Object) {
-    if (this.props.chart == props.chart) return;
+    if (this.props.chart.toString() === props.chart.toString()) return;
     this.refresh(props);
   }
 
