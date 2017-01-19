@@ -3,6 +3,7 @@
 import React from 'react';
 import { shallowEqual } from 'alaska-admin-view';
 import Simditor from 'simditor';
+// $Flow
 import 'simditor/styles/simditor.css';
 
 const { bool, object, func, string } = React.PropTypes;

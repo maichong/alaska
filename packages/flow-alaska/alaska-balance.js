@@ -1,10 +1,8 @@
 declare module 'alaska-balance' {
   declare class BalanceService extends Alaska$Service {
-    _currencies:?Object[];
-    _defaultCurrency:Object;
-    currencies():Object[];
+    currencies():Alaska$SelectField$option[];
     currenciesMap():Object;
-    defaultCurrency():Object;
+    defaultCurrency():Alaska$SelectField$option;
   }
 
   declare var exports: BalanceService;
