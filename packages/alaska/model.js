@@ -694,7 +694,9 @@ export default class Model {
         'show',
         'createFilters',
         'paginate',
-        'fromObject'
+        'fromObject',
+        'fromObjectArray',
+        'toObjectArray'
       ].forEach((key) => {
         // $Flow
         model[key] = Model[key];

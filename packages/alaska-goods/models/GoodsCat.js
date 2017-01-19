@@ -147,7 +147,7 @@ export default class GoodsCat extends Model {
     let cat = this;
     while (cat && cat.parent) {
       // $Flow
-      cat = await GoodsCat.findCache(cat.parent);
+      cat = await GoodsCat.findById(cat.parent);
       if (cat) {
         cats.push(cat);
       }

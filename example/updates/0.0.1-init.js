@@ -1,5 +1,5 @@
-const Register = service.sled('user.Register');
-const Init = service.sled('admin.Init');
+import Register from 'alaska-user/sleds/Register';
+import Init from 'alaska-admin/sleds/Init';
 
 export default async function () {
   await Init.run();

@@ -211,33 +211,33 @@ export default class Goods extends Model {
     }
   };
 
-  title:string;
-  brief:string;
-  pic:Object;
-  pics:Object[];
-  cats:Object[];
-  brand:Object;
-  newGoods:boolean;
-  hotGoods:boolean;
-  seoTitle:string;
-  seoKeywords:string;
-  seoDescription:string;
-  currency:any;
-  price:number;
-  discount:number;
-  discountStartAt:Date;
-  discountEndAt:Date;
-  shipping:number;
-  inventory:number;
-  volume:number;
-  sort:number;
-  activated:boolean;
-  props:Object;
-  propValues:Object[];
-  skus:Object[];
-  sku:Object;
-  createdAt:Date;
-  desc:string;
+  title: string;
+  brief: string;
+  pic: Object;
+  pics: Object[];
+  cats: Object[];
+  brand: Object;
+  newGoods: boolean;
+  hotGoods: boolean;
+  seoTitle: string;
+  seoKeywords: string;
+  seoDescription: string;
+  currency: any;
+  price: number;
+  discount: number;
+  discountStartAt: Date;
+  discountEndAt: Date;
+  shipping: number;
+  inventory: number;
+  volume: number;
+  sort: number;
+  activated: boolean;
+  props: Object;
+  propValues: Object[];
+  skus: Object[];
+  sku: Object;
+  createdAt: Date;
+  desc: string;
 
   static virtuals = {
     get discountValid() {
@@ -257,7 +257,7 @@ export default class Goods extends Model {
     if (this.isModified('cat') || !this.cats || !this.cats.length) {
       this.cats = [];
       // $Flow
-      let cat = await GoodsCat.findCache(this.cat);
+      let cat = await GoodsCat.findById(this.cat);
       if (cat) {
         let cats = await cat.parents();
         cats.unshift(cat);
@@ -283,19 +283,19 @@ export default class Goods extends Model {
 
     //如果在后台修改了SKU,更新SKU记录
     if (this.isModified('sku')) {
-      let skuIds:any[] = [];
+      let skuIds: any[] = [];
       // $Flow
-      let skus:Sku[] = await Sku.find({
+      let skus: Sku[] = await Sku.find({
         goods: this.id
       });
       let skusMap = {};
       let skusMapByKey = {};
-      skus.forEach((s:Sku) => {
+      skus.forEach((s: Sku) => {
         skusMap[s.id] = s;
         skusMapByKey[s.key] = s;
       });
       for (let s of this.sku) {
-        let sku:?Sku;
+        let sku: ?Sku;
         if (s.id) {
           sku = skusMap[s.id];
         }

@@ -7,7 +7,7 @@ export default function (router) {
       await next();
       return;
     }
-    let banner = await Banner.findCache(id);
+    let banner = await Banner.findById(id);
     if (!banner || !banner.isValid() || banner.action !== 'url' || !banner.url) {
       await next();
       return;

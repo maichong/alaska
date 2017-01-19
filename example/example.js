@@ -1,7 +1,9 @@
 'use strict';
 
+process.title = 'example';
 process.chdir(__dirname);
 
+process.env.DEBUG = '*,-babel';
 process.env.BABEL_CACHE_PATH = process.env.BABEL_CACHE_PATH || 'runtime/babel-cache.json';
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
@@ -12,8 +14,6 @@ if (!process.env.DB) {
     process.env.DB = 'mongodb://localhost/alaska-example';
   }
 }
-
-process.title = 'example';
 
 require('babel-register')({
   ignore: [
@@ -41,5 +41,6 @@ let service = require('./').default;
 service.launch().then(() => {
   console.log('example started');
 }, (error) => {
+  console.error(error.stack);
   process.exit(1);
 });

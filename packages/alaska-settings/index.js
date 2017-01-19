@@ -32,7 +32,7 @@ class SettingsService extends Service {
 
     const id = data.id || data._id;
     // $Flow
-    let settings = await Settings.findCache(id);
+    let settings = await Settings.findById(id);
     if (settings) {
       return settings;
     }
@@ -51,7 +51,7 @@ class SettingsService extends Service {
   async get(id: string|number) {
     const Settings = this.model('Settings');
     // $Flow
-    let record = await Settings.findCache(id);
+    let record = await Settings.findById(id);
     let value = record ? record.value : undefined;
     debug('get', id, '=>', value);
     return value;
@@ -67,7 +67,7 @@ class SettingsService extends Service {
     debug('set', id, '=>', value);
     const Settings = this.model('Settings');
     // $Flow
-    let record = await Settings.findCache(id);
+    let record = await Settings.findById(id);
     if (!record) {
       return null;
     }

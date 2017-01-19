@@ -7,7 +7,7 @@ import AppUpdate from '../models/AppUpdate';
 
 export default class Update extends Sled {
 
-  async exec(params:Object) {
+  async exec(params: Object) {
     const dir = params.dir;
     if (!dir) {
       throw new ReferenceError('alaska-update sled Update data.dir is required');

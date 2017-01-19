@@ -20,7 +20,7 @@ export default class UpdatePropRef extends Sled {
     while (cid) {
       cats.push(cid);
       // $Flow
-      let cat = await GoodsCat.findCache(cid);
+      let cat = await GoodsCat.findById(cid);
       if (cat) {
         cid = cat.parent;
       } else {

@@ -180,7 +180,7 @@ export default class GoodsProp extends Model {
           continue;
         }
         // $Flow
-        let cat = await GoodsCat.findCache(cid);
+        let cat = await GoodsCat.findById(cid);
         cats[cid] = cat;
         let subs = await cat.allSubs();
         _.defaults(cats, subs);

@@ -423,6 +423,7 @@ export default class Service {
       console.error(error.stack);
       throw error;
     }
+    console.log('launched');
   }
 
   /**

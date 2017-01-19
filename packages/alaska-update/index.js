@@ -20,12 +20,7 @@ class UpdateService extends Service {
       MAIN.pre('mount', async() => {
         //检查更新脚本
         let dir = MAIN.dir + '/updates/';
-        try {
-          await this.run('Update', { dir });
-        } catch (error) {
-          console.error(error.stack);
-          process.exit(1);
-        }
+        await this.run('Update', { dir });
       });
     }
   }
