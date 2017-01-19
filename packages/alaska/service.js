@@ -198,7 +198,7 @@ export default class Service {
    * @returns {Koa}
    */
   get app(): Koa {
-    return alaska.app;
+    return this.alaska.app;
   }
 
   /**
@@ -206,7 +206,7 @@ export default class Service {
    * @returns {Service}
    */
   get main(): Alaska$Service {
-    return alaska.main;
+    return this.alaska.main;
   }
 
   /**
@@ -456,7 +456,7 @@ export default class Service {
     }
     if (!config) {
       if (this.isMain()) {
-        console.log('No database config');
+        console.warn('No database config');
       } else {
         this._db = this.alaska.db;
         return this._db;

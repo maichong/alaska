@@ -38,4 +38,4 @@ export default {
     prefix: '/uploads/'
   },
   port: 5000
-}
+};

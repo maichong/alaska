@@ -20,6 +20,7 @@
     "no-prototype-builtins": 0,
     "no-underscore-dangle": 0,
     "no-continue": 0,
+    "no-console": [1, {"allow": ["warn", "error", "trace"]}],
     "comma-dangle": [
       "error", {
         "arrays": "only-multiline",
