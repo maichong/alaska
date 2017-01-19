@@ -1,7 +1,6 @@
 // @flow
 
-
-import fs from 'mz/fs';
+import fs from 'fs';
 import { Sled, utils } from 'alaska';
 import AppUpdate from '../models/AppUpdate';
 
@@ -15,7 +14,7 @@ export default class Update extends Sled {
 
     let files;
     try {
-      files = await fs.readdir(dir);
+      files = fs.readdirSync(dir);
     } catch (error) {
       return;
     }

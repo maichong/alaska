@@ -9,10 +9,9 @@ import * as utils from './utils';
 function readDir(dir: string): Object {
   let map = {};
   try {
-    let files = fs.readdirSync(dir);
+    let files: string[] = fs.readdirSync(dir);
     for (let name of files) {
       if (name[0] === '.') {
-        delete files[name];
         continue;
       }
       map[name] = dir + '/' + name;
@@ -25,7 +24,7 @@ function readDir(dir: string): Object {
   return map;
 }
 
-function objectToMap(obj: Object, path: string, map: { [file:string]:string }): { [file:string]:string } {
+function objectToMap(obj: Object, path?: string, map?: { [file:string]:string }): { [file:string]:string } {
   path = path ? path + '/' : '';
   map = map || {};
   for (let key of Object.keys(obj)) {
@@ -65,7 +64,7 @@ export default class Renderer {
     }
 
     let files = {};
-    this.service._templatesDirs.forEach((dir) => {
+    this.service.templatesDirs.forEach((dir) => {
       files = _.defaultsDeep({}, readDir(dir), files);
     });
 

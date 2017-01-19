@@ -35,6 +35,11 @@ export default class RelationshipField extends Field {
     }
   };
 
+  service: string;
+  model: string;
+  ref: void| Class<Alaska$Model>;
+  optional: boolean;
+
   /**
    * 初始化Schema
    */
@@ -49,10 +54,10 @@ export default class RelationshipField extends Field {
     if (typeof ref === 'string') {
       //查找引用模型
       //ref 当this.optional为true时,ref有可能为null
-      ref = model.service.model(this.ref, this.optional);
+      ref = model.service.model(ref, this.optional);
     }
 
-    let options;
+    let options: Indexed = {};
     let type;
     if (ref) {
       //找到了引用模型
@@ -64,6 +69,7 @@ export default class RelationshipField extends Field {
           type = type.type;
         }
         if (typeof type === 'string') {
+          // $Flow
           type = require('alaska-field-' + type);
         }
         if (type.plain) {
@@ -108,12 +114,10 @@ export default class RelationshipField extends Field {
       }
     });
 
-    if (this.multi) {
-      options = [options];
-    }
     this.ref = ref;
+    // $Flow
     this.dataType = type;
-    schema.path(this.path, options);
+    schema.path(this.path, this.multi ? [options] : options);
   }
 
   createFilter(filter: Object): any {

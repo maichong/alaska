@@ -36,6 +36,7 @@ export default async function (ctx: Alaska$Context) {
     }
   }
 
+  // $Flow
   const Sled: Class<Alaska$Sled> = s.sled(Model.actions[action].sled);
 
   const recordModelName = Model.name.replace(/^\w/, (w) => w.toLowerCase());

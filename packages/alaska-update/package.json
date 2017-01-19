@@ -9,8 +9,5 @@
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-update",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
-  "license": "MIT",
-  "dependencies": {
-    "mz": "^2.6.0"
-  }
+  "license": "MIT"
 }

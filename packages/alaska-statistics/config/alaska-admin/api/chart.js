@@ -1,8 +1,4 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-09-18
- * @author Liang <liang@maichong.it>
- */
+//@flow
 
 import Chart from '../../../models/Chart';
 

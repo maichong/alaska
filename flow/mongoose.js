@@ -100,7 +100,7 @@ declare class Mongoose$Schema {
   constructor(obj: Object, options?: Object):void;
   defaultOptions(options: Object):Object;
   add(obj: Object, prefix: string):void;
-  path(path: string, obj: Object):this;
+  path(path: string, obj: Object|Object[]):this;
   eachPath(fn: Function):this;
   requiredPaths(invalidate: boolean):Object[];
   indexedPaths():Object[];

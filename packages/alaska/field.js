@@ -133,7 +133,8 @@ export default class Field {
    * @returns {Object}
    */
   viewOptions() {
-    let field = this;
+    // $Flow
+    let field: Alaska$Field = this;
     let options = {
       label: field.label,
       path: field.path,
@@ -173,7 +174,6 @@ export default class Field {
           key(options, field);
         } else if (typeof key === 'object' && key.key) {
           options[key.key] = key.value;
-          // $Flow
         } else if (field[key] !== undefined) {
           options[key] = field[key];
         }

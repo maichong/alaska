@@ -530,6 +530,7 @@ declare class Alaska$Field {
   path:string;
   ref?: Class<Alaska$Model>;
   group:void|string;
+  multi:boolean;
   hidden:void|boolean;
   fixed:void|boolean;
   horizontal:void|boolean;
@@ -608,6 +609,7 @@ declare class Alaska$Service {
   sleds:{ [name:string]:Class<Alaska$Sled> };
   models:{ [name:string]:Class<Alaska$Model> };
   locales: { [locale:string]:Object };
+  templatesDirs:string[];
 
   constructor(options?: Alaska$Service$options):void;
   createCacheDriver(options: Object | string, createNew?: boolean): Alaska$CacheDriver;

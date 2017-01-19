@@ -45,6 +45,6 @@ export default async function loadConfig() {
     if (templates[0] !== '/') {
       templates = path.join(this.dir, templates);
     }
-    this._templatesDirs.unshift(templates);
+    this.templatesDirs.unshift(templates);
   }
 }

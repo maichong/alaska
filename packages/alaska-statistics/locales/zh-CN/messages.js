@@ -1,9 +1,3 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-09-05
- * @author Liang <liang@maichong.it>
- */
-
 export default {
   Chart: '图表',
   Model: '模型',

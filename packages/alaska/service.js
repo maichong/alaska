@@ -90,7 +90,7 @@ export default class Service {
    * @type {[string]}
    * @private
    */
-  _templatesDirs = [];
+  templatesDirs: string[];
   version = '';
 
   /**
@@ -104,6 +104,7 @@ export default class Service {
     this.plugins = {};
     this.models = {};
     this.locales = {};
+    this.templatesDirs = [];
     this._messageCache = {};
     this._cacheDrivers = {};
     this._idleDrivers = {};
@@ -239,7 +240,7 @@ export default class Service {
   addConfigDir(dir: string) {
     this._configDirs.push(dir);
     if (utils.isDirectory(dir + '/templates')) {
-      this._templatesDirs.unshift(dir + '/templates');
+      this.templatesDirs.unshift(dir + '/templates');
     }
   }
 
