@@ -4,7 +4,7 @@
 import { Model } from 'alaska';
 
 export default class AppUpdate extends Model {
-  static title = 'key';
+  static titleField = 'key';
   static icon = 'upload';
 
   static fields = {

@@ -1,8 +1,4 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-09-02
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 import Select from 'alaska-field-select/lib/Select';
@@ -25,21 +21,25 @@ export default class AxisSelector extends React.Component {
     settings: object,
     t: func
   };
+  state: {
+    model:?Object;
+    options:Object;
+  };
 
   componentWillMount() {
     this.init(this.props);
   }
 
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps(props: Object) {
     this.init(props);
   }
 
-  handleChange = option => {
+  handleChange = (option: Object) => {
     this.props.onChange(option && option.value ? option.value : option);
   };
 
-  init(props) {
-    let state = {
+  init(props: Object) {
+    let newstate: Object = {
       model: null,
       value: props.value
     };
@@ -47,17 +47,18 @@ export default class AxisSelector extends React.Component {
     const { data, field } = props;
 
     if (!data || !data.model) {
-      return this.setState(state);
+      this.setState(newstate);
+      return;
     }
 
     const { settings, t } = this.context;
     let model = settings.models[props.data.model];
 
     if (!model) {
-      return this.setState(state);
+      return this.setState(newstate);
     }
 
-    state.model = model;
+    newstate.model = model;
 
     let options = [];
 
@@ -86,8 +87,8 @@ export default class AxisSelector extends React.Component {
       options.push({ label: field.label, value: key });
     });
 
-    state.options = options;
-    this.setState(state);
+    newstate.options = options;
+    this.setState(newstate);
   }
 
   render() {

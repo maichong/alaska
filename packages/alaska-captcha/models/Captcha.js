@@ -40,7 +40,7 @@ export default class Captcha extends Model {
 
   static label = 'Captcha';
   static icon = 'lock';
-  static title = 'title';
+  static titleField = 'title';
   static defaultColumns = '_id title type length sms email';
   static defaultSort = '_id';
 

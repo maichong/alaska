@@ -54,7 +54,7 @@ export default class RedisCacheDriver {
           resolve();
         }
       });
-      this._driver.set.apply(this._driver, args);
+      this._driver.set.apply(this._driver, ...args);
     });
   }
 

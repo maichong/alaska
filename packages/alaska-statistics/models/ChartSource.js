@@ -8,7 +8,7 @@ export default class ChartSource extends Model {
 
   static label = 'Chart Source';
   static icon = 'database';
-  static title = 'title';
+  static titleField = 'title';
   static defaultColumns = 'title type reducer unit model autoBuild createdAt';
   static defaultSort = '-createdAt';
 

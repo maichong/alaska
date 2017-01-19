@@ -6,7 +6,7 @@ export default class Log extends Model {
 
   static label = 'Log';
   static icon = 'file-text-o';
-  static title = 'title';
+  static titleField = 'title';
   static defaultColumns = '_id type level method title status time length createdAt';
   static defaultSort = '-_id';
 

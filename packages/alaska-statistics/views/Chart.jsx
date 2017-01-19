@@ -1,8 +1,4 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-09-16
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 import ChartJS from 'react-chartjs';
@@ -19,7 +15,15 @@ export default class Chart extends React.Component {
     onLoadData: func
   };
 
-  constructor(props) {
+  state: {
+    raw:?Object;
+    type:string;
+    data:?Object;
+    options:?Object;
+    error:?Object;
+  };
+
+  constructor(props: Object) {
     super(props);
     this.state = {
       raw: null,
@@ -34,12 +38,12 @@ export default class Chart extends React.Component {
     this.refresh(this.props);
   }
 
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps(props: Object) {
     if (this.props.chart == props.chart) return;
     this.refresh(props);
   }
 
-  async refresh(props) {
+  async refresh(props: ?Object) {
     if (!props) {
       props = this.props;
     }
@@ -65,7 +69,8 @@ export default class Chart extends React.Component {
         lastClick = now;
       };
     }
-    this.setState({ raw, error, type, data, options });
+    let tmp: Object = { raw, error, type, data, options };
+    this.setState(tmp);
   }
 
   render() {
@@ -85,7 +90,7 @@ export default class Chart extends React.Component {
 
     return (
       <div className="chart-box">
-        <Chart width={width} height={height} data={data} options={options} />
+        <TypeChart width={width} height={height} data={data} options={options} />
       </div>
     );
   }
