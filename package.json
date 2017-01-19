@@ -13,7 +13,8 @@
   "scripts": {
     "eslint": "eslint ./",
     "flow": "flow check --show-all-errors && pkill flow",
-    "update": "node scripts/update.js"
+    "update": "node scripts/update.js",
+    "example": "node scripts/example.js"
   },
   "repository": {
     "type": "git",
@@ -61,6 +62,7 @@
     "read-promise": "^1.0.0",
     "semver": "^5.3.0",
     "shallow-equal-without": "^0.1.0",
+    "shelljs": "^0.7.6",
     "style-loader": "^0.13.1",
     "webpack": "^1.14.0"
   }

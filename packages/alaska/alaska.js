@@ -581,8 +581,8 @@ class Alaska {
 export default new Alaska();
 
 exports.utils = utils;
-exports.Field = require('./field');
-exports.Model = require('./model');
-exports.Sled = require('./sled');
-exports.Service = require('./service');
-exports.Renderer = require('./renderer');
+exports.Field = require('./field').default;
+exports.Model = require('./model').default;
+exports.Sled = require('./sled').default;
+exports.Service = require('./service').default;
+exports.Renderer = require('./renderer').default;

@@ -633,13 +633,13 @@ declare class Alaska$Alaska {
   services:{ [id:string]:Alaska$Service };
   app: Koa;
   service(id: string):Alaska$Service;
+  registerModel(Model: Class<Alaska$Model>): Promise<Class<Alaska$Model>>;
   config(key: string, defaultValue: any): any;
   toJSON():Object;
   post(action: string, fn: Function): void;
   panic:(message: string|number, code?: number) => void;
   error:(message: string|number, code?: number) => void;
   try: <T>(promise: Promise<T>) => Promise<T>;
-
 }
 
 declare class Alaska$Driver {

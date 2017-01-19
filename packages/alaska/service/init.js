@@ -9,16 +9,18 @@ export default async function init() {
 
   try {
     let services = this.config('services') || {};
+    console.log('services', services);
 
     Object.keys(services).forEach((serviceId) => {
       let config = services[serviceId];
       let sub = this.alaska.service(serviceId, true);
       if (!sub) {
-        if (!config.dir) {
-          throw new Error(`Can not find sub service '${serviceId}'`);
-        } else {
+        if (config.dir) {
           // $Flow
           sub = require(config.dir).default;
+        } else {
+          // $Flow
+          sub = require(serviceId).defualt;
         }
       }
       sub.applyConfig(config);

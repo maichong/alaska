@@ -431,12 +431,6 @@ export default class Service {
    * @param {boolean} [mainAsDefault] 如果当前Service中不存在配置,则获取主Service的配置
    */
   config(key: string, defaultValue?: any, mainAsDefault?: boolean): any {
-    if (mainAsDefault !== true) {
-      defaultValue = key;
-      // $Flow
-      key = mainAsDefault;
-      mainAsDefault = false;
-    }
     let value = _.get(this._config, key, defaultValue);
     if (!mainAsDefault || value !== undefined || this.isMain()) {
       return value;
@@ -602,6 +596,16 @@ export default class Service {
       this._renderer = new Renderer(this, config);
     }
     return this._renderer;
+  }
+
+  /**
+   * 注册模型
+   * @param {Model} Model
+   * @returns {Model}
+   */
+  async registerModel(Model: Class<Alaska$Model>): Promise<Class<Alaska$Model>> {
+    Model.register();
+    return Model;
   }
 
   /**
