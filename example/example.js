@@ -40,6 +40,7 @@ let service = require('./').default;
 
 service.launch().then(() => {
   console.log('example started');
+  console.log(service._controllers);
 }, (error) => {
   console.error(error.stack);
   process.exit(1);
