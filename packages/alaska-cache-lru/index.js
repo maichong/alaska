@@ -1,10 +1,19 @@
-const LRU = require('lru-cache');
-const debug = require('debug')('alaska-cache-lru');
+// @flow
 
-class LruCacheDriver {
-  constructor(options) {
+import LRU from 'lru-cache';
+import _debug from 'debug';
+
+const debug = _debug('alaska-cache-lru');
+
+export default class LruCacheDriver {
+  _maxAge: number;
+  _driver: any;
+  type: string;
+  isCacheDriver: boolean;
+  noSerialization: boolean;
+  constructor(options: Object) {
     this._maxAge = options.maxAge || 0;
-    this._driver = LRU(options);
+    this._driver = new LRU(options);
     this.type = 'lru';
     //标识已经是缓存对象实例
     this.isCacheDriver = true;
@@ -72,7 +81,7 @@ class LruCacheDriver {
     if (!value) {
       value = 0;
     }
-    value++;
+    value += 1;
     this._driver.set(key, value);
     debug('inc', key, '=>', value);
     return Promise.resolve(value);
@@ -88,7 +97,7 @@ class LruCacheDriver {
     if (!value) {
       value = 0;
     }
-    value--;
+    value -= 1;
     this._driver.set(key, value);
     debug('inc', key, '=>', value);
     return Promise.resolve(value);
@@ -121,5 +130,3 @@ class LruCacheDriver {
     return Promise.resolve();
   }
 }
-
-module.exports = LruCacheDriver.default = LruCacheDriver;

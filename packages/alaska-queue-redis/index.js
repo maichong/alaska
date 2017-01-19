@@ -1,6 +1,6 @@
 // @flow
 
-const redis = require('redis');
+import redis from 'redis';
 
 export default class RedisQueueDriver {
   key: string;
@@ -19,8 +19,8 @@ export default class RedisQueueDriver {
    * @param {*} item
    */
   push(item: any) {
-    return new Promise((resolve, reject)=> {
-      this._driver.rpush(this.key, JSON.stringify(item), function (error) {
+    return new Promise((resolve, reject) => {
+      this._driver.rpush(this.key, JSON.stringify(item), (error) => {
         if (error) {
           reject(error);
         } else {
@@ -37,12 +37,12 @@ export default class RedisQueueDriver {
    */
   pop(timeout: number): any {
     let method = timeout === undefined ? 'lpop' : 'blpop';
-    return new Promise((resolve, reject)=> {
+    return new Promise((resolve, reject) => {
       let args = [this.key];
       if (method === 'blpop') {
         args.push(parseInt(timeout / 1000));
       }
-      args.push(function (error, res) {
+      args.push((error, res) => {
         if (error) {
           reject(error);
         } else {
@@ -52,14 +52,14 @@ export default class RedisQueueDriver {
                 res = res[1];
               }
               res = JSON.parse(res);
-            } catch (error) {
+            } catch (err) {
               res = null;
             }
           }
           resolve(res);
         }
       });
-      this._driver[method].apply(this._driver, args);
+      this._driver[method].apply(this._driver, ...args);
     });
   }
 

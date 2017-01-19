@@ -1,8 +1,8 @@
 // @flow
 
 function sleep(seconds: number) {
-  return new Promise(function (resolve) {
-    setTimeout(function () {
+  return new Promise((resolve) => {
+    setTimeout(() => {
       resolve();
     }, seconds * 1000);
   });
@@ -55,7 +55,7 @@ export default class ArrayQueueDriver {
       await sleep(1);
       timeout -= 1000;
       if (this._free) {
-        return;
+        return null;
       }
     }
     return queues[this.key].shift();

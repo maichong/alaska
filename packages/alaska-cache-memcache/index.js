@@ -1,8 +1,21 @@
-const memcache = require('memcache');
-const debug = require('debug')('alaska-cache-memcache');
+// @flow
 
-class MemcacheCacheDriver {
-  constructor(options) {
+import memcache from 'memcache';
+import _debug from 'debug';
+
+const debug = _debug('alaska-cache-memcache');
+
+export default class MemcacheCacheDriver {
+  _maxAge:number;
+  _options:Object;
+  type:string;
+  isCacheDriver:boolean;
+  noSerialization:boolean;
+  _connect:Function;
+  _connecting:any;
+  _driver:any;
+
+  constructor(options:Object) {
     this._maxAge = options.maxAge || 0;
     this._options = options || {};
     this.type = 'memcache';
@@ -22,12 +35,12 @@ class MemcacheCacheDriver {
     }
     this._driver = new memcache.Client(this._options.port, this._options.host);
     debug('connect');
-    return this._connecting = new Promise((resolve, reject) => {
-      this._driver.on('connect', ()=> {
+    this._connecting = new Promise((resolve, reject) => {
+      this._driver.on('connect', () => {
         this._connecting = null;
         resolve();
       });
-      this._driver.on('error', e => {
+      this._driver.on('error', (e) => {
         console.error(e.stack);
         if (this._connecting) {
           this._connecting = null;
@@ -46,6 +59,7 @@ class MemcacheCacheDriver {
       });
       this._driver.connect();
     });
+    return this._connecting;
   }
 
   /**
@@ -62,11 +76,9 @@ class MemcacheCacheDriver {
    * @param {number} [lifetime] 超时时间,为0不超时,默认按驱动初始化参数maxAge而定
    * @returns {*}
    */
-  set(key: string, value: any, lifetime?: number) {
+  set(key:string, value:any, lifetime?:number) {
     if (this._connecting || !this._driver) {
-      return this._connect().then(() => {
-        return this.set(key, value, lifetime);
-      });
+      return this._connect().then(() => this.set(key, value, lifetime));
     }
     debug('set', key, '=>', value, '(', lifetime !== undefined ? lifetime : '{' + this._maxAge + '}', ')');
     lifetime = lifetime === undefined ? this._maxAge : lifetime;
@@ -75,7 +87,7 @@ class MemcacheCacheDriver {
         if (error) {
           return reject(new Error(error));
         }
-        resolve(res);
+        return resolve(res);
       }, lifetime);
     });
   }
@@ -85,11 +97,9 @@ class MemcacheCacheDriver {
    * @param key
    * @returns {*}
    */
-  get(key: string) {
+  get(key:string) {
     if (this._connecting || !this._driver) {
-      return this._connect().then(() => {
-        return this.get(key);
-      });
+      return this._connect().then(() => this.get(key));
     }
     return new Promise((resolve, reject) => {
       this._driver.get(key, (error, res) => {
@@ -99,12 +109,12 @@ class MemcacheCacheDriver {
         if (res !== null) {
           try {
             res = JSON.parse(res);
-          } catch (error) {
+          } catch (err) {
             res = null;
           }
         }
         debug('get', key, '=>', res);
-        resolve(res);
+        return resolve(res);
       });
     });
   }
@@ -113,11 +123,9 @@ class MemcacheCacheDriver {
    * [async] 删除缓存
    * @param key
    */
-  del(key: string) {
+  del(key:string):Promise<void> {
     if (this._connecting || !this._driver) {
-      return this._connect().then(() => {
-        return this.del(key);
-      });
+      return this._connect().then(() => this.del(key));
     }
     debug('del', key);
     return new Promise((resolve, reject) => {
@@ -125,7 +133,7 @@ class MemcacheCacheDriver {
         if (error) {
           return reject(new Error(error));
         }
-        resolve();
+        return resolve();
       });
     });
   }
@@ -135,11 +143,9 @@ class MemcacheCacheDriver {
    * @param key
    * @returns {boolean}
    */
-  has(key: string) {
+  has(key:string) {
     if (this._connecting || !this._driver) {
-      return this._connect().then(() => {
-        return this.has(key);
-      });
+      return this._connect().then(() => this.has(key));
     }
     return new Promise((resolve, reject) => {
       this._driver.get(key, (error, res) => {
@@ -147,7 +153,7 @@ class MemcacheCacheDriver {
           return reject(new Error(error));
         }
         debug('has', key, '=>', res !== null);
-        resolve(res !== null);
+        return resolve(res !== null);
       });
     });
   }
@@ -157,11 +163,9 @@ class MemcacheCacheDriver {
    * @param key
    * @returns {number}
    */
-  inc(key: string) {
+  inc(key:string) {
     if (this._connecting || !this._driver) {
-      return this._connect().then(() => {
-        return this.inc(key);
-      });
+      return this._connect().then(() => this.inc(key));
     }
     return new Promise((resolve, reject) => {
       this._driver.increment(key, 1, (error, res) => {
@@ -176,7 +180,7 @@ class MemcacheCacheDriver {
         }
         res = parseInt(res) || 0;
         debug('inc', key, '=>', res);
-        resolve(res);
+        return resolve(res);
       });
     });
   }
@@ -186,11 +190,9 @@ class MemcacheCacheDriver {
    * @param key
    * @returns {number}
    */
-  dec(key: string) {
+  dec(key:string) {
     if (this._connecting || !this._driver) {
-      return this._connect().then(() => {
-        return this.dec(key);
-      });
+      return this._connect().then(() => this.dec(key));
     }
     return new Promise((resolve, reject) => {
       this._driver.decrement(key, 1, (error, res) => {
@@ -205,7 +207,7 @@ class MemcacheCacheDriver {
         }
         res = parseInt(res) || 0;
         debug('dec', key, '=>', res);
-        resolve(res);
+        return resolve(res);
       });
     });
   }
@@ -216,9 +218,7 @@ class MemcacheCacheDriver {
    */
   size() {
     if (this._connecting || !this._driver) {
-      return this._connect().then(() => {
-        return this.size();
-      });
+      return this._connect().then(() => this.size());
     }
     debug('size');
     return new Promise((resolve, reject) => {
@@ -226,7 +226,7 @@ class MemcacheCacheDriver {
         if (error) {
           return reject(new Error(error));
         }
-        resolve(parseInt(res.curr_items) || 0);
+        return resolve(parseInt(res.curr_items) || 0);
       });
     });
   }
@@ -244,9 +244,7 @@ class MemcacheCacheDriver {
    */
   flush() {
     if (this._connecting || !this._driver) {
-      return this._connect().then(() => {
-        return this.flush();
-      });
+      return this._connect().then(() => this.flush());
     }
     debug('flush');
     return new Promise((resolve, reject) => {
@@ -254,10 +252,8 @@ class MemcacheCacheDriver {
         if (error) {
           return reject(new Error(error));
         }
-        resolve();
+        return resolve();
       });
     });
   }
 }
-
-module.exports = MemcacheCacheDriver.default = MemcacheCacheDriver;
