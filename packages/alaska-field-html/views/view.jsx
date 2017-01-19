@@ -23,6 +23,9 @@ export default class HtmlFieldView extends React.Component {
     settings: object,
   };
 
+  _editor: any;
+  _textarea: any;
+
   constructor(props: Object) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -38,19 +41,14 @@ export default class HtmlFieldView extends React.Component {
 
   componentWillUnmount() {
     if (this._editor) {
-      // $Flow 用完即删的属性
       this._editor.destroy();
     }
-    // $Flow 用完即删的属性
     delete this._editor;
-    // $Flow 用完即删的属性
     delete this._textarea;
   }
 
   init() {
-    // $Flow 用完即删的属性
     if (this._textarea && this._textarea !== this.refs.editor && this._editor) {
-      // $Flow 用完即删的属性
       this._editor.destroy();
       // $Flow 用完即删的属性
       delete this._editor;
@@ -144,7 +142,7 @@ export default class HtmlFieldView extends React.Component {
       />);
     } else {
       this.init();
-      editor = <textarea ref="editor" />;
+      editor = <textarea ref="editor"/>;
     }
 
     let help = field.help;
@@ -159,7 +157,7 @@ export default class HtmlFieldView extends React.Component {
 
     if (field.horizontal === false) {
       let labelElement = label ? (
-        <label className="control-label">{label}</label>
+          <label className="control-label">{label}</label>
         ) : null;
       return (
         <div className={className}>
