@@ -1,6 +1,6 @@
 // @flow
 
-import PaymentService from 'alaska-payment';
+import { PaymentService } from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 
 export async function alipay(ctx: Alaska$Context) {

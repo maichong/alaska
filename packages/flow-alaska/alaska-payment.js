@@ -3,6 +3,9 @@
 declare module 'alaska-payment' {
   declare export class PaymentService extends Alaska$Service {
     constructor(options?: Alaska$Service$options):void;
+    static payments: Object;
+    static run(name: string, params?: Object): Promise<any>;
+
     payments: Object;
   }
   declare var exports: PaymentService;
