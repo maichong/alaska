@@ -1,15 +1,42 @@
+// @flow
+
 import collie from 'collie';
 import random from 'string-random';
 import _ from 'lodash';
 
+// TODO Liang 取消cache
+
 export default class Sled {
+  static service: Alaska$Service;
+  static name: string;
+  static key: string;
+  static config: Object;
+  static _pre: Function[];
+  static _post: Function[];
+  static _config: Object;
+  static _cache: Alaska$CacheDriver|false;
+
+  id: string;
+  params: Object;
+  item: null|{
+    id:string;
+    payload:Object;
+  };
+  payload: null|Object;
+  fromQueue: boolean;
+  result: null|Object;
+  error: null|Object;
+  fromJSON: void|((params: Object) => void);
+  toJSON: void|(() => Object);
+  exec: ((params: Object) => Promise<any>);
+  validate: (() => Promise<any>);
 
   /**
    * Sled构造函数
-   * @param {Object} [data]
+   * @param {Object} [params]
    */
-  constructor(data) {
-    this.data = data || {};
+  constructor(params?: Object) {
+    this.params = params || {};
     //队列item数据,只有从队列中读取的Sled或将Sled发送到队列后才有此属性
     this.item = null;
     //队列缓存扩展信息数据,只有从队列中读取的Sled或将Sled发送到队列后才有此属性
@@ -24,7 +51,7 @@ export default class Sled {
    * 获取sled所属service
    * @returns {Service}
    */
-  get service() {
+  get service(): Alaska$Service {
     return this.constructor.service;
   }
 
@@ -32,7 +59,7 @@ export default class Sled {
    * 获取Sled name
    * @returns {string}
    */
-  get name() {
+  get name(): string {
     return this.constructor.name;
   }
 
@@ -40,7 +67,7 @@ export default class Sled {
    * 获取Sled key
    * @returns {string}
    */
-  get key() {
+  get key(): string {
     return this.constructor.key;
   }
 
@@ -49,35 +76,35 @@ export default class Sled {
    * @private
    * @returns {Object}
    */
-  get config() {
+  get config(): Object {
     return this.constructor.config;
   }
 
   /**
    * 获取缓存驱动
    * @private
-   * @returns {RedisCacheDriver|boolean}
+   * @returns {Alaska$CacheDriver|boolean}
    */
-  createCacheDriver() {
+  createCacheDriver(): Alaska$CacheDriver|false {
     return this.constructor.createCacheDriver();
   }
 
   /**
    * 获取队列驱动
    * @private
-   * @returns {RedisQueueDriver}
+   * @returns {Alaska$QueueDriver}
    */
-  createQueueDriver() {
+  createQueueDriver(): Alaska$QueueDriver {
     return this.constructor.createQueueDriver();
   }
 
   /**
-   * 获取队列驱动
+   * 获取订阅驱动
    * @private
    * @param {string} channel 频道ID
-   * @returns {RedisSubscribeDriver}
+   * @returns {Alaska$SubscribeDriver}
    */
-  createSubscribeDriver(channel) {
+  createSubscribeDriver(channel: string): Alaska$SubscribeDriver {
     return this.constructor.createSubscribeDriver(channel);
   }
 
@@ -85,7 +112,7 @@ export default class Sled {
    * 注册 Sled 前置钩子
    * @param fn
    */
-  static pre(fn) {
+  static pre(fn: Function) {
     if (!this._pre) {
       this._pre = [];
     }
@@ -96,7 +123,7 @@ export default class Sled {
    * 注册 Sled 后置钩子
    * @param fn
    */
-  static post(fn) {
+  static post(fn: Function) {
     if (!this._post) {
       this._post = [];
     }
@@ -128,16 +155,15 @@ export default class Sled {
   /**
    * 获取Sled数据缓存驱动
    * @private
-   * @returns {RedisCacheDriver|boolean}
+   * @returns {Alaska$CacheDriver|boolean}
    */
-  static createCacheDriver() {
+  static createCacheDriver(): Alaska$CacheDriver|false {
     if (!this._cache && this._cache !== false) {
       let config = this.config;
-      let cache = false;
+      this._cache = false;
       if (config.cache) {
-        cache = this.service.createCacheDriver(config.cache);
+        this._cache = this.service.createCacheDriver(config.cache);
       }
-      this._cache = cache;
     }
     return this._cache;
   }
@@ -145,13 +171,14 @@ export default class Sled {
   /**
    * 获取Sled队列驱动
    * @private
-   * @returns {RedisQueueDriver}
+   * @returns {Alaska$QueueDriver}
    */
-  static createQueueDriver() {
+  static createQueueDriver(): Alaska$QueueDriver {
     let config = this.config;
     if (!config.queue) {
       throw new ReferenceError('sled queue config not found');
     }
+    // $Flow
     return this.service.createDriver(_.defaults({}, config.queue, { key: this.key }));
   }
 
@@ -159,23 +186,24 @@ export default class Sled {
    * 获取Sled订阅驱动
    * @private
    * @param {string} channel 频道ID
-   * @returns {RedisSubscribeDriver}
+   * @returns {Alaska$SubscribeDriver}
    */
-  static createSubscribeDriver(channel) {
+  static createSubscribeDriver(channel: string): Alaska$SubscribeDriver {
     let config = this.config;
     if (!config.subscribe) {
       throw new ReferenceError('sled subscribe config not found');
     }
+    // $Flow
     return this.service.createDriver(_.defaults({ channel }, config.subscribe));
   }
 
   /**
    * alias for sled.run()
-   * @param {Object} [data]
+   * @param {Object} [params]
    * @returns {Promise<any>}
    */
-  static run(data): Promise<any> {
-    let sled = new this(data);
+  static run(params): Promise<any> {
+    let sled = new this(params);
     return sled.run();
   }
 
@@ -183,7 +211,7 @@ export default class Sled {
    * 从队列中读取一个sled
    * @param {number} [timeout] 读取超时,单位毫秒,默认Infinity
    */
-  static async read(timeout) {
+  static async read(timeout?: number): Promise<Alaska$Sled|null> {
     let queue = this.createQueueDriver();
     let item = await queue.pop(timeout);
     this.service.freeDriver(queue);
@@ -199,9 +227,9 @@ export default class Sled {
     }
     let sled = new this();
     if (sled.fromJSON) {
-      sled.fromJSON(payload.data);
+      sled.fromJSON(payload.params);
     } else {
-      sled.data = payload.data;
+      sled.params = payload.params;
     }
     if (payload.result !== undefined) {
       sled.result = payload.result;
@@ -212,6 +240,7 @@ export default class Sled {
     sled.fromQueue = true;
     sled.item = item;
     sled.id = item.id;
+    // $Flow
     return sled;
   }
 
@@ -220,7 +249,7 @@ export default class Sled {
    * @param {number} [timeout] Sled超时时间,单位秒,默认60天
    * @param {boolean} [notify] Sled执行后是否需要通知,默认false
    */
-  async send(timeout, notify) {
+  async send(timeout?: number, notify?: boolean) {
     if (this.result || this.error) {
       throw new Error('can not send a finished sled');
     }
@@ -231,9 +260,9 @@ export default class Sled {
     //默认60天超时
     timeout = timeout || 60 * 86400;
 
-    let data = this.data;
+    let params = this.params;
     if (this.toJSON) {
-      data = this.toJSON();
+      params = this.toJSON();
     }
 
     let key = this.key;
@@ -245,7 +274,7 @@ export default class Sled {
       id,
       key,
       notify,
-      data,
+      params,
       name: this.name,
       result: null,
       error: null,
@@ -256,7 +285,8 @@ export default class Sled {
     let item = this.item = {
       id,
       name: this.name,
-      key
+      key,
+      payload: {}
     };
 
     let cache = this.createCacheDriver();
@@ -273,11 +303,11 @@ export default class Sled {
   }
 
   /**
-   * [async]等待队列中sled执行
+   * 等待队列中sled执行
    * @param {number} [waitTimeout] 超时时间,单位秒,默认为Infinity,超时后将返回null
    * @param {number} [sledTimeout] Sled执行超时时间,单位秒,默认为60天
    */
-  async wait(waitTimeout, sledTimeout) {
+  async wait(waitTimeout?: number, sledTimeout?: number): Promise<any> {
     if (this.result) {
       return this.result;
     }
@@ -359,9 +389,9 @@ export default class Sled {
       return this.result;
     }
     if (this.validate) {
-      let promise = this.validate(this.data);
+      let promise = this.validate(this.params);
       if (promise && promise.then) {
-        await promise();
+        await promise;
       }
     }
     if (this.constructor._pre) {
@@ -372,7 +402,7 @@ export default class Sled {
     //如果已经有result,说明在前置hooks中已经执行完成任务
     if (!this.result) {
       try {
-        result = this.exec(this.data);
+        result = this.exec(this.params);
         if (result && result.then) {
           result = await result;
         }
