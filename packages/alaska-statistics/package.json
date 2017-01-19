@@ -1,0 +1,40 @@
+{
+  "name": "alaska-statistics",
+  "version": "0.10.5",
+  "description": "Alaska statistics service",
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "build": "babel ./src --out-dir ./",
+    "watch": "babel ./src --out-dir ./ -w",
+    "prebuild": "rimraf lib api controllers config locales middlewares models sleds views",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-statistics.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-statistics/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-statistics#readme",
+  "peerDependencies": {
+    "alaska": "*"
+  },
+  "dependencies": {
+    "react-chartjs": "github:jhudson8/react-chartjs#chartjs-v2",
+    "alaska-field-select": "^0.10.4",
+    "color": "^0.11.3",
+    "chart.js": "^2.2.2",
+    "number-random": "^0.1.1"
+  }
+}

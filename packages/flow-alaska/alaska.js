@@ -429,7 +429,7 @@ declare class Alaska$Model extends events$EventEmitter {
   static nocreate:boolean;
   static noedit:boolean;
   static noremove:boolean;
-  static groups:{ [key:string]: string| { title:string;panle?:boolean;className?:string } };
+  static groups:{ [key:string]: string| { label:string;panle?:boolean;className?:string } };
   static service:Alaska$Service;
   static db:Mongoose$Connection;
   static MongooseModel:Mongoose$Model;
@@ -638,7 +638,7 @@ declare class Alaska$Alaska {
   panic:(message: string|number, code?: number) => void;
   error:(message: string|number, code?: number) => void;
   try: <T>(promise: Promise<T>) => Promise<T>;
-  
+
 }
 
 declare class Alaska$Driver {
