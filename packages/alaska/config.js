@@ -1,4 +1,3 @@
-
 /**
  * 默认配置
  * @module config
@@ -117,7 +116,7 @@ export default {
   /** [Service] 默认控制器名称
    * @type {string}
    */
-  defaultController: 'default',
+  defaultController: 'index',
   /**
    * [Service] 控制器中默认Action名称
    * @type {string}
@@ -137,8 +136,8 @@ export default {
    * [Service] 模板引擎
    * @type {Object}
    */
-  render: {
-    type: 'alaska-render-swig'
+  renderer: {
+    type: 'alaska-renderer-swig'
   },
   /**
    * [Service] 模板目录

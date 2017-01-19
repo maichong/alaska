@@ -14,7 +14,7 @@ export default class MongoCacheDriver {
   isCacheDriver:boolean;
   noSerialization:boolean;
 
-  constructor(options:Object) {
+  constructor(options: Object) {
     this._maxAge = options.maxAge || 0;
     this._connecting = MongoClient.connect(options.url, {
       uri_decode_auth: options.uri_decode_auth,
@@ -48,7 +48,7 @@ export default class MongoCacheDriver {
   /**
    * @returns {Collection}
    */
-  driver() {
+  driver(): any {
     return this._driver;
   }
 
@@ -114,7 +114,7 @@ export default class MongoCacheDriver {
    * [async] 删除缓存
    * @param key
    */
-  del(key:string) {
+  del(key:string): any {
     if (this._connecting) {
       return this._connecting.then(() => this.del(key));
     }
@@ -199,7 +199,7 @@ export default class MongoCacheDriver {
    * [async] 返回缓存数量
    * @returns {number}
    */
-  size() {
+  size(): number {
     if (this._connecting) {
       return this._connecting.then(() => this.size());
     }
@@ -210,7 +210,7 @@ export default class MongoCacheDriver {
   /**
    * [async] 清理过期缓存
    */
-  prune() {
+  prune(): any {
     if (this._connecting) {
       return this._connecting.then(() => this.prune());
     }
@@ -221,7 +221,7 @@ export default class MongoCacheDriver {
   /**
    * [async] 清空缓存
    */
-  flush() {
+  flush(): any {
     if (this._connecting) {
       return this._connecting.then(() => this.flush());
     }

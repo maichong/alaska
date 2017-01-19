@@ -162,7 +162,6 @@ declare type Alaska$Context = {
   sendfile:(filePath: string, options: Object) => Promise<void>;
   t:((message: string, locale?: string, values?: Object) => string) &
     ((message: string, values: Object) => string);
-  render:(template: string, state?: Object) => Promise<string>;
   show:(template: string, state?: Object) => Promise<string>;
   toJSON: () => Object;
 };

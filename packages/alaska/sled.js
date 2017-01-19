@@ -113,9 +113,9 @@ export default class Sled {
       let service = this.service;
       let key = this.key;
       let name = 'sled.' + key;
-      let config = service.config(true, name);
+      let config = service.config(name, undefined, true);
       if (!config) {
-        config = service.config(true, 'sled');
+        config = service.config('sled', undefined, true);
       }
       this._config = config;
     }
