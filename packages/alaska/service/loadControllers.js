@@ -60,9 +60,8 @@ export default async function loadControllers() {
     }
     service.debug('route %s:%s', controller, action);
     if (service._controllers[controller] && service._controllers[controller][action] && action[0] !== '_') {
-      //TODO 错误页面
       return service._controllers[controller][action](ctx, next);
     }
     return next();
-  });//end of register
+  });
 };

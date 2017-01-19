@@ -404,7 +404,7 @@ export default class Service {
   async launch() {
     this.debug('launch');
     // $Flow
-    this.launch = Promise.resolve();
+    this.launch = utils.resolved;
     try {
       await this.init();
       await this.loadConfig();
@@ -424,7 +424,6 @@ export default class Service {
       console.error(error.stack);
       throw error;
     }
-    console.log('launched');
   }
 
   /**

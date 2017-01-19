@@ -16,7 +16,7 @@ class PostService extends Service {
   preLoadConfig() {
     let ADMIN = this.alaska.service('alaska-admin', true);
     if (ADMIN) {
-      ADMIN._configDirs.push(this.dir + '/config/alaska-admin');
+      ADMIN.addConfigDir(this.dir + '/config/alaska-admin');
     }
   }
 }

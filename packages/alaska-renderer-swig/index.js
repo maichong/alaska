@@ -57,6 +57,7 @@ export default class SwigRenderer extends Renderer {
    * @returns {Promise<string>}
    */
   renderFile(pathName: string, locals: Object) {
+    console.log('renderFile', pathName);
     return new Promise((resolve, reject) => {
       this.swig.renderFile(pathName, locals, (error, output) => {
         if (error) {

@@ -25,8 +25,7 @@ export default class MemcacheCacheDriver {
     this.noSerialization = false;
     this._connect();
   }
-
-  _connect() {
+  _connect(): any {
     if (this._connecting) {
       return this._connecting;
     }
@@ -65,7 +64,7 @@ export default class MemcacheCacheDriver {
   /**
    * @returns {Memcache}
    */
-  driver() {
+  driver(): any {
     return this._driver;
   }
 
