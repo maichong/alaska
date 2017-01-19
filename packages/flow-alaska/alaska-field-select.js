@@ -2,7 +2,9 @@ declare type Alaska$SelectField$option={
   value:number|string|boolean;
   label:string;
   style?:Alaska$style;
-  depends?:Alaska$Field$depends
+  depends?:Alaska$Field$depends;
+  unit?:any;
+  precision?:number;
 };
 
 declare module 'alaska-field-select' {

@@ -52,7 +52,6 @@ export default class CartItem extends Model {
     currency: {
       label: 'Currency',
       type: 'select',
-      // $Flow
       options: BALANCE.currencies,
       default: BALANCE.defaultCurrency.value,
       group: 'price'

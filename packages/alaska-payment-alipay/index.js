@@ -3,29 +3,28 @@
 import _ from 'lodash';
 import crypto from 'crypto';
 import fs from 'fs';
-import querystring from 'querystring';
-import PAYMENT from 'alaska-payment';
+import type { PaymentService } from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 
 const GATEWAY = 'https://mapi.alipay.com/gateway.do?';
 
 export default class AlipayPlugin {
-  service: typeof PAYMENT;
+  service: PaymentService;
   label: string;
   _config: Object;
   rsa_private_key: string;
   alipay_public_key: string;
 
-  constructor(service: typeof PAYMENT) {
+  constructor(service: PaymentService) {
     this.init(service);
   }
 
-  init(service: typeof PAYMENT) {
+  init(service: PaymentService) {
     this.service = service;
     service.payments['alipay'] = this;
     service.addConfigDir(__dirname);
     this.label = 'Alipay';
-    let configTmp: ?Object = service.config('alipay') || service.panic('Alipay config not found');
+    let configTmp: Object = service.config('alipay') || service.panic('Alipay config not found');
     this._config = configTmp;
     this._config = Object.assign({
       partner: '',

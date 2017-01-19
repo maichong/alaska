@@ -113,7 +113,6 @@ export default class Order extends Model {
     currency: {
       label: 'Currency',
       type: 'select',
-      // $Flow
       options: BALANCE.currencies,
       default: BALANCE.defaultCurrency.value
     },
@@ -236,8 +235,8 @@ export default class Order extends Model {
   userDeleted: boolean;
   adminDeleted: boolean;
 
-  _logTotal: OrderLog;
-  _logShipping: OrderLog;
+  _logTotal: boolean;
+  _logShipping: boolean;
 
   preSave() {
     if (!this.createdAt) {
