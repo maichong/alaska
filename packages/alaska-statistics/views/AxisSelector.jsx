@@ -2,7 +2,7 @@
 
 import React from 'react';
 import _ from 'lodash';
-import Select from 'alaska-field-select/lib/Select';
+import Select from 'alaska-field-select/views/Select';
 
 const { bool, string, func, object } = React.PropTypes;
 
