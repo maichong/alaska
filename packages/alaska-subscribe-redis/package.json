@@ -1,0 +1,30 @@
+{
+  "name": "alaska-subscribe-redis",
+  "version": "0.10.0",
+  "description": "Alaska redis subscribe/publish driver",
+  "keywords": [
+    "alaska",
+    "alaska-subscribe",
+    "alaska-redis",
+    "redis"
+  ],
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/alaska-subscribe-redis.git"
+  },
+  "author": {
+    "email": "liang@maichong.it",
+    "name": "liang",
+    "url": "https://github.com/liangxingchen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/alaska-subscribe-redis/issues"
+  },
+  "homepage": "https://github.com/maichong/alaska-subscribe-redis#readme",
+  "dependencies": {
+    "redis": "^2.6.0-2"
+  }
+}
