@@ -7,7 +7,7 @@ export default class Commission extends Model {
 
   static label = 'Commission';
   static icon = 'money';
-  static title = 'title';
+  static titleField = 'title';
   static defaultColumns = 'title user contributor order amount level state createdAt balancedAt';
   static defaultSort = '-createdAt';
 
