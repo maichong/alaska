@@ -6,7 +6,7 @@ import service from '../';
 export default class Sms extends Model {
   static label = 'SMS';
   static icon = 'comment';
-  static title = 'title';
+  static titleField = 'title';
   static defaultColumns = '_id title content createdAt';
   static defaultSort = '_id';
 

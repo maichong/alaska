@@ -1,6 +1,6 @@
 export default class ArticleCat extends service.Model {
   static label = 'Article Category';
-  static title = 'name';
+  static titleField = 'name';
   static defaultColumns = '_id name parent';
   static fields = {
     name: {

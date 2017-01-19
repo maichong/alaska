@@ -5,7 +5,7 @@ import { Model } from 'alaska';
 export default class Menu extends Model {
   static label = 'Menu';
   static icon = 'list';
-  static title = 'title';
+  static titleField = 'title';
   static defaultColumns = '_id title createdAt';
   static defaultSort = '-sort';
   static api = { show: 1 };

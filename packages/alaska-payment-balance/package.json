@@ -1,6 +1,6 @@
 {
   "name": "alaska-payment-balance",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Alaska balance payment plugin",
   "keywords": [
     "alaska",
@@ -8,28 +8,7 @@
     "alaska-payment-plugin"
   ],
   "main": "index.js",
-  "scripts": {
-    "build": "babel ./src --out-dir ./",
-    "watch": "babel ./src --out-dir ./ -w",
-    "prebuild": "rimraf lib api controllers config locales middlewares models sleds views",
-    "prepublish": "npm run build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/maichong/alaska-payment-balance.git"
-  },
-  "author": {
-    "email": "liang@maichong.it",
-    "name": "liang",
-    "url": "https://github.com/liangxingchen"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/maichong/alaska-payment-balance/issues"
-  },
-  "homepage": "https://github.com/maichong/alaska-payment-balance#readme",
-  "peerDependencies": {
-    "alaska": "*",
-    "alaska-payment": "^0.10.0"
-  }
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-payment-balance",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT"
 }
