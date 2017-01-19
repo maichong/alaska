@@ -4,6 +4,15 @@ import redis from 'redis';
 
 export default class RedisSubscribeDriver {
 
+  channel: Object;
+  options: Object;
+  _driver: Object;
+  _subscribed: boolean;
+  _timer: number;
+  _messages: Object[];
+  _onMessage: ?Function;
+  _listener: ?Function;
+
   /**
    * @param {Object} options Redis连接设置
    */
@@ -17,15 +26,6 @@ export default class RedisSubscribeDriver {
     this._onMessage = null;//message callback
     this._listener = null;
   }
-
-  channel: Object;
-  options: Object;
-  _driver: Object;
-  _subscribed: boolean;
-  _timer: number;
-  _messages: [];
-  _onMessage: ?Function;
-  _listener: ?Function;
 
   /**
    * 发布信息
@@ -47,9 +47,10 @@ export default class RedisSubscribeDriver {
   }
 
   /**
-   * [async] 订阅信息
+   * 订阅消息
+   * @returns {Promise<Object>}
    */
-  subscribe() {
+  subscribe(): Promise<Object> {
     if (this._subscribed) {
       return Promise.reject('driver has already subscribed.');
     }
@@ -78,11 +79,11 @@ export default class RedisSubscribeDriver {
   }
 
   /**
-   * [async] 从频道读取一条消息
+   * 从频道读取一条消息
    * @param {number} timeout 超时时间,单位毫秒,默认为Infinity,超时后返回null
-   * @returns {*}
+   * @returns {Promise<Object|null>}
    */
-  read(timeout: ?number) {
+  read(timeout: ?number): Promise<Object|null> {
     if (!this._subscribed) {
       return Promise.reject('the driver is not subscribed.');
     }
@@ -117,8 +118,9 @@ export default class RedisSubscribeDriver {
   /**
    * 只订阅一次信息
    * @param {number} timeout 超时时间,单位毫秒,默认为Infinity,超时后返回null
+   * @returns {Promise<Object|null>}
    */
-  once(timeout: ?number) {
+  once(timeout: ?number): Promise<Object|null> {
     if (this._subscribed) {
       return Promise.reject('driver has already subscribed.');
     }
@@ -154,9 +156,9 @@ export default class RedisSubscribeDriver {
   }
 
   /**
-   * [async] 取消订阅
+   * 取消订阅
    */
-  cancel() {
+  cancel(): Promise<void> {
     if (this._timer) {
       clearTimeout(this._timer);
       this._timer = 0;
