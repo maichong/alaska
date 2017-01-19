@@ -28,7 +28,7 @@ export default class RedisCacheDriver {
   /**
    * @returns {Redis}
    */
-  driver() {
+  driver(): any {
     return this._driver;
   }
 

@@ -24,7 +24,7 @@ export default class LruCacheDriver {
   /**
    * @returns {LRUCache}
    */
-  driver() {
+  driver(): any {
     return this._driver;
   }
 
