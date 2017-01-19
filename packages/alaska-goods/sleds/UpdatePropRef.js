@@ -20,7 +20,7 @@ export default class UpdatePropRef extends Sled {
     while (cid) {
       cats.push(cid);
       // $Flow
-      let cat = await GoodsCat.findById(cid);
+      let cat:GoodsCat = await GoodsCat.findById(cid);
       if (cat) {
         cid = cat.parent;
       } else {
@@ -28,7 +28,7 @@ export default class UpdatePropRef extends Sled {
       }
     }
     // $Flow
-    let props:Object[] = await GoodsProp.find().where('catsIndex').in(cats);
+    let props:GoodsProp[] = await GoodsProp.find().where('catsIndex').in(cats);
     for (let prop of props) {
       await prop.updateCatsIndex();
       prop.save();

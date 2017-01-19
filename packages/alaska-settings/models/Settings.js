@@ -84,7 +84,7 @@ export default class Settings extends Model {
       default: {}
     }
   };
-
+  _id: string|number|Object|any;
   title: string;
   service: string;
   group: string;

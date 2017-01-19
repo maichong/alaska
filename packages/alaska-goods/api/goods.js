@@ -28,13 +28,11 @@ export async function newest(ctx: Alaska$Context) {
   let cid: any = ctx.query.cid || service.error(400);
   const cache = service.cache;
   let cacheKey = `goods_newest_${cid}`;
-  // $Flow 确认会得到Goods[]
-  let results: ?Goods[] = await cache.get(cacheKey);
+  let results: ?Goods[]|Object[] = await cache.get(cacheKey);
   if (!results) {
     // $Flow find
-    results = await Goods.find({ activated: true, cats: cid }).sort('-createdAt').limit(10);
-    // $Flow 自己写的Model类型描述不能继承Alaska$Model ? line 35
-    results = results.map((goods: Goods) => (goods.data().omit('desc', 'pics', 'skus', 'cat')));
+    let mResults:Goods[] = await Goods.find({ activated: true, cats: cid }).sort('-createdAt').limit(10);
+    results = mResults.map((goods: Goods) => (goods.data().omit('desc', 'pics', 'skus', 'cat')));
     cache.set(cacheKey, results, 600 * 1000);
   }
   ctx.body = results;
@@ -49,13 +47,11 @@ export async function popular(ctx: Alaska$Context) {
   let cid: any = ctx.query.cid || service.error(400);
   const cache = service.cache;
   let cacheKey = `goods_popular_${cid}`;
-  // $Flow 确认会得到Goods[]
-  let results: ?Goods[] = await cache.get(cacheKey);
+  let results: ?Goods[]|Object[] = await cache.get(cacheKey);
   if (!results) {
     // $Flow find
-    results = await Goods.find({ activated: true, cats: cid }).sort('-volume -sort').limit(10);
-    // $Flow 自己写的Model类型描述不能继承Alaska$Model ? line 55
-    results = results.map((goods: Goods) => goods.data().omit('desc', 'pics', 'skus', 'cat'));
+    let mResults:Goods[] = await Goods.find({ activated: true, cats: cid }).sort('-volume -sort').limit(10);
+    results = mResults.map((goods: Goods) => goods.data().omit('desc', 'pics', 'skus', 'cat'));
     cache.set(cacheKey, results, 600 * 1000);
   }
   ctx.body = results;
