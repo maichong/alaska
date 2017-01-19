@@ -1,5 +1,59 @@
-// TODO lulu https://github.com/qix-/color
-
-// declare module color {
-//
-// }
+declare module color {
+  declare class Color {
+    constructor(obj?: Object|string, model?: string):void;
+    clone():Object;
+    toString():string;
+    toJSON():Object;
+    string(places: number):string;
+    percentString(places: number):string;
+    array():number[];
+    object():Object;
+    unitArray():number[];
+    unitObject():Object;
+    round(places: number):Object;
+    alpha(val?: number):number|Object;
+    keyword(val?: any):string|Object;
+    hex(val?: any):string|Object;
+    rgbNumber():number;
+    luminosity():number;
+    contrast(obj: Object):number;
+    level(obj: Object):string;
+    dark():boolean;
+    light():boolean;
+    negate():Object;
+    lighten(ratio: number):Object;
+    darken(ratio: number):Object;
+    saturate(ratio: number):Object;
+    desaturate(ratio: number):Object;
+    whiten(ratio: number):Object;
+    blacken(ratio: number):Object;
+    grayscale():Object;
+    fade(ratio: number):Object;
+    opaquer(ratio: number):Object;
+    rotate(degrees: number):Object;
+    mix(mixinColor: Object, weight?: number):Object;
+    red():number;
+    green():number;
+    blue():number;
+    hue():number;
+    saturationl():number;
+    lightness():number;
+    saturationv():number;
+    value():number;
+    chroma():number;
+    gray():number;
+    white():number;
+    wblack():number;
+    cyan():number;
+    magenta():number;
+    yellow():number;
+    black():number;
+    x(): number ;
+    y(): number;
+    z(): number;
+    l(): number;
+    a(): number;
+    b(): number;
+  }
+  declare var exports: Class<Color>;
+}
