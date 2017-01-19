@@ -226,7 +226,7 @@ class Alaska {
    */
   async listen(): Promise<void> {
     // $Flow
-    this.listen = Promise.resolve();
+    this.listen = utils.resolved;
     const alaska = this;
     debug('listen');
     const mountKeys = Object.keys(this._mounts);
@@ -268,7 +268,7 @@ class Alaska {
    */
   async loadMiddlewares() {
     // $Flow
-    this.loadMiddlewares = Promise.resolve();
+    this.loadMiddlewares = utils.resolved;
     // $Flow
     const alaska: Alaska$Alaska = this;
     const MAIN = this.main;
@@ -403,35 +403,6 @@ class Alaska {
       //env
       ctx.state.env = process.env.NODE_ENV || 'production';
 
-      //render
-      /**
-       * 渲染模板
-       * @param {string} template 模板文件
-       * @param {Object} [state]  模板变量
-       * @returns {Promise<string>} 返回渲染结果
-       */
-      ctx.render = function (template: string, state?: Object): Promise<string> {
-        const service = ctx.service;
-        //const templatesDir = path.join(service.dir, service.config('templates')) + '/';
-        //let file = templatesDir + template;
-        //if (!utils.isFile(file)) {
-        //  throw new Error(`Template is not exist: ${file}`);
-        //}
-        return new Promise((resolve, reject) => {
-          service.renderer.renderFile(
-            template,
-            Object.assign({}, ctx.state, state),
-            (error, result) => {
-              if (error) {
-                reject(error);
-                return;
-              }
-              resolve(result);
-            }
-          );
-        });
-      };
-
       /**
        * 渲染并显示模板
        * @param {string} template 模板文件
@@ -439,10 +410,11 @@ class Alaska {
        * @returns {Promise<string>} 返回渲染结果
        */
       ctx.show = function (template: string, state?: Object): Promise<string> {
-        return ctx.render(template, state).then((html) => {
-          ctx.body = html;
-          return html;
-        });
+        return ctx.service.renderer.renderFile(template, Object.assign({}, ctx.state, state))
+          .then((html) => {
+            ctx.body = html;
+            return Promise.resolve(html);
+          });
       };
 
       return next();
