@@ -1,8 +1,8 @@
 // @flow
 
 import { Model } from 'alaska';
-import service from '../';
 import BALANCE from 'alaska-balance';
+import service from '../';
 import OrderLog from './OrderLog';
 import OrderItem from './OrderItem';
 
@@ -15,7 +15,7 @@ export default class Order extends Model {
   static nocreate = true;
   static noremove = true;
 
-  static defaultFilters = ctx => {
+  static defaultFilters = (ctx: Alaska$Context) => {
     let field = ctx.service.id === 'alaska-admin' ? 'adminDeleted' : 'userDeleted';
     return {
       [field]: {
@@ -241,7 +241,7 @@ export default class Order extends Model {
 
   preSave() {
     if (!this.createdAt) {
-      this.createdAt = new Date;
+      this.createdAt = new Date();
     }
     this.pay = (this.total || 0) + (this.shipping || 0);
     this._logTotal = !this.isNew && this.isModified('total');
@@ -262,7 +262,7 @@ export default class Order extends Model {
    * @param title
    * @returns {*}
    */
-  createLog(title: string) {
+  createLog(title: string): OrderLog {
     let log = new OrderLog({ title, order: this });
     log.save();
     return log;
@@ -273,7 +273,7 @@ export default class Order extends Model {
    * @param {OrderItem} item
    * @returns {boolean}
    */
-  canAppendItem(item: OrderItem) {
-    return true;
+  canAppendItem(item: OrderItem): boolean {
+    return !!item;
   }
 }
