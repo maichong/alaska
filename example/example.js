@@ -1,3 +1,6 @@
+/* eslint strict:0 */
+/* eslint no-console:0 */
+
 'use strict';
 
 process.title = 'example';
