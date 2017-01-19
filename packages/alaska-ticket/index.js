@@ -17,8 +17,8 @@ class TicketService extends Service {
     let service = this;
     const Ticket = service.model('Ticket');
     const alaska = service.alaska;
-    alaska.post('loadMiddlewares', function () {
-      alaska.app.use(async function (ctx:Alaska$Context, next:Function) {
+    alaska.post('loadMiddlewares', () => {
+      alaska.app.use(async (ctx:Alaska$Context, next:Function) => {
         if (ctx.method === 'POST') {
           let body = ctx.state.body || ctx.request.body;
           let ticketId = body._ticket || ctx.request.body._ticket;

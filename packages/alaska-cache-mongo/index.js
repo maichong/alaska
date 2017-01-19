@@ -1,8 +1,20 @@
-const MongoClient = require('mongodb').MongoClient;
-const debug = require('debug')('alaska-cache-mongo');
+// @flow
 
-class MongoCacheDriver {
-  constructor(options) {
+import _mongodb from 'mongodb';
+import _debug from 'debug';
+
+const MongoClient = _mongodb.MongoClient;
+const debug = _debug('alaska-cache-mongo');
+
+export default class MongoCacheDriver {
+  _maxAge:number;
+  _connecting:Object|null;
+  _driver:Object;
+  type:string;
+  isCacheDriver:boolean;
+  noSerialization:boolean;
+
+  constructor(options:Object) {
     this._maxAge = options.maxAge || 0;
     this._connecting = MongoClient.connect(options.url, {
       uri_decode_auth: options.uri_decode_auth,
@@ -11,7 +23,7 @@ class MongoCacheDriver {
       replSet: options.replSet,
       mongos: options.mongos
     });
-    this._connecting.then(db => {
+    this._connecting.then((db) => {
       this._connecting = null;
       this._driver = db.collection(options.collection || 'mongo_cache');
       this._driver.createIndex('expiredAt', {
@@ -28,7 +40,7 @@ class MongoCacheDriver {
     this.noSerialization = false;
 
     //每10分钟自动清理一次
-    setInterval(()=> {
+    setInterval(() => {
       this.prune();
     }, 10 * 60 * 1000);
   }
@@ -47,11 +59,9 @@ class MongoCacheDriver {
    * @param {number} [lifetime] 超时时间,为0不超时,默认按驱动初始化参数maxAge而定
    * @returns {*}
    */
-  set(key: string, value: any, lifetime?: number) {
+  set(key:string, value:any, lifetime?:number) {
     if (this._connecting) {
-      return this._connecting.then(() => {
-        return this.set(key, value, lifetime);
-      });
+      return this._connecting.then(() => this.set(key, value, lifetime));
     }
     debug('set', key, '=>', value, '(', lifetime !== undefined ? lifetime : '{' + this._maxAge + '}', ')');
     lifetime = lifetime === undefined ? this._maxAge : lifetime;
@@ -65,8 +75,8 @@ class MongoCacheDriver {
       _id: key
     }, {
       _id: key,
-      value: value,
-      expiredAt: expiredAt
+      value,
+      expiredAt
     }, {
       upsert: true,
       returnOriginal: false
@@ -78,11 +88,9 @@ class MongoCacheDriver {
    * @param key
    * @returns {*}
    */
-  get(key: string) {
+  get(key:string) {
     if (this._connecting) {
-      return this._connecting.then(() => {
-        return this.get(key);
-      });
+      return this._connecting.then(() => this.get(key));
     }
     return this._driver.findOne({
       _id: key
@@ -91,7 +99,7 @@ class MongoCacheDriver {
         debug('get', key, '=>', null);
         return Promise.resolve(null);
       }
-      if (doc.expiredAt !== 0 && (!doc.expiredAt || doc.expiredAt < new Date)) {
+      if (doc.expiredAt !== 0 && (!doc.expiredAt || doc.expiredAt < new Date())) {
         //已过期
         debug('get', key, '=>', null);
         this.del(key);
@@ -106,11 +114,9 @@ class MongoCacheDriver {
    * [async] 删除缓存
    * @param key
    */
-  del(key: string) {
+  del(key:string) {
     if (this._connecting) {
-      return this._connecting.then(() => {
-        return this.del(key);
-      });
+      return this._connecting.then(() => this.del(key));
     }
     debug('del', key);
     return this._driver.deleteOne({
@@ -123,11 +129,9 @@ class MongoCacheDriver {
    * @param key
    * @returns {boolean}
    */
-  has(key: string) {
+  has(key:string) {
     if (this._connecting) {
-      return this._connecting.then(() => {
-        return this.has(key);
-      });
+      return this._connecting.then(() => this.has(key));
     }
     return this._driver.findOne({
       _id: key
@@ -136,7 +140,7 @@ class MongoCacheDriver {
         debug('has', key, '=>', false);
         return Promise.resolve(false);
       }
-      if (doc.expiredAt !== 0 && (!doc.expiredAt || doc.expiredAt < new Date)) {
+      if (doc.expiredAt !== 0 && (!doc.expiredAt || doc.expiredAt < new Date())) {
         //已过期
         return this.del(key);
       }
@@ -150,11 +154,9 @@ class MongoCacheDriver {
    * @param key
    * @returns {number}
    */
-  inc(key: string) {
+  inc(key:string) {
     if (this._connecting) {
-      return this._connecting.then(() => {
-        return this.inc(key);
-      });
+      return this._connecting.then(() => this.inc(key));
     }
     let expiredAt = 0;
     if (this._maxAge) {
@@ -175,11 +177,9 @@ class MongoCacheDriver {
    * @param key
    * @returns {number}
    */
-  dec(key: string) {
+  dec(key:string) {
     if (this._connecting) {
-      return this._connecting.then(() => {
-        return this.dec(key);
-      });
+      return this._connecting.then(() => this.dec(key));
     }
     let expiredAt = 0;
     if (this._maxAge) {
@@ -201,9 +201,7 @@ class MongoCacheDriver {
    */
   size() {
     if (this._connecting) {
-      return this._connecting.then(() => {
-        return this.size();
-      });
+      return this._connecting.then(() => this.size());
     }
     debug('size');
     return this._driver.count();
@@ -214,12 +212,10 @@ class MongoCacheDriver {
    */
   prune() {
     if (this._connecting) {
-      return this._connecting.then(() => {
-        return this.prune();
-      });
+      return this._connecting.then(() => this.prune());
     }
     debug('prune');
-    return this._driver.deleteMany({ $or: [{ expiredAt: null }, { expiredAt: { $ne: 0, $lt: new Date } }] });
+    return this._driver.deleteMany({ $or: [{ expiredAt: null }, { expiredAt: { $ne: 0, $lt: new Date() } }] });
   }
 
   /**
@@ -227,13 +223,9 @@ class MongoCacheDriver {
    */
   flush() {
     if (this._connecting) {
-      return this._connecting.then(() => {
-        return this.flush();
-      });
+      return this._connecting.then(() => this.flush());
     }
     debug('flush');
     return this._driver.drop();
   }
 }
-
-module.exports = MongoCacheDriver.default = MongoCacheDriver;

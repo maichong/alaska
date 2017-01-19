@@ -1,14 +1,20 @@
-const redis = require('redis');
-const debug = require('debug')('alaska-cache-redis');
+// @flow
 
-class RedisCacheDriver {
+import redis from 'redis';
+import _debug from 'debug';
+
+const debug = _debug('alaska-cache-redis');
+
+export default class RedisCacheDriver {
   static classOfCacheDriver = true;
 
   instanceOfCacheDriver: true;
   _maxAge: number;
   _driver: Object;
-
-  constructor(options) {
+  type: string;
+  isCacheDriver: boolean;
+  noSerialization: boolean;
+  constructor(options: Object) {
     this.instanceOfCacheDriver = true;
     this._maxAge = options.maxAge || 0;
     this._driver = redis.createClient(options);
@@ -66,7 +72,7 @@ class RedisCacheDriver {
           if (res !== null) {
             try {
               res = JSON.parse(res);
-            } catch (error) {
+            } catch (err) {
               res = null;
             }
           }
@@ -108,7 +114,7 @@ class RedisCacheDriver {
           debug('has', key, '=>', !!exists);
           resolve(!!exists);
         }
-      })
+      });
     });
   }
 
@@ -191,4 +197,3 @@ class RedisCacheDriver {
 
 }
 
-module.exports = RedisCacheDriver.default = RedisCacheDriver;
