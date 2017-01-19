@@ -77,6 +77,7 @@ export async function pre() {
       order.items = [item];
       orders.push(order);
     }
+    // $Flow item.order确认既可以是order对象 也可以是order._id
     item.order = order._id;
   });
 
