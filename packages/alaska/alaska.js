@@ -585,3 +585,4 @@ exports.Field = require('./field');
 exports.Model = require('./model');
 exports.Sled = require('./sled');
 exports.Service = require('./service');
+exports.Renderer = require('./renderer');

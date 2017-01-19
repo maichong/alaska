@@ -190,6 +190,7 @@ declare type Alaska$Config$cache={
 
 declare type Alaska$Config$renderer={
   type:string;
+  cache:boolean;
 };
 
 declare type Alaska$Config$session={
@@ -663,9 +664,13 @@ declare class Alaska$CacheDriver extends Alaska$Driver {
 }
 
 declare class Alaska$Renderer {
+  service: Alaska$Service;
+  options: Alaska$Config$renderer;
+
   constructor(service: Alaska$Service, options: Alaska$Config$renderer):void;
-  renderFile(template: string, state: Object, callback: Function):void;
-  render(template: string, state: Object):string;
+  renderFile (pathName: string, locals: Object): Promise<string>;
+  render (template: string, locals: Object): string;
+  getFileMap(): { [file:string]:string };
 }
 
 declare class Alaska$NormalError extends Error {
@@ -678,7 +683,7 @@ declare module alaska {
   declare export var Model: Class<Alaska$Model>;
   declare export var Sled: Class<Alaska$Sled>;
   declare export var Field: Class<Alaska$Field>;
-  declare export var Plugin: Class<Alaska$Plugin>;
+  declare export var Renderer: Class<Alaska$Renderer>;
   declare export var utils: Object;
   declare var exports: Alaska$Alaska;
   declare export default Alaska$Alaska;
