@@ -40,7 +40,10 @@ function* update(pkg) {
       try {
         if (libs[name] === '*' || libs[name][0] !== '^') continue;
         let v = yield getVersions(name, libs[name]);
-        if (!v) continue;
+        if (!v) {
+          console.log(name + ' last version not found');
+          continue;
+        }
         let latest = v.latest;
         let old = libs[name].substr(1);
         if (semver.gte(old, latest)) continue;
