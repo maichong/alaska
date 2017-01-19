@@ -1,8 +1,7 @@
 // @flow
 
 import React from 'react';
-
-import { shallowEqual } from 'alaska-admin-view';
+import shallowEqualWithout from 'shallow-equal-without';
 
 const { object, string, func, any, bool } = React.PropTypes;
 
@@ -19,7 +18,7 @@ export default class IconFieldView extends React.Component {
   };
 
   shouldComponentUpdate(props: Object) {
-    return !shallowEqual(props, this.props, 'data', 'onChange', 'model', 'field');
+    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model', 'field');
   }
 
   handleChange = (event: Event) => {
@@ -60,7 +59,7 @@ export default class IconFieldView extends React.Component {
 
     if (field.horizontal === false) {
       let labelElement = label ? (
-        <label className="control-label">{label}</label>
+          <label className="control-label">{label}</label>
         ) : null;
       return (
         <div className={className}>
