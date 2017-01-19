@@ -76,7 +76,7 @@ export default class MemcacheCacheDriver {
    * @param {number} [lifetime] 超时时间,为0不超时,默认按驱动初始化参数maxAge而定
    * @returns {*}
    */
-  set(key:string, value:any, lifetime?:number) {
+  set(key:string, value:any, lifetime?:number): Promise<any> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.set(key, value, lifetime));
     }
@@ -97,7 +97,7 @@ export default class MemcacheCacheDriver {
    * @param key
    * @returns {*}
    */
-  get(key:string) {
+  get(key:string): Promise<any> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.get(key));
     }
@@ -123,7 +123,7 @@ export default class MemcacheCacheDriver {
    * [async] 删除缓存
    * @param key
    */
-  del(key:string):Promise<void> {
+  del(key:string): Promise<any> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.del(key));
     }
@@ -143,7 +143,7 @@ export default class MemcacheCacheDriver {
    * @param key
    * @returns {boolean}
    */
-  has(key:string) {
+  has(key:string): Promise<boolean> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.has(key));
     }
@@ -163,7 +163,7 @@ export default class MemcacheCacheDriver {
    * @param key
    * @returns {number}
    */
-  inc(key:string) {
+  inc(key:string): Promise<number> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.inc(key));
     }
@@ -190,7 +190,7 @@ export default class MemcacheCacheDriver {
    * @param key
    * @returns {number}
    */
-  dec(key:string) {
+  dec(key:string): Promise<number> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.dec(key));
     }
@@ -216,7 +216,7 @@ export default class MemcacheCacheDriver {
    * [async] 返回缓存数量
    * @returns {number}
    */
-  size() {
+  size(): Promise<number> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.size());
     }
@@ -234,7 +234,7 @@ export default class MemcacheCacheDriver {
   /**
    * [async] 清理过期缓存
    */
-  prune() {
+  prune(): Promise<void> {
     debug('prune');
     return Promise.resolve();
   }
@@ -242,7 +242,7 @@ export default class MemcacheCacheDriver {
   /**
    * [async] 清空缓存
    */
-  flush() {
+  flush(): Promise<any> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.flush());
     }

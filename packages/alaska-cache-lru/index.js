@@ -35,7 +35,7 @@ export default class LruCacheDriver {
    * @param {number} [lifetime] 超时时间,为0不超时,默认按驱动初始化参数maxAge而定
    * @returns {*}
    */
-  set(key: string, value: any, lifetime?: number) {
+  set(key: string, value: any, lifetime?: number): Promise<any> {
     debug('set', key, '=>', value, '(', lifetime !== undefined ? lifetime : '{' + this._maxAge + '}', ')');
     return Promise.resolve(this._driver.set(key, value, lifetime));
   }
@@ -45,7 +45,7 @@ export default class LruCacheDriver {
    * @param key
    * @returns {*}
    */
-  get(key: string) {
+  get(key: string): Promise<any> {
     let value = this._driver.get(key);
     debug('get', key, '=>', value);
     return Promise.resolve(value);
@@ -55,7 +55,7 @@ export default class LruCacheDriver {
    * [async] 删除缓存
    * @param key
    */
-  del(key: string) {
+  del(key: string):Promise<any> {
     debug('del', key);
     return Promise.resolve(this._driver.del(key));
   }
@@ -65,7 +65,7 @@ export default class LruCacheDriver {
    * @param key
    * @returns {boolean}
    */
-  has(key: string) {
+  has(key: string): Promise<boolean> {
     let exists = this._driver.has(key);
     debug('has', key, '=>', exists);
     return Promise.resolve(exists);
@@ -76,7 +76,7 @@ export default class LruCacheDriver {
    * @param key
    * @returns {number}
    */
-  inc(key: string) {
+  inc(key: string): Promise<number> {
     let value = this._driver.get(key);
     if (!value) {
       value = 0;
@@ -92,7 +92,7 @@ export default class LruCacheDriver {
    * @param key
    * @returns {number}
    */
-  dec(key: string) {
+  dec(key: string): Promise<number> {
     let value = this._driver.get(key);
     if (!value) {
       value = 0;
@@ -107,7 +107,7 @@ export default class LruCacheDriver {
    * [async] 返回缓存数量
    * @returns {number}
    */
-  size() {
+  size(): Promise<number> {
     debug('size', this._driver.itemCount);
     return Promise.resolve(this._driver.itemCount);
   }
@@ -115,7 +115,7 @@ export default class LruCacheDriver {
   /**
    * [async] 清理过期缓存
    */
-  prune() {
+  prune(): Promise<void> {
     debug('prune');
     this._driver.prune();
     return Promise.resolve();
@@ -124,7 +124,7 @@ export default class LruCacheDriver {
   /**
    * [async] 清空缓存
    */
-  flush() {
+  flush(): Promise<void> {
     debug('flush');
     this._driver.reset();
     return Promise.resolve();

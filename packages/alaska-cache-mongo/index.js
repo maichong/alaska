@@ -59,7 +59,7 @@ export default class MongoCacheDriver {
    * @param {number} [lifetime] 超时时间,为0不超时,默认按驱动初始化参数maxAge而定
    * @returns {*}
    */
-  set(key:string, value:any, lifetime?:number) {
+  set(key:string, value:any, lifetime?:number): Promise<any> {
     if (this._connecting) {
       return this._connecting.then(() => this.set(key, value, lifetime));
     }
@@ -88,7 +88,7 @@ export default class MongoCacheDriver {
    * @param key
    * @returns {*}
    */
-  get(key:string) {
+  get(key:string): Promise<any> {
     if (this._connecting) {
       return this._connecting.then(() => this.get(key));
     }
@@ -129,7 +129,7 @@ export default class MongoCacheDriver {
    * @param key
    * @returns {boolean}
    */
-  has(key:string) {
+  has(key:string): Promise<boolean> {
     if (this._connecting) {
       return this._connecting.then(() => this.has(key));
     }
@@ -154,7 +154,7 @@ export default class MongoCacheDriver {
    * @param key
    * @returns {number}
    */
-  inc(key:string) {
+  inc(key:string): Promise<number> {
     if (this._connecting) {
       return this._connecting.then(() => this.inc(key));
     }
@@ -177,7 +177,7 @@ export default class MongoCacheDriver {
    * @param key
    * @returns {number}
    */
-  dec(key:string) {
+  dec(key:string): Promise<number> {
     if (this._connecting) {
       return this._connecting.then(() => this.dec(key));
     }
