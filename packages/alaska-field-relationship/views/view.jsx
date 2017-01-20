@@ -96,7 +96,7 @@ export default class RelationshipFieldView extends React.Component {
     let helpElement = help ? <p className="help-block">{help}</p> : null;
 
     let inputElement;
-    if (field.static) {
+    if (field.fixed) {
       let options = this.state.options;
       let opts = [];
       if (!options) {

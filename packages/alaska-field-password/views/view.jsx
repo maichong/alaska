@@ -84,7 +84,7 @@ export default class PasswordFieldView extends React.Component {
 
     let inputElement;
 
-    if (field.static) {
+    if (field.fixed) {
       inputElement = <p className="form-control-static">******</p>;
     } else {
       inputElement = (

@@ -108,7 +108,7 @@ export default class SelectFieldView extends React.Component {
     }
     let helpElement = help ? <p className="help-block">{help}</p> : null;
     let inputElement;
-    if (field.static) {
+    if (field.fixed) {
       if (field.multi) {
         let elements = [];
         let valueMap = {};

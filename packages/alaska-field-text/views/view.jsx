@@ -52,7 +52,7 @@ export default class TextFieldView extends React.Component {
     if (disabled && value && field.translate) {
       value = t(value, model.service.id);
     }
-    if (field.static) {
+    if (field.fixed) {
       inputElement = <p className="form-control-static">{value}</p>;
     } else {
       let placeholder = field.placeholder ? t(field.placeholder, field.service || model.service.id) : '';
