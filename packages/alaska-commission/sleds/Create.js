@@ -2,9 +2,9 @@
 
 import _ from 'lodash';
 import { Sled } from 'alaska';
-import service from '../';
 import BALANCE from 'alaska-balance';
 import User from 'alaska-user/models/User';
+import service from '../';
 import Commission from '../models/Commission';
 
 export default class Create extends Sled {

@@ -10,7 +10,7 @@ export default class Shop extends Model {
   static defaultColumns = 'logo title user brand activated createdAt';
   static defaultSort = '-createdAt';
 
-  static defaultFilters = ctx => {
+  static defaultFilters = (ctx) => {
     if (ctx.service.id === 'alaska-admin') return null;
     return {
       activated: true
@@ -68,7 +68,7 @@ export default class Shop extends Model {
 
   preSave() {
     if (!this.createdAt) {
-      this.createdAt = new Date;
+      this.createdAt = new Date();
     }
   }
 }

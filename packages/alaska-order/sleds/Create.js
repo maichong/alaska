@@ -2,8 +2,8 @@
 
 import moment from 'moment';
 import { Sled } from 'alaska';
-import service from '../';
 import SETTINGS from 'alaska-settings';
+import service from '../';
 import Order from '../models/Order';
 
 /**

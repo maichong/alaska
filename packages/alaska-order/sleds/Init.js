@@ -1,8 +1,8 @@
 // @flow
 
 import { Sled } from 'alaska';
-import service from '../';
 import SETTINGS from 'alaska-settings';
+import service from '../';
 
 export default class Init extends Sled {
   exec() {

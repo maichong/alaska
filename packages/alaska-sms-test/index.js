@@ -17,4 +17,4 @@ export default class SmsTestDriver {
     console.log('send sms to', to, ':', message);
     return Promise.resolve();
   }
-};
+}

@@ -1,8 +1,8 @@
 // @flow
 
 import { Model } from 'alaska';
-import service from '../';
 import User from 'alaska-user/models/User';
+import service from '../';
 import Email from '../models/Email';
 
 export default class EmailTask extends Model {
@@ -117,10 +117,10 @@ export default class EmailTask extends Model {
 
   async preSave() {
     if (!this.createdAt) {
-      this.createdAt = new Date;
+      this.createdAt = new Date();
     }
     if (!this.state && !this.nextAt) {
-      this.nextAt = new Date;
+      this.nextAt = new Date();
     }
     if (!this.total && !this.state) {
       this.total = await User.where(this._.filters.filter() || {}).where('email').ne(null).count();
