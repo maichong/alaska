@@ -58,7 +58,7 @@ class EmailService extends Service {
     let locales = alaska.main.config('locales');
     if (locales && locales.length > 1) {
       Email.fields.content.help = 'Default';
-      locales.forEach(locale => {
+      locales.forEach((locale) => {
         Email.fields['content_' + locale.replace('-', '_')] = {
           label: 'Content',
           type: String,
@@ -70,7 +70,7 @@ class EmailService extends Service {
   }
 
   postMount() {
-    setTimeout(() => this.updateTasks().catch(e => console.error(e.stack)), 1000);
+    setTimeout(() => this.updateTasks().catch((e) => console.error(e.stack)), 1000);
   }
 
   nextTask = null;
@@ -90,7 +90,7 @@ class EmailService extends Service {
     if (!time || time < 0) {
       time = 0;
     }
-    this.timer = setTimeout(() => this.processTask().catch(e => console.error(e.stack)), time);
+    this.timer = setTimeout(() => this.processTask().catch((e) => console.error(e.stack)), time);
   }
 
   async processTask() {
@@ -103,7 +103,7 @@ class EmailService extends Service {
     // $Flow
     let email: ?Email = await Email.findById(task.email);
     if (!email) {
-      return this.updateTasks().catch(e => console.error(e.stack));
+      return this.updateTasks().catch((e) => console.error(e.stack));
     }
     // $Flow
     let query = User.findOne(task._.filters.filter() || {}).where('email').ne(null);

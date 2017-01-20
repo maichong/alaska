@@ -1,6 +1,5 @@
 // @flow
 
-import _ from 'lodash';
 import BALANCE from 'alaska-balance';
 import USER from 'alaska-user';
 import type { PaymentService } from 'alaska-payment';

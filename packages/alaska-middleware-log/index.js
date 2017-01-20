@@ -54,6 +54,8 @@ export default function (options?: Object) {
         case 500:
           level = 'error';
           break;
+        default:
+          level = 'info';
       }
       let details = {};
       if (options && options.headers && typeof Array.isArray(options.headers)) {
