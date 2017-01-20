@@ -24,7 +24,12 @@ export default class AlipayPlugin {
     service.payments['alipay'] = this;
     service.addConfigDir(__dirname);
     this.label = 'Alipay';
-    let configTmp: Object = service.config('alipay') || service.panic('Alipay config not found');
+    let configTmp: Object = service.config('alipay');
+
+    if (!configTmp) {
+      service.panic('Alipay config not found')
+    }
+
     this._config = configTmp;
     this._config = Object.assign({
       partner: '',
@@ -39,9 +44,11 @@ export default class AlipayPlugin {
     }, this._config);
     let rsa_private_key = this._config.rsa_private_key || service.panic('rsa_private_key not found');
     delete this._config.rsa_private_key;
-    this.rsa_private_key = fs.readFileSync(rsa_private_key);
-    let alipay_public_key: string = this._config.alipay_public_key || service.panic('alipay_public_key not found');
-    this.alipay_public_key = fs.readFileSync(alipay_public_key);
+    // $Flow 确认readFileSync读出数据是string
+    this.rsa_private_key = fs.readFileSync(rsa_private_key) || '';
+    let alipay_public_key = this._config.alipay_public_key || service.panic('alipay_public_key not found');
+    // $Flow 确认readFileSync读出数据是string
+    this.alipay_public_key = fs.readFileSync(alipay_public_key) || '';
     delete this._config.alipay_public_key;
   }
 

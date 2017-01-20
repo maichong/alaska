@@ -115,7 +115,7 @@ export default class NumberFieldView extends React.Component {
     }
     let helpElement = help ? <p className="help-block">{help}</p> : null;
     let inputElement;
-    if (field.static) {
+    if (field.fixed) {
       inputElement = <p className="form-control-static">{value}</p>;
     } else {
       let placeholder = field.placeholder ? t(field.placeholder, field.service || model.service.id) : '';

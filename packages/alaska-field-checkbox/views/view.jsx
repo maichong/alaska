@@ -42,7 +42,7 @@ export default class CheckboxFieldView extends React.Component {
       help = errorText;
     }
     let helpElement = help ? <p className="help-block">{help}</p> : null;
-    if (field.static) {
+    if (field.fixed) {
       disabled = true;
     }
 

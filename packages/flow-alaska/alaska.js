@@ -618,6 +618,8 @@ declare class Alaska$Service {
 
   constructor(options?: Alaska$Service$options):void;
   createCacheDriver(options: Object | string, createNew?: boolean): Alaska$CacheDriver;
+  createDriver(options: Object): Alaska$Driver;
+  freeDriver(driver: Alaska$Driver):void;
   pre(action: string, fn: Function): void;
   post(action: string, fn: Function): void;
   panic:(message: string|number, code?: number) => void;
@@ -660,6 +662,9 @@ declare class Alaska$Driver {
 }
 
 declare class Alaska$CacheDriver extends Alaska$Driver {
+  static classOfCacheDriver:true;
+  instanceOfCacheDriver:true;
+
   get(key: string): Promise<any>;
   set(key: string, value: any, lifetime?: number): Promise<void>;
   del(key: string): Promise<void>;
@@ -669,6 +674,24 @@ declare class Alaska$CacheDriver extends Alaska$Driver {
   size(): Promise<number>;
   prune(): Promise<void>;
   flush(): Promise<void>;
+}
+
+declare class Alaska$QueueDriver extends Alaska$Driver {
+  static classOfQueueDriver:true;
+  instanceOfQueueDriver:true;
+  push(item: any): Promise<void>;
+  pop(timeout?: number): Promise<any>;
+}
+
+declare class Alaska$SubscribeDriver extends Alaska$Driver {
+  static classOfSubscribeDriver:true;
+  instanceOfSubscribeDriver:true;
+
+  publish(message: Object): Promise<void>;
+  subscribe(): Promise<Object>;
+  read(timeout: ?number): Promise<Object|null>;
+  once(timeout: ?number): Promise<Object|null>;
+  cancel(): Promise<void>;
 }
 
 declare class Alaska$Renderer {

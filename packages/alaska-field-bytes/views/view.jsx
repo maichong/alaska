@@ -100,7 +100,7 @@ export default class BytesFieldView extends React.Component {
     display = _.round(display, precision) + units[0] + unit;
     let helpElement = help ? <p className="help-block">{help}</p> : null;
     let inputElement;
-    if (field.static) {
+    if (field.fixed) {
       inputElement = <p className="form-control-static">{display}</p>;
     } else {
       inputElement = (<div className="input-group"><input

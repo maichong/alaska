@@ -65,7 +65,7 @@ export default class DatetimeFieldView extends React.Component {
     }
     let helpElement = help ? <p className="help-block">{help}</p> : null;
     let inputElement;
-    if (field.static) {
+    if (field.fixed) {
       inputElement = <p className="form-control-static">{valueString}</p>;
     } else if (disabled) {
       inputElement = <input type="text" className="form-control" disabled value={valueString} />;

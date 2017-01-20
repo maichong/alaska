@@ -120,7 +120,7 @@ export default class HtmlFieldView extends React.Component {
       value
     } = this.props;
 
-    let readonly = field.disabled || field.static;
+    let readonly = field.disabled || field.fixed;
 
     let editor;
     if (readonly) {

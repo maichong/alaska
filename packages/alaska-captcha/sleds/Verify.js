@@ -2,6 +2,7 @@
 
 import { Sled } from 'alaska';
 import service from '../';
+
 const CACHE = service.cache;
 
 export default class Verify extends Sled {
