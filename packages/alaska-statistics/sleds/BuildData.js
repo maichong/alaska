@@ -50,18 +50,24 @@ function getTimeX(date, unit) {
     case 'quarter':
     case 'month':
       date.date(1);
+      break;
     case 'week':
     case 'day':
       date.hour(0);
+      break;
     case 'hour':
       date.minute(0);
+      break;
     case 'minute':
       date.second(0);
+      break;
+    default:
+      break;
   }
   date.millisecond(0);
-  if (unit == 'year') {
+  if (unit.toString() === 'year') {
     date.month(1);
-  } else if (unit == 'quarter') {
+  } else if (unit.toString() === 'quarter') {
     date.month((date.quarter() * 4) - 3);
   }
   return date.valueOf().toString();
@@ -98,12 +104,12 @@ async function buildTimeData(source, Model, filters) {
     }
     while (true) {
       await sleep(10);
-      let query = Model.find(filters).sort('_id').limit(1000).select(select);
+      let modeQuery = Model.find(filters).sort('_id').limit(1000).select(select);
       if (last) {
-        query.where('_id').gt(last);
+        modeQuery.where('_id').gt(last);
       }
       // $Flow  find
-      let list: Alaska$Model[] = await query;
+      let list: Alaska$Model[] = await modeQuery;
       if (!list.length) break;
       for (let record of list) {
         last = record._id;
@@ -114,7 +120,7 @@ async function buildTimeData(source, Model, filters) {
         }
         switch (reducer) {
           case 'count':
-            result[key]++;
+            result[key] += 1;
             break;
           case 'max':
             result[key] = Math.max(result[key], record.get(y));
@@ -124,8 +130,10 @@ async function buildTimeData(source, Model, filters) {
             break;
           case 'sum':
           case 'average':
-            count[key]++;
+            count[key] += 1;
             result[key] += record.get(y) || 0;
+            break;
+          default:
             break;
         }
       }
@@ -199,6 +207,8 @@ async function buildTimeData(source, Model, filters) {
             case 'max':
               value = Math.max(value, v);
               break;
+            default:
+              break;
           }
         }
         if (reducer === 'average') {
@@ -259,6 +269,8 @@ async function buildCycleData(source, Model, filters) {
           count[key] += 1;
           result[key] += record.get(y) || 0;
           break;
+        default:
+          break;
       }
     }
   }
@@ -313,6 +325,8 @@ async function buildEnumData(source, Model, filters) {
         case 'average':
           count[key] += 1;
           result[key] += record.get(y) || 0;
+          break;
+        default:
           break;
       }
     }

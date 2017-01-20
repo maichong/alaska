@@ -1,10 +1,10 @@
 // @flow
 
 import { utils, Sled } from 'alaska';
+import SETTINGS from 'alaska-settings';
 import _ from 'lodash';
 import service from '../';
 import User from '../models/User';
-import SETTINGS from 'alaska-settings';
 
 /**
  * 用户注册
