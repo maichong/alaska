@@ -738,6 +738,30 @@ declare class Alaska$SubscribeDriver extends Alaska$Driver {
   cancel(): Promise<void>;
 }
 
+declare type Alaska$emailMessage={
+  from?:string;
+  to?:string;
+  cc?:string;
+  bcc?:string;
+  subject?:string;
+  text?:string;
+  html?:string;
+  attachments?:Object[];
+  replyTo?:string;
+  encoding?:string;
+  messageId?:string;
+  headers?:Object;
+  [key:string]:any
+};
+
+declare class Alaska$EmailDriver extends Alaska$Driver {
+  static classOfEmailDriver:true;
+  instanceOfEmailDriver:true;
+
+  constructor(service: Alaska$Service, options: Object):void;
+  send(data: Alaska$emailMessage): Promise<Object>;
+}
+
 declare class Alaska$Renderer {
   service: Alaska$Service;
   options: Alaska$Config$renderer;

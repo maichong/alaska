@@ -1,20 +1,15 @@
 // @flow
 
-export default class EmailTestDriver {
-  service: Alaska$Service;
-  options: Object;
+import { Driver } from 'alaska';
 
-  constructor(service: Alaska$Service, options: Object) {
-    this.service = service;
-    this.options = options;
-  }
-
+export default class EmailTestDriver extends Driver {
   /**
-   * [async] 发送
-   * @param data nodemailer e-mail message fields
+   * 发送
+   * @param {Alaska$emailMessage} data https://nodemailer.com/ E-mail message fields
+   * @returns Promise<Object>
    */
-  send(data: Object) {
+  send(data: Alaska$emailMessage): Promise<Object> {
     console.log('send email', data);
-    return Promise.resolve();
+    return Promise.resolve({});
   }
-};
+}

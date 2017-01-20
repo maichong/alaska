@@ -36,7 +36,7 @@ class EmailService extends Service {
         //已经实例化的driver
       } else if (driver.type) {
         // $Flow  require参数必须是文本字符串
-        let Driver: Class<Driver> = require(driver.type).default;
+        let Driver: Class<Alaska$EmailDriver> = require(driver.type).default;
 
         driver = new Driver(this, driver);
       } else {
