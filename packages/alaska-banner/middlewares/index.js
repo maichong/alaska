@@ -12,7 +12,7 @@ export default function (router) {
       await next();
       return;
     }
-    banner.clicks++;
+    banner.clicks += 1;
     banner.save();
     ctx.redirect(banner.url);
   });

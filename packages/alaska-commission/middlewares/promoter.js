@@ -10,4 +10,4 @@ export default function (options: Object): Function {
     }
     return next();
   };
-};
+}
