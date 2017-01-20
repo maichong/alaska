@@ -1,4 +1,3 @@
-
 import _ from 'lodash';
 
 export const fields = {
@@ -15,6 +14,6 @@ export const fields = {
 };
 
 export default function (Payment) {
-  if (_.find(Payment.fields.type.options, opt => opt.value === 'alipay')) return;
+  if (_.find(Payment.fields.type.options, (opt) => opt.value === 'alipay')) return;
   Payment.fields.type.options.push({ label: 'Alipay', value: 'alipay' });
 }

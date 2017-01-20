@@ -10,6 +10,6 @@ export const fields = {
 };
 
 export default function (Payment) {
-  if (_.find(Payment.fields.type.options, opt => opt.value === 'balance')) return;
+  if (_.find(Payment.fields.type.options, (opt) => opt.value === 'balance')) return;
   Payment.fields.type.options.push({ label: 'Balance', value: 'balance' });
 }

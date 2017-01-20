@@ -22,7 +22,7 @@ class BalanceService extends Service {
 
   postInit() {
     let service = this;
-    USER.pre('registerModel', function (Model) {
+    USER.pre('registerModel', (Model) => {
       if (Model.name !== 'User') return;
       service._currencies.forEach((c) => {
         Model.underscoreMethod(c.value, 'income', async function (amount, title, type) {

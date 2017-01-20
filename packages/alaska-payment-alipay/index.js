@@ -27,7 +27,7 @@ export default class AlipayPlugin {
     let configTmp: Object = service.config('alipay');
 
     if (!configTmp) {
-      service.panic('Alipay config not found')
+      service.panic('Alipay config not found');
     }
 
     this._config = configTmp;
@@ -68,7 +68,7 @@ export default class AlipayPlugin {
 
     let signer = crypto.createSign('RSA-SHA1');
     signer.update(link, 'utf8');
-    params.sign = signer.sign(this.rsa_private_key, "base64");
+    params.sign = signer.sign(this.rsa_private_key, 'base64');
 
     return GATEWAY + this.createQueryStringUrlencode(params);
   }
@@ -87,8 +87,8 @@ export default class AlipayPlugin {
    * @return {object} 去掉空值与签名参数后的新签名参数组
    */
   paramsFilter(params: Object): Object {
-    return _.reduce(params, function (result, value, key) {
-      if (value && key != 'sign' && key != 'sign_type') {
+    return _.reduce(params, (result, value, key) => {
+      if (value && key !== 'sign' && key !== 'sign_type') {
         result[key] = value;
       }
       return result;
@@ -101,10 +101,10 @@ export default class AlipayPlugin {
    * @returns {string}
    */
   createQueryString(params: Object): string {
-    return Object.keys(params).sort().map(key => key + '=' + params[key]).join('&');
+    return Object.keys(params).sort().map((key) => key + '=' + params[key]).join('&');
   }
 
   createQueryStringUrlencode(params: Object): string {
-    return Object.keys(params).sort().map(key => key + '=' + encodeURIComponent(params[key])).join('&');
-  };
+    return Object.keys(params).sort().map((key) => key + '=' + encodeURIComponent(params[key])).join('&');
+  }
 }

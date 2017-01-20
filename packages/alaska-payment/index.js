@@ -8,7 +8,6 @@ import { Service } from 'alaska';
 class PaymentService extends Service {
 
   static payments: Object;
-  static run(name: string, params?: Object): Promise<any>;
 
   payments: Object;
 

@@ -7,11 +7,11 @@ export default function (options: Alaska$Config$session): Function {
     if (ctx.method !== 'POST' || ctx.files !== undefined) return next();
     if (!ctx.request.is('multipart/*')) return next();
     ctx.files = {};
-    return asyncBusboy(ctx.req, options).then(res => {
+    return asyncBusboy(ctx.req, options).then((res) => {
       const files = res.files;
       const fields = res.fields;
       ctx.files = {};
-      files.forEach(file => {
+      files.forEach((file) => {
         let fieldname = file.fieldname;
         if (ctx.files[fieldname]) {
           if (Array.isArray(ctx.files[fieldname])) {
