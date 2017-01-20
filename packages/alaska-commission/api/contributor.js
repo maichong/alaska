@@ -1,8 +1,8 @@
 // @flow
 
 import _ from 'lodash';
-import service from '../';
 import User from 'alaska-user/models/User';
+import service from '../';
 
 export default async function (ctx:Alaska$Context) {
   let _user:?Object = ctx.user || service.error(403);

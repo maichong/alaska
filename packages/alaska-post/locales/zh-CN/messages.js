@@ -23,8 +23,8 @@ export default {
   'Related Posts': '相关的文章',
   'Reply To': '回复',
   'Tag Name': '标签名称',
-  'Agreed': '支持',
-  'Opposed': '反对',
+  Agreed: '支持',
+  Opposed: '反对',
   'Parent Category': '父分类',
   'Created At': '创建时间',
   'Related Topic': '相关专题'

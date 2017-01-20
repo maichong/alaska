@@ -47,7 +47,7 @@ export default class IconFieldView extends React.Component {
     if (value) {
       icon = <i className={'fa fa-' + value} />;
     }
-    if (field.static) {
+    if (field.fixed) {
       inputElement = <p className="form-control-static">{icon}</p>;
     } else {
       inputElement = <div className="input-group">

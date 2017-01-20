@@ -46,7 +46,7 @@ export default class OrderLog extends Model {
 
   preSave() {
     if (!this.createdAt) {
-      this.createdAt = new Date;
+      this.createdAt = new Date();
     }
   }
 }

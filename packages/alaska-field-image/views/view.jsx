@@ -134,7 +134,7 @@ export default class ImageFieldView extends React.Component {
       value = value ? [value] : [];
     }
     let items = [];
-    let readonly = disabled || field.static;
+    let readonly = disabled || field.fixed;
     // $Flow 和lodash的flow不匹配
     _.forEach(value, (item, index) => {
       items.push(<div key={index} className="image-field-item">

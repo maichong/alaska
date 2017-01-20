@@ -1,6 +1,6 @@
 // @flow
 
-import alaska, { Model } from 'alaska';
+import { Model } from 'alaska';
 
 export default class FeedbackComment extends Model {
 

@@ -109,7 +109,7 @@ export default class Withdraw extends Model {
 
   preSave() {
     if (!this.createdAt) {
-      this.createdAt = new Date;
+      this.createdAt = new Date();
     }
     if (!this.title) {
       this.title = 'Withdraw';

@@ -1,10 +1,10 @@
 // @flow
 
 import { Sled } from 'alaska';
-import service from '../';
-import CartItem from '../models/CartItem';
 import Goods from 'alaska-goods/models/Goods';
 import Sku from 'alaska-goods/models/Sku';
+import service from '../';
+import CartItem from '../models/CartItem';
 
 export default class Create extends Sled {
 
@@ -53,7 +53,7 @@ export default class Create extends Sled {
       record = new CartItem(filters);
       record.quantity = 1;
     } else {
-      record.quantity++;
+      record.quantity += 1;
     }
     if (quantity) {
       record.quantity = quantity;

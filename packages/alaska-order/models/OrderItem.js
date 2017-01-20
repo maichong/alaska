@@ -2,9 +2,9 @@
 
 import { Model } from 'alaska';
 import BALANCE from 'alaska-balance';
-import Order from '../models/Order';
 import Goods from 'alaska-goods/models/Goods';
 import Sku from 'alaska-goods/models/Sku';
+import Order from '../models/Order';
 
 export default class OrderItem extends Model {
   static label = 'Order Item';
@@ -94,7 +94,7 @@ export default class OrderItem extends Model {
 
   preSave() {
     if (!this.createdAt) {
-      this.createdAt = new Date;
+      this.createdAt = new Date();
     }
   }
 }

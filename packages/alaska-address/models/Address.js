@@ -76,7 +76,7 @@ export default class Address extends Model {
   name: string;
   tel: string;
   zip: string;
-  geo: [number,number];
+  geo: [number, number];
   country: string;
   province: string;
   city: string;

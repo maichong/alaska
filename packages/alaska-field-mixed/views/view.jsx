@@ -91,7 +91,7 @@ export default class MixedFieldView extends React.Component {
     let { field, disabled } = this.props;
 
     let inputElement;
-    if (disabled || field.static) {
+    if (disabled || field.fixed) {
       inputElement = <pre>{this.state.text}</pre>;
     } else {
       inputElement = <textarea

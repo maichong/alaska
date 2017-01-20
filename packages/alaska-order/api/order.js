@@ -16,7 +16,7 @@ exports['pre-create'] = async function (ctx: Alaska$Context) {
   body.ctx = ctx;
   body = await service.run('Create', body);
   ctx.body = {
-    orders: body.orders.map(o => o.data())
+    orders: body.orders.map((o) => o.data())
   };
 };
 
@@ -33,7 +33,7 @@ export async function create(ctx: Alaska$Context) {
   body.ctx = ctx;
   body = await service.run('Create', body);
   ctx.body = {
-    orders: body.orders.map(o => o.data())
+    orders: body.orders.map((o) => o.data())
   };
 }
 

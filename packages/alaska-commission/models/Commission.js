@@ -64,7 +64,6 @@ export default class Commission extends Model {
     currency: {
       label: 'Currency',
       type: 'select',
-      // $Flow options:?Object[] 属性可以不存在  BALANCE.currencies:Object[] 一定有值 类型不符合？
       options: BALANCE.currencies,
       default: BALANCE.defaultCurrency.value
     },

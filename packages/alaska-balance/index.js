@@ -11,7 +11,7 @@ class BalanceService extends Service {
   _currencies: Alaska$SelectField$option[];
   _currenciesMap: Object;
   _defaultCurrency: Alaska$SelectField$option;
-  currencies:Alaska$SelectField$option[];
+  currencies: Alaska$SelectField$option[];
 
   constructor(options?: Alaska$Service$options) {
     options = options || {};
@@ -24,7 +24,7 @@ class BalanceService extends Service {
     let service = this;
     USER.pre('registerModel', function (Model) {
       if (Model.name !== 'User') return;
-      service._currencies.forEach(c => {
+      service._currencies.forEach((c) => {
         Model.underscoreMethod(c.value, 'income', async function (amount, title, type) {
           let user = this;
           let balance = (user.get(c.value) + amount) || 0;
@@ -62,7 +62,7 @@ class BalanceService extends Service {
     }
     this._currencies = currencies;
     let currenciesMap = this._currenciesMap = {};
-    currencies.forEach(c => {
+    currencies.forEach((c) => {
       currenciesMap[c.value] = c;
       if (c.default) {
         this._defaultCurrency = c;

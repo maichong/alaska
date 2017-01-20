@@ -2,11 +2,12 @@
 
 import _ from 'lodash';
 import alaska, { Service } from 'alaska';
+import path from 'path';
 
 export const views = {
-  AxisSelector: __dirname + '/views/AxisSelector',
-  ChartReview: __dirname + '/views/ChartReview',
-  Chart: __dirname + '/views/Chart'
+  AxisSelector: path.join(__dirname, '/views/AxisSelector'),
+  ChartReview: path.join(__dirname, '/views/ChartReview'),
+  Chart: path.join(__dirname, '/views/Chart')
 };
 
 /**
@@ -23,7 +24,7 @@ class StatisticsService extends Service {
   postLoadConfig() {
     let ADMIN = alaska.service('alaska-admin', true);
     if (ADMIN) {
-      ADMIN.addConfigDir(__dirname + '/config/alaska-admin');
+      ADMIN.addConfigDir(path.join(__dirname, '/config/alaska-admin'));
     }
   }
 

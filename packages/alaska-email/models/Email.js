@@ -70,7 +70,7 @@ export default class Email extends Model {
 
   preSave() {
     if (!this.createdAt) {
-      this.createdAt = new Date;
+      this.createdAt = new Date();
     }
   }
 }
