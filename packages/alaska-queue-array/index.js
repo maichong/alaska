@@ -1,5 +1,7 @@
 // @flow
 
+import { Driver } from 'alaska';
+
 function sleep(seconds: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -13,23 +15,29 @@ function sleep(seconds: number): Promise<void> {
  */
 const queues = {};
 
-export default class ArrayQueueDriver {
+export default class ArrayQueueDriver extends Driver {
   static classOfCacheDriver = true;
-
   instanceOfQueueDriver: true;
 
   key: string;
-  options: Object;
   _free: boolean;
 
-  constructor(options: Object) {
+  constructor(service: Alaska$Service, options: Object) {
+    super(service, options);
     this.key = options.key;
-    this.options = options;
     this.instanceOfQueueDriver = true;
     this._free = false;
     if (!queues[this.key]) {
       queues[this.key] = [];
     }
+  }
+
+  /**
+   * 获取底层驱动
+   * @returns {any}
+   */
+  driver(): any {
+    return queues;
   }
 
   /**
@@ -68,14 +76,13 @@ export default class ArrayQueueDriver {
   /**
    * 释放当前所有任务,进入空闲状态
    */
-  free() {
-    this._free = true;
+  onFree() {
   }
 
   /**
    * 销毁队列
    */
-  destroy() {
+  onDestroy() {
     //This package may cause memory leak.
   }
 }

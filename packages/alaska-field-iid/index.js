@@ -19,7 +19,7 @@ export default class IIDField extends NumberField {
       return this.get(field.path);
     });
 
-    let cacheDriver = alaska.main.createCacheDriver(field.cache);
+    let cacheDriver = alaska.main.getCacheDriver(field.cache);
     let key:string = field.key || model.name + '.' + field.path;
 
     schema.pre('save', (next: Function): Function|void => {

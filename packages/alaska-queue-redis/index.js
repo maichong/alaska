@@ -1,24 +1,31 @@
 // @flow
 
 import redis from 'redis';
+import { Driver } from 'alaska';
 
-export default class RedisQueueDriver {
+export default class RedisQueueDriver extends Driver {
   static classOfCacheDriver = true;
-
   instanceOfQueueDriver: true;
   key: string;
-  options: Object;
   _driver: any;
 
-  constructor(options: Object) {
+  constructor(service: Alaska$Service, options: Object) {
+    super(service, options);
     this.key = options.key;
-    this.options = options;
     this.instanceOfQueueDriver = true;
     this._driver = redis.createClient(options);
   }
 
   /**
-   * [async] 将元素插入队列
+   * 获取底层驱动
+   * @returns {any}
+   */
+  driver(): any {
+    return this._driver;
+  }
+
+  /**
+   * 将元素插入队列
    * @param {*} item
    * @returns {Promise<void>}
    */
@@ -35,7 +42,7 @@ export default class RedisQueueDriver {
   }
 
   /**
-   * [async] 读取队列中的元素
+   * 读取队列中的元素
    * @param {number} [timeout] 超时时间,单位毫秒,默认不阻塞,为0则永久阻塞
    * @returns {Promise<any>}
    */
@@ -68,16 +75,13 @@ export default class RedisQueueDriver {
     });
   }
 
-  /**
-   * 释放当前所有任务,进入空闲状态
-   */
-  free() {
+  onFree() {
   }
 
   /**
    * 销毁队列
    */
-  destroy() {
+  onDestroy() {
     this._driver.quit();
     this._driver = null;
   }

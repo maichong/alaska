@@ -1,28 +1,30 @@
 // @flow
 
+/* eslint new-cap:0 */
+
 import LRU from 'lru-cache';
-import _debug from 'debug';
+import Debugger from 'debug';
+import { Driver } from 'alaska';
 
-const debug = _debug('alaska-cache-lru');
+const debug = Debugger('alaska-cache-lru');
 
-export default class LruCacheDriver {
+export default class LruCacheDriver extends Driver {
+  static classOfCacheDriver = true;
+
+  instanceOfCacheDriver: true;
   _maxAge: number;
   _driver: any;
-  type: string;
-  isCacheDriver: boolean;
-  noSerialization: boolean;
-  constructor(options: Object) {
+
+  constructor(service: Alaska$Service, options: Object) {
+    super(service, options);
+    this.instanceOfCacheDriver = true;
     this._maxAge = options.maxAge || 0;
     this._driver = new LRU(options);
-    this.type = 'lru';
-    //标识已经是缓存对象实例
-    this.isCacheDriver = true;
-    //标识本驱动不会序列化数据
-    this.noSerialization = true;
   }
 
   /**
-   * @returns {LRUCache}
+   * 获取底层驱动
+   * @returns {any}
    */
   driver(): any {
     return this._driver;
@@ -55,7 +57,7 @@ export default class LruCacheDriver {
    * [async] 删除缓存
    * @param key
    */
-  del(key: string):Promise<any> {
+  del(key: string): Promise<any> {
     debug('del', key);
     return Promise.resolve(this._driver.del(key));
   }
@@ -128,5 +130,10 @@ export default class LruCacheDriver {
     debug('flush');
     this._driver.reset();
     return Promise.resolve();
+  }
+
+  onDestroy() {
+    this._driver.reset();
+    this._driver = null;
   }
 }

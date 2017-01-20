@@ -279,10 +279,41 @@ declare type Alaska$Service$options = {
 declare class Alaska$Plugin {
 }
 
+declare type Alaska$sledQueueItem={
+  id:string;
+  key:string;
+  notify:boolean;
+  params:Object;
+  name: string;
+  result: void|any;
+  error: void|string;
+  timeout: number;
+  createdAt: Date;
+  expiredAt: Date;
+}
+
 declare class Alaska$Sled {
+  static service:Alaska$Service;
+  static name:string;
+  static key:string;
+  static config:Object;
+  static run(params?: Object):Promise<any>;
+  static createSubscribeDriver():Alaska$SubscribeDriver;
+  static pre(fn: Function):void;
+  static post(fn: Function):void;
+  static read(timeout?: number): Promise<Alaska$Sled|null>;
+  static createQueueDriver():Alaska$QueueDriver;
+
+  service:Alaska$Service;
+  name:string;
+  key:string;
+  config:Object;
   constructor(params?: Object):void;
   run():Promise<any>;
-  static run(params?: Object):Promise<any>;
+  createQueueDriver():Alaska$QueueDriver;
+  createSubscribeDriver():Alaska$SubscribeDriver;
+  send(timeout?: number, notify?: boolean):Promise<void>;
+  wait(waitTimeout?: number, sledTimeout?: number): Promise<any>;
 }
 
 declare type Alaska$Data={
@@ -617,7 +648,7 @@ declare class Alaska$Service {
   templatesDirs:string[];
 
   constructor(options?: Alaska$Service$options):void;
-  createCacheDriver(options: Object | string, createNew?: boolean): Alaska$CacheDriver;
+  getCacheDriver(options: Object | string, createNew?: boolean): Alaska$CacheDriver;
   createDriver(options: Object): Alaska$Driver;
   freeDriver(driver: Alaska$Driver):void;
   pre(action: string, fn: Function): void;
@@ -653,18 +684,26 @@ declare class Alaska$Alaska {
 }
 
 declare class Alaska$Driver {
+  static classOfDriver: true;
+  instanceOfDriver: boolean;
+  service: Alaska$Service;
   options:Object;
   idle:number;
   idleId:string;
 
+  constructor(service: Alaska$Service, options: Object):void;
+  driver():any;
   free():void;
   destroy():void;
+  onFree():void;
+  onDestroy():void;
 }
 
 declare class Alaska$CacheDriver extends Alaska$Driver {
   static classOfCacheDriver:true;
   instanceOfCacheDriver:true;
 
+  constructor(service: Alaska$Service, options: Object):void;
   get(key: string): Promise<any>;
   set(key: string, value: any, lifetime?: number): Promise<void>;
   del(key: string): Promise<void>;
@@ -679,6 +718,9 @@ declare class Alaska$CacheDriver extends Alaska$Driver {
 declare class Alaska$QueueDriver extends Alaska$Driver {
   static classOfQueueDriver:true;
   instanceOfQueueDriver:true;
+  key:string;
+
+  constructor(service: Alaska$Service, options: Object):void;
   push(item: any): Promise<void>;
   pop(timeout?: number): Promise<any>;
 }
@@ -686,7 +728,9 @@ declare class Alaska$QueueDriver extends Alaska$Driver {
 declare class Alaska$SubscribeDriver extends Alaska$Driver {
   static classOfSubscribeDriver:true;
   instanceOfSubscribeDriver:true;
+  channel:string;
 
+  constructor(service: Alaska$Service, options: Object):void;
   publish(message: Object): Promise<void>;
   subscribe(): Promise<Object>;
   read(timeout: ?number): Promise<Object|null>;
@@ -715,6 +759,7 @@ declare module alaska {
   declare export var Sled: Class<Alaska$Sled>;
   declare export var Field: Class<Alaska$Field>;
   declare export var Renderer: Class<Alaska$Renderer>;
+  declare export var Driver: Class<Alaska$Driver>;
   declare export var utils: Object;
   declare var exports: Alaska$Alaska;
   declare export default Alaska$Alaska;

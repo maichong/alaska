@@ -1,32 +1,30 @@
 // @flow
 
+/* eslint new-cap:0 */
+
 import redis from 'redis';
-import _debug from 'debug';
+import Debugger from 'debug';
+import { Driver } from 'alaska';
 
-const debug = _debug('alaska-cache-redis');
+const debug = Debugger('alaska-cache-redis');
 
-export default class RedisCacheDriver {
+export default class RedisCacheDriver extends Driver {
   static classOfCacheDriver = true;
 
   instanceOfCacheDriver: true;
   _maxAge: number;
   _driver: Object;
-  type: string;
-  isCacheDriver: boolean;
-  noSerialization: boolean;
-  constructor(options: Object) {
+
+  constructor(service: Alaska$Service, options: Object) {
+    super(service, options);
     this.instanceOfCacheDriver = true;
     this._maxAge = options.maxAge || 0;
     this._driver = redis.createClient(options);
-    this.type = 'redis';
-    //标识已经是缓存对象实例
-    this.isCacheDriver = true;
-    //标识本驱动会序列化数据
-    this.noSerialization = false;
   }
 
   /**
-   * @returns {Redis}
+   * 获取底层驱动
+   * @returns {any}
    */
   driver(): any {
     return this._driver;
@@ -47,7 +45,7 @@ export default class RedisCacheDriver {
       if (lifetime) {
         args.push('PX', lifetime);
       }
-      args.push((error, res) => {
+      args.push((error) => {
         if (error) {
           reject(error);
         } else {
@@ -185,7 +183,7 @@ export default class RedisCacheDriver {
   flush(): Promise<void> {
     debug('flush');
     return new Promise((resolve, reject) => {
-      this._driver.flushdb((error, size) => {
+      this._driver.flushdb((error) => {
         if (error) {
           reject(error);
         } else {
@@ -193,6 +191,20 @@ export default class RedisCacheDriver {
         }
       });
     });
+  }
+
+  /**
+   * 空闲
+   */
+  onFree() {
+  }
+
+  /**
+   * 销毁
+   */
+  onDestroy() {
+    this._driver.quit();
+    this._driver = {};
   }
 
 }

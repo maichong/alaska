@@ -477,7 +477,7 @@ export default class Service {
    */
   get cache(): Alaska$CacheDriver {
     if (!this._cache) {
-      this._cache = this.createCacheDriver(this.config('cache'));
+      this._cache = this.getCacheDriver(this.config('cache'));
     }
     return this._cache;
   }
@@ -488,7 +488,7 @@ export default class Service {
    * @param {boolean} [createNew] 如果为true则创建新驱动,否则使用之前的实例
    * @returns {Alaska$CacheDriver|*}
    */
-  createCacheDriver(options: Object | string, createNew?: boolean): Alaska$CacheDriver {
+  getCacheDriver(options: Object | string, createNew?: boolean): Alaska$CacheDriver {
     //options is driver id
     if (typeof options === 'string') {
       if (!this._cacheDrivers[options]) {
@@ -496,7 +496,7 @@ export default class Service {
       }
       return this._cacheDrivers[options];
     }
-    if (options.isCacheDriver) {
+    if (options.instanceOfCacheDriver) {
       return options;
     }
     let driver;
@@ -504,7 +504,8 @@ export default class Service {
     if (createNew || !this._cacheDrivers[id]) {
       // $Flow
       let Driver: Class<Alaska$CacheDriver> = require(options.type).default;
-      driver = new Driver(options);
+      // $Flow
+      driver = new Driver(this, options);
     }
 
     if (!driver) {
@@ -535,10 +536,9 @@ export default class Service {
 
     //当前无空闲驱动,创建新驱动
     // $Flow
-    const Driver = require(options.type);
-    let driver = new Driver(options);
+    const Driver = require(options.type).default;
+    let driver = new Driver(this, options);
     driver.idleId = idleId;
-    driver.service = this;
     driver.idle = 0;
     return driver;
   }
@@ -548,6 +548,8 @@ export default class Service {
    * @param {Driver|*} driver
    */
   freeDriver(driver: Alaska$Driver) {
+    // 已经空闲
+    if (driver.idle) return;
     if (driver.idleId) {
       //允许空闲
       let idleId = driver.idleId;
@@ -557,12 +559,15 @@ export default class Service {
       if (this._idleDrivers[idleId].length > driver.options.idle) {
         this._idleDrivers[idleId].shift().destroy();
       }
-      driver.free();
+      if (driver.onFree) {
+        driver.onFree();
+      }
       driver.idle = Date.now();
       this._idleDrivers[idleId].push(driver);
       if (!this._freeIdleTimer) {
         this._freeIdleTimer = setInterval(() => this._destroyIdleDrivers(), 60 * 1000);
       }
+      return;
     }
     driver.destroy();
   }

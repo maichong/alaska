@@ -4,28 +4,20 @@ import collie from 'collie';
 import random from 'string-random';
 import _ from 'lodash';
 
-// TODO Liang 取消cache
-
 export default class Sled {
   static service: Alaska$Service;
   static name: string;
   static key: string;
-  static config: Object;
   static _pre: Function[];
   static _post: Function[];
   static _config: Object;
-  static _cache: Alaska$CacheDriver|false;
 
   id: string;
   params: Object;
-  item: null|{
-    id:string;
-    payload:Object;
-  };
-  payload: null|Object;
+  item: null|Alaska$sledQueueItem;
   fromQueue: boolean;
-  result: null|Object;
-  error: null|Object;
+  result: void|any;
+  error: void|Error;
   fromJSON: void|((params: Object) => void);
   toJSON: void|(() => Object);
   exec: ((params: Object) => Promise<any>);
@@ -39,12 +31,10 @@ export default class Sled {
     this.params = params || {};
     //队列item数据,只有从队列中读取的Sled或将Sled发送到队列后才有此属性
     this.item = null;
-    //队列缓存扩展信息数据,只有从队列中读取的Sled或将Sled发送到队列后才有此属性
-    this.payload = null;
     //执行结果
-    this.result = null;
+    this.result = undefined;
     //错误
-    this.error = null;
+    this.error = undefined;
   }
 
   /**
@@ -78,15 +68,6 @@ export default class Sled {
    */
   get config(): Object {
     return this.constructor.config;
-  }
-
-  /**
-   * 获取缓存驱动
-   * @private
-   * @returns {Alaska$CacheDriver|boolean}
-   */
-  createCacheDriver(): Alaska$CacheDriver|false {
-    return this.constructor.createCacheDriver();
   }
 
   /**
@@ -153,22 +134,6 @@ export default class Sled {
   }
 
   /**
-   * 获取Sled数据缓存驱动
-   * @private
-   * @returns {Alaska$CacheDriver|boolean}
-   */
-  static createCacheDriver(): Alaska$CacheDriver|false {
-    if (!this._cache && this._cache !== false) {
-      let config = this.config;
-      this._cache = false;
-      if (config.cache) {
-        this._cache = this.service.createCacheDriver(config.cache);
-      }
-    }
-    return this._cache;
-  }
-
-  /**
    * 获取Sled队列驱动
    * @private
    * @returns {Alaska$QueueDriver}
@@ -208,48 +173,11 @@ export default class Sled {
   }
 
   /**
-   * 从队列中读取一个sled
-   * @param {number} [timeout] 读取超时,单位毫秒,默认Infinity
-   */
-  static async read(timeout?: number): Promise<Alaska$Sled|null> {
-    let queue = this.createQueueDriver();
-    let item = await queue.pop(timeout);
-    this.service.freeDriver(queue);
-    if (!item) {
-      return null;
-    }
-    let payload = item.payload;
-    if (!payload) {
-      let cache = this.createCacheDriver();
-      if (cache) {
-        payload = await cache.get(item.id);
-      }
-    }
-    let sled = new this();
-    if (sled.fromJSON) {
-      sled.fromJSON(payload.params);
-    } else {
-      sled.params = payload.params;
-    }
-    if (payload.result !== undefined) {
-      sled.result = payload.result;
-    } else if (payload.error) {
-      sled.error = new Error(payload.error);
-    }
-    sled.payload = payload;
-    sled.fromQueue = true;
-    sled.item = item;
-    sled.id = item.id;
-    // $Flow
-    return sled;
-  }
-
-  /**
-   * 将sled发送到队列
+   * 将Sled发送到队列
    * @param {number} [timeout] Sled超时时间,单位秒,默认60天
    * @param {boolean} [notify] Sled执行后是否需要通知,默认false
    */
-  async send(timeout?: number, notify?: boolean) {
+  async send(timeout?: number, notify?: boolean): Promise<Alaska$sledQueueItem> {
     if (this.result || this.error) {
       throw new Error('can not send a finished sled');
     }
@@ -270,36 +198,52 @@ export default class Sled {
     if (!id) {
       id = this.id = 'sled.' + key + '.' + random(10);
     }
-    let payload = this.payload = {
+    let item = {
       id,
       key,
-      notify,
+      notify: notify || false,
       params,
       name: this.name,
-      result: null,
-      error: null,
+      result: undefined,
+      error: undefined,
       timeout: timeout || 0,
       createdAt: new Date(),
       expiredAt: new Date(Date.now() + (timeout * 1000))
     };
-    let item = this.item = {
-      id,
-      name: this.name,
-      key,
-      payload: {}
-    };
-
-    let cache = this.createCacheDriver();
-    if (cache) {
-      await cache.set(id, payload);
-    } else {
-      item.payload = payload;
-    }
 
     let queue = this.createQueueDriver();
     await queue.push(item);
-    this.service.freeDriver(queue);
+    queue.free();
     return item;
+  }
+
+  /**
+   * 从队列中读取一个sled
+   * @param {number} [timeout] 读取超时,单位毫秒,默认Infinity
+   */
+  static async read(timeout?: number): Promise<Alaska$Sled|null> {
+    let queue = this.createQueueDriver();
+    let item: Alaska$sledQueueItem = await queue.pop(timeout);
+    queue.free();
+    if (!item) {
+      return null;
+    }
+    let sled = new this();
+    if (sled.fromJSON) {
+      sled.fromJSON(item.params);
+    } else {
+      sled.params = item.params;
+    }
+    if (item.result !== undefined) {
+      sled.result = item.result;
+    } else if (item.error) {
+      sled.error = new Error(item.error);
+    }
+    sled.fromQueue = true;
+    sled.item = item;
+    sled.id = item.id;
+    // $Flow
+    return sled;
   }
 
   /**
@@ -319,62 +263,25 @@ export default class Sled {
     if (!id) {
       id = this.id = 'sled.' + this.key + '.' + random(10);
     }
-    let subscribe = this.createSubscribeDriver(id);
 
     if (!this.item) {
       //异步将sled插入队列
       this.send(sledTimeout, true);
     }
 
+    let subscribe = this.createSubscribeDriver(id);
     let msg = await subscribe.once(waitTimeout);
-    this.service.freeDriver(subscribe);
+    subscribe.free();
     if (!msg) {
-      return msg;
+      return null;
     }
-    let cache = this.createCacheDriver();
-    if (cache) {
-      let payload = await cache.get(id);
-      if (payload) {
-        this.payload = payload;
-      }
-    } else {
-      //没有将数据放入缓存
-      this.payload.result = msg.result;
-      this.payload.error = msg.error;
-    }
-    if (this.payload.error) {
-      this.error = new Error(this.payload.error);
+    if (msg.result !== undefined) {
+      this.result = msg.result;
+    } else if (msg.error) {
+      this.error = new Error(msg.error);
       throw this.error;
     }
-    this.result = this.payload.result;
     return this.result;
-  }
-
-  /**
-   * 将运行后的状态更新到缓存
-   * @private
-   */
-  async update() {
-    let payload = this.payload;
-    if (!payload) return;
-    payload.result = this.result;
-    if (this.error) {
-      payload.error = this.error.message;
-    }
-
-    let cache = this.createCacheDriver();
-    if (cache) {
-      await cache.set(this.item.id, payload);
-    }
-    if (payload.notify) {
-      let subscribe = this.createSubscribeDriver(payload.id);
-      await subscribe.publish({
-        id: payload.id,
-        error: payload.error,
-        result: payload.result
-      });
-      this.service.freeDriver(subscribe);
-    }
   }
 
   /**
@@ -400,7 +307,8 @@ export default class Sled {
 
     let result = this.result;
     //如果已经有result,说明在前置hooks中已经执行完成任务
-    if (!this.result) {
+
+    if (result !== undefined) {
       try {
         result = this.exec(this.params);
         if (result && result.then) {
@@ -408,21 +316,27 @@ export default class Sled {
         }
       } catch (error) {
         this.error = error;
-        if (this.payload) {
-          this.update();
+        if (this.item && this.item.notify) {
+          // 发送通知
+          let subscribe = this.createSubscribeDriver(this.item.id);
+          await subscribe.publish({ error: error.message });
+          subscribe.free();
         }
         throw error;
       }
       this.result = result;
-    }
-    if (this.payload) {
-      this.update();
     }
 
     if (this.constructor._post) {
       await collie.compose(this.constructor._post, [result], this);
     }
 
+    if (this.item && this.item.notify) {
+      // 发送通知
+      let subscribe = this.createSubscribeDriver(this.item.id);
+      await subscribe.publish({ result });
+      subscribe.free();
+    }
     return result;
   }
 

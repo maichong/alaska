@@ -558,3 +558,4 @@ exports.Model = require('./model').default;
 exports.Sled = require('./sled').default;
 exports.Service = require('./service').default;
 exports.Renderer = require('./renderer').default;
+exports.Driver = require('./driver').default;

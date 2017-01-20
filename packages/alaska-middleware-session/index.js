@@ -3,6 +3,7 @@
 /* eslint global-require:0 */
 /* eslint import/no-dynamic-require:0 */
 
+import alaska from 'alaska';
 import random from 'string-random';
 import pathToRegexp from 'path-to-regexp';
 import Session from './session';
@@ -13,7 +14,7 @@ export default function (options: Alaska$Config$session) {
   const key: string = cookieOpts.key || 'alaska.sid';
   // $Flow require参数需要为字符串
   const Store = require(storeOpts.type).default;
-  const store = new Store(storeOpts);
+  const store = new Store(alaska.main, storeOpts);
   let ignore: ?RegExp[] = null;
 
   function convert(input) {

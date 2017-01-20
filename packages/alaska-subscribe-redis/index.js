@@ -1,11 +1,13 @@
 // @flow
 
 import redis from 'redis';
+import { Driver } from 'alaska';
 
-export default class RedisSubscribeDriver {
+export default class RedisSubscribeDriver extends Driver {
+  static classOfSubscribeDriver: true;
 
-  channel: Object;
-  options: Object;
+  instanceOfSubscribeDriver: true;
+  channel: string;
   _driver: Object;
   _subscribed: boolean;
   _timer: number;
@@ -14,9 +16,12 @@ export default class RedisSubscribeDriver {
   _listener: ?Function;
 
   /**
+   * @param {Alaska$Service} service
    * @param {Object} options Redis连接设置
    */
-  constructor(options: Object) {
+  constructor(service: Alaska$Service, options: Object) {
+    super(service, options);
+    this.instanceOfSubscribeDriver = true;
     this.channel = options.channel;
     this.options = options;
     this._driver = redis.createClient(options);
@@ -25,6 +30,14 @@ export default class RedisSubscribeDriver {
     this._messages = [];
     this._onMessage = null;//message callback
     this._listener = null;
+  }
+
+  /**
+   * 获取底层驱动
+   * @returns {any}
+   */
+  driver(): any {
+    return this._driver;
   }
 
   /**
@@ -185,7 +198,7 @@ export default class RedisSubscribeDriver {
   /**
    * 释放当前所有任务,进入空闲状态
    */
-  free() {
+  onFree() {
     this.cancel();
     this._messages = [];
     this._onMessage = null;//message callback
@@ -194,7 +207,7 @@ export default class RedisSubscribeDriver {
   /**
    * 销毁
    */
-  destroy() {
+  onDestroy() {
     let destroy = () => {
       this._messages = [];
       this._onMessage = null;

@@ -1,20 +1,26 @@
 // @flow
 
-import _mongodb from 'mongodb';
-import _debug from 'debug';
+/* eslint new-cap:0 */
 
-const MongoClient = _mongodb.MongoClient;
-const debug = _debug('alaska-cache-mongo');
+import mongodb from 'mongodb';
+import Debugger from 'debug';
+import { Driver } from 'alaska';
 
-export default class MongoCacheDriver {
-  _maxAge:number;
-  _connecting:Object|null;
-  _driver:Object;
-  type:string;
-  isCacheDriver:boolean;
-  noSerialization:boolean;
+const MongoClient = mongodb.MongoClient;
+const debug = Debugger('alaska-cache-mongo');
 
-  constructor(options: Object) {
+export default class MongoCacheDriver extends Driver {
+  static classOfCacheDriver: true;
+
+  instanceOfCacheDriver: true;
+  _maxAge: number;
+  _connecting: Object|null;
+  _driver: Object;
+  _db: Object;
+
+  constructor(service: Alaska$Service, options: Object) {
+    super(service, options);
+    this.instanceOfCacheDriver = true;
     this._maxAge = options.maxAge || 0;
     this._connecting = MongoClient.connect(options.url, {
       uri_decode_auth: options.uri_decode_auth,
@@ -24,6 +30,7 @@ export default class MongoCacheDriver {
       mongos: options.mongos
     });
     this._connecting.then((db) => {
+      this._db = db;
       this._connecting = null;
       this._driver = db.collection(options.collection || 'mongo_cache');
       this._driver.createIndex('expiredAt', {
@@ -33,11 +40,6 @@ export default class MongoCacheDriver {
       console.error(error.stack);
       process.exit(1);
     });
-    this.type = 'mongo';
-    //标识已经是缓存对象实例
-    this.isCacheDriver = true;
-    //标识本驱动会序列化数据
-    this.noSerialization = false;
 
     //每10分钟自动清理一次
     setInterval(() => {
@@ -46,7 +48,8 @@ export default class MongoCacheDriver {
   }
 
   /**
-   * @returns {Collection}
+   * 获取底层驱动
+   * @returns {any}
    */
   driver(): any {
     return this._driver;
@@ -59,7 +62,7 @@ export default class MongoCacheDriver {
    * @param {number} [lifetime] 超时时间,为0不超时,默认按驱动初始化参数maxAge而定
    * @returns {*}
    */
-  set(key:string, value:any, lifetime?:number): Promise<any> {
+  set(key: string, value: any, lifetime?: number): Promise<any> {
     if (this._connecting) {
       return this._connecting.then(() => this.set(key, value, lifetime));
     }
@@ -88,7 +91,7 @@ export default class MongoCacheDriver {
    * @param key
    * @returns {*}
    */
-  get(key:string): Promise<any> {
+  get(key: string): Promise<any> {
     if (this._connecting) {
       return this._connecting.then(() => this.get(key));
     }
@@ -114,7 +117,7 @@ export default class MongoCacheDriver {
    * [async] 删除缓存
    * @param key
    */
-  del(key:string): any {
+  del(key: string): any {
     if (this._connecting) {
       return this._connecting.then(() => this.del(key));
     }
@@ -129,7 +132,7 @@ export default class MongoCacheDriver {
    * @param key
    * @returns {boolean}
    */
-  has(key:string): Promise<boolean> {
+  has(key: string): Promise<boolean> {
     if (this._connecting) {
       return this._connecting.then(() => this.has(key));
     }
@@ -154,7 +157,7 @@ export default class MongoCacheDriver {
    * @param key
    * @returns {number}
    */
-  inc(key:string): Promise<number> {
+  inc(key: string): Promise<number> {
     if (this._connecting) {
       return this._connecting.then(() => this.inc(key));
     }
@@ -177,7 +180,7 @@ export default class MongoCacheDriver {
    * @param key
    * @returns {number}
    */
-  dec(key:string): Promise<number> {
+  dec(key: string): Promise<number> {
     if (this._connecting) {
       return this._connecting.then(() => this.dec(key));
     }
@@ -227,5 +230,20 @@ export default class MongoCacheDriver {
     }
     debug('flush');
     return this._driver.drop();
+  }
+
+  /**
+   * 空闲
+   */
+  onFree() {
+  }
+
+  /**
+   * 销毁
+   */
+  onDestroy() {
+    this._db.close();
+    this._db = {};
+    this._driver = {};
   }
 }
