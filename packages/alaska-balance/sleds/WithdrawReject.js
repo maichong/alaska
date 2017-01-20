@@ -15,7 +15,7 @@ export default class WithdrawReject extends Sled {
     if (withdraw.state === 0) {
       let reason = params.body.reason || service.error('Missing reject reason');
       withdraw.state = -1;
-      if(reason){
+      if (reason) {
         withdraw.reason = reason;
       }
 
