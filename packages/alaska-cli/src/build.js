@@ -2,7 +2,6 @@
 
 import shelljs from 'shelljs';
 import fs from 'fs';
-import program from 'commander';
 import childProcess from 'child_process';
 import * as uitls from './utils';
 
@@ -13,7 +12,7 @@ function filepath(file) {
 }
 
 
-export default async function build() {
+export default async function build(options:Object) {
   console.log('Alaska build...');
   const dir = process.cwd() + '/';
   if (!uitls.isFile(dir + '.alaska')) {
@@ -126,13 +125,13 @@ export default async function build() {
 
   let args = ['webpack', '--config'];
 
-  if (program.dev) {
+  if (options.dev) {
     args.push('webpack.admin.dev.js');
   } else {
     args.push('webpack.admin.pro.js');
   }
 
-  if (program.watch) {
+  if (options.watch) {
     args.push('-w');
   }
 
