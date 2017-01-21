@@ -27,4 +27,4 @@ export default function (options: Alaska$Config$session): Function {
       return next();
     });
   };
-};
+}

@@ -80,4 +80,4 @@ export default function (options?: Object) {
 
     return next().then(log, log);
   };
-};
+}

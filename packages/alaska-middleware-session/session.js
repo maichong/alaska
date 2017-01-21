@@ -56,4 +56,4 @@ export default class Session {
     }
     return JSON.stringify(this) !== prev;
   }
-};
+}
