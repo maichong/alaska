@@ -75,8 +75,8 @@ class Relationship extends React.Component {
       service: serviceId,
       model: modelName,
       key: model.key,
-      filters: {}
     };
+    // $Flow
     let filters = args.filters = Object.assign({}, this.props.filters, {
       [this.props.path]: this.props.from
     });
