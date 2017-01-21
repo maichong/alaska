@@ -1,8 +1,4 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-02-29
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 
@@ -15,7 +11,7 @@ import Content from './Content';
 
 const { node, object } = React.PropTypes;
 
-export default class Manage extends React.Component {
+class Manage extends React.Component {
 
   static propTypes = {
     children: node
@@ -28,13 +24,13 @@ export default class Manage extends React.Component {
   render() {
     let { children } = this.props;
     let { settings } = this.context;
-    return <Node id="manage">
+    return (<Node id="manage">
       <Sidebar menu={settings.menu} layout={this.props.layout}/>
       <Node id="body">
-        <Header/>
+        <Header />
         <Content>{children}</Content>
       </Node>
-    </Node>
+    </Node>);
   }
 }
 

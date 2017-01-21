@@ -1,12 +1,7 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-07-11
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
-import _reduce from 'lodash/reduce';
-import _assign from 'lodash/assign';
+import _ from 'lodash';
 
 const { node, string, object } = React.PropTypes;
 
@@ -41,7 +36,8 @@ export default class Node extends React.Component {
     if (wrapper) {
       const wrappers = this.context.views.wrappers;
       if (wrappers[wrapper] && wrappers[wrapper].length) {
-        children = _reduce(wrappers[wrapper], (el, Wrapper) => React.createElement(Wrapper, _assign({}, props, { state }), el), children);
+        children = _.reduce(wrappers[wrapper],
+          (el, Wrapper) => React.createElement(Wrapper, _.assign({}, props, { state }), el), children);
       }
     }
     return children;

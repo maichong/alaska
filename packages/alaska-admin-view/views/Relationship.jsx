@@ -1,8 +1,4 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-03-25
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 import { connect } from 'react-redux';
@@ -30,7 +26,9 @@ class Relationship extends React.Component {
     t: func,
   };
 
-  constructor(props) {
+  state:Object;
+
+  constructor(props:Object) {
     super(props);
     this.state = {
       data: null,
@@ -43,7 +41,7 @@ class Relationship extends React.Component {
     this.init();
   }
 
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps(props:Object) {
     let model = this.state.model;
     if (props.from !== this.props.from) {
       this.setState({
@@ -62,8 +60,8 @@ class Relationship extends React.Component {
     }
   }
 
-  shouldComponentUpdate(props, state) {
-    return state.data != this.state.data || state.model != this.state.model;
+  shouldComponentUpdate(props:Object, state:Object) {
+    return state.data !== this.state.data || state.model !== this.state.model;
   }
 
   init() {
@@ -76,8 +74,9 @@ class Relationship extends React.Component {
     let args = {
       service: serviceId,
       model: modelName,
-      key: model.key
+      key: model.key,
     };
+    // $Flow
     let filters = args.filters = Object.assign({}, this.props.filters, {
       [this.props.path]: this.props.from
     });
@@ -91,16 +90,20 @@ class Relationship extends React.Component {
   render() {
     let { model, data, filters } = this.state;
     if (!model || !data) {
-      return <div></div>;
+      return <div />;
     }
     const t = this.context.t;
-    let title = this.props.title ? t(this.props.title, model.service.id) : t('Relationship') + `: ${t(model.label, model.service.id)}`;
+    let title = this.props.title ? t(this.props.title, model.service.id)
+      : t('Relationship') + `: ${t(model.label, model.service.id)}`;
     let filtersString = qs.stringify({ filters });
     return (
       <div className="panel panel-default relationship-panel">
         <div className="panel-heading">
-          <h3 className="panel-title">{title} <a className="relationship-more"
-                                                 href={`#/list/${model.service.id}/${model.name}?${filtersString}`}>{t('More')}</a>
+          <h3 className="panel-title">{title}
+            <a
+              className="relationship-more"
+              href={`#/list/${model.service.id}/${model.name}?${filtersString}`}
+            >{t('More')}</a>
           </h3>
         </div>
         <div className="inner"><DataTable model={model} data={data}/></div>
