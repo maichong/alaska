@@ -39,7 +39,7 @@ export default async function build() {
 
   function parse(m) {
     if (m.views && typeof m.views === 'object') {
-      for (let name in m.views) {
+      for (let name = 0; name < m.views.length; name += 1) {
         let view = m.views[name];
         if (typeof view === 'string') {
           views[name] = view;
@@ -49,7 +49,7 @@ export default async function build() {
       }
     }
     if (m.wrappers) {
-      for (let name in m.wrappers) {
+      for (let name = 0; name < m.wrappers.length; name += 1) {
         let wrapper = m.wrappers[name];
         if (!wrappers[name]) {
           wrappers[name] = [];
@@ -88,16 +88,16 @@ export default async function build() {
 
   let content = '/* this file is created by alaska build command */\n\n';
 
-  for (let name in views) {
+  for (let name = 0; name < views.length; name += 1) {
     let file = filepath(views[name]);
     content += `exports['${name}'] = require('${file}').default;\n`;
     console.log(`view : ${name} -> ${file}`);
   }
   content += '\nexports.wrappers={\n';
-  for (let name in wrappers) {
+  for (let name = 0; name < wrappers.length; name += 1) {
     console.log(`wrapper : ${name}`);
     content += `  '${name}':[`;
-    for (let key in wrappers) {
+    for (let key = 0; key < wrappers.length; key += 1) {
       let file = filepath(wrappers[key]);
       content += ` require('${file}').default,`;
       console.log(`\t-> ${file}`);
