@@ -1,12 +1,8 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-07-12
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
+import { Overlay } from 'react-bootstrap';
 import Node from './Node';
-import Overlay from 'react-bootstrap/lib/Overlay';
 
 const { node, array } = React.PropTypes;
 
@@ -16,8 +12,11 @@ export default class ContentHeader extends React.Component {
     children: node,
     actions: array
   };
+  state: {
+    show:boolean;
+  };
 
-  constructor(props) {
+  constructor(props: Object) {
     super(props);
     this.state = {
       show: false
@@ -32,14 +31,14 @@ export default class ContentHeader extends React.Component {
     const { children, actions } = this.props;
     let el = null;
     if (window.innerWidth > 768 || !actions || actions.length < 2) {
-      el = <Node wrapper="contentHeaderActions" className="content-header-actions">{actions}</Node>
+      el = <Node wrapper="contentHeaderActions" className="content-header-actions">{actions}</Node>;
     } else {
       el = <i className="fa fa-bars"/>;
       let overlay = null;
       if (this.state.show) {
         overlay = <Overlay show={true} onHide={() => this.setState({ show: false })} rootClose={true}>
           <div className="content-header-actions overlay">
-            <div>{actions.map((a, index)=><div key={index} className="action">{a}</div>)}</div>
+            <div>{actions.map((a, index) => <div key={index} className="action">{a}</div>)}</div>
           </div>
         </Overlay>;
       }
