@@ -1,13 +1,7 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-08-14
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
-import _map from 'lodash/map';
-import _assign from 'lodash/assign';
-import _omit from 'lodash/omit';
+import _ from 'lodash';
 
 const { object, func, bool } = React.PropTypes;
 
@@ -25,27 +19,30 @@ export default class FilterEditor extends React.Component {
   static contextTypes = {
     views: object
   };
+  state: {
+    value:Object;
+  };
 
-  constructor(props) {
+  constructor(props: Object) {
     super(props);
     this.state = {
       value: props.value
     };
   }
 
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps(props: Object) {
     if (props.value !== this.state.value) {
       this.setState({ value: props.value });
     }
   }
 
-  handleChange(path, v) {
-    this.props.onChange(_assign({}, this.state.value, { [path]: v }));
+  handleChange(path: string, v: string) {
+    this.props.onChange(_.assign({}, this.state.value, { [path]: v }));
   }
 
-  handleClose(path) {
-    this.props.onChange(_omit(this.state.value, path));
-    this.props.onFieldsChange(_omit(this.props.fields, path));
+  handleClose(path: string) {
+    this.props.onChange(_.omit(this.state.value, path));
+    this.props.onFieldsChange(_.omit(this.props.fields, path));
   }
 
   render() {
@@ -54,16 +51,18 @@ export default class FilterEditor extends React.Component {
     const { views } = this.context;
     return (
       <div className="filter-editor">{
-        _map(fields, (_, path) => {
+        _.map(fields, (__, path) => {
           let field = model.fields[path];
           let FilterView = views[field.filter];
-          return <FilterView
-            key={path}
-            field={field}
-            value={value[path]}
-            onChange={(v) => this.handleChange(path,v)}
-            onClose={() => this.handleClose(path)}
-          />;
+          return (
+            <FilterView
+              key={path}
+              field={field}
+              value={value[path]}
+              onChange={(v) => this.handleChange(path, v)}
+              onClose={() => this.handleClose(path)}
+            />
+          );
         })
       }</div>
     );

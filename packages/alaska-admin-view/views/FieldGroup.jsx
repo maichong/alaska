@@ -1,8 +1,4 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-03-21
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 import Node from './Node';
@@ -21,7 +17,7 @@ export default class FieldGroup extends React.Component {
   };
 
   render() {
-    let props = this.props
+    let props = this.props;
     let el = props.children;
     if (props.form !== false) {
       el = <div className="field-group-form form-horizontal">
