@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import qs from 'qs';
 import DataTable from './DataTable';
 import * as listRedux from '../redux/lists';
-import { bindActionCreators } from 'redux';
 
 const { object, string, func } = React.PropTypes;
 
@@ -108,7 +108,7 @@ class Relationship extends React.Component {
             >{t('More')}</a>
           </h3>
         </div>
-        <div className="inner"><DataTable model={model} data={data}/></div>
+        <div className="inner"><DataTable model={model} data={data} /></div>
       </div>
     );
   }

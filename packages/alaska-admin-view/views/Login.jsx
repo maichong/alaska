@@ -81,12 +81,12 @@ class Login extends React.Component {
 
     return (
       <Node id="login" className="panel">
-        <Node id="loginLogo"><img src={logoReverse || 'static/img/logo_reverse.png'}/> </Node>
+        <Node id="loginLogo"><img alt="" src={logoReverse || 'static/img/logo_reverse.png'} /> </Node>
         <Node id="loginForm" tag="form">
           <Node id="loginField">
             <div className={'form-group' + state.usernameError}>
               <div className="input-group">
-                <div className="input-group-addon"><i className="fa fa-user"/></div>
+                <div className="input-group-addon"><i className="fa fa-user" /></div>
                 <input
                   type="text"
                   className="form-control"
@@ -98,7 +98,7 @@ class Login extends React.Component {
             </div>
             <div className={'form-group' + state.passwordError}>
               <div className="input-group">
-                <div className="input-group-addon"><i className="fa fa-key"/></div>
+                <div className="input-group-addon"><i className="fa fa-key" /></div>
                 <input
                   type="password"
                   className="form-control"
