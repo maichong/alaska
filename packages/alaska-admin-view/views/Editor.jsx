@@ -6,19 +6,23 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import * as detailsRedux from '../redux/details';
 import * as saveRedux from '../redux/save';
+import * as userRedux from '../redux/user';
 import { bindActionCreators } from 'redux';
 import Node from './Node';
 import Action from './Action';
 import FieldGroup from './FieldGroup';
 import Relationship from './Relationship';
 import ContentHeader from './ContentHeader';
-import { PREFIX } from '../constants';
-import api from '../utils/api';
+import akita from '../utils/akita';
 import checkDepends from '../utils/check-depends';
 
 const { object, func } = React.PropTypes;
 
 class Editor extends React.Component {
+
+  state: Object;
+  _r: number;
+  loading: boolean;
 
   static propTypes = {
     details: object,
@@ -45,7 +49,9 @@ class Editor extends React.Component {
       serviceId: props.params.service,
       modelName: props.params.model,
       id: props.params.id,
-      errors: {}
+      errors: {},
+      service: {},
+      model: { key: '' }
     };
 
     let service = context.settings.services[this.state.serviceId];
@@ -139,7 +145,7 @@ class Editor extends React.Component {
     });
   }
 
-  handleChange(key, value) {
+  handleChange(key: any, value: any) {
     this.setState({
       data: Object.assign({}, this.state.data, {
         [key]: value
@@ -161,7 +167,7 @@ class Editor extends React.Component {
     }]);
     this.loading = true;
     try {
-      await api.post(PREFIX + '/api/remove?' + qs.stringify({
+      await akita.post('/api/remove?' + qs.stringify({
           service: serviceId,
           model: modelName
         }), { id });
@@ -201,7 +207,7 @@ class Editor extends React.Component {
     this._r = Math.random();
     this.loading = true;
 
-    this.context.actions.saveAction({
+    this.props.saveAction({
       service: model.service.id,
       model: model.name,
       key: model.key,
@@ -212,7 +218,7 @@ class Editor extends React.Component {
 
   async handleAction(action) {
     const { model, data, id } = this.state;
-    const { t, toast, confirm, actions } = this.context;
+    const { t, toast, confirm } = this.context;
 
     const config = model.actions[action];
     if (config && config.confirm) {
@@ -230,7 +236,7 @@ class Editor extends React.Component {
         eval(config.script.substr(3));
       } else {
         let body = Object.assign({}, data, { id: id.toString() === '_new' ? '' : id });
-        await api.post(PREFIX + '/api/action?' + qs.stringify({
+        await akita.post('/api/action?' + qs.stringify({
             service: model.service.id,
             model: model.name,
             action
@@ -238,7 +244,7 @@ class Editor extends React.Component {
       }
       toast('success', t('Successfully'));
       if (config.post === 'refresh') {
-        actions.refresh();
+        this.props.refreshAction();
       } else {
         this.refresh();
       }
@@ -260,8 +266,7 @@ class Editor extends React.Component {
       model,
       data,
       errors,
-      serviceId,
-      modelName
+      serviceId
     } = this.state;
     const { views, t, settings } = this.context;
     if (!data) {
@@ -285,10 +290,10 @@ class Editor extends React.Component {
       }
     };
 
-    for (let groupKey in model.groups) {
-      let group = model.groups[groupKey];
-      if (typeof group === 'string') {
-        group = { title: group };
+    for (let groupKey of Object.keys(model.groups)) {
+      let group: { title:string, _title:?string, fields:?any[] } = model.groups[groupKey];
+      if (typeof group == 'string') {
+        group = { title: group, _title: undefined, fields: [] };
       }
       if (!group._title) {
         group._title = group.title;
@@ -297,7 +302,7 @@ class Editor extends React.Component {
       group.fields = [];
       groups[groupKey] = group;
     }
-    for (let key in model.fields) {
+    for (let key of Object.keys(model.fields)) {
       let cfg = model.fields[key];
       if (cfg.hidden) continue;
       if (cfg.super && !settings.superMode) continue;
@@ -348,7 +353,7 @@ class Editor extends React.Component {
       group.fields.push(view);
     }
     let groupElements = [];
-    for (let groupKey in groups) {
+    for (let groupKey of Object.keys(groups)) {
       let group = groups[groupKey];
       if (!group.fields.length) {
         continue;
@@ -371,7 +376,7 @@ class Editor extends React.Component {
         onClick={this.handleSave}
         key="save"
         disabled={this.loading}
-      ><i className="fa fa-save"/></button>);
+      ><i className="fa fa-save" /></button>);
     }
     let canRemove = true;
     if (model.actions.remove && model.actions.remove.depends && !checkDepends(model.actions.remove.depends, data)) {
@@ -383,7 +388,7 @@ class Editor extends React.Component {
         onClick={this.handleRemove}
         key="remove"
         disabled={this.loading}
-      ><i className="fa fa-close"/></button>);
+      ><i className="fa fa-close" /></button>);
     }
 
     let canCreate = true;
@@ -396,7 +401,7 @@ class Editor extends React.Component {
         className="btn btn-success"
         key="create"
         disabled={this.loading}
-      ><i className="fa fa-plus"/></button>);
+      ><i className="fa fa-plus" /></button>);
     }
 
     //扩展动作按钮
@@ -462,5 +467,6 @@ class Editor extends React.Component {
 
 export default connect(({ details, save }) => ({ details, save }), (dispatch) => bindActionCreators({
   detailsAction: detailsRedux.details,
-  saveAction: saveRedux.save
+  saveAction: saveRedux.save,
+  refreshAction: userRedux.refreshInfo
 }, dispatch))(Editor);
