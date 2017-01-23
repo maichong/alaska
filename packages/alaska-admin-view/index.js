@@ -1,13 +1,11 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-02-24
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import '../less/style.less';
 
+import store from './redux/index';
+
+exports.store = store;
 exports.App = require('./views/App').default;
-exports.store = require('./store').default;
 exports.api = require('./utils/api').default;
 exports.shallowEqual = require('./utils/shallow-equal').default;
 exports.checkDepends = require('./utils/check-depends').default;

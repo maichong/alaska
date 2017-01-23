@@ -1,23 +1,40 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-02-25
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import promiseMiddleware from 'redux-promise';
-import thunkMiddleware from 'redux-thunk';
+import { createStore, compose, applyMiddleware } from 'redux';
+import reduxPersist, { persistStore, autoRehydrate } from 'redux-persist';
 import createLogger from 'redux-logger';
-import * as reducers from './reducers/index';
+import createSagaMiddleware from 'redux-saga';
+import * as StartupActions from './startup';
 
-const defaultReducers = reducers.default;
-delete reducers.default;
-const reducer = combineReducers(reducers);
+export default function (rootReducer, rootSaga) {
+  const middleware = [];
+  const enhancers = [];
 
-let middlewares = [thunkMiddleware, promiseMiddleware];
+  // saga中间件
+  const sagaMiddleware = createSagaMiddleware();
+  middleware.push(sagaMiddleware);
+  // log中间件
+  const SAGA_LOGGING_BLACKLIST = ['EFFECT_TRIGGERED', 'EFFECT_RESOLVED', 'EFFECT_REJECTED'];
+  if (__DEV__) {
+    const logger = createLogger({
+      predicate: (getState, { type }) => SAGA_LOGGING_BLACKLIST.indexOf(type) === -1
+    });
+    middleware.push(logger);
+  }
 
-if (process.env.NODE_ENV != 'production') {
-  middlewares.push(createLogger());
+  // 合并中间件
+  enhancers.push(applyMiddleware(...middleware));
+
+  // persist rehydrate
+  enhancers.push(autoRehydrate());
+
+  const store = createStore(rootReducer, compose(...enhancers));
+
+  // persist
+  persistStore(store, reduxPersist, () => store.dispatch(StartupActions.startup()));
+
+  // kick off root saga
+  sagaMiddleware.run(rootSaga);
+
+  return store;
 }
-
-export default createStore((state, action) => reducer(defaultReducers(state, action), action), applyMiddleware(...middlewares));

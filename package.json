@@ -9,7 +9,15 @@
     "react",
     "mvc"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "akita": "^0.1.1",
+    "node-fetch": "^1.6.3",
+    "redux": "^3.6.0",
+    "redux-actions": "^1.2.0",
+    "redux-logger": "^2.7.4",
+    "redux-persist": "^4.0.1",
+    "redux-saga": "^0.14.3"
+  },
   "scripts": {
     "eslint": "eslint ./",
     "flow": "flow check --show-all-errors && pkill flow",
