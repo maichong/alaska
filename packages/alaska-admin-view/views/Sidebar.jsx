@@ -42,7 +42,7 @@ export default class Sidebar extends React.Component {
       <Node id="sidebar">
         <Node id="sidebarInner">
           <Logo />
-          <Menu items={menu} layout={layout} value={this.state.menu} onChange={this.handleChange} />
+          <Menu items={menu} layout={layout} value={this.state.menu} onChange={this.handleChange} level={0} />
           <Copyright layout={layout} />
         </Node>
       </Node>
