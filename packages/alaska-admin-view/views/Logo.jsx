@@ -19,8 +19,8 @@ export default class Logo extends React.Component {
     return (
       <Node id="logo">
         <a href="javascript:void(0)">
-          <img className="logo" src={logo} />
-          <img className="icon" src={icon} />
+          <img alt="" className="logo" src={logo} />
+          <img alt="" className="icon" src={icon} />
         </a>
       </Node>
     );

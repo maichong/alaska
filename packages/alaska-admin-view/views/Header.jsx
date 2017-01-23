@@ -4,11 +4,12 @@ import React from 'react';
 import { NavDropdown, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
-import * as layoutRedux from '../redux/layout';
 import { connect } from 'react-redux';
+import * as layoutRedux from '../redux/layout';
 import Node from './Node';
 import LocaleNav from './LocaleNav';
 import * as loginRedux from '../redux/login';
+
 const { node, object, func, string } = React.PropTypes;
 
 class Header extends React.Component {
@@ -53,12 +54,10 @@ class Header extends React.Component {
       } else {
         layout = 'hidden';
       }
+    } else if (layout.toString() === 'full') {
+      layout = 'icon';
     } else {
-      if (layout.toString() === 'full') {
-        layout = 'icon';
-      } else {
-        layout = 'full';
-      }
+      layout = 'full';
     }
     this.props.layoutAction(layout);
   };
@@ -93,7 +92,7 @@ class Header extends React.Component {
   render() {
     const { user, layout } = this.props;
     const { t, views } = this.context;
-    const navs = _.map(views.navs, (Nav, index) => (<Nav key={index}/>));
+    const navs = _.map(views.navs, (Nav, index) => (<Nav key={index} />));
     let username = null;
     if (layout.toString() === 'full') {
       username = user.username;
@@ -111,7 +110,7 @@ class Header extends React.Component {
             <LocaleNav />
             <NavDropdown
               eventKey={3}
-              title={<div><img src={user.avatar || 'static/img/avatar.png'} />{username}</div>}
+              title={<div><img alt="" src={user.avatar || 'static/img/avatar.png'} />{username}</div>}
               id="userNav"
             >
               <MenuItem eventKey={3.1} onClick={this.handleRefresh}>{t('Refresh')}<i
