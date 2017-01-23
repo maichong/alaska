@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as layoutRedux from '../redux/layout';
+import * as userRedux from '../redux/user';
 import Node from './Node';
 import LocaleNav from './LocaleNav';
 import * as loginRedux from '../redux/login';
@@ -76,7 +77,7 @@ class Header extends React.Component {
   };
 
   handleRefresh = () => {
-    this.context.actions.refresh();
+    this.props.refreshAction();
     this.setState({
       open: false
     });
@@ -130,5 +131,6 @@ class Header extends React.Component {
 
 export default connect(({ user, layout }) => ({ user, layout }), (dispatch) => bindActionCreators({
   logoutAction: loginRedux.logout,
-  layoutAction: layoutRedux.layout
+  layoutAction: layoutRedux.layout,
+  refreshAction: userRedux.refreshInfo
 }, dispatch))(Header);

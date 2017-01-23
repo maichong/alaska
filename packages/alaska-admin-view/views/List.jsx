@@ -1,12 +1,12 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-03-04
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 import qs from 'qs';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import DropdownButton from 'react-bootstrap/lib/DropdownButton';
+import MenuItem from 'react-bootstrap/lib/MenuItem';
+import _ from 'lodash';
 
 import Node from './Node';
 import DataTable from './DataTable';
@@ -14,29 +14,18 @@ import SearchField from './SearchField';
 import ContentHeader from './ContentHeader';
 import ListActions from './ListActions';
 import * as listRedux from '../redux/lists';
-import { bindActionCreators } from 'redux';
-import api from '../utils/api';
-import { PREFIX } from '../constants';
+import * as userRedux from '../redux/user';
+import akita from '../utils/akita';
 
-import DropdownButton from 'react-bootstrap/lib/DropdownButton';
-import MenuItem from 'react-bootstrap/lib/MenuItem';
-
-import _forEach from 'lodash/forEach';
-import _clone from 'lodash/clone';
-import _assign from 'lodash/assign';
-import _omit from 'lodash/omit';
-import _without from 'lodash/without';
-import _size from 'lodash/size';
-import _reduce from 'lodash/reduce';
-import _find from 'lodash/find';
-import _pull from 'lodash/pull';
 
 const { object, func } = React.PropTypes;
 const CHECK_ICON = <i className="fa fa-check"/>;
 
 class List extends React.Component {
 
-  static propTypes = {};
+  static propTypes = {
+    location: object
+  };
 
   static contextTypes = {
     actions: object,
@@ -47,8 +36,23 @@ class List extends React.Component {
     toast: func,
     router: object,
   };
+  state: {
+    data:any,
+    search:string,
+    filters:Object,
+    page:number,
+    list:Object,
+    sort:string,
+    columnsItems:any[],
+    columnsKeys: any[],
+    filterItems: any[],
+    filterViews: any[],
+    filterViewsMap: Object,
+    selected: any[],
+    model:any
+  };
 
-  constructor(props) {
+  constructor(props: Object) {
     super(props);
     let query = props.location.query || {};
     this.state = {
@@ -59,16 +63,13 @@ class List extends React.Component {
       list: {},
       sort: query.sort || '',
       columnsItems: [],
-      columnsKeys: (query.columns || '').split('-').filter(a => a),
+      columnsKeys: (query.columns || '').split('-').filter((a) => a),
       filterItems: [],
       filterViews: [],
       filterViewsMap: {},
-      selected: []
+      selected: [],
+      model: {}
     };
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll, false);
   }
 
   componentDidMount() {
@@ -76,7 +77,7 @@ class List extends React.Component {
     this.init(this.props);
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  componentWillReceiveProps(nextProps: Object) {
     let newState = {};
     if (nextProps.params.model !== this.props.params.model) {
       this.init(nextProps);
@@ -98,6 +99,10 @@ class List extends React.Component {
       });
       this._loading = false;
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll, false);
   }
 
   init(props) {
@@ -123,13 +128,13 @@ class List extends React.Component {
       filters = {};
       filterViews = [];
       filterViewsMap = {};
-      columnsKeys = _clone(model.defaultColumns);
+      columnsKeys = _.clone(model.defaultColumns);
       sort = '';
       search = '';
     }
 
     if (!this.state.model && !columnsKeys.length) {
-      columnsKeys = _clone(model.defaultColumns);
+      columnsKeys = _.clone(model.defaultColumns);
     }
 
     //filters
@@ -155,7 +160,7 @@ class List extends React.Component {
       columnsItems,
       columnsKeys
     }, () => {
-      _forEach(filters, (value, path) => {
+      _.forEach(filters, (value, path) => {
         if (!filterViewsMap[path]) {
           this.handleFilter(path);
         }
@@ -168,7 +173,7 @@ class List extends React.Component {
 
   getFilterItems(model, filterViewsMap) {
     const { t, settings } = this.context;
-    return _reduce(model.fields, (res, field, index) => {
+    return _.reduce(model.fields, (res, field, index) => {
       if (!field._label) {
         field._label = field.label;
         field.label = t(field.label, model.service.id);
@@ -176,30 +181,35 @@ class List extends React.Component {
       if (field.hidden || !field.filter) return res;
       if (field.super && !settings.superMode) return res;
       let icon = filterViewsMap[field.path] ? CHECK_ICON : null;
-      res.push(<MenuItem key={index} eventKey={field.path}
-                         className="with-icon">{icon} {field.label}</MenuItem>);
-      return res;
-    }, []);
-  };
-
-  getColumnItems(model, columnsKeys) {
-    const { settings } = this.context;
-    return _reduce(model.fields, (res, field, index) => {
-      let icon = columnsKeys.indexOf(field.path) > -1 ? CHECK_ICON : null;
-      if (field.hidden || !field.cell) return res;
-      if (field.super && !settings.superMode) return res;
-      res.push(<MenuItem key={index} eventKey={field.path}
-                         className="with-icon">{icon} {field.label}</MenuItem>);
+      res.push(
+        <MenuItem
+          key={index}
+          eventKey={field.path}
+          className="with-icon"
+        >{icon} {field.label}
+        </MenuItem>
+      );
       return res;
     }, []);
   }
 
-  handleSearch = (search) => {
-    this.setState({ search, data: [] }, () => {
-      this.refresh();
-      this.updateQuery();
-    });
-  };
+  getColumnItems(model, columnsKeys) {
+    const { settings } = this.context;
+    return _.reduce(model.fields, (res, field, index) => {
+      let icon = columnsKeys.indexOf(field.path) > -1 ? CHECK_ICON : null;
+      if (field.hidden || !field.cell) return res;
+      if (field.super && !settings.superMode) return res;
+      res.push(
+        <MenuItem
+          key={index}
+          eventKey={field.path}
+          className="with-icon"
+        >{icon} {field.label}
+        </MenuItem>
+      );
+      return res;
+    }, []);
+  }
 
   refresh = () => {
     this.setState({ page: 0 }, () => this.loadMore());
@@ -219,53 +229,15 @@ class List extends React.Component {
     this.setState({ page });
   }
 
-  handleScroll = () => {
-    let body = document.body;
-    if (body.scrollTop + document.documentElement.clientHeight >= body.scrollHeight) {
-      if (!this.state.list.next || this._loading) return;
-      this.loadMore();
-    }
-  };
-
-  handleSort = (sort) => {
-    this.setState({ sort, data: null }, () => {
-      this.refresh();
-      this.updateQuery();
-    });
-  };
-
-  handleFilter = (eventKey) => {
-    const { filters, filterViews, filterViewsMap, model } = this.state;
-    if (filterViewsMap[eventKey]) return this.removeFilter(eventKey);
-    const field = model.fields[eventKey];
-    const views = this.context.views;
-    let FilterView = views[field.filter];
-    let view;
-    const onChange = filter => {
-      let filters = _assign({}, this.state.filters, { [field.path]: filter });
-      this.setState({ filters, data: null, page: 0 }, () => {
-        this.loadMore();
-        this.updateQuery();
-      });
-    };
-    const onClose = () => {
-      this.removeFilter(field.path)
-    };
-    view = filterViewsMap[eventKey] =
-      <FilterView key={eventKey} field={field} onChange={onChange} onClose={onClose} value={filters[eventKey]}/>;
-    filterViews.push(view);
-    this.setState({ filterViews, filterViewsMap, filterItems: this.getFilterItems(model, filterViewsMap) });
-  };
-
   removeFilter(path) {
-    let filters = _omit(this.state.filters, path);
-    let filterViews = _reduce(this.state.filterViews, (res, view) => {
+    let filters = _.omit(this.state.filters, path);
+    let filterViews = _.reduce(this.state.filterViews, (res, view) => {
       if (view.key !== path) {
         res.push(view);
       }
       return res;
     }, []);
-    let filterViewsMap = _omit(this.state.filterViewsMap, path);
+    let filterViewsMap = _.omit(this.state.filterViewsMap, path);
     this.setState({
       filters,
       filterViews,
@@ -288,7 +260,7 @@ class List extends React.Component {
     if (sort) {
       query.sort = sort;
     }
-    if (_size(filters)) {
+    if (_.size(filters)) {
       query.filters = filters;
     }
     query.columns = columnsKeys.join('-');
@@ -297,10 +269,56 @@ class List extends React.Component {
     this.context.router.replace({ pathname, query, state });
   }
 
+  handleFilter = (eventKey) => {
+    const { filters, filterViews, filterViewsMap, model } = this.state;
+    if (filterViewsMap[eventKey]) {
+      this.removeFilter(eventKey);
+      return;
+    }
+    const field = model.fields[eventKey];
+    const views = this.context.views;
+    let FilterView = views[field.filter];
+    let view;
+    const onChange = (filter) => {
+      let cFilters = _.assign({}, this.state.filters, { [field.path]: filter });
+      this.setState({ cFilters, data: null, page: 0 }, () => {
+        this.loadMore();
+        this.updateQuery();
+      });
+    };
+    const onClose = () => {
+      this.removeFilter(field.path);
+    };
+    view = filterViewsMap[eventKey] =
+      <FilterView key={eventKey} field={field} onChange={onChange} onClose={onClose} value={filters[eventKey]}/>;
+    filterViews.push(view);
+    this.setState({ filterViews, filterViewsMap, filterItems: this.getFilterItems(model, filterViewsMap) });
+  };
+
+  handleSort = (sort) => {
+    this.setState({ sort, data: null }, () => {
+      this.refresh();
+      this.updateQuery();
+    });
+  };
+
+  handleSearch = (search) => {
+    this.setState({ search, data: [] }, () => {
+      this.refresh();
+      this.updateQuery();
+    });
+  }
+  handleScroll = () => {
+    let body = document.body;
+    if (body.scrollTop + document.documentElement.clientHeight >= body.scrollHeight) {
+      if (!this.state.list.next || this._loading) return;
+      this.loadMore();
+    }
+  };
   handleColumn = (eventKey) => {
     let columnsKeys = this.state.columnsKeys.slice();
     if (columnsKeys.indexOf(eventKey) > -1) {
-      _pull(columnsKeys, eventKey);
+      _.pull(columnsKeys, eventKey);
     } else {
       columnsKeys.push(eventKey);
     }
@@ -319,10 +337,8 @@ class List extends React.Component {
     const { t, toast, confirm } = this.context;
     await confirm(t('Remove record'), t('confirm remove record'));
     try {
-      await api.post(PREFIX + '/api/remove?' + qs.stringify({
-          service: model.service.id,
-          model: model.name
-        }), { id: record._id });
+      await akita.post('/api/remove?' + qs.stringify({ service: model.service.id, model: model.name }),
+        { id: record._id });
       toast('success', t('Successfully'));
       this.refresh();
     } catch (error) {
@@ -353,29 +369,39 @@ class List extends React.Component {
     let titleBtns = [];
 
     if (!location.query.nofilter && filterItems.length) {
-      titleBtns.push(<DropdownButton id="listFilterDropdown" key="listFilterDropdown"
-                                     title={<i className="fa fa-filter"/>}
-                                     onSelect={this.handleFilter}>{filterItems}</DropdownButton>);
+      titleBtns.push(
+        <DropdownButton
+          id="listFilterDropdown" key="listFilterDropdown"
+          title={<i className="fa fa-filter" />}
+          onSelect={this.handleFilter}
+        >{filterItems}</DropdownButton>);
     }
 
     if (!location.query.nocolumns) {
-      titleBtns.push(<DropdownButton id="columnsDropdown" key="columnsDropdown"
-                                     title={<i className="fa fa-columns"/>}
-                                     onSelect={this.handleColumn}>{columnsItems}</DropdownButton>);
+      titleBtns.push(
+        <DropdownButton
+          id="columnsDropdown" key="columnsDropdown"
+          title={<i className="fa fa-columns" />}
+          onSelect={this.handleColumn}
+        >{columnsItems}</DropdownButton>);
     }
 
 
     if (!location.query.norefresh) {
-      titleBtns.push(<button key="refresh" className="btn btn-primary" onClick={this.refresh}><i
-        className="fa fa-refresh"/>
-      </button>);
+      titleBtns.push(
+        <button
+          key="refresh"
+          className="btn btn-primary"
+          onClick={this.refresh}
+        ><i className="fa fa-refresh" />
+        </button>);
     }
 
     let searchInput = model.searchFields.length ?
-      <SearchField placeholder={t('Search')} onChange={this.handleSearch} value={search}/> : null;
+      <SearchField placeholder={t('Search')} onChange={this.handleSearch} value={search} /> : null;
 
     let handleSelect;
-    if (!model.noremove || _find(model.actions, a => a.list)) {
+    if (!model.noremove || _.find(model.actions, (a) => a.list)) {
       handleSelect = this.handleSelect;
     }
 
@@ -411,7 +437,10 @@ class List extends React.Component {
                 {searchInput}
               </div>
             </div>
-            <ListActions model={model} selected={selected} onRefresh={this.refresh}/>
+            <ListActions
+              model={model} selected={selected}
+              onRefresh={this.refresh}
+              refreshAction={this.props.refreshAction} />
           </div>
         </nav>
       </Node>
@@ -420,5 +449,6 @@ class List extends React.Component {
 }
 
 export default connect(({ lists }) => ({ lists }), (dispatch) => bindActionCreators({
-  listAction: listRedux.list
+  listAction: listRedux.list,
+  refreshAction: userRedux.refreshInfo
 }, dispatch))(List);
