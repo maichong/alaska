@@ -4,10 +4,11 @@ import React from 'react';
 import { NavDropdown, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
+import * as layoutRedux from '../redux/layout';
 import { connect } from 'react-redux';
 import Node from './Node';
 import LocaleNav from './LocaleNav';
-
+import * as loginRedux from '../redux/login';
 const { node, object, func, string } = React.PropTypes;
 
 class Header extends React.Component {
@@ -27,17 +28,18 @@ class Header extends React.Component {
 
   state: {
     open:boolean;
-    anchorEl:Object;
+    anchorEl:?Object;
   };
 
-  constructor(props, context) {
+  constructor(props: Object) {
     super(props);
     this.state = {
       open: false,
+      anchorEl: null
     };
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  componentWillReceiveProps() {
     let newState = {};
     this.setState(newState);
   }
@@ -46,19 +48,19 @@ class Header extends React.Component {
     let { layout } = this.props;
     if (window.innerWidth <= 768) {
       //小屏幕
-      if (layout == 'hidden') {
+      if (layout.toString() === 'hidden') {
         layout = 'icon';
       } else {
         layout = 'hidden';
       }
     } else {
-      if (layout == 'full') {
+      if (layout.toString() === 'full') {
         layout = 'icon';
       } else {
         layout = 'full';
       }
     }
-    this.context.actions.layout(layout);
+    this.props.layoutAction(layout);
   };
 
   handleTouchTap = (event) => {
@@ -82,7 +84,7 @@ class Header extends React.Component {
   };
 
   handleLogout = () => {
-    this.context.actions.logout();
+    this.props.logoutAction();
     this.setState({
       open: false
     });
@@ -91,17 +93,18 @@ class Header extends React.Component {
   render() {
     const { user, layout } = this.props;
     const { t, views } = this.context;
-    const navs = _.map(views.navs, (Nav, index) => <Nav key={index}/>);
+    const navs = _.map(views.navs, (Nav, index) => (<Nav key={index}/>));
     let username = null;
-    if (layout == 'full') {
+    if (layout.toString() === 'full') {
       username = user.username;
     }
 
     return (
       <Node id="header" tag="nav" className="navbar navbar-default">
         <div className="container-fluid">
-          <div className="nav menu-toggle" onClick={this.handleToggle}>
-            <i className="fa fa-bars"/>
+          <div className="nav menu-toggle" onClick={this.handleToggle}><i
+            className="fa fa-bars"
+          />
           </div>
           <Node id="topNav" tag="ul" className="nav navbar-nav navbar-right">
             {navs}
@@ -126,4 +129,7 @@ class Header extends React.Component {
   }
 }
 
-export default connect(({ user, layout }) => ({ user, layout }))(Header);
+export default connect(({ user, layout }) => ({ user, layout }), (dispatch) => bindActionCreators({
+  logoutAction: loginRedux.logout,
+  layoutAction: layoutRedux.layout
+}, dispatch))(Header);

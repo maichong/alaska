@@ -1,10 +1,10 @@
 // @flow
 
 import React from 'react';
-
+import { bindActionCreators } from 'redux';
 import { IF } from 'jsx-plus';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import * as loginRedux from '../redux/login';
 import Node from './Node';
 
 
@@ -21,9 +21,9 @@ class Login extends React.Component {
     t: func,
   };
 
-  state:Object;
+  state: Object;
 
-  constructor(props:Object) {
+  constructor(props: Object) {
     super(props);
     this.state = {
       username: '',
@@ -33,7 +33,7 @@ class Login extends React.Component {
     };
   }
 
-  componentWillReceiveProps(nextProps:Object) {
+  componentWillReceiveProps(nextProps: Object) {
     let newState = {};
     if (nextProps.login && nextProps.login.errorMsg) {
       newState.errorMsg = nextProps.login.errorMsg;
@@ -41,11 +41,11 @@ class Login extends React.Component {
     this.setState(newState);
   }
 
-  handleUsername = (e:Object) => {
+  handleUsername = (e: Object) => {
     this.setState({ username: e.target.value });
   };
 
-  handlePassword = (e:Object) => {
+  handlePassword = (e: Object) => {
     this.setState({ password: e.target.value });
   };
 
@@ -64,7 +64,7 @@ class Login extends React.Component {
     }
     this.setState(state);
     if (username && password) {
-      this.context.actions.login({ username, password });
+      this.props.loginAction({ username, password });
     }
   };
 
@@ -86,7 +86,7 @@ class Login extends React.Component {
           <Node id="loginField">
             <div className={'form-group' + state.usernameError}>
               <div className="input-group">
-                <div className="input-group-addon"><i className="fa fa-user" /></div>
+                <div className="input-group-addon"><i className="fa fa-user"/></div>
                 <input
                   type="text"
                   className="form-control"
@@ -98,7 +98,7 @@ class Login extends React.Component {
             </div>
             <div className={'form-group' + state.passwordError}>
               <div className="input-group">
-                <div className="input-group-addon"><i className="fa fa-key" /></div>
+                <div className="input-group-addon"><i className="fa fa-key"/></div>
                 <input
                   type="password"
                   className="form-control"
@@ -125,4 +125,7 @@ class Login extends React.Component {
   }
 }
 
-export default connect(({ login }) => ({ login }))(Login);
+export default connect(({ login }) => ({ login }),
+  (dispatch) => bindActionCreators({
+    loginAction: loginRedux.login
+  }, dispatch))(Login);

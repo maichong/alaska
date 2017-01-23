@@ -2,12 +2,15 @@ import { combineReducers } from 'redux';
 import configureStore from './store';
 import rootSaga from '../sagas/';
 
+import accessReducer from './access';
+import detailsReducer from './details';
+import layoutReducer from './layout';
+import listsReducer from './lists';
 import loginReducer from './login';
+import saveReducer from './save';
+import settingsReducer from './settings';
 import signedReducer from './signed';
 import userReducer from './user';
-import accessReducer from './access';
-import settingsReducer from './settings';
-import listsReducer from './lists';
 
 function createStore() {
   const rootReducer = combineReducers({
@@ -16,7 +19,10 @@ function createStore() {
     user: userReducer,
     access: accessReducer,
     settings: settingsReducer,
-    lists: listsReducer
+    lists: listsReducer,
+    details: detailsReducer,
+    layout: layoutReducer,
+    save: saveReducer
   });
 
   return configureStore(rootReducer, rootSaga);

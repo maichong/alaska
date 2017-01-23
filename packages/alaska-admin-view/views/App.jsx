@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 import IntlMessageFormat from 'intl-messageformat';
@@ -6,12 +5,13 @@ import { Router, Route, IndexRoute, useRouterHistory } from 'react-router';
 import createHashHistory from 'history/lib/createHashHistory';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import * as layoutRedux from '../redux/layout';
 import qs from 'qs';
 import $ from 'jquery';
 import _map from 'lodash/map';
 import _defaults from 'lodash/defaults';
 
+import * as userRedux from '../redux/user';
 import Node from './Node.jsx';
 import Login from './Login.jsx';
 import Locked from './Locked.jsx';
@@ -75,7 +75,7 @@ class App extends React.Component {
   componentDidMount() {
     let props = this.props;
     if (!props.access && !props.signed && !props.login.show) {
-      props.actions.refreshInfo();
+      props.refreshAction();
     }
 
     $(window).on('resize', this.handleResize);
@@ -90,11 +90,11 @@ class App extends React.Component {
     let { layout } = this.props;
     if (window.innerWidth <= 768) {
       if (layout == 'full') {
-        this.props.actions.layout('hidden');
+        this.props.layoutAction('hidden');
       }
     } else {
       if (layout == 'hidden') {
-        this.props.actions.layout('full');
+        this.props.layoutAction('full');
       }
     }
   };
@@ -235,12 +235,12 @@ class App extends React.Component {
     if (props.access) {
       el = <Router history={history}>
         <Route component={Manage} path="/">
-          <IndexRoute component={Dashboard} />
-          <Route component={List} path="list/:service/:model" />
-          <Route component={Editor} path="edit/:service/:model/:id" />
+          <IndexRoute component={Dashboard}/>
+          <Route component={List} path="list/:service/:model"/>
+          <Route component={Editor} path="edit/:service/:model/:id"/>
           {
             (views.routes || []).map((item, index) => {
-              return <Route key={index} component={item.component} path={item.path} />
+              return <Route key={index} component={item.component} path={item.path}/>
             })
           }
         </Route>
@@ -264,7 +264,7 @@ class App extends React.Component {
       <ToastContainer
         ref="container"
         toastMessageFactory={ToastMessageFactory}
-        className="toast-top-right" />
+        className="toast-top-right"/>
       <Modal show={state.modalOpen}>
         <div className="modal-header">{state.modalTitle}</div>
         <div className="modal-body">{state.modalBody}</div>
@@ -280,6 +280,7 @@ export default connect(({ login, access, signed, settings, layout }) => ({
   signed,
   settings,
   layout
-}), dispatch => ({
-  actions: bindActionCreators(actions, dispatch)
-}))(App);
+}), (dispatch) => bindActionCreators({
+  refreshAction: userRedux.refreshInfo,
+  layoutAction: layoutRedux.layout
+}, dispatch))(App);

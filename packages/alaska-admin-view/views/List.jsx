@@ -13,7 +13,8 @@ import DataTable from './DataTable';
 import SearchField from './SearchField';
 import ContentHeader from './ContentHeader';
 import ListActions from './ListActions';
-
+import * as listRedux from '../redux/lists';
+import { bindActionCreators } from 'redux';
 import api from '../utils/api';
 import { PREFIX } from '../constants';
 
@@ -154,7 +155,7 @@ class List extends React.Component {
       columnsItems,
       columnsKeys
     }, () => {
-      _forEach(filters, (value, path)=> {
+      _forEach(filters, (value, path) => {
         if (!filterViewsMap[path]) {
           this.handleFilter(path);
         }
@@ -167,7 +168,7 @@ class List extends React.Component {
 
   getFilterItems(model, filterViewsMap) {
     const { t, settings } = this.context;
-    return _reduce(model.fields, (res, field, index)=> {
+    return _reduce(model.fields, (res, field, index) => {
       if (!field._label) {
         field._label = field.label;
         field.label = t(field.label, model.service.id);
@@ -183,7 +184,7 @@ class List extends React.Component {
 
   getColumnItems(model, columnsKeys) {
     const { settings } = this.context;
-    return _reduce(model.fields, (res, field, index)=> {
+    return _reduce(model.fields, (res, field, index) => {
       let icon = columnsKeys.indexOf(field.path) > -1 ? CHECK_ICON : null;
       if (field.hidden || !field.cell) return res;
       if (field.super && !settings.superMode) return res;
@@ -214,7 +215,7 @@ class List extends React.Component {
     let filters = state.filters;
     let search = state.search;
     let sort = state.sort;
-    this.context.actions.list({ service, model, page, filters, search, key: state.model.key, sort });
+    this.props.list({ service, model, page, filters, search, key: state.model.key, sort });
     this.setState({ page });
   }
 
@@ -258,7 +259,7 @@ class List extends React.Component {
 
   removeFilter(path) {
     let filters = _omit(this.state.filters, path);
-    let filterViews = _reduce(this.state.filterViews, (res, view)=> {
+    let filterViews = _reduce(this.state.filterViews, (res, view) => {
       if (view.key !== path) {
         res.push(view);
       }
@@ -313,7 +314,7 @@ class List extends React.Component {
     this.setState({ selected });
   };
 
-  handleRemove = async (record) => {
+  handleRemove = async(record) => {
     const { model } = this.state;
     const { t, toast, confirm } = this.context;
     await confirm(t('Remove record'), t('confirm remove record'));
@@ -344,7 +345,7 @@ class List extends React.Component {
       columnsItems,
       columnsKeys,
       selected
-      } = this.state;
+    } = this.state;
     if (!model) {
       return <div className="loading">Loading...</div>;
     }
@@ -357,14 +358,14 @@ class List extends React.Component {
                                      onSelect={this.handleFilter}>{filterItems}</DropdownButton>);
     }
 
-    if(!location.query.nocolumns){
+    if (!location.query.nocolumns) {
       titleBtns.push(<DropdownButton id="columnsDropdown" key="columnsDropdown"
                                      title={<i className="fa fa-columns"/>}
                                      onSelect={this.handleColumn}>{columnsItems}</DropdownButton>);
     }
 
 
-    if(!location.query.norefresh){
+    if (!location.query.norefresh) {
       titleBtns.push(<button key="refresh" className="btn btn-primary" onClick={this.refresh}><i
         className="fa fa-refresh"/>
       </button>);
@@ -418,4 +419,6 @@ class List extends React.Component {
   }
 }
 
-export default connect(({ lists }) => ({ lists }))(List);
+export default connect(({ lists }) => ({ lists }), (dispatch) => bindActionCreators({
+  listAction: listRedux.list
+}, dispatch))(List);
