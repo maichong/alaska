@@ -140,58 +140,58 @@ class App extends React.Component {
     return this._messageCache[locale][message].format(values);
   };
 
-  alert = (title, body) => {
-    return new Promise((resolve, reject) => {
-      this.setState({
-        modalTitle: title,
-        modalBody: body,
-        modalActions: <button
-          className={'btn btn-success'}
-          onClick={() => {
-            this.handleCloseModal();
-            resolve();
-          }}
-        >{this.t('Confirm')}</button>,
-        modalOpen: true
-      });
-    });
-  };
+  alert = (title, body) => (new Promise(
+      (resolve) => {
+        this.setState({
+          modalTitle: title,
+          modalBody: body,
+          modalActions: <button
+            className={'btn btn-success'}
+            onClick={() => {
+              this.handleCloseModal();
+              resolve();
+            }}
+          >{this.t('Confirm')}</button>,
+          modalOpen: true
+        });
+      })
+  );
 
-  confirm = (title, body, buttons = []) => {
-    return new Promise((resolve, reject) => {
-      let defaults = [{
-        title: this.t('Confirm'),
-        style: 'success'
-      }, {
-        title: this.t('Cancel'),
-        style: 'default'
-      }];
-      let handles = [() => {
-        this.handleCloseModal();
-        resolve();
-      }, () => {
-        this.handleCloseModal();
-        reject();
-      }];
-      let modalActions = _.map([0, 1], (i) => {
-        let config = buttons[i];
-        if (typeof config === 'string') {
-          config = {
-            title: config
-          };
-        }
-        config = _.defaults({}, config, defaults[i]);
-        return <button key={i} className={'btn btn-' + config.style} onClick={handles[i]}>{config.title}</button>;
-      });
+  confirm = (title, body, buttons = []) => (new Promise(
+      (resolve, reject) => {
+        let defaults = [{
+          title: this.t('Confirm'),
+          style: 'success'
+        }, {
+          title: this.t('Cancel'),
+          style: 'default'
+        }];
+        let handles = [() => {
+          this.handleCloseModal();
+          resolve();
+        }, () => {
+          this.handleCloseModal();
+          reject();
+        }];
+        let modalActions = _.map([0, 1], (i) => {
+          let config = buttons[i];
+          if (typeof config === 'string') {
+            config = {
+              title: config
+            };
+          }
+          config = _.defaults({}, config, defaults[i]);
+          return <button key={i} className={'btn btn-' + config.style} onClick={handles[i]}>{config.title}</button>;
+        });
 
-      this.setState({
-        modalTitle: title,
-        modalBody: body,
-        modalActions,
-        modalOpen: true
-      });
-    });
-  };
+        this.setState({
+          modalTitle: title,
+          modalBody: body,
+          modalActions,
+          modalOpen: true
+        });
+      })
+  );
 
   toast = (method, title, body, options) => {
     if (typeof body === 'object') {
@@ -223,13 +223,11 @@ class App extends React.Component {
   handleResize = () => {
     let { layout } = this.props;
     if (window.innerWidth <= 768) {
-      if (layout == 'full') {
+      if (layout === 'full') {
         this.props.layoutAction('hidden');
       }
-    } else {
-      if (layout == 'hidden') {
-        this.props.layoutAction('full');
-      }
+    } else if (layout === 'hidden') {
+      this.props.layoutAction('full');
     }
   };
 
@@ -247,7 +245,8 @@ class App extends React.Component {
           <Route component={List} path="list/:service/:model" />
           <Route component={Editor} path="edit/:service/:model/:id" />
           {
-            (views.routes || []).map((item, index) => <Route key={index} component={item.component} path={item.path} />)
+            (views.routes || []).map(
+              (item, index) => (<Route key={index} component={item.component} path={item.path} />))
           }
         </Route>
       </Router>;
