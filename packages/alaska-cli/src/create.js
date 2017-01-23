@@ -4,7 +4,7 @@ import path from 'path';
 import download from 'download-github-repo';
 import * as utils from './utils';
 
-function github(url, uri,) {
+function github(url, uri) {
   return new Promise(function (resolve, reject) {
     download(url, uri, (err) => {
       if (err) {

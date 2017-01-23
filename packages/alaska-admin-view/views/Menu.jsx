@@ -1,19 +1,15 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-02-29
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 import shallowEqual from '../utils/shallow-equal';
 import Node from './Node';
 
-const { object, func, number, array, string, node } = React.PropTypes;
+const { object, func, number, array, string } = React.PropTypes;
 
 function findSubs(subs, id) {
-  for (let i in subs) {
+  for (let i = 0; i < subs.length; i += 1) {
     let sub = subs[i];
-    if (sub.id == id) return true;
+    if (sub.id === id) return true;
     if (sub.subs && sub.subs.length) {
       let has = findSubs(sub.subs, id);
       if (has) return true;
@@ -25,7 +21,7 @@ function findSubs(subs, id) {
 export default class Menu extends React.Component {
 
   static propTypes = {
-    children: node,
+    // children: node,
     items: array,
     level: number,
     layout: string,
@@ -38,7 +34,9 @@ export default class Menu extends React.Component {
     t: func
   };
 
-  constructor(props) {
+  state:Object;
+
+  constructor(props:Object) {
     super(props);
     this.state = {
       activated: '',
@@ -46,36 +44,38 @@ export default class Menu extends React.Component {
     };
   }
 
-  shouldComponentUpdate(props, state) {
-    return state.activated != this.state.activated || state.opened != this.state.opened || !shallowEqual(props, this.props);
+  shouldComponentUpdate(props:Object, state:Object) {
+    return state.activated !== this.state.activated ||
+      state.opened !== this.state.opened || !shallowEqual(props, this.props);
   }
 
-  createMenuItem(item, level) {
+  createMenuItem(item:Object, level:number) {
     const me = this;
     const t = this.context.t;
     const { layout, onChange, value } = this.props;
     let subMenu;
     let itemId = item.id;
-    let activated = this.state.activated == itemId || value == itemId;
+    let activated = this.state.activated === itemId || value === itemId;
     let hasSubs = item.subs && item.subs.length;
-    let opened = this.state.opened == itemId;
+    let opened = this.state.opened === itemId;
     if (opened && hasSubs) {
-
-      function onChangeFinal(v) {
+      let onChangeFinal = function (v) {
         onChange(v);
         let newState = { activated: '' };
-        if (level == 0 && layout == 'icon') {
+        if (level === 0 && layout === 'icon') {
+          // $Flow
           newState.opened = '';
         }
         me.setState(newState);
-      }
+      };
 
       subMenu = <Menu
         items={item.subs}
         level={level + 1}
         layout={layout}
         onChange={onChangeFinal}
-        value={value}/>
+        value={value}
+      />;
     }
 
     function onClick() {
@@ -94,14 +94,15 @@ export default class Menu extends React.Component {
     }
 
     let icon = item.icon || 'hashtag';
-    let subsIcon = !hasSubs ? null : opened ? 'up' : 'down';
+    let openedTxt = opened ? 'up' : 'down';
+    let subsIcon = !hasSubs ? null : openedTxt;
     if (subsIcon) {
-      if (layout == 'icon') {
+      if (layout === 'icon') {
         subsIcon = 'right';
       }
-      subsIcon = <i className={'has-subs-icon fa fa-angle-'+subsIcon}/>;
+      subsIcon = <i className={'has-subs-icon fa fa-angle-' + subsIcon} />;
     }
-    let badge = item.badge ? <span className={'label label-'+item.badgeStyle}>{item.badge}</span> : null;
+    let badge = item.badge ? <span className={'label label-' + item.badgeStyle}>{item.badge}</span> : null;
     let className = activated ? 'activated' : '';
     if (opened || (value && hasSubs && findSubs(item.subs, value))) {
       className = 'opened';
@@ -109,7 +110,7 @@ export default class Menu extends React.Component {
     return (
       <li key={item.id} className={className}>
         <a href="javascript:void(0)" onClick={onClick}>
-          <i className={'fa fa-'+icon}/>
+          <i className={'fa fa-' + icon} />
           <span>{t(item.label, item.service)}</span>
           {badge}
           {subsIcon}
@@ -122,9 +123,9 @@ export default class Menu extends React.Component {
   render() {
     let props = this.props;
     let level = this.props.level || 0;
-    let items = (props.items || []).map(item => this.createMenuItem(item, level));
-    return <Node wrapper="menu" tag="ul" className={'sidebar-menu menu-'+level}>
+    let items = (props.items || []).map((item) => this.createMenuItem(item, level));
+    return (<Node wrapper="menu" tag="ul" className={'sidebar-menu menu-' + level}>
       { items }
-    </Node>;
+    </Node>);
   }
 }

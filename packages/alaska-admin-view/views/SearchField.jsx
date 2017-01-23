@@ -1,8 +1,4 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-04-20
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 
@@ -12,17 +8,19 @@ export default class SearchField extends React.Component {
 
   static propTypes = {
     value: string,
-    onChange: func,
+    onChange: func
   };
+  state:Object;
+  _timer:any;
 
-  constructor(props) {
+  constructor(props:Object) {
     super(props);
     this.state = {
       value: ''
     };
   }
 
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps(props:Object) {
     if (props.value !== this.state.value) {
       this.setState({
         value: props.value
@@ -30,7 +28,7 @@ export default class SearchField extends React.Component {
     }
   }
 
-  handleChange = (event) => {
+  handleChange = (event:Object) => {
     let value = event.target.value;
     this.setState({ value });
     if (this._timer) {
@@ -42,7 +40,9 @@ export default class SearchField extends React.Component {
   };
 
   render() {
-    return <input className="form-control" type="text" value={this.state.value} onChange={this.handleChange}
-                  placeholder={this.props.placeholder}/>;
+    return (<input
+      className="form-control" type="text" value={this.state.value} onChange={this.handleChange}
+      placeholder={this.props.placeholder}
+    />);
   }
 }

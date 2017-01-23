@@ -1,8 +1,4 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-07-11
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 
@@ -22,9 +18,9 @@ export default class Logo extends React.Component {
     let icon = settings.icon || 'static/img/icon.png';
     return (
       <Node id="logo">
-        <a href="#">
-          <img className="logo" src={logo}/>
-          <img className="icon" src={icon}/>
+        <a href="javascript:void(0)">
+          <img className="logo" src={logo} />
+          <img className="icon" src={icon} />
         </a>
       </Node>
     );

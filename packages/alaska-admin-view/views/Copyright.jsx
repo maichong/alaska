@@ -1,8 +1,4 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-02-29
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 import Node from './Node';
@@ -17,7 +13,7 @@ export default class Copyright extends React.Component {
 
   render() {
     if (this.props.layout == 'icon') {
-      return <Node id="copyright">Alaska</Node>
+      return <Node id="copyright">Alaska</Node>;
     }
     return <Node id="copyright">Powered By Alaska</Node>;
   }

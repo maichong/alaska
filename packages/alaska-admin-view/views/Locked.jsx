@@ -1,8 +1,4 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-02-29
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 import Node from './Node';
@@ -17,8 +13,8 @@ export default class Locked extends React.Component {
 
   render() {
     const t = this.context.t;
-    return <Node id="locked">
+    return (<Node id="locked">
       <h1>{t('Access Denied')}</h1>
-    </Node>;
+    </Node>);
   }
 }

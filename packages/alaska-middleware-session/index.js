@@ -124,4 +124,4 @@ export default function (options: Alaska$Config$session) {
       onNext();
     }
   };
-};
+}

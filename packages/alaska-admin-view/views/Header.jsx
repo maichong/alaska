@@ -1,19 +1,12 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-02-29
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
-
-import Node from './Node';
-import LocaleNav from './LocaleNav';
-import NavDropdown from 'react-bootstrap/lib/NavDropdown';
-import MenuItem from 'react-bootstrap/lib/MenuItem';
-import _map from 'lodash/map';
-
+import { NavDropdown, MenuItem } from 'react-bootstrap';
+import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import Node from './Node';
+import LocaleNav from './LocaleNav';
 
 const { node, object, func, string } = React.PropTypes;
 
@@ -30,6 +23,11 @@ class Header extends React.Component {
     views: object,
     settings: object,
     t: func,
+  };
+
+  state: {
+    open:boolean;
+    anchorEl:Object;
   };
 
   constructor(props, context) {
@@ -93,7 +91,7 @@ class Header extends React.Component {
   render() {
     const { user, layout } = this.props;
     const { t, views } = this.context;
-    const navs = _map(views.navs, (Nav, index) => <Nav key={index}/>);
+    const navs = _.map(views.navs, (Nav, index) => <Nav key={index}/>);
     let username = null;
     if (layout == 'full') {
       username = user.username;
@@ -107,15 +105,19 @@ class Header extends React.Component {
           </div>
           <Node id="topNav" tag="ul" className="nav navbar-nav navbar-right">
             {navs}
-            <LocaleNav/>
-            <NavDropdown eventKey={3}
-                         title={<div><img src={user.avatar || 'static/img/avatar.png'}/>{username}</div>}
-                         id="userNav">
+            <LocaleNav />
+            <NavDropdown
+              eventKey={3}
+              title={<div><img src={user.avatar || 'static/img/avatar.png'} />{username}</div>}
+              id="userNav"
+            >
               <MenuItem eventKey={3.1} onClick={this.handleRefresh}>{t('Refresh')}<i
-                className="fa fa-refresh pull-right"/>
+                className="fa fa-refresh pull-right"
+              />
               </MenuItem>
               <MenuItem eventKey={3.2} onClick={this.handleLogout}>{t('Logout')}<i
-                className="fa fa-sign-out pull-right"/></MenuItem>
+                className="fa fa-sign-out pull-right"
+              /></MenuItem>
             </NavDropdown>
           </Node>
         </div>

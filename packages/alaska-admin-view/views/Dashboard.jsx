@@ -1,8 +1,4 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-07-15
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 import Node from './Node';

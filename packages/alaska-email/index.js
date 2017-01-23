@@ -125,7 +125,7 @@ class EmailService extends Service {
     }
 
     task.lastUser = user._id;
-    task.progress++;
+    task.progress += 1;
     task.nextAt = new Date(Date.now() + (task.interval * 1000 || 0));
     task.save();
   }
