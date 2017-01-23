@@ -1,16 +1,17 @@
-import React from 'react';
+// @flow
 
+import React from 'react';
 import IntlMessageFormat from 'intl-messageformat';
 import { Router, Route, IndexRoute, useRouterHistory } from 'react-router';
 import createHashHistory from 'history/lib/createHashHistory';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as layoutRedux from '../redux/layout';
+import { Modal } from 'react-bootstrap';
+import ReactToastr, { ToastContainer } from 'react-toastr';
 import qs from 'qs';
 import $ from 'jquery';
-import _map from 'lodash/map';
-import _defaults from 'lodash/defaults';
-
+import _ from 'lodash';
+import * as layoutRedux from '../redux/layout';
 import * as userRedux from '../redux/user';
 import Node from './Node.jsx';
 import Login from './Login.jsx';
@@ -19,10 +20,7 @@ import Manage from './Manage.jsx';
 import Dashboard from './Dashboard.jsx';
 import Editor from './Editor.jsx';
 import List from './List.jsx';
-import Modal from 'react-bootstrap/lib/Modal';
 
-const ReactToastr = require('react-toastr');
-const { ToastContainer } = ReactToastr;
 const ToastMessageFactory = React.createFactory(ReactToastr.ToastMessage.animation);
 
 const createAppHistory = useRouterHistory(createHashHistory);
@@ -31,7 +29,7 @@ const history = createAppHistory({
   stringifyQuery: qs.stringify
 });
 
-const { node, object, func } = React.PropTypes;
+const { object, func } = React.PropTypes;
 
 class App extends React.Component {
 
@@ -49,7 +47,15 @@ class App extends React.Component {
     toast: func,
   };
 
-  constructor(props, context) {
+  state: {
+    modalTitle: string;
+    modalBody: string;
+    modalOpen: boolean;
+    modalActions: any;
+  };
+  _messageCache: Object;
+
+  constructor(props: Object) {
     super(props);
     this.state = {
       modalTitle: '',
@@ -83,99 +89,8 @@ class App extends React.Component {
   }
 
   componentWillUnmount() {
-    $(window).off('resize', this.handleResize)
+    $(window).off('resize', this.handleResize);
   }
-
-  handleResize = () => {
-    let { layout } = this.props;
-    if (window.innerWidth <= 768) {
-      if (layout == 'full') {
-        this.props.layoutAction('hidden');
-      }
-    } else {
-      if (layout == 'hidden') {
-        this.props.layoutAction('full');
-      }
-    }
-  };
-
-  handleCloseModal = () => {
-    this.setState({
-      modalOpen: false
-    });
-  };
-
-  alert = (title, body) => {
-    return new Promise((resolve, reject) => {
-      this.setState({
-        modalTitle: title,
-        modalBody: body,
-        modalActions: <button className={'btn btn-success'}
-                              onClick={() => {
-                              this.handleCloseModal();
-                              resolve();
-                              }}>{this.t('Confirm')}</button>,
-        modalOpen: true
-      });
-    });
-  };
-
-  confirm = (title, body, buttons = []) => {
-    return new Promise((resolve, reject) => {
-      let defaults = [{
-        title: this.t('Confirm'),
-        style: 'success'
-      }, {
-        title: this.t('Cancel'),
-        style: 'default'
-      }];
-      let handles = [() => {
-        this.handleCloseModal();
-        resolve();
-      }, () => {
-        this.handleCloseModal();
-        reject();
-      }];
-      let modalActions = _map([0, 1], i => {
-        let config = buttons[i];
-        if (typeof config === 'string') {
-          config = {
-            title: config
-          };
-        }
-        config = _defaults({}, config, defaults[i]);
-        return <button key={i} className={'btn btn-'+config.style} onClick={handles[i]}>{config.title}</button>
-      });
-
-      this.setState({
-        modalTitle: title,
-        modalBody: body,
-        modalActions,
-        modalOpen: true
-      });
-    });
-  };
-
-  toast = (method, title, body, options) => {
-    if (typeof body === 'object') {
-      options = body;
-      body = '';
-    }
-    options = options || {};
-    if (options.closeButton !== false) {
-      options.closeButton = true;
-    }
-    if (!options.showAnimation) {
-      options.showAnimation = 'fadeIn';
-    }
-    if (!options.hideAnimation) {
-      options.hideAnimation = 'fadeOut';
-    }
-    if (!options.timeOut) {
-      options.timeOut = 10000;
-    }
-    this.refs.container[method](title, body, options);
-  };
 
   t = (message, serviceId, values, formats) => {
     if (typeof serviceId === 'object') {
@@ -225,6 +140,99 @@ class App extends React.Component {
     return this._messageCache[locale][message].format(values);
   };
 
+  alert = (title, body) => {
+    return new Promise((resolve, reject) => {
+      this.setState({
+        modalTitle: title,
+        modalBody: body,
+        modalActions: <button
+          className={'btn btn-success'}
+          onClick={() => {
+            this.handleCloseModal();
+            resolve();
+          }}
+        >{this.t('Confirm')}</button>,
+        modalOpen: true
+      });
+    });
+  };
+
+  confirm = (title, body, buttons = []) => {
+    return new Promise((resolve, reject) => {
+      let defaults = [{
+        title: this.t('Confirm'),
+        style: 'success'
+      }, {
+        title: this.t('Cancel'),
+        style: 'default'
+      }];
+      let handles = [() => {
+        this.handleCloseModal();
+        resolve();
+      }, () => {
+        this.handleCloseModal();
+        reject();
+      }];
+      let modalActions = _.map([0, 1], (i) => {
+        let config = buttons[i];
+        if (typeof config === 'string') {
+          config = {
+            title: config
+          };
+        }
+        config = _.defaults({}, config, defaults[i]);
+        return <button key={i} className={'btn btn-' + config.style} onClick={handles[i]}>{config.title}</button>;
+      });
+
+      this.setState({
+        modalTitle: title,
+        modalBody: body,
+        modalActions,
+        modalOpen: true
+      });
+    });
+  };
+
+  toast = (method, title, body, options) => {
+    if (typeof body === 'object') {
+      options = body;
+      body = '';
+    }
+    options = options || {};
+    if (options.closeButton !== false) {
+      options.closeButton = true;
+    }
+    if (!options.showAnimation) {
+      options.showAnimation = 'fadeIn';
+    }
+    if (!options.hideAnimation) {
+      options.hideAnimation = 'fadeOut';
+    }
+    if (!options.timeOut) {
+      options.timeOut = 10000;
+    }
+    this.refs.container[method](title, body, options);
+  };
+
+  handleCloseModal = () => {
+    this.setState({
+      modalOpen: false
+    });
+  };
+
+  handleResize = () => {
+    let { layout } = this.props;
+    if (window.innerWidth <= 768) {
+      if (layout == 'full') {
+        this.props.layoutAction('hidden');
+      }
+    } else {
+      if (layout == 'hidden') {
+        this.props.layoutAction('full');
+      }
+    }
+  };
+
   render() {
     const props = this.props;
     const state = this.state;
@@ -235,36 +243,29 @@ class App extends React.Component {
     if (props.access) {
       el = <Router history={history}>
         <Route component={Manage} path="/">
-          <IndexRoute component={Dashboard}/>
-          <Route component={List} path="list/:service/:model"/>
-          <Route component={Editor} path="edit/:service/:model/:id"/>
+          <IndexRoute component={Dashboard} />
+          <Route component={List} path="list/:service/:model" />
+          <Route component={Editor} path="edit/:service/:model/:id" />
           {
-            (views.routes || []).map((item, index) => {
-              return <Route key={index} component={item.component} path={item.path}/>
-            })
+            (views.routes || []).map((item, index) => <Route key={index} component={item.component} path={item.path} />)
           }
         </Route>
-      </Router>
-    }
-
-    //已登录,但无权限
-    else if (props.signed) {
+      </Router>;
+    } else if (props.signed) { //已登录,但无权限
       el = <Locked />;
-    }
-
-    //未登录
-    else if (props.login.show) {
+    } else if (props.login.show) {  //未登录
       el = <Login />;
     } else {
       el = <div className="boot-loading">Loading...</div>;
     }
 
-    return ( <Node id="app" className={props.layout}>
+    return (<Node id="app" className={props.layout}>
       {el}
       <ToastContainer
         ref="container"
         toastMessageFactory={ToastMessageFactory}
-        className="toast-top-right"/>
+        className="toast-top-right"
+      />
       <Modal show={state.modalOpen}>
         <div className="modal-header">{state.modalTitle}</div>
         <div className="modal-body">{state.modalBody}</div>
