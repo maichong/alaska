@@ -1,18 +1,12 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-03-03
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
+import _ from 'lodash';
 import React from 'react';
 import { Link } from 'react-router';
 import { IF, ELSE } from 'jsx-plus';
 import shallowEqual from '../utils/shallow-equal';
 import Node from './Node';
 import DataTableRow from './DataTableRow';
-import _filter from 'lodash/filter';
-import _clone from 'lodash/clone';
-import _reduce from 'lodash/reduce';
 
 const { object, array, string, func } = React.PropTypes;
 
@@ -36,11 +30,18 @@ export default class DataTable extends React.Component {
     t: func,
   };
 
-  constructor(props, context) {
+  state: {
+    data:Object[];
+    columns:Object[];
+    selected:Object;
+  };
+
+  constructor(props: Object) {
     super(props);
     this.state = {
       data: props.data || [],
-      selected: {}
+      selected: {},
+      columns: []
     };
   }
 
@@ -48,11 +49,18 @@ export default class DataTable extends React.Component {
     this.init(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Object) {
     this.init(nextProps);
   }
 
-  init(props) {
+  shouldComponentUpdate(props: Object, state: Object) {
+    if (!state.data || !state.columns) {
+      return false;
+    }
+    return !shallowEqual(state, this.state);
+  }
+
+  init(props: Object) {
     let model = props.model || this.props.model;
     if (!model) return;
     const { settings } = this.context;
@@ -62,7 +70,7 @@ export default class DataTable extends React.Component {
       state.data = props.data;
     }
     if (props.selected) {
-      state.selected = _reduce(props.selected, (res, record) => {
+      state.selected = _.reduce(props.selected, (res, record) => {
         res[record._id] = true;
         return res;
       }, {});
@@ -83,33 +91,6 @@ export default class DataTable extends React.Component {
     this.setState(state);
   }
 
-  shouldComponentUpdate(props, state) {
-    if (!state.data || !state.columns) {
-      return false;
-    }
-    return !shallowEqual(state, this.state);
-  }
-
-  handleSelect = (record, isSelected) => {
-    let selected = _clone(this.state.selected);
-    if (isSelected) {
-      selected[record._id] = true;
-    } else {
-      delete selected[record._id];
-    }
-    this.setState({ selected });
-    let records = _filter(this.state.data, record => selected[record._id]);
-    this.props.onSelect(records);
-  };
-
-  handleSelectAll = () => {
-    let records = [];
-    if (!this.isAllSelected()) {
-      records = _clone(this.state.data);
-    }
-    this.props.onSelect(records);
-  };
-
   isAllSelected() {
     const { data, selected } = this.state;
     if (!data || !data.length) {
@@ -121,7 +102,25 @@ export default class DataTable extends React.Component {
     return true;
   };
 
-  handleEdit = (record) => {
+  handleSelectAll = () => {
+    let records = [];
+    if (!this.isAllSelected()) {
+      records = _.clone(this.state.data);
+    }
+    this.props.onSelect(records);
+  };
+  handleSelect = (record: Object, isSelected: boolean) => {
+    let selected = _.clone(this.state.selected);
+    if (isSelected) {
+      selected[record._id] = true;
+    } else {
+      delete selected[record._id];
+    }
+    this.setState({ selected });
+    let records = _.filter(this.state.data, (record) => selected[record._id]);
+    this.props.onSelect(records);
+  };
+  handleEdit = (record: Object) => {
     const { model } = this.props;
     const { router } = this.context;
     const service = model.service;
@@ -140,14 +139,13 @@ export default class DataTable extends React.Component {
 
     let selectEl = onSelect ?
       <th onClick={this.handleSelectAll} width="29"><input type="checkbox" checked={this.isAllSelected()}/></th> : null;
-
     return (
       <table className="data-table table table-hover">
         <thead>
         <tr>
           {selectEl}
           {
-            columns.map(col => {
+            columns.map((col) => {
               let sortIcon = null;
               let handleClick;
               if (!col.nosort && onSort) {

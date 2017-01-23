@@ -1,16 +1,9 @@
-/**
- * @copyright Maichong Software Ltd. 2016 http://maichong.it
- * @date 2016-03-03
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 import qs from 'qs';
 import { connect } from 'react-redux';
-import _forEach from 'lodash/forEach';
-import _get from 'lodash/get';
-import _map from 'lodash/map';
-
+import _ from 'lodash';
 import Node from './Node';
 import Action from './Action';
 import FieldGroup from './FieldGroup';
@@ -112,7 +105,7 @@ class Editor extends React.Component {
     if (id === '_new') {
       let data = state.data || {};
       let newData = {};
-      _forEach(state.model.fields, field => {
+      _.forEach(state.model.fields, (field) => {
         if (data[field.path] !== undefined) {
           newData[field.path] = data[field.path];
         } else if (field.default !== undefined) {
@@ -156,7 +149,7 @@ class Editor extends React.Component {
     this.context.router.replace(url);
   };
 
-  handleRemove = async () => {
+  handleRemove = async() => {
     const { serviceId, modelName, id } = this.state;
     const { t, toast, confirm } = this.context;
     await confirm(t('Remove record'), t('confirm remove record'), [{
@@ -185,7 +178,7 @@ class Editor extends React.Component {
       data,
       model,
       id
-      } = this.state;
+    } = this.state;
     let fields = model.fields;
     let errors = {};
     let hasError = false;
@@ -210,7 +203,7 @@ class Editor extends React.Component {
       model: model.name,
       key: model.key,
       _r: this._r,
-      data: Object.assign({}, data, { id: id == '_new' ? '' : id })
+      data: Object.assign({}, data, { id: id.toString() === '_new' ? '' : id })
     });
   };
 
@@ -233,7 +226,7 @@ class Editor extends React.Component {
       if (config.script && config.script.substr(0, 3) === 'js:') {
         eval(config.script.substr(3));
       } else {
-        let body = Object.assign({}, data, { id: id == '_new' ? '' : id });
+        let body = Object.assign({}, data, { id: id.toString() === '_new' ? '' : id });
         await api.post(PREFIX + '/api/action?' + qs.stringify({
             service: model.service.id,
             model: model.name,
@@ -266,7 +259,7 @@ class Editor extends React.Component {
       errors,
       serviceId,
       modelName
-      } = this.state;
+    } = this.state;
     const { views, t, settings } = this.context;
     if (!data) {
       return <div className="loading">Loading...</div>;
@@ -291,7 +284,7 @@ class Editor extends React.Component {
 
     for (let groupKey in model.groups) {
       let group = model.groups[groupKey];
-      if (typeof group == 'string') {
+      if (typeof group === 'string') {
         group = { title: group };
       }
       if (!group._title) {
@@ -404,7 +397,7 @@ class Editor extends React.Component {
     }
 
     //扩展动作按钮
-    _forEach(model.actions, (action, key)=> {
+    _.forEach(model.actions, (action, key) => {
       if (['create', 'save', 'remove'].indexOf(key) > -1) return;
       if (action.super && !settings.superMode) return;
       if (action.depends && !checkDepends(action.depends, data)) return;
@@ -426,7 +419,7 @@ class Editor extends React.Component {
 
     let relationships = null;
     if (id != '_new' && model.relationships) {
-      relationships = _map(model.relationships,
+      relationships = _.map(model.relationships,
         (r, index) => {
           if (r.super && !settings.superMode) return;
           return <Relationship
