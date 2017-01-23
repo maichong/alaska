@@ -4,6 +4,9 @@ import React from 'react';
 import qs from 'qs';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import * as detailsRedux from '../redux/details';
+import * as saveRedux from '../redux/save';
+import { bindActionCreators } from 'redux';
 import Node from './Node';
 import Action from './Action';
 import FieldGroup from './FieldGroup';
@@ -128,7 +131,7 @@ class Editor extends React.Component {
   refresh() {
     const state = this.state;
     const id = state.id;
-    this.context.actions.details({
+    this.props.detailsAction({
       service: state.serviceId,
       model: state.modelName,
       key: state.model.key,
@@ -198,7 +201,7 @@ class Editor extends React.Component {
     this._r = Math.random();
     this.loading = true;
 
-    this.context.actions.save({
+    this.context.actions.saveAction({
       service: model.service.id,
       model: model.name,
       key: model.key,
@@ -457,4 +460,7 @@ class Editor extends React.Component {
   }
 }
 
-export default connect(({ details, save }) => ({ details, save }))(Editor);
+export default connect(({ details, save }) => ({ details, save }), (dispatch) => bindActionCreators({
+  detailsAction: detailsRedux.details,
+  saveAction: saveRedux.save
+}, dispatch))(Editor);

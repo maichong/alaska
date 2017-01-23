@@ -1,5 +1,4 @@
 import { createAction, handleActions } from 'redux-actions';
-import _ from 'lodash';
 
 export const REFRESH = 'REFRESH';
 export const LIST_SUCCESS = 'LIST_SUCCESS';

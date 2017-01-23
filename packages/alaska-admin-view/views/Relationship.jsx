@@ -4,6 +4,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import qs from 'qs';
 import DataTable from './DataTable';
+import * as listRedux from '../redux/lists';
+import { bindActionCreators } from 'redux';
 
 const { object, string, func } = React.PropTypes;
 
@@ -26,9 +28,9 @@ class Relationship extends React.Component {
     t: func,
   };
 
-  state:Object;
+  state: Object;
 
-  constructor(props:Object) {
+  constructor(props: Object) {
     super(props);
     this.state = {
       data: null,
@@ -41,7 +43,7 @@ class Relationship extends React.Component {
     this.init();
   }
 
-  componentWillReceiveProps(props:Object) {
+  componentWillReceiveProps(props: Object) {
     let model = this.state.model;
     if (props.from !== this.props.from) {
       this.setState({
@@ -60,7 +62,7 @@ class Relationship extends React.Component {
     }
   }
 
-  shouldComponentUpdate(props:Object, state:Object) {
+  shouldComponentUpdate(props: Object, state: Object) {
     return state.data !== this.state.data || state.model !== this.state.model;
   }
 
@@ -82,7 +84,7 @@ class Relationship extends React.Component {
     });
     this.setState({ model, filters }, () => {
       if (!this.state.data) {
-        this.context.actions.list(args);
+        this.props.listAction(args);
       }
     });
   }
@@ -112,4 +114,6 @@ class Relationship extends React.Component {
   }
 }
 
-export default connect(({ lists }) => ({ lists }))(Relationship);
+export default connect(({ lists }) => ({ lists }), (dispatch) => bindActionCreators({
+  listAction: listRedux.list
+}, dispatch))(Relationship);
