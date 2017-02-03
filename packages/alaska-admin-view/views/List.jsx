@@ -4,8 +4,7 @@ import React from 'react';
 import qs from 'qs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import DropdownButton from 'react-bootstrap/lib/DropdownButton';
-import MenuItem from 'react-bootstrap/lib/MenuItem';
+import { DropdownButton, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
 
 import Node from './Node';
@@ -36,6 +35,7 @@ class List extends React.Component {
     toast: func,
     router: object,
   };
+
   state: {
     data:any,
     search:string,
@@ -49,8 +49,12 @@ class List extends React.Component {
     filterViews: any[],
     filterViewsMap: Object,
     selected: any[],
-    model:any
+    model:any,
+    service: any,
+    title: string
   };
+
+  _loading:boolean;
 
   constructor(props: Object) {
     super(props);
@@ -68,7 +72,9 @@ class List extends React.Component {
       filterViews: [],
       filterViewsMap: {},
       selected: [],
-      model: {}
+      model: {},
+      service: {},
+      title: ''
     };
   }
 
@@ -252,7 +258,7 @@ class List extends React.Component {
   }
 
   updateQuery() {
-    let query = { t: Date.now() };
+    let query = { t: Date.now(), search: '', sort: '', filters: '', columns: '' };
     const { filters, sort, search, columnsKeys } = this.state;
     if (search) {
       query.search = search;
@@ -281,7 +287,7 @@ class List extends React.Component {
     let view;
     const onChange = (filter) => {
       let cFilters = _.assign({}, this.state.filters, { [field.path]: filter });
-      this.setState({ cFilters, data: null, page: 0 }, () => {
+      this.setState({ filters: cFilters, data: null, page: 0 }, () => {
         this.loadMore();
         this.updateQuery();
       });
@@ -440,7 +446,8 @@ class List extends React.Component {
             <ListActions
               model={model} selected={selected}
               onRefresh={this.refresh}
-              refreshAction={this.props.refreshAction} />
+              refreshAction={this.props.refreshAction}
+            />
           </div>
         </nav>
       </Node>

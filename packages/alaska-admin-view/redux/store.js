@@ -6,7 +6,7 @@ import createLogger from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import * as StartupActions from './startup';
 
-export default function (rootReducer, rootSaga) {
+export default function (rootReducer:any, rootSaga:any) {
   const middleware = [];
   const enhancers = [];
 

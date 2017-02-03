@@ -1,7 +1,6 @@
 // @flow
 
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import React from 'react';
 import _ from 'lodash';
 import akita from 'akita';
@@ -28,11 +27,11 @@ export default class ListActions extends React.Component {
     toast: func
   };
 
-  shouldComponentUpdate(props) {
+  shouldComponentUpdate(props: Object) {
     return !shallowEqual(props, this.props);
   }
 
-  handleAction = async(action) => {
+  handleAction = async(action :Object) => {
     const { model, selected } = this.props;
     const { t, toast, confirm } = this.context;
 
