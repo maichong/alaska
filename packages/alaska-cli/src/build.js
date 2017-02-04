@@ -1,19 +1,20 @@
 // @flow
 
-import shelljs from 'shelljs';
+/* eslint no-console:0 */
+/* eslint global-require:0 */
+/* eslint import/no-dynamic-require:0 */
+
 import fs from 'fs';
-import childProcess from 'child_process';
+import { execFileSync } from 'child_process';
+import mkdirp from 'mkdirp';
 import * as uitls from './utils';
 
-const execFileSync = childProcess.execFileSync;
-
-function filepath(file) {
+function filepath(file: string): string {
   return process.platform === 'win32' ? file.replace(/\\/g, '\\\\') : file;
 }
 
-
-export default async function build(options:Object) {
-  console.log('Alaska build...');
+export default async function build(options: Object) {
+  console.log('Alaska build admin dashboard...');
   const dir = process.cwd() + '/';
   if (!uitls.isFile(dir + '.alaska')) {
     throw new Error('Current folder is not an alaska project!');
@@ -25,20 +26,20 @@ export default async function build(options:Object) {
   }
 
   if (!uitls.isDirectory(dir + 'runtime/alaska-admin-view')) {
-    shelljs.mkdir('-p', 'runtime/alaska-admin-view');
+    mkdirp.sync('runtime/alaska-admin-view');
   }
 
   const modulesDir = dir + 'node_modules/';
   const modulesList = fs.readdirSync(modulesDir);
 
-  let views = {};
-  let wrappers = {};
-  let routes = [];
+  let views: { [name:string]:string } = {};
+  let wrappers: { [name:string]:string[] } = {};
+  let routes: Object[] = [];
   let navs = [];
 
   function parse(m) {
     if (m.views && typeof m.views === 'object') {
-      for (let name = 0; name < m.views.length; name += 1) {
+      for (let name of Object.keys(m.views)) {
         let view = m.views[name];
         if (typeof view === 'string') {
           views[name] = view;
@@ -48,7 +49,7 @@ export default async function build(options:Object) {
       }
     }
     if (m.wrappers) {
-      for (let name = 0; name < m.wrappers.length; name += 1) {
+      for (let name of Object.keys(m.wrappers)) {
         let wrapper = m.wrappers[name];
         if (!wrappers[name]) {
           wrappers[name] = [];
@@ -77,32 +78,31 @@ export default async function build(options:Object) {
   modulesList.forEach((name) => {
     try {
       // $Flow require()
-      let m = require(modulesDir + name);
-      parse(m);
+      parse(require(modulesDir + name));
       return;
     } catch (err) {
       console.log(err);
     }
   });
 
-  let content = '/* this file is created by alaska build command */\n\n';
+  let content = '/* This file is created by alaska build command, please modify this file manually. */\n\n';
 
-  for (let name = 0; name < views.length; name += 1) {
+  for (let name of Object.keys(views)) {
     let file = filepath(views[name]);
     content += `exports['${name}'] = require('${file}').default;\n`;
     console.log(`view : ${name} -> ${file}`);
   }
   content += '\nexports.wrappers={\n';
-  for (let name = 0; name < wrappers.length; name += 1) {
+  Object.keys(wrappers).forEach((name) => {
     console.log(`wrapper : ${name}`);
     content += `  '${name}':[`;
-    for (let key = 0; key < wrappers.length; key += 1) {
-      let file = filepath(wrappers[key]);
+    wrappers[name].forEach((file) => {
+      file = filepath(file);
       content += ` require('${file}').default,`;
       console.log(`\t-> ${file}`);
-    }
+    });
     content += ' ]\n';
-  }
+  });
   content += '};';
 
   content += '\n\nexports.routes=[\n';
@@ -141,7 +141,7 @@ export default async function build(options:Object) {
     execFile += '.cmd';
   }
   execFileSync(execFile, args.slice(1), {
-    stdio: 'inherit'
+    stdio: ['inherit', 'inherit', 'inherit']
   });
 }
 
