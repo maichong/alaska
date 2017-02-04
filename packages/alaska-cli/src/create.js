@@ -1,12 +1,16 @@
 // @flow
 
+/* eslint no-console:0 */
+
 import path from 'path';
 import download from 'download-github-repo';
+import chalk from 'chalk';
+import { execSync } from 'child_process';
 import * as utils from './utils';
 
-function github(url, uri) {
-  return new Promise(function (resolve, reject) {
-    download(url, uri, (err) => {
+function github(url, destination) {
+  return new Promise((resolve, reject) => {
+    download(url, destination, (err) => {
       if (err) {
         reject(err);
       } else {
@@ -19,18 +23,21 @@ function github(url, uri) {
 export default async function create(name: string) {
   let rootDir = path.join(process.cwd(), name);
   if (utils.isDirectory(rootDir)) {
-    console.error(`项目创建失败："${rootDir}" 已经存在`.red);
+    console.error(chalk.red(`项目创建失败："${rootDir}" 已经存在`));
     process.exit();
   }
   let tips = `
-  1: base    alaska基本框架;
-  2: user    alaska用户权限框架;
-  3: admin   alaska管理后台框架;
-  4: post    alaska博客框架;
-  5: goods   alaska商城框架
+  1: Basic project without any services.
+  2: With User service and RBAC system.
+  3: With Admin service for auto generate admin dashboard.
+  4: With Post service for blog site.
+  5: With Goods and Order service for shopping site.
 `;
-  console.log(tips.green);
-  let type = await utils.readValue({ prompt: '请选择项目类型?', default: 5 }, (p) => (p >= 1 && p <= 5));
+  console.log(tips);
+  let type = await utils.readValue({
+    prompt: 'Please select project template?',
+    default: 5
+  }, (p) => (p >= 1 && p <= 5));
   let branch = '';
   switch (type) {
     case 1:
@@ -50,17 +57,19 @@ export default async function create(name: string) {
       branch = 'goods';
       break;
   }
-  console.log('开始下载项目...'.green);
+  console.log(chalk.green('Download project code...'));
   await github(`maichong/alaska#${branch}`, rootDir);
 
-  console.log('下载完毕'.green);
+  console.log(chalk.green('Download Completed.'));
   let pkgFile = path.join(rootDir, 'package.json');
   let pkg = utils.readJSON(pkgFile);
   pkg.name = name;
   utils.writeJson(pkgFile, pkg);
 
-  console.log('安装npm依赖'.green);
-  exec((which('yarn') ? 'yarn' : 'npm install'), {
-    cwd: rootDir
-  }, () => process.exit());
+  console.log(chalk.green('Install dependencies...'));
+
+  execSync('npm install', {
+    pwd: rootDir,
+    stdio: ['inherit', 'inherit', 'inherit']
+  });
 }
