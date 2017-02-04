@@ -70,6 +70,11 @@ export default async function create(name: string) {
 
   execSync('npm install', {
     pwd: rootDir,
-    stdio: ['inherit', 'inherit', 'inherit']
+    stdio: ['inherit', 'inherit', 'inherit'],
+    env: {
+      NPM_CONFIG_LOGLEVEL: 'http',
+      NPM_CONFIG_PROGRESS: 'false',
+      NPM_CONFIG_COLOR: 'false'
+    }
   });
 }

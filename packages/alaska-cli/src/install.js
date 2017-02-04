@@ -1,42 +1,42 @@
 // @flow
 
+/* eslint no-console:0 */
+
 import esprima from 'esprima';
 import escodegen from 'escodegen';
 import fs from 'fs';
+import chalk from 'chalk';
+import { execSync } from 'child_process';
 import * as utils from './utils';
-import * as npm from './npm';
 
-const rcFile = process.cwd() + '/.alaska';
+export default async function install(name: string) {
+  const rcFile = process.cwd() + '/.alaska';
 
-if (!utils.isFile(rcFile)) {
-  throw new Error(`Can not find project file '${rcFile}'`);
-}
-const rc = utils.readJSON(rcFile);
-const configFile = process.cwd() + '/config/' + rc.id + '.js';
-if (!utils.isFile(configFile)) {
-  throw new Error(`Can not find config file '${rcFile}'`);
-}
+  if (!utils.isFile(rcFile)) {
+    throw new Error(`Can not find project file '${rcFile}'`);
+  }
 
-export default async function install(name: []) {
-  console.log(`Install service packages`);
-  let conf = {
-    save: true,
-    argv: {
-      remain: name,
-      cooked: ['install', '--save'].concat(name),
-      original: ['install', '-S'].concat(name)
-    },
-    _exit: true
-  };
-  await npm.load(conf);
-  await npm.commands.install(process.cwd(), name);
-}
+  const rc = utils.readJSON(rcFile);
+  const configFile = process.cwd() + '/config/' + rc.id + '.js';
 
-export async function update(services: Object[]) {
-  console.log('Update config file...');
+  if (!utils.isFile(configFile)) {
+    throw new Error(`Can not find config file '${configFile}'`);
+  }
+  console.log(chalk.green('Install service packages...'));
+
+  execSync('npm install --save ' + name, {
+    pwd: process.cwd(),
+    stdio: ['inherit', 'inherit', 'inherit'],
+    env: {
+      NPM_CONFIG_LOGLEVEL: 'http',
+      NPM_CONFIG_PROGRESS: 'false',
+      NPM_CONFIG_COLOR: 'false'
+    }
+  });
+
+  console.log(chalk.green('Update config file...'));
 
   let content = fs.readFileSync(configFile, 'utf8');
-  //console.log(content);
   let data;
   try {
     data = esprima.parse(content, {
@@ -61,23 +61,21 @@ export async function update(services: Object[]) {
         continue;
       }
       let properties = prop.value.properties;
-      services.forEach((s) => {
-        properties.push({
-          type: 'Property',
-          key: {
-            type: 'Literal',
-            value: s.id,
-            raw: `'${s.id}'`
-          },
-          computed: false,
-          value: {
-            type: 'ObjectExpression',
-            properties: []
-          },
-          kind: 'init',
-          method: false,
-          shorthand: false
-        });
+      properties.push({
+        type: 'Property',
+        key: {
+          type: 'Literal',
+          value: name,
+          raw: `'${name}'`
+        },
+        computed: false,
+        value: {
+          type: 'ObjectExpression',
+          properties: []
+        },
+        kind: 'init',
+        method: false,
+        shorthand: false
       });
       success = true;
     }
@@ -93,8 +91,6 @@ export async function update(services: Object[]) {
 
   fs.writeFileSync(configFile, content);
 
-  services.forEach(s => {
-    rc.services[s.id] = true;
-  });
+  rc.services[name] = true;
   fs.writeFileSync(rcFile, JSON.stringify(rc, null, 2));
 }
