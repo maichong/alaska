@@ -5,7 +5,6 @@ import _ from 'lodash';
 import api from 'akita';
 import shallowEqualWithout from 'shallow-equal-without';
 import MultiLevelSelect from './MultiLevelSelect';
-import '../category.less';
 
 export default class CategoryFieldView extends React.Component {
 

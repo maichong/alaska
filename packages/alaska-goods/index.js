@@ -2,12 +2,6 @@
 
 import alaska, { Service } from 'alaska';
 
-export const views = {
-  GoodsPropsEditor: `${__dirname}/views/GoodsPropsEditor`,
-  GoodsSkuEditor: `${__dirname}/views/GoodsSkuEditor`,
-  GoodsPropsValueEditor: `${__dirname}/views/GoodsPropsValueEditor`
-};
-
 /**
  * @class GoodsService
  */

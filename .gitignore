@@ -9,3 +9,4 @@ node_modules
 .idea
 temp/
 runtime
+example/public/admin/js

@@ -25,14 +25,10 @@ require('babel-register')({
   babelrc: false,
   presets: [],
   plugins: [
-    'syntax-async-functions',
     'syntax-export-extensions',
     'syntax-flow',
-    'transform-async-to-generator',
     'transform-class-properties',
     'transform-es2015-modules-commonjs',
-    'transform-es2015-destructuring',
-    'transform-es2015-parameters',
     'transform-export-extensions',
     'transform-flow-strip-types',
     'transform-object-rest-spread'

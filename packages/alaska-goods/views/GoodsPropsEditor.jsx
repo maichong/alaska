@@ -1,11 +1,11 @@
 // @flow
 
 import React from 'react';
-import { api } from 'alaska-admin-view';
-import Select from 'alaska-field-select/views/Select';
-import Checkbox from 'alaska-field-select/views/Checkbox';
-import Switch from 'alaska-field-select/views/Switch';
 import _ from 'lodash';
+import api from 'akita';
+import Select from 'alaska-field-select/views/Select';
+import SelectCheckbox from 'alaska-field-select/views/SelectCheckbox';
+import Switch from 'alaska-field-select/views/Switch';
 
 const { func, object } = React.PropTypes;
 
@@ -22,6 +22,8 @@ export default class GoodsPropsEditor extends React.Component {
     goodsPropsMap: {};
     valueMap:{}
   };
+
+  _cat: any;
 
   constructor(props: Object, context: Object) {
     super(props);
@@ -48,7 +50,7 @@ export default class GoodsPropsEditor extends React.Component {
       this.fetchProps(props.data.cat);
     }
   }
-  _cat:any;
+
   onChange = () => {
     let goodsProps = this.state.goodsProps;
     let valueMap = this.state.valueMap;
@@ -67,7 +69,9 @@ export default class GoodsPropsEditor extends React.Component {
     cat = cat || this.props.data.cat;
     if (this._cat === cat) return;
     this._cat = cat;
-    api.get(this.state.service.prefix + '/api/goods-prop?cat=' + cat).then((res) => {
+    api.get('goods-prop', {
+      query: { cat }
+    }).then((res) => {
       let map = {};
       _.forEach(res.results, (prop) => {
         map[prop.id] = prop;
@@ -89,7 +93,6 @@ export default class GoodsPropsEditor extends React.Component {
     return map;
   }
 
-
   render() {
     let props = this.props;
     let data = props.data;
@@ -106,7 +109,7 @@ export default class GoodsPropsEditor extends React.Component {
     let me = this;
 
     let list = [];
-    goodsProps.forEach((p, index) => {
+    goodsProps.forEach((p) => {
       if (!valueMap[p.id]) {
         valueMap[p.id] = {
           id: p.id,
@@ -159,12 +162,12 @@ export default class GoodsPropsEditor extends React.Component {
 
       let View = Select;
       if (!p.input && p.checkbox) {
-        View = Checkbox;
+        View = SelectCheckbox;
       } else if (!p.input && p.switch) {
         View = Switch;
       }
 
-      list.push(<div className="form-group" key={index}>
+      list.push(<div className="form-group" key={p.id}>
         <label className="control-label col-xs-2">{p.title}</label>
         <div className="col-xs-10">
           <View

@@ -1,8 +1,5 @@
 // @flow
 
-// $Flow
-import '../less/style.less';
-
 import { details } from './redux/details';
 import { layout } from './redux/layout';
 import { list } from './redux/lists';

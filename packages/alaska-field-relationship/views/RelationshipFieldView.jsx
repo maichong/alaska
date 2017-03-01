@@ -5,7 +5,7 @@ import _ from 'lodash';
 import shallowEqualWithout from 'shallow-equal-without';
 import Select from 'alaska-field-select/views/Select';
 import Switch from 'alaska-field-select/views/Switch';
-import Checkbox from 'alaska-field-select/views/Checkbox';
+import SelectCheckbox from 'alaska-field-select/views/SelectCheckbox';
 import api from 'akita';
 
 function getOptionValue(opt) {
@@ -84,7 +84,7 @@ export default class RelationshipFieldView extends React.Component {
     let help = field.help;
     let View = Select;
     if (field.checkbox) {
-      View = Checkbox;
+      View = SelectCheckbox;
     } else if (field.switch) {
       View = Switch;
     }

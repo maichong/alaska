@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+// TODO actions
 import { actions } from 'alaska-admin-view';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';

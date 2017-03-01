@@ -72,33 +72,52 @@ export default async function build(options: Object) {
     }
   }
 
-  let viewsFile = process.cwd() + '/views/views.js';
-  if (uitls.isFile(viewsFile)) {
-    // $Flow require()
-    parse(require(viewsFile));
+  {
+    // views 配置文件
+    let viewsFile = process.cwd() + '/views/views.js';
+    if (uitls.isFile(viewsFile)) {
+      // $Flow require()
+      parse(require(viewsFile));
+    }
   }
 
   modulesList.forEach((name) => {
     try {
-      let file = path.join(modulesDir, name, 'views');
-      if (uitls.isFile(file)) {
+      let viewsDir = path.join(modulesDir, name, 'views');
+      let viewsFile = path.join(viewsDir, 'index.js');
+      if (uitls.isFile(viewsFile)) {
+        // 如果views配置文件存在
         // $Flow require()
-        parse(require(file));
+        parse(require(viewsFile));
+      } else if (uitls.isDirectory(viewsDir)) {
+        let config = {
+          views: {}
+        };
+        fs.readdirSync(viewsDir)
+          .filter((f) => f[0] !== '.' && f.endsWith('.jsx'))
+          .forEach((f) => {
+            config.views[f.replace(/\.jsx$/, '')] = path.join(viewsDir, f);
+          });
+        parse(config);
       }
-      return;
     } catch (err) {
       console.log(err);
     }
   });
 
-  let content = '/* This file is created by alaska build command, please modify this file manually. */\n\n';
+  let runtimeViewsFile = dir + 'runtime/alaska-admin-view/views.js';
+  let content = '/* This file is created by alaska build command, please do NOT modify this file manually. */\n\n';
 
+  // 输出views
   for (let name of Object.keys(views)) {
     let file = filepath(views[name]);
-    content += `exports['${name}'] = require('${file}').default;\n`;
-    console.log(`view : ${name} -> ${file}`);
+    let r = path.relative(dir, file);
+    content += `export { ${name} } from '../../${r}';\n`;
+    console.log(`view : ${name} -> ${r}`);
   }
-  content += '\nexports.wrappers={\n';
+
+  // 输出 wrappers
+  content += '\nexport const wrappers = {\n';
   Object.keys(wrappers).forEach((name) => {
     console.log(`wrapper : ${name}`);
     content += `  '${name}':[`;
@@ -111,7 +130,8 @@ export default async function build(options: Object) {
   });
   content += '};';
 
-  content += '\n\nexports.routes=[\n';
+  // 输出 routes
+  content += '\n\nexport const routes = [\n';
   routes.forEach((route) => {
     let file = filepath(route.component);
     content += `  {\n    component: require('${file}').default,\n    path: '${route.path}'\n  },\n`;
@@ -119,7 +139,8 @@ export default async function build(options: Object) {
   });
   content += '];\n';
 
-  content += '\nexports.navs=[\n';
+  // 输出 navs
+  content += '\nexport const navs = [\n';
 
   navs.forEach((nav) => {
     let file = filepath(nav);
@@ -127,7 +148,7 @@ export default async function build(options: Object) {
   });
   content += '];\n';
 
-  fs.writeFileSync(dir + 'runtime/alaska-admin-view/views.js', content);
+  fs.writeFileSync(runtimeViewsFile, content);
 
   let args = ['webpack', '--config'];
 

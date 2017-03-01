@@ -4,12 +4,6 @@ import { Service } from 'alaska';
 
 const debug = require('debug')('alaska-settings');
 
-//为 alaska-admin-view 注入设置编辑器
-export const routes = [{
-  component: `${__dirname}/views/SettingsEditor`,
-  path: 'settings'
-}];
-
 /**
  * @class SettingsService
  */
@@ -32,7 +26,7 @@ class SettingsService extends Service {
 
     const id = data.id || data._id;
     // $Flow
-    let settings:Settings = await Settings.findById(id);
+    let settings: Settings = await Settings.findById(id);
     if (settings) {
       return settings;
     }
@@ -63,7 +57,7 @@ class SettingsService extends Service {
    * @param {*} value
    * @returns {Settings}
    */
-  async set(id:string|number, value:any) {
+  async set(id: string|number, value: any) {
     debug('set', id, '=>', value);
     const Settings = this.model('Settings');
     // $Flow

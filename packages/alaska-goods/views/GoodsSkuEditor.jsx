@@ -3,8 +3,6 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 import _ from 'lodash';
-// $Flow
-import '../goods.less';
 
 /**
  * @param value
@@ -264,17 +262,17 @@ export default class GoodsSkuEditor extends React.Component {
       });
       content = (<table className="table goods-sku-editor">
         <thead>
-          <tr>
-            <th>{t('Picture', 'alaska-goods')}</th>
-            <th>{t('Properties', 'alaska-goods')}</th>
-            <th>{t('Inventory', 'alaska-goods')}</th>
-            <th>{t('Price', 'alaska-goods')}</th>
-            <th>{t('Discount', 'alaska-goods')}</th>
-            <th />
-          </tr>
+        <tr>
+          <th>{t('Picture', 'alaska-goods')}</th>
+          <th>{t('Properties', 'alaska-goods')}</th>
+          <th>{t('Inventory', 'alaska-goods')}</th>
+          <th>{t('Price', 'alaska-goods')}</th>
+          <th>{t('Discount', 'alaska-goods')}</th>
+          <th />
+        </tr>
         </thead>
         <tbody>
-          {trs}
+        {trs}
         </tbody>
       </table>);
     } else {
@@ -287,10 +285,12 @@ export default class GoodsSkuEditor extends React.Component {
         <Modal show={picPicker} onHide={this.closePicker}>
           <Modal.Header>{t('Select picture')}</Modal.Header>
           <Modal.Body className="sku-pic-picker">
-            {_.map(pics, (pic, index) => (
-              <img alt="" src={pic.thumbUrl} key={index} onClick={this.selectPicture(pic)} />
-              )
-            )}
+            {_.map(pics, (pic, index) => <img
+              alt=""
+              src={pic.thumbUrl}
+              key={index}
+              onClick={this.selectPicture(pic)} />)
+            }
           </Modal.Body>
         </Modal>
       </div>
