@@ -539,13 +539,9 @@ declare type Alaska$ListResult = {
 declare class Alaska$Field {
   static classOfField:true;
   static plain:any;
-  static dbOptions:string[];
-  static viewOptions:Array<string|(options: Object, field: Alaska$Field)=>void>;
-  static views:{
-    cell?:Alaska$Field$View;
-    view?:Alaska$Field$View;
-    filter?:Alaska$Field$View;
-  };
+  static dbOptions? :string[];
+  static viewOptions? :Array<string| (options: Object, field: Alaska$Field)=>void >;
+  static defaultOptions? :Indexed;
 [path:string]:any;
 
   // Mongoose
@@ -620,11 +616,6 @@ declare type Alaska$Field$options={
   view?:string;
   filter?:string|boolean;
   depends?:Alaska$Field$depends;
-};
-
-declare type Alaska$Field$View= {
-  name:string;
-  path:string;
 };
 
 declare type Alaska$Field$depends= string | {

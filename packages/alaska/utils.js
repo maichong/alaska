@@ -182,6 +182,6 @@ export function pareseAcceptLanguage(header: string): string[] {
       return [lang[0], parseFloat(lang[1]) || 0];
     })
     .filter((lang) => lang[1] > 0)
-    .sort((a, b) => (a[1] < b[1] ? -1 : 1))
+    .sort((a, b) => (a[1] < b[1] ? 1 : -1))
     .map((lang) => lang[0]);
 }

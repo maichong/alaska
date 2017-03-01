@@ -5,14 +5,9 @@
   "keywords": [
     "alaska"
   ],
-  "scripts": {
-    "build": "babel ./src --out-dir ./lib",
-    "watch": "babel ./src --out-dir ./lib -w",
-    "prebuild": "rimraf lib",
-    "prepublish": "npm run build"
-  },
+  "scripts": {},
   "engines": {
-    "node": ">=5.0.0"
+    "node": ">=7.6.0"
   },
   "bin": {
     "alaska": "bin/alaska"
@@ -21,6 +16,14 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
+    "babel-core": "^6.23.1",
+    "babel-plugin-syntax-flow": "^6.18.0",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
+    "babel-plugin-transform-export-extensions": "^6.22.0",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-register": "^6.23.0",
     "chalk": "^1.1.3",
     "co": "^4.6.0",
     "commander": "^2.9.0",
@@ -29,16 +32,6 @@
     "mkdirp": "^0.5.1",
     "read-promise": "^1.0.0",
     "string-random": "^0.1.0",
-    "update-notifier": "^1.0.3"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.22.1",
-    "babel-plugin-syntax-flow": "^6.18.0",
-    "babel-plugin-transform-flow-strip-types": "^6.22.0",
-    "babel-plugin-transform-async-to-generator": "^6.22.0",
-    "babel-plugin-transform-class-properties": "^6.22.0",
-    "babel-plugin-transform-export-extensions": "^6.22.0",
-    "babel-preset-es2015": "^6.22.0",
-    "rimraf": "^2.5.4"
+    "update-notifier": "^2.1.0"
   }
 }

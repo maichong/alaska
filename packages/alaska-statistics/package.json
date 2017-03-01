@@ -14,7 +14,7 @@
     "react-chartjs": "github:jhudson8/react-chartjs#chartjs-v2",
     "alaska-field-select": "^0.11.0",
     "color": "^1.0.3",
-    "chart.js": "^2.4.0",
+    "chart.js": "^2.5.0",
     "number-random": "^0.1.1"
   }
 }

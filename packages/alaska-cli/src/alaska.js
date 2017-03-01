@@ -19,7 +19,6 @@ const notifier = updateNotifier({
   }
 });
 
-
 program
   .command('create <name>')
   .alias('c')

@@ -11,6 +11,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "bcryptjs": "^2.4.0"
+    "bcryptjs": "^2.4.3"
   }
 }

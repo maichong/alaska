@@ -11,6 +11,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "nodemailer": "^2.7.0"
+    "nodemailer": "2.7.2"
   }
 }

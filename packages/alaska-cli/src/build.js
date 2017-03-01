@@ -7,6 +7,8 @@
 import fs from 'fs';
 import { execFileSync } from 'child_process';
 import mkdirp from 'mkdirp';
+import path from 'path';
+import chalk from 'chalk';
 import * as uitls from './utils';
 
 function filepath(file: string): string {
@@ -14,7 +16,7 @@ function filepath(file: string): string {
 }
 
 export default async function build(options: Object) {
-  console.log('Alaska build admin dashboard...');
+  console.log(chalk.green('Alaska build admin dashboard...'));
   const dir = process.cwd() + '/';
   if (!uitls.isFile(dir + '.alaska')) {
     throw new Error('Current folder is not an alaska project!');
@@ -30,7 +32,8 @@ export default async function build(options: Object) {
   }
 
   const modulesDir = dir + 'node_modules/';
-  const modulesList = fs.readdirSync(modulesDir);
+  const modulesList = fs.readdirSync(modulesDir)
+    .filter((file) => file[0] !== '.' && file.startsWith('alaska-') && file !== 'alaska-admin-view');
 
   let views: { [name:string]:string } = {};
   let wrappers: { [name:string]:string[] } = {};
@@ -77,8 +80,11 @@ export default async function build(options: Object) {
 
   modulesList.forEach((name) => {
     try {
-      // $Flow require()
-      parse(require(modulesDir + name));
+      let file = path.join(modulesDir, name, 'views');
+      if (uitls.isFile(file)) {
+        // $Flow require()
+        parse(require(file));
+      }
       return;
     } catch (err) {
       console.log(err);

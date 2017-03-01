@@ -4,13 +4,9 @@ export default class Field {
 
   static classOfField = true;
   static plain = String;
-  static dbOptions: string[];
-  static viewOptions: string[];
-  static views: {
-    cell?:Alaska$Field$View;
-    view?:Alaska$Field$View;
-    filter?:Alaska$Field$View;
-  };
+  static dbOptions: string[] | void;
+  static viewOptions: string[] | void;
+  static defaultOptions: Indexed | void;
 
   // Mongoose
   get: Function | void;
@@ -56,9 +52,16 @@ export default class Field {
     this._model = model;
 
     // $Flow
-    let FieldClass: Class<Alaska$Field> = this.type = options.type;
+    let FieldClass: Class<Alaska$Field> = options.type;
+    this.type = FieldClass;
 
-    let keys = [
+    // 设置Field类默认选项
+    if (FieldClass.defaultOptions) {
+      Object.assign(this, FieldClass.defaultOptions);
+    }
+
+    // 所有数据库选项
+    let dbOptions = [
       'get',
       'set',
       'default',
@@ -68,15 +71,18 @@ export default class Field {
       'sparse',
       'required',
       'select'
-    ].concat(FieldClass.dbOptions);
+    ].concat(FieldClass.dbOptions || []);
 
+    // 遍历初始化选项
     Object.keys(options).forEach((key) => {
       let value = options[key];
       if (value && value instanceof Promise) {
+        // 当初始化选项是一个promise对象，则代表此选项需要异步加载
         value.then((v) => {
           // $Flow
           this[key] = v;
-          if (keys.indexOf(key) > -1) {
+          if (dbOptions.indexOf(key) > -1) {
+            // 如果选项是数据库选项，异步加载后重新初始化数据库Schema
             this.initSchema();
           }
         });
@@ -86,11 +92,15 @@ export default class Field {
       }
     });
 
+    // 如果Field对象存在init方法，执行自定义初始化方法
     if (this.init) {
       this.init();
     }
   }
 
+  /**
+   * 初始化数据库Schema
+   */
   initSchema() {
     let schema = this._schema;
     let options = {
@@ -107,7 +117,7 @@ export default class Field {
       'sparse',
       'required',
       'select'
-    ].concat(this.type.dbOptions);
+    ].concat(this.type.dbOptions || []);
 
     keys.forEach((key) => {
       // $Flow
@@ -135,6 +145,8 @@ export default class Field {
   viewOptions() {
     // $Flow
     let field: Alaska$Field = this;
+    let FieldClass = this.type;
+
     let options = {
       label: field.label,
       path: field.path,
@@ -153,20 +165,6 @@ export default class Field {
       filter: field.filter,
       super: field.super
     };
-
-    let FieldClass = this.type;
-
-    if (FieldClass.views) {
-      if (!options.cell && options.cell !== false && FieldClass.views.cell) {
-        options.cell = FieldClass.views.cell.name;
-      }
-      if (!options.view && FieldClass.views.view) {
-        options.view = FieldClass.views.view.name;
-      }
-      if (!options.filter && options.filter !== false && FieldClass.views.filter) {
-        options.filter = FieldClass.views.filter.name;
-      }
-    }
 
     if (FieldClass.viewOptions && FieldClass.viewOptions.length) {
       FieldClass.viewOptions.forEach((key) => {

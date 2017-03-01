@@ -26,13 +26,13 @@ fs.readdirSync(packagesDir).forEach((lib) => {
   }
 });
 
-// try {
-//   execSync('npm install', {
-//     cwd: exampleDir,
-//     stdio: ['inherit', 'inherit', 'inherit']
-//   });
-// } catch (e) {
-// }
+try {
+  execSync('npm install', {
+    cwd: exampleDir,
+    stdio: ['inherit', 'inherit', 'inherit']
+  });
+} catch (e) {
+}
 
 try {
   execSync('node example.js', {

@@ -1,6 +1,7 @@
 // @flow
 
 /* eslint global-require:0 */
+/* eslint new-cap:0 */
 /* eslint import/no-dynamic-require:0 */
 /* eslint import/no-extraneous-dependencies:0 */
 /* eslint import/no-unresolved:0 */
@@ -10,11 +11,13 @@ import path from 'path';
 import fs from 'fs';
 import mime from 'mime';
 import Koa from 'koa';
+import KoaQS from 'koa-qs';
 import statuses from 'statuses';
 import collie from 'collie';
+import Debugger from 'debug';
 import * as utils from './utils';
 
-const debug = require('debug')('alaska');
+const debug = Debugger('alaska');
 
 /**
  * 一般错误
@@ -154,8 +157,7 @@ class Alaska {
       this._app.env = this.config('env');
       this._app.proxy = this.config('proxy');
       this._app.subdomainOffset = this.config('subdomainOffset');
-      // $Flow
-      require('koa-qs')(this._app);
+      KoaQS(this._app);
     }
     return this._app;
   }
@@ -246,7 +248,7 @@ class Alaska {
           }
         }
       }
-      return undefined;
+      return null;
     });
 
     if (!this._callbackMode) {

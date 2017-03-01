@@ -4,4 +4,19 @@
 
 process.title = 'alaska';
 
-require('../lib/alaska');
+require('babel-register')({
+  ignore: [
+    /node_modules\/(?!alaska)/
+  ],
+  babelrc: false,
+  plugins: [
+    'syntax-flow',
+    'transform-class-properties',
+    'transform-export-extensions',
+    'transform-es2015-modules-commonjs',
+    'transform-flow-strip-types',
+    'transform-object-rest-spread'
+  ]
+});
+
+require('../src/alaska');

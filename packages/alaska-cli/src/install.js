@@ -50,7 +50,6 @@ export default async function install(name: string) {
     throw new Error('Can not parse config file:' + err.message);
   }
 
-
   let success = false;
   for (let d of data.body) {
     if (d.type !== 'ExportDefaultDeclaration') {
