@@ -8,19 +8,11 @@ const ObjectId = mongoose.Types.ObjectId;
 
 export default class IDField extends Field {
   static plain = TypeObjectId;
-
-  init() {
-    let field = this;
-    if (!field.filter && field.filter !== false) {
-      field.filter = 'TextFieldFilter';
-    }
-    if (!field.cell && field.cell !== false) {
-      field.cell = 'TextFieldCell';
-    }
-    if (!field.view && field.view !== false) {
-      field.view = 'TextFieldView';
-    }
-  }
+  static defaultOptions = {
+    cell: 'TextFieldCell',
+    view: 'TextFieldView',
+    filter: 'TextFieldFilter',
+  };
 
   createFilter(filter: Object) {
     let value = filter;

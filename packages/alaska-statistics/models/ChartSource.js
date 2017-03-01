@@ -129,7 +129,7 @@ export default class ChartSource extends Model {
     precision: {
       label: 'Y Axis Precision',
       type: Number,
-      defualt: 0,
+      default: 0,
       depends: {
         reducer: ['average', 'sum']
       }

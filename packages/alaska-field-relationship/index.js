@@ -5,7 +5,6 @@
 
 import { Field } from 'alaska';
 import mongoose from 'mongoose';
-import path from 'path';
 
 const TypeObjectId = mongoose.Schema.Types.ObjectId;
 const ObjectId = mongoose.Types.ObjectId;
@@ -20,19 +19,10 @@ export default class RelationshipField extends Field {
       options.title = Model.title;
     }
   }];
-  static views = {
-    cell: {
-      name: 'RelationshipFieldCell',
-      path: path.join(__dirname, 'lib/cell.js')
-    },
-    view: {
-      name: 'RelationshipFieldView',
-      path: path.join(__dirname, 'lib/view.js')
-    },
-    filter: {
-      name: 'RelationshipFieldFilter',
-      path: path.join(__dirname, 'lib/filter.js')
-    }
+  static defaultOptions = {
+    cell: 'RelationshipFieldCell',
+    name: 'RelationshipFieldView',
+    filter: 'RelationshipFieldFilter'
   };
 
   service: string;
@@ -144,9 +134,9 @@ export default class RelationshipField extends Field {
       }
     } else if (this.dataType === Number) {
       value = parseInt(value);
-      if (isNaN(value)) return undefined;
+      if (isNaN(value)) return null;
       return inverse ? { $ne: value } : value;
     }
-    return undefined;
+    return null;
   }
 }

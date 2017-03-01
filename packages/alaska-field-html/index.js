@@ -3,24 +3,13 @@
 import { utils, Field } from 'alaska';
 
 export default class HtmlField extends Field {
-  static views: Object = {
-    cell: {
-      name: 'HtmlFieldCell',
-      path: `${__dirname}/lib/cell.js`
-    },
-    view: {
-      name: 'HtmlFieldView',
-      path: `${__dirname}/lib/view.js`
-    }
+  static plain = String;
+  static viewOptions = ['upload', 'defaultImage'];
+  static defaultOptions = {
+    cell: 'HtmlFieldCell',
+    view: 'HtmlFieldView',
+    filter: 'TextFieldFilter',
   };
-  static plain: Class<String> = String;
-  static viewOptions: Array<string|(options: Object, field: Alaska$Field)=>void> = ['upload', 'defaultImage'];
-
-  init() {
-    if (!this.filter && this.filter !== false) {
-      this.filter = 'TextFieldFilter';
-    }
-  }
 
   createFilter(filter: Object) {
     let exact = true;

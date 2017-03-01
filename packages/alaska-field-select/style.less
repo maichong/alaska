@@ -1,0 +1,58 @@
+// $Flow
+@import "../react-selectize/themes/index.css";
+
+.react-selectize.root-node {
+  width: 100%;
+}
+
+div .simple-select.react-selectize.default.root-node:not(.open) .react-selectize-control {
+  background: #fff;
+}
+
+div .react-selectize.default.root-node .react-selectize-control {
+  border-radius: 6px;
+}
+
+.react-selectize.default.root-node.open .react-selectize-control {
+  border-top-left-radius: 6px !important;
+  border-top-right-radius: 6px !important;
+}
+
+div .react-selectize.default.root-node .react-selectize-control {
+  border-color: #bdc3c7;
+}
+
+.react-selectize .simple-value-remove {
+  border-right: 1px solid #c9e6f2;
+  padding: 0 5px;
+  &:hover {
+    background: #c9e6f2;
+  }
+}
+
+.react-selectize.disabled {
+  color: #d5dbdb;
+  cursor: default;
+  border-color: #d5dbdb;
+  opacity: .7;
+}
+
+.react-selectize.disabled .react-selectize-control {
+  background: #f4f6f6 !important;
+}
+
+.select-field .form-control-static > span,
+.select-field-cell > span {
+  margin-right: 10px;
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.select-field-filter {
+  .form-group {
+    label {
+      margin-top: 0;
+    }
+  }
+}

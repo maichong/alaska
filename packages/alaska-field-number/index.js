@@ -2,26 +2,16 @@
 
 import { Field } from 'alaska';
 import numeral from 'numeral';
-import path from 'path';
 
 export default class NumberField extends Field {
 
   static plain = Number;
   static dbOptions = ['min', 'max'];
   static viewOptions = ['min', 'max', 'format', 'addonBefore', 'addonAfter', 'placeholder'];
-  static views = {
-    cell: {
-      name: 'NumberFieldCell',
-      path: path.join(__dirname, '/views/cell.js')
-    },
-    view: {
-      name: 'NumberFieldView',
-      path: path.join(__dirname, '/views/view.js')
-    },
-    filter: {
-      name: 'NumberFieldFilter',
-      path: path.join(__dirname, '/views/filter.js')
-    }
+  static defaultOptions = {
+    cell: 'NumberFieldCell',
+    view: 'NumberFieldView',
+    filter: 'NumberFieldFilter',
   };
 
   init() {
@@ -34,7 +24,7 @@ export default class NumberField extends Field {
     });
   }
 
-  createFilter(filter: Object): any|void {
+  createFilter(filter: Object): any {
     let value;
     if (typeof filter === 'object') {
       value = filter.value;
@@ -58,7 +48,7 @@ export default class NumberField extends Field {
     if (bt && bt.length === 2) {
       let start = parseFloat(bt[0]);
       let end = parseFloat(bt[1]);
-      if (isNaN(start) || isNaN(end)) return undefined;
+      if (isNaN(start) || isNaN(end)) return null;
       return { $gte: start, $lte: end };
     }
 
@@ -78,6 +68,6 @@ export default class NumberField extends Field {
       return value;
     }
 
-    return undefined;
+    return null;
   }
 }

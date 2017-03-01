@@ -6,11 +6,6 @@
 import React from 'react';
 import { SimpleSelect, MultiSelect } from 'react-selectize';
 
-// $Flow
-import 'react-selectize/themes/index.css';
-// $Flow
-import '../select.less';
-
 function createFromSearchSimple(options, search) {
   if (!search) {
     return null;

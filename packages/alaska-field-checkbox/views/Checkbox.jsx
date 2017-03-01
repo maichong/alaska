@@ -2,16 +2,15 @@
 
 import React from 'react';
 
-const { bool, object, func, string } = React.PropTypes;
-
 export default class Checkbox extends React.Component {
 
-  static propTypes = {
-    style: object,
-    radio: bool,
-    value: bool,
+  props: {
+    style: Object,
+    radio: boolean,
+    value: boolean,
+    disabled: boolean,
     label: string,
-    onCheck: func,
+    onCheck: Function,
   };
 
   handleCheck = () => {
@@ -21,14 +20,14 @@ export default class Checkbox extends React.Component {
   };
 
   render() {
-    let props = this.props;
-    let checked = props.value ? 'checked' : false;
-    let type = props.radio ? 'radio' : 'checkbox';
+    const { label, disabled, value, radio, style } = this.props;
+    let checked = value ? 'checked' : false;
+    let type = radio ? 'radio' : 'checkbox';
     return (
-      <label className={type} style={props.style}>
+      <label className={type} style={style}>
         <input
           type={type}
-          disabled={props.disabled}
+          disabled={disabled}
           checked={checked}
           className={'custom-' + type}
           onChange={this.handleCheck}
@@ -37,7 +36,7 @@ export default class Checkbox extends React.Component {
           <span className="icon-unchecked" />
           <span className="icon-checked" />
         </span>
-        {props.label}
+        {label}
       </label>
     );
   }

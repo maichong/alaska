@@ -12,17 +12,12 @@ const ObjectId = mongoose.Types.ObjectId;
 
 export default class ImageField extends Field {
   static plain = mongoose.Schema.Types.Mixed;
-  static viewOptions: Array<string|(options: Object, field: Alaska$Field)=>void> = ['multi', 'allowed'];
-  static views: Object = {
-    cell: {
-      name: 'ImageFieldCell',
-      path: `${__dirname}/lib/cell.js`
-    },
-    view: {
-      name: 'ImageFieldView',
-      path: `${__dirname}/lib/view.js`
-    }
+  static viewOptions = ['multi', 'allowed'];
+  static defaultOptions = {
+    cell: 'ImageFieldCell',
+    view: 'ImageFieldView'
   };
+
   dir: string;
   pathFormat: string;
   prefix: string;

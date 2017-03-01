@@ -1,19 +1,18 @@
 // @flow
 
 import React from 'react';
-import Select from 'alaska-field-select/lib/Select';
+import Select from 'alaska-field-select/views/Select';
 import _ from 'lodash';
-
-const { array, any, bool, func } = React.PropTypes;
 
 export default class MultiLevelSelect extends React.Component {
 
-  static propTypes = {
-    options: array,
-    onChange: func,
+  props: {
+    options: Object[],
+    onChange: Function,
     value: any,
-    disabled: bool
+    disabled: boolean
   };
+
   state: {
     levels:any[],
     options: any[],
@@ -91,7 +90,7 @@ export default class MultiLevelSelect extends React.Component {
     this.setState({ levels, options, optionsMap });
   }
 
-  handleChange = (level:number, value:any) => {
+  handleChange = (level: number, value: any) => {
     if (!value) {
       let v = this.props.value;
       if (v) {
@@ -112,16 +111,14 @@ export default class MultiLevelSelect extends React.Component {
     return (
       <div className="row multi-level-select">
         {
-          _.map(levels, (level, index) => {
-            return (<div className="col-sm-4" key={index}>
-              <Select
-                disabled={disabled}
-                options={level.options}
-                value={level.value}
-                onChange={(value) => this.handleChange(index, value)}
-              />
-            </div>);
-          })
+          _.map(levels, (level, index) => <div className="col-sm-4" key={index}>
+            <Select
+              disabled={disabled}
+              options={level.options}
+              value={level.value}
+              onChange={(value) => this.handleChange(index, value)}
+            />
+          </div>)
         }
       </div>
     );

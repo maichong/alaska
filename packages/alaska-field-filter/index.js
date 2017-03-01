@@ -5,14 +5,11 @@ import alaska, { Field } from 'alaska';
 import mongoose from 'mongoose';
 
 export default class FilterField extends Field {
-  static views: Object = {
-    view: {
-      name: 'FilterFieldView',
-      path: `${__dirname}/lib/view.js`
-    }
-  };
   static plain = mongoose.Schema.Types.Mixed;
-  static viewOptions: Array<string|(options: Object, field: Alaska$Field)=>void> = ['ref'];
+  static viewOptions = ['ref'];
+  static defualtOptions = {
+    view: 'FilterFieldView'
+  };
 
   init() {
     // $Flow this.ref有可能为空

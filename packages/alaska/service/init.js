@@ -21,7 +21,7 @@ export default async function init() {
           sub = require(config.dir).default;
         } else {
           // $Flow
-          sub = require(serviceId).defualt;
+          sub = require(serviceId).default;
         }
       }
       sub.applyConfig(config);

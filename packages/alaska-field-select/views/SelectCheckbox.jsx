@@ -1,11 +1,13 @@
 // @flow
 
+/* eslint eqeqeq:0 */
+
 import React from 'react';
+import Checkbox from 'alaska-field-checkbox/views/Checkbox';
 import _ from 'lodash';
 import { getOptionValue } from './utils';
 
-export default class Switch extends React.Component {
-
+export default class SelectCheckbox extends React.Component {
   props: {
     multi: boolean,
     onChange: Function,
@@ -42,17 +44,22 @@ export default class Switch extends React.Component {
     });
   }
 
-  handleClick(opt: string) {
-    const { value, multi, onChange } = this.props;
+  handleCheck(opt: Alaska$SelectField$option) {
+    const { multi, onChange, value } = this.props;
     const { options } = this.state;
+    let valueStr = String(opt.value);
     if (!multi) {
-      return onChange(opt);
+      let valueId = getOptionValue(value);
+      if (valueId != valueStr) {
+        onChange(opt);
+      }
+      return;
     }
 
     //multi
     if (!value || !value.length) {
       onChange([opt]);
-      return null;
+      return;
     }
 
     let optionsMap: Indexed = {};
@@ -60,40 +67,48 @@ export default class Switch extends React.Component {
 
     let res = [];
     let found = false;
+
     _.forEach(value, (v) => {
+      if (!v) return;
       let vid = getOptionValue(v);
-      if (vid === opt) {
+      if (vid == valueStr) {
         found = true;
       } else if (optionsMap[vid]) {
-        res.push(vid);
+        res.push(v);
       }
     });
+
     if (!found) {
       res.push(opt);
     }
-    return onChange(res);
+    onChange(res);
   }
 
   render() {
-    const { value, multi } = this.props;
+    const { multi, value } = this.props;
     const { options } = this.state;
-    let valueMap = {};
+    let valueMap: Indexed = {};
     if (multi) {
-      _.forEach(value, (v) => (valueMap[getOptionValue(v)] = true));
-    } else if (value !== undefined) {
-      valueMap[getOptionValue(value)] = true;
+      _.forEach(value, (v) => {
+        if (!v) return;
+        v = String(v.value ? v.value : v);
+        valueMap[v] = true;
+      });
     }
+
     return (
-      <div className="btn-group">
-        {_.map(options, (o) => {
-          let cls = 'btn btn-' + (o.style || 'default');
-          let vid = getOptionValue(o);
-          if (valueMap[vid]) {
-            cls += (o.style ? ' active' : ' btn-success');
+      <div>{
+        _.map(options, (opt, key) => (<Checkbox
+          key={key}
+          radio={!multi}
+          label={opt.label}
+          value={
+            multi ? valueMap[getOptionValue(opt)] : (opt.value == value || opt == value || opt.value == value.value)
           }
-          return <div key={vid} className={cls} onClick={() => this.handleClick(vid)}>{o.label}</div>;
-        })}
-      </div>
+          style={{ display: 'inline-block', marginRight: 16 }}
+          onCheck={() => this.handleCheck(opt)}
+        />))
+      }</div>
     );
   }
 }

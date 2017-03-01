@@ -1,39 +1,30 @@
 // @flow
 
 import { Field } from 'alaska';
-import path from 'path';
 import moment from 'moment';
 
 export default class DateField extends Field {
   static plain = Date;
   static dbOptions = ['min', 'max', 'expires'];
   static viewOptions = ['min', 'max', 'format'];
-  static views = {
-    cell: {
-      name: 'DateFieldCell',
-      path: path.join(__dirname, 'views/cell.js')
-    },
-    view: {
-      name: 'DateFieldView',
-      path: path.join(__dirname, 'views/view.js')
-    }
+  static defaultOptions = {
+    format: 'YYYY-MM-DD',
+    cell: 'DateFieldCell',
+    view: 'DateFieldView',
+    filter: 'DatetimeFieldFilter',
   };
 
   format: string;
 
   init() {
     let field = this;
-    field.format = field.format || 'YYYY-MM-DD';
-    if (!field.filter && field.filter !== false) {
-      field.filter = 'DatetimeFieldFilter';
-    }
     this.underscoreMethod('format', function (format) {
       return moment(this.get(field.path)).format(format || field.format);
     });
   }
 
-  createFilter(filter: Object): any|void {
-    if (!filter) return undefined;
+  createFilter(filter: Object): any {
+    if (!filter) return null;
     let value;
 
     //精确
@@ -45,7 +36,7 @@ export default class DateField extends Field {
     if (value) {
       let date = moment(value);
       if (!date.isValid()) {
-        return undefined;
+        return null;
       }
       let end = moment(date).endOf('day').toDate();
       let start = moment(date).startOf('day').toDate();
@@ -96,6 +87,6 @@ export default class DateField extends Field {
     if (value) {
       return value;
     }
-    return undefined;
+    return null;
   }
 }

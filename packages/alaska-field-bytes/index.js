@@ -8,7 +8,7 @@ export default class BytesField extends NumberField {
   static viewOptions: void | Array<string|(options: Object, field: Alaska$Field)=>void> = [
     'min', 'max', 'unit', 'size', 'precision'
   ];
-  static defualtOptions = {
+  static defaultOptions = {
     view: 'BytesFieldView',
     cell: 'BytesFieldCell',
     filter: 'NumberFieldFilter',

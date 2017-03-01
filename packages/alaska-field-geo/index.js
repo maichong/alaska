@@ -3,31 +3,15 @@
 import { Field } from 'alaska';
 
 export default class GeoField extends Field {
-  static options: any[] = [];
-
-  static views: Object = {
-    cell: {
-      name: 'GeoFieldCell',
-      path: `${__dirname}/lib/cell.js`
-    },
-    view: {
-      name: 'GeoFieldView',
-      path: `${__dirname}/lib/view.js`
-    }
-  };
   static plain = Array;
-  static viewOptions: any[] = [];
-
-  coordinate: string;
+  static defaultOptions = {
+    index: '2dsphere',
+    coordinate: 'wgs84',
+    cell: 'GeoFieldCell',
+    view: 'GeoFieldView'
+  };
 
   init() {
-    let field = this;
-    // $Flow 2dsphere 不知道有什么具体作用 但类型不匹配
-    field.index = field.index || '2dsphere';
-    field.coordinate = field.coordinate || 'wgs84'; // wgs84 gcj02 bd09
-
-    //const errorMsg = `Cannot cast data to geo type, at ${field._model.name}.${field.path}`;
-
     this.set = function (value) {
       if (Array.isArray(value)) {
         return [parseFloat(value[0]) || 0, parseFloat(value[1] || 0)];

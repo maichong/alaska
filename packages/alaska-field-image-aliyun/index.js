@@ -11,14 +11,15 @@ import ALI from 'aliyun-sdk';
 const ObjectId = mongoose.Types.ObjectId;
 
 export default class AliyunImageField extends Field {
+  static plain = mongoose.Schema.Types.Mixed;
+  static viewOptions = ['multi', 'allowed', 'cell', 'view'];
+
   oss: ALI.OSS;
   dir: string;
   pathFormat: string;
   prefix: string;
   thumbSuffix: string;
   allowed: string[];
-  static plain = mongoose.Schema.Types.Mixed;
-  static viewOptions = ['multi', 'allowed', 'cell', 'view'];
 
   /**
    * 上传

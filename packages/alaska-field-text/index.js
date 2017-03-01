@@ -1,7 +1,6 @@
 // @flow
 
 import { Field, utils } from 'alaska';
-import path from 'path';
 
 export default class TextFeild extends Field {
   static plain = String;
@@ -10,19 +9,10 @@ export default class TextFeild extends Field {
     'trim', 'match', 'lowercase', 'uppercase', 'maxlength', 'minlength',
     'addonBefore', 'addonAfter', 'placeholder', 'multiLine', 'translate'
   ];
-  static views = {
-    cell: {
-      name: 'TextFieldCell',
-      path: path.join(__dirname, 'views/cell.js')
-    },
-    view: {
-      name: 'TextFieldView',
-      path: path.join(__dirname, 'views/view.js')
-    },
-    filter: {
-      name: 'TextFieldFilter',
-      path: path.join(__dirname, 'views/filter.js')
-    }
+  static defaultOptions = {
+    cell: 'TextFieldCell',
+    view: 'TextFieldView',
+    filter: 'TextFieldFilter',
   };
 
   init() {

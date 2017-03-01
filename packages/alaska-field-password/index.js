@@ -4,19 +4,13 @@ import { Field } from 'alaska';
 import bcrypt from 'bcryptjs';
 
 export default class PasswordField extends Field {
-
-  static views: Object = {
-    cell: {
-      name: 'PasswordFieldCell',
-      path: `${__dirname}/lib/cell.js`
-    },
-    view: {
-      name: 'PasswordFieldView',
-      path: `${__dirname}/lib/view.js`
-    }
-  };
   static plain = String;
-  workFactor:number;
+  static defaultOptions = {
+    cell: 'PasswordFieldCell',
+    view: 'PasswordFieldView'
+  };
+  workFactor: number;
+
   initSchema() {
     let field = this;
     let schema = this._schema;

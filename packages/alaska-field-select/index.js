@@ -1,25 +1,15 @@
 // @flow
 
 import { Field } from 'alaska';
-import path from 'path';
 
 export default class SelectField extends Field {
 
   static plain = String;
   static viewOptions = ['options', 'translate', 'checkbox', 'switch', 'multi'];
-  static views = {
-    cell: {
-      name: 'SelectFieldCell',
-      path: path.join(__dirname, 'views/cell.js')
-    },
-    view: {
-      name: 'SelectFieldView',
-      path: path.join(__dirname, 'views/view.js')
-    },
-    filter: {
-      name: 'SelectFieldFilter',
-      path: path.join(__dirname, 'views/filter.js')
-    }
+  static defaultOptions = {
+    cell: 'SelectFieldCell',
+    view: 'SelectFieldView',
+    filter: 'SelectFieldFilter'
   };
 
   number: boolean;
@@ -71,7 +61,7 @@ export default class SelectField extends Field {
     }
     if (this.number) {
       value = parseInt(value);
-      if (isNaN(value)) return undefined;
+      if (isNaN(value)) return null;
       return inverse ? { $ne: value } : value;
     }
     if (this.boolean) {
@@ -84,6 +74,6 @@ export default class SelectField extends Field {
     if (typeof value === 'string') {
       return inverse ? { $ne: value } : value;
     }
-    return undefined;
+    return null;
   }
 }

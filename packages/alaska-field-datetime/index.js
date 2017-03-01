@@ -1,26 +1,19 @@
 // @flow
 
 import { Field } from 'alaska';
-import path from 'path';
 import moment from 'moment';
 
 export default class DatetimeField extends Field {
   static plain = Date;
   static dbOptions = ['min', 'max', 'expires'];
   static viewOptions = ['min', 'max', 'format', 'dateFormat', 'timeFormat'];
-  static views = {
-    cell: {
-      name: 'DatetimeFieldCell',
-      path: path.join(__dirname, 'views/cell.js')
-    },
-    view: {
-      name: 'DatetimeFieldView',
-      path: path.join(__dirname, 'views/view.js')
-    },
-    filter: {
-      name: 'DatetimeFieldFilter',
-      path: path.join(__dirname, 'views/filter.js')
-    }
+  static defaultOptions = {
+    format: 'YYYY-MM-DD HH:mm:ss',
+    dateFormat: 'YYYY-MM-DD',
+    timeFormat: 'HH:mm:ss',
+    cell: 'DatetimeFieldCell',
+    view: 'DatetimeFieldView',
+    filter: 'DatetimeFieldFilter',
   };
 
   format: string;
@@ -29,16 +22,13 @@ export default class DatetimeField extends Field {
 
   init() {
     let field = this;
-    field.format = field.format || 'YYYY-MM-DD HH:mm:ss';
-    field.dateFormat = field.dateFormat || 'YYYY-MM-DD';
-    field.timeFormat = field.timeFormat || 'HH:mm:ss';
     this.underscoreMethod('format', function (format) {
       return moment(this.get(field.path)).format(format || field.format);
     });
   }
 
-  createFilter(filter: Object): any|void {
-    if (!filter) return undefined;
+  createFilter(filter: Object): any {
+    if (!filter) return null;
     let value;
 
     //精确
@@ -50,7 +40,7 @@ export default class DatetimeField extends Field {
     if (value) {
       let date = moment(value);
       if (!date.isValid()) {
-        return undefined;
+        return null;
       }
       let end = date.endOf('day').toDate();
       let start = date.startOf('day').toDate();
@@ -101,6 +91,6 @@ export default class DatetimeField extends Field {
     if (value) {
       return value;
     }
-    return undefined;
+    return null;
   }
 }
