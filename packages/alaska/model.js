@@ -206,7 +206,6 @@ export default class Model {
     [path:string]:Alaska$Field$options
   };
 
-  static prefix = '';
   static collection = '';
   static classOfModel = true;
 
@@ -313,7 +312,7 @@ export default class Model {
       _.defaults(model, {
         titleField: 'title',
         userField: 'user',
-        api: false,
+        api: {},
         searchFields: '',
         defaultFilters: null,
         defaultSort: '',
@@ -328,9 +327,11 @@ export default class Model {
         model.autoSelect = true;
       }
 
-      let schema = model.schema = new Schema({}, {
-        collection: model.collection || ((model.prefix || service.config('dbPrefix')) + model.id.replace(/-/g, '_'))
+      const schema = new Schema({}, {
+        collection: model.collection || ((service.config('dbPrefix') || '') + model.id.replace(/-/g, '_'))
       });
+
+      model.schema = schema;
 
       /**
        * init fields
@@ -691,8 +692,10 @@ export default class Model {
 
       [
         'list',
+        'all',
         'show',
         'createFilters',
+        'createFiltersByContext',
         'paginate',
         'fromObject',
         'fromObjectArray',
@@ -771,26 +774,41 @@ export default class Model {
   }
 
   /**
+   * 通过ctx创建过滤器
+   * @param {Context} ctx
+   * @param {Object} [state]
+   */
+  static createFiltersByContext(ctx: Alaska$Context, state?: Object): Alaska$filters {
+    // $Flow
+    state = _.defaultsDeep({}, state, ctx.state);
+
+    // $Flow
+    let model: Class<Alaska$Model> = this;
+    let filters = model.createFilters(
+      (state.search || ctx.query._search || '').trim(),
+      state.filters || ctx.query
+    );
+    if (model.defaultFilters) {
+      Object.assign(
+        filters,
+        typeof model.defaultFilters === 'function' ? model.defaultFilters(ctx) : model.defaultFilters
+      );
+    }
+    return filters;
+  }
+
+  /**
    * 分页查询
    * @param {Object} options
    * @returns {mongoose.Query}
    */
-  static async paginate(options: Object): Promise<{
-    page:number;
-    perPage:number;
-    total:number;
-    totalPage:number;
-    next:number;
-    previous:number;
-    // $Flow
-    results:Alaska$Model[]
-  }> {
+  static paginate(options: Object): Alaska$Query | Promise<Alaska$ListResult> {
     // $Flow
     let model: Class<Alaska$Model> = this;
     options = options || {};
     let page = parseInt(options.page) || 1;
-    let perPage = parseInt(options.perPage) || 10;
-    let skip = (page - 1) * perPage;
+    let limit = parseInt(options.limit) || 10;
+    let skip = (page - 1) * limit;
     let search = options.search || '';
     let filters = options.filters;
     if (filters && search) {
@@ -801,65 +819,89 @@ export default class Model {
       filters = model.createFilters(search);
     }
 
+    let query = model.find(filters);
+
+    // $Flow
+    query._originalExec = query.exec;
+
     let results = {
       total: 0,
       page,
-      perPage,
+      limit,
       totalPage: 0,
-      previous: page <= 1 ? -1 : page - 1,
+      previous: page <= 1 ? 0 : page - 1,
       next: 0,
       results: []
     };
 
-    let total = await model.count(filters);
+    // let total = await model.count(filters);
+    //
+    // if (!total) {
+    //   return results;
+    // }
+    //
+    // results.total = total;
+    // results.totalPage = Math.ceil(total / limit);
+    // results.next = results.totalPage > page ? page + 1 : 0;
+    //
+    // results.results = await model.where(filters).limit(limit).skip(skip).find();
+    // return results;
 
-    if (!total) {
-      return results;
-    }
+    // $Flow
+    query.exec = function (callback) {
+      callback = callback || _.noop;
 
-    results.total = total;
-    results.totalPage = Math.ceil(total / perPage);
-    results.next = results.totalPage > page ? page + 1 : 0;
+      return new Promise((resolve, reject) => {
+        // $Flow
+        query.exec = query._originalExec;
+        query.count((error, total) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          if (!total) {
+            callback(null, results);
+            resolve(results);
+            return;
+          }
+          results.total = total;
+          results.totalPage = Math.ceil(total / limit);
+          results.next = results.totalPage > page ? page + 1 : 0;
 
-    results.results = await model.where(filters).limit(perPage).skip(skip).find();
-    return results;
+          query.find().limit(limit).skip(skip).exec((err, res) => {
+            if (err) {
+              reject(err);
+              return;
+            }
+            results.results = res;
+            callback(null, results);
+            resolve(results);
+          });
+        });
+      });
+    };
+
+    return query;
   }
 
   /**
-   * 获取数据列表高级接口
+   * 获取数据分页列表高级接口
    * @param {Context} ctx
    * @param {Object} [state]
    * @returns {mongoose.Query}
    */
-  static async list(ctx: Alaska$Context, state?: Object): Promise<{
-    page:number;
-    perPage:number;
-    total:number;
-    totalPage:number;
-    next:number;
-    previous:number;
-    results:Alaska$Model[]
-  }> {
+  static async list(ctx: Alaska$Context, state?: Object): Promise<Alaska$ListResult> {
     // $Flow
     let model: Class<Alaska$Model> = this;
 
+    let filters = model.createFiltersByContext(ctx, state);
+
+    state = Object.assign({}, ctx.state, state);
+
     // $Flow
-    state = _.defaultsDeep({}, state, ctx.state);
-
-    let filters = model.createFilters(
-      (state.search || ctx.query.search || '').trim(),
-      state.filters || ctx.query.filters
-    );
-    if (model.defaultFilters) {
-      Object.assign(
-        filters,
-        typeof model.defaultFilters === 'function' ? model.defaultFilters(ctx) : model.defaultFilters
-      );
-    }
-
-    let query = model.paginate({
-      page: parseInt(state.page || ctx.query.page, 10) || 1,
-      perPage: parseInt(state.perPage || ctx.query.perPage, 10) || model.perPage || 10,
+    let query: Alaska$Query = model.paginate({
+      page: parseInt(state.page || ctx.query._page, 10) || 1,
+      limit: parseInt(state.limit || ctx.query._limit, 10) || model.defaultLimit || 10,
       filters
     });
 
@@ -884,7 +926,7 @@ export default class Model {
       return res;
     }, []);
 
-    let sort = state.sort || ctx.query.sort || model.defaultSort;
+    let sort = state.sort || ctx.query._sort || model.defaultSort;
     if (sort) {
       query.sort(sort);
     }
@@ -929,6 +971,91 @@ export default class Model {
   }
 
   /**
+   * 获取数据列表高级接口
+   * @param {Context} ctx
+   * @param {Object} [state]
+   * @returns {mongoose.Query}
+   */
+  static async all(ctx: Alaska$Context, state?: Object): Promise<Alaska$Model[]> {
+    // $Flow
+    let model: Class<Alaska$Model> = this;
+
+    let filters = model.createFiltersByContext(ctx, state);
+
+    state = Object.assign({}, ctx.state, state);
+
+    let query = model.find(filters);
+
+    const scopeKey = state.scope || ctx.query.scope || 'list';
+    if (scopeKey && model.autoSelect && model.scopes[scopeKey]) {
+      //仅仅查询scope指定的字段,优化性能
+      query.select(model.scopes[scopeKey]);
+    }
+
+    let populations = [];
+    _.forEach(model.populations, (pop) => {
+      if (processPopulation(query, pop, model, scopeKey) && pop.populations) {
+        populations.push(pop);
+      }
+    });
+
+    let scope = model.scopes[scopeKey] || model.defaultScope;
+    let relationships = _.reduce(model.relationships, (res, r) => {
+      if (!r.private && scope[r.key]) {
+        res.push(r);
+      }
+      return res;
+    }, []);
+
+    let sort = state.sort || ctx.query._sort || model.defaultSort;
+    if (sort) {
+      query.sort(sort);
+    }
+    let limit = parseInt(state.limit || ctx.query._limit) || 0;
+    if (limit) {
+      query.limit(limit);
+    }
+    let results = await query;
+
+    if (!results.length || (!relationships.length && !populations.length)) {
+      return results;
+    }
+
+    //处理关联查询
+    let promises = [];
+    results.forEach((doc) => {
+      relationships.forEach((r) => {
+        promises.push(createRelationshipQuery(r, doc, scopeKey));
+      });
+
+      //populations
+      populations.forEach((pop) => {
+        _.forEach(pop.populations, (p, path) => {
+          if (doc[pop.path]) {
+            let Ref = pop.model;
+            if (Ref && Ref.populations && Ref.populations[path]) {
+              let record = doc[pop.path];
+              let config = Object.assign({}, Ref.populations[path], p);
+              let promise = record.populate(config).execPopulate();
+              if (config.select) {
+                promise.then(() => {
+                  if (record[path]) {
+                    let poplated = Array.isArray(record[path]) ? record[path] : [record[path]];
+                    poplated.forEach((tmp) => (tmp.___fields = config.select));
+                  }
+                });
+              }
+              promises.push(promise);
+            }
+          }
+        });
+      });
+    });
+    await Promise.all(promises);
+    return results;
+  }
+
+  /**
    * 获取单条数据高级接口
    * @param {Context} ctx
    * @param {Object} [state]
@@ -941,8 +1068,10 @@ export default class Model {
     // $Flow
     state = _.defaultsDeep({}, state, ctx.state);
 
+    let filters = model.createFilters('', ctx.state.filters || ctx.query);
+
     // $Flow
-    let query: Alaska$Query = model.findById(state.id || ctx.params.id);
+    let query: Alaska$Query = model.findById(state.id || ctx.params.id).where(filters);
 
     if (model.defaultFilters) {
       query.where(typeof model.defaultFilters === 'function' ? model.defaultFilters(ctx) : model.defaultFilters);

@@ -10,9 +10,9 @@ export default async function (ctx: Alaska$Context) {
   let keyword = ctx.state.search || ctx.query.search || '';
   let value = ctx.state.value || ctx.query.value || '';
   let page = parseInt(ctx.state.page || ctx.query.page) || 1;
-  let perPage = parseInt(ctx.state.perPage || ctx.query.perPage) || 100;
-  if (ctx.state.all || ctx.query.all) {
-    perPage = 10000;
+  let limit = parseInt(ctx.state.limit || ctx.query._limit) || 100;
+  if (ctx.state.all || ctx.query._all) {
+    limit = 10000;
   }
 
   if (!serviceId || !modelName) {
@@ -29,11 +29,11 @@ export default async function (ctx: Alaska$Context) {
 
   let titleField = Model.titleField || 'titleField';
 
-  let filters = Model.createFilters(keyword, ctx.state.filters || ctx.query.filters);
+  let filters = Model.createFilters(keyword, ctx.state.filters || ctx.query);
 
   let query: Mongoose$Query = Model.paginate({
     page,
-    perPage,
+    limit,
     filters
   });
 

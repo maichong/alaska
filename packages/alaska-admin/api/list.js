@@ -19,16 +19,11 @@ export default async function list(ctx: Alaska$Context) {
   let ability = `admin.${Model.key}.read`;
   await ctx.checkAbility(ability);
 
-  let defaultFilters;
-  if (Model.defaultFilters) {
-    defaultFilters = typeof Model.defaultFilters === 'function' ? Model.defaultFilters(ctx) : Model.defaultFilters;
-  }
-
-  let filters = Model.createFilters(keyword, ctx.state.filters || ctx.query.filters || defaultFilters);
+  let filters = Model.createFiltersByContext(ctx);
 
   let query = Model.paginate({
-    page: parseInt(ctx.state.page || ctx.query.page) || 1,
-    perPage: parseInt(ctx.query.perPage || ctx.query.perPage) || 50,
+    page: parseInt(ctx.state.page || ctx.query._page) || 1,
+    limit: parseInt(ctx.query.limit || ctx.query._limit || Model.defaultLimit) || 50,
     filters
   });
 

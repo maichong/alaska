@@ -7,6 +7,7 @@
 import _ from 'lodash';
 import compose from 'koa-compose';
 import * as utils from '../utils';
+import { NormalError } from '../alaska';
 
 export default async function loadApi() {
   this.loadApi = utils.resolved;
@@ -17,9 +18,11 @@ export default async function loadApi() {
   if (this.config('prefix') === false || this.config('api') === false) return;
   this.debug('loadApi');
 
-  const alaska = this.alaska;
-  const service = this;
-  const router = this.router;
+  // $Flow
+  const service: Alaska$Service = this;
+
+  const alaska = service.alaska;
+  const router = service.router;
 
   const apis = this._apiControllers = utils.include(this.dir + '/api', false) || {};
 
@@ -56,7 +59,7 @@ export default async function loadApi() {
 
   const defaultApiController = require('../api');
 
-  const models = _.reduce(this._models, (res, Model) => {
+  const models = _.reduce(this.models, (res, Model) => {
     res[Model.id] = Model;
     return res;
   }, {});
@@ -66,7 +69,7 @@ export default async function loadApi() {
       ctx.status = 500;
     }
     //普通业务逻辑错误
-    if ((error instanceof alaska.NormalError)) {
+    if ((error instanceof NormalError)) {
       if (!ctx.body) {
         let body = {
           error: ctx.t(error.message),
@@ -90,8 +93,12 @@ export default async function loadApi() {
     };
   }
 
-  router.all('/api/*', async function (ctx, next) {
-    await next();
+  router.all('/api/*', async(ctx, next) => {
+    try {
+      await next();
+    } catch (error) {
+      onError(ctx, error);
+    }
     if (!ctx.body) {
       if (ctx.status === 404) {
         ctx.body = { error: 'Not found' };
@@ -108,9 +115,9 @@ export default async function loadApi() {
     }
   });
 
-  const REST_ACTIONS = ['count', 'show', 'list', 'create', 'remove', 'update'];
+  const REST_ACTIONS = ['count', 'show', 'list', 'all', 'create', 'remove', 'removeMulti', 'update', 'updateMulti'];
   let restApis = {};
-  _.forEach(this._models, (model) => {
+  _.forEach(this.models, (model) => {
     if (!model.api) return;
     REST_ACTIONS.forEach((action) => {
       restApis[action] = restApis[action] || !!model.api[action];
@@ -125,41 +132,34 @@ export default async function loadApi() {
 
   function restApi(action) {
     return function (ctx, next) {
-      try {
-        let modelId = ctx.params.model;
-        //console.log(service);
-        //console.log(service._models);
-        let Model = models[modelId];
-        if (!Model) {
-          //404
-          return next();
-        }
-        ctx.state.Model = Model;
-        let middlewares = [];
-        if (ctx.params.id) {
-          ctx.state.id = ctx.params.id;
-        }
-
-        // api 目录下定义的中间件
-        if (apis[modelId] && apis[modelId][action]) {
-          middlewares.push(apis[modelId][action]);
-        }
-
-        // Model.api参数定义的中间件
-        if (Model.api && Model.api[action]) {
-          middlewares.push(defaultApiController[action]);
-        }
-        //console.log(middlewares);
-
-        if (!middlewares.length) {
-          //404
-          return next();
-        }
-        return compose(middlewares)(ctx, next).catch((error) => onError(ctx, error));
-      } catch (error) {
-        onError(ctx, error);
+      let modelId = ctx.params.model;
+      let Model = models[modelId];
+      if (!Model) {
+        //404
+        return next();
       }
-      return null;
+      ctx.state.Model = Model;
+      let middlewares = [];
+      if (ctx.params.id) {
+        ctx.state.id = ctx.params.id;
+      }
+
+      // api 目录下定义的中间件
+      if (apis[modelId] && apis[modelId][action]) {
+        middlewares.push(apis[modelId][action]);
+      }
+
+      // Model.api参数定义的中间件
+      if (Model.api && Model.api[action]) {
+        middlewares.push(defaultApiController[action]);
+      }
+      //console.log(middlewares);
+
+      if (!middlewares.length) {
+        //404
+        return next();
+      }
+      return compose(middlewares)(ctx, next);
     };
   }
 
@@ -204,9 +204,12 @@ export default async function loadApi() {
 
   //Restful接口
   if (restApis.count) router.get('/api/:model/count', restApi('count'));
-  if (restApis.show) router.get('/api/:model/:id', restApi('show'));
+  if (restApis.all) router.get('/api/:model/all', restApi('all'));
   if (restApis.list) router.get('/api/:model', restApi('list'));
+  if (restApis.show) router.get('/api/:model/:id', restApi('show'));
   if (restApis.create) router.post('/api/:model', restApi('create'));
-  if (restApis.update) router.put('/api/:model/:id', restApi('update'));
+  if (restApis.update) router.patch('/api/:model/:id', restApi('update'));
+  if (restApis.updateMulti) router.patch('/api/:model', restApi('updateMulti'));
   if (restApis.remove) router.del('/api/:model/:id', restApi('remove'));
+  if (restApis.removeMulti) router.del('/api/:model', restApi('removeMulti'));
 }

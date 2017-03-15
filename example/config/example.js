@@ -37,5 +37,12 @@ export default {
     pathFormat: 'YYYY/MM/DD/',
     prefix: '/uploads/'
   },
+  'alaska-field-iid': {
+    cache: {
+      type: 'alaska-cache-mongo',
+      url: process.env.DB,
+      collection: 'app_iid'
+    }
+  },
   port: 5000
 };

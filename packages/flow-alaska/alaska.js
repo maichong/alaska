@@ -460,6 +460,7 @@ declare class Alaska$Model extends events$EventEmitter {
   static nocreate:boolean;
   static noedit:boolean;
   static noremove:boolean;
+  static collection?:string;
   static groups:{
     [key:string]: string | {
       label:string;
@@ -475,6 +476,7 @@ declare class Alaska$Model extends events$EventEmitter {
   static autoSelect:boolean;
   static defaultScope:{ [field:string]:boolean };
   static defaultSort?:string;
+  static defaultLimit?:number;
   static titleField:string;
   static userField:string;
   static searchFields:string[] | string;
@@ -491,13 +493,15 @@ declare class Alaska$Model extends events$EventEmitter {
   };
   static virtuals:{};
   static api:{
+    all?: number,
     list?: number,
     show?: number,
     count?: number,
     create?: number,
     update?: number,
-    remove?: number
-    //TODO akita
+    updateMulti?: number,
+    remove?: number,
+    removeMulti?: number,
   };
   static actions:{
     [key:string]:false | {
@@ -518,6 +522,7 @@ declare class Alaska$Model extends events$EventEmitter {
   static register():void;
   static underscoreMethod(field: string, name: string, fn: Function):void;
   static createFilters(search: string, filters?: Object|string): Alaska$filters;
+  static createFiltersByContext(ctx: Alaska$Context, state?: Object): Alaska$filters;
   static paginate(options: Object): Mongoose$Query & Promise<Alaska$ListResult>;
   static list(ctx: Alaska$Context, state?: Object): Promise<Alaska$ListResult>;
   static show(ctx: Alaska$Context, state?: Object): Promise<Alaska$Model>;
@@ -528,7 +533,7 @@ declare class Alaska$Model extends events$EventEmitter {
 
 declare type Alaska$ListResult = {
   page:number;
-  perPage:number;
+  limit:number;
   total:number;
   totalPage:number;
   next:number;
@@ -776,6 +781,10 @@ declare module alaska {
   declare export var Renderer: Class<Alaska$Renderer>;
   declare export var Driver: Class<Alaska$Driver>;
   declare export var utils: Object;
+  declare export var CLOSED: 0;
+  declare export var PUBLIC: 1;
+  declare export var AUTHENTICATED: 2;
+  declare export var OWNER: 3;
   declare var exports: Alaska$Alaska;
   declare export default Alaska$Alaska;
 }

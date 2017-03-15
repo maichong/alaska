@@ -4,12 +4,12 @@ import _ from 'lodash';
 import User from 'alaska-user/models/User';
 import service from '../';
 
-export default async function (ctx:Alaska$Context) {
-  let _user:?Object = ctx.user || service.error(403);
-  let user:Object = _user || {};
-  let obj:Object = await User.paginate({
-    page: parseInt(ctx.state.page || ctx.query.page) || 1,
-    perPage: parseInt(ctx.query.perPage || ctx.query.perPage) || 10,
+export default async function (ctx: Alaska$Context) {
+  let _user: ?Object = ctx.user || service.error(403);
+  let user: Object = _user || {};
+  let obj: Object = await User.paginate({
+    page: parseInt(ctx.state.page || ctx.query._page) || 1,
+    limit: parseInt(ctx.state.limit || ctx.query._limit) || 10,
     filters: _.assign({}, {
       promoter: user._id
     }, ctx.state.filters)

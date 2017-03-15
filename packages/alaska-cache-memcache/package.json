@@ -11,7 +11,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "debug": "^2.6.1",
+    "debug": "^2.6.3",
     "memcache": "^0.3.0"
   }
 }

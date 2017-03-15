@@ -60,7 +60,7 @@ export default class RelationshipField extends Field {
         }
         if (typeof type === 'string') {
           // $Flow
-          type = require('alaska-field-' + type);
+          type = require('alaska-field-' + type).default;
         }
         if (type.plain) {
           type = type.plain;

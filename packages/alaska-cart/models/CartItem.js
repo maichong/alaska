@@ -13,7 +13,7 @@ export default class CartItem extends Model {
   static defaultSort = '-sort';
   static noedit = true;
   static nocreate = true;
-  static perPage = 100;
+  static defaultLimit = 100;
 
   static api = {
     list: 3,

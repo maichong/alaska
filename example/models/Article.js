@@ -1,10 +1,14 @@
-import alaska, { Model } from 'alaska';
+import { Model } from 'alaska';
 
 export default class Article extends Model {
   static label = 'Article';
   static api = {
-    list: alaska.PUBLIC,
-    show: alaska.PUBLIC
+    all: 1,
+    list: 1,
+    show: 1,
+    create: 1,
+    updateMulti: 1,
+    removeMulti: 1
   };
 
   static fields = {
@@ -16,6 +20,10 @@ export default class Article extends Model {
       label: 'Category',
       ref: 'ArticleCat',
       required: true
+    },
+    hot: {
+      label: 'Hot',
+      type: Boolean,
     },
     content: {
       label: 'Content',

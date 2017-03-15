@@ -8,6 +8,7 @@ export default class IIDField extends NumberField {
   cache: any;
   path: any;
   key: string;
+
   init() {
     let field = this;
     let schema = this._schema;
@@ -20,9 +21,9 @@ export default class IIDField extends NumberField {
     });
 
     let cacheDriver = alaska.main.getCacheDriver(field.cache);
-    let key:string = field.key || model.name + '.' + field.path;
+    let key: string = field.key || model.name + '.' + field.path;
 
-    schema.pre('save', (next: Function): Function|void => {
+    schema.pre('save', function (next: Function): Function|void {
       let record = this;
       // $Flow record确认会有值
       let value = record.get(field.path);
@@ -36,7 +37,8 @@ export default class IIDField extends NumberField {
       }, (error) => {
         next(error);
       });
-      return () => {};
+      return () => {
+      };
     });
   }
 }

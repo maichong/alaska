@@ -1,6 +1,7 @@
 // @flow
 
-import alaska from './alaska';
+import _ from 'lodash';
+import { PUBLIC, OWNER } from './alaska';
 
 /**
  * REST接口默认控制器
@@ -22,23 +23,14 @@ import alaska from './alaska';
 export async function count(ctx: Alaska$Context) {
   let Model = ctx.state.Model;
   let code = Model.api.count;
-  if (code > alaska.PUBLIC && !ctx.user) {
+  if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
-    ctx.status = alaska.UNAUTHORIZED;
+    ctx.status = 401;
     return;
   }
-  let filters = Model.createFilters(
-    (ctx.state.search || ctx.query.search || '').trim(),
-    ctx.state.filters || ctx.query.filters
-  );
-  if (Model.defaultFilters) {
-    Object.assign(
-      filters,
-      typeof Model.defaultFilters === 'function' ? Model.defaultFilters(ctx) : Model.defaultFilters
-    );
-  }
-  ctx.status = alaska.OK;
-  if (code === alaska.OWNER) {
+  let filters = Model.createFiltersByContext(ctx);
+  ctx.status = 200;
+  if (code === OWNER) {
     //只允许用户列出自己的资源
     let userField = Model.userField;
     filters[userField] = ctx.user;
@@ -49,23 +41,23 @@ export async function count(ctx: Alaska$Context) {
 }
 
 /**
- * 列表接口
+ * 分页列表接口
  */
 export async function list(ctx: Alaska$Context) {
   let Model = ctx.state.Model;
   let code = Model.api.list;
-  if (code > alaska.PUBLIC && !ctx.user) {
+  if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
-    ctx.status = alaska.UNAUTHORIZED;
+    ctx.status = 401;
     return;
   }
-  ctx.status = alaska.OK;
+  ctx.status = 200;
 
   const scope = ctx.state.scope || ctx.query.scope || 'list';
 
   let query = Model.list(ctx, { scope });
 
-  if (code === alaska.OWNER) {
+  if (code === OWNER) {
     //只允许用户列出自己的资源
     let userField = Model.userField;
     // $Flow 已经确认ctx.user存在
@@ -79,14 +71,43 @@ export async function list(ctx: Alaska$Context) {
 }
 
 /**
+ * 所有数据列表接口
+ */
+export async function all(ctx: Alaska$Context) {
+  let Model = ctx.state.Model;
+  let code = Model.api.all;
+  if (code > PUBLIC && !ctx.user) {
+    //未登录,需要认证
+    ctx.status = 401;
+    return;
+  }
+  ctx.status = 200;
+
+  const scope = ctx.state.scope || ctx.query.scope || 'list';
+
+  let query = Model.all(ctx, { scope });
+
+  if (code === OWNER) {
+    //只允许用户列出自己的资源
+    let userField = Model.userField;
+    // $Flow 已经确认ctx.user存在
+    query.where(userField, ctx.user._id);
+  }
+
+  let results = await query;
+
+  ctx.body = results.map((doc) => doc.data(scope));
+}
+
+/**
  * 获取单个对象详细信息
  */
 export async function show(ctx: Alaska$Context) {
   let Model = ctx.state.Model;
   let code = Model.api.show;
-  if (code > alaska.PUBLIC && !ctx.user) {
+  if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
-    ctx.status = alaska.UNAUTHORIZED;
+    ctx.status = 401;
     return;
   }
 
@@ -98,7 +119,7 @@ export async function show(ctx: Alaska$Context) {
     return;
   }
   // $Flow 已经确认ctx.user存在
-  if (code === alaska.OWNER && doc[Model.userField].toString() !== ctx.user.id) {
+  if (code === OWNER && doc[Model.userField].toString() !== ctx.user.id) {
     //404
     return;
   }
@@ -111,19 +132,18 @@ export async function show(ctx: Alaska$Context) {
 export async function create(ctx: Alaska$Context) {
   let Model = ctx.state.Model;
   let code = Model.api.create;
-  if (code > alaska.PUBLIC && !ctx.user) {
+  if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
-    ctx.status = alaska.UNAUTHORIZED;
+    ctx.status = 401;
     return;
   }
   let doc = new Model(ctx.state.body || ctx.request.body);
-  if (code > alaska.PUBLIC) {
+  if (code > PUBLIC) {
     let userField = Model.userField;
     // $Flow 已经确认ctx.user存在
     doc.set(userField, ctx.user._id);
   }
   await doc.save();
-  ctx.status = alaska.CREATED;
   ctx.body = doc.data('create');
 }
 
@@ -133,25 +153,68 @@ export async function create(ctx: Alaska$Context) {
 export async function update(ctx: Alaska$Context) {
   let Model = ctx.state.Model;
   let code = Model.api.update;
-  if (code > alaska.PUBLIC && !ctx.user) {
+  if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
-    ctx.status = alaska.UNAUTHORIZED;
+    ctx.status = 401;
     return;
   }
-  let doc = await Model.findById(ctx.state.id || ctx.params.id);
+  let filters = Model.createFilters('', ctx.state.filters || ctx.query);
+  let doc = await Model.findById(ctx.state.id || ctx.params.id).where(filters);
   if (!doc) {
     //404
     return;
   }
   // $Flow 已经确认ctx.user存在
-  if (code === alaska.OWNER && doc[Model.userField].toString() !== ctx.user.id) {
+  if (code === OWNER && doc[Model.userField].toString() !== ctx.user.id) {
     //404
     return;
   }
-  doc.set(ctx.state.body || ctx.request.body);
+  let body = Object.assign({}, ctx.state.body || ctx.request.body);
+
+  // 不允许更新private 字段
+  _.forEach(Model.fields, (key, conf) => {
+    if (conf.private) {
+      delete body[key];
+    }
+  });
+  doc.set(body);
   await doc.save();
-  ctx.status = alaska.CREATED;
   ctx.body = {};
+}
+
+/**
+ * 使用Filters同时更新多条记录
+ */
+export async function updateMulti(ctx: Alaska$Context) {
+  let Model = ctx.state.Model;
+  let code = Model.api.updateMulti;
+  if (code > PUBLIC && !ctx.user) {
+    //未登录,需要认证
+    ctx.status = 401;
+    return;
+  }
+  let filters = Model.createFilters('', ctx.state.filters || ctx.query);
+  if (code === OWNER) {
+    //只允许用户更新自己的资源
+    // $Flow 已经确认ctx.user存在
+    filters[Model.userField] = ctx.user._id;
+  }
+
+  let body = Object.assign({}, ctx.state.body || ctx.request.body);
+
+  // 不允许更新private 字段
+  _.forEach(Model.fields, (key, conf) => {
+    if (conf.private) {
+      delete body[key];
+    }
+  });
+
+  let res = await Model.update(filters, body, { multi: true });
+
+  ctx.body = {
+    count: res.n,
+    updated: res.nModified
+  };
 }
 
 /**
@@ -160,15 +223,42 @@ export async function update(ctx: Alaska$Context) {
 export async function remove(ctx: Alaska$Context) {
   let Model = ctx.state.Model;
   let code = Model.api.remove;
-  if (code > alaska.PUBLIC && !ctx.user) {
+  if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
-    ctx.status = alaska.UNAUTHORIZED;
+    ctx.status = 401;
     return;
   }
   ctx.body = {};
-  let doc = await Model.findById(ctx.state.id || ctx.params.id);
+  let filters = Model.createFilters('', ctx.state.filters || ctx.query);
+  let doc = await Model.findById(ctx.state.id || ctx.params.id).where(filters);
   if (!doc) return;
   // $Flow 已经确认ctx.user存在
-  if (code === alaska.OWNER && doc[Model.userField].toString() !== ctx.user.id) return;
+  if (code === OWNER && doc[Model.userField].toString() !== ctx.user.id) return;
   await doc.remove();
+}
+
+/**
+ * 使用Filters同时删除多条记录
+ */
+export async function removeMulti(ctx: Alaska$Context) {
+  let Model = ctx.state.Model;
+  let code = Model.api.removeMulti;
+  if (code > PUBLIC && !ctx.user) {
+    //未登录,需要认证
+    ctx.status = 401;
+    return;
+  }
+  ctx.body = {};
+  let filters = Model.createFilters('', ctx.state.filters || ctx.query);
+  if (code === OWNER) {
+    //只允许用户删除自己的资源
+    // $Flow 已经确认ctx.user存在
+    filters[Model.userField] = ctx.user._id;
+  }
+
+  let res = await Model.deleteMany(filters);
+
+  ctx.body = {
+    removed: res.result.n
+  };
 }

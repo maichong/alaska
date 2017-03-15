@@ -5,7 +5,6 @@
 /* eslint import/no-dynamic-require:0 */
 
 import fs from 'fs';
-import { execFileSync } from 'child_process';
 import mkdirp from 'mkdirp';
 import path from 'path';
 import chalk from 'chalk';
@@ -149,26 +148,5 @@ export default async function build(options: Object) {
   content += '];\n';
 
   fs.writeFileSync(runtimeViewsFile, content);
-
-  let args = ['webpack', '--config'];
-
-  if (options.dev) {
-    args.push('webpack.admin.dev.js');
-  } else {
-    args.push('webpack.admin.pro.js');
-  }
-
-  if (options.watch) {
-    args.push('-w');
-  }
-
-  console.log(args.join(' '));
-  let execFile = modulesDir + '.bin/webpack';
-  if (process.platform === 'win32') {
-    execFile += '.cmd';
-  }
-  execFileSync(execFile, args.slice(1), {
-    stdio: ['inherit', 'inherit', 'inherit']
-  });
 }
 

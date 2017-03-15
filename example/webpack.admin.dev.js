@@ -40,7 +40,12 @@ module.exports = {
             'syntax-class-properties',
             'transform-class-properties',
             'transform-flow-strip-types',
-            'transform-runtime'
+            ['transform-runtime', {
+              "helpers": false,
+              "polyfill": false,
+              "regenerator": true,
+              "moduleName": "babel-runtime"
+            }]
           ],
           ignore: [
             'node_modules/babel-runtime/**/*.js',

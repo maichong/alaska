@@ -25,11 +25,9 @@ require('babel-register')({
   babelrc: false,
   presets: [],
   plugins: [
-    'syntax-export-extensions',
     'syntax-flow',
     'transform-class-properties',
     'transform-es2015-modules-commonjs',
-    'transform-export-extensions',
     'transform-flow-strip-types',
     'transform-object-rest-spread'
   ]
@@ -39,7 +37,6 @@ let service = require('./').default;
 
 service.launch().then(() => {
   console.log('example started');
-  console.log(service._controllers);
 }, (error) => {
   console.error(error.stack);
   process.exit(1);

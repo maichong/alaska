@@ -78,7 +78,7 @@ class SettingsEditor extends React.Component {
       service: 'alaska-settings',
       model: 'Settings',
       key: KEY,
-      perPage: 10000
+      _limit: 10000
     });
     this.setState({
       values: {}

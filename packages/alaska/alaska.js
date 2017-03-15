@@ -46,6 +46,27 @@ export class PanicError extends Error {
 }
 
 /**
+ * 接口关闭
+ * @type {number}
+ */
+export const CLOSED = 0;
+
+/**
+ * 允许所有用户访问接口
+ */
+export const PUBLIC = 1;
+
+/**
+ * 允许已经认证的用户访问接口
+ */
+export const AUTHENTICATED = 2;
+
+/**
+ * 允许资源所有者访问接口
+ */
+export const OWNER = 3;
+
+/**
  * Alaska主类,一个项目运行时可以实例化多个Alaska对象,每个Alaska对象会监听一个端口
  * 默认情况下通过 `require('alaska')` 获取默认Alaska实例
  * ```js
@@ -57,73 +78,6 @@ export class PanicError extends Error {
  * ```
  */
 class Alaska {
-
-  /**
-   * HTTP状态码200 REST接口show/list方法成功
-   */
-  OK = 200;
-
-  /**
-   * HTTP状态码201 REST接口create/update成功
-   */
-  CREATED = 201;
-
-  /**
-   * HTTP状态码204 REST接口remove成功
-   */
-  NO_CONTENT = 204;
-
-  /**
-   * HTTP状态码400 REST接口create/update请求未识别,错误的请求
-   */
-  BAD_REQUEST = 400;
-
-  /**
-   * HTTP状态码401 REST接口未授权
-   */
-  UNAUTHORIZED = 401;
-
-  /**
-   * HTTP状态码403 REST已授权,但是没有权限
-   */
-  FORBIDDEN = 403;
-
-  /**
-   * HTTP状态码404 REST接口show/list请求的资源不存在
-   */
-  NOT_FOUND = 404;
-
-  /**
-   * HTTP状态码405 REST接口HTTP方法不允许
-   */
-  METHOD_NOT_ALLOWED = 405;
-
-  /**
-   * HTTP状态码422 REST接口create/update数据验证失败
-   */
-  UNPROCESSABLE_ENTITY = 422;
-
-  /**
-   * 接口关闭
-   * @type {number}
-   */
-  CLOSED = 0;
-
-  /**
-   * 允许所有用户访问接口
-   */
-  PUBLIC = 1;
-
-  /**
-   * 允许已经认证的用户访问接口
-   */
-  AUTHENTICATED = 2;
-
-  /**
-   * 允许资源所有者访问接口
-   */
-  OWNER = 3;
-
   _callbackMode = false;
   _app: Koa;
   main: Alaska$Service;
