@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 import configureStore from './store';
 import rootSaga from '../sagas/';
 
-import accessReducer from './access';
 import detailsReducer from './details';
 import layoutReducer from './layout';
 import listsReducer from './lists';
@@ -17,7 +16,6 @@ function createStore() {
     login: loginReducer,
     signed: signedReducer,
     user: userReducer,
-    access: accessReducer,
     settings: settingsReducer,
     lists: listsReducer,
     details: detailsReducer,

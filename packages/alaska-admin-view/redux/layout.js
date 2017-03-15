@@ -1,11 +1,11 @@
 import { createAction, handleActions } from 'redux-actions';
 
-export const LAYOUT = 'LAYOUT';
+export const UPDATE_LAYOUT = 'UPDATE_LAYOUT';
 
-export const layout = createAction(LAYOUT);
+export const updateLayout = createAction(UPDATE_LAYOUT);
 
 export default handleActions({
-  LAYOUT: (state, action) => {
+  UPDATE_LAYOUT: (state, action) => {
     if (window.localStorage) {
       window.localStorage.setItem('layout', action.payload);
     }

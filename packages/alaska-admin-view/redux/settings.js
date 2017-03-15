@@ -1,8 +1,7 @@
 import { handleActions } from 'redux-actions';
-import _ from 'lodash';
+import immutable from 'seamless-immutable';
 
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const REFRESH_INFO_SUCCESS = 'REFRESH_INFO_SUCCESS';
+export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
 
 function settingsReducer(state = {}, action) {
   let settings = action.payload.settings || {};
@@ -45,7 +44,13 @@ function settingsReducer(state = {}, action) {
   return state.merge(settings);
 }
 
+// 初始state
+export const INITIAL_STATE = immutable({
+  locales: {
+    all: {}
+  }
+});
+
 export default handleActions({
-  LOGIN_SUCCESS: settingsReducer,
-  REFRESH_INFO_SUCCESS: settingsReducer
-}, {});
+  UPDATE_SETTINGS: settingsReducer
+}, INITIAL_STATE);

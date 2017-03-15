@@ -14,5 +14,5 @@ ReactDOM.render(
   <Provider store={store}>
     <App views={views} />
   </Provider>
-  , document.getElementById('app')
+  , document.getElementById('viewport')
 );

@@ -7,7 +7,7 @@ import createHashHistory from 'history/lib/createHashHistory';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
-import ReactToastr, { ToastContainer } from 'react-toastr';
+import { ToastContainer, ToastMessage } from 'react-toastr';
 import qs from 'qs';
 import $ from 'jquery';
 import _ from 'lodash';
@@ -21,7 +21,7 @@ import Dashboard from './Dashboard.jsx';
 import Editor from './Editor.jsx';
 import List from './List.jsx';
 
-const ToastMessageFactory = React.createFactory(ReactToastr.ToastMessage.animation);
+const ToastMessageFactory = React.createFactory(ToastMessage.animation);
 
 const createAppHistory = useRouterHistory(createHashHistory);
 const history = createAppHistory({

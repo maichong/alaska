@@ -27,7 +27,7 @@ export default class Article extends Model {
     },
     content: {
       label: 'Content',
-      type: 'html'
+      type: String
     },
     createdAt: {
       label: 'Created At',

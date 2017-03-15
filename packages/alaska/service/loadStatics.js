@@ -14,10 +14,13 @@ export default async function loadStatics() {
 
   this.config('statics', []).forEach((c) => {
     let root = path.resolve(this.dir, c.root);
-    let prefix = (c.prefix || '') + '/*';
-    let prefixLength = this.config('prefix').length + c.prefix.length;
+    let prefix = (c.prefix || '');
+    if (prefix === '/') {
+      prefix = '';
+    }
+    let prefixLength = this.config('prefix').length + prefix.length;
     let index = c.index === false ? false : (c.index || 'index.html');
-    this.router.register(prefix, ['GET', 'HEAD'], async(ctx, next) => {
+    this.router.register(prefix + '/*', ['GET', 'HEAD'], async(ctx, next) => {
       await next();
       if (ctx.body != null || ctx.status !== 404) return;
       let filePath = root;

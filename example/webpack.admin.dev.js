@@ -9,14 +9,14 @@ module.exports = {
     __dirname + '/views/admin.jsx'
   ],
   output: {
-    filename: 'app.min.js',
+    filename: 'app.js',
     path: process.cwd() + '/public/admin/js/',
     publicPath: '/assets/'
   },
   resolve: {
     modules: ['node_modules'],
     extensions: ['.js', '.jsx'],
-    mainFields: ['webpack', 'jsnext:main', 'browser', 'main']
+    mainFields: ['webpack', 'browser', 'main']
   },
   plugins: [
     new webpack.DefinePlugin({

@@ -27,6 +27,7 @@
     "redux-actions": "^2.0.1",
     "redux-logger": "^2.8.2",
     "redux-saga": "^0.14.3",
+    "seamless-immutable": "^7.1.1",
     "shallow-equal-without": "^0.1.0",
     "whatwg-fetch": "^2.0.3"
   }

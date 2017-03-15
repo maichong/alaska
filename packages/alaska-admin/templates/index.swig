@@ -24,12 +24,7 @@
       background: #eaf0f5;
     }
   </style>
-  <script src="{{ prefix }}/static/js/html5shiv.min.js"></script>
-  <link href="{{ prefix }}/static/css/bootstrap.min.css" rel="stylesheet">
-  <link href="{{ prefix }}/static/css/font-awesome.min.css" rel="stylesheet">
-  <link href="{{ prefix }}/static/css/flat-ui.min.css" rel="stylesheet">
-  <link href="{{ prefix }}/static/css/toastr.min.css" rel="stylesheet">
-  <link href="{{ prefix }}/static/css/animate.min.css" rel="stylesheet">
+  <link href="{{ prefix }}/css/admin.css" rel="stylesheet">
 </head>
 <body>
 <div id="viewport">
