@@ -3,11 +3,14 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-// TODO actions
-import { actions } from 'alaska-admin-view';
 import { Link } from 'react-router';
+import { loadDetails } from 'alaska-admin-view/redux/details';
 
 class RelationshipFieldCell extends React.Component {
+
+  props: {
+    loadDetails:Function;
+  };
 
   state: {
     display:string
@@ -68,7 +71,7 @@ class RelationshipFieldCell extends React.Component {
       delete this._fetch[value];
     } else if (!this._fetch[value]) {
       setTimeout(() => {
-        this.props.actions.detailsIfNeed({
+        this.props.loadDetails({
           service: field.service,
           model: field.model,
           key,
@@ -98,5 +101,5 @@ class RelationshipFieldCell extends React.Component {
 }
 
 export default connect(({ details }) => ({ details }), (dispatch) => ({
-  actions: bindActionCreators(actions, dispatch)
+  loadDetails: bindActionCreators(loadDetails, dispatch)
 }))(RelationshipFieldCell);

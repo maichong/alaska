@@ -1,6 +1,6 @@
 import { put } from 'redux-saga/effects';
 import akita from 'akita';
-import { loadListSuccess, loadListFailure } from '../redux/lists';
+import { applyList, loadListFailure } from '../redux/lists';
 
 export default function* list({ payload }) {
   try {
@@ -12,9 +12,7 @@ export default function* list({ payload }) {
       .sort(payload.sort)
       .limit(payload.limit)
       .page(payload.page);
-
-    console.log('res', res);
-    yield put(loadListSuccess(payload.key, res));
+    yield put(applyList(payload.key, res));
   } catch (e) {
     yield put(loadListFailure(payload.key, e));
   }

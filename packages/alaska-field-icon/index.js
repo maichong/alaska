@@ -4,8 +4,8 @@ import TextField from 'alaska-field-text';
 
 export default class IconField extends TextField {
   static defaultOptions = {
-    cell: 'IconFieldView',
-    view: 'IconFieldCell',
+    cell: 'IconFieldCell',
+    view: 'IconFieldView',
     filter: 'TextFieldFilter',
   };
 }

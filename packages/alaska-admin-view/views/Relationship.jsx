@@ -7,25 +7,25 @@ import qs from 'qs';
 import DataTable from './DataTable';
 import * as listRedux from '../redux/lists';
 
-const { object, string, func } = React.PropTypes;
+const { object, func } = React.PropTypes;
 
 class Relationship extends React.Component {
-
-  static propTypes = {
-    actions: object,
-    filters: object,
-    lists: object,
-    service: string,
-    model: string,
-    path: string,
-    from: string,
-    title: string,
-  };
 
   static contextTypes = {
     actions: object,
     settings: object,
     t: func,
+  };
+
+  props: {
+    actions: Object,
+    filters: Object,
+    lists: Object,
+    service: string,
+    model: string,
+    path: string,
+    from: string,
+    title: string,
   };
 
   state: Object;

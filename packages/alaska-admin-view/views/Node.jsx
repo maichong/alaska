@@ -3,21 +3,21 @@
 import React from 'react';
 import _ from 'lodash';
 
-const { node, string, object } = React.PropTypes;
+const { object } = React.PropTypes;
 
 export default class Node extends React.Component {
 
-  static propTypes = {
-    children: node,
+  static contextTypes = {
+    views: object
+  };
+
+  props: {
+    children: any,
     tag: string,
     id: string,
     wrapper: string,
-    props: object,
-    state: object,
-  };
-
-  static contextTypes = {
-    views: object
+    props: Object,
+    state: Object,
   };
 
   render() {

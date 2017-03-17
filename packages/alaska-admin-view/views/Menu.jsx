@@ -4,7 +4,7 @@ import React from 'react';
 import shallowEqualWithout from 'shallow-equal-without';
 import Node from './Node';
 
-const { object, func, number, array, string } = React.PropTypes;
+const { object, func } = React.PropTypes;
 
 function findSubs(subs, id) {
   for (let i = 0; i < subs.length; i += 1) {
@@ -20,23 +20,22 @@ function findSubs(subs, id) {
 
 export default class Menu extends React.Component {
 
-  static propTypes = {
-    // children: node,
-    items: array,
-    level: number,
-    layout: string,
-    value: string,
-    onChange: func
-  };
-
   static contextTypes = {
     views: object,
     t: func
   };
 
-  state:Object;
+  props: {
+    items: Object[],
+    level: number,
+    layout: string,
+    value: string,
+    onChange: Function
+  };
 
-  constructor(props:Object) {
+  state: Object;
+
+  constructor(props: Object) {
     super(props);
     this.state = {
       activated: '',
@@ -44,12 +43,12 @@ export default class Menu extends React.Component {
     };
   }
 
-  shouldComponentUpdate(props:Object, state:Object) {
+  shouldComponentUpdate(props: Object, state: Object) {
     return state.activated !== this.state.activated ||
       state.opened !== this.state.opened || !shallowEqualWithout(props, this.props);
   }
 
-  createMenuItem(item:Object, level:number) {
+  createMenuItem(item: Object, level: number) {
     const me = this;
     const t = this.context.t;
     const { layout, onChange, value } = this.props;

@@ -26,16 +26,14 @@ function createFromSearchMulti(options, values, search) {
   return { label: search, value: search };
 }
 
-const { any, array, bool, func } = React.PropTypes;
-
 export default class Select extends React.Component {
 
-  static propTypes = {
-    multi: bool,
-    onChange: func,
-    loadOptions: func,
+  props: {
+    multi: boolean,
+    onChange: Function,
+    loadOptions: Function,
     value: any,
-    options: array
+    options: Object[]
   };
 
   state: {

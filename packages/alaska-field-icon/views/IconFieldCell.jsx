@@ -2,13 +2,12 @@
 
 import React from 'react';
 
-const { string } = React.PropTypes;
-
 export default class IconFieldCell extends React.Component {
-  propTypes={
+  props: {
     value: string
   };
-  shouldComponentUpdate(props:Object) {
+
+  shouldComponentUpdate(props: Object) {
     return props.value !== this.props.value;
   }
 

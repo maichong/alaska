@@ -3,12 +3,10 @@
 import React from 'react';
 import Node from './Node';
 
-const { node } = React.PropTypes;
-
 export default class Content extends React.Component {
 
-  static propTypes = {
-    children: node
+  props: {
+    children: any
   };
 
   render() {

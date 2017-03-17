@@ -7,26 +7,26 @@ import { IF, ELSE } from 'jsx-plus';
 import shallowEqualWithout from 'shallow-equal-without';
 import DataTableRow from './DataTableRow';
 
-const { object, array, string, func } = React.PropTypes;
+const { object, func } = React.PropTypes;
 
 export default class DataTable extends React.Component {
-
-  static propTypes = {
-    model: object,
-    columns: array,
-    selected: array,
-    data: array,
-    sort: string,
-    onSort: func,
-    onSelect: func,
-    onRemove: func
-  };
 
   static contextTypes = {
     router: object,
     settings: object,
     views: object,
     t: func,
+  };
+
+  props: {
+    model: Object,
+    columns: Object[],
+    selected: any[],
+    data: Object[],
+    sort: string,
+    onSort: Function,
+    onSelect: Function,
+    onRemove: Function
   };
 
   state: {

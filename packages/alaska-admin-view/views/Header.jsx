@@ -6,26 +6,26 @@ import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as layoutRedux from '../redux/layout';
-import * as userRedux from '../redux/user';
+import * as settingsRedux from '../redux/settings';
 import Node from './Node';
 import LocaleNav from './LocaleNav';
 import * as loginRedux from '../redux/login';
 
-const { node, object, func, string } = React.PropTypes;
+const { object, func } = React.PropTypes;
 
 class Header extends React.Component {
-
-  static propTypes = {
-    children: node,
-    user: object,
-    layout: string
-  };
 
   static contextTypes = {
     actions: object,
     views: object,
-    settings: object,
     t: func,
+  };
+
+  props: {
+    children: any,
+    user: Object,
+    layout: string;
+    applyLayout: Function;
   };
 
   state: {
@@ -60,7 +60,7 @@ class Header extends React.Component {
     } else {
       layout = 'full';
     }
-    this.props.layoutAction(layout);
+    this.props.applyLayout(layout);
   };
 
   handleTouchTap = (event) => {
@@ -77,7 +77,7 @@ class Header extends React.Component {
   };
 
   handleRefresh = () => {
-    this.props.refreshAction();
+    this.props.refreshSettings();
     this.setState({
       open: false
     });
@@ -130,7 +130,7 @@ class Header extends React.Component {
 }
 
 export default connect(({ user, layout }) => ({ user, layout }), (dispatch) => bindActionCreators({
-  logoutAction: loginRedux.logout,
-  layoutAction: layoutRedux.layout,
-  refreshAction: userRedux.refreshInfo
+  logout: loginRedux.logout,
+  applyLayout: layoutRedux.applyLayout,
+  refreshSettings: settingsRedux.refreshSettings,
 }, dispatch))(Header);

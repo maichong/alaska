@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 export const CLEAR_LIST = 'CLEAR_LIST';
 export const LOAD_LIST = 'LOAD_LIST';
-export const LOAD_LIST_SUCCESS = 'LOAD_LIST_SUCCESS';
+export const APPLY_LIST = 'APPLY_LIST';
 export const LOAD_LIST_FAILURE = 'LOAD_LIST_FAILURE';
 
 /**
@@ -30,7 +30,7 @@ export const loadList = createAction(LOAD_LIST);
  * @param {string} key
  * @param {Object} res
  */
-export const loadListSuccess = createAction(LOAD_LIST_SUCCESS, (key, res) => Object.assign({ key }, res));
+export const applyList = createAction(APPLY_LIST, (key, res) => Object.assign({ key }, res));
 /**
  * 加载失败
  * @param {string} key
@@ -43,7 +43,7 @@ export const INITIAL_STATE = immutable({});
 
 export default handleActions({
   CLEAR_LIST: (state, { payload }) => payload.key ? state.without(payload.key) : INITIAL_STATE,
-  LOAD_LIST_SUCCESS: (state, { payload }) => {
+  APPLY_LIST: (state, { payload }) => {
     let key = payload.key;
     let info = _.without(payload, 'results');
     let list = state[payload.key] || immutable({});

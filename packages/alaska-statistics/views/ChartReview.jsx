@@ -3,12 +3,10 @@
 import React from 'react';
 import Chart from './Chart';
 
-const { object } = React.PropTypes;
-
 export default class ChartReview extends React.Component {
 
-  static propTypes = {
-    data: object
+  props: {
+    data: Object
   };
 
   render() {

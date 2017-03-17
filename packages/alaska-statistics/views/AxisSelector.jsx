@@ -4,23 +4,24 @@ import React from 'react';
 import _ from 'lodash';
 import Select from 'alaska-field-select/views/Select';
 
-const { bool, string, func, object } = React.PropTypes;
+const { func, object } = React.PropTypes;
 
 export default class AxisSelector extends React.Component {
-
-  static propTypes = {
-    data: object,
-    field: object,
-    value: string,
-    errorText: string,
-    disabled: bool,
-    onChange: func
-  };
 
   static contextTypes = {
     settings: object,
     t: func
   };
+
+  props: {
+    data: Object,
+    field: Object,
+    value: string,
+    errorText: string,
+    disabled: boolean,
+    onChange: Function
+  };
+
   state: {
     model:?Object;
     options:Object;

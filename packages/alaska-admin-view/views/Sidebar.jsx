@@ -6,29 +6,29 @@ import Copyright from './Copyright';
 import Node from './Node';
 import Logo from './Logo';
 
-const { array, string, object } = React.PropTypes;
+const { object } = React.PropTypes;
 
 export default class Sidebar extends React.Component {
-
-  static propTypes = {
-    menu: array,
-    layout: string
-  };
 
   static contextTypes = {
     router: object
   };
 
-  state:Object;
+  props: {
+    menu: Object[],
+    layout: string
+  };
 
-  constructor(props:Object) {
+  state: Object;
+
+  constructor(props: Object) {
     super(props);
     this.state = {
       menu: ''
     };
   }
 
-  handleChange = (item:Object) => {
+  handleChange = (item: Object) => {
     this.context.router.push(item.link);
     this.setState({ menu: item.id });
   };

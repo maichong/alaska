@@ -9,23 +9,17 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import Content from './Content';
 
-const { node, object } = React.PropTypes;
-
 class Manage extends React.Component {
 
-  static propTypes = {
-    children: node
-  };
-
-  static contextTypes = {
-    settings: object
+  props: {
+    children: any;
+    settings: Object;
   };
 
   render() {
-    let { children } = this.props;
-    let { settings } = this.context;
+    let { children, settings } = this.props;
     return (<Node id="manage">
-      <Sidebar menu={settings.menu} layout={this.props.layout}/>
+      <Sidebar menu={settings.menu} layout={this.props.layout} />
       <Node id="body">
         <Header />
         <Content>{children}</Content>

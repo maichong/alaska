@@ -9,15 +9,9 @@ import shallowEqualWithout from 'shallow-equal-without';
 import Node from './Node';
 import Action from './Action';
 
-const { object, array, func } = React.PropTypes;
+const { object, func } = React.PropTypes;
 
 export default class ListActions extends React.Component {
-
-  static propTypes = {
-    selected: array,
-    model: object,
-    onRefresh: func
-  };
 
   static contextTypes = {
     actions: object,
@@ -25,6 +19,12 @@ export default class ListActions extends React.Component {
     t: func,
     confirm: func,
     toast: func
+  };
+
+  props: {
+    selected: any[],
+    model: Object,
+    onRefresh: Function
   };
 
   shouldComponentUpdate(props: Object) {

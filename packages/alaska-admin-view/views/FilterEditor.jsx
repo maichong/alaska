@@ -3,22 +3,23 @@
 import React from 'react';
 import _ from 'lodash';
 
-const { object, func, bool } = React.PropTypes;
+const { object } = React.PropTypes;
 
 export default class FilterEditor extends React.Component {
-
-  static propTypes = {
-    value: object,
-    model: object,
-    fields: object,
-    onChange: func,
-    onFieldsChange: func,
-    disabled: bool
-  };
 
   static contextTypes = {
     views: object
   };
+
+  props: {
+    value: Object,
+    model: Object,
+    fields: Object,
+    onChange: Function,
+    onFieldsChange: Function,
+    disabled: boolean
+  };
+
   state: {
     value:Object;
   };

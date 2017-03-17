@@ -4,31 +4,21 @@ import React from 'react';
 import qs from 'qs';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import akita from 'akita';
+import checkDepends from 'check-depends';
 import * as detailsRedux from '../redux/details';
 import * as saveRedux from '../redux/save';
-import * as userRedux from '../redux/user';
 import { bindActionCreators } from 'redux';
 import Node from './Node';
 import Action from './Action';
 import FieldGroup from './FieldGroup';
 import Relationship from './Relationship';
 import ContentHeader from './ContentHeader';
-import akita from 'akita';
-import checkDepends from 'check-depends';
+import * as settingsRedux from '../redux/settings';
 
 const { object, func } = React.PropTypes;
 
-class Editor extends React.Component {
-
-  state: Object;
-  _r: number;
-  loading: boolean;
-
-  static propTypes = {
-    details: object,
-    save: object,
-    params: object
-  };
+class EditorPage extends React.Component {
 
   static contextTypes = {
     actions: object,
@@ -39,6 +29,18 @@ class Editor extends React.Component {
     toast: func,
     confirm: func,
   };
+
+  props: {
+    loadDetails:Function,
+    refreshSettings:Function,
+    details: Object,
+    save: Object,
+    params: Object
+  };
+
+  state: Object;
+  _r: number;
+  loading: boolean;
 
   constructor(props, context) {
     super(props);
@@ -137,7 +139,7 @@ class Editor extends React.Component {
   refresh() {
     const state = this.state;
     const id = state.id;
-    this.props.detailsAction({
+    this.props.loadDetails({
       service: state.serviceId,
       model: state.modelName,
       key: state.model.key,
@@ -325,21 +327,15 @@ class Editor extends React.Component {
         }
       }
 
-      if (!cfg._label) {
-        cfg._label = cfg.label;
-        cfg.label = t(cfg.label, serviceId);
-      }
-      if (cfg.help && !cfg._help) {
-        cfg._help = cfg.help;
-        cfg.help = t(cfg.help, serviceId);
-      }
+      let label = t(cfg.label, serviceId);
+      let help = t(cfg.help, serviceId);
 
       let fieldProps = {
         key,
         value: data[key],
         model,
         data,
-        field: cfg,
+        field: cfg.merge({ label, help }),
         disabled,
         errorText: errors[key],
         onChange: this.handleChange.bind(this, key)
@@ -466,7 +462,7 @@ class Editor extends React.Component {
 }
 
 export default connect(({ details, save }) => ({ details, save }), (dispatch) => bindActionCreators({
-  detailsAction: detailsRedux.details,
+  loadDetails: detailsRedux.loadDetails,
   saveAction: saveRedux.save,
-  refreshAction: userRedux.refreshInfo
-}, dispatch))(Editor);
+  refreshSettings: settingsRedux.refreshSettings
+}, dispatch))(EditorPage);

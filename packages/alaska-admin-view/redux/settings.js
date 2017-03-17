@@ -4,7 +4,7 @@ import {
 } from 'redux-actions';
 import immutable from 'seamless-immutable';
 
-export const UPDATE_SETTINGS = 'UPDATE_SETTINGS';
+export const APPLY_SETTINGS = 'APPLY_SETTINGS';
 export const REFRESH_SETTINGS = 'REFRESH_SETTINGS';
 
 // 初始state
@@ -14,9 +14,9 @@ export const INITIAL_STATE = immutable({
   }
 });
 
-export const updateSettings = createAction(UPDATE_SETTINGS);
+export const applySettings = createAction(APPLY_SETTINGS);
 export const refreshSettings = createAction(REFRESH_SETTINGS);
 
 export default handleActions({
-  UPDATE_SETTINGS: (state, action) => immutable(action.payload)
+  APPLY_SETTINGS: (state, action) => immutable(action.payload)
 }, INITIAL_STATE);

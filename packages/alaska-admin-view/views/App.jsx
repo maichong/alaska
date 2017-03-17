@@ -9,16 +9,14 @@ import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
 import { ToastContainer, ToastMessage } from 'react-toastr';
 import qs from 'qs';
-import $ from 'jquery';
 import _ from 'lodash';
 import * as layoutRedux from '../redux/layout';
-import * as userRedux from '../redux/user';
 import Node from './Node';
 import Login from './Login';
 import Locked from './Locked';
 import Manage from './Manage';
 import Dashboard from './Dashboard';
-import Editor from './Editor';
+import EditorPage from './EditorPage';
 import ListPage from './ListPage';
 
 const ToastMessageFactory = React.createFactory(ToastMessage.animation);
@@ -33,18 +31,17 @@ const { object, func } = React.PropTypes;
 
 class App extends React.Component {
 
-  static propTypes = {
-    views: object.isRequired
-  };
-
   static childContextTypes = {
-    actions: object,
     views: object,
     settings: object,
     t: func,
     alert: func,
     confirm: func,
     toast: func,
+  };
+
+  props: {
+    views: Object
   };
 
   state: {
@@ -69,7 +66,6 @@ class App extends React.Component {
   getChildContext() {
     return {
       views: this.props.views,
-      actions: this.props.actions,
       settings: this.props.settings,
       t: this.t,
       alert: this.alert,
@@ -79,17 +75,11 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    let props = this.props;
-    if (!props.access && !props.signed && !props.login.show) {
-      props.refreshAction();
-    }
-
-    $(window).on('resize', this.handleResize);
-    this.handleResize();
+    window.addEventListener('resize', this.handleResize);
   }
 
   componentWillUnmount() {
-    $(window).off('resize', this.handleResize);
+    window.removeEventListener(this.handleResize);
   }
 
   t = (message, serviceId, values, formats) => {
@@ -224,15 +214,15 @@ class App extends React.Component {
     let { layout } = this.props;
     if (window.innerWidth <= 768) {
       if (layout === 'full') {
-        this.props.layoutAction('hidden');
+        this.props.applyLayout('hidden');
       }
     } else if (layout === 'hidden') {
-      this.props.layoutAction('full');
+      this.props.applyLayout('full');
     }
   };
 
   render() {
-    const { layout, login, user, settings, views } = this.props;
+    const { layout, user, settings, views } = this.props;
     const state = this.state;
     let el;
 
@@ -242,7 +232,7 @@ class App extends React.Component {
         <Route component={Manage} path="/">
           <IndexRoute component={Dashboard} />
           <Route component={ListPage} path="list/:service/:model" />
-          <Route component={Editor} path="edit/:service/:model/:id" />
+          <Route component={EditorPage} path="edit/:service/:model/:id" />
           {
             (views.routes || []).map(
               (item, index) => (<Route key={index} component={item.component} path={item.path} />))
@@ -273,12 +263,10 @@ class App extends React.Component {
   }
 }
 
-export default connect(({ user, login, settings, layout }) => ({
+export default connect(({ user, settings, layout }) => ({
   user,
-  login,
   settings,
   layout
 }), (dispatch) => bindActionCreators({
-  refreshAction: userRedux.refreshInfo,
-  layoutAction: layoutRedux.layout
+  applyLayout: layoutRedux.applyLayout
 }, dispatch))(App);

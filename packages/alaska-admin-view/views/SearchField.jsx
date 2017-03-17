@@ -2,25 +2,24 @@
 
 import React from 'react';
 
-const { string, func } = React.PropTypes;
-
 export default class SearchField extends React.Component {
 
-  static propTypes = {
+  props: {
     value: string,
-    onChange: func
+    onChange: Function
   };
-  state:Object;
-  _timer:any;
 
-  constructor(props:Object) {
+  state: Object;
+  _timer: any;
+
+  constructor(props: Object) {
     super(props);
     this.state = {
       value: ''
     };
   }
 
-  componentWillReceiveProps(props:Object) {
+  componentWillReceiveProps(props: Object) {
     if (props.value !== this.state.value) {
       this.setState({
         value: props.value
@@ -28,7 +27,7 @@ export default class SearchField extends React.Component {
     }
   }
 
-  handleChange = (event:Object) => {
+  handleChange = (event: Object) => {
     let value = event.target.value;
     this.setState({ value });
     if (this._timer) {

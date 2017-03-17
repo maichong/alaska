@@ -2,9 +2,9 @@
 
 import React from 'react';
 import _ from 'lodash';
-import { actions } from 'alaska-admin-view';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { loadList } from 'alaska-admin-view/redux/lists';
 
 const KEY = 'alaska-settings.settings';
 
@@ -74,11 +74,11 @@ class SettingsEditor extends React.Component {
   }
 
   refresh = () => {
-    this.props.actions.list({
+    this.props.loadDetails({
       service: 'alaska-settings',
       model: 'Settings',
       key: KEY,
-      _limit: 10000
+      limit: 10000
     });
     this.setState({
       values: {}
@@ -164,5 +164,5 @@ class SettingsEditor extends React.Component {
 }
 
 export default connect(({ lists }) => ({ lists }), (dispatch) => ({
-  actions: bindActionCreators(actions, dispatch)
+  loadDetails: bindActionCreators(loadList, dispatch)
 }))(SettingsEditor);

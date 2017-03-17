@@ -4,15 +4,13 @@ import React from 'react';
 import ChartJS from 'react-chartjs';
 import { PREFIX, api } from 'alaska-admin-view';
 
-const { string, number, func } = React.PropTypes;
-
 export default class Chart extends React.Component {
 
-  static propTypes = {
+  props: {
     chart: string,
     width: number,
     height: number,
-    onLoadData: func
+    onLoadData: Function
   };
 
   state: {

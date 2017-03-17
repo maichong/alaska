@@ -3,14 +3,12 @@
 import React from 'react';
 import Node from './Node';
 
-const { node, bool, string } = React.PropTypes;
-
 export default class FieldGroup extends React.Component {
 
-  static propTypes = {
-    children: node,
-    form: bool,
-    panel: bool,
+  props: {
+    children: any,
+    form: boolean,
+    panel: boolean,
     className: string,
     style: string,
     wrapper: string,

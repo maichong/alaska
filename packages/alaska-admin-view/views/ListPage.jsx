@@ -350,7 +350,6 @@ class ListPage extends React.Component {
   };
 
   render() {
-    console.log('ListPage.state', this.state);
     const { location } = this.props;
     const {
       search,

@@ -3,8 +3,8 @@
 import { put } from 'redux-saga/effects';
 import _ from 'lodash';
 import akita from 'akita';
-import { updateSettings } from '../redux/settings';
-import { updateUser } from '../redux/user';
+import { applySettings } from '../redux/settings';
+import { applyUser } from '../redux/user';
 
 export default function* settingsSaga() {
   try {
@@ -49,8 +49,8 @@ export default function* settingsSaga() {
     settings.locales.all = all;
     settings.models = models;
 
-    yield put(updateSettings(settings));
-    yield put(updateUser(res.user));
+    yield put(applySettings(settings));
+    yield put(applyUser(res.user));
 
   } catch (e) {
     console.error(e);

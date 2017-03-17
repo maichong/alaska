@@ -12,7 +12,7 @@ const examplePath = dir + 'example/';
 const packagesPath = dir + 'packages/';
 
 chokidar.watch(packagesPath, {
-  ignored: /html|node_modules|[\/\\]\./
+  ignored: /node_modules|[\/\\]\./
 }).on('all', (event, file) => {
   if (utils.isFile(file)) {
     let relative = path.relative(packagesPath, file);

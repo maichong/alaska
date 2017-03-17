@@ -1,12 +1,17 @@
 import { put } from 'redux-saga/effects';
-import qs from 'qs';
 import akita from 'akita';
-import { detailsSuccess } from '../redux/details';
+import { applyDetails } from '../redux/details';
 
-export default function* details(args) {
+export default function* details({ payload }) {
   try {
-    let res = akita.findOne('/api/details?' + qs.stringify(args));
-    yield put(detailsSuccess(res));
+    let res = yield akita.get('/api/details', {
+      params: {
+        _service: payload.service,
+        _model: payload.model,
+        _id: payload.id,
+      }
+    });
+    yield put(applyDetails(payload.key, res));
   } catch (e) {
     throw e;
   }

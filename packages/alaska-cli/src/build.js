@@ -34,6 +34,18 @@ export default async function build(options: Object) {
   const modulesList = fs.readdirSync(modulesDir)
     .filter((file) => file[0] !== '.' && file.startsWith('alaska-') && file !== 'alaska-admin-view');
 
+  let runtimeStyleFile = dir + 'runtime/alaska-admin-view/style.less';
+
+  let styles = modulesList.map((name) => {
+    let styleFile = path.join(modulesDir, name, 'style.less');
+    if (uitls.isFile(styleFile)) {
+      let p = path.relative(path.dirname(runtimeStyleFile), styleFile);
+      return `@import "${p}";`
+    }
+  }).filter((f) => (f)).join('\n');
+
+  fs.writeFileSync(runtimeStyleFile, styles);
+
   let views: { [name:string]:string } = {};
   let wrappers: { [name:string]:string[] } = {};
   let routes: Object[] = [];

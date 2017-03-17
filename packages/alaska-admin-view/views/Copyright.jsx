@@ -3,11 +3,9 @@
 import React from 'react';
 import Node from './Node';
 
-const { string } = React.PropTypes;
-
 export default class Copyright extends React.Component {
 
-  static propTypes = {
+  props: {
     layout: string
   };
 

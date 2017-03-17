@@ -4,14 +4,13 @@ import React from 'react';
 import { Overlay } from 'react-bootstrap';
 import Node from './Node';
 
-const { node, array } = React.PropTypes;
-
 export default class ContentHeader extends React.Component {
 
-  static propTypes = {
-    children: node,
-    actions: array
+  props: {
+    children: any,
+    actions: Array<any>
   };
+
   state: {
     show:boolean;
   };
@@ -33,7 +32,7 @@ export default class ContentHeader extends React.Component {
     if (window.innerWidth > 768 || !actions || actions.length < 2) {
       el = <Node wrapper="contentHeaderActions" className="content-header-actions">{actions}</Node>;
     } else {
-      el = <i className="fa fa-bars"/>;
+      el = <i className="fa fa-bars" />;
       let overlay = null;
       if (this.state.show) {
         overlay = <Overlay show={true} onHide={() => this.setState({ show: false })} rootClose={true}>

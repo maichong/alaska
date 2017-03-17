@@ -4,26 +4,26 @@ import React from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import shallowEqualWithout from 'shallow-equal-without';
 
-const { bool, object, array, func, string } = React.PropTypes;
+const { object, func } = React.PropTypes;
 
 const NULL = <div />;
 
 export default class Action extends React.Component {
 
-  static propTypes = {
-    model: object,
-    action: object,
-    selected: array,
-    disabled: bool,
-    data: object,
-    id: string,
-    onClick: func,
-    onRefresh: func,
-  };
-
   static contextTypes = {
     views: object,
     t: func
+  };
+
+  props: {
+    model: Object,
+    action: Object,
+    selected: Array<any>,
+    disabled: boolean,
+    data: Object,
+    id: string,
+    onClick: Function,
+    onRefresh: Function,
   };
 
   shouldComponentUpdate(props: Object) {

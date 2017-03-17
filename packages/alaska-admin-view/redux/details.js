@@ -1,37 +1,38 @@
 import { createAction, handleActions } from 'redux-actions';
+import immutable from 'seamless-immutable';
 
-export const REFRESH = 'REFRESH';
-export const LIST_SUCCESS = 'LIST_SUCCESS';
-export const DETAILS = 'DETAILS';
-export const DETAILS_SUCCESS = 'DETAILS_SUCCESS';
-export const SAVE_SUCCESS = 'SAVE_SUCCESS';
+export const LOAD_DETAILS = 'LOAD_DETAILS';
+export const APPLY_DETAILS = 'APPLY_DETAILS';
 
-export const details = createAction(DETAILS);
+/**
+ * 加载详情
+ * @param {Object} options
+ * @param {string} options.service
+ * @param {string} options.model
+ * @param {string} options.key
+ * @param {string} options.id
+ */
+export const loadDetails = createAction(LOAD_DETAILS);
 
-export const detailsSuccess = createAction(DETAILS_SUCCESS);
+/**
+ * 成功获得详情数据
+ * @param {string} key
+ * @param {Object} data
+ */
+export const applyDetails = createAction(APPLY_DETAILS, (key, data) => ({ key, data }));
 
-function listReducer(state, action) {
-  let key = action.meta ? action.meta.key : '';
-  if (key) {
-    let results = action.payload.results;
-    let tmp = {};
-    for (let i = 0; i < results.length; i += 1) {
-      let record = results[i];
-      tmp[record._id] = record;
-    }
-    state.merge({ [key]: state[key].merge(tmp) });
+// 初始state
+export const INITIAL_STATE: {
+  [key:string]:{
+    [id:string]:Object
   }
-}
-function detailSaveReducer(state, action) {
-  let key = action.meta ? action.meta.key : '';
-  if (key && action.payload._id) {
-    let data = action.payload;
-    state.merge({ [key]: state[key].merge({ [data._id]: data }) });
-  }
-}
+} = immutable({});
+
 export default handleActions({
-  REFRESH: () => ({}),
-  LIST_SUCCESS: listReducer,
-  DETAILS_SUCCESS: detailSaveReducer,
-  SAVE_SUCCESS: detailSaveReducer
-}, {});
+  APPLY_DETAILS: (state, { payload }) => {
+    let { key, data }=payload;
+    let datas = state[key] || immutable({});
+    datas = datas.set(data._id, data);
+    return state.set(key, datas);
+  }
+}, INITIAL_STATE);

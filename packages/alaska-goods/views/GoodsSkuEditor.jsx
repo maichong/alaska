@@ -109,17 +109,17 @@ function createPropsMap(props) {
   return map;
 }
 
-const { object, array, func } = React.PropTypes;
+const { func } = React.PropTypes;
 
 export default class GoodsSkuEditor extends React.Component {
 
-  static propTypes = {
-    data: object,
-    value: array
-  };
-
   static contextTypes = {
     t: func
+  };
+
+  props: {
+    data: Object,
+    value: Object[]
   };
 
   state: {
