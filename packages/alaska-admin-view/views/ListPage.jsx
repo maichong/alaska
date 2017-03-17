@@ -16,13 +16,9 @@ import * as listRedux from '../redux/lists';
 import * as userRedux from '../redux/user';
 
 const { object, func } = React.PropTypes;
-const CHECK_ICON = <i className="fa fa-check"/>;
+const CHECK_ICON = <i className="fa fa-check" />;
 
-class List extends React.Component {
-
-  static propTypes = {
-    location: object
-  };
+class ListPage extends React.Component {
 
   static contextTypes = {
     actions: object,
@@ -32,6 +28,11 @@ class List extends React.Component {
     confirm: func,
     toast: func,
     router: object,
+  };
+
+  props: {
+    location: Object,
+    loadList: Function
   };
 
   state: {
@@ -52,7 +53,7 @@ class List extends React.Component {
     title: string
   };
 
-  _loading:boolean;
+  _loading: boolean;
 
   constructor(props: Object) {
     super(props);
@@ -70,8 +71,8 @@ class List extends React.Component {
       filterViews: [],
       filterViewsMap: {},
       selected: [],
-      model: {},
-      service: {},
+      model: null,
+      service: null,
       title: ''
     };
   }
@@ -178,10 +179,6 @@ class List extends React.Component {
   getFilterItems(model, filterViewsMap) {
     const { t, settings } = this.context;
     return _.reduce(model.fields, (res, field, index) => {
-      if (!field._label) {
-        field._label = field.label;
-        field.label = t(field.label, model.service.id);
-      }
       if (field.hidden || !field.filter) return res;
       if (field.super && !settings.superMode) return res;
       let icon = filterViewsMap[field.path] ? CHECK_ICON : null;
@@ -190,7 +187,7 @@ class List extends React.Component {
           key={index}
           eventKey={field.path}
           className="with-icon"
-        >{icon} {field.label}
+        >{icon} {t(field.label, model.serviceId)}
         </MenuItem>
       );
       return res;
@@ -229,7 +226,7 @@ class List extends React.Component {
     let filters = state.filters;
     let search = state.search;
     let sort = state.sort;
-    this.props.list({ service, model, page, filters, search, key: state.model.key, sort });
+    this.props.loadList({ service, model, page, filters, search, key: state.model.key, sort });
     this.setState({ page });
   }
 
@@ -294,7 +291,7 @@ class List extends React.Component {
       this.removeFilter(field.path);
     };
     view = filterViewsMap[eventKey] =
-      <FilterView key={eventKey} field={field} onChange={onChange} onClose={onClose} value={filters[eventKey]}/>;
+      <FilterView key={eventKey} field={field} onChange={onChange} onClose={onClose} value={filters[eventKey]} />;
     filterViews.push(view);
     this.setState({ filterViews, filterViewsMap, filterItems: this.getFilterItems(model, filterViewsMap) });
   };
@@ -311,7 +308,8 @@ class List extends React.Component {
       this.refresh();
       this.updateQuery();
     });
-  }
+  };
+
   handleScroll = () => {
     let body = document.body;
     if (body.scrollTop + document.documentElement.clientHeight >= body.scrollHeight) {
@@ -319,6 +317,7 @@ class List extends React.Component {
       this.loadMore();
     }
   };
+
   handleColumn = (eventKey) => {
     let columnsKeys = this.state.columnsKeys.slice();
     if (columnsKeys.indexOf(eventKey) > -1) {
@@ -341,7 +340,7 @@ class List extends React.Component {
     const { t, toast, confirm } = this.context;
     await confirm(t('Remove record'), t('confirm remove record'));
     try {
-      await akita.post('/api/remove?' + qs.stringify({ service: model.service.id, model: model.name }),
+      await akita.post('/api/remove?' + qs.stringify({ service: model.serviceId, model: model.name }),
         { id: record._id });
       toast('success', t('Successfully'));
       this.refresh();
@@ -351,6 +350,7 @@ class List extends React.Component {
   };
 
   render() {
+    console.log('ListPage.state', this.state);
     const { location } = this.props;
     const {
       search,
@@ -413,6 +413,7 @@ class List extends React.Component {
     if (!model.noremove && model.abilities.remove) {
       handleRemove = this.handleRemove;
     }
+
     return (
       <Node id="list">
         <ContentHeader actions={titleBtns}>
@@ -454,6 +455,6 @@ class List extends React.Component {
 }
 
 export default connect(({ lists }) => ({ lists }), (dispatch) => bindActionCreators({
-  listAction: listRedux.list,
+  loadList: listRedux.loadList,
   refreshAction: userRedux.refreshInfo
-}, dispatch))(List);
+}, dispatch))(ListPage);

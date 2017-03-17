@@ -31,13 +31,13 @@ export default class ListActions extends React.Component {
     return !shallowEqualWithout(props, this.props);
   }
 
-  handleAction = async(action :Object) => {
+  handleAction = async(action: Object) => {
     const { model, selected } = this.props;
     const { t, toast, confirm } = this.context;
 
     const config = model.actions[action];
     if (config && config.confirm) {
-      await confirm(t('Confirm'), t(config.confirm, model.service.id));
+      await confirm(t('Confirm'), t(config.confirm, model.serviceId));
     }
 
     try {
@@ -50,7 +50,7 @@ export default class ListActions extends React.Component {
       if (config.script && config.script.substr(0, 3) === 'js:') {
         eval(config.script.substr(3));
       } else {
-        await akita.post('/api/action?' + qs.stringify({ service: model.service.id, model: model.name, action }),
+        await akita.post('/api/action?' + qs.stringify({ service: model.serviceId, model: model.name, action }),
           { records: _.map(selected, (record) => record._id) });
       }
       toast('success', t('Successfully'));
@@ -72,7 +72,7 @@ export default class ListActions extends React.Component {
     const { t, toast, confirm } = this.context;
     await confirm(t('Remove selected records'), t('confirm remove selected records'));
     try {
-      await akita.post('/api/remove?' + qs.stringify({ service: model.service.id, model: model.name }),
+      await akita.post('/api/remove?' + qs.stringify({ service: model.serviceId, model: model.name }),
         { records: _.map(selected, (record) => record._id) });
       toast('success', t('Successfully'));
       this.props.onRefresh();
@@ -117,7 +117,7 @@ export default class ListActions extends React.Component {
     }
 
     if (!model.nocreate && model.abilities.create && model.actions.create !== false) {
-      let href = '#/edit/' + model.service.id + '/' + model.name + '/_new';
+      let href = '#/edit/' + model.serviceId + '/' + model.name + '/_new';
       actions.push(
         <OverlayTrigger
           key="create"

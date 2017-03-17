@@ -27,7 +27,7 @@ export default class TextFieldCell extends React.Component {
     if (!value) return null;
     if (value && field.translate) {
       const t = this.context.t;
-      value = t(value, model.service.id);
+      value = t(value, model.serviceId);
     }
     if (value && value.length > 50) {
       value = value.substr(0, 50) + '...';

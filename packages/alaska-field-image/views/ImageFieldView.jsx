@@ -75,7 +75,7 @@ export default class ImageFieldView extends React.Component {
     let modelName = 'User';
     let id = '_new';
     if (model) {
-      serviceId = model.service.id;
+      serviceId = model.serviceId;
       modelName = model.name;
     }
     if (data && data._id) {

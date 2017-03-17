@@ -118,7 +118,7 @@ export default class NumberFieldView extends React.Component {
     if (field.fixed) {
       inputElement = <p className="form-control-static">{value}</p>;
     } else {
-      let placeholder = field.placeholder ? t(field.placeholder, field.service || model.service.id) : '';
+      let placeholder = field.placeholder ? t(field.placeholder, field.service || model.serviceId) : '';
       inputElement = (<input
         type="text"
         className="form-control"
@@ -130,9 +130,9 @@ export default class NumberFieldView extends React.Component {
         placeholder={placeholder}
       />);
       let addonAfter = field.addonAfter ?
-        <span className="input-group-addon">{t(field.addonAfter, field.service || model.service.id)}</span> : null;
+        <span className="input-group-addon">{t(field.addonAfter, field.service || model.serviceId)}</span> : null;
       let addonBefore = field.addonBefore ?
-        <span className="input-group-addon">{t(field.addonBefore, field.service || model.service.id)}</span> : null;
+        <span className="input-group-addon">{t(field.addonBefore, field.service || model.serviceId)}</span> : null;
       if (addonAfter || addonBefore) {
         inputElement = <div className="input-group">{addonBefore}{inputElement}{addonAfter}</div>;
       }

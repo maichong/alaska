@@ -53,7 +53,7 @@ export default class SelectFieldView extends React.Component {
       return opt;
     }
     return {
-      label: t(opt.label, this.props.model.service.id),
+      label: t(opt.label, this.props.model.serviceId),
       value: opt.value,
       style: opt.style
     };

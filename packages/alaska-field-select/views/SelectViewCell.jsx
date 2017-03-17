@@ -36,7 +36,7 @@ export default class SelectViewCell extends React.Component {
         if (valueMap[opt.value]) {
           let label = opt.label || opt.value;
           if (field.translate !== false) {
-            label = t(label, model.service.id);
+            label = t(label, model.serviceId);
           }
           el.push(<span key={opt.value}>{label}</span>);
         }
@@ -45,7 +45,7 @@ export default class SelectViewCell extends React.Component {
       let option = _.find(field.options, (opt) => opt.value === value);
       el = option ? option.label : value;
       if (field.translate !== false) {
-        el = t(el, model.service.id);
+        el = t(el, model.serviceId);
       }
     }
     return <div className="select-field-cell">{el}</div>;

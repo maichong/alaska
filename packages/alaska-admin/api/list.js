@@ -4,9 +4,9 @@ import alaska from 'alaska';
 
 export default async function list(ctx: Alaska$Context) {
   await ctx.checkAbility('admin');
-  let serviceId = ctx.state.service || ctx.query.service;
-  let modelName = ctx.state.model || ctx.query.model;
-  let keyword = ctx.state.search || ctx.query.search || '';
+  let serviceId = ctx.state.service || ctx.query._service;
+  let modelName = ctx.state.model || ctx.query._model;
+  let keyword = ctx.state.search || ctx.query._search || '';
   if (!serviceId || !modelName) {
     alaska.error('Invalid parameters');
   }

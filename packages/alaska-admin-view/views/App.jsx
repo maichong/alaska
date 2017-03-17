@@ -13,13 +13,13 @@ import $ from 'jquery';
 import _ from 'lodash';
 import * as layoutRedux from '../redux/layout';
 import * as userRedux from '../redux/user';
-import Node from './Node.jsx';
-import Login from './Login.jsx';
-import Locked from './Locked.jsx';
-import Manage from './Manage.jsx';
-import Dashboard from './Dashboard.jsx';
-import Editor from './Editor.jsx';
-import List from './List.jsx';
+import Node from './Node';
+import Login from './Login';
+import Locked from './Locked';
+import Manage from './Manage';
+import Dashboard from './Dashboard';
+import Editor from './Editor';
+import ListPage from './ListPage';
 
 const ToastMessageFactory = React.createFactory(ToastMessage.animation);
 
@@ -241,7 +241,7 @@ class App extends React.Component {
       el = <Router history={history}>
         <Route component={Manage} path="/">
           <IndexRoute component={Dashboard} />
-          <Route component={List} path="list/:service/:model" />
+          <Route component={ListPage} path="list/:service/:model" />
           <Route component={Editor} path="edit/:service/:model/:id" />
           {
             (views.routes || []).map(

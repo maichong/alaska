@@ -50,12 +50,12 @@ export default class TextFieldView extends React.Component {
     let inputElement;
     value = value || '';
     if (disabled && value && field.translate) {
-      value = t(value, model.service.id);
+      value = t(value, model.serviceId);
     }
     if (field.fixed) {
       inputElement = <p className="form-control-static">{value}</p>;
     } else {
-      let placeholder = field.placeholder ? t(field.placeholder, field.service || model.service.id) : '';
+      let placeholder = field.placeholder ? t(field.placeholder, field.service || model.serviceId) : '';
       if (field.multiLine) {
         inputElement = (<textarea
           className="form-control"
@@ -72,9 +72,9 @@ export default class TextFieldView extends React.Component {
           value={value} disabled={disabled}
         />);
         let addonAfter = field.addonAfter ?
-          <span className="input-group-addon">{t(field.addonAfter, field.service || model.service.id)}</span> : null;
+          <span className="input-group-addon">{t(field.addonAfter, field.service || model.serviceId)}</span> : null;
         let addonBefore = field.addonBefore ?
-          <span className="input-group-addon">{t(field.addonBefore, field.service || model.service.id)}</span> : null;
+          <span className="input-group-addon">{t(field.addonBefore, field.service || model.serviceId)}</span> : null;
         if (addonAfter || addonBefore) {
           inputElement = <div className="input-group">{addonBefore}{inputElement}{addonAfter}</div>;
         }

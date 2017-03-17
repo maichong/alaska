@@ -1,13 +1,21 @@
 import { put } from 'redux-saga/effects';
-import qs from 'qs';
 import akita from 'akita';
-import { listSuccess } from '../redux/lists';
+import { loadListSuccess, loadListFailure } from '../redux/lists';
 
-export default function* list(args) {
+export default function* list({ payload }) {
   try {
-    let res = akita.post('/api/list?' + qs.stringify(args));
-    yield put(listSuccess(res, args));
+    let res = yield akita('/api/list')
+      .find(payload.filters)
+      .param('service', payload.service)
+      .param('model', payload.model)
+      .search(payload.search)
+      .sort(payload.sort)
+      .limit(payload.limit)
+      .page(payload.page);
+
+    console.log('res', res);
+    yield put(loadListSuccess(payload.key, res));
   } catch (e) {
-    throw e;
+    yield put(loadListFailure(payload.key, e));
   }
 }

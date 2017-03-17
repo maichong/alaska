@@ -47,7 +47,7 @@ export default class Action extends React.Component {
     }
     let title;
     if (action.title) {
-      title = t(action.title, model.service.id);
+      title = t(action.title, model.serviceId);
     }
     let el = (
       <button

@@ -5,7 +5,6 @@ import React from 'react';
 import { Link } from 'react-router';
 import { IF, ELSE } from 'jsx-plus';
 import shallowEqualWithout from 'shallow-equal-without';
-import Node from './Node';
 import DataTableRow from './DataTableRow';
 
 const { object, array, string, func } = React.PropTypes;
@@ -123,8 +122,7 @@ export default class DataTable extends React.Component {
   handleEdit = (record: Object) => {
     const { model } = this.props;
     const { router } = this.context;
-    const service = model.service;
-    let url = '/edit/' + service.id + '/' + model.name + '/' + record._id;
+    let url = '/edit/' + model.serviceId + '/' + model.name + '/' + record._id;
     router.push(url);
   };
 
@@ -135,10 +133,10 @@ export default class DataTable extends React.Component {
     if (!model || !columns) {
       return <div className="loading">Loading...</div>;
     }
-    const service = model.service;
 
     let selectEl = onSelect ?
-      <th onClick={this.handleSelectAll} width="29"><input type="checkbox" checked={this.isAllSelected()}/></th> : null;
+      <th onClick={this.handleSelectAll} width="29"><input type="checkbox" checked={this.isAllSelected()} />
+      </th> : null;
     return (
       <table className="data-table table table-hover">
         <thead>
@@ -150,10 +148,10 @@ export default class DataTable extends React.Component {
               let handleClick;
               if (!col.nosort && onSort) {
                 if (col.key === sort) {
-                  sortIcon = <i className="fa fa-sort-asc"/>;
+                  sortIcon = <i className="fa fa-sort-asc" />;
                   handleClick = () => onSort('-' + col.key);
                 } else if ('-' + col.key === sort) {
-                  sortIcon = <i className="fa fa-sort-desc"/>;
+                  sortIcon = <i className="fa fa-sort-desc" />;
                   handleClick = () => onSort(col.key);
                 } else {
                   handleClick = () => onSort('-' + col.key);
@@ -162,7 +160,7 @@ export default class DataTable extends React.Component {
               return <th
                 key={col.field.path}
                 onClick={handleClick}
-              >{t(col.field.label, service.id)}{sortIcon}</th>;
+              >{t(col.field.label, model.serviceId)}{sortIcon}</th>;
             })
           }
           <th></th>

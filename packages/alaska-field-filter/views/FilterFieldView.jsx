@@ -76,7 +76,7 @@ export default class FilterFieldView extends React.Component {
     return _.reduce(model.fields, (res, field, index) => {
       if (!field._label) {
         field._label = field.label;
-        field.label = t(field.label, model.service.id);
+        field.label = t(field.label, model.serviceId);
       }
       if (field.hidden || !field.filter) return res;
       let icon = selectedFields[field.path] ? CHECK_ICON : null;

@@ -111,7 +111,7 @@ export default async function build(options: Object) {
   for (let name of Object.keys(views)) {
     let file = filepath(views[name]);
     let r = path.relative(dir, file);
-    content += `export { ${name} } from '../../${r}';\n`;
+    content += `export ${name} from '../../${r}';\n`;
     console.log(`view : ${name} -> ${r}`);
   }
 

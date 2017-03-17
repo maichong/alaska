@@ -95,8 +95,8 @@ class Relationship extends React.Component {
       return <div />;
     }
     const t = this.context.t;
-    let title = this.props.title ? t(this.props.title, model.service.id)
-      : t('Relationship') + `: ${t(model.label, model.service.id)}`;
+    let title = this.props.title ? t(this.props.title, model.serviceId)
+      : t('Relationship') + `: ${t(model.label, model.serviceId)}`;
     let filtersString = qs.stringify({ filters });
     return (
       <div className="panel panel-default relationship-panel">
@@ -104,7 +104,7 @@ class Relationship extends React.Component {
           <h3 className="panel-title">{title}
             <a
               className="relationship-more"
-              href={`#/list/${model.service.id}/${model.name}?${filtersString}`}
+              href={`#/list/${model.serviceId}/${model.name}?${filtersString}`}
             >{t('More')}</a>
           </h3>
         </div>

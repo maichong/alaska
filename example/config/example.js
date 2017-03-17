@@ -12,7 +12,7 @@ export default {
       type: 'alaska-cache-mongo',
       url: process.env.DB,
       collection: 'app_session',
-      maxAge: 3600
+      maxAge: 3600 * 1000
     }
   },
   services: {

@@ -208,7 +208,7 @@ class Editor extends React.Component {
     this.loading = true;
 
     this.props.saveAction({
-      service: model.service.id,
+      service: model.serviceId,
       model: model.name,
       key: model.key,
       _r: this._r,
@@ -222,7 +222,7 @@ class Editor extends React.Component {
 
     const config = model.actions[action];
     if (config && config.confirm) {
-      await confirm(t('Confirm'), t(config.confirm, model.service.id));
+      await confirm(t('Confirm'), t(config.confirm, model.serviceId));
     }
 
     try {
@@ -237,7 +237,7 @@ class Editor extends React.Component {
       } else {
         let body = Object.assign({}, data, { id: id.toString() === '_new' ? '' : id });
         await akita.post('/api/action?' + qs.stringify({
-            service: model.service.id,
+            service: model.serviceId,
             model: model.name,
             action
           }), body);
