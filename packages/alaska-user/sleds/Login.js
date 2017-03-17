@@ -3,7 +3,7 @@
 import alaska, { Sled, utils } from 'alaska';
 import service from '../';
 import User from '../models/User';
-import Encryption from '../lib/encryption';
+import Encryption from '../utils/encryption';
 
 const autoLogin = alaska.main.config('autoLogin');
 let encryption;

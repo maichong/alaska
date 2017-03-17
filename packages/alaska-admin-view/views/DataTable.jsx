@@ -4,7 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import { Link } from 'react-router';
 import { IF, ELSE } from 'jsx-plus';
-import shallowEqual from '../utils/shallow-equal';
+import shallowEqualWithout from 'shallow-equal-without';
 import Node from './Node';
 import DataTableRow from './DataTableRow';
 
@@ -57,7 +57,7 @@ export default class DataTable extends React.Component {
     if (!state.data || !state.columns) {
       return false;
     }
-    return !shallowEqual(state, this.state);
+    return !shallowEqualWithout(state, this.state);
   }
 
   init(props: Object) {

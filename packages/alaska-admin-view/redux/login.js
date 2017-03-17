@@ -1,36 +1,42 @@
 import { createAction, handleActions } from 'redux-actions';
+import immutable from 'seamless-immutable';
 
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
-export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
-export const REFRESH_INFO_SUCCESS = 'REFRESH_INFO_SUCCESS';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 
-// 请求登录action
+/**
+ * 请求登录 action
+ * @params {string} username
+ * @params {string} password
+ */
 export const login = createAction(LOGIN, (username, password) => ({ username, password }));
 
-// 登录成功
-export const loginSuccess = createAction(LOGOUT_SUCCESS, (res) => (res));
+/**
+ * 登录成功 action
+ */
+export const loginSuccess = createAction(LOGIN_SUCCESS);
 
-// 登录失败
-export const loginFailure = createAction(LOGIN_FAILURE, (error) => ({ errorMsg: error.message }));
+/**
+ * 登录失败
+ * @params {Error} error
+ */
+export const loginFailure = createAction(LOGIN_FAILURE);
 
-// 请求退出登录
+/**
+ * 退出登录 action
+ */
 export const logout = createAction(LOGOUT);
 
-// 退出登录成功
-export const logoutSuccess = createAction(LOGOUT_SUCCESS);
-
-export default handleActions({
-  LOGIN_FAILURE: (state, action) => state.merge({ errorMsg: action.payload.errorMsg }),
-  LOGOUT_SUCCESS: (state) => state.merge({ show: true }),
-  REFRESH_INFO_SUCCESS: (state, action) => {
-    if (!action.payload.signed) {
-      return state.merge({ show: true });
-    }
-    return state.merge({ show: false });
-  }
-}, {
+// 初始state
+export const INITIAL_STATE = immutable({
   show: true,
   errorMsg: ''
 });
+
+export default handleActions({
+  LOGIN_FAILURE: (state, { payload }) => state.merge({ errorMsg: payload.message }),
+  LOGOUT_SUCCESS: () => INITIAL_STATE,
+  LOGIN_SUCCESS: (state, action) => state.merge({ user: false, errorMsg: '' })
+}, INITIAL_STATE);

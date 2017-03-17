@@ -2,7 +2,7 @@ import { put } from 'redux-saga/effects';
 import qs from 'qs';
 import _ from 'lodash';
 import { saveFailure, saveSuccess } from '../redux/save';
-import akita from '../utils/akita';
+import akita from 'akita';
 
 export default function* save(action) {
   try {

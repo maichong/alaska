@@ -1,6 +1,6 @@
 import { put } from 'redux-saga/effects';
 import qs from 'qs';
-import akita from '../utils/akita';
+import akita from 'akita';
 import { detailsSuccess } from '../redux/details';
 
 export default function* details(args) {

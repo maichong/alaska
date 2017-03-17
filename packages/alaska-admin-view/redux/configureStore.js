@@ -4,7 +4,7 @@ import { createStore, compose, applyMiddleware } from 'redux';
 import createLogger from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 
-export default function (rootReducer: Function, rootSaga: Function) {
+export default function configureStore(rootReducer: Function, rootSaga: Function) {
   const middleware = [];
   const enhancers = [];
 
@@ -27,6 +27,8 @@ export default function (rootReducer: Function, rootSaga: Function) {
 
   // kick off root saga
   sagaMiddleware.run(rootSaga);
+
+  setTimeout(() => store.dispatch({ type: 'STARTUP' }));
 
   return store;
 }

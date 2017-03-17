@@ -2,24 +2,23 @@
 
 import React from 'react';
 import { IF, ELSE } from 'jsx-plus';
-import shallowEqual from '../utils/shallow-equal';
 
-const { object, array, func, bool } = React.PropTypes;
+const { object } = React.PropTypes;
 
 export default class DataTableRow extends React.Component {
 
-  static propTypes = {
-    columns: array,
-    record: object,
-    model: object,
-    onEdit: func,
-    onSelect: func,
-    onRemove: func,
-    selected: bool,
-  };
-
   static contextTypes = {
     views: object
+  };
+
+  props: {
+    columns: Array<any>,
+    record: Object,
+    model: Object,
+    onEdit: Function,
+    onSelect: Function,
+    onRemove: Function,
+    selected: boolean,
   };
 
   handleChange = () => {

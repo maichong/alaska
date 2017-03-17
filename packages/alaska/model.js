@@ -537,7 +537,6 @@ export default class Model {
         model.searchFields = [];
       }
 
-
       if (model.scopes) {
         if (model.scopes['*']) {
           model.defaultScope = processScope(model.scopes['*'], model);

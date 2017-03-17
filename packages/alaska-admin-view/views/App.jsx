@@ -232,13 +232,12 @@ class App extends React.Component {
   };
 
   render() {
-    const props = this.props;
+    const { layout, login, user, settings, views } = this.props;
     const state = this.state;
-    const views = props.views;
     let el;
 
     //有权限
-    if (props.access) {
+    if (user.access) {
       el = <Router history={history}>
         <Route component={Manage} path="/">
           <IndexRoute component={Dashboard} />
@@ -250,15 +249,15 @@ class App extends React.Component {
           }
         </Route>
       </Router>;
-    } else if (props.signed) { //已登录,但无权限
+    } else if (user.id) { //已登录,但无权限
       el = <Locked />;
-    } else if (props.login.show) {  //未登录
+    } else if (settings.locale) {  //未登录,已加载设置
       el = <Login />;
     } else {
       el = <div className="boot-loading">Loading...</div>;
     }
 
-    return (<Node id="app" className={props.layout}>
+    return (<Node id="app" className={layout}>
       {el}
       <ToastContainer
         ref="container"
@@ -274,10 +273,9 @@ class App extends React.Component {
   }
 }
 
-export default connect(({ login, access, signed, settings, layout }) => ({
+export default connect(({ user, login, settings, layout }) => ({
+  user,
   login,
-  access,
-  signed,
   settings,
   layout
 }), (dispatch) => bindActionCreators({

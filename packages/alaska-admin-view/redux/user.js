@@ -1,15 +1,17 @@
 import { createAction, handleActions } from 'redux-actions';
+import immutable from 'seamless-immutable';
 
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
-export const REFRESH = 'REFRESH';
-export const REFRESH_INFO_SUCCESS = 'REFRESH_INFO_SUCCESS';
+export const UPDATE_USER = 'UPDATE_USER';
 
-export const refreshInfo = createAction(REFRESH);
-export const refreshSuccess = createAction(REFRESH_INFO_SUCCESS, (res) => (res));
+// 初始state
+export const INITIAL_STATE = immutable({});
+
+/**
+ * 更新用户信息
+ * @params {Object} user
+ */
+export const updateUser = createAction(UPDATE_USER);
 
 export default handleActions({
-  LOGIN_SUCCESS: (state, action) => state.merge(action.payload.user),
-  LOGOUT_SUCCESS: () => ({}),
-  REFRESH_INFO_SUCCESS: (state, action) => state.merge(action.payload.user)
-}, {});
+  UPDATE_USER: (state, action) => state.merge(action.payload)
+}, INITIAL_STATE);

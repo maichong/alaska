@@ -13,8 +13,8 @@ import Action from './Action';
 import FieldGroup from './FieldGroup';
 import Relationship from './Relationship';
 import ContentHeader from './ContentHeader';
-import akita from '../utils/akita';
-import checkDepends from '../utils/check-depends';
+import akita from 'akita';
+import checkDepends from 'check-depends';
 
 const { object, func } = React.PropTypes;
 

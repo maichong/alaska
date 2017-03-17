@@ -4,7 +4,7 @@
 
 import alaska, { NormalError } from 'alaska';
 import User from '../models/User';
-import Encryption from '../lib/encryption';
+import Encryption from '../utils/encryption';
 
 export default function () {
   let key = alaska.main.config('autoLogin.key');

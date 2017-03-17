@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
-
+import akita from 'akita';
 import Node from './Node';
 import DataTable from './DataTable';
 import SearchField from './SearchField';
@@ -14,8 +14,6 @@ import ContentHeader from './ContentHeader';
 import ListActions from './ListActions';
 import * as listRedux from '../redux/lists';
 import * as userRedux from '../redux/user';
-import akita from '../utils/akita';
-
 
 const { object, func } = React.PropTypes;
 const CHECK_ICON = <i className="fa fa-check"/>;

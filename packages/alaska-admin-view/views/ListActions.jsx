@@ -5,7 +5,7 @@ import React from 'react';
 import _ from 'lodash';
 import akita from 'akita';
 import qs from 'qs';
-import shallowEqual from '../utils/shallow-equal';
+import shallowEqualWithout from 'shallow-equal-without';
 import Node from './Node';
 import Action from './Action';
 
@@ -28,7 +28,7 @@ export default class ListActions extends React.Component {
   };
 
   shouldComponentUpdate(props: Object) {
-    return !shallowEqual(props, this.props);
+    return !shallowEqualWithout(props, this.props);
   }
 
   handleAction = async(action :Object) => {

@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import configureStore from './store';
+import configureStore from './configureStore';
 import rootSaga from '../sagas/';
 
 import detailsReducer from './details';
@@ -8,13 +8,11 @@ import listsReducer from './lists';
 import loginReducer from './login';
 import saveReducer from './save';
 import settingsReducer from './settings';
-import signedReducer from './signed';
 import userReducer from './user';
 
 function createStore() {
   const rootReducer = combineReducers({
     login: loginReducer,
-    signed: signedReducer,
     user: userReducer,
     settings: settingsReducer,
     lists: listsReducer,

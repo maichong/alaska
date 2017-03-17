@@ -7,18 +7,18 @@ import { connect } from 'react-redux';
 import * as loginRedux from '../redux/login';
 import Node from './Node';
 
-
 const { func, object } = React.PropTypes;
 
 class Login extends React.Component {
-  static propTypes = {
-    login: object
-  };
 
   static contextTypes = {
     actions: object,
     settings: object,
     t: func,
+  };
+
+  props: {
+    login: Object
   };
 
   state: Object;
@@ -64,7 +64,7 @@ class Login extends React.Component {
     }
     this.setState(state);
     if (username && password) {
-      this.props.loginAction({ username, password });
+      this.props.loginAction(username, password);
     }
   };
 

@@ -292,7 +292,7 @@ export default class Sled {
     if (this.error) {
       throw this.error;
     }
-    if (this.result !== null) {
+    if (this.result !== undefined) {
       return this.result;
     }
     if (this.validate) {
@@ -308,24 +308,22 @@ export default class Sled {
     let result = this.result;
     //如果已经有result,说明在前置hooks中已经执行完成任务
 
-    if (result !== undefined) {
-      try {
-        result = this.exec(this.params);
-        if (result && result.then) {
-          result = await result;
-        }
-      } catch (error) {
-        this.error = error;
-        if (this.item && this.item.notify) {
-          // 发送通知
-          let subscribe = this.createSubscribeDriver(this.item.id);
-          await subscribe.publish({ error: error.message });
-          subscribe.free();
-        }
-        throw error;
+    try {
+      result = this.exec(this.params);
+      if (result && result.then) {
+        result = await result;
       }
-      this.result = result;
+    } catch (error) {
+      this.error = error;
+      if (this.item && this.item.notify) {
+        // 发送通知
+        let subscribe = this.createSubscribeDriver(this.item.id);
+        await subscribe.publish({ error: error.message });
+        subscribe.free();
+      }
+      throw error;
     }
+    this.result = result;
 
     if (this.constructor._post) {
       await collie.compose(this.constructor._post, [result], this);

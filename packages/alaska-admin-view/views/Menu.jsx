@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import shallowEqual from '../utils/shallow-equal';
+import shallowEqualWithout from 'shallow-equal-without';
 import Node from './Node';
 
 const { object, func, number, array, string } = React.PropTypes;
@@ -46,7 +46,7 @@ export default class Menu extends React.Component {
 
   shouldComponentUpdate(props:Object, state:Object) {
     return state.activated !== this.state.activated ||
-      state.opened !== this.state.opened || !shallowEqual(props, this.props);
+      state.opened !== this.state.opened || !shallowEqualWithout(props, this.props);
   }
 
   createMenuItem(item:Object, level:number) {

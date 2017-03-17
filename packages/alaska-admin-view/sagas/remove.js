@@ -1,7 +1,7 @@
 import { put } from 'redux-saga/effects';
 import qs from 'qs';
 import _ from 'lodash';
-import akita from '../utils/akita';
+import akita from 'akita';
 
 export default function* remove(action) {
   try {

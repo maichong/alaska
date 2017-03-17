@@ -6,7 +6,7 @@ export default async function () {
 
   await Register.run({
     username: 'alaska',
-    password: 'pass',
+    password: '123456',
     roles: ['root']
   });
 }

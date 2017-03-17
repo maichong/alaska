@@ -19,7 +19,7 @@ export default class PasswordField extends Field {
     let options = {
       type: String,
       required: Boolean,
-      set: (password) => {
+      set(password) {
         this[NEED_HASHING] = true;
         return password;
       }
