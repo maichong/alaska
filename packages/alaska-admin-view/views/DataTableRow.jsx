@@ -16,13 +16,15 @@ export default class DataTableRow extends React.Component {
     record: Object,
     model: Object,
     onEdit: Function,
-    onSelect: Function,
+    onSelect?: Function|null,
     onRemove: Function,
     selected: boolean,
   };
 
   handleChange = () => {
-    this.props.onSelect(this.props.record, !this.props.selected);
+    if (this.props.onSelect) {
+      this.props.onSelect(this.props.record, !this.props.selected);
+    }
   };
 
   render() {

@@ -18,7 +18,6 @@ export default async function loadApi() {
   if (this.config('prefix') === false || this.config('api') === false) return;
   this.debug('loadApi');
 
-  // $Flow
   const service: Alaska$Service = this;
 
   const alaska = service.alaska;
@@ -179,6 +178,7 @@ export default async function loadApi() {
     router.register('/api/:controller?/:action?', ['POST', 'GET'], function (ctx, next) {
       let controller = ctx.params.controller;
       let action = ctx.params.action || 'default';
+      // $Flow
       let ctrl = service._apiControllers[controller];
       if (ctrl && ctrl[action] && action[0] !== '_') {
         try {

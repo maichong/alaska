@@ -12,12 +12,12 @@ export default class Node extends React.Component {
   };
 
   props: {
-    children: any,
-    tag: string,
-    id: string,
-    wrapper: string,
-    props: Object,
-    state: Object,
+    children?: React$Element<any>,
+    tag?: string,
+    id?: string,
+    wrapper?: string,
+    props?: Object,
+    state?: Object,
   };
 
   render() {
@@ -37,7 +37,7 @@ export default class Node extends React.Component {
       const wrappers = this.context.views.wrappers;
       if (wrappers[wrapper] && wrappers[wrapper].length) {
         children = _.reduce(wrappers[wrapper],
-          (el, Wrapper) => React.createElement(Wrapper, _.assign({}, props, { state }), el), children);
+          (el, Wrapper) => React.createElement(Wrapper, _.assign({}, props || {}, { state }), el), children);
       }
     }
     return children;

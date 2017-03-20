@@ -11,6 +11,7 @@ import path from 'path';
 import fs from 'fs';
 import mime from 'mime';
 import Koa from 'koa';
+// $Flow
 import KoaQS from 'koa-qs';
 import statuses from 'statuses';
 import collie from 'collie';
@@ -195,14 +196,15 @@ class Alaska {
         if (!service.domain || service.domain === hostname) {
           if (ctx.path.startsWith(service.prefix)) {
             ctx.service = service;
-            return service.routes(ctx, next);
+            await service.routes(ctx, next);
+            return;
           }
           if (ctx.path + '/' === service.prefix) {
-            return ctx.redirect(service.prefix);
+            ctx.redirect(service.prefix);
+            return;
           }
         }
       }
-      return null;
     });
 
     if (!this._callbackMode) {

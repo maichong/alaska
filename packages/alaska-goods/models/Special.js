@@ -21,7 +21,7 @@ export default class Special extends Model {
 
   static groups = {
     desc: {
-      label: 'Description',
+      title: 'Description',
       className: 'noborder'
     }
   };

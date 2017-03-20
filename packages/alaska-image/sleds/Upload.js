@@ -1,10 +1,12 @@
 // @flow
 
 import alaska, { Sled } from 'alaska';
-import request from 'request-async';
+import akita from 'akita-node';
 import mime from 'mime';
 import path from 'path';
 import Image from '../models/Image';
+
+const client = akita.resolve('alaska-image');
 
 export default class Upload extends Sled {
   async exec() {
@@ -22,8 +24,8 @@ export default class Upload extends Sled {
     }
 
     if (!file && url) {
-      let res = await request({ url, headers, encoding: null });
-      file = res.body;
+      let res = await client.get(url, { headers }).response();
+      file = await res.buffer();
       if (!filename) {
         filename = path.basename(url);
       }

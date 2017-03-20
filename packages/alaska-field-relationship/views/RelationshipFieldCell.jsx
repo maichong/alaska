@@ -9,6 +9,8 @@ import { loadDetails } from 'alaska-admin-view/redux/details';
 class RelationshipFieldCell extends React.Component {
 
   props: {
+    field:Object;
+    value:any;
     settings:Object;
     details:Object;
     loadDetails:Function;
@@ -58,9 +60,9 @@ class RelationshipFieldCell extends React.Component {
     let field = this.props.field;
     let details = this.props.details;
     let Model = this.props.settings.models[field.ref];
-    let key = field.key;
+    let key = Model.key;
     let title = value;
-    if (value && Model && details && details[key] && details[key][value]) {
+    if (value && details && details[key] && details[key][value]) {
       title = details[key][value][Model.titleField] || value;
     } else {
       setTimeout(() => {

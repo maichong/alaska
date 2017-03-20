@@ -7,11 +7,12 @@ import { getOptionValue } from './utils';
 export default class Switch extends React.Component {
 
   props: {
-    multi: boolean,
+    disabled?: boolean,
+    multi?: boolean,
     onChange: Function,
-    loadOptions: Function,
+    loadOptions?: Function,
     value: any,
-    options: Array<any>
+    options: Object[]
   };
 
   state: {
@@ -28,7 +29,7 @@ export default class Switch extends React.Component {
   componentWillMount() {
     let props = this.props;
     if (props.loadOptions && (!props.options || !props.options.length)) {
-      this.props.loadOptions('', (error, res) => {
+      props.loadOptions('', (error, res) => {
         if (!error && res.options) {
           this.setState({ options: res.options });
         }
@@ -75,7 +76,7 @@ export default class Switch extends React.Component {
   }
 
   render() {
-    const { value, multi } = this.props;
+    const { value, multi, disabled } = this.props;
     const { options } = this.state;
     let valueMap = {};
     if (multi) {
@@ -91,7 +92,10 @@ export default class Switch extends React.Component {
           if (valueMap[vid]) {
             cls += (o.style ? ' active' : ' btn-success');
           }
-          return <div key={vid} className={cls} onClick={() => this.handleClick(vid)}>{o.label}</div>;
+          if (disabled) {
+            cls += ' disabled';
+          }
+          return <div key={vid} className={cls} onClick={disabled?null:() => this.handleClick(vid)}>{o.label}</div>;
         })}
       </div>
     );

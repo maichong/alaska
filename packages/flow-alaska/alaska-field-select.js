@@ -1,5 +1,5 @@
 declare type Alaska$SelectField$option={
-  value:number|string|boolean;
+  value:any;
   label:string;
   style?:Alaska$style;
   depends?:Alaska$Field$depends;
@@ -21,10 +21,10 @@ declare module 'alaska-field-select/views/Select' {
   declare var exports: Class<React$Component<void, Object, void>>;
 }
 
-declare module 'alaska-field-select/views/Checkbox' {
+declare module 'alaska-field-select/views/Switch' {
   declare var exports: Class<React$Component<void, Object, void>>;
 }
 
-declare module 'alaska-field-select/views/Switch' {
+declare module 'alaska-field-select/views/SelectCheckbox' {
   declare var exports: Class<React$Component<void, Object, void>>;
 }

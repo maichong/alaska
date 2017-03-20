@@ -801,7 +801,7 @@ export default class Model {
    * @param {Object} options
    * @returns {mongoose.Query}
    */
-  static paginate(options: Object): Alaska$Query | Promise<Alaska$ListResult> {
+  static paginate(options: Object): Mongoose$Query | Promise<Alaska$ListResult> {
     // $Flow
     let model: Class<Alaska$Model> = this;
     options = options || {};
@@ -897,8 +897,7 @@ export default class Model {
 
     state = Object.assign({}, ctx.state, state);
 
-    // $Flow
-    let query: Alaska$Query = model.paginate({
+    let query: Mongoose$Query = model.paginate({
       page: parseInt(state.page || ctx.query._page, 10) || 1,
       limit: parseInt(state.limit || ctx.query._limit, 10) || model.defaultLimit || 10,
       filters
@@ -929,7 +928,9 @@ export default class Model {
     if (sort) {
       query.sort(sort);
     }
-    let results = await query;
+
+    // $Flow
+    let results: Alaska$ListResult = await query;
 
     if (!results.results.length || (!relationships.length && !populations.length)) {
       return results;

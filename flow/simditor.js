@@ -1,3 +1,3 @@
-declare module bcryptjs {
+declare module 'simditor' {
   declare var exports: any;
 }

@@ -1,10 +1,9 @@
 // @flow
 
 import React from 'react';
-// TODO actions
-import { actions } from 'alaska-admin-view';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import * as saveRedux from 'alaska-admin-view/redux/save';
 
 const { func } = React.PropTypes;
 
@@ -12,6 +11,11 @@ class GoodsPropsValueEditor extends React.Component {
 
   static contextTypes = {
     t: func
+  };
+
+  props: {
+    data:Object;
+    save:Function;
   };
 
   state: {
@@ -33,14 +37,13 @@ class GoodsPropsValueEditor extends React.Component {
     let value = this.state.value.trim();
     if (!value) return;
     this.setState({ value: '' });
-    this.props.actions.save({
+    this.props.save({
       service: 'alaska-goods',
       model: 'GoodsPropValue',
-      key: 'alaska-goods.goods-prop-value',
-      data: {
-        prop: this.props.data._id,
-        title: this.state.value
-      }
+      key: 'alaska-goods.goods-prop-value'
+    }, {
+      prop: this.props.data._id,
+      title: this.state.value
     });
   };
 
@@ -76,5 +79,5 @@ class GoodsPropsValueEditor extends React.Component {
 }
 
 export default connect(null, (dispatch) => ({
-  actions: bindActionCreators(actions, dispatch)
+  save: bindActionCreators(saveRedux.save, dispatch)
 }))(GoodsPropsValueEditor);

@@ -89,7 +89,7 @@ export default class Chart extends Model {
 
   static groups = {
     review: {
-      label: 'Review'
+      title: 'Review'
     }
   };
 

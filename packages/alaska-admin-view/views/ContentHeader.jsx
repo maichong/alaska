@@ -7,8 +7,8 @@ import Node from './Node';
 export default class ContentHeader extends React.Component {
 
   props: {
-    children: any,
-    actions: Array<any>
+    children?: React$Element<any>,
+    actions?: Array<React$Element<any>>
   };
 
   state: {
@@ -30,7 +30,7 @@ export default class ContentHeader extends React.Component {
     const { children, actions } = this.props;
     let el = null;
     if (window.innerWidth > 768 || !actions || actions.length < 2) {
-      el = <Node wrapper="contentHeaderActions" className="content-header-actions">{actions}</Node>;
+      el = <Node id="contentHeaderActions" className="content-header-actions">{actions}</Node>;
     } else {
       el = <i className="fa fa-bars" />;
       let overlay = null;
@@ -47,7 +47,7 @@ export default class ContentHeader extends React.Component {
       </div>;
     }
     return (
-      <Node wrapper="contentHeader" className="content-header">
+      <Node id="contentHeader" className="content-header">
         <div className="content-header-title">{children}</div>
         {el}
       </Node>

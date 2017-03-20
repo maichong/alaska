@@ -12,12 +12,16 @@ class EmailService extends Service {
   driversMap: Object;
 
   nextTask: ?EmailTask;
+  timer: number;
 
   constructor(options?: Alaska$Service$options) {
     options = options || {};
     options.id = options.id || 'alaska-email';
     options.dir = options.dir || __dirname;
     super(options);
+
+    this.nextTask = null;
+    this.timer = 0;
   }
 
   preLoadModels() {
@@ -28,9 +32,8 @@ class EmailService extends Service {
     let driversOptions = [];
     let defaultDriver = {};
     let driversMap = {};
-    _.forEach(drivers, (driver, key) => {
-      let label = driver.label || key;
-      driver.key = key;
+    _.forEach(drivers, (driver: Object, key) => {
+      let label: string = driver.label || key;
       driversOptions.push({ label, value: key });
       if (driver.send) {
         //已经实例化的driver
@@ -43,6 +46,7 @@ class EmailService extends Service {
         throw new Error('invalid email driver config ' + key);
       }
       driversMap[key] = driver;
+      // $Flow
       driver.key = key;
       if (!defaultDriver || driver.default) {
         defaultDriver = driver;
@@ -72,9 +76,6 @@ class EmailService extends Service {
   postMount() {
     setTimeout(() => this.updateTasks().catch((e) => console.error(e.stack)), 1000);
   }
-
-  nextTask = null;
-  timer = 0;
 
   async updateTasks() {
     const EmailTask = this.model('EmailTask');
@@ -124,6 +125,7 @@ class EmailService extends Service {
       console.error(err.stack);
     }
 
+    // $Flow
     task.lastUser = user._id;
     task.progress += 1;
     task.nextAt = new Date(Date.now() + (task.interval * 1000 || 0));

@@ -119,7 +119,8 @@ export default class GoodsSkuEditor extends React.Component {
 
   props: {
     data: Object,
-    value: Object[]
+    value: Object[],
+    onChange:Function
   };
 
   state: {

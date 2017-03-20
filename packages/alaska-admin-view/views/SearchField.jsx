@@ -6,10 +6,13 @@ export default class SearchField extends React.Component {
 
   props: {
     value: string,
-    onChange: Function
+    onChange: Function;
+    placeholder?:string
   };
 
-  state: Object;
+  state: {
+    value:string
+  };
   _timer: any;
 
   constructor(props: Object) {

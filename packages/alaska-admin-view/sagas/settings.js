@@ -6,6 +6,7 @@ import akita from 'akita';
 import { applySettings } from '../redux/settings';
 import { applyUser } from '../redux/user';
 
+// $Flow
 export default function* settingsSaga() {
   try {
     let res = yield akita.get('/api/settings');

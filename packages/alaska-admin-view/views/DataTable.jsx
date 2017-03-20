@@ -6,6 +6,7 @@ import { Link } from 'react-router';
 import { IF, ELSE } from 'jsx-plus';
 import shallowEqualWithout from 'shallow-equal-without';
 import DataTableRow from './DataTableRow';
+import type { Model, Record } from '../types';
 
 const { object, func } = React.PropTypes;
 
@@ -19,18 +20,17 @@ export default class DataTable extends React.Component {
   };
 
   props: {
-    model: Object,
-    columns: Object[],
-    selected: any[],
-    data: Object[],
-    sort: string,
-    onSort: Function,
-    onSelect: Function,
-    onRemove: Function
+    model: Model,
+    selected?: Record[],
+    data?: Record[],
+    sort?: string,
+    onSort?: Function,
+    onSelect?: Function,
+    onRemove?: Function
   };
 
   state: {
-    data:Object[];
+    data:Record[];
     columns:Object[];
     selected:Object;
   };
@@ -106,7 +106,9 @@ export default class DataTable extends React.Component {
     if (!this.isAllSelected()) {
       records = _.clone(this.state.data);
     }
-    this.props.onSelect(records);
+    if (this.props.onSelect) {
+      this.props.onSelect(records);
+    }
   };
   handleSelect = (record: Object, isSelected: boolean) => {
     let selected = _.clone(this.state.selected);
@@ -117,7 +119,9 @@ export default class DataTable extends React.Component {
     }
     this.setState({ selected });
     let records = _.filter(this.state.data, (record) => selected[record._id]);
-    this.props.onSelect(records);
+    if (this.props.onSelect) {
+      this.props.onSelect(records);
+    }
   };
   handleEdit = (record: Object) => {
     const { model } = this.props;

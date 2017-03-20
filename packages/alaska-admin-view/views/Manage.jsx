@@ -1,25 +1,25 @@
 // @flow
 
 import React from 'react';
-
 import { connect } from 'react-redux';
 import Node from './Node';
-
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Content from './Content';
+import type { Settings } from '../types';
 
 class Manage extends React.Component {
 
   props: {
     children: any;
-    settings: Object;
+    settings: Settings;
+    layout: string;
   };
 
   render() {
-    let { children, settings } = this.props;
+    let { children, settings, layout } = this.props;
     return (<Node id="manage">
-      <Sidebar menu={settings.menu} layout={this.props.layout} />
+      <Sidebar menu={settings.menu} layout={layout} />
       <Node id="body">
         <Header />
         <Content>{children}</Content>

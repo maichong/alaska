@@ -9,11 +9,12 @@ import { getOptionValue } from './utils';
 
 export default class SelectCheckbox extends React.Component {
   props: {
-    multi: boolean,
+    disabled?: boolean,
+    multi?: boolean,
     onChange: Function,
-    loadOptions: Function,
+    loadOptions?: Function,
     value: any,
-    options: Array<any>
+    options: Object[]
   };
 
   state: {
@@ -30,7 +31,7 @@ export default class SelectCheckbox extends React.Component {
   componentWillMount() {
     let props = this.props;
     if (props.loadOptions && (!props.options || !props.options.length)) {
-      this.props.loadOptions('', (error, res) => {
+      props.loadOptions('', (error, res) => {
         if (!error && res.options) {
           this.setState({ options: res.options });
         }
@@ -44,7 +45,7 @@ export default class SelectCheckbox extends React.Component {
     });
   }
 
-  handleClick(opt: string) {
+  handleCheck(opt: string) {
     const { value, multi, onChange } = this.props;
     const { options } = this.state;
     if (!multi) {
@@ -77,7 +78,7 @@ export default class SelectCheckbox extends React.Component {
   }
 
   render() {
-    const { multi, value } = this.props;
+    const { multi, value, disabled } = this.props;
     const { options } = this.state;
     let valueMap: Indexed = {};
     if (multi) {
@@ -94,11 +95,12 @@ export default class SelectCheckbox extends React.Component {
           let vid = getOptionValue(opt);
           return (<Checkbox
             key={vid}
+            disabled={disabled}
             radio={!multi}
             label={opt.label}
             value={
-            multi ? valueMap[vid] : (opt.value == value || opt == value || opt.value == value.value)
-          }
+              multi ? valueMap[vid] : (opt.value == value || opt == value || opt.value == value.value)
+            }
             style={{ display: 'inline-block', marginRight: 16 }}
             onCheck={() => this.handleCheck(vid)}
           />)

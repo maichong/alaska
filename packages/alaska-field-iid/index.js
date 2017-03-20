@@ -25,13 +25,11 @@ export default class IIDField extends NumberField {
 
     schema.pre('save', function (next: Function): Function|void {
       let record = this;
-      // $Flow record确认会有值
       let value = record.get(field.path);
       if (value) {
         return next();
       }
       cacheDriver.inc(key).then((f) => {
-        // $Flow record确认会有值
         record.set(field.path, f);
         next();
       }, (error) => {

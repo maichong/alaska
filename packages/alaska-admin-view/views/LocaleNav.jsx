@@ -1,28 +1,18 @@
 // @flow
 
 import React from 'react';
+import { NavDropdown, MenuItem } from 'react-bootstrap';
 
-import NavDropdown from 'react-bootstrap/lib/NavDropdown';
-import MenuItem from 'react-bootstrap/lib/MenuItem';
-
-const { object, func } = React.PropTypes;
+const { object } = React.PropTypes;
 
 export default class LocaleNav extends React.Component {
 
   static contextTypes = {
-    settings: object,
-    t: func,
+    settings: object
   };
-  state:Object;
-
-  constructor(props:Object) {
-    super(props);
-    this.state = {};
-  }
-
 
   render() {
-    const { settings, t } = this.context;
+    const { settings } = this.context;
 
     if (settings && settings.locales && Object.keys(settings.locales.all).length > 1) {
       let all = settings.locales.all;

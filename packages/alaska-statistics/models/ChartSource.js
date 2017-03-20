@@ -238,7 +238,6 @@ export default class ChartSource extends Model {
       if (field.options) {
         let map = {};
         _.forEach(field.options, (opt) => {
-          // $Flow opt.value有可能为boolean
           map[opt.value] = opt.label;
         });
         this.xLabelMap = map;

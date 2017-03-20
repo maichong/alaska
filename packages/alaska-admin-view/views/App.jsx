@@ -18,6 +18,7 @@ import Manage from './Manage';
 import Dashboard from './Dashboard';
 import EditorPage from './EditorPage';
 import ListPage from './ListPage';
+import type { Settings, User } from '../types';
 
 const ToastMessageFactory = React.createFactory(ToastMessage.animation);
 
@@ -41,7 +42,11 @@ class App extends React.Component {
   };
 
   props: {
-    views: Object
+    views: Object,
+    user: User,
+    settings: Settings,
+    layout: string,
+    applyLayout: Function
   };
 
   state: {

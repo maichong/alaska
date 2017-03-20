@@ -40,15 +40,21 @@ export default class Goods extends Model {
   };
 
   static groups = {
-    price: 'Price',
-    inventory: 'Inventory',
-    props: 'Goods Properties',
+    price: {
+      title: 'Price'
+    },
+    inventory: {
+      title: 'Inventory'
+    },
+    props: {
+      title: 'Goods Properties'
+    },
     sku: {
-      label: 'SKU',
+      title: 'SKU',
       panel: false
     },
     desc: {
-      label: 'Description',
+      title: 'Description',
       className: 'noborder'
     }
   };
@@ -210,7 +216,7 @@ export default class Goods extends Model {
       nolabel: true
     }
   };
-  _id:string|number|Object|any;
+  _id: string|number|Object|any;
   title: string;
   brief: string;
   pic: Object;
@@ -257,7 +263,7 @@ export default class Goods extends Model {
     if (this.isModified('cat') || !this.cats || !this.cats.length) {
       this.cats = [];
       // $Flow
-      let cat:GoodsCat = await GoodsCat.findById(this.cat);
+      let cat: GoodsCat = await GoodsCat.findById(this.cat);
       if (cat) {
         let cats = await cat.parents();
         cats.unshift(cat);

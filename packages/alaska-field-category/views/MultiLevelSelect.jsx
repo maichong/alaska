@@ -10,7 +10,7 @@ export default class MultiLevelSelect extends React.Component {
     options: Object[],
     onChange: Function,
     value: any,
-    disabled: boolean
+    disabled?: boolean
   };
 
   state: {

@@ -266,7 +266,7 @@ export default class Service {
       //移除配置项
       if (key[0] === '-') {
         key = key.slice(1);
-        if (Array.isArray(this._config[key])) {
+        if (Array.isArray(value)) {
           this._config[key] = _.without(this._config[key], ...value);
         } else if (typeof this._config[key] === 'object') {
           let keys = [];
@@ -277,6 +277,7 @@ export default class Service {
           } else {
             throw new Error(`Apply config error at '+${key}'`);
           }
+          // $Flow
           this._config[key] = _.omit(this._config[key], ...keys);
         } else {
           throw new Error(`Apply config error at '${key}'`);
@@ -286,6 +287,7 @@ export default class Service {
       //深度继承
       if (key[0] === '*') {
         key = key.slice(1);
+        // $Flow
         this._config[key] = _.defaultsDeep({}, value, this._config[key]);
       } else {
         this._config[key] = value;

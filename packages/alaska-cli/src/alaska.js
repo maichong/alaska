@@ -2,7 +2,9 @@
 
 /* eslint global-require:0 */
 
+// $Flow
 import program from 'commander';
+// $Flow
 import updateNotifier from 'update-notifier';
 
 const pkg = require('../package.json');

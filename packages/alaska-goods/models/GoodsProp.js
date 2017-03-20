@@ -37,7 +37,7 @@ export default class GoodsProp extends Model {
 
   static groups = {
     editor: {
-      label: 'Create Property Values'
+      title: 'Create Property Values'
     }
   };
 

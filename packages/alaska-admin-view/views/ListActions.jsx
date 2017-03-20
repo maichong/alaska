@@ -7,22 +7,29 @@ import akita from 'akita';
 import shallowEqualWithout from 'shallow-equal-without';
 import Node from './Node';
 import Action from './Action';
+import type { Model, Record, Settings } from '../types';
 
 const { object, func } = React.PropTypes;
 
 export default class ListActions extends React.Component {
 
   static contextTypes = {
-    actions: object,
     settings: object,
     t: func,
     confirm: func,
     toast: func
   };
 
+  context: {
+    settings:Settings;
+    t:Function;
+    confirm:Function;
+    toast:Function;
+  };
+
   props: {
-    selected: any[],
-    model: Object,
+    selected?: Record[],
+    model: Model,
     refresh: Function,
     refreshSettings: Function,
   };
@@ -82,14 +89,14 @@ export default class ListActions extends React.Component {
         body: { records: _.map(selected, (record) => record._id) }
       });
       toast('success', t('Successfully'));
-      this.props.onRefresh();
+      this.props.refresh();
     } catch (error) {
       toast('error', t('Failed'), error.message);
     }
   };
 
   render() {
-    const { model, selected, onRefresh } = this.props;
+    const { model, selected, refresh } = this.props;
     const { t, settings } = this.context;
     const actions = _.reduce(model.actions, (res, action, key) => {
       if (!action.list) return res;
@@ -100,7 +107,7 @@ export default class ListActions extends React.Component {
           model={model}
           selected={selected}
           action={action}
-          onRefresh={onRefresh}
+          refresh={refresh}
           onClick={() => this.handleAction(key)}
         />
       );
@@ -119,7 +126,7 @@ export default class ListActions extends React.Component {
         selected={selected}
         model={model}
         onClick={this.handleRemove}
-        onRefresh={onRefresh}
+        refresh={refresh}
       />);
     }
 

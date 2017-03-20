@@ -13,6 +13,7 @@ import ContentHeader from './ContentHeader';
 import ListActions from './ListActions';
 import * as listRedux from '../redux/lists';
 import { refreshSettings } from '../redux/settings';
+import type { Lists, Service, Model, Record } from '../types';
 
 const { object, func } = React.PropTypes;
 const CHECK_ICON = <i className="fa fa-check" />;
@@ -32,11 +33,16 @@ class ListPage extends React.Component {
   props: {
     location: Object,
     loadList: Function,
-    refreshSettings: Function,
+    refreshSettings: Function;
+    params:{
+      service:string;
+      model:string
+    };
+    lists:Lists
   };
 
   state: {
-    data:any,
+    data?:Record,
     search:string,
     filters:Object,
     page:number,
@@ -48,9 +54,8 @@ class ListPage extends React.Component {
     filterViews: any[],
     filterViewsMap: Object,
     selected: any[],
-    model:any,
-    service: any,
-    title: string
+    model:Model,
+    service: Service
   };
 
   _loading: boolean;
@@ -72,8 +77,7 @@ class ListPage extends React.Component {
       filterViewsMap: {},
       selected: [],
       model: null,
-      service: null,
-      title: ''
+      service: null
     };
   }
 
@@ -89,7 +93,7 @@ class ListPage extends React.Component {
     }
     if (nextProps.lists && nextProps.lists !== this.props.lists) {
       let lists = nextProps.lists;
-      let model = this.state.model;
+      let model: Model = this.state.model;
       if (lists[model.key]) {
         newState.list = lists[model.key];
         newState.data = lists[model.key].results;
@@ -119,7 +123,6 @@ class ListPage extends React.Component {
     if (!service) return;
     let model = service.models[modelName];
     if (!model) return;
-    let title = props.title || this.props.title || model.label;
     let data = this.state.data;
     let sort = this.state.sort;
     let search = this.state.search;
@@ -154,7 +157,6 @@ class ListPage extends React.Component {
     this.setState({
       service,
       model,
-      title,
       data: data || [],
       search,
       sort,
@@ -253,7 +255,7 @@ class ListPage extends React.Component {
   }
 
   updateQuery() {
-    let query = { t: Date.now(), search: '', sort: '', filters: '', columns: '' };
+    let query = { t: Date.now(), search: '', sort: '', filters: {}, columns: '' };
     const { filters, sort, search, columnsKeys } = this.state;
     if (search) {
       query.search = search;
@@ -312,6 +314,7 @@ class ListPage extends React.Component {
 
   handleScroll = () => {
     let body = document.body;
+    // $Flow
     if (body.scrollTop + document.documentElement.clientHeight >= body.scrollHeight) {
       if (!this.state.list.next || this._loading) return;
       this.loadMore();
@@ -358,7 +361,6 @@ class ListPage extends React.Component {
     const { location } = this.props;
     const {
       search,
-      title,
       service,
       model,
       data,
@@ -421,7 +423,7 @@ class ListPage extends React.Component {
     return (
       <Node id="list">
         <ContentHeader actions={titleBtns}>
-          {t(title, service.id)} &nbsp;
+          {t(model.label || model.name, service.id)} &nbsp;
           <i>{t('total records', { total: list.total })}</i>
         </ContentHeader>
         <div>{filterViews}</div>

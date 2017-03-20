@@ -6,27 +6,28 @@ import Node from './Node';
 export default class FieldGroup extends React.Component {
 
   props: {
-    children: any,
-    form: boolean,
-    panel: boolean,
-    className: string,
-    style: string,
-    wrapper: string,
+    children?: React$Element<any>,
+    form?: boolean,
+    panel?: boolean,
+    className?: string,
+    title?: string,
+    style?: string,
+    wrapper?: string,
   };
 
   render() {
-    let props = this.props;
-    let el = props.children;
-    if (props.form !== false) {
+    const { title, style, panel, form, className, wrapper, children } = this.props;
+    let el = children;
+    if (form !== false) {
       el = <div className="field-group-form form-horizontal">
         {el}
       </div>;
     }
-    if (props.panel !== false) {
-      let heading = props.title ? <div className="panel-heading">{props.title}</div> : null;
-      let cls = 'field-group-panel panel panel-' + (props.style || 'default');
-      if (props.className) {
-        cls += ' ' + props.className;
+    if (panel !== false) {
+      let heading = title ? <div className="panel-heading">{title}</div> : null;
+      let cls = 'field-group-panel panel panel-' + (style || 'default');
+      if (className) {
+        cls += ' ' + className;
       }
       el = <div className={cls}>
         {heading}
@@ -34,8 +35,8 @@ export default class FieldGroup extends React.Component {
       </div>;
     }
 
-    if (props.wrapper) {
-      return <Node wrapper={props.wrapper} props={this.props}>{el}</Node>;
+    if (wrapper) {
+      return <Node wrapper={wrapper} props={this.props}>{el}</Node>;
     }
     return el;
   }

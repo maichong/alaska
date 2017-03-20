@@ -17,6 +17,7 @@ node_modules/flow-numeral/flow/
 node_modules/flow-path-to-regexp/flow/
 node_modules/flow-react-router/flow/
 node_modules/flow-qs/flow/
+node_modules/akita/flow/
 
 [options]
 strip_root=true

@@ -72,6 +72,7 @@ export default class RelationshipFieldView extends React.Component {
       .param('value', field.value)
       .search(keyword)
       .where(field.filters || {})
+      // $Flow
       .then((res) => {
         callback(null, { options: res.results });
       }, callback);

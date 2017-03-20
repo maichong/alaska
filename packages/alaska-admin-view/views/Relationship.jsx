@@ -6,19 +6,19 @@ import { bindActionCreators } from 'redux';
 import qs from 'qs';
 import DataTable from './DataTable';
 import * as listRedux from '../redux/lists';
+import type { Model, Record } from '../types';
 
 const { object, func } = React.PropTypes;
 
 class Relationship extends React.Component {
 
   static contextTypes = {
-    actions: object,
     settings: object,
     t: func,
   };
 
   props: {
-    actions: Object,
+    loadList: Function,
     filters: Object,
     lists: Object,
     service: string,
@@ -28,7 +28,11 @@ class Relationship extends React.Component {
     title: string,
   };
 
-  state: Object;
+  state: {
+    data:Record;
+    model:Model;
+    filters:Object;
+  };
 
   constructor(props: Object) {
     super(props);

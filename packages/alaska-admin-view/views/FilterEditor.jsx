@@ -2,6 +2,7 @@
 
 import React from 'react';
 import _ from 'lodash';
+import type { Model } from '../types';
 
 const { object } = React.PropTypes;
 
@@ -13,7 +14,7 @@ export default class FilterEditor extends React.Component {
 
   props: {
     value: Object,
-    model: Object,
+    model: Model,
     fields: Object,
     onChange: Function,
     onFieldsChange: Function,

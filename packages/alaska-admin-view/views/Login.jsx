@@ -18,23 +18,31 @@ class Login extends React.Component {
   };
 
   props: {
-    login: Object
+    login: Object;
+    loginAction:Function
   };
 
-  state: Object;
+  state: {
+    username: string,
+    password: string,
+    errorMsg: string,
+    usernameError: string,
+    passwordError: string
+  };
 
   constructor(props: Object) {
     super(props);
     this.state = {
       username: '',
       password: '',
+      errorMsg: '',
       usernameError: '',
       passwordError: ''
     };
   }
 
   componentWillReceiveProps(nextProps: Object) {
-    let newState = {};
+    let newState = { errorMsg: '' };
     if (nextProps.login && nextProps.login.errorMsg) {
       newState.errorMsg = nextProps.login.errorMsg;
     }

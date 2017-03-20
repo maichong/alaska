@@ -5,11 +5,11 @@ import React from 'react';
 export default class Checkbox extends React.Component {
 
   props: {
-    style: Object,
-    radio: boolean,
+    style?: Object,
+    radio?: boolean,
     value: boolean,
-    disabled: boolean,
-    label: string,
+    disabled?: boolean,
+    label?: string,
     onCheck: Function,
   };
 

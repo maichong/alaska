@@ -1,30 +1,30 @@
 // @flow
 
+// $Flow
 import memcache from 'memcache';
-import _debug from 'debug';
+import Debugger from 'debug';
+import { Driver } from 'alaska';
 
-const debug = _debug('alaska-cache-memcache');
+const debug = Debugger('alaska-cache-memcache');
 
-export default class MemcacheCacheDriver {
-  _maxAge:number;
-  _options:Object;
-  type:string;
-  isCacheDriver:boolean;
-  noSerialization:boolean;
-  _connect:Function;
-  _connecting:any;
-  _driver:any;
+export default class MemcacheCacheDriver extends Driver {
+  static classOfCacheDriver = true;
 
-  constructor(options:Object) {
+  instanceOfCacheDriver: true;
+  _maxAge: number;
+  _options: Object;
+  type: string;
+  _connecting: any;
+  _driver: any;
+
+  constructor(service: Alaska$Service, options: Object) {
+    super(service, options);
+    this.instanceOfCacheDriver = true;
     this._maxAge = options.maxAge || 0;
     this._options = options || {};
-    this.type = 'memcache';
-    //标识已经是缓存对象实例
-    this.isCacheDriver = true;
-    //标识本驱动会序列化数据
-    this.noSerialization = false;
     this._connect();
   }
+
   _connect(): any {
     if (this._connecting) {
       return this._connecting;
@@ -69,13 +69,13 @@ export default class MemcacheCacheDriver {
   }
 
   /**
-   * [async] 设置缓存
+   * 设置缓存
    * @param {string} key
    * @param {*} value
    * @param {number} [lifetime] 超时时间,为0不超时,默认按驱动初始化参数maxAge而定
    * @returns {*}
    */
-  set(key:string, value:any, lifetime?:number): Promise<any> {
+  set(key: string, value: any, lifetime?: number): Promise<any> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.set(key, value, lifetime));
     }
@@ -92,11 +92,11 @@ export default class MemcacheCacheDriver {
   }
 
   /**
-   * [async] 获取缓存
+   * 获取缓存
    * @param key
    * @returns {*}
    */
-  get(key:string): Promise<any> {
+  get(key: string): Promise<any> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.get(key));
     }
@@ -119,10 +119,10 @@ export default class MemcacheCacheDriver {
   }
 
   /**
-   * [async] 删除缓存
+   * 删除缓存
    * @param key
    */
-  del(key:string): Promise<any> {
+  del(key: string): Promise<void> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.del(key));
     }
@@ -138,11 +138,11 @@ export default class MemcacheCacheDriver {
   }
 
   /**
-   * [async] 判断缓存键是否存在
+   * 判断缓存键是否存在
    * @param key
    * @returns {boolean}
    */
-  has(key:string): Promise<boolean> {
+  has(key: string): Promise<boolean> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.has(key));
     }
@@ -158,11 +158,11 @@ export default class MemcacheCacheDriver {
   }
 
   /**
-   * [async] 自增并返回结果
+   * 自增并返回结果
    * @param key
    * @returns {number}
    */
-  inc(key:string): Promise<number> {
+  inc(key: string): Promise<number> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.inc(key));
     }
@@ -185,11 +185,11 @@ export default class MemcacheCacheDriver {
   }
 
   /**
-   * [async] 自减并返回结果
+   * 自减并返回结果
    * @param key
    * @returns {number}
    */
-  dec(key:string): Promise<number> {
+  dec(key: string): Promise<number> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.dec(key));
     }
@@ -212,7 +212,7 @@ export default class MemcacheCacheDriver {
   }
 
   /**
-   * [async] 返回缓存数量
+   * 返回缓存数量
    * @returns {number}
    */
   size(): Promise<number> {
@@ -231,7 +231,7 @@ export default class MemcacheCacheDriver {
   }
 
   /**
-   * [async] 清理过期缓存
+   * 清理过期缓存
    */
   prune(): Promise<void> {
     debug('prune');
@@ -239,9 +239,9 @@ export default class MemcacheCacheDriver {
   }
 
   /**
-   * [async] 清空缓存
+   * 清空缓存
    */
-  flush(): Promise<any> {
+  flush(): Promise<void> {
     if (this._connecting || !this._driver) {
       return this._connect().then(() => this.flush());
     }
@@ -254,5 +254,10 @@ export default class MemcacheCacheDriver {
         return resolve();
       });
     });
+  }
+
+  onDestroy() {
+    this._driver.close();
+    this._driver = null;
   }
 }

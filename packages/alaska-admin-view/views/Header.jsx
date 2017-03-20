@@ -25,7 +25,9 @@ class Header extends React.Component {
     children: any,
     user: Object,
     layout: string;
+    logout: Function;
     applyLayout: Function;
+    refreshSettings: Function;
   };
 
   state: {
@@ -93,6 +95,7 @@ class Header extends React.Component {
   render() {
     const { user, layout } = this.props;
     const { t, views } = this.context;
+    // $Flow
     const navs = _.map(views.navs, (Nav, index) => (<Nav key={index} />));
     let username = null;
     if (layout.toString() === 'full') {

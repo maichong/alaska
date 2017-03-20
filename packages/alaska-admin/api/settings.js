@@ -51,6 +51,7 @@ export default async function (ctx: Alaska$Context) {
   settings.logo = logo;
   settings.icon = icon;
   ctx.body = {
+    // $Flow
     user: Object.assign({ access }, user.data()),
     settings
   };

@@ -1,16 +1,17 @@
 // @flow
 
 import React from 'react';
+// $Flow
 import ChartJS from 'react-chartjs';
-import { PREFIX, api } from 'alaska-admin-view';
+import akita from 'akita';
 
 export default class Chart extends React.Component {
 
   props: {
     chart: string,
-    width: number,
-    height: number,
-    onLoadData: Function
+    width?: number,
+    height?: number,
+    onLoadData?: Function
   };
 
   state: {
@@ -47,9 +48,14 @@ export default class Chart extends React.Component {
     }
     let raw;
     if (props.onLoadData) {
-      raw = await props.onLoadData(props.id);
+      raw = await props.onLoadData(props.chart);
     } else {
-      raw = await api.get(PREFIX + '/api/chart?id=' + props.chart);
+      // $Flow
+      raw = await akita.get('/api/chart', {
+        params: {
+          id: props.chart
+        }
+      });
     }
     let error = raw.error;
     let type = '';

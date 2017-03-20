@@ -47,6 +47,7 @@ export default class CategoryFieldView extends React.Component {
       .param('model', field.model)
       .param('value', field.value)
       .where(field.filters || {})
+      // $Flow
       .then((res) => {
         this.setState({ options: res.results });
       });
@@ -96,6 +97,7 @@ export default class CategoryFieldView extends React.Component {
       if (!value.length) {
         value.push(null);
       }
+      // $Flow
       inputElement = _.map(value, (v, index) => <MultiLevelSelect
         key={index}
         value={v || ''}

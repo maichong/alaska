@@ -30,9 +30,12 @@ function createFromSearchMulti(options, values, search) {
 export default class Select extends React.Component {
 
   props: {
-    multi: boolean,
+    allowCreate?: boolean,
+    disabled?: boolean,
+    multi?: boolean,
+    renderValue?: Function,
     onChange: Function,
-    loadOptions: Function,
+    loadOptions?: Function,
     value: any,
     options: Object[]
   };
@@ -42,7 +45,7 @@ export default class Select extends React.Component {
     optionsMap: {
       [value:string]:Alaska$SelectField$option;
     };
-    value:Alaska$SelectField$option | Alaska$SelectField$option[];
+    value?:Alaska$SelectField$option | Alaska$SelectField$option[];
   };
 
   _cache: Object;
@@ -176,6 +179,7 @@ export default class Select extends React.Component {
       this.setState({ options: this._cache[search] });
       return;
     }
+    // $Flow 我们知道此处 loadOptions 一定存在
     this.props.loadOptions(search, (error, res) => {
       if (!error && res.options) {
         let options = this._cache[search] = res.options;
@@ -184,7 +188,6 @@ export default class Select extends React.Component {
           optionsMap[o.value] = o;
         });
         let value = this.state.value;
-        console.log('value', value);
         if (value instanceof Array) {
           if (this.props.multi) {
             value.forEach((v) => {

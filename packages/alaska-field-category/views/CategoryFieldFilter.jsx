@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import api from 'akita';
+import akita from 'akita';
 import MultiLevelSelect from './MultiLevelSelect';
 
 const { func } = React.PropTypes;
@@ -22,7 +22,7 @@ export default class CategoryFieldFilter extends React.Component {
     value: any,
     inverse: boolean,
     error: string|boolean,
-    options: any|null
+    options: Object[]
   };
 
   constructor(props: Object) {
@@ -35,7 +35,7 @@ export default class CategoryFieldFilter extends React.Component {
       value: value.value,
       inverse: value.inverse,
       error: value.value === undefined,
-      options: null
+      options: []
     };
   }
 
@@ -60,6 +60,7 @@ export default class CategoryFieldFilter extends React.Component {
       .param('model', field.model)
       .param('value', field.value)
       .where(field.filters || {})
+      // $Flow
       .then((res) => {
         this.setState({ options: res.results });
       });
@@ -84,7 +85,6 @@ export default class CategoryFieldFilter extends React.Component {
     this.props.onChange(inverse ? { value, inverse } : value);
   };
 
-  //loadOptions={this.handleSearch} TODO 应该在103行 方法不存在
   render() {
     const t = this.context.t;
     const { field, onClose } = this.props;

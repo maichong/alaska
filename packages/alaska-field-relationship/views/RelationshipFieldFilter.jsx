@@ -63,13 +63,13 @@ export default class RelationshipFieldFilter extends React.Component {
       .param('value', field.value)
       .search(keyword)
       .where(field.filters || {})
+      // $Flow
       .then((res) => {
         callback(null, { options: res.results });
       }, callback);
   };
 
   handleChange = (option: Alaska$SelectField$option) => {
-    // $Flow
     this.setState({ value: option ? option.value : undefined }, () => this.handleBlur());
   };
 

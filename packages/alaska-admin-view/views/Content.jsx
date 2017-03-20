@@ -6,7 +6,7 @@ import Node from './Node';
 export default class Content extends React.Component {
 
   props: {
-    children: any
+    children?: React$Element<any>
   };
 
   render() {

@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react';
-import qs from 'qs';
 import { connect } from 'react-redux';
 import immutable from 'seamless-immutable';
 import _ from 'lodash';
@@ -16,13 +15,13 @@ import FieldGroup from './FieldGroup';
 import Relationship from './Relationship';
 import ContentHeader from './ContentHeader';
 import * as settingsRedux from '../redux/settings';
+import type { Settings, Details, Views } from '../types';
 
 const { object, func } = React.PropTypes;
 
 class EditorPage extends React.Component {
 
   static contextTypes = {
-    actions: object,
     views: object,
     settings: object,
     t: func,
@@ -31,12 +30,26 @@ class EditorPage extends React.Component {
     confirm: func,
   };
 
+  context: {
+    settings:Settings;
+    views:Views;
+    t:Function;
+    router:Object;
+    toast:Function;
+    confirm:Function;
+  };
+
   props: {
     loadDetails:Function,
     refreshSettings:Function,
-    details: Object,
+    saveAction:Function,
+    details: Details,
     save: Object,
-    params: Object
+    params: {
+      service:string;
+      model:string;
+      id:string;
+    }
   };
 
   state: Object;
@@ -250,7 +263,7 @@ class EditorPage extends React.Component {
       }
       toast('success', t('Successfully'));
       if (config.post === 'refresh') {
-        this.props.refreshAction();
+        this.props.refreshSettings();
       } else {
         this.refresh();
       }
