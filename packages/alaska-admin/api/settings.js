@@ -15,7 +15,7 @@ async function getLogo(key: string): Promise < string > {
 
 export default async function (ctx: Alaska$Context) {
   let user = ctx.user;
-  const logoReverse = await getLogo('adminLogoReverse');
+  const loginLogo = await getLogo('adminLoginLogo');
   const logo = await getLogo('adminLogo');
   const icon = await getLogo('adminIcon');
 
@@ -27,7 +27,7 @@ export default async function (ctx: Alaska$Context) {
           'alaska-admin': service.locales,
         },
         locale: ctx.locale,
-        logoReverse,
+        loginLogo,
         logo,
         icon
       },

@@ -62,5 +62,6 @@ export default handleActions({
   LOAD_LIST_FAILURE: (state, { payload }) => {
     let list = state[payload.key] || immutable({});
     return state.set(payload.key, list.set('error', payload.error.message));
-  }
+  },
+  LOGOUT: () => INITIAL_STATE
 }, INITIAL_STATE);

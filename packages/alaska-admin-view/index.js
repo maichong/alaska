@@ -6,7 +6,6 @@ import App from './views/App';
 
 akita.setOptions({
   apiRoot: window.PREFIX,
-  debug: true,
   init: {
     credentials: 'include'
   }

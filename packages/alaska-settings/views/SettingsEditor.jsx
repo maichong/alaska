@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { loadList } from 'alaska-admin-view/redux/lists';
+import { save } from 'alaska-admin-view/redux/save';
 
 const KEY = 'alaska-settings.settings';
 
@@ -20,7 +21,9 @@ class SettingsEditor extends React.Component {
 
   props: {
     lists: Object,
-    actions: Object
+    actions: Object,
+    loadList:Function,
+    save:Function,
   };
 
   state: {
@@ -74,7 +77,7 @@ class SettingsEditor extends React.Component {
   }
 
   refresh = () => {
-    this.props.loadDetails({
+    this.props.loadList({
       service: 'alaska-settings',
       model: 'Settings',
       key: KEY,
@@ -94,17 +97,17 @@ class SettingsEditor extends React.Component {
 
   handleSave = () => {
     const { values, map } = this.state;
-    const save = this.props.actions.save;
+    const save = this.props.save;
     _.forEach(values, (value, id) => {
       let data = Object.assign({}, map[id], { id, value });
       save({
         service: 'alaska-settings',
         model: 'Settings',
         key: KEY,
-        data
-      });
+        _r: Math.random()
+      }, data);
     });
-    this.refresh();
+    setTimeout(this.refresh, 1000);
   };
 
   render() {
@@ -163,6 +166,10 @@ class SettingsEditor extends React.Component {
   }
 }
 
-export default connect(({ lists }) => ({ lists }), (dispatch) => ({
-  loadDetails: bindActionCreators(loadList, dispatch)
-}))(SettingsEditor);
+export default connect(
+  ({ lists }) => ({ lists }),
+  (dispatch) => bindActionCreators({
+    loadList,
+    save
+  }, dispatch)
+)(SettingsEditor);

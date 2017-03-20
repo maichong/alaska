@@ -31,8 +31,8 @@ export default class Init extends Sled {
     });
 
     SETTINGS.register({
-      id: 'adminLogoReverse',
-      title: 'Admin Logo Reverse',
+      id: 'adminLoginLogo',
+      title: 'Admin Login Logo',
       service: 'alaska-admin',
       type: 'ImageFieldView'
     });

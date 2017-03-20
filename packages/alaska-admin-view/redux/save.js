@@ -59,5 +59,6 @@ export default handleActions({
     key: payload.key,
     _r: payload._r,
     res: {}
-  })
+  }),
+  LOGOUT: () => INITIAL_STATE
 }, INITIAL_STATE);

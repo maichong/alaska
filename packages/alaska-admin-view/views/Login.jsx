@@ -77,11 +77,11 @@ class Login extends React.Component {
   render() {
     let state = this.state;
     const t = this.context.t;
-    const logoReverse = this.context.settings.logoReverse;
+    const loginLogo = this.context.settings.loginLogo;
 
     return (
       <Node id="login" className="panel">
-        <Node id="loginLogo"><img alt="" src={logoReverse || 'static/img/logo_reverse.png'} /> </Node>
+        <Node id="loginLogo"><img alt="" src={loginLogo || 'static/img/logo_reverse.png'} /> </Node>
         <Node id="loginForm" tag="form">
           <Node id="loginField">
             <div className={'form-group' + state.usernameError}>

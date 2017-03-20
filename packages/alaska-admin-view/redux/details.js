@@ -34,5 +34,6 @@ export default handleActions({
     let datas = state[key] || immutable({});
     datas = datas.set(data._id, data);
     return state.set(key, datas);
-  }
+  },
+  LOGOUT: () => INITIAL_STATE
 }, INITIAL_STATE);

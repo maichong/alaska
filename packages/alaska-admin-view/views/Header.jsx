@@ -84,7 +84,7 @@ class Header extends React.Component {
   };
 
   handleLogout = () => {
-    this.props.logoutAction();
+    this.props.logout();
     this.setState({
       open: false
     });

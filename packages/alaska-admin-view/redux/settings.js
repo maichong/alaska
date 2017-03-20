@@ -18,5 +18,6 @@ export const applySettings = createAction(APPLY_SETTINGS);
 export const refreshSettings = createAction(REFRESH_SETTINGS);
 
 export default handleActions({
-  APPLY_SETTINGS: (state, action) => immutable(action.payload)
+  APPLY_SETTINGS: (state, action) => immutable(action.payload),
+  LOGOUT: () => INITIAL_STATE
 }, INITIAL_STATE);

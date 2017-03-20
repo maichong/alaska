@@ -54,7 +54,7 @@ export default {
   Successfully: '操作成功',
   Failed: '操作失败',
   'Admin Logo': '管理平台LOGO',
-  'Admin Logo Reverse': '管理平台LOGO反色',
+  'Admin Login Logo': '管理登录LOGO',
   'Admin Icon': '管理平台图标',
   Submit: '提交'
 };

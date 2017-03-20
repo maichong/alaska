@@ -13,5 +13,6 @@ export const INITIAL_STATE = immutable({});
 export const applyUser = createAction(APPLY_USER);
 
 export default handleActions({
-  APPLY_USER: (state, action) => state.merge(action.payload)
+  APPLY_USER: (state, action) => state.merge(action.payload),
+  LOGOUT: () => INITIAL_STATE
 }, INITIAL_STATE);

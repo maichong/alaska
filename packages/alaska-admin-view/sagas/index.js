@@ -17,11 +17,10 @@ export default function* root() {
   yield [
     takeLatest(STARTUP, settingsSaga),
     takeLatest(REFRESH_SETTINGS, settingsSaga),
-    takeLatest(LOGIN_SUCCESS, settingsSaga),
     takeLatest(LOGIN, login),
     takeLatest(LOGOUT, logout),
     takeEvery(LOAD_DETAILS, detailsSaga),
     takeLatest(LOAD_LIST, listSaga),
-    takeLatest(SAVE, saveSaga)
+    takeEvery(SAVE, saveSaga)
   ];
 }
