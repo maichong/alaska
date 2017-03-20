@@ -48,18 +48,16 @@ export default class Select extends React.Component {
 
   constructor(props: Object) {
     super(props);
+    this.state = {
+      options: props.options,
+      optionsMap: {},
+    };
     if (props.options) {
       for (let o of props.options) {
         this.state.optionsMap[o.value] = o;
       }
     }
-    let value = this.processValue(props.value);
-
-    this.state = {
-      options: props.options,
-      optionsMap: {},
-      value
-    };
+    this.state.value = this.processValue(props.value);
     this._cache = {};
   }
 

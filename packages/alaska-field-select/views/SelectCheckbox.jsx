@@ -44,22 +44,17 @@ export default class SelectCheckbox extends React.Component {
     });
   }
 
-  handleCheck(opt: Alaska$SelectField$option) {
-    const { multi, onChange, value } = this.props;
+  handleClick(opt: string) {
+    const { value, multi, onChange } = this.props;
     const { options } = this.state;
-    let valueStr = String(opt.value);
     if (!multi) {
-      let valueId = getOptionValue(value);
-      if (valueId != valueStr) {
-        onChange(opt);
-      }
-      return;
+      return onChange(opt);
     }
 
     //multi
     if (!value || !value.length) {
       onChange([opt]);
-      return;
+      return null;
     }
 
     let optionsMap: Indexed = {};
@@ -67,21 +62,18 @@ export default class SelectCheckbox extends React.Component {
 
     let res = [];
     let found = false;
-
     _.forEach(value, (v) => {
-      if (!v) return;
       let vid = getOptionValue(v);
-      if (vid == valueStr) {
+      if (vid === opt) {
         found = true;
       } else if (optionsMap[vid]) {
-        res.push(v);
+        res.push(vid);
       }
     });
-
     if (!found) {
       res.push(opt);
     }
-    onChange(res);
+    return onChange(res);
   }
 
   render() {
@@ -98,16 +90,19 @@ export default class SelectCheckbox extends React.Component {
 
     return (
       <div>{
-        _.map(options, (opt, key) => (<Checkbox
-          key={key}
-          radio={!multi}
-          label={opt.label}
-          value={
-            multi ? valueMap[getOptionValue(opt)] : (opt.value == value || opt == value || opt.value == value.value)
+        _.map(options, (opt) => {
+          let vid = getOptionValue(opt);
+          return (<Checkbox
+            key={vid}
+            radio={!multi}
+            label={opt.label}
+            value={
+            multi ? valueMap[vid] : (opt.value == value || opt == value || opt.value == value.value)
           }
-          style={{ display: 'inline-block', marginRight: 16 }}
-          onCheck={() => this.handleCheck(opt)}
-        />))
+            style={{ display: 'inline-block', marginRight: 16 }}
+            onCheck={() => this.handleCheck(vid)}
+          />)
+        })
       }</div>
     );
   }

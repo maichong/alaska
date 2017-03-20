@@ -24,4 +24,6 @@ function createStore() {
   return configureStore(rootReducer, rootSaga);
 }
 
-export default createStore();
+const store = createStore();
+window.store = store;
+export default store;

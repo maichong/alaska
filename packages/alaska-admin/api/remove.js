@@ -5,8 +5,8 @@ import _ from 'lodash';
 
 export default async function remove(ctx: Alaska$Context) {
   await ctx.checkAbility('admin');
-  let serviceId = ctx.state.service || ctx.query.service;
-  let modelName = ctx.state.model || ctx.query.model;
+  let serviceId = ctx.state.service || ctx.query._service;
+  let modelName = ctx.state.model || ctx.query._model;
   let body = ctx.state.body || ctx.request.body;
   let id = body.id || ctx.request.body.id;
   let records = body.records || ctx.request.body.records;

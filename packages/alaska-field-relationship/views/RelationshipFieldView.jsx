@@ -6,7 +6,7 @@ import shallowEqualWithout from 'shallow-equal-without';
 import Select from 'alaska-field-select/views/Select';
 import Switch from 'alaska-field-select/views/Switch';
 import SelectCheckbox from 'alaska-field-select/views/SelectCheckbox';
-import api from 'akita';
+import akita from 'akita';
 
 function getOptionValue(opt) {
   if (opt && typeof opt === 'object') return opt.value;
@@ -66,17 +66,15 @@ export default class RelationshipFieldView extends React.Component {
 
   handleSearch = (keyword: string, callback: Function) => {
     let field = this.props.field;
-    api.post('relation', {
-      query: {
-        service: field.service,
-        model: field.model,
-        search: keyword,
-        filters: field.filters,
-        value: this.props.value
-      }
-    }).then((res) => {
-      callback(null, { options: res.results });
-    }, callback);
+    akita('/api/relation')
+      .param('service', field.service)
+      .param('model', field.model)
+      .param('value', field.value)
+      .search(keyword)
+      .where(field.filters || {})
+      .then((res) => {
+        callback(null, { options: res.results });
+      }, callback);
   };
 
   render() {

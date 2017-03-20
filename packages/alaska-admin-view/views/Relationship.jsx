@@ -84,7 +84,7 @@ class Relationship extends React.Component {
     });
     this.setState({ model, filters }, () => {
       if (!this.state.data) {
-        this.props.listAction(args);
+        this.props.loadList(args);
       }
     });
   }
@@ -115,5 +115,5 @@ class Relationship extends React.Component {
 }
 
 export default connect(({ lists }) => ({ lists }), (dispatch) => bindActionCreators({
-  listAction: listRedux.list
+  loadList: listRedux.loadList
 }, dispatch))(Relationship);

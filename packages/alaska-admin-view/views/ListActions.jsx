@@ -72,8 +72,13 @@ export default class ListActions extends React.Component {
     const { t, toast, confirm } = this.context;
     await confirm(t('Remove selected records'), t('confirm remove selected records'));
     try {
-      await akita.post('/api/remove?' + qs.stringify({ service: model.serviceId, model: model.name }),
-        { records: _.map(selected, (record) => record._id) });
+      await akita.post('/api/remove', {
+        params: {
+          _service: model.serviceId,
+          _model: model.name
+        },
+        body: { records: _.map(selected, (record) => record._id) }
+      });
       toast('success', t('Successfully'));
       this.props.onRefresh();
     } catch (error) {

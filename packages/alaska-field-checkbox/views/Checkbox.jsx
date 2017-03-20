@@ -20,22 +20,34 @@ export default class Checkbox extends React.Component {
   };
 
   render() {
-    const { label, disabled, value, radio, style } = this.props;
-    let checked = value ? 'checked' : false;
-    let type = radio ? 'radio' : 'checkbox';
+    const { radio, value, disabled, label, style } = this.props;
+
+    let className = 'checkbox';
+    if (disabled) {
+      className += ' disabled';
+    }
+    if (value) {
+      className += ' checked';
+    }
+
+    let icon = 'square-o';
+    if (radio) {
+      if (value) {
+        icon = 'check-circle';
+      } else {
+        icon = 'circle-o';
+      }
+    } else {
+      if (value) {
+        icon = 'check-square';
+      } else {
+        //icon = 'square-o';
+      }
+    }
+
     return (
-      <label className={type} style={style}>
-        <input
-          type={type}
-          disabled={disabled}
-          checked={checked}
-          className={'custom-' + type}
-          onChange={this.handleCheck}
-        />
-        <span className="icons">
-          <span className="icon-unchecked" />
-          <span className="icon-checked" />
-        </span>
+      <label className={className} onClick={disabled ? null : this.handleCheck} style={style}>
+        <i className={'fa fa-' + icon} />
         {label}
       </label>
     );

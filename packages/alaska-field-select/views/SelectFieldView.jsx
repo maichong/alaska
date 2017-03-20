@@ -72,22 +72,8 @@ export default class SelectFieldView extends React.Component {
     return res;
   }
 
-  handleChange = (option: Alaska$SelectField$option | Alaska$SelectField$option[]) => {
-    const { onChange, field } = this.props;
-    if (!onChange) return;
-    let value;
-    if (option instanceof Array) {
-      if (field.multi) {
-        value = _.map(option, (o) => o.value);
-      }
-    } else {
-      value = option.value;
-    }
-    onChange(value);
-  };
-
   render() {
-    let { field, value, disabled, errorText } = this.props;
+    let { field, value, disabled, errorText, onChange } = this.props;
     let View = Select;
     if (field.checkbox) {
       View = SelectCheckbox;
@@ -130,7 +116,7 @@ export default class SelectFieldView extends React.Component {
         multi={field.multi}
         disabled={disabled}
         options={this.state.options}
-        onChange={this.handleChange}
+        onChange={onChange}
       />;
     }
 

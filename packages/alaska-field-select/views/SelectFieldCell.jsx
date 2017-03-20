@@ -6,7 +6,7 @@ import { getOptionValue } from './utils';
 
 const { func } = React.PropTypes;
 
-export default class SelectViewCell extends React.Component {
+export default class SelectFieldCell extends React.Component {
 
   static contextTypes = {
     t: func

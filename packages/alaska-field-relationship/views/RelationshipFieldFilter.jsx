@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Select from 'alaska-field-select/views/Select';
-import api from 'akita';
+import akita from 'akita';
 
 const { func } = React.PropTypes;
 
@@ -57,17 +57,15 @@ export default class RelationshipFieldFilter extends React.Component {
 
   handleSearch = (keyword: string, callback: Function) => {
     let field = this.props.field;
-    api.post('relation', {
-      query: {
-        service: field.service,
-        model: field.model,
-        search: keyword,
-        filters: field.filters,
-        value: this.state.value
-      }
-    }).then((res) => {
-      callback(null, { options: res.results });
-    }, callback);
+    akita('/api/relation')
+      .param('service', field.service)
+      .param('model', field.model)
+      .param('value', field.value)
+      .search(keyword)
+      .where(field.filters || {})
+      .then((res) => {
+        callback(null, { options: res.results });
+      }, callback);
   };
 
   handleChange = (option: Alaska$SelectField$option) => {

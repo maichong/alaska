@@ -18,7 +18,7 @@ div .react-selectize.default.root-node .react-selectize-control {
 }
 
 div .react-selectize.default.root-node .react-selectize-control {
-  border-color: #bdc3c7;
+  border-color: @border-color;
 }
 
 .react-selectize .simple-value-remove {
@@ -54,4 +54,8 @@ div .react-selectize.default.root-node .react-selectize-control {
       margin-top: 0;
     }
   }
+}
+
+.form-control, .select2-search input[type="text"] {
+  border-width: 1px;
 }

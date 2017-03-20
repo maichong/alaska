@@ -340,8 +340,13 @@ class ListPage extends React.Component {
     const { t, toast, confirm } = this.context;
     await confirm(t('Remove record'), t('confirm remove record'));
     try {
-      await akita.post('/api/remove?' + qs.stringify({ service: model.serviceId, model: model.name }),
-        { id: record._id });
+      await akita.post('/api/remove', {
+        params: {
+          _service: model.serviceId,
+          _model: model.name
+        },
+        body: { id: record._id }
+      });
       toast('success', t('Successfully'));
       this.refresh();
     } catch (error) {

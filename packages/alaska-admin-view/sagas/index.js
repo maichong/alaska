@@ -1,16 +1,15 @@
-import { takeLatest } from 'redux-saga/effects';
+import { takeLatest, takeEvery } from 'redux-saga/effects';
 import { STARTUP } from '../redux/startup';
 import { REFRESH_SETTINGS } from '../redux/settings';
 import { LOGIN, LOGOUT, LOGIN_SUCCESS } from '../redux/login';
 import { LOAD_DETAILS } from '../redux/details';
 import { LOAD_LIST } from '../redux/lists';
-import { REMOVE, SAVE } from '../redux/save';
+import { SAVE } from '../redux/save';
 
 import detailsSaga from './details';
 import listSaga from './list';
 import settingsSaga from './settings';
 import { login, logout } from './login';
-import removeSaga from './remove';
 import saveSaga from './save';
 
 // 当action触发时，执行特定saga
@@ -21,7 +20,7 @@ export default function* root() {
     takeLatest(LOGIN_SUCCESS, settingsSaga),
     takeLatest(LOGIN, login),
     takeLatest(LOGOUT, logout),
-    takeLatest(LOAD_DETAILS, detailsSaga),
+    takeEvery(LOAD_DETAILS, detailsSaga),
     takeLatest(LOAD_LIST, listSaga),
     takeLatest(SAVE, saveSaga)
   ];

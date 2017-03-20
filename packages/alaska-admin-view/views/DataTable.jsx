@@ -122,7 +122,7 @@ export default class DataTable extends React.Component {
   handleEdit = (record: Object) => {
     const { model } = this.props;
     const { router } = this.context;
-    let url = '/edit/' + model.serviceId + '/' + model.name + '/' + record._id;
+    let url = '/edit/' + model.serviceId + '/' + model.name + '/' + encodeURIComponent(record._id);
     router.push(url);
   };
 

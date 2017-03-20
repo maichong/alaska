@@ -40,16 +40,24 @@ export const INITIAL_STATE = immutable({
   error: null,
   fetching: false,
   key: '',
-  _r: 0
+  _r: 0,
+  res: {}
 });
 
 export default handleActions({
-  SAVE: (state, { payload }) => state.merge({ error: null, fetching: true, key: payload.key, _r: payload._r }),
-  SAVE_SUCCESS: (state, { payload }) => state.merge({ error: null, fetching: false, key: payload.key, _r: payload._r }),
+  SAVE: (state, { payload }) => state.merge({ error: null, fetching: true, key: payload.key, _r: payload._r, res: {} }),
+  SAVE_SUCCESS: (state, { payload }) => state.merge({
+    error: null,
+    fetching: false,
+    key: payload.key,
+    _r: payload._r,
+    res: payload.res
+  }),
   SAVE_FAILURE: (state, { payload }) => state.merge({
     error: payload.error,
     fetching: false,
     key: payload.key,
-    _r: payload._r
+    _r: payload._r,
+    res: {}
   })
 }, INITIAL_STATE);

@@ -89,7 +89,7 @@ class EditorPage extends React.Component {
         }
       }
     }
-    if (nextProps.save && nextProps.save._r == this._r) {
+    if (nextProps.save && nextProps.save._r == this._r && !nextProps.save.fetching) {
       this._r = Math.random();
       let t = this.context.t;
       this.loading = false;
@@ -169,10 +169,13 @@ class EditorPage extends React.Component {
     }]);
     this.loading = true;
     try {
-      await akita.post('/api/remove?' + qs.stringify({
-          service: serviceId,
-          model: modelName
-        }), { id });
+      await akita.post('/api/remove', {
+        params: {
+          _service: serviceId,
+          _model: modelName
+        },
+        body: { id }
+      });
       toast('success', t('Successfully'));
       this.loading = false;
 

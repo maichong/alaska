@@ -1,0 +1,27 @@
+.checkbox {
+  display: inline-block;
+  cursor: pointer;
+  vertical-align: middle;
+
+  .fa {
+    display: inline-block;
+    width: 18px;
+    text-align: center;
+    font-size: 18px;
+    vertical-align: middle;
+    color: @gray;
+    margin-right: 4px;
+  }
+
+  &.checked {
+    .fa {
+      color: @brand-success;
+    }
+  }
+
+  &.disabled {
+    .fa {
+      color: @gray-light;
+    }
+  }
+}

@@ -15,7 +15,7 @@ export default class RelationshipField extends Field {
   static viewOptions = ['filters', 'service', 'model', 'multi', 'checkbox', 'switch', function (options, field) {
     let Model = field.ref;
     if (Model) {
-      options.key = Model.key;
+      options.ref = Model.path;
       options.title = Model.title;
     }
   }];
@@ -108,6 +108,21 @@ export default class RelationshipField extends Field {
     // $Flow
     this.dataType = type;
     schema.path(this.path, this.multi ? [options] : options);
+
+    let field = this;
+    schema.pre('save', function (next) {
+      let record = this;
+      if (!record.isModified(field.path)) {
+        next();
+        return;
+      }
+      let id = record.id;
+      if (id && String(id) == String(record.get(field.path))) {
+        next(new Error('Can not relate to record self, ' + model.path + '#' + field.path));
+        return;
+      }
+      next();
+    });
   }
 
   createFilter(filter: Object): any {

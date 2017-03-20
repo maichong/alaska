@@ -2,7 +2,7 @@
 
 import React from 'react';
 import _ from 'lodash';
-import api from 'akita';
+import akita from 'akita';
 import shallowEqualWithout from 'shallow-equal-without';
 import MultiLevelSelect from './MultiLevelSelect';
 
@@ -42,18 +42,14 @@ export default class CategoryFieldView extends React.Component {
 
   init() {
     let field = this.props.field;
-    // akita
-    api.post('relation', {
-      query: {
-        service: field.service,
-        model: field.model,
-        search: '',
-        filters: field.filters,
-        all: 1
-      }
-    }).then((res) => {
-      this.setState({ options: res.results });
-    });
+    akita('/api/relation')
+      .param('service', field.service)
+      .param('model', field.model)
+      .param('value', field.value)
+      .where(field.filters || {})
+      .then((res) => {
+        this.setState({ options: res.results });
+      });
   }
 
   handleChange = (index: number, value: any) => {
