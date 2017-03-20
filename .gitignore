@@ -10,3 +10,4 @@ node_modules
 temp/
 runtime
 example/public/admin/js
+example/public/uploads

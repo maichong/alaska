@@ -3,7 +3,7 @@
 import React from 'react';
 import _ from 'lodash';
 import shallowEqualWithout from 'shallow-equal-without';
-import api from 'akita';
+import akita from 'akita';
 
 const { object, func } = React.PropTypes;
 
@@ -92,16 +92,16 @@ export default class ImageFieldView extends React.Component {
         nextState.errorText = t('Invalid image format');
         return;
       }
-      api.post('upload', {
-        query: {
-          service: serviceId,
-          model: modelName
+      let data = new FormData();
+      data.append('file', file);
+      data.append('id', id);
+      data.append('path', field.path || 'avatar');
+      akita.post('/api/upload', {
+        params: {
+          _service: serviceId,
+          _model: modelName
         },
-        body: {
-          file,
-          id,
-          path: field.path || 'avatar'
-        }
+        body: data
       }).then((res) => {
         value.push(res);
         if (me.props.onChange) {
