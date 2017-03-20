@@ -213,9 +213,8 @@ class EditorPage extends React.Component {
       service: model.serviceId,
       model: model.name,
       key: model.key,
-      _r: this._r,
-      data: Object.assign({}, data, { id: id.toString() === '_new' ? '' : id })
-    });
+      _r: this._r
+    }, Object.assign({}, data, { id: id.toString() === '_new' ? '' : id }));
   };
 
   async handleAction(action) {
@@ -279,8 +278,8 @@ class EditorPage extends React.Component {
     let subTitle = '';
     if (id == '_new') {
       subTitle = t('Create');
-    } else if (model.title) {
-      subTitle = t(data[model.title], serviceId);
+    } else if (model.titleField) {
+      subTitle = t(data[model.titleField], serviceId);
     } else {
       subTitle = id;
     }

@@ -10,8 +10,8 @@ import detailsSaga from './details';
 import listSaga from './list';
 import settingsSaga from './settings';
 import { login, logout } from './login';
-import remove from './remove';
-import save from './save';
+import removeSaga from './remove';
+import saveSaga from './save';
 
 // 当action触发时，执行特定saga
 export default function* root() {
@@ -23,7 +23,6 @@ export default function* root() {
     takeLatest(LOGOUT, logout),
     takeLatest(LOAD_DETAILS, detailsSaga),
     takeLatest(LOAD_LIST, listSaga),
-    takeLatest(REMOVE, remove),
-    takeLatest(SAVE, save)
+    takeLatest(SAVE, saveSaga)
   ];
 }

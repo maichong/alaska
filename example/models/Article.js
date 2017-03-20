@@ -2,6 +2,7 @@ import { Model } from 'alaska';
 
 export default class Article extends Model {
   static label = 'Article';
+  static titleField = 'title';
   static api = {
     all: 1,
     list: 1,

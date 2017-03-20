@@ -9,6 +9,8 @@ export default handleActions({
     if (window.localStorage) {
       window.localStorage.setItem('layout', action.payload);
     }
-    return state.merge(action.payload);
+    return action.payload;
   }
-}, window.localStorage.getItem('layout') || 'full');
+}, (
+  (window.localStorage ? window.localStorage.getItem('layout') : '') || 'full'
+));
