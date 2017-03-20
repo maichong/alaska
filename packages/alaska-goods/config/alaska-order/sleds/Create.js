@@ -16,11 +16,12 @@ export async function pre() {
   if (!gids || !gids.length) {
     return;
   }
-  let orders = data.orders = data.orders || [];
+  data.orders = data.orders || [];
+  let orders = data.orders;
   let orderItems = [];
   for (let g of gids) {
     if (!g.id) continue;
-    let goods:?Goods = await Goods.findById(g.id);
+    let goods: ?Goods = await Goods.findById(g.id);
     if (!goods) continue;
     if (!goods.activated) ORDER.error('Goods is not activated');
     let discountValid = goods.discountValid;
@@ -34,7 +35,7 @@ export async function pre() {
       discount: discountValid ? goods.discount : 0,
       quantity: parseInt(g.quantity) || 1
     });
-    let sku:Sku;
+    let sku: Sku;
     //如果选择了SKU
     if (g.sku) {
       sku = await Sku.findById(g.sku).where('goods', goods._id);

@@ -1,5 +1,7 @@
 // @flow
 
+/* eslint no-inner-declarations:0 */
+
 import _ from 'lodash';
 import alaska, { Sled } from 'alaska';
 import SETTINGS from 'alaska-settings';

@@ -20,10 +20,11 @@ export default async function loadApi() {
 
   const service: Alaska$Service = this;
 
-  const alaska = service.alaska;
   const router = service.router;
 
-  const apis = this._apiControllers = utils.include(this.dir + '/api', false) || {};
+  this._apiControllers = utils.include(this.dir + '/api', false) || {};
+
+  const apis = this._apiControllers;
 
   this._configDirs.forEach((dir) => {
     dir += '/api';

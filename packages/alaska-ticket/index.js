@@ -1,12 +1,12 @@
 // @flow
 
-
 import { Service } from 'alaska';
+
 /**
  * @class TicketService
  */
 class TicketService extends Service {
-  constructor(options?:Alaska$Service$options, alaska?:Alaska$Alaska) {
+  constructor(options?: Alaska$Service$options, alaska?: Alaska$Alaska) {
     options = options || {};
     options.dir = options.dir || __dirname;
     options.id = options.id || 'alaska-ticket';
@@ -18,7 +18,7 @@ class TicketService extends Service {
     const Ticket = service.model('Ticket');
     const alaska = service.alaska;
     alaska.post('loadMiddlewares', () => {
-      alaska.app.use(async (ctx:Alaska$Context, next:Function) => {
+      alaska.app.use(async(ctx: Alaska$Context, next: Function) => {
         if (ctx.method === 'POST') {
           let body = ctx.state.body || ctx.request.body;
           let ticketId = body._ticket || ctx.request.body._ticket;

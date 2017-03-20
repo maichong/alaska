@@ -15,7 +15,9 @@ export default async function loadControllers() {
 
   const service = this;
 
-  const controllers = this._controllers = utils.include(this.dir + '/controllers', false) || {};
+  this._controllers = utils.include(this.dir + '/controllers', false) || {}
+
+  const controllers = this._controllers;
 
   this._configDirs.forEach((dir) => {
     dir += '/controllers';

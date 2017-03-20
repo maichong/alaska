@@ -37,11 +37,13 @@ export default class Send extends Sled {
     }
 
     if (!code) {
-      code = values.code = random(captcha.length, {
+      code = random(captcha.length, {
         numbers: captcha.numbers || false,
         letters: captcha.letters || false
       });
     }
+
+    values.code = code;
 
     let cacheKey = 'captcha_' + to;
     CACHE.set(cacheKey, code, captcha.lifetime * 1000 || 1800 * 1000);

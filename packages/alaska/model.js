@@ -393,7 +393,8 @@ export default class Model {
                 fieldTypeName = options.type;
               }
               // $Flow
-              FieldClass = options.type = require(fieldTypeName).default;
+              options.type = require(fieldTypeName).default;
+              FieldClass = options.type;
             }
             options.label = options.label || path.toUpperCase();
             let field = new FieldClass(options, schema, model);

@@ -1,7 +1,7 @@
 import Banner from '../models/Banner';
 
 export default function (router) {
-  router.get('/redirect/:id', async function (ctx, next) {
+  router.get('/redirect/:id', async(ctx, next) => {
     let id = ctx.params.id;
     if (!/^[0-9a-f]{24}$/.test(id)) {
       await next();

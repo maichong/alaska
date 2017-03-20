@@ -186,7 +186,6 @@ exports['refund-accept'] = async function (ctx: Alaska$Context) {
   ctx.body = order.data();
 };
 
-
 /**
  * 卖家或管理员 拒绝退款
  * 如果是多店铺模式,并且卖家无管理员权限,前置中间件请将order对象存放在ctx.state.order,并做好状态判断

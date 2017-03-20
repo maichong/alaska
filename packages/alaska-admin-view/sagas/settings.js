@@ -52,7 +52,6 @@ export default function* settingsSaga() {
 
     yield put(applySettings(settings));
     yield put(applyUser(res.user));
-
   } catch (e) {
     console.error(e);
   }

@@ -42,7 +42,7 @@ export const loadListFailure = createAction(LOAD_LIST_FAILURE, (key, error) => (
 export const INITIAL_STATE = immutable({});
 
 export default handleActions({
-  CLEAR_LIST: (state, { payload }) => payload.key ? state.without(payload.key) : INITIAL_STATE,
+  CLEAR_LIST: (state, { payload }) => (payload.key ? state.without(payload.key) : INITIAL_STATE),
   APPLY_LIST: (state, { payload }) => {
     let key = payload.key;
     let info = _.omit(payload, 'results');

@@ -18,7 +18,9 @@ export default async function loadLocales() {
 
   this.debug('loadLocales');
 
-  const locales = this.locales = {};
+  this.locales = {};
+
+  const locales = this.locales;
 
   const allowed = alaska.main.config('locales', []);
 

@@ -184,7 +184,6 @@ export default class Service {
     return this.options.dir;
   }
 
-
   /**
    * 判断当前Service是否是主Service
    * @returns Boolean

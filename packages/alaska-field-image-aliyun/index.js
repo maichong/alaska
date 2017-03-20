@@ -60,7 +60,8 @@ export default class AliyunImageField extends Field {
         }
         img.path += id.toString() + '.' + img.ext;
         url += img.path;
-        img.thumbUrl = img.url = url;
+        img.url = url;
+        img.thumbUrl = url;
         if (field.thumbSuffix) {
           img.thumbUrl += (field.thumbSuffix || '').replace('EXT', img.ext);
         }

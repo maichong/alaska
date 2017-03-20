@@ -41,7 +41,6 @@ export default class GoodsProp extends Model {
     }
   };
 
-
   static fields = {
     title: {
       label: 'Title',
@@ -134,7 +133,7 @@ export default class GoodsProp extends Model {
       cell: false
     }
   };
-  _id:string|number|Object|any;
+  _id: string|number|Object|any;
   title: string;
   cats: Object;
   catsIndex: any;
@@ -180,7 +179,7 @@ export default class GoodsProp extends Model {
           continue;
         }
         // $Flow
-        let cat:GoodsCat = await GoodsCat.findById(cid);
+        let cat: GoodsCat = await GoodsCat.findById(cid);
         cats[cid] = cat;
         let subs = await cat.allSubs();
         _.defaults(cats, subs);

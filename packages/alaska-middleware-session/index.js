@@ -50,10 +50,12 @@ export default function (options: Alaska$Config$session) {
     ctx.sessionKey = key;
     let sid = '';
     if (cookieOpts && cookieOpts.get) {
-      sid = ctx.sessionId = cookieOpts.get(ctx, key, cookieOpts);
+      ctx.sessionId = cookieOpts.get(ctx, key, cookieOpts);
+      sid = ctx.sessionId;
     } else {
       // $Flow
-      sid = ctx.sessionId = ctx.cookies.get(key, cookieOpts);
+      ctx.sessionId = ctx.cookies.get(key, cookieOpts);
+      sid = ctx.sessionId;
     }
     let json;
     let session;
@@ -61,7 +63,8 @@ export default function (options: Alaska$Config$session) {
     if (sid) {
       json = await store.get(sid);
     } else {
-      sid = ctx.sessionId = random(24);
+      ctx.sessionId = random(24);
+      sid = ctx.sessionId;
       if (cookieOpts && cookieOpts.set) {
         cookieOpts.set(ctx, key, sid, cookieOpts);
       } else {

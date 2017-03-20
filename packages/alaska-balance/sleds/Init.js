@@ -5,12 +5,12 @@ export default class Init extends Sled {
   exec() {
     USER.run('RegisterAbility', {
       id: 'admin.alaska-balance.withdraw.accept',
-      title: `Accept Withdraw`,
+      title: 'Accept Withdraw',
       service: 'alaska-admin'
     });
     USER.run('RegisterAbility', {
       id: 'admin.alaska-balance.withdraw.reject',
-      title: `Reject Withdraw`,
+      title: 'Reject Withdraw',
       service: 'alaska-admin'
     });
   }

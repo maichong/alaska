@@ -116,7 +116,7 @@ export default class RelationshipField extends Field {
         return;
       }
       let id = record.id;
-      if (id && String(id) == String(record.get(field.path))) {
+      if (id && String(id) === String(record.get(field.path))) {
         next(new Error('Can not relate to record self, ' + model.path + '#' + field.path));
         return;
       }

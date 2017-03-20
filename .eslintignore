@@ -3,8 +3,10 @@ flow/
 flow-typed/
 packages/flow-alaska/
 packages/alaska-admin/static/
+packages/alaska-admin-view/types.js
 scripts/
 temp/
 example/public/
 webpack.*
-
+gulpfile.js
+runtime/

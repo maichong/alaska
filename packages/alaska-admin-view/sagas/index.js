@@ -1,7 +1,7 @@
 import { takeLatest, takeEvery } from 'redux-saga/effects';
 import { STARTUP } from '../redux/startup';
 import { REFRESH_SETTINGS } from '../redux/settings';
-import { LOGIN, LOGOUT, LOGIN_SUCCESS } from '../redux/login';
+import { LOGIN, LOGOUT } from '../redux/login';
 import { LOAD_DETAILS } from '../redux/details';
 import { LOAD_LIST } from '../redux/lists';
 import { SAVE } from '../redux/save';

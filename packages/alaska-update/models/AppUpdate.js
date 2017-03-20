@@ -1,6 +1,5 @@
 // @flow
 
-
 import { Model } from 'alaska';
 
 export default class AppUpdate extends Model {

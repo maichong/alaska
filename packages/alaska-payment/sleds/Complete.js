@@ -1,6 +1,5 @@
 // @flow
 
-
 import alaska, { Sled } from 'alaska';
 
 export default class Complete extends Sled {

@@ -1,6 +1,5 @@
 // @flow
 
-
 import Ticket from '../models/Ticket';
 
 export async function create(ctx: Alaska$Context) {

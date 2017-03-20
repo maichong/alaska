@@ -1,6 +1,5 @@
 // @flow
 
-
 import { Service } from 'alaska';
 
 /**

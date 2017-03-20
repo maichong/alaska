@@ -1,5 +1,7 @@
 // @flow
 
+/* eslint camelcase:0 */
+
 import _ from 'lodash';
 import crypto from 'crypto';
 import fs from 'fs';
@@ -21,7 +23,7 @@ export default class AlipayPlugin {
 
   init(service: PaymentService) {
     this.service = service;
-    service.payments['alipay'] = this;
+    service.payments.alipay = this;
     service.addConfigDir(__dirname);
     this.label = 'Alipay';
     let configTmp: Object = service.config('alipay');

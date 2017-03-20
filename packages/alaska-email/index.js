@@ -1,5 +1,8 @@
 // @flow
 
+/* eslint global-require:0 */
+/* eslint import/no-dynamic-require:0 */
+
 import _ from 'lodash';
 import alaska, { Service } from 'alaska';
 import User from 'alaska-user/models/User';
@@ -78,16 +81,15 @@ class EmailService extends Service {
   }
 
   async updateTasks() {
-    const EmailTask = this.model('EmailTask');
     if (this.timer) {
       clearTimeout(this.timer);
       this.timer = 0;
     }
     // $Flow
-    let task = this.nextTask = await EmailTask.findOne({ state: 1 }).sort('nextAt');
-    if (!task) return;
+    this.nextTask = await EmailTask.findOne({ state: 1 }).sort('nextAt');
+    if (!this.nextTask) return;
 
-    let time = task.nextAt.getTime() - Date.now();
+    let time = this.nextTask.nextAt.getTime() - Date.now();
     if (!time || time < 0) {
       time = 0;
     }
@@ -104,7 +106,8 @@ class EmailService extends Service {
     // $Flow
     let email: ?Email = await Email.findById(task.email);
     if (!email) {
-      return this.updateTasks().catch((e) => console.error(e.stack));
+      this.updateTasks().catch((e) => console.error(e.stack));
+      return;
     }
     // $Flow
     let query = User.findOne(task._.filters.filter() || {}).where('email').ne(null);

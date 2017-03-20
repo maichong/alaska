@@ -180,8 +180,10 @@ export default class Chart extends Model {
       options
     };
 
-    let datasets = res.data.datasets = [];
-    let labels = res.data.labels = [];
+    res.data.datasets = [];
+    let datasets = res.data.datasets;
+    res.data.labels = [];
+    let labels = res.data.labels;
 
     let datasetsConfigs = chart.datasets || {};
 
@@ -290,10 +292,12 @@ export default class Chart extends Model {
             if (!color) {
               let c = colorsQueue.shift();
               if (c) {
-                color = colorMap[label] = c;
+                colorMap[label] = c;
+                color = c;
               } else {
                 c = randomColorList(1, backgroundClearer[chart.type]);
-                color = colorMap[label] = [c.borderColor[0], c.hoverBackgroundColor[0], c.backgroundColor[0]];
+                colorMap[label] = [c.borderColor[0], c.hoverBackgroundColor[0], c.backgroundColor[0]];
+                color = colorMap[label];
               }
             }
             tmp.borderColor[index] = color[0];

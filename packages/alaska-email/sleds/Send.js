@@ -45,7 +45,7 @@ export default class Send extends Sled {
       }
     }
 
-    if (to && typeof to === 'object' || !Array.isArray(to) && to.email) {
+    if (to && typeof to === 'object' && !Array.isArray(to) && to.email) {
       // $Flow
       let user: User = to;
       if (user.displayName) {

@@ -30,7 +30,7 @@ export const INITIAL_STATE: {
 
 export default handleActions({
   APPLY_DETAILS: (state, { payload }) => {
-    let { key, data }=payload;
+    let { key, data } = payload;
     let datas = state[key] || immutable({});
     datas = datas.set(data._id, data);
     return state.set(key, datas);

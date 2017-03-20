@@ -1,8 +1,8 @@
 import { put } from 'redux-saga/effects';
+import akita from 'akita';
 import { saveFailure, saveSuccess } from '../redux/save';
 import { applyDetails } from '../redux/details';
 import { clearList } from '../redux/lists';
-import akita from 'akita';
 
 export default function* saveSaga({ payload }) {
   try {

@@ -6,7 +6,7 @@ export default async function list(ctx: Alaska$Context) {
   await ctx.checkAbility('admin');
   let serviceId = ctx.state.service || ctx.query._service;
   let modelName = ctx.state.model || ctx.query._model;
-  let keyword = ctx.state.search || ctx.query._search || '';
+  let search = ctx.state.search || ctx.query._search || '';
   if (!serviceId || !modelName) {
     alaska.error('Invalid parameters');
   }
@@ -14,7 +14,7 @@ export default async function list(ctx: Alaska$Context) {
   if (!s) {
     alaska.error('Invalid parameters');
   }
-  let Model: Class<Alaska$Model> = s.model(modelName);
+  let Model: Class < Alaska$Model > = s.model(modelName);
 
   let ability = `admin.${Model.key}.read`;
   await ctx.checkAbility(ability);
@@ -24,6 +24,7 @@ export default async function list(ctx: Alaska$Context) {
   let query = Model.paginate({
     page: parseInt(ctx.state.page || ctx.query._page) || 1,
     limit: parseInt(ctx.query.limit || ctx.query._limit || Model.defaultLimit) || 50,
+    search,
     filters
   });
 

@@ -194,10 +194,10 @@ export default class Sled {
     }
 
     let key = this.key;
-    let id = this.id;
-    if (!id) {
-      id = this.id = 'sled.' + key + '.' + random(10);
+    if (!this.id) {
+      this.id = 'sled.' + key + '.' + random(10);
     }
+    let id = this.id;
     let item = {
       id,
       key,
@@ -259,10 +259,11 @@ export default class Sled {
       throw this.error;
     }
 
-    let id = this.id;
-    if (!id) {
-      id = this.id = 'sled.' + this.key + '.' + random(10);
+    if (!this.id) {
+      this.id = 'sled.' + this.key + '.' + random(10);
     }
+
+    let id = this.id;
 
     if (!this.item) {
       //异步将sled插入队列

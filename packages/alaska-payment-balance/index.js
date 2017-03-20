@@ -11,17 +11,16 @@ export default class BalancePlugin {
 
   constructor(service: PaymentService) {
     this.service = service;
-    service.payments['balance'] = this;
+    service.payments.balance = this;
     service.addConfigDir(__dirname);
   }
 
   /**
    * 创建支付参数
    * @param {Payment} payment
-   * @param {Object} [data]
    * @returns {any}
    */
-  async createParams(payment: Payment, data: ?Object): any {
+  async createParams(payment: Payment): any {
     let currency: string = payment.currency || BALANCE.defaultCurrency.value;
     let user: ?User;
     if (payment.populated('user')) {

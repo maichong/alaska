@@ -61,7 +61,8 @@ class BalanceService extends Service {
       throw new Error('alaska-balance service require currency settings.');
     }
     this._currencies = currencies;
-    let currenciesMap = this._currenciesMap = {};
+    this._currenciesMap = {};
+    let currenciesMap = this._currenciesMap;
     currencies.forEach((c) => {
       currenciesMap[c.value] = c;
       if (c.default) {

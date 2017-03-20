@@ -14,7 +14,7 @@ function filepath(file: string): string {
   return process.platform === 'win32' ? file.replace(/\\/g, '\\\\') : file;
 }
 
-export default async function build(options: Object) {
+export default async function build() {
   console.log(chalk.green('Alaska build admin dashboard...'));
   const dir = process.cwd() + '/';
   if (!uitls.isFile(dir + '.alaska')) {
@@ -40,8 +40,9 @@ export default async function build(options: Object) {
     let styleFile = path.join(modulesDir, name, 'style.less');
     if (uitls.isFile(styleFile)) {
       let p = path.relative(path.dirname(runtimeStyleFile), styleFile);
-      return `@import "${p}";`
+      return `@import "${p}";`;
     }
+    return false;
   }).filter((f) => (f)).join('\n');
 
   fs.writeFileSync(runtimeStyleFile, styles);

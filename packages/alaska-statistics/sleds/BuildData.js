@@ -421,7 +421,10 @@ export default class BuildData extends Sled {
     startDate:Date;
   }) {
     const { chartSource, chart, startDate } = params;
-    if (chartSource) return await buildChartSource(chartSource, startDate);
+    if (chartSource) {
+      await buildChartSource(chartSource, startDate);
+      return;
+    }
 
     if (chart) {
       // $Flow  find

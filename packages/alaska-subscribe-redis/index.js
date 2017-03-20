@@ -116,7 +116,7 @@ export default class RedisSubscribeDriver extends Driver {
         resolve(this._messages.shift());
       };
       if (timeout && timeout !== Infinity) {
-        timer = this._timer = setTimeout(() => {
+        timer = setTimeout(() => {
           if (timer) {
             clearTimeout(timer);
           }
@@ -124,6 +124,7 @@ export default class RedisSubscribeDriver extends Driver {
           //超时后返回null
           resolve(null);
         }, timeout);
+        this._timer = timer;
       }
     });
   }

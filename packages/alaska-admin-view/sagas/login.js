@@ -1,8 +1,8 @@
 // 登录请求 /api/login/login
 import { put } from 'redux-saga/effects';
+import akita from 'akita';
 import { loginSuccess, loginFailure } from '../redux/login';
 import { refreshSettings } from '../redux/settings';
-import akita from 'akita';
 
 export function* login({ payload }) {
   try {
