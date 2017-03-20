@@ -506,8 +506,15 @@ declare class Alaska$Model extends events$EventEmitter {
   static actions:{
     [key:string]:false | {
       title?:string;
+      tooltip?:string;
       style?:string;
-      sled:string;
+      sled?:string;
+      view?:string;
+      super?:boolean;
+      editor?:boolean;
+      list?:boolean;
+      needRecords?:number;
+      disabled?:Alaska$Field$depends;
       depends?:Alaska$Field$depends;
       pre?:Alaska$Field$depends;
       post?:Alaska$Field$depends;

@@ -77,6 +77,7 @@ class AdminService extends Service {
         }
         let model = {
           name: Model.name,
+          label: Model.label,
           id: Model.id,
           path: Model.path,
           key: Model.key,

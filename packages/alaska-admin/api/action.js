@@ -6,9 +6,9 @@ import service from '../';
 export default async function (ctx: Alaska$Context) {
   await ctx.checkAbility('admin');
 
-  let serviceId = ctx.state.service || ctx.query.service;
-  let modelName = ctx.state.model || ctx.query.model;
-  let action = ctx.state.action || ctx.query.action;
+  let serviceId = ctx.state.service || ctx.query._service;
+  let modelName = ctx.state.model || ctx.query._model;
+  let action = ctx.state.action || ctx.query._action;
   let body = ctx.state.body || ctx.request.body;
   let id = body.id || ctx.request.body.id;
   let records = body.records || ctx.request.body.records || [];

@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react';
-import qs from 'qs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
@@ -13,7 +12,7 @@ import SearchField from './SearchField';
 import ContentHeader from './ContentHeader';
 import ListActions from './ListActions';
 import * as listRedux from '../redux/lists';
-import * as userRedux from '../redux/user';
+import { refreshSettings } from '../redux/settings';
 
 const { object, func } = React.PropTypes;
 const CHECK_ICON = <i className="fa fa-check" />;
@@ -32,7 +31,8 @@ class ListPage extends React.Component {
 
   props: {
     location: Object,
-    loadList: Function
+    loadList: Function,
+    refreshSettings: Function,
   };
 
   state: {
@@ -448,8 +448,8 @@ class ListPage extends React.Component {
             </div>
             <ListActions
               model={model} selected={selected}
-              onRefresh={this.refresh}
-              refreshAction={this.props.refreshAction}
+              refresh={this.refresh}
+              refreshSettings={this.props.refreshSettings}
             />
           </div>
         </nav>
@@ -460,5 +460,5 @@ class ListPage extends React.Component {
 
 export default connect(({ lists }) => ({ lists }), (dispatch) => bindActionCreators({
   loadList: listRedux.loadList,
-  refreshAction: userRedux.refreshInfo
+  refreshSettings
 }, dispatch))(ListPage);

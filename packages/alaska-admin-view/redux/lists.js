@@ -45,7 +45,7 @@ export default handleActions({
   CLEAR_LIST: (state, { payload }) => payload.key ? state.without(payload.key) : INITIAL_STATE,
   APPLY_LIST: (state, { payload }) => {
     let key = payload.key;
-    let info = _.without(payload, 'results');
+    let info = _.omit(payload, 'results');
     let list = state[payload.key] || immutable({});
 
     list = list.merge(info);

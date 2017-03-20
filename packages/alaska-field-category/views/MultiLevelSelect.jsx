@@ -102,6 +102,9 @@ export default class MultiLevelSelect extends React.Component {
     } else {
       value = value.value || value;
     }
+    if (value === undefined) {
+      value = null;
+    }
     this.props.onChange(value);
   };
 

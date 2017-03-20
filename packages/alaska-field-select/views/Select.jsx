@@ -4,6 +4,7 @@
 /* eslint no-unused-vars:1 */
 
 import React from 'react';
+import _ from 'lodash';
 import { SimpleSelect, MultiSelect } from 'react-selectize';
 
 function createFromSearchSimple(options, search) {
@@ -116,7 +117,7 @@ export default class Select extends React.Component {
       if (!value || !value.length) {
         return [];
       }
-      return value.map(processOne);
+      return _.map(value, processOne);
     }
     return processOne(value);
   };
@@ -145,7 +146,7 @@ export default class Select extends React.Component {
 
     function handleRemove() {
       let values = [];
-      let value = this.state.value;
+      let value = me.state.value;
       if (value instanceof Array) {
         value.forEach((v) => {
           if (v.value != item.value) {
@@ -183,6 +184,7 @@ export default class Select extends React.Component {
           optionsMap[o.value] = o;
         });
         let value = this.state.value;
+        console.log('value', value);
         if (value instanceof Array) {
           if (this.props.multi) {
             value.forEach((v) => {

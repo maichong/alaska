@@ -4,7 +4,6 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import React from 'react';
 import _ from 'lodash';
 import akita from 'akita';
-import qs from 'qs';
 import shallowEqualWithout from 'shallow-equal-without';
 import Node from './Node';
 import Action from './Action';
@@ -24,7 +23,8 @@ export default class ListActions extends React.Component {
   props: {
     selected: any[],
     model: Object,
-    onRefresh: Function
+    refresh: Function,
+    refreshSettings: Function,
   };
 
   shouldComponentUpdate(props: Object) {
@@ -50,14 +50,16 @@ export default class ListActions extends React.Component {
       if (config.script && config.script.substr(0, 3) === 'js:') {
         eval(config.script.substr(3));
       } else {
-        await akita.post('/api/action?' + qs.stringify({ service: model.serviceId, model: model.name, action }),
-          { records: _.map(selected, (record) => record._id) });
+        await akita.post('/api/action', {
+          params: { _service: model.serviceId, _model: model.name, _action: action },
+          body: { records: _.map(selected, (record) => record._id) }
+        });
       }
       toast('success', t('Successfully'));
       if (config.post === 'refresh') {
-        this.props.refreshAction();
+        this.props.refreshSettings();
       } else {
-        this.props.onRefresh();
+        this.props.refresh();
       }
       if (config.post && config.post.substr(0, 3) === 'js:') {
         eval(config.post.substr(3));

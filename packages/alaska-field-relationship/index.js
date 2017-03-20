@@ -10,7 +10,6 @@ const TypeObjectId = mongoose.Schema.Types.ObjectId;
 const ObjectId = mongoose.Types.ObjectId;
 
 export default class RelationshipField extends Field {
-
   static plain = TypeObjectId;
   static viewOptions = ['filters', 'service', 'model', 'multi', 'checkbox', 'switch', function (options, field) {
     let Model = field.ref;
@@ -21,7 +20,7 @@ export default class RelationshipField extends Field {
   }];
   static defaultOptions = {
     cell: 'RelationshipFieldCell',
-    name: 'RelationshipFieldView',
+    view: 'RelationshipFieldView',
     filter: 'RelationshipFieldFilter'
   };
 

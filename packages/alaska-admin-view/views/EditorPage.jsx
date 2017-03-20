@@ -3,6 +3,7 @@
 import React from 'react';
 import qs from 'qs';
 import { connect } from 'react-redux';
+import immutable from 'seamless-immutable';
 import _ from 'lodash';
 import akita from 'akita';
 import checkDepends from 'check-depends';
@@ -77,7 +78,7 @@ class EditorPage extends React.Component {
       newState.id = nextProps.params.id;
       if (newState.id === '_new' && this.state.id && this.state.id !== '_new') {
         //新建时候清空表单
-        newState.data = {};
+        newState.data = immutable({});
       }
 
       let service = this.context.settings.services[newState.serviceId];
@@ -123,7 +124,7 @@ class EditorPage extends React.Component {
           newData[field.path] = field.default;
         }
       });
-      this.setState({ data: newData });
+      this.setState({ data: immutable(newData) });
       return;
     }
     let key = state.model.key;
@@ -149,9 +150,7 @@ class EditorPage extends React.Component {
 
   handleChange(key: any, value: any) {
     this.setState({
-      data: Object.assign({}, this.state.data, {
-        [key]: value
-      })
+      data: this.state.data.set(key, value)
     });
   }
 
@@ -240,11 +239,14 @@ class EditorPage extends React.Component {
         eval(config.script.substr(3));
       } else {
         let body = Object.assign({}, data, { id: id.toString() === '_new' ? '' : id });
-        await akita.post('/api/action?' + qs.stringify({
-            service: model.serviceId,
-            model: model.name,
-            action
-          }), body);
+        await akita.post('/api/action', {
+          params: {
+            _service: model.serviceId,
+            _model: model.name,
+            _action: action
+          },
+          body
+        });
       }
       toast('success', t('Successfully'));
       if (config.post === 'refresh') {

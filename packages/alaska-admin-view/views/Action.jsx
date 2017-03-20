@@ -61,7 +61,7 @@ export default class Action extends React.Component {
       return (
         <OverlayTrigger
           placement="top"
-          overlay={<Tooltip id="tooltip">{t(action.tooltip)}</Tooltip>}
+          overlay={<Tooltip id={'action-tooltip-' + action.key}>{t(action.tooltip)}</Tooltip>}
         >{el}</OverlayTrigger>
       );
     }

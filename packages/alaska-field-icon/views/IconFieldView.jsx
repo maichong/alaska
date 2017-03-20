@@ -11,7 +11,7 @@ export default class IconFieldView extends React.Component {
     data: Object,
     errorText: string,
     disabled: boolean,
-    value: any,
+    value: string,
     onChange: Function,
   };
 
@@ -49,8 +49,15 @@ export default class IconFieldView extends React.Component {
       inputElement = <p className="form-control-static">{icon}</p>;
     } else {
       inputElement = <div className="input-group">
-        <input type="text" className="form-control" onChange={this.handleChange} value={value} disabled={disabled} />
-        <span className="input-group-addon">{icon}</span></div>;
+        <input
+          type="text"
+          className="form-control"
+          onChange={this.handleChange}
+          value={value||''}
+          disabled={disabled}
+        />
+        <span className="input-group-addon">{icon}</span>
+      </div>;
     }
 
     let label = field.nolabel ? '' : field.label;
