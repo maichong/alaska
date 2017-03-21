@@ -9,5 +9,5 @@ node_modules
 .idea
 temp/
 runtime
-example/public/admin/js
+example/public/admin/
 example/public/uploads

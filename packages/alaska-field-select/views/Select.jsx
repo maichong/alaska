@@ -5,7 +5,7 @@
 
 import React from 'react';
 import _ from 'lodash';
-import { SimpleSelect, MultiSelect } from 'react-selectize';
+import ReactSelect from 'react-select';
 
 function createFromSearchSimple(options, search) {
   if (!search) {
@@ -28,6 +28,10 @@ function createFromSearchMulti(options, values, search) {
 }
 
 export default class Select extends React.Component {
+
+  static contextTypes = {
+    t: React.PropTypes.func
+  };
 
   props: {
     allowCreate?: boolean,
@@ -206,42 +210,34 @@ export default class Select extends React.Component {
   };
 
   render() {
+    const { t } = this.context;
     let {
       onChange,
       value,
       options,
       multi,
       allowCreate,
-      renderValue,
       loadOptions,
       disabled,
       ...others
     } = this.props;
 
-    if (multi) {
-      return (
-        <MultiSelect
-          createFromSearch={allowCreate ? createFromSearchMulti : null}
-          renderValue={renderValue || disabled ? renderValue : this.renderValueWithRemove}
-          onValuesChange={this.handleChange}
-          values={this.state.value}
-          onSearchChange={loadOptions ? this.handleSearchChange : null}
-          options={this.state.options}
-          disabled={disabled}
-          {...others}
-        />
-      );
+    let View = ReactSelect;
+    if (allowCreate) {
+      View = ReactSelect.Creatable;
+    } else if (allowCreate) {
+      View = ReactSelect;
     }
 
     return (
-      <SimpleSelect
-        createFromSearch={allowCreate ? createFromSearchSimple : null}
-        renderValue={renderValue}
-        onValueChange={this.handleChange}
+      <View
+        multi={multi}
+        onChange={this.handleChange}
         value={this.state.value}
-        onSearchChange={loadOptions ? this.handleSearchChange : null}
+        onInputChange={loadOptions ? this.handleSearchChange : null}
         options={this.state.options}
         disabled={disabled}
+        placeholder={t('Select...')}
         {...others}
       />
     );

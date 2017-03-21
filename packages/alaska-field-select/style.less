@@ -1,52 +1,4 @@
-@import (less) "../react-selectize/themes/index.css";
-
-.react-selectize.root-node {
-  width: 100%;
-}
-
-div .simple-select.react-selectize.default.root-node:not(.open) .react-selectize-control {
-  background: #fff;
-}
-
-div .react-selectize.default.root-node .react-selectize-control {
-  border-radius: @input-border-radius !important;
-}
-
-.react-selectize.default.root-node.open .react-selectize-control {
-  border-top-left-radius: @input-border-radius !important;
-  border-top-right-radius: @input-border-radius !important;
-}
-
-div .react-selectize.default.root-node .react-selectize-control {
-  border-color: @border-color;
-}
-
-.react-selectize .simple-value-remove {
-  border-right: 1px solid #c9e6f2;
-  padding: 0 5px;
-  &:hover {
-    background: #c9e6f2;
-  }
-}
-
-.react-selectize.disabled {
-  color: #d5dbdb;
-  cursor: default;
-  border-color: #d5dbdb;
-  opacity: .7;
-}
-
-.react-selectize.disabled .react-selectize-control {
-  background: #f4f6f6 !important;
-}
-
-.select-field .form-control-static > span,
-.select-field-cell > span {
-  margin-right: 10px;
-  &:last-child {
-    margin-right: 0;
-  }
-}
+@import (less) "../react-select/dist/react-select.css";
 
 .select-field-filter {
   .form-group {
@@ -56,6 +8,29 @@ div .react-selectize.default.root-node .react-selectize-control {
   }
 }
 
-.form-control, .select2-search input[type="text"] {
-  border-width: 1px;
+.Select {
+  outline: none !important;
+  &.is-focused {
+    .Select-control {
+      border: solid 1px @input-border-focus !important;
+      box-shadow: none !important;
+    }
+  }
+  .Select-control {
+    padding-bottom: 0 !important;
+    border: solid 1px @border-color !important;
+    border-radius: @input-border-radius !important;
+    &:hover {
+      box-shadow: none !important;
+    }
+  }
+  .Select-menu-outer {
+    left: 0;
+    right: 1px;
+    width: auto;
+    box-shadow: none !important;
+    border: solid 1px @input-border-focus !important;
+    border-top-color: @border-color !important;
+    border-radius: @input-border-radius !important;
+  }
 }
