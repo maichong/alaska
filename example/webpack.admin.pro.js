@@ -74,6 +74,8 @@ module.exports = {
             'node_modules/lodash/*.js',
             'node_modules/simple*/**/*.js',
             'node_modules/simditor/**/*.js',
+            'node_modules/moment/*.js',
+            'node_modules/jquery/*.js',
           ]
         }
       }

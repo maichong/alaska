@@ -6,9 +6,6 @@ import akita from 'akita';
 import { applySettings } from '../redux/settings';
 import { applyUser } from '../redux/user';
 
-
-console.log('settings',[akita]);
-
 // $Flow
 export default function* settingsSaga() {
   try {
