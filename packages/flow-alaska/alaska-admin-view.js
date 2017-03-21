@@ -1,3 +1,8 @@
+declare module 'alaska-admin-view' {
+  declare export var api: Akita$Client;
+  declare export var store: Object;
+  declare export var App: Class<React$Component<any,Object,any>>;
+}
 declare module 'alaska-admin-view/redux/details' {
   declare var exports: any;
 }

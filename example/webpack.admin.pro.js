@@ -42,29 +42,41 @@ module.exports = {
     })
   ],
   module: {
-    loaders: [
+    rules: [
+      {
+        // fix simditor amd bug
+        test: /\.js?$/,
+        include: /simple*|simditor/,
+        loader: 'string-replace-loader',
+        options: {
+          search: 'typeof define === \'function\'',
+          replace: 'false'
+        }
+      },
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        query: {
+        options: {
           babelrc: false,
           presets: ['react', 'es2015', 'stage-0'],
           plugins: [
-            "syntax-export-extensions",
-            "syntax-flow",
+            'syntax-export-extensions',
+            'syntax-flow',
             'syntax-class-properties',
             'transform-class-properties',
-            "transform-flow-strip-types",
+            'transform-flow-strip-types',
             'transform-runtime'
           ],
-          "ignore": [
-            "node_modules/babel-runtime/**/*.js",
-            "node_modules/core-js/**/*.js",
-            "node_modules/regenerator-runtime/**/*.js",
-            "node_modules/lodash/*.js"
+          ignore: [
+            'node_modules/babel-runtime/**/*.js',
+            'node_modules/core-js/**/*.js',
+            'node_modules/regenerator-runtime/**/*.js',
+            'node_modules/lodash/*.js',
+            'node_modules/simple*/**/*.js',
+            'node_modules/simditor/**/*.js',
           ]
         }
-      },
+      }
     ]
   }
 };

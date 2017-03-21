@@ -12,7 +12,6 @@ require('babel-register')({
   plugins: [
     'syntax-flow',
     'transform-class-properties',
-    'transform-export-extensions',
     'transform-es2015-modules-commonjs',
     'transform-flow-strip-types',
     'transform-object-rest-spread'

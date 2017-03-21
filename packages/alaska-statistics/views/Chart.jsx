@@ -3,7 +3,7 @@
 import React from 'react';
 // $Flow
 import ChartJS from 'react-chartjs';
-import akita from 'akita';
+import { api } from 'alaska-admin-view';
 
 export default class Chart extends React.Component {
 
@@ -51,7 +51,7 @@ export default class Chart extends React.Component {
       raw = await props.onLoadData(props.chart);
     } else {
       // $Flow
-      raw = await akita.get('/api/chart', {
+      raw = await api.get('/api/chart', {
         params: {
           id: props.chart
         }

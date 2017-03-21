@@ -20,7 +20,7 @@ export default class GoodsPropValue extends Model {
     },
     prop: {
       label: 'Goods Property',
-      type: GoodsProp,
+      ref: GoodsProp,
       index: true,
       required: true
     },
@@ -53,7 +53,7 @@ export default class GoodsPropValue extends Model {
     }
   };
 
-  _id:string|number|Object|any;
+  _id: string|number|Object|any;
   title: string;
   prop: Object;
   cats: Object;
@@ -95,9 +95,9 @@ export default class GoodsPropValue extends Model {
     let prop: GoodsProp = await GoodsProp.findById(this.prop);
     if (!prop) return;
     // $Flow find
-    let values:GoodsPropValue[] = await GoodsPropValue.find({ prop: prop._id });
+    let values: GoodsPropValue[] = await GoodsPropValue.find({ prop: prop._id });
     // $Flow v._id类型太多 确认正确
-    prop.values = values.map((v:GoodsPropValue) => (v._id));
+    prop.values = values.map((v: GoodsPropValue) => (v._id));
     await prop.save();
   }
 
@@ -112,7 +112,7 @@ export default class GoodsPropValue extends Model {
           continue;
         }
         // $Flow findById
-        let cat:GoodsCat = await GoodsCat.findById(cid);
+        let cat: GoodsCat = await GoodsCat.findById(cid);
         cats[cid] = cat;
         let subs = await cat.allSubs();
         _.defaults(cats, subs);

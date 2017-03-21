@@ -3,7 +3,7 @@
 import React from 'react';
 import _ from 'lodash';
 import shallowEqualWithout from 'shallow-equal-without';
-import akita from 'akita';
+import { api } from 'alaska-admin-view';
 
 const { object, func } = React.PropTypes;
 
@@ -96,7 +96,7 @@ export default class ImageFieldView extends React.Component {
       data.append('file', file);
       data.append('id', id);
       data.append('path', field.path || 'avatar');
-      akita.post('/api/upload', {
+      api.post('/api/upload', {
         params: {
           _service: serviceId,
           _model: modelName

@@ -14,6 +14,7 @@ export default class PostCat extends Model {
   static autoSelect = false;
 
   static api = {
+    all: 1,
     list: 1
   };
 

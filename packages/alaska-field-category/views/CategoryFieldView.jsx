@@ -2,7 +2,7 @@
 
 import React from 'react';
 import _ from 'lodash';
-import akita from 'akita';
+import { api } from 'alaska-admin-view';
 import shallowEqualWithout from 'shallow-equal-without';
 import MultiLevelSelect from './MultiLevelSelect';
 
@@ -42,7 +42,7 @@ export default class CategoryFieldView extends React.Component {
 
   init() {
     let field = this.props.field;
-    akita('/api/relation')
+    api('/api/relation')
       .param('service', field.service)
       .param('model', field.model)
       .param('value', field.value)

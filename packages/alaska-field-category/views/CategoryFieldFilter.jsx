@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import akita from 'akita';
+import { api } from 'alaska-admin-view';
 import MultiLevelSelect from './MultiLevelSelect';
 
 const { func } = React.PropTypes;
@@ -55,7 +55,7 @@ export default class CategoryFieldFilter extends React.Component {
 
   init() {
     let field = this.props.field;
-    akita('/api/relation')
+    api('/api/relation')
       .param('service', field.service)
       .param('model', field.model)
       .param('value', field.value)

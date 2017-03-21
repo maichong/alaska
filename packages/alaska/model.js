@@ -294,7 +294,7 @@ export default class Model {
 
       /**
        * 模型所属服务
-       * @type {alaska.Service}
+       * @type {Service}
        */
       model.service = service;
 

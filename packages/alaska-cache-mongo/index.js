@@ -5,6 +5,7 @@
 import mongodb from 'mongodb';
 import Debugger from 'debug';
 import { Driver } from 'alaska';
+import _ from 'lodash';
 
 const MongoClient = mongodb.MongoClient;
 const debug = Debugger('alaska-cache-mongo');
@@ -22,13 +23,7 @@ export default class MongoCacheDriver extends Driver {
     super(service, options);
     this.instanceOfCacheDriver = true;
     this._maxAge = options.maxAge || 0;
-    this._connecting = MongoClient.connect(options.url, {
-      uri_decode_auth: options.uri_decode_auth,
-      db: options.db,
-      server: options.server,
-      replSet: options.replSet,
-      mongos: options.mongos
-    });
+    this._connecting = MongoClient.connect(options.url, _.omit(options, 'url', 'type', 'collection', 'maxAge'));
     this._connecting.then((db) => {
       this._db = db;
       this._connecting = null;

@@ -27,11 +27,21 @@ module.exports = {
     })
   ],
   module: {
-    loaders: [
+    rules: [
+      {
+        // fix simditor amd bug
+        test: /\.js?$/,
+        include: /simple*|simditor/,
+        loader: 'string-replace-loader',
+        options: {
+          search: 'typeof define === \'function\'',
+          replace: 'false'
+        }
+      },
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        query: {
+        options: {
           babelrc: false,
           presets: ['react', 'es2015', 'stage-0'],
           plugins: [
@@ -40,21 +50,18 @@ module.exports = {
             'syntax-class-properties',
             'transform-class-properties',
             'transform-flow-strip-types',
-            ['transform-runtime', {
-              "helpers": false,
-              "polyfill": false,
-              "regenerator": true,
-              "moduleName": "babel-runtime"
-            }]
+            'transform-runtime'
           ],
           ignore: [
             'node_modules/babel-runtime/**/*.js',
             'node_modules/core-js/**/*.js',
             'node_modules/regenerator-runtime/**/*.js',
-            'node_modules/lodash/*.js'
+            'node_modules/lodash/*.js',
+            'node_modules/simple*/**/*.js',
+            'node_modules/simditor/**/*.js',
           ]
         }
-      },
+      }
     ]
   }
 };

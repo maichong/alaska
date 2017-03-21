@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Select from 'alaska-field-select/views/Select';
-import akita from 'akita';
+import { api } from 'alaska-admin-view';
 
 const { func } = React.PropTypes;
 
@@ -57,7 +57,7 @@ export default class RelationshipFieldFilter extends React.Component {
 
   handleSearch = (keyword: string, callback: Function) => {
     let field = this.props.field;
-    akita('/api/relation')
+    api('/api/relation')
       .param('service', field.service)
       .param('model', field.model)
       .param('value', field.value)

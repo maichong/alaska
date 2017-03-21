@@ -1,14 +1,14 @@
 // @flow
 
-import akita from 'akita';
+import api from 'akita';
 import store from './redux/index';
 import App from './views/App';
 
-akita.setOptions({
+api.setOptions({
   apiRoot: window.PREFIX,
   init: {
     credentials: 'include'
   }
 });
 
-export { store, App };
+export { store, App, api };

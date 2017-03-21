@@ -1,7 +1,6 @@
+import { Service } from 'alaska';
 
-import alaska from 'alaska';
-
-class BannerService extends alaska.Service {
+class BannerService extends Service {
   constructor(options) {
     options = options || {};
     options.dir = options.dir || __dirname;

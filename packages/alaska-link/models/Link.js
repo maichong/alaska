@@ -1,7 +1,6 @@
+import { Model } from 'alaska';
 
-import alaska from 'alaska';
-
-export default class Link extends alaska.Model {
+export default class Link extends Model {
   static defaultSort = '-sort';
   static icon = 'link';
   static defaultColumns = 'pic title url sort activated createdAt';
@@ -46,12 +45,13 @@ export default class Link extends alaska.Model {
       private: true
     }
   };
-  title:string;
-  url:string;
-  pic:Object;
-  activated:boolean;
-  sort:number;
-  createdAt:Date;
+  title: string;
+  url: string;
+  pic: Object;
+  activated: boolean;
+  sort: number;
+  createdAt: Date;
+
   preSave() {
     if (!this.createdAt) {
       this.createdAt = new Date();

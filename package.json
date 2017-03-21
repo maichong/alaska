@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "eslint": "eslint ./",
-    "flow": "flow check --show-all-errors && pkill flow",
+    "flow": "flow check --show-all-errors",
     "update": "node scripts/update.js",
     "watch": "node scripts/watch.js",
     "example": "node scripts/example.js"

@@ -24,7 +24,6 @@ export default class HtmlFieldView extends React.Component {
 
   _editor: any;
   _textarea: any;
-  _lastTextarea: any;
 
   constructor(props: Object) {
     super(props);
@@ -45,16 +44,12 @@ export default class HtmlFieldView extends React.Component {
     }
     delete this._editor;
     delete this._textarea;
-    delete this._lastTextarea;
   }
 
   init() {
-    if (this._textarea && this._textarea !== this._lastTextarea && this._editor) {
+    if (this._editor) {
       // 如果已经存在之前的editor
-      // 销毁
-      this._editor.destroy();
-      delete this._editor;
-      delete this._lastTextarea;
+      return;
     }
     if (!this._editor && this._textarea) {
       let { defaultImage, upload } = this.props.field;
@@ -103,7 +98,6 @@ export default class HtmlFieldView extends React.Component {
     if (this._editor && this._editor.getValue() !== this.props.value) {
       this._editor.setValue(this.props.value || '');
     }
-    this._lastTextarea = this._textarea;
   }
 
   handleChange = () => {
