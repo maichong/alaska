@@ -55,23 +55,18 @@ export default {
     }),
     babel({
       babelrc: false,
+      runtimeHelpers: true,
       sourceMaps: 'both',
       presets: ['react', 'stage-0', ['es2015', {
         modules: false
       }]],
       plugins: [
-        'external-helpers',
         'syntax-export-extensions',
         'syntax-class-properties',
         'transform-class-properties',
-        'transform-export-extensions', ['transform-runtime', {
-          'helpers': false,
-          'polyfill': false,
-          'regenerator': true,
-          'moduleName': 'babel-runtime'
-        }]
+        'transform-runtime'
       ],
-      'ignore': [
+      ignore: [
         'node_modules/babel-runtime/**/*.js',
         'node_modules/core-js/**/*.js',
         'node_modules/regenerator-runtime/**/*.js',

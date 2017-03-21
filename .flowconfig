@@ -6,7 +6,7 @@ node_modules/.*
 
 [libs]
 flow/
-packages/flow-alaska/
+packages/flow-alaska/flow/
 #node_modules/flow-mongoose/flow/
 node_modules/flow-mime/flow/
 node_modules/flow-statuses/flow/

@@ -58,7 +58,7 @@ export default async function create(name: string) {
       break;
   }
   console.log(chalk.green('Download project code...'));
-  await github(`maichong/alaska#${branch}`, rootDir);
+  await github(`maichong/alaska-init#${branch}`, rootDir);
 
   console.log(chalk.green('Download Completed.'));
   let pkgFile = path.join(rootDir, 'package.json');

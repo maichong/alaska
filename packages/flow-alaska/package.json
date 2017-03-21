@@ -1,0 +1,11 @@
+{
+  "name": "flow-alaska",
+  "version": "0.11.0",
+  "description": "Flow declarations for alaska",
+  "files": [
+    "flow"
+  ],
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/flow-alaska",
+  "license": "MIT"
+}
