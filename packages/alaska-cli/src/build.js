@@ -129,36 +129,46 @@ export default async function build() {
   }
 
   // 输出 wrappers
-  content += '\nexport const wrappers = {\n';
-  Object.keys(wrappers).forEach((name) => {
+  content += '\n\n';
+  let contentTmp = '\nexport const wrappers = {\n';
+  Object.keys(wrappers).forEach((name, index) => {
     console.log(`wrapper : ${name}`);
-    content += `  '${name}':[`;
-    wrappers[name].forEach((file) => {
-      file = filepath(file);
-      content += ` require('${file}').default,`;
-      console.log(`\t-> ${file}`);
+    contentTmp += `  '${name}':[`;
+    wrappers[name].forEach((file, i) => {
+      let r = filepath(path.relative(dir, file));
+      let com = 'Wrapper$' + index + '$' + i;
+      content += `import ${com} from '../../${r}';\n`;
+      contentTmp += ` ${com},`;
+      console.log(`\t-> ${r}`);
     });
-    content += ' ]\n';
+    contentTmp += ' ]\n';
   });
-  content += '};';
+  content += contentTmp + '};';
 
   // 输出 routes
-  content += '\n\nexport const routes = [\n';
-  routes.forEach((route) => {
-    let file = filepath(route.component);
-    content += `  {\n    component: require('${file}').default,\n    path: '${route.path}'\n  },\n`;
-    console.log(`route : ${route.path} -> ${file}`);
+  content += '\n\n';
+  contentTmp = '\nexport const routes = [\n';
+  routes.forEach((route, index) => {
+    let r = filepath(path.relative(dir, route.component));
+    let com = 'Route' + index;
+    content += `import ${com} from '../../${r}';\n`;
+    contentTmp += `  {\n    component: ${com},\n    path: '${route.path}'\n  },\n`;
+    console.log(`route : ${route.path} -> ${r}`);
   });
-  content += '];\n';
+  content += contentTmp + '];\n';
 
   // 输出 navs
-  content += '\nexport const navs = [\n';
+  content += '\n\n';
+  contentTmp = '\nexport const navs = [\n';
 
-  navs.forEach((nav) => {
-    let file = filepath(nav);
-    content += `  require('${file}').default,\n`;
+  navs.forEach((nav, index) => {
+    let r = filepath(path.relative(dir, nav));
+    let com = 'Nav' + index;
+    content += `import ${com} from '../../${r}';\n`;
+    contentTmp += `  ${com},\n`;
+    console.log(`nav : ${r}`);
   });
-  content += '];\n';
+  content += contentTmp + '];\n';
 
   fs.writeFileSync(runtimeViewsFile, content);
 }

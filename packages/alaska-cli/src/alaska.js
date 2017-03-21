@@ -26,7 +26,7 @@ program
   .alias('c')
   .description('Create new project')
   .action((name, options) => {
-    require('./create').default(name, options);
+    require('./create').default(name, options).catch((error) => console.error(error));
   });
 
 program
@@ -46,7 +46,7 @@ program
   .option('-w, --watch', 'watch mode')
   .option('-d, --dev', 'build dev lib')
   .action((name, options) => {
-    require('./install').default(name, options);
+    require('./install').default(name, options).catch((error) => console.error(error));
   });
 
 program.parse(process.argv);

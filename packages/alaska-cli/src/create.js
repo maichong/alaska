@@ -40,19 +40,19 @@ export default async function create(name: string) {
   }, (p) => (p >= 1 && p <= 5));
   let branch = '';
   switch (type) {
-    case 1:
+    case '1':
       branch = 'base';
       break;
-    case 2:
+    case '2':
       branch = 'user';
       break;
-    case 3:
+    case '3':
       branch = 'admin';
       break;
-    case 4:
+    case '4':
       branch = 'post';
       break;
-    case 5:
+    case '5':
     default:
       branch = 'goods';
       break;
@@ -69,12 +69,15 @@ export default async function create(name: string) {
   console.log(chalk.green('Install dependencies...'));
 
   execSync('npm install', {
-    pwd: rootDir,
+    cwd: rootDir,
     stdio: ['inherit', 'inherit', 'inherit'],
-    env: {
+    env: Object.assign({
       NPM_CONFIG_LOGLEVEL: 'http',
-      NPM_CONFIG_PROGRESS: 'false',
-      NPM_CONFIG_COLOR: 'false'
-    }
+      NPM_CONFIG_PROGRESS: 'false'
+    }, process.env)
   });
+
+  console.log(chalk.green('--- Alaska project created, please type the following commands for start server. ---'));
+  console.log(chalk.gray('>'), chalk.blue('cd ' + name));
+  console.log(chalk.gray('>'), chalk.blue('node server.js'));
 }

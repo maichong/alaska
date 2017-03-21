@@ -310,14 +310,8 @@ class EditorPage extends React.Component {
     };
 
     for (let groupKey of Object.keys(model.groups)) {
-      let group: { title:string, _title:?string, fields:?any[] } = model.groups[groupKey];
-      if (typeof group == 'string') {
-        group = { title: group, _title: undefined, fields: [] };
-      }
-      if (!group._title) {
-        group._title = group.title;
-        group.title = t(group.title, serviceId);
-      }
+      let group = model.groups[groupKey].asMutable();
+      group.title = t(group.title, serviceId);
       group.fields = [];
       groups[groupKey] = group;
     }

@@ -8,17 +8,13 @@ Alaska command line interface
 
 npm install -g alaska-cli
 
-mkdir demo
+alaska create demo
 
 cd demo
 
-npm init
-
-alaska init
-
 alaska build
 
-node index.js
+node server.js
 
 ```
 

@@ -14,7 +14,7 @@
     "gulp": "gulp",
     "gulp-watch": "gulp watch",
     "prebuild": "alaska build",
-    "build": "npm run rollup && npm run grunt"
+    "build": "npm run rollup && npm run gulp"
   },
   "devDependencies": {
     "alaska-admin-view": "^0.11.0",
@@ -27,7 +27,6 @@
     "babel-preset-react": "^6.23.0",
     "babel-preset-stage-0": "^6.22.0",
     "bootstrap": "^3.3.7",
-    "flat-ui": "^2.1.1",
     "font-awesome": "^4.7.0",
     "gulp": "^3.9.1",
     "gulp-less": "^3.3.0",

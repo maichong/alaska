@@ -26,7 +26,7 @@ export default class RelationshipField extends Field {
 
   service: string;
   model: string;
-  ref: void| Class<Alaska$Model>;
+  ref: void | Class < Alaska$Model > ;
   optional: boolean;
 
   /**
@@ -108,20 +108,22 @@ export default class RelationshipField extends Field {
     this.dataType = type;
     schema.path(this.path, this.multi ? [options] : options);
 
-    let field = this;
-    schema.pre('save', function (next) {
-      let record = this;
-      if (!record.isModified(field.path)) {
+    if (ref === model) {
+      let field = this;
+      schema.pre('save', function (next) {
+        let record = this;
+        if (!record.isModified(field.path)) {
+          next();
+          return;
+        }
+        let id = record.id;
+        if (id && String(id) === String(record.get(field.path))) {
+          next(new Error('Can not relate to record self, ' + model.path + '#' + field.path));
+          return;
+        }
         next();
-        return;
-      }
-      let id = record.id;
-      if (id && String(id) === String(record.get(field.path))) {
-        next(new Error('Can not relate to record self, ' + model.path + '#' + field.path));
-        return;
-      }
-      next();
-    });
+      });
+    }
   }
 
   createFilter(filter: Object): any {

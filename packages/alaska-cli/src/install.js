@@ -27,11 +27,10 @@ export default async function install(name: string) {
   execSync('npm install --save ' + name, {
     pwd: process.cwd(),
     stdio: ['inherit', 'inherit', 'inherit'],
-    env: {
+    env: Object.assign({
       NPM_CONFIG_LOGLEVEL: 'http',
-      NPM_CONFIG_PROGRESS: 'false',
-      NPM_CONFIG_COLOR: 'false'
-    }
+      NPM_CONFIG_PROGRESS: 'false'
+    }, process.env)
   });
 
   console.log(chalk.green('Update config file...'));
@@ -56,7 +55,7 @@ export default async function install(name: string) {
       continue;
     }
     for (let prop of d.declaration.properties) {
-      if (prop.key.value !== 'services') {
+      if (prop.key.name !== 'services') {
         continue;
       }
       let properties = prop.value.properties;
