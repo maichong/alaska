@@ -13,7 +13,7 @@ export default class Post extends Model {
   static autoSelect = false;
 
   static api = {
-    list: 1,
+    paginate: 1,
     show: 1
   };
 

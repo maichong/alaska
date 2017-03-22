@@ -12,7 +12,7 @@
   "license": "MIT",
   "peerDependencies": {
     "alaska": "^0.11.0",
-    "alaska-user": "^0.11.0"
+    "alaska-user": "^0.11.2"
   },
   "dependencies": {
     "alaska-field-select": "^0.11.0"

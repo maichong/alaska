@@ -11,7 +11,7 @@ export default class Special extends Model {
   static defaultSort = '-createdAt';
 
   static api = {
-    list: 1,
+    paginate: 1,
     show: 1
   };
 

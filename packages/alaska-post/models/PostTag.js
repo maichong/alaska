@@ -11,6 +11,7 @@ export default class PostTag extends Model {
 
   static api = {
     list: 1,
+    paginate: 1,
     show: 1
   };
 

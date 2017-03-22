@@ -357,7 +357,7 @@ declare class Alaska$Model extends events$EventEmitter {
 
   constructor(obj?: Object, fields?: Object, skipId?: boolean):void;
   init(doc: Object, opts?: Object, fn?: Function):this;
-  update(doc: Object, options: Object, fn: Function):Mongoose$Query;
+  update(doc: Object, options: Object, fn: Function):Alaska$Query;
   set(path: string|Object, val: any, type?: any, options?: Object):this;
   get(path: string, type?: any):any;
   markModified(path: string):void;
@@ -382,7 +382,7 @@ declare class Alaska$Model extends events$EventEmitter {
   populated(path: string, val?: any, options?: Object):string|void;
   depopulate(path: string):void;
 
-  // Mongoose$Model
+  // Alaska$Model
 
   db:Mongoose$Connection;
   collection:Mongoose$Collection;
@@ -391,19 +391,19 @@ declare class Alaska$Model extends events$EventEmitter {
   base:Mongoose;
   discriminators:Alaska$Model[];
 
-  static remove(conditions: Object, callback?: Function):Mongoose$Query;
-  static find(conditions?: Object, projection?: Object, options?: Object, callback?: Function):Mongoose$Query & Promise<Alaska$Model[]>;
-  static findById(id: Object|string|number, projection?: Object, options?: Object, callback?: Function):Mongoose$Query|Promise<Alaska$Model>;
-  static findByIdAndUpdate(id: Object|string|number, update: Object, options?: Object, callback?: Function):Mongoose$Query;
-  static findByIdAndRemove(id: Object|string|number, options?: Object, callback?: Function):Mongoose$Query;
-  static findOne(conditions?: Object, projection?: Object, options?: Object, callback?: Function):Mongoose$Query|Promise<Alaska$Model>;
-  static findOneAndUpdate(conditions: Object, update: Object, options?: Object, callback?: Function):Mongoose$Query;
-  static findOneAndRemove(conditions: Object, options?: Object, callback?: Function):Mongoose$Query;
-  static update(conditions: Object, doc: Object, options?: Object, callback?: Function):Mongoose$Query;
+  static remove(conditions: Object, callback?: Function):Alaska$Query;
+  static find(conditions?: Object, projection?: Object, options?: Object, callback?: Function):Alaska$Query & Promise<Alaska$Model[]>;
+  static findById(id: Object|string|number, projection?: Object, options?: Object, callback?: Function):Alaska$Query|Promise<Alaska$Model>;
+  static findByIdAndUpdate(id: Object|string|number, update: Object, options?: Object, callback?: Function):Alaska$Query;
+  static findByIdAndRemove(id: Object|string|number, options?: Object, callback?: Function):Alaska$Query;
+  static findOne(conditions?: Object, projection?: Object, options?: Object, callback?: Function):Alaska$Query|Promise<Alaska$Model>;
+  static findOneAndUpdate(conditions: Object, update: Object, options?: Object, callback?: Function):Alaska$Query;
+  static findOneAndRemove(conditions: Object, options?: Object, callback?: Function):Alaska$Query;
+  static update(conditions: Object, doc: Object, options?: Object, callback?: Function):Alaska$Query;
   static count(conditions?: Object, callback?: Function):Promise<number>;
-  static distinct(field: string, conditions?: Object, callback?: Function):Mongoose$Query|Promise<any[]>;
-  static where(path: string|Object, val?: any):Mongoose$Query;
-  static $where(js: string|Function):Mongoose$Query;
+  static distinct(field: string, conditions?: Object, callback?: Function):Alaska$Query|Promise<any[]>;
+  static where(path: string|Object, val?: any):Alaska$Query;
+  static $where(js: string|Function):Alaska$Query;
   static create(doc: Object, fn?: Function):Promise<void>;
   static create(doc: Object[], fn?: Function):Promise<void>;
   static create(...doc: Array<Object|Function>):Promise<void>;
@@ -470,7 +470,7 @@ declare class Alaska$Model extends events$EventEmitter {
   };
   static service:Alaska$Service;
   static db:Mongoose$Connection;
-  static MongooseModel:Mongoose$Model;
+  static MongooseModel:Alaska$Model;
   static schema:Mongoose$Schema;
   static prefix:string;
   static autoSelect:boolean;
@@ -530,15 +530,107 @@ declare class Alaska$Model extends events$EventEmitter {
   static underscoreMethod(field: string, name: string, fn: Function):void;
   static createFilters(search: string, filters?: Object|string): Alaska$filters;
   static createFiltersByContext(ctx: Alaska$Context, state?: Object): Alaska$filters;
-  static paginate(options: Object): Mongoose$Query & Promise<Alaska$ListResult>;
-  static list(ctx: Alaska$Context, state?: Object): Promise<Alaska$ListResult>;
-  static show(ctx: Alaska$Context, state?: Object): Promise<Alaska$Model>;
+  static paginate(conditions?: Object): Alaska$PaginateQuery;
+  static paginateByContext(ctx: Alaska$Context, state?: Object): Promise<Alaska$PaginateResult>;
+  static listByContext(ctx: Alaska$Context, state?: Object): Promise<Alaska$Model[]>;
+  static showByContext(ctx: Alaska$Context, state?: Object): Promise<Alaska$Model>;
   static fromObject(data: Object): Alaska$Model;
   static fromObjectArray(array: Object[]): Alaska$Model[];
   static toObjectArray(array: Alaska$Model[]): Object[];
 }
 
-declare type Alaska$ListResult = {
+declare class Alaska$Query {
+  constructor(conditions?: Object, options?: Object, model?: Alaska$Model, collection?: Mongoose$Collection):void;
+  toConstructor():Alaska$Query;
+  $where(js: string|Function):this;
+  where(path?: Object|string, val?: any):this;
+  equals(val: any):this;
+  or(conditions: Object[]):this;
+  nor(conditions: Object[]):this;
+  and(conditions: Object[]):this;
+  gt(path: string, val: any):this;
+  gt(val: any):this;
+  gte(path: string, val: any):this;
+  gte(val: any):this;
+  lt(path: string, val: any):this;
+  lt(val: any):this;
+  lte(path: string, val: any):this;
+  lte(val: any):this;
+  ne(path: string, val: any):this;
+  ne(val: any):this;
+  in(path: string, val: any[]):this;
+  in(val: any[]):this;
+  nin(path: string, val: any[]):this;
+  nin(val: any[]):this;
+  all(path: string, val: any[]):this;
+  all(val: any[]):this;
+  size(path: string, val: number):this;
+  size(val: number):this;
+  regex(path: string, val: RegExp):this;
+  regex(val: RegExp):this;
+  maxDistance(path: string, val: number):this;
+  maxDistance(val: number):this;
+  mod(path: string, val: number[]):this;
+  mod(val: number[]):this;
+  exists(path: string, val: boolean):this & Promise<Alaska$Model[]>;
+  exists(val: boolean):this & Promise<Alaska$Model[]>;
+  elemMatch(path: string|Object|Function, criteria: Object|Function):this;
+  within():this;
+  within(criteria: Object):this;
+  within(...points: Array<[number, number]>):this;
+  slice(path: string, val: number[] | number):this;
+  slice(val: number[]|number):this;
+  limit(val: number):this;
+  skip(val: number):this;
+  maxScan(val: number):this;
+  batchSize(val: number):this;
+  comment(val: string):this;
+  snapshot():this;
+  hint(val: Object):this;
+  select(arg: Object|string):this;
+  read(pref: string, tags: string[]):this;
+  setOptions(options: Object|Alaska$Query):this;
+  getQuery():Object;
+  getUpdate():Object;
+  lean(bool?: boolean):this;
+  find(conditions?: Object, callback?: Function):Promise<Alaska$Model[]> & this;
+  merge(source?: Object|Alaska$Query):this;
+  findOne(conditions?: Object, projection?: Object, options?: Object, fn?: Function):this & Promise<Alaska$Model>;
+  count(conditions?: Object, callback?: Function):this & Promise<number>;
+  distinct(field?: string, conditions?: Object, callback?: Function):this;
+  sort(arg: Object|string): Alaska$Query & Promise<Alaska$Model> & Promise<Alaska$Model[]>;
+  remove(conditions?: Object, callback?: Function):this & Promise<void>;
+  findOneAndUpdate(conditions?: Object, doc?: Object, options?: Object, callback?: Function):this;
+  findOneAndRemove(conditions?: Object, options?: Object, callback?: Function):this;
+  update(conditions?: Object, doc?: Object, options?: Object, callback?: Function):this;
+  exec(op?: string|Function, callback?: Function):Promise<any>;
+  then(resolve?: Function, reject?: Function):Promise<any>;
+  catch(reject?: Function):Promise<any>;
+  populate(path: string|Object, select?: Object|string, model?: Alaska$Model, match?: Object, options?: Object):this;
+  cast(model: Alaska$Model, obj?: Object):Object;
+  stream(options?: Object):Mongoose$QueryStream;
+  cursor(options?: Object):Mongoose$QueryCursor;
+  tailable(bool?: boolean, options?: Object):this;
+  intersects(arg?: Object):this;
+  geometry(object: Object):this;
+  near(path: string, val: Object):this;
+  near(val: Object):this;
+  polygon(path: string, ...coordinatePairs: Array<[number, number]>):this;
+  polygon(...coordinatePairs: Array<[number, number]>):this;
+  box(val: Object|Array<[number, number]>, upperRight?: Array<[number, number]>):this;
+  circle(path: string, val: Object):this;
+  circle(val: Object):this;
+  selected():boolean;
+  selectedInclusively():boolean;
+  selectedExclusively():boolean;
+}
+
+declare class Alaska$PaginateQuery extends Alaska$Query {
+  search(keyword: string): this;
+  page(page: number): this;
+}
+
+declare type Alaska$PaginateResult = {
   page:number;
   limit:number;
   total:number;

@@ -12,7 +12,7 @@ export default class PostComment extends Model {
   static searchFields = 'content';
 
   static api = {
-    list: 1,
+    paginate: 1,
     create: 2
   };
 

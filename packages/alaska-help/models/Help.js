@@ -17,6 +17,7 @@ export default class Help extends Model {
   };
 
   static api = {
+    paginate: 1,
     list: 1,
     show: 1
   };

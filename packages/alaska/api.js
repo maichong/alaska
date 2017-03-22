@@ -9,12 +9,15 @@ import { PUBLIC, OWNER } from './alaska';
  * 例如 `User.api=false` 将关闭User模型所有的默认REST接口
  * `User.api={list:1,show:1}` 将只打开list和show接口
  * 不同的数值代表:
- * > list接口   1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许用户列出自己的资源
- * > show接口   1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许资源所有者调用
- * > count接口  1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许用户统计自己的资源
- * > create接口 1:允许匿名调用此接口 2:允许认证后的用户调用
- * > update接口 1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许用户更新自己的资源
- * > remove接口 1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许用户删除自己的资源
+ * > list接口        1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许用户列出自己的资源
+ * > paginate接口    1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许用户列出自己的资源
+ * > show接口        1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许资源所有者调用
+ * > count接口       1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许用户统计自己的资源
+ * > create接口      1:允许匿名调用此接口 2:允许认证后的用户调用
+ * > update接口      1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许用户更新自己的资源
+ * > updateMulti接口 1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许用户更新自己的资源
+ * > remove接口      1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许用户删除自己的资源
+ * > removeMulti接口 1:允许匿名调用此接口 2:允许认证后的用户调用 3:只允许用户删除自己的资源
  */
 
 /**
@@ -43,7 +46,7 @@ export async function count(ctx: Alaska$Context) {
 /**
  * 分页列表接口
  */
-export async function list(ctx: Alaska$Context) {
+export async function paginate(ctx: Alaska$Context) {
   let Model = ctx.state.Model;
   let code = Model.api.list;
   if (code > PUBLIC && !ctx.user) {
@@ -55,7 +58,7 @@ export async function list(ctx: Alaska$Context) {
 
   const scope = ctx.state.scope || ctx.query.scope || 'list';
 
-  let query = Model.list(ctx, { scope });
+  let query = Model.paginateByContext(ctx, { scope });
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
@@ -73,7 +76,7 @@ export async function list(ctx: Alaska$Context) {
 /**
  * 所有数据列表接口
  */
-export async function all(ctx: Alaska$Context) {
+export async function list(ctx: Alaska$Context) {
   let Model = ctx.state.Model;
   let code = Model.api.all;
   if (code > PUBLIC && !ctx.user) {
@@ -85,7 +88,7 @@ export async function all(ctx: Alaska$Context) {
 
   const scope = ctx.state.scope || ctx.query.scope || 'list';
 
-  let query = Model.all(ctx, { scope });
+  let query = Model.listByContext(ctx, { scope });
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
@@ -113,7 +116,7 @@ export async function show(ctx: Alaska$Context) {
 
   const scope = ctx.state.scope || ctx.query.scope || 'show';
 
-  let doc = await Model.show(ctx, { scope });
+  let doc = await Model.showByContext(ctx, { scope });
   if (!doc) {
     //404
     return;

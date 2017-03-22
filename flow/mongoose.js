@@ -211,7 +211,7 @@ declare class Mongoose$Query {
   select(arg: Object|string):this;
   read(pref: string, tags: string[]):this;
   setOptions(options: Object|Mongoose$Query):this;
-  getMongoose$Query():Object;
+  getQuery():Object;
   getUpdate():Object;
   lean(bool?: boolean):this;
   find(conditions?: Object, callback?: Function):Promise<Mongoose$Model[]> & this;

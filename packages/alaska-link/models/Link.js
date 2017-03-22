@@ -4,7 +4,9 @@ export default class Link extends Model {
   static defaultSort = '-sort';
   static icon = 'link';
   static defaultColumns = 'pic title url sort activated createdAt';
-  static api = { list: 1 };
+  static api = {
+    list: 1
+  };
 
   static defaultFilters = (ctx) => {
     if (ctx.service.id === 'alaska-admin') return null;

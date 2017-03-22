@@ -5,8 +5,7 @@ export default class Article extends Model {
   static titleField = 'title';
   static defaultColumns = 'title cat hot createdAt';
   static api = {
-    all: 1,
-    list: 1,
+    paginate: 1,
     show: 1,
     create: 1,
     updateMulti: 1,

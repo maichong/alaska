@@ -18,7 +18,8 @@ export default class GoodsProp extends Model {
   static searchFields = 'title';
 
   static api = {
-    list: 1
+    paginate: 1,
+    list: 1,
   };
 
   static populations = {

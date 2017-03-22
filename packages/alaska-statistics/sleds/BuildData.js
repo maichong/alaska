@@ -76,11 +76,10 @@ function getTimeX(date, unit) {
 async function buildTimeData(source, Model, filters) {
   const { x, y, reducer, unit } = source;
   // $Flow findOne
-  let query: Mongoose$Query = Model.findOne(filters);
+  let query: Alaska$Query = Model.findOne(filters);
   if (!filters || !filters[x]) {
     query.where(x).gt(new Date(0));
   }
-  // $Flow  findOne
   let first: Alaska$Model = await query.sort(x);
   // $Flow findOne
   let lastRecord: Alaska$Model = await Model.findOne(filters).sort('-' + x);

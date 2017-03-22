@@ -10,7 +10,7 @@ export default class PostTopic extends Model {
   static searchFields = 'title summary';
 
   static api = {
-    list: 1,
+    paginate: 1,
     show: 1
   };
 

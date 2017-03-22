@@ -7,8 +7,8 @@ export default class ArticleCat extends Model {
 
   static api = {
     create: 1,
-    all: 1,
-    list: 1
+    list: 1,
+    paginate: 1
   };
 
   static fields = {

@@ -15,7 +15,7 @@ export default class Goods extends Model {
   static searchFields = 'title';
 
   static api = {
-    list: 1,
+    paginate: 1,
     show: 1
   };
 

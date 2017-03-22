@@ -31,11 +31,9 @@ export default async function (ctx: Alaska$Context) {
 
   let filters = Model.createFilters(keyword, ctx.state.filters || ctx.query);
 
-  let query: Mongoose$Query = Model.paginate({
-    page,
-    limit,
-    filters
-  });
+  let query = Model.paginate(filters)
+    .page(page)
+    .limit(limit);
 
   query.select(titleField + ' parent');
 
@@ -44,8 +42,8 @@ export default async function (ctx: Alaska$Context) {
     query.sort(sort);
   }
 
-  // $Flow
-  let results: Alaska$ListResult = await query;
+  // Alaska$PaginateResult
+  let results: Object = await query;
 
   let recordsMap = {};
   let records = _.map(results.results, (record) => {

@@ -115,7 +115,7 @@ export default async function loadApi() {
     }
   });
 
-  const REST_ACTIONS = ['count', 'show', 'list', 'all', 'create', 'remove', 'removeMulti', 'update', 'updateMulti'];
+  const REST_ACTIONS = ['count', 'show', 'list', 'paginate', 'create', 'remove', 'removeMulti', 'update', 'updateMulti'];
   let restApis = {};
   _.forEach(this.models, (model) => {
     if (!model.api) return;
@@ -205,9 +205,9 @@ export default async function loadApi() {
 
   //Restful接口
   if (restApis.count) router.get('/api/:model/count', restApi('count'));
-  if (restApis.all) router.get('/api/:model/all', restApi('all'));
-  if (restApis.list) router.get('/api/:model', restApi('list'));
+  if (restApis.paginate) router.get('/api/:model/paginate', restApi('paginate'));
   if (restApis.show) router.get('/api/:model/:id', restApi('show'));
+  if (restApis.list) router.get('/api/:model', restApi('list'));
   if (restApis.create) router.post('/api/:model', restApi('create'));
   if (restApis.update) router.patch('/api/:model/:id', restApi('update'));
   if (restApis.updateMulti) router.patch('/api/:model', restApi('updateMulti'));
