@@ -11,9 +11,9 @@ export default class Logout extends Sled {
    *                 params.ctx
    */
   async exec(params: { ctx:Alaska$Context }) {
-    let key = alaska.main.config('autoLogin.key');
-    if (key) {
-      params.ctx.cookies.set(key);
+    let autoLogin = alaska.main.config('autoLogin');
+    if (autoLogin && autoLogin.key) {
+      params.ctx.cookies.set(autoLogin.key, '', autoLogin);
     }
     delete params.ctx.session.userId;
   }

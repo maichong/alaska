@@ -8,11 +8,8 @@ import fs from 'fs';
 import mkdirp from 'mkdirp';
 import path from 'path';
 import chalk from 'chalk';
+import slash from 'slash';
 import * as uitls from './utils';
-
-function filepath(file: string): string {
-  return process.platform === 'win32' ? file.replace(/\\/g, '\\\\') : file;
-}
 
 export default async function build() {
   console.log(chalk.green('Alaska build admin dashboard...'));
@@ -39,7 +36,7 @@ export default async function build() {
   let styles = modulesList.map((name) => {
     let styleFile = path.join(modulesDir, name, 'style.less');
     if (uitls.isFile(styleFile)) {
-      let p = path.relative(path.dirname(runtimeStyleFile), styleFile);
+      let p = slash(path.relative(path.dirname(runtimeStyleFile), styleFile));
       return `@import "${p}";`;
     }
     return false;
@@ -122,8 +119,7 @@ export default async function build() {
 
   // 输出views
   for (let name of Object.keys(views)) {
-    let file = filepath(views[name]);
-    let r = path.relative(dir, file);
+    let r = slash(path.relative(dir, views[name]));
     content += `export ${name} from '../../${r}';\n`;
     console.log(`view : ${name} -> ${r}`);
   }
@@ -135,7 +131,7 @@ export default async function build() {
     console.log(`wrapper : ${name}`);
     contentTmp += `  '${name}':[`;
     wrappers[name].forEach((file, i) => {
-      let r = filepath(path.relative(dir, file));
+      let r = slash(path.relative(dir, file));
       let com = 'Wrapper$' + index + '$' + i;
       content += `import ${com} from '../../${r}';\n`;
       contentTmp += ` ${com},`;
@@ -149,7 +145,7 @@ export default async function build() {
   content += '\n\n';
   contentTmp = '\nexport const routes = [\n';
   routes.forEach((route, index) => {
-    let r = filepath(path.relative(dir, route.component));
+    let r = slash(path.relative(dir, route.component));
     let com = 'Route' + index;
     content += `import ${com} from '../../${r}';\n`;
     contentTmp += `  {\n    component: ${com},\n    path: '${route.path}'\n  },\n`;
@@ -162,7 +158,7 @@ export default async function build() {
   contentTmp = '\nexport const navs = [\n';
 
   navs.forEach((nav, index) => {
-    let r = filepath(path.relative(dir, nav));
+    let r = slash(path.relative(dir, nav));
     let com = 'Nav' + index;
     content += `import ${com} from '../../${r}';\n`;
     contentTmp += `  ${com},\n`;
