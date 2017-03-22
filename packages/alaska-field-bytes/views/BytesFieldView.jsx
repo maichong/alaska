@@ -64,8 +64,7 @@ export default class BytesFieldView extends React.Component {
   handleBlur = () => {
     this.focused = false;
     let value = this.state.display;
-    // $Flow 和node_modules/flow-numeral/flow/index.js:3冲突 numeral()应该有参数,但现在不知道应该传什么
-    let unfomarted = numeral().unformat(value);
+    let unfomarted = numeral(value);
     if (isNaN(unfomarted)) {
       unfomarted = 0;
     }
@@ -89,8 +88,7 @@ export default class BytesFieldView extends React.Component {
       className += ' has-error';
       help = errorText;
     }
-    // $Flow 和node_modules/flow-numeral/flow/index.js:3冲突 numeral()应该有参数,但现在不知道应该传什么
-    let display = numeral().unformat(this.state.display) || 0;
+    let display = numeral(this.state.display) || 0;
     let units = ['', 'K', 'M', 'G', 'T', 'P', 'E'];
     while (display > size && units.length > 1) {
       display /= size;
