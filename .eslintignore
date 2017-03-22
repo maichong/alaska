@@ -11,3 +11,4 @@ webpack.*
 rollup.*
 gulpfile.js
 runtime/
+alaska-init/public/

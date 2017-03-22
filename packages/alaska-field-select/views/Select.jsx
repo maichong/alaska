@@ -138,8 +138,9 @@ export default class Select extends React.Component {
             optionsMap[String(vv.value)] = vv;
           }
         });
-      } else if (value.label != String(value.value)) {
+      } else {
         optionsMap[String(value.value)] = value;
+        value = value.value;
       }
     }
     this.setState({ optionsMap, value });

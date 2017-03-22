@@ -115,7 +115,17 @@ export default async function loadApi() {
     }
   });
 
-  const REST_ACTIONS = ['count', 'show', 'list', 'paginate', 'create', 'remove', 'removeMulti', 'update', 'updateMulti'];
+  const REST_ACTIONS = [
+    'count',
+    'show',
+    'list',
+    'paginate',
+    'create',
+    'remove',
+    'removeMulti',
+    'update',
+    'updateMulti'
+  ];
   let restApis = {};
   _.forEach(this.models, (model) => {
     if (!model.api) return;

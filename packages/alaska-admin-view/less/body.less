@@ -64,10 +64,14 @@
   }
   #app.hidden & {
     left: 0;
+    .navbar-form {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
   }
   left: 240px;
   background: @dark-color;
-  z-index: 1;
+  z-index: 999;
   .btn {
     margin-left: 10px;
   }

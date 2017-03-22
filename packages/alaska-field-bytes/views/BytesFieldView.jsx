@@ -88,13 +88,14 @@ export default class BytesFieldView extends React.Component {
       className += ' has-error';
       help = errorText;
     }
-    let display = numeral(this.state.display) || 0;
+    // $Flow
+    let num: number = numeral(this.state.display) || 0;
     let units = ['', 'K', 'M', 'G', 'T', 'P', 'E'];
-    while (display > size && units.length > 1) {
-      display /= size;
+    while (num > size && units.length > 1) {
+      num /= size;
       units.shift();
     }
-    display = _.round(display, precision) + units[0] + unit;
+    let display = _.round(num, precision) + units[0] + unit;
     let helpElement = help ? <p className="help-block">{help}</p> : null;
     let inputElement;
     if (field.fixed) {

@@ -825,7 +825,7 @@ export default class Model {
     };
 
     // $Flow
-    query.page = function page(page: number) {
+    query.page = function (page: number) {
       results.page = page;
       results.previous = page <= 1 ? 0 : page - 1;
       return query;
@@ -843,7 +843,6 @@ export default class Model {
 
     // $Flow
     query.exec = function (callback) {
-
       // 返回 Promise
       return (async() => {
         try {

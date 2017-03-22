@@ -46,7 +46,14 @@ export default class Switch extends React.Component {
   handleClick(opt: string) {
     const { value, multi, onChange } = this.props;
     const { options } = this.state;
+
+    let optionsMap: Indexed = {};
+    _.forEach(options, (o) => (optionsMap[getOptionValue(o)] = o));
+
     if (!multi) {
+      if (optionsMap[opt]) {
+        return onChange(optionsMap[opt].value);
+      }
       return onChange(opt);
     }
 
@@ -55,9 +62,6 @@ export default class Switch extends React.Component {
       onChange([opt]);
       return null;
     }
-
-    let optionsMap: Indexed = {};
-    _.forEach(options, (o) => (optionsMap[getOptionValue(o)] = true));
 
     let res = [];
     let found = false;
