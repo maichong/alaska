@@ -13,5 +13,18 @@ function sync(lib) {
   });
 }
 
-fs.readdirSync(path.join(path.dirname(__dirname), 'packages'))
+const packagesPath = path.join(path.dirname(__dirname), 'packages');
+
+const version = require(path.join(path.dirname(__dirname), 'lerna.json')).version;
+
+fs.readdirSync(packagesPath)
+  .filter((file) => {
+    let pkg = path.join(packagesPath, file, 'package.json');
+    try {
+      let data = require(pkg);
+      return version === data.version;
+    } catch (e) {
+      return false;
+    }
+  })
   .forEach(sync);
