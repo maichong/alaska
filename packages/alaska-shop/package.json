@@ -1,6 +1,6 @@
 {
   "name": "alaska-shop",
-  "version": "0.11.0",
+  "version": "0.11.3",
   "description": "Alaska shop service",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-shop",
