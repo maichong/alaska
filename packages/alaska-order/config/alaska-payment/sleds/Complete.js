@@ -1,9 +1,8 @@
-
 import ORDER from 'alaska-order';
 import Order from 'alaska-order/models/Order';
 
 export async function pre() {
-  let payment = this.data.payment;
+  let payment = this.params.payment;
   if (!payment.orders || !payment.orders.length) return;
   for (let order of payment.orders) {
     if (!order.save) {
@@ -21,5 +20,5 @@ export async function pre() {
     order.payment = payment.type;
     await ORDER.run('Pay', { order });
   }
-  this.data.done = true;
+  this.params.done = true;
 }

@@ -150,7 +150,7 @@ export default class AliyunImageField extends Field {
       paths[p] = options;
     }
 
-    addPath('_id', mongoose.Schema.Types.ObjectId);
+    addPath('_id', String);
     addPath('ext', String);
     addPath('path', String);
     addPath('url', String);

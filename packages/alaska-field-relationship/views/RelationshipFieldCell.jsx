@@ -16,17 +16,6 @@ class RelationshipFieldCell extends React.Component {
     loadDetails:Function;
   };
 
-  state: {
-    display:string
-  };
-
-  constructor(props: Object) {
-    super(props);
-    this.state = {
-      display: ''
-    };
-  }
-
   shouldComponentUpdate(props: Object) {
     let field = this.props.field;
     let key = field.key;
@@ -87,7 +76,13 @@ class RelationshipFieldCell extends React.Component {
     }
     let display;
     if (Array.isArray(value)) {
-      display = value.map((v, i) => this.getLink(v));
+      display = [];
+      value.forEach((v) => {
+        if (display.length) {
+          display.push(' , ');
+        }
+        display.push(this.getLink(v));
+      });
     } else {
       display = this.getLink(value);
     }

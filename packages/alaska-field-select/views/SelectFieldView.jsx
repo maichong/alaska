@@ -80,7 +80,6 @@ export default class SelectFieldView extends React.Component {
     } else if (field.switch) {
       View = Switch;
     }
-    View = Switch;
     if (field.multi) {
       if (!_.isArray(value)) {
         value = [value];

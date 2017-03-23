@@ -1,6 +1,7 @@
 export default {
   lang: '简体中文',
   'Internal Server Error': '系统错误',
+  'Validation failed.': '数据验证失败',
   'Bad Request': '非法请求',
   'Created At': '创建时间',
   'Created By': '创建者',

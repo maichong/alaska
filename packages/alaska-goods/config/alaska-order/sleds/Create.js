@@ -11,13 +11,13 @@ import OrderItem from 'alaska-order/models/OrderItem';
 const currenciesMap = BALANCE.currenciesMap;
 
 export async function pre() {
-  let data = this.data;
-  let gids = data.goods;
+  let params = this.params;
+  let gids = params.goods;
   if (!gids || !gids.length) {
     return;
   }
-  data.orders = data.orders || [];
-  let orders = data.orders;
+  params.orders = params.orders || [];
+  let orders = params.orders;
   let orderItems = [];
   for (let g of gids) {
     if (!g.id) continue;
@@ -69,10 +69,10 @@ export async function pre() {
         title: item.title,
         type: 'goods',
         pic: item.pic,
-        user: data.user._id,
+        user: params.user._id,
         currency: item.currency
       });
-      order.address = data.address;
+      order.address = params.address;
       order.items = [item];
       orders.push(order);
     }
@@ -98,7 +98,7 @@ export async function pre() {
 }
 
 export async function post() {
-  let orders = this.data.orders;
+  let orders = this.params.orders;
   for (let order of orders) {
     //TODO 减少商品库存
   }

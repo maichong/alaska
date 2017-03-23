@@ -231,7 +231,7 @@ class EditorPage extends React.Component {
       model: model.name,
       key: model.key,
       _r: this._r
-    }, data.set('id', id.toString() === '_new' ? '' : id));
+    }, data.set('id', id.toString() === '_new' ? undefined : id));
   };
 
   async handleAction(action) {

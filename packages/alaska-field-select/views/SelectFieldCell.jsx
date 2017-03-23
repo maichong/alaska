@@ -38,6 +38,9 @@ export default class SelectFieldCell extends React.Component {
           if (field.translate !== false) {
             label = t(label, model.serviceId);
           }
+          if (el.length) {
+            el.push(' , ');
+          }
           el.push(<span key={opt.value}>{label}</span>);
         }
       });

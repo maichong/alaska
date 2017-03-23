@@ -1,14 +1,13 @@
-
 import service from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 import Order from 'alaska-order/models/Order';
 
 export async function pre() {
-  let data = this.data;
-  let orders = data.orders;
+  let params = this.params;
+  let orders = params.orders;
   if (!orders || !Array.isArray(orders) || !orders.length) return;
-  let user = data.user || service.error('Missing user info');
-  let type = data.type || service.error('Missing payment type');
+  let user = params.user || service.error('Missing user info');
+  let type = params.type || service.error('Missing payment type');
   if (!service.payments[type]) service.error('Unknown payment type');
 
   let amount = 0;
@@ -34,5 +33,5 @@ export async function pre() {
   payment.amount = amount;
   payment.params = await service.payments[type].createParams(payment);
   await payment.save();
-  data.payment = payment;
+  params.payment = payment;
 }

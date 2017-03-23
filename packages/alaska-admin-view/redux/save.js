@@ -54,7 +54,7 @@ export default handleActions({
     res: payload.res
   }),
   SAVE_FAILURE: (state, { payload }) => state.merge({
-    error: payload.error,
+    error: { message: payload.error.message, code: payload.error.code },
     fetching: false,
     key: payload.key,
     _r: payload._r,

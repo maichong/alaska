@@ -155,7 +155,7 @@ export default class ImageField extends Field {
       paths[mPath] = options;
     }
 
-    addPath('_id', mongoose.Schema.Types.ObjectId);
+    addPath('_id', String);
     addPath('ext', String);
     addPath('path', String);
     addPath('url', String);

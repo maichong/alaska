@@ -87,6 +87,16 @@ export default async function loadApi() {
     }
     //如果不是普通错误,则输出错误信息
     console.error(`URL: ${ctx.path} ${service.id} API ${error.stack}`);
+    //如果是数据验证错误
+    if (error.message === 'Validation failed' && error.errors) {
+      for (let key in error.errors) {
+        ctx.body = {
+          error: ctx.t('Validation failed.') + ' ' + error.errors[key].message,
+          code: 500
+        };
+        return;
+      }
+    }
     ctx.body = {
       error: ctx.t('Internal Server Error'),
       code: 500
