@@ -90,7 +90,7 @@ export default class MixedFieldView extends React.Component {
   };
 
   render() {
-    let { field, disabled } = this.props;
+    let { field, disabled, errorText } = this.props;
 
     let inputElement;
     if (disabled || field.fixed) {
@@ -104,9 +104,15 @@ export default class MixedFieldView extends React.Component {
       />;
     }
 
-    let className = 'form-group mixed-field ' + (this.state.style || '');
+    let help = field.help;
 
-    let helpElement = field.help ? <p className="help-block">{field.help}</p> : null;
+    let className = 'form-group mixed-field ' + (this.state.style || '');
+    if (errorText) {
+      className += ' has-error';
+      help = errorText;
+    }
+
+    let helpElement = help ? <p className="help-block">{help}</p> : null;
 
     let label = field.nolabel ? '' : field.label;
 

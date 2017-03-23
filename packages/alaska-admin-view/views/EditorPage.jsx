@@ -103,17 +103,19 @@ class EditorPage extends React.Component {
         }
       }
     }
-    if (nextProps.save && nextProps.save._r == this._r && !nextProps.save.fetching) {
+    let save = nextProps.save;
+    if (save && save._r == this._r && !save.fetching) {
       this._r = Math.random();
       let t = this.context.t;
       this.loading = false;
-      if (nextProps.save.error) {
+      if (save.error) {
         //保存失败
-        toast('error', t('Save failed'), nextProps.save.error.message);
+        toast('error', t('Save failed'), save.error.message);
       } else {
         toast('success', t('Saved successfully'));
-        if (this.state.id === '_new') {
-          let url = '/edit/' + this.state.serviceId + '/' + this.state.modelName + '/' + nextProps.save.res._id;
+        let state = this.state;
+        if (state.id === '_new') {
+          let url = '/edit/' + state.serviceId + '/' + state.modelName + '/' + encodeURIComponent(save.res._id);
           this.context.router.replace(url);
         }
       }
@@ -229,7 +231,7 @@ class EditorPage extends React.Component {
       model: model.name,
       key: model.key,
       _r: this._r
-    }, Object.assign({}, data, { id: id.toString() === '_new' ? '' : id }));
+    }, data.set('id', id.toString() === '_new' ? '' : id));
   };
 
   async handleAction(action) {
