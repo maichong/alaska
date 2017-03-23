@@ -3,6 +3,8 @@
 /* eslint no-console:0 */
 /* eslint global-require:0 */
 /* eslint prefer-arrow-callback:0 */
+/* eslint no-restricted-syntax:0 */
+/* eslint guard-for-in:0 */
 
 import _ from 'lodash';
 import compose from 'koa-compose';

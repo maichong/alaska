@@ -60,7 +60,6 @@ export default class CategoryFieldFilter extends React.Component {
       .param('model', field.model)
       .param('value', field.value)
       .where(field.filters || {})
-      // $Flow
       .then((res) => {
         this.setState({ options: res.results });
       });

@@ -117,6 +117,7 @@ export default class ImageFieldView extends React.Component {
       value = [];
       _.forEach(this.props.value, (i) => {
         if (i !== item) {
+          // $Flow 我们知道此处value 为数组
           value.push(i);
         }
       });

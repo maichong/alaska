@@ -10,6 +10,7 @@ const utils = require('./utils');
 const dir = process.cwd() + '/';
 const packagesPath = dir + 'packages/';
 let projectPath = dir + 'example/';
+projectPath = '/Users/liang/dev/cloud/core/';
 
 chokidar.watch(packagesPath, {
   ignored: /node_modules|[\/\\]\./

@@ -79,8 +79,10 @@ class RelationshipFieldCell extends React.Component {
       display = [];
       value.forEach((v) => {
         if (display.length) {
+          // $Flow
           display.push(' , ');
         }
+        // $Flow
         display.push(this.getLink(v));
       });
     } else {

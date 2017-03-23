@@ -63,6 +63,7 @@ export default class ImageLinkFieldView extends React.Component {
     let multi = field.multi;
     if (value) {
       if (!multi) {
+        // $Flow
         value = [value];
       } else {
         value = value.concat();
@@ -106,8 +107,10 @@ export default class ImageLinkFieldView extends React.Component {
     let value = null;
     if (multi) {
       value = [];
+      // $Flow 我们知道此处props.value为数组
       _.forEach(this.props.value, (i) => {
         if (i !== item) {
+          // $Flow 我们知道此处value为数组
           value.push(i);
         }
       });
@@ -127,7 +130,7 @@ export default class ImageLinkFieldView extends React.Component {
     let items = [];
     let readonly = disabled || field.fixed;
     // $Flow 和lodash的flow不匹配
-    _.forEach(value, (item) => {
+    _.forEach(value, (item: string) => {
       items.push(<div key={item} className="image-field-item">
         <img alt="" src={item + thumbSuffix} />
         {

@@ -852,7 +852,7 @@ export default class Model {
           // $Flow
           let res: Alaska$Model[] = await query.find().skip(skip).limit(results.limit);
           results.results = res;
-          if ((res.length || skip === 0 ) && res.length < results.limit) {
+          if ((res.length || skip === 0) && res.length < results.limit) {
             // 优化，省略count查询
             results.total = skip + res.length;
           } else {
