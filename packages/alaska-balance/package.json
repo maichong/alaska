@@ -1,6 +1,6 @@
 {
   "name": "alaska-balance",
-  "version": "0.11.7",
+  "version": "0.11.8",
   "description": "Alaska balance service",
   "keywords": [
     "alaska",
@@ -15,6 +15,6 @@
     "alaska-user": "^0.11.7"
   },
   "dependencies": {
-    "alaska-field-select": "^0.11.7"
+    "alaska-field-select": "^0.11.8"
   }
 }

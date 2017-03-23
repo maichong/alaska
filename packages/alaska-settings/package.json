@@ -1,6 +1,6 @@
 {
   "name": "alaska-settings",
-  "version": "0.11.7",
+  "version": "0.11.8",
   "description": "Alaska settings service",
   "keywords": [
     "alaska",
@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "alaska-field-mixed": "^0.11.7",
-    "alaska-field-select": "^0.11.7",
+    "alaska-field-select": "^0.11.8",
     "alaska-field-text": "^0.11.0",
     "debug": "^2.6.3"
   }
