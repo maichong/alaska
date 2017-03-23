@@ -293,6 +293,9 @@ class EditorPage extends React.Component {
     if (!data) {
       return <div className="loading">Loading...</div>;
     }
+    if (data._error) {
+      return <div className="editor-error">{data._error}</div>;
+    }
     let canSave = (id === '_new' && model.abilities.create) || (id !== '_new' && model.abilities.update && !model.noedit);
     let title = <a onClick={this.handleBack}>{t(model.label || model.name, serviceId)}</a>;
     let subTitle = '';

@@ -15,7 +15,7 @@ export default class ImageFieldCell extends React.Component {
   render() {
     let value = this.props.value;
     if (!value || !value.thumbUrl) {
-      return <div />;
+      return <div className="image-field-cell" />;
     }
     let styles = {
       img: {
@@ -24,7 +24,9 @@ export default class ImageFieldCell extends React.Component {
       }
     };
     return (
-      <img alt="" src={value.thumbUrl} style={styles.img} />
+      <div className="image-field-cell">
+        <img alt="" src={value.thumbUrl} style={styles.img} />
+      </div>
     );
   }
 }

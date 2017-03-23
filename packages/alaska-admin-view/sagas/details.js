@@ -22,6 +22,10 @@ export default function* details({ payload }) {
     yield put(applyDetails(payload.key, res));
   } catch (e) {
     fetching[fetchingKey] = false;
+    yield put(applyDetails(payload.key, {
+      _id: payload.id,
+      _error: e.message
+    }));
     throw e;
   }
 }

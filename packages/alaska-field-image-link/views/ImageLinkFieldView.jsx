@@ -7,7 +7,7 @@ import { api } from 'alaska-admin-view';
 
 const { object, func } = React.PropTypes;
 
-export default class ImageFieldView extends React.Component {
+export default class ImageLinkFieldView extends React.Component {
 
   static contextTypes = {
     settings: object,
@@ -20,7 +20,7 @@ export default class ImageFieldView extends React.Component {
     data: Object,
     errorText: string,
     disabled: boolean,
-    value: any,
+    value: string | string[],
     onChange: Function,
   };
 
@@ -59,7 +59,7 @@ export default class ImageFieldView extends React.Component {
 
   handleAddImage = () => {
     const t = this.context.t;
-    let { model, field, data, value } = this.props;
+    let { field, value } = this.props;
     let multi = field.multi;
     if (value) {
       if (!multi) {
@@ -70,20 +70,11 @@ export default class ImageFieldView extends React.Component {
     } else {
       value = [];
     }
-    let serviceId = 'alaska-user';
-    let modelName = 'User';
+    let [serviceId, modelName, path] = field.target.split('.');
     let id = '_new';
-    if (model) {
-      serviceId = model.serviceId;
-      modelName = model.name;
-    }
-    if (data && data._id) {
-      id = data._id;
-    }
     let nextState = {
       errorText: ''
     };
-
     _.forEach(this.imageInput.files, (file) => {
       if (value.length >= this.state.max || !file) return;
       let matchs = file.name.match(/\.(\w+)$/);
@@ -97,11 +88,11 @@ export default class ImageFieldView extends React.Component {
           _service: serviceId,
           _model: modelName
         },
-        body: { file, id, path: field.path || 'avatar' }
+        body: { file, id, path: path }
       }).then((res) => {
-        value = value.concat(res);
+        value = value.concat(res.url);
         if (this.props.onChange) {
-          this.props.onChange(multi ? value : res);
+          this.props.onChange(multi ? value : res.url);
         }
       }, (error) => {
         this.setState({ errorText: error.message });
@@ -132,12 +123,13 @@ export default class ImageFieldView extends React.Component {
     if (!field.multi) {
       value = value ? [value] : [];
     }
+    let thumbSuffix = field.thumbSuffix || '';
     let items = [];
     let readonly = disabled || field.fixed;
     // $Flow 和lodash的flow不匹配
-    _.forEach(value, (item, index) => {
-      items.push(<div key={index} className="image-field-item">
-        <img alt="" src={item.thumbUrl} />
+    _.forEach(value, (item) => {
+      items.push(<div key={item} className="image-field-item">
+        <img alt="" src={item + thumbSuffix} />
         {
           readonly ? null : <button
               className="btn btn-link btn-block"
@@ -170,7 +162,7 @@ export default class ImageFieldView extends React.Component {
     }
 
     let help = field.help;
-    let className = 'form-group image-field';
+    let className = 'form-group image-field image-link-field';
     if (errorText) {
       className += ' has-error';
       help = errorText;

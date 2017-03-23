@@ -15,7 +15,11 @@ export default class ImageField extends Field {
   static viewOptions = ['multi', 'allowed'];
   static defaultOptions = {
     cell: 'ImageFieldCell',
-    view: 'ImageFieldView'
+    view: 'ImageFieldView',
+    dir: 'public/uploads/',
+    pathFormat: 'YYYY/MM/DD/',
+    prefix: '/uploads/',
+    allowed: ['jpg', 'png', 'gif']
   };
 
   dir: string;
@@ -172,22 +176,6 @@ export default class ImageField extends Field {
     schema.add({
       [field.path]: imageSchema
     }, '');
-
-    if (!field.dir) {
-      field.dir = '';
-    }
-
-    if (!field.pathFormat) {
-      field.pathFormat = '';
-    }
-
-    if (!field.prefix) {
-      field.prefix = '';
-    }
-
-    if (!field.allowed) {
-      field.allowed = ['jpg', 'png', 'gif'];
-    }
 
     this.underscoreMethod('upload', function (file) {
       let record = this;
