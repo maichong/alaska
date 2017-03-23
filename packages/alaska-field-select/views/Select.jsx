@@ -133,11 +133,14 @@ export default class Select extends React.Component {
     let optionsMap = this.state.optionsMap;
     if (value) {
       if (value instanceof Array) {
+        let arr = [];
         value.forEach((vv) => {
           if (vv.label != String(vv.value)) {
             optionsMap[String(vv.value)] = vv;
           }
+          arr.push(vv.value);
         });
+        value = arr;
       } else {
         optionsMap[String(value.value)] = value;
         value = value.value;
