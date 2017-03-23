@@ -71,7 +71,7 @@ export default class RedisQueueDriver extends Driver {
           resolve(res);
         }
       });
-      this._driver[method].apply(this._driver, ...args);
+      this._driver[method](...args);
     });
   }
 
