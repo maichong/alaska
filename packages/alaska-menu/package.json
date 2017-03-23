@@ -1,6 +1,6 @@
 {
   "name": "alaska-menu",
-  "version": "0.11.3",
+  "version": "0.11.7",
   "description": "Alaska menu service",
   "keywords": [
     "alaska",
@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "alaska-field-datetime": "^0.11.3",
-    "alaska-field-mixed": "^0.11.0",
+    "alaska-field-mixed": "^0.11.7",
     "alaska-field-text": "^0.11.0"
   }
 }

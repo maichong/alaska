@@ -1,6 +1,6 @@
 {
   "name": "alaska-user",
-  "version": "0.11.6",
+  "version": "0.11.7",
   "description": "Alaska user service",
   "keywords": [
     "alaska",
@@ -12,12 +12,12 @@
   "license": "MIT",
   "dependencies": {
     "alaska-field-datetime": "^0.11.3",
-    "alaska-field-image": "^0.11.3",
+    "alaska-field-image": "^0.11.7",
     "alaska-field-number": "^0.11.0",
     "alaska-field-password": "^0.11.0",
-    "alaska-field-relationship": "^0.11.6",
+    "alaska-field-relationship": "^0.11.7",
     "alaska-field-text": "^0.11.0",
     "alaska-middleware-session": "^0.11.0",
-    "alaska-settings": "^0.11.6"
+    "alaska-settings": "^0.11.7"
   }
 }

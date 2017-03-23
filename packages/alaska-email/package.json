@@ -1,6 +1,6 @@
 {
   "name": "alaska-email",
-  "version": "0.11.0",
+  "version": "0.11.7",
   "description": "Alaska email service",
   "keywords": [
     "alaska",
@@ -13,6 +13,6 @@
   "dependencies": {
     "alaska-field-filter": "^0.11.0",
     "alaska-field-html": "^0.11.0",
-    "alaska-field-mixed": "^0.11.0"
+    "alaska-field-mixed": "^0.11.7"
   }
 }
