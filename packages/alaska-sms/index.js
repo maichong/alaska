@@ -22,20 +22,17 @@ class SmsService extends Service {
     let driversOptions = [];
     let defaultDriver;
     let driversMap = {};
-    _.forEach(drivers, (driver, key) => {
-      let label = driver.label || key;
+    _.forEach(drivers, (options, key) => {
+      let label = options.label || key;
       driversOptions.push({ label, value: key });
-      if (driver.send) {
+      let driver;
+      if (_.isFunction(options.send)) {
         //已经实例化的driver
-      } else if (driver.type) {
-        // $Flow  require()需要一个字符串
-        let Driver = require(driver.type).default;
-        driver = new Driver(this);
+        driver = options;
       } else {
-        throw new Error('invalid sms driver config ' + key);
+        driver = this.createDriver(options);
       }
       driversMap[key] = driver;
-      driver.key = key;
       if (!defaultDriver || driver.default) {
         defaultDriver = driver;
       }

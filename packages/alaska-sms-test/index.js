@@ -8,13 +8,12 @@ export default class SmsTestDriver {
   }
 
   /**
-   * [async] 发送
-   * @param to
-   * @param message
-   * @returns {Promise.<T>}
+   * @param {string} to
+   * @param {string} message
+   * @returns {Promise<Object>}
    */
-  send(to: string, message: string): Promise<void> {
+  send(to: string, message: string): Promise<Object> {
     console.log('send sms to', to, ':', message);
-    return Promise.resolve();
+    return Promise.resolve({});
   }
 }

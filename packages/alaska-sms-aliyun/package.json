@@ -11,6 +11,8 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "ini": "^1.3.4"
+    "ini": "^1.3.4",
+    "akita-node": "^0.3.5",
+    "moment": "^2.18.1"
   }
 }
