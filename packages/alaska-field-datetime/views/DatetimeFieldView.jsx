@@ -69,7 +69,7 @@ export default class DatetimeFieldView extends React.Component {
       inputElement = <input type="text" className="form-control" disabled value={valueString} />;
     } else {
       inputElement = <DateTime
-        value={value}
+        value={valueString||value}
         dateFormat={field.dateFormat}
         timeFormat={field.timeFormat}
         onChange={props.onChange}

@@ -1,7 +1,7 @@
 // @flow
 
 import { createStore, compose, applyMiddleware } from 'redux';
-import createLogger from 'redux-logger';
+import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 
 export default function configureStore(rootReducer: Function, rootSaga: Function) {

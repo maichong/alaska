@@ -59,16 +59,17 @@ export default class BytesFieldView extends React.Component {
 
   handleFocus = () => {
     this.focused = true;
+    this.forceUpdate();
   };
 
   handleBlur = () => {
     this.focused = false;
     let value = this.state.display;
-    let unfomarted = numeral(value);
+    let unfomarted = numeral(value).value();
     if (isNaN(unfomarted)) {
       unfomarted = 0;
     }
-    this.setState({ display: numeral(unfomarted).format('0,0') });
+    this.setState({ display: numeral(unfomarted).format('0,0') }, () => this.forceUpdate());
     if (unfomarted !== this.props.value) {
       if (this.props.onChange) {
         this.props.onChange(unfomarted);
@@ -88,14 +89,15 @@ export default class BytesFieldView extends React.Component {
       className += ' has-error';
       help = errorText;
     }
-    // $Flow
-    let num: number = numeral(this.state.display) || 0;
+    let value: number = numeral(this.state.display).value() || 0;
     let units = ['', 'K', 'M', 'G', 'T', 'P', 'E'];
+    let num = value;
     while (num > size && units.length > 1) {
       num /= size;
       units.shift();
     }
-    let display = _.round(num, precision) + units[0] + unit;
+    let u = this.focused ? unit : (units[0] + unit);
+    let display = this.focused ? value : _.round(num, precision);
     let helpElement = help ? <p className="help-block">{help}</p> : null;
     let inputElement;
     if (field.fixed) {
@@ -107,10 +109,10 @@ export default class BytesFieldView extends React.Component {
         onChange={this.handleChange}
         onFocus={this.handleFocus}
         onBlur={this.handleBlur}
-        value={this.state.display}
+        value={display}
         disabled={disabled}
       />
-        <span className="input-group-addon">{display}</span>
+        <span className="input-group-addon">{u}</span>
       </div>);
     }
 

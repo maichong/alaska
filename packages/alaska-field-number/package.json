@@ -12,6 +12,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "numeral": "^2.0.4"
+    "numeral": "^2.0.6"
   }
 }
