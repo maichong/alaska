@@ -1,6 +1,6 @@
 {
   "name": "alaska-goods",
-  "version": "0.11.8",
+  "version": "0.11.9",
   "description": "Alaska goods service",
   "keywords": [
     "alaska",
@@ -11,7 +11,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-balance": "^0.11.8",
+    "alaska-balance": "^0.11.9",
     "alaska-field-html": "^0.11.0",
     "alaska-field-select": "^0.11.8",
     "alaska-field-category": "^0.11.8",

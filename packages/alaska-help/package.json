@@ -1,6 +1,6 @@
 {
   "name": "alaska-help",
-  "version": "0.11.8",
+  "version": "0.11.9",
   "description": "Alaska help service",
   "keywords": [
     "alaska",
@@ -14,6 +14,6 @@
     "alaska-field-relationship": "^0.11.8",
     "alaska-field-text": "^0.11.0",
     "alaska-field-html": "^0.11.0",
-    "alaska-field-datetime": "^0.11.3"
+    "alaska-field-datetime": "^0.11.9"
   }
 }

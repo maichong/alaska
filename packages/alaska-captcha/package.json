@@ -1,6 +1,6 @@
 {
   "name": "alaska-captcha",
-  "version": "0.11.8",
+  "version": "0.11.9",
   "description": "Alaska captcha service",
   "keywords": [
     "alaska",
@@ -12,7 +12,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-number": "^0.11.0",
+    "alaska-field-number": "^0.11.9",
     "alaska-field-text": "^0.11.0",
     "alaska-field-select": "^0.11.8",
     "alaska-field-relationship": "^0.11.8",

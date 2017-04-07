@@ -1,6 +1,6 @@
 {
   "name": "alaska-page",
-  "version": "0.11.3",
+  "version": "0.11.9",
   "keywords": [
     "alaska",
     "alaska-service"
@@ -13,6 +13,6 @@
   "dependencies": {
     "alaska-field-text": "^0.11.0",
     "alaska-field-html": "^0.11.0",
-    "alaska-field-datetime": "^0.11.3"
+    "alaska-field-datetime": "^0.11.9"
   }
 }
