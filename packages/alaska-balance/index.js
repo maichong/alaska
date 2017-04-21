@@ -39,6 +39,7 @@ class BalanceService extends Service {
             title,
             amount,
             balance,
+            target: 'balance',
             currency: c.value,
             user
           });

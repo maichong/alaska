@@ -44,7 +44,7 @@ export default class RelationshipFieldView extends React.Component {
   componentWillReceiveProps(props: Object) {
     if (props.value !== this.props.value) {
       if (_.find(this.state.options, (o) => o.value === props.value)) return;
-      this.setState({ options: [] });
+      this.setState({ options: [] }, this.handleSearch);
     }
   }
 
@@ -118,6 +118,7 @@ export default class RelationshipFieldView extends React.Component {
   };
 
   render() {
+    console.log('render', this);
     let { field, value, disabled, errorText } = this.props;
     const options = this.state.options;
     let help = field.help;

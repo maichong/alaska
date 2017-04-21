@@ -7,7 +7,7 @@ export default class Income extends Model {
 
   static label = 'Income Record';
   static icon = 'usd';
-  static defaultColumns = 'title user type deposit currency amount balance createdAt';
+  static defaultColumns = 'title user type target deposit currency amount balance createdAt';
   static defaultSort = '-createdAt';
   static searchFields = 'title';
   static nocreate = true;
@@ -15,7 +15,8 @@ export default class Income extends Model {
   static noremove = true;
 
   static api = {
-    list: 3
+    list: 3,
+    paginate: 3
   };
 
   static fields = {
@@ -44,6 +45,19 @@ export default class Income extends Model {
       }, {
         label: 'Withdraw Rejected',
         value: 'withdraw_rejected'
+      }]
+    },
+    target: {
+      label: 'Target',
+      type: 'select',
+      default: 'balance',
+      switch: true,
+      options: [{
+        label: 'Balance',
+        value: 'balance'
+      }, {
+        label: 'Deposit',
+        value: 'deposit'
       }]
     },
     deposit: {
@@ -86,6 +100,9 @@ export default class Income extends Model {
   preSave() {
     if (!this.createdAt) {
       this.createdAt = new Date();
+    }
+    if (!this.target && this.deposit) {
+      this.target = 'deposit';
     }
   }
 }

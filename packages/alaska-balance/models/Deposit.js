@@ -19,7 +19,8 @@ export default class Deposit extends Model {
   static defaultSort = '-createdAt';
 
   static api = {
-    list: 3
+    list: 3,
+    paginate: 3
   };
 
   static fields = {
@@ -84,6 +85,7 @@ export default class Deposit extends Model {
       balance,
       currency: this.currency || c.value,
       user: this.user,
+      target: 'deposit',
       deposit: this.id
     });
     await income.save();
