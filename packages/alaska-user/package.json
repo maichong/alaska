@@ -1,6 +1,6 @@
 {
   "name": "alaska-user",
-  "version": "0.11.9",
+  "version": "0.11.10",
   "description": "Alaska user service",
   "keywords": [
     "alaska",
@@ -11,13 +11,13 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-datetime": "^0.11.9",
-    "alaska-field-image": "^0.11.8",
-    "alaska-field-number": "^0.11.9",
-    "alaska-field-password": "^0.11.0",
-    "alaska-field-relationship": "^0.11.8",
-    "alaska-field-text": "^0.11.0",
+    "alaska-field-datetime": "^0.11.10",
+    "alaska-field-image": "^0.11.10",
+    "alaska-field-number": "^0.11.10",
+    "alaska-field-password": "^0.11.10",
+    "alaska-field-relationship": "^0.11.10",
+    "alaska-field-text": "^0.11.10",
     "alaska-middleware-session": "^0.11.0",
-    "alaska-settings": "^0.11.8"
+    "alaska-settings": "^0.11.10"
   }
 }

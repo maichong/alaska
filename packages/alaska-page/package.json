@@ -1,6 +1,6 @@
 {
   "name": "alaska-page",
-  "version": "0.11.9",
+  "version": "0.11.10",
   "keywords": [
     "alaska",
     "alaska-service"
@@ -11,8 +11,8 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-text": "^0.11.0",
-    "alaska-field-html": "^0.11.0",
-    "alaska-field-datetime": "^0.11.9"
+    "alaska-field-text": "^0.11.10",
+    "alaska-field-html": "^0.11.10",
+    "alaska-field-datetime": "^0.11.10"
   }
 }

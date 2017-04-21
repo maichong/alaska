@@ -1,6 +1,6 @@
 {
   "name": "alaska-field-iid",
-  "version": "0.11.9",
+  "version": "0.11.10",
   "description": "Alaska auto increment ID field",
   "keywords": [
     "alaska",
@@ -11,6 +11,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-number": "^0.11.9"
+    "alaska-field-number": "^0.11.10"
   }
 }

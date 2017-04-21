@@ -1,6 +1,6 @@
 {
   "name": "alaska-email",
-  "version": "0.11.7",
+  "version": "0.11.10",
   "description": "Alaska email service",
   "keywords": [
     "alaska",
@@ -11,8 +11,8 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-filter": "^0.11.0",
-    "alaska-field-html": "^0.11.0",
+    "alaska-field-filter": "^0.11.10",
+    "alaska-field-html": "^0.11.10",
     "alaska-field-mixed": "^0.11.7"
   }
 }

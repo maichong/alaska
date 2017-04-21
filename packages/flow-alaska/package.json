@@ -1,6 +1,6 @@
 {
   "name": "flow-alaska",
-  "version": "0.11.3",
+  "version": "0.11.10",
   "description": "Flow declarations for alaska",
   "files": [
     "flow"

@@ -1,12 +1,12 @@
 {
   "name": "alaska-shop",
-  "version": "0.11.3",
+  "version": "0.11.10",
   "description": "Alaska shop service",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-shop",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-html": "^0.11.0"
+    "alaska-field-html": "^0.11.10"
   }
 }
