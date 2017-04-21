@@ -1,6 +1,6 @@
 {
   "name": "alaska-admin",
-  "version": "0.11.10",
+  "version": "0.11.11",
   "description": "Alaska admin service",
   "keywords": [
     "alaska",
@@ -17,7 +17,7 @@
     "alaska-field-select": "^0.11.10",
     "alaska-field-category": "^0.11.10",
     "alaska-field-icon": "^0.11.10",
-    "alaska-user": "^0.11.10",
+    "alaska-user": "^0.11.11",
     "alaska-middleware-upload": "^0.11.0",
     "koa-bodyparser": "^4.2.0"
   }
