@@ -12,7 +12,7 @@ export default class FeedbackComment extends Model {
 
   static populations = {
     user: {
-      select: '@tiny'
+      select: ':tiny'
     }
   };
 

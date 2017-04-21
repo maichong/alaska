@@ -11,7 +11,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "mongodb": "^2.2.25",
-    "debug": "^2.6.3"
+    "mongodb": "^2.2.26",
+    "debug": "^2.6.4"
   }
 }

@@ -10,8 +10,8 @@ export default class Income extends Model {
   static defaultColumns = 'title user type currency amount balance createdAt';
   static defaultSort = '-createdAt';
   static searchFields = 'title';
-  static nocreate = true;
-  static noedit = true;
+  //static nocreate = true;
+  //static noedit = true;
   static noremove = true;
 
   static api = {
@@ -45,6 +45,13 @@ export default class Income extends Model {
         label: 'Withdraw Rejected',
         value: 'withdraw_rejected'
       }]
+    },
+    deposit: {
+      label: 'Deposit',
+      ref: 'Deposit',
+      filters: {
+        user: ':user' // 只显示当前用户Deposit列表
+      }
     },
     currency: {
       label: 'Currency',

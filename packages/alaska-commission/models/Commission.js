@@ -6,7 +6,7 @@ import BALANCE from 'alaska-balance';
 export default class Commission extends Model {
 
   static label = 'Commission';
-  static icon = 'money';
+  static icon = 'jpy';
   static titleField = 'title';
   static defaultColumns = 'title user contributor order amount level state createdAt balancedAt';
   static defaultSort = '-createdAt';
@@ -17,7 +17,7 @@ export default class Commission extends Model {
 
   static populations = {
     contributor: {
-      select: '@tiny'
+      select: ':tiny'
     }
   };
 

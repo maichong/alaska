@@ -57,5 +57,6 @@ export default {
   'Admin Login Logo': '管理登录LOGO',
   'Admin Icon': '管理平台图标',
   Submit: '提交',
-  'Select...': '请选择...'
+  'Select...': '请选择...',
+  Unknown: '未知'
 };

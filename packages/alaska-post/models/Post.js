@@ -20,13 +20,13 @@ export default class Post extends Model {
   static populations = {
     tags: {},
     user: {
-      select: '@tiny'
+      select: ':tiny'
     },
     cat: {
       select: 'title'
     },
     relations: {
-      select: '@tiny'
+      select: ':tiny'
     }
   };
 

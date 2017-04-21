@@ -1,8 +1,8 @@
-
 export default {
   Currency: '货币',
   Amount: '金额',
   Balance: '余额',
+  Deposit: '储值卡',
   Type: '类型',
   Default: '默认',
   'Income Record': '收支记录',

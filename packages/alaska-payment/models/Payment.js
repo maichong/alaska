@@ -5,7 +5,7 @@ import { Model } from 'alaska';
 export default class Payment extends Model {
 
   static label = 'Payment Logs';
-  static icon = 'credit-card';
+  static icon = 'money';
   static defaultColumns = 'title user type amount state createdAt';
   static defaultSort = '-createdAt';
   static nocreate = true;

@@ -19,7 +19,7 @@ export default class PostComment extends Model {
   static populations = {
     user: {
       path: 'user',
-      select: '@tiny'
+      select: ':tiny'
     },
     commentTo: {}
   };

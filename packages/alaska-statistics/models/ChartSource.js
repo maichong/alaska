@@ -99,7 +99,7 @@ export default class ChartSource extends Model {
         }
       }],
       depends: {
-        '!type': 'enum'
+        'type!=': 'enum'
       }
     },
     model: {
@@ -114,7 +114,7 @@ export default class ChartSource extends Model {
       view: 'AxisSelector',
       filter: false,
       disabled: {
-        '!reducer': ['count', 'sum', 'min', 'max', 'average']
+        'reducer!=': ['count', 'sum', 'min', 'max', 'average']
       }
     },
     y: {
@@ -123,7 +123,7 @@ export default class ChartSource extends Model {
       view: 'AxisSelector',
       filter: false,
       disabled: {
-        '!reducer': ['sum', 'min', 'max', 'average']
+        'reducer!=': ['sum', 'min', 'max', 'average']
       }
     },
     precision: {

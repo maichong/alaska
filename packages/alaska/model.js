@@ -32,7 +32,7 @@ function processScope(fields: string|Object, Model: Class<Alaska$Model>): Object
         throw new Error(`Can not find field ${Model.path}.scopes.${s} when process scopes`);
       }
       delete keys[s];
-    } else if (s[0] === '@') {
+    } else if (s[0] === ':') {
       s = s.substr(1);
       let scope = Model.scopes[s];
       if (!scope) {
