@@ -1,0 +1,17 @@
+{
+  "name": "alaska-recharge",
+  "version": "0.11.10",
+  "description": "Alaska recharge service",
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-recharge",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "alaska-balance": "^0.11.0",
+    "alaska-payment": "^0.11.0"
+  }
+}

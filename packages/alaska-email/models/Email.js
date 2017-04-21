@@ -28,7 +28,7 @@ export default class Email extends Model {
     title: {
       label: 'Title',
       type: String,
-      require: true
+      required: true
     },
     subject: {
       label: 'Subject',

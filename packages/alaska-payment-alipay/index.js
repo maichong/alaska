@@ -15,7 +15,7 @@ export default class AlipayPlugin {
   label: string;
   _config: Object;
   rsa_private_key: string;
-  alipay_public_key: string;
+  rsa_public_key: string;
 
   constructor(service: PaymentService) {
     this.init(service);
@@ -48,10 +48,10 @@ export default class AlipayPlugin {
     delete this._config.rsa_private_key;
     // $Flow 确认readFileSync读出数据是string
     this.rsa_private_key = fs.readFileSync(rsa_private_key) || '';
-    let alipay_public_key = this._config.alipay_public_key || service.panic('alipay_public_key not found');
+    let rsa_public_key = this._config.rsa_public_key || service.panic('rsa_public_key not found');
     // $Flow 确认readFileSync读出数据是string
-    this.alipay_public_key = fs.readFileSync(alipay_public_key) || '';
-    delete this._config.alipay_public_key;
+    this.rsa_public_key = fs.readFileSync(rsa_public_key) || '';
+    delete this._config.rsa_public_key;
   }
 
   /**
@@ -80,7 +80,7 @@ export default class AlipayPlugin {
     let link = this.createQueryString(filtered);
     let verify = crypto.createVerify('RSA-SHA1');
     verify.update(link, 'utf8');
-    return verify.verify(this.alipay_public_key, data.sign, 'base64');
+    return verify.verify(this.rsa_public_key, data.sign, 'base64');
   }
 
   /**

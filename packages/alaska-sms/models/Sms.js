@@ -18,7 +18,7 @@ export default class Sms extends Model {
     title: {
       label: 'Title',
       type: String,
-      require: true
+      required: true
     },
     driver: {
       label: 'Driver',
@@ -29,7 +29,7 @@ export default class Sms extends Model {
     content: {
       label: '内容',
       type: String,
-      require: true,
+      required: true,
       multiLine: true
     },
     createdAt: {

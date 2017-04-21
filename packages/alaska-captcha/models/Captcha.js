@@ -52,7 +52,7 @@ export default class Captcha extends Model {
     title: {
       label: 'Title',
       type: String,
-      require: true
+      required: true
     },
     type: {
       label: 'Type',

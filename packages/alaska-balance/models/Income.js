@@ -40,6 +40,9 @@ export default class Income extends Model {
         label: 'Unknown',
         value: ''
       }, {
+        label: 'Recharge',
+        value: 'recharge'
+      }, {
         label: 'Withdraw',
         value: 'withdraw'
       }, {
@@ -63,6 +66,9 @@ export default class Income extends Model {
     deposit: {
       label: 'Deposit',
       ref: 'Deposit',
+      depends: {
+        target: 'deposit'
+      },
       filters: {
         user: ':user' // 只显示当前用户Deposit列表
       }

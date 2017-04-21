@@ -16,11 +16,23 @@ export default class Payment extends Model {
     show: 3
   };
 
+  static actions = {
+    complete: {
+      title: 'Complete',
+      sled: 'Complete',
+      style: 'warning',
+      confirm: 'COMPLETE_PAYMENT_WARING',
+      depends: {
+        state: 0
+      }
+    }
+  };
+
   static fields = {
     title: {
       label: 'Title',
       type: String,
-      require: true,
+      required: true,
       private: true
     },
     user: {
@@ -31,14 +43,14 @@ export default class Payment extends Model {
     amount: {
       label: 'Amount',
       type: Number,
-      require: true,
+      required: true,
       private: true
     },
     type: {
       label: 'Payment Type',
       type: 'select',
       options: [],
-      require: true
+      required: true
     },
     params: {
       label: 'Params',

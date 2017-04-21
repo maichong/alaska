@@ -10,5 +10,6 @@ export default {
   'Payment Type': '支付类型',
   'Can not create any payment': '未能生成支付信息',
   Amount: '金额',
-  State: '状态'
+  State: '状态',
+  COMPLETE_PAYMENT_WARING: '你确定要手动完成支付吗？这可能引起危险的后果！'
 };

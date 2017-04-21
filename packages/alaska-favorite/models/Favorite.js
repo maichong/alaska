@@ -19,7 +19,7 @@ export default class Favorite extends Model {
     title: {
       label: 'Title',
       type: String,
-      require: true
+      required: true
     },
     pic: {
       label: 'Picture',
