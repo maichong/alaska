@@ -84,10 +84,10 @@ export default class RelationshipFieldView extends React.Component {
     }
   };
 
-  handleSearch = (keyword: string) => {
+  handleSearch = (keyword?: string) => {
     keyword = keyword || '';
     const { field, data } = this.props;
-    let filters = _.reduce(field.filters, (res, value, key) => {
+    let filters = _.reduce(field.filters || {}, (res: {}, value: any, key: string) => {
       res[key] = value;
       if (_.isString(value) && value[0] === ':') {
         res[key] = data[value.substr(1)];

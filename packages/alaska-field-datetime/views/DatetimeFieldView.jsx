@@ -20,12 +20,12 @@ export default class DatetimeFieldView extends React.Component {
     data: Object,
     errorText: string,
     disabled: boolean,
-    value: any,
+    value: string,
     onChange: Function,
   };
 
   state: {
-    value:moment;
+    value: Object;
   };
 
   constructor(props: Object) {
@@ -71,7 +71,7 @@ export default class DatetimeFieldView extends React.Component {
         value={valueString||value}
         dateFormat={field.dateFormat}
         timeFormat={field.timeFormat}
-        onChange={props.onChange}
+        onChange={(value)=>{props.onChange(value.format())}}
       />;
     }
 

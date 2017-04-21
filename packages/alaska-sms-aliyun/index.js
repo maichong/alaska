@@ -18,7 +18,6 @@ export default class SmsAliyunDriver extends Driver {
     if (!options.SignName) throw new Error('Aliyun sms driver init options missing SignName');
   }
 
-
   /**
    * @param {string} to
    * @param {string} message
@@ -65,6 +64,6 @@ export default class SmsAliyunDriver extends Driver {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: params + '&Signature=' + encodeURIComponent(sign)
-    })
+    });
   }
 }

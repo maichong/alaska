@@ -24,7 +24,7 @@ export default class Create extends Sled {
    *                 ...
    * @returns {Commission}
    */
-  async exec(params:Object) {
+  async exec(params: Object) {
     if (!params.user) throw new Error('user required when create commission');
 
     const commissionRates = service.config('commissionRates');
@@ -60,12 +60,10 @@ export default class Create extends Sled {
 
     if (commissionRates.length > params.level && params.price) {
       //创建多级佣金
-      let user:User;
-      let u = params.user;
-      if (!u.save) {
+      let user = params.user;
+      if (!user.save) {
         //如果不是模型记录
-        // $Flow findById
-        user = await User.findById(u);
+        user = await User.findById(user);
       }
       if (user && user.promoter) {
         //用户有上级

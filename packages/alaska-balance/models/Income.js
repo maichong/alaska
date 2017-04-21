@@ -7,11 +7,11 @@ export default class Income extends Model {
 
   static label = 'Income Record';
   static icon = 'usd';
-  static defaultColumns = 'title user type currency amount balance createdAt';
+  static defaultColumns = 'title user type deposit currency amount balance createdAt';
   static defaultSort = '-createdAt';
   static searchFields = 'title';
-  //static nocreate = true;
-  //static noedit = true;
+  static nocreate = true;
+  static noedit = true;
   static noremove = true;
 
   static api = {

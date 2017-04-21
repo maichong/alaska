@@ -6,7 +6,7 @@ import Select from 'alaska-field-select/views/Select';
 import { api } from 'alaska-admin-view';
 import _ from 'lodash';
 
-function getFilters(filters) {
+function getFilters(filters: Object) {
   if (!filters) return {};
   return _.reduce(filters, (res, value, key) => {
     if (!_.isString(value) || value[0] !== ':') {

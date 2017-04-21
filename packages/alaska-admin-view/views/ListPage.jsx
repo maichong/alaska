@@ -180,13 +180,13 @@ class ListPage extends React.Component {
 
   getFilterItems(model, filterViewsMap) {
     const { t, settings } = this.context;
-    return _.reduce(model.fields, (res, field, index) => {
+    return _.reduce(model.fields, (res: Array<any>, field: Object) => {
       if (field.hidden || !field.filter) return res;
       if (field.super && !settings.superMode) return res;
       let icon = filterViewsMap[field.path] ? CHECK_ICON : null;
       res.push(
         <MenuItem
-          key={index}
+          key={field.path}
           eventKey={field.path}
           className="with-icon"
         >{icon} {t(field.label, model.serviceId)}
@@ -197,17 +197,17 @@ class ListPage extends React.Component {
   }
 
   getColumnItems(model, columnsKeys) {
-    const { settings } = this.context;
-    return _.reduce(model.fields, (res, field, index) => {
+    const { settings, t } = this.context;
+    return _.reduce(model.fields, (res: Array<any>, field: Object) => {
       let icon = columnsKeys.indexOf(field.path) > -1 ? CHECK_ICON : null;
       if (field.hidden || !field.cell) return res;
       if (field.super && !settings.superMode) return res;
       res.push(
         <MenuItem
-          key={index}
+          key={field.path}
           eventKey={field.path}
           className="with-icon"
-        >{icon} {field.label}
+        >{icon} {t(field.label, model.serviceId)}
         </MenuItem>
       );
       return res;
@@ -273,12 +273,17 @@ class ListPage extends React.Component {
   }
 
   handleFilter = (eventKey) => {
+    const { t } = this.context;
     const { filters, filterViews, filterViewsMap, model } = this.state;
     if (filterViewsMap[eventKey]) {
       this.removeFilter(eventKey);
       return;
     }
-    const field = model.fields[eventKey];
+    let field = model.fields[eventKey];
+    if (!field) return;
+
+    field = field.set('label', t(field.label, model.serviceId));
+
     const views = this.context.views;
     let FilterView = views[field.filter];
     let view;

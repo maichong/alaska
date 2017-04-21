@@ -438,11 +438,12 @@ class EditorPage extends React.Component {
 
     let relationships = null;
     if (id != '_new' && model.relationships) {
-      relationships = _.map(model.relationships,
-        (r, index) => {
+      relationships = _.map(
+        model.relationships,
+        (r: Object, key: string) => {
           if (r.super && !settings.superMode) return;
           return <Relationship
-            key={index}
+            key={key}
             from={id}
             path={r.path}
             service={r.service}

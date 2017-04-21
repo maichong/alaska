@@ -58,5 +58,6 @@ export default {
   'Admin Icon': '管理平台图标',
   Submit: '提交',
   'Select...': '请选择...',
-  Unknown: '未知'
+  Unknown: '未知',
+  'Expired At': '到期时间'
 };

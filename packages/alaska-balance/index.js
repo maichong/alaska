@@ -25,15 +25,16 @@ class BalanceService extends Service {
     USER.pre('registerModel', (Model) => {
       if (Model.name !== 'User') return;
       service._currencies.forEach((c) => {
-        Model.underscoreMethod(c.value, 'income', async function (amount, title, type) {
+        Model.underscoreMethod(c.value, 'income', async function (amount: number, title: string, type: ?string) {
+          // 只能在这里导入模型，如果在头部import会循环引用
+          const Income = service.model('Income');
           let user = this;
           let balance = (user.get(c.value) + amount) || 0;
           if (c.precision !== undefined) {
             balance = _.round(balance, c.precision);
           }
           user.set(c.value, balance);
-          let Income = service.model('Income');
-          let imcome = new Income({
+          let income = new Income({
             type,
             title,
             amount,
@@ -41,7 +42,7 @@ class BalanceService extends Service {
             currency: c.value,
             user
           });
-          await imcome.save();
+          await income.save();
           await user.save();
         });
         if (Model.fields[c.value]) return;
