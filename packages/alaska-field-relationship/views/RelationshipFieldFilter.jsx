@@ -4,6 +4,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'alaska-field-select/views/Select';
 import { api } from 'alaska-admin-view';
+import _ from 'lodash';
+
+function getFilters(filters) {
+  if (!filters) return {};
+  return _.reduce(filters, (res, value, key) => {
+    if (!_.isString(value) || value[0] !== ':') {
+      res[key] = value;
+    }
+    return res;
+  }, {});
+}
 
 export default class RelationshipFieldFilter extends React.Component {
 
@@ -61,14 +72,14 @@ export default class RelationshipFieldFilter extends React.Component {
       .param('model', field.model)
       .param('value', field.value)
       .search(keyword)
-      .where(field.filters || {})
+      .where(getFilters(field.filters))
       .then((res) => {
         callback(null, { options: res.results });
       }, callback);
   };
 
-  handleChange = (option: Alaska$SelectField$option) => {
-    this.setState({ value: option ? option.value : undefined }, () => this.handleBlur());
+  handleChange = (value: string) => {
+    this.setState({ value }, () => this.handleBlur());
   };
 
   handleBlur = () => {
@@ -91,7 +102,7 @@ export default class RelationshipFieldFilter extends React.Component {
     let className = 'row field-filter relationship-field-filter' + (error ? ' error' : '');
     return (
       <div className={className}>
-        <label className="col-xs-2 control-label text-right">{field.label}</label>
+        <label className="col-xs-2 control-label text-right">{t(field.label)}</label>
         <div className="form-inline col-xs-10">
           <div className="form-group" style={{ minWidth: 230 }}>
             <Select

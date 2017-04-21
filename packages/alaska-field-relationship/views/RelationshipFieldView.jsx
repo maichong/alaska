@@ -7,6 +7,7 @@ import Select from 'alaska-field-select/views/Select';
 import Switch from 'alaska-field-select/views/Switch';
 import SelectCheckbox from 'alaska-field-select/views/SelectCheckbox';
 import { api } from 'alaska-admin-view';
+import immutable from 'seamless-immutable';
 
 function getOptionValue(opt) {
   if (opt && typeof opt === 'object') return opt.value;
@@ -27,13 +28,16 @@ export default class RelationshipFieldView extends React.Component {
 
   state: {
     value?: string | number | Array<any>;
-    options: Alaska$SelectField$option[]
+    options: Alaska$SelectField$option[] | null
   };
+
+  cache: Object;
 
   constructor(props: Object) {
     super(props);
+    this.cache = {};
     this.state = {
-      options: []
+      options: null
     };
   }
 
@@ -45,8 +49,24 @@ export default class RelationshipFieldView extends React.Component {
   }
 
   shouldComponentUpdate(props: Object, state: Object) {
+    if (props.data !== this.props.data) {
+      let filters = props.field.filters;
+      if (
+        _.find(
+          filters,
+          (v) => (_.isString(v) && v[0] === ':' && props.data[v.substr(1)] !== this.props.data[v.substr(1)])
+        )
+      ) {
+        setTimeout(this.handleSearch);
+        return true;
+      }
+    }
     return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'search')
       || this.state.options !== state.options;
+  }
+
+  componentWillUnmount() {
+    this.cache = {};
   }
 
   handleChange = (value: string|number) => {
@@ -64,21 +84,42 @@ export default class RelationshipFieldView extends React.Component {
     }
   };
 
-  handleSearch = (keyword: string, callback: Function) => {
-    let field = this.props.field;
+  handleSearch = (keyword: string) => {
+    keyword = keyword || '';
+    const { field, data } = this.props;
+    let filters = _.reduce(field.filters, (res, value, key) => {
+      res[key] = value;
+      if (_.isString(value) && value[0] === ':') {
+        res[key] = data[value.substr(1)];
+      }
+      return res;
+    }, {});
+
+    let cacheKey = JSON.stringify(filters) + keyword;
+    if (this.cache[cacheKey]) {
+      if (this.cache[cacheKey] === this.state.options) return;
+      setTimeout(() => {
+        this.setState({ options: this.cache[cacheKey] });
+      });
+      return;
+    }
+
     api('/api/relation')
       .param('service', field.service)
       .param('model', field.model)
       .param('value', field.value)
       .search(keyword)
-      .where(field.filters || {})
+      .where(filters)
       .then((res) => {
-        callback(null, { options: res.results });
-      }, callback);
+        let options = immutable(res.results);
+        this.cache[cacheKey] = options;
+        this.setState({ options });
+      });
   };
 
   render() {
     let { field, value, disabled, errorText } = this.props;
+    const options = this.state.options;
     let help = field.help;
     let View = Select;
     if (field.checkbox) {
@@ -95,14 +136,9 @@ export default class RelationshipFieldView extends React.Component {
 
     let inputElement;
     if (field.fixed) {
-      let options = this.state.options;
       let opts = [];
       if (!options) {
-        this.handleSearch('', (error, res) => {
-          if (res) {
-            this.setState(res);
-          }
-        });
+        this.handleSearch();
       } else {
         if (typeof value === 'string') {
           value = [value];
@@ -131,6 +167,7 @@ export default class RelationshipFieldView extends React.Component {
           value={value || ''}
           disabled={disabled}
           onChange={this.handleChange}
+          options={options}
           loadOptions={this.handleSearch}
         />
       );
