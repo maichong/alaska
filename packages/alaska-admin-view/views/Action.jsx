@@ -1,19 +1,18 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import shallowEqualWithout from 'shallow-equal-without';
 import type { Model, Action as ActionData, Views }from '../types';
-
-const { object, func } = React.PropTypes;
 
 const NULL = <div />;
 
 export default class Action extends React.Component {
 
   static contextTypes = {
-    views: object,
-    t: func
+    views: PropTypes.object,
+    t: PropTypes.func
   };
 
   context: {

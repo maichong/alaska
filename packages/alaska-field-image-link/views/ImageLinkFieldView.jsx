@@ -1,17 +1,16 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import shallowEqualWithout from 'shallow-equal-without';
 import { api } from 'alaska-admin-view';
 
-const { object, func } = React.PropTypes;
-
 export default class ImageLinkFieldView extends React.Component {
 
   static contextTypes = {
-    settings: object,
-    t: func
+    settings: PropTypes.object,
+    t: PropTypes.func
   };
 
   props: {

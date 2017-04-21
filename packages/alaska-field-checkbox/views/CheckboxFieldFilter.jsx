@@ -1,13 +1,12 @@
 // @flow
 
 import React from 'react';
-
-const { func } = React.PropTypes;
+import PropTypes from 'prop-types';
 
 export default class CheckboxFieldFilter extends React.Component {
 
   static contextTypes = {
-    t: func,
+    t: PropTypes.func,
   };
 
   props: {

@@ -1,15 +1,14 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import type { Model } from '../types';
-
-const { object } = React.PropTypes;
 
 export default class FilterEditor extends React.Component {
 
   static contextTypes = {
-    views: object
+    views: PropTypes.object
   };
 
   props: {

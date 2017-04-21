@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
@@ -15,19 +16,18 @@ import * as listRedux from '../redux/lists';
 import { refreshSettings } from '../redux/settings';
 import type { Lists, Service, Model, Record } from '../types';
 
-const { object, func } = React.PropTypes;
 const CHECK_ICON = <i className="fa fa-check" />;
 
 class ListPage extends React.Component {
 
   static contextTypes = {
-    actions: object,
-    views: object,
-    settings: object,
-    t: func,
-    confirm: func,
-    toast: func,
-    router: object,
+    actions: PropTypes.object,
+    views: PropTypes.object,
+    settings: PropTypes.object,
+    t: PropTypes.func,
+    confirm: PropTypes.func,
+    toast: PropTypes.func,
+    router: PropTypes.object,
   };
 
   props: {

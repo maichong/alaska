@@ -4,6 +4,7 @@
 /* eslint no-unused-vars:1 */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import ReactSelect from 'react-select';
 
@@ -30,7 +31,7 @@ function createFromSearchMulti(options, values, search) {
 export default class Select extends React.Component {
 
   static contextTypes = {
-    t: React.PropTypes.func
+    t: PropTypes.func
   };
 
   props: {

@@ -1,16 +1,15 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as saveRedux from 'alaska-admin-view/redux/save';
 
-const { func } = React.PropTypes;
-
 class GoodsPropsValueEditor extends React.Component {
 
   static contextTypes = {
-    t: func
+    t: PropTypes.func
   };
 
   props: {

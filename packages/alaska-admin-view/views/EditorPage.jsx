@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import immutable from 'seamless-immutable';
 import _ from 'lodash';
@@ -17,17 +18,15 @@ import ContentHeader from './ContentHeader';
 import * as settingsRedux from '../redux/settings';
 import type { Settings, Details, Views } from '../types';
 
-const { object, func } = React.PropTypes;
-
 class EditorPage extends React.Component {
 
   static contextTypes = {
-    views: object,
-    settings: object,
-    t: func,
-    router: object,
-    toast: func,
-    confirm: func,
+    views: PropTypes.object,
+    settings: PropTypes.object,
+    t: PropTypes.func,
+    router: PropTypes.object,
+    toast: PropTypes.func,
+    confirm: PropTypes.func,
   };
 
   context: {

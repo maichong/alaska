@@ -1,23 +1,22 @@
 // @flow
 
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import akita from 'akita';
 import shallowEqualWithout from 'shallow-equal-without';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Node from './Node';
 import Action from './Action';
 import type { Model, Record, Settings } from '../types';
 
-const { object, func } = React.PropTypes;
-
 export default class ListActions extends React.Component {
 
   static contextTypes = {
-    settings: object,
-    t: func,
-    confirm: func,
-    toast: func
+    settings: PropTypes.object,
+    t: PropTypes.func,
+    confirm: PropTypes.func,
+    toast: PropTypes.func
   };
 
   context: {

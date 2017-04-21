@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import qs from 'qs';
@@ -8,13 +9,11 @@ import DataTable from './DataTable';
 import * as listRedux from '../redux/lists';
 import type { Model, Record } from '../types';
 
-const { object, func } = React.PropTypes;
-
 class Relationship extends React.Component {
 
   static contextTypes = {
-    settings: object,
-    t: func,
+    settings: PropTypes.object,
+    t: PropTypes.func,
   };
 
   props: {

@@ -1,15 +1,14 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import DateTime from 'react-datetime';
 import moment from 'moment';
-
-const { func } = React.PropTypes;
 
 export default class DatetimeFieldFilter extends React.Component {
 
   static contextTypes = {
-    t: func,
+    t: PropTypes.func,
   };
 
   props: {

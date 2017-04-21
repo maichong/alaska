@@ -1,15 +1,14 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
 import Simditor from 'simditor';
-
-const { object } = React.PropTypes;
 
 export default class HtmlFieldView extends React.Component {
 
   static contextTypes = {
-    settings: object,
+    settings: PropTypes.object,
   };
 
   props: {

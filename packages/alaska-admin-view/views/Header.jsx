@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { NavDropdown, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
@@ -11,14 +12,12 @@ import Node from './Node';
 import LocaleNav from './LocaleNav';
 import * as loginRedux from '../redux/login';
 
-const { object, func } = React.PropTypes;
-
 class Header extends React.Component {
 
   static contextTypes = {
-    actions: object,
-    views: object,
-    t: func,
+    actions: PropTypes.object,
+    views: PropTypes.object,
+    t: PropTypes.func,
   };
 
   props: {

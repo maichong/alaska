@@ -1,16 +1,15 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import Select from 'alaska-field-select/views/Select';
-
-const { func, object } = React.PropTypes;
 
 export default class AxisSelector extends React.Component {
 
   static contextTypes = {
-    settings: object,
-    t: func
+    settings: PropTypes.object,
+    t: PropTypes.func
   };
 
   props: {

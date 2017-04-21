@@ -2,21 +2,20 @@
 
 import _ from 'lodash';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { IF, ELSE } from 'jsx-plus';
 import shallowEqualWithout from 'shallow-equal-without';
 import DataTableRow from './DataTableRow';
 import type { Model, Record } from '../types';
 
-const { object, func } = React.PropTypes;
-
 export default class DataTable extends React.Component {
 
   static contextTypes = {
-    router: object,
-    settings: object,
-    views: object,
-    t: func,
+    router: PropTypes.object,
+    settings: PropTypes.object,
+    views: PropTypes.object,
+    t: PropTypes.func,
   };
 
   props: {

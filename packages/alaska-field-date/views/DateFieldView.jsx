@@ -1,19 +1,17 @@
 // @flow
 
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
 import DateTime from 'react-datetime';
 import moment from 'moment';
 // $Flow
 import 'moment/locale/zh-cn';
 
-const { object } = React.PropTypes;
-
 export default class DateFieldView extends React.Component {
 
   static contextTypes = {
-    settings: object
+    settings: PropTypes.object
   };
 
   props: {

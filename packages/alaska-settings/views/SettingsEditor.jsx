@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -9,14 +10,12 @@ import { save } from 'alaska-admin-view/redux/save';
 
 const KEY = 'alaska-settings.settings';
 
-const { object, func } = React.PropTypes;
-
 class SettingsEditor extends React.Component {
 
   static contextTypes = {
-    views: object,
-    settings: object,
-    t: func
+    views: PropTypes.object,
+    settings: PropTypes.object,
+    t: PropTypes.func
   };
 
   props: {

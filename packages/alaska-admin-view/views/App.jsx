@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import IntlMessageFormat from 'intl-messageformat';
 import { Router, Route, IndexRoute, useRouterHistory } from 'react-router';
 import createHashHistory from 'history/lib/createHashHistory';
@@ -28,17 +29,15 @@ const history = createAppHistory({
   stringifyQuery: qs.stringify
 });
 
-const { object, func } = React.PropTypes;
-
 class App extends React.Component {
 
   static childContextTypes = {
-    views: object,
-    settings: object,
-    t: func,
-    alert: func,
-    confirm: func,
-    toast: func,
+    views: PropTypes.object,
+    settings: PropTypes.object,
+    t: PropTypes.func,
+    alert: PropTypes.func,
+    confirm: PropTypes.func,
+    toast: PropTypes.func,
   };
 
   props: {

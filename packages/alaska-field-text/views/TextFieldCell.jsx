@@ -3,13 +3,12 @@
 /* eslint eqeqeq:0 */
 
 import React from 'react';
-
-const { func } = React.PropTypes;
+import PropTypes from 'prop-types';
 
 export default class TextFieldCell extends React.Component {
 
   static contextTypes = {
-    t: func,
+    t: PropTypes.func,
   };
 
   props: {

@@ -1,20 +1,19 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { IF } from 'jsx-plus';
 import { connect } from 'react-redux';
 import * as loginRedux from '../redux/login';
 import Node from './Node';
 
-const { func, object } = React.PropTypes;
-
 class Login extends React.Component {
 
   static contextTypes = {
-    actions: object,
-    settings: object,
-    t: func,
+    actions: PropTypes.object,
+    settings: PropTypes.object,
+    t: PropTypes.func,
   };
 
   props: {

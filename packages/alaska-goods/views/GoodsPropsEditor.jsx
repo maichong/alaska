@@ -1,19 +1,18 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { api } from 'alaska-admin-view';
 import Select from 'alaska-field-select/views/Select';
 import SelectCheckbox from 'alaska-field-select/views/SelectCheckbox';
 import Switch from 'alaska-field-select/views/Switch';
 
-const { func, object } = React.PropTypes;
-
 export default class GoodsPropsEditor extends React.Component {
 
   static contextTypes = {
-    settings: object,
-    t: func
+    settings: PropTypes.object,
+    t: PropTypes.func
   };
 
   state: {

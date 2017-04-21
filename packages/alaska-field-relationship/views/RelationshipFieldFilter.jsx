@@ -1,15 +1,14 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Select from 'alaska-field-select/views/Select';
 import { api } from 'alaska-admin-view';
-
-const { func } = React.PropTypes;
 
 export default class RelationshipFieldFilter extends React.Component {
 
   static contextTypes = {
-    t: func,
+    t: PropTypes.func,
   };
 
   props: {

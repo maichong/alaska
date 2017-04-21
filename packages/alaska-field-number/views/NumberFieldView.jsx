@@ -3,15 +3,14 @@
 /* eslint eqeqeq:0 */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import numeral from 'numeral';
 import shallowEqualWithout from 'shallow-equal-without';
-
-const { func } = React.PropTypes;
 
 export default class NumberFieldView extends React.Component {
 
   static contextTypes = {
-    t: func,
+    t: PropTypes.func,
   };
 
   props: {

@@ -1,17 +1,16 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Menu from './Menu';
 import Copyright from './Copyright';
 import Node from './Node';
 import Logo from './Logo';
 
-const { object } = React.PropTypes;
-
 export default class Sidebar extends React.Component {
 
   static contextTypes = {
-    router: object
+    router: PropTypes.object
   };
 
   props: {

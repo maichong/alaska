@@ -1,15 +1,14 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { getOptionValue } from './utils';
-
-const { func } = React.PropTypes;
 
 export default class SelectFieldCell extends React.Component {
 
   static contextTypes = {
-    t: func
+    t: PropTypes.func
   };
 
   props: {

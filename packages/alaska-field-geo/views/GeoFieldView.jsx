@@ -1,14 +1,13 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
-
-const { func } = React.PropTypes;
 
 export default class GeoFieldView extends React.Component {
 
   static contextTypes = {
-    t: func,
+    t: PropTypes.func,
   };
 
   props: {

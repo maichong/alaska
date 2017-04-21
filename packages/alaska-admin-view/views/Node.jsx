@@ -1,14 +1,13 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
-
-const { object } = React.PropTypes;
 
 export default class Node extends React.Component {
 
   static contextTypes = {
-    views: object
+    views: PropTypes.object
   };
 
   props: {

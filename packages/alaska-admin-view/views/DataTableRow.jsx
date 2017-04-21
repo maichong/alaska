@@ -1,14 +1,13 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { IF, ELSE } from 'jsx-plus';
-
-const { object } = React.PropTypes;
 
 export default class DataTableRow extends React.Component {
 
   static contextTypes = {
-    views: object
+    views: PropTypes.object
   };
 
   props: {

@@ -1,19 +1,18 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import FilterEditor from 'alaska-admin-view/views/FilterEditor';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
 
 const CHECK_ICON = <i className="fa fa-check" />;
 
-const { object, func } = React.PropTypes;
-
 export default class FilterFieldView extends React.Component {
 
   static contextTypes = {
-    settings: object,
-    t: func
+    settings: PropTypes.object,
+    t: PropTypes.func
   };
 
   props: {

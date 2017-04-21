@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Modal } from 'react-bootstrap';
 import _ from 'lodash';
 
@@ -109,12 +110,10 @@ function createPropsMap(props) {
   return map;
 }
 
-const { func } = React.PropTypes;
-
 export default class GoodsSkuEditor extends React.Component {
 
   static contextTypes = {
-    t: func
+    t: PropTypes.func
   };
 
   props: {

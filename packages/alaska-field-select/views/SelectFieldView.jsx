@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import shallowEqualWithout from 'shallow-equal-without';
 import checkDepends from 'check-depends';
@@ -9,12 +10,10 @@ import SelectCheckbox from './SelectCheckbox';
 import Switch from './Switch';
 import { getOptionValue } from './utils';
 
-const { func } = React.PropTypes;
-
 export default class SelectFieldView extends React.Component {
 
   static contextTypes = {
-    t: func,
+    t: PropTypes.func,
   };
 
   props: {

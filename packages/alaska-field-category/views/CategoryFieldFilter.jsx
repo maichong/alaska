@@ -1,14 +1,13 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { api } from 'alaska-admin-view';
 import MultiLevelSelect from './MultiLevelSelect';
 
-const { func } = React.PropTypes;
-
 export default class CategoryFieldFilter extends React.Component {
   static contextTypes = {
-    t: func
+    t: PropTypes.func
   };
 
   props: {

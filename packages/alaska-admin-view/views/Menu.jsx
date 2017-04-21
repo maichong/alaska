@@ -1,10 +1,9 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
 import Node from './Node';
-
-const { object, func } = React.PropTypes;
 
 function findSubs(subs, id) {
   for (let i = 0; i < subs.length; i += 1) {
@@ -21,8 +20,8 @@ function findSubs(subs, id) {
 export default class Menu extends React.Component {
 
   static contextTypes = {
-    views: object,
-    t: func
+    views: PropTypes.object,
+    t: PropTypes.func
   };
 
   props: {

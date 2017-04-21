@@ -1,15 +1,14 @@
 // @flow
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Node from './Node';
 import type { Settings } from '../types';
-
-const { object } = React.PropTypes;
 
 export default class Logo extends React.Component {
 
   static contextTypes = {
-    settings: object
+    settings: PropTypes.object
   };
 
   context: {
