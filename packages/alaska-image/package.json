@@ -1,6 +1,6 @@
 {
   "name": "alaska-image",
-  "version": "0.11.10",
+  "version": "0.11.12",
   "description": "Alaska image service",
   "keywords": [
     "alaska",
@@ -11,7 +11,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-image": "^0.11.10",
+    "alaska-field-image": "^0.11.12",
     "akita-node": "^0.3.6"
   }
 }

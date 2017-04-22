@@ -1,6 +1,6 @@
 {
   "name": "alaska-statistics",
-  "version": "0.11.10",
+  "version": "0.11.12",
   "description": "Alaska statistics service",
   "keywords": [
     "alaska",
@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "react-chartjs": "github:jhudson8/react-chartjs#chartjs-v2",
-    "alaska-field-select": "^0.11.10",
+    "alaska-field-select": "^0.11.12",
     "color": "^1.0.3",
     "chart.js": "^2.5.0",
     "number-random": "^0.1.1"

@@ -1,6 +1,6 @@
 {
   "name": "alaska-address",
-  "version": "0.11.11",
+  "version": "0.11.12",
   "description": "Alaska address service",
   "keywords": [
     "alaska",
@@ -12,7 +12,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-user": "^0.11.11",
-    "alaska-field-geo": "^0.11.10"
+    "alaska-user": "^0.11.12",
+    "alaska-field-geo": "^0.11.12"
   }
 }
