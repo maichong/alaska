@@ -5,6 +5,7 @@ import React from 'react';
 export default class Checkbox extends React.Component {
 
   props: {
+    className?: string,
     style?: Object,
     radio?: boolean,
     value: boolean,
@@ -20,9 +21,9 @@ export default class Checkbox extends React.Component {
   };
 
   render() {
-    const { radio, value, disabled, label, style } = this.props;
-
-    let className = 'checkbox';
+    let { className, radio, value, disabled, label, style } = this.props;
+    className = className || '';
+    className += ' checkbox';
     if (disabled) {
       className += ' disabled';
     }

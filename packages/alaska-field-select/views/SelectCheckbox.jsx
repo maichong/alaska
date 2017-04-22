@@ -97,8 +97,13 @@ export default class SelectCheckbox extends React.Component {
       <div>{
         _.map(options, (opt) => {
           let vid = getOptionValue(opt);
+          let className = '';
+          if (opt.style) {
+            className = 'text-' + opt.style;
+          }
           return (<Checkbox
             key={vid}
+            className={className}
             disabled={disabled}
             radio={!multi}
             label={opt.label}

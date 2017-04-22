@@ -93,7 +93,7 @@ export default class Recharge extends Model {
       label: 'State',
       type: 'select',
       number: true,
-      switch: true,
+      checkbox: true,
       default: 0,
       options: [{
         label: 'Pending',
