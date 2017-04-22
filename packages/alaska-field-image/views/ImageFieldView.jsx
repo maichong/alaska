@@ -14,6 +14,7 @@ export default class ImageFieldView extends React.Component {
   };
 
   props: {
+    className: string,
     model: Object,
     field: Object,
     data: Object,
@@ -127,7 +128,7 @@ export default class ImageFieldView extends React.Component {
   }
 
   render() {
-    let { field, value, disabled } = this.props;
+    let { className, field, value, disabled } = this.props;
     let { errorText, max } = this.state;
     if (!field.multi) {
       value = value ? [value] : [];
@@ -170,7 +171,7 @@ export default class ImageFieldView extends React.Component {
     }
 
     let help = field.help;
-    let className = 'form-group image-field';
+    className += ' image-field';
     if (errorText) {
       className += ' has-error';
       help = errorText;

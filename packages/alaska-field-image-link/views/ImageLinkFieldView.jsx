@@ -14,6 +14,7 @@ export default class ImageLinkFieldView extends React.Component {
   };
 
   props: {
+    className: string,
     model: Object,
     field: Object,
     data: Object,
@@ -120,7 +121,7 @@ export default class ImageLinkFieldView extends React.Component {
   }
 
   render() {
-    let { field, value, disabled } = this.props;
+    let { className, field, value, disabled } = this.props;
     let { errorText, max } = this.state;
     if (!field.multi) {
       value = value ? [value] : [];
@@ -164,7 +165,7 @@ export default class ImageLinkFieldView extends React.Component {
     }
 
     let help = field.help;
-    let className = 'form-group image-field image-link-field';
+    className += ' image-field image-link-field';
     if (errorText) {
       className += ' has-error';
       help = errorText;

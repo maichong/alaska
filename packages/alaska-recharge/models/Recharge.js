@@ -97,13 +97,16 @@ export default class Recharge extends Model {
       default: 0,
       options: [{
         label: 'Pending',
-        value: 0
+        value: 0,
+        style: 'info'
       }, {
         label: 'Success',
-        value: 1
+        value: 1,
+        style: 'success'
       }, {
         label: 'Failed',
-        value: -1
+        value: -1,
+        style: 'danger'
       }]
     },
     createdAt: {

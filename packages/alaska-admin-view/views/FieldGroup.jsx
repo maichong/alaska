@@ -11,12 +11,11 @@ export default class FieldGroup extends React.Component {
     panel?: boolean,
     className?: string,
     title?: string,
-    style?: string,
     wrapper?: string,
   };
 
   render() {
-    const { title, style, panel, form, className, wrapper, children } = this.props;
+    const { title, panel, form, className, wrapper, children } = this.props;
     let el = children;
     if (form !== false) {
       el = <div className="field-group-form form-horizontal">
@@ -25,11 +24,7 @@ export default class FieldGroup extends React.Component {
     }
     if (panel !== false) {
       let heading = title ? <div className="panel-heading">{title}</div> : null;
-      let cls = 'field-group-panel panel panel-' + (style || 'default');
-      if (className) {
-        cls += ' ' + className;
-      }
-      el = <div className={cls}>
+      el = <div className={className}>
         {heading}
         <div className="panel-body">{el}</div>
       </div>;

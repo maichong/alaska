@@ -16,6 +16,7 @@ export default class FilterFieldView extends React.Component {
   };
 
   props: {
+    className: string,
     field: Object,
     errorText: string,
     disabled: boolean,
@@ -104,9 +105,9 @@ export default class FilterFieldView extends React.Component {
   };
 
   render() {
-    const { field, value, disabled, onChange, errorText } = this.props;
+    let { className, field, value, disabled, onChange, errorText } = this.props;
     const { model, selectedFields } = this.state;
-    let className = 'form-group filter-field';
+    className += ' filter-field';
     if (errorText) {
       className += ' has-error';
     }

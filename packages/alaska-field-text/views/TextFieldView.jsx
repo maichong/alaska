@@ -11,6 +11,7 @@ export default class TextFieldView extends React.Component {
   };
 
   props: {
+    className: string,
     model: Object,
     field: Object,
     data: Object,
@@ -32,6 +33,7 @@ export default class TextFieldView extends React.Component {
 
   render() {
     let {
+      className,
       field,
       disabled,
       value,
@@ -40,7 +42,7 @@ export default class TextFieldView extends React.Component {
     } = this.props;
     const t = this.context.t;
     let help = field.help;
-    let className = 'form-group text-field';
+    className += ' text-field';
     if (errorText) {
       className += ' has-error';
       help = errorText;

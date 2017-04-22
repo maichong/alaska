@@ -54,8 +54,7 @@ export default class Goods extends Model {
       panel: false
     },
     desc: {
-      title: 'Description',
-      className: 'noborder'
+      title: 'Description'
     }
   };
 

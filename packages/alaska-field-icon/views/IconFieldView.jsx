@@ -6,6 +6,7 @@ import shallowEqualWithout from 'shallow-equal-without';
 export default class IconFieldView extends React.Component {
 
   props: {
+    className: string,
     model: Object,
     field: Object,
     data: Object,
@@ -28,13 +29,14 @@ export default class IconFieldView extends React.Component {
 
   render() {
     let {
+      className,
       field,
       disabled,
       value,
       errorText
     } = this.props;
     let help = field.help;
-    let className = 'form-group icon-field';
+    className += ' icon-field';
     if (errorText) {
       className += ' has-error';
       help = errorText;

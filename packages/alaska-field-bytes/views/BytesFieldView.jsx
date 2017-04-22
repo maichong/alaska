@@ -8,6 +8,7 @@ import shallowEqualWithout from 'shallow-equal-without';
 export default class BytesFieldView extends React.Component {
 
   props: {
+    className: string,
     value: any,
     model: Object,
     data: Object,
@@ -78,13 +79,14 @@ export default class BytesFieldView extends React.Component {
   };
 
   render() {
-    const {
+    let {
+      className,
       field,
       disabled,
       errorText,
     } = this.props;
     let { help, unit, size, precision } = field;
-    let className = 'form-group bytes-field';
+    className += ' bytes-field';
     if (errorText) {
       className += ' has-error';
       help = errorText;

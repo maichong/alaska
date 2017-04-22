@@ -353,7 +353,8 @@ class EditorPage extends React.Component {
         field: cfg.merge({ label, help }),
         disabled,
         errorText: errors[key],
-        onChange: this.handleChange.bind(this, key)
+        onChange: this.handleChange.bind(this, key),
+        className: 'form-group ' + model.id + '-' + key + '-view'
       };
 
       let view = React.createElement(ViewClass, fieldProps);
@@ -370,7 +371,8 @@ class EditorPage extends React.Component {
         continue;
       }
       if (group.super && !settings.superMode) continue;
-      let groupEl = <FieldGroup key={groupKey} {...group}>{group.fields}</FieldGroup>;
+      let className = model.id + '-group-' + groupKey + ' field-group-panel panel panel-' + (group.style || 'default');
+      let groupEl = <FieldGroup key={groupKey} className={className} {...group}>{group.fields}</FieldGroup>;
       groupElements.push(groupEl);
     }
 
@@ -455,7 +457,7 @@ class EditorPage extends React.Component {
     }
 
     return (
-      <Node id="editor" props={this.props} state={this.state}>
+      <Node id="editor" props={this.props} state={this.state} className={serviceId + '-' + model.id}>
         <ContentHeader>
           {title}
         </ContentHeader>

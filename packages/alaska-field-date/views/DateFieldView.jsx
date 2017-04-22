@@ -15,6 +15,7 @@ export default class DateFieldView extends React.Component {
   };
 
   props: {
+    className: string,
     model: Object,
     field: Object,
     data: Object,
@@ -33,9 +34,9 @@ export default class DateFieldView extends React.Component {
   }
 
   render() {
-    let { value, field, disabled, errorText, onChange } = this.props;
+    let { className, value, field, disabled, errorText, onChange } = this.props;
     let help = field.help;
-    let className = 'form-group date-field';
+    className += ' date-field';
     if (errorText) {
       className += ' has-error';
       help = errorText;

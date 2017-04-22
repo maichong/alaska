@@ -11,6 +11,7 @@ export default class GeoFieldView extends React.Component {
   };
 
   props: {
+    className: string,
     model: Object,
     field: Object,
     errorText: string,
@@ -24,13 +25,14 @@ export default class GeoFieldView extends React.Component {
 
   render() {
     let {
+      className,
       field,
       value,
       errorText
     } = this.props;
     const t = this.context.t;
     let help = field.help;
-    let className = 'form-group geo-field';
+    className += ' geo-field';
     if (errorText) {
       className += ' has-error';
       help = errorText;

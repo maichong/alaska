@@ -15,6 +15,7 @@ export default class SelectFieldFilter extends React.Component {
   };
 
   props: {
+    className: string,
     value: any,
     field: Object,
     onChange: Function,
@@ -74,11 +75,11 @@ export default class SelectFieldFilter extends React.Component {
 
   render() {
     const t = this.context.t;
-    const { field, onClose } = this.props;
+    let { className, field, onClose } = this.props;
     const { value, inverse, error } = this.state;
     const buttonClassName = 'btn btn-default';
     const buttonClassNameActive = buttonClassName + ' btn-success';
-    let className = 'row field-filter select-field-filter' + (error ? ' error' : '');
+    className += ' select-field-filter' + (error ? ' error' : '');
     let View = Select;
     if (field.checkbox) {
       View = SelectCheckbox;

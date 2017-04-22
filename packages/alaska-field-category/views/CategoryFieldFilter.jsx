@@ -11,6 +11,7 @@ export default class CategoryFieldFilter extends React.Component {
   };
 
   props: {
+    className: string,
     value: any,
     field: Object,
     onChange: Function,
@@ -85,11 +86,11 @@ export default class CategoryFieldFilter extends React.Component {
 
   render() {
     const t = this.context.t;
-    const { field, onClose } = this.props;
+    let { className, field, onClose } = this.props;
     const { value, inverse, error, options } = this.state;
     const buttonClassName = 'btn btn-default';
     const buttonClassNameActive = buttonClassName + ' btn-success';
-    let className = 'row field-filter category-field-filter' + (error ? ' error' : '');
+    className += ' category-field-filter' + (error ? ' error' : '');
     return (
       <div className={className}>
         <label className="col-xs-2 control-label text-right">{field.label}</label>

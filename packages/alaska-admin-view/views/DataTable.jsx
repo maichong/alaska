@@ -137,11 +137,13 @@ export default class DataTable extends React.Component {
       return <div className="loading">Loading...</div>;
     }
 
+    let className = 'data-table table table-hover ' + model.serviceId + '-' + model.id + '-data';
+
     let selectEl = onSelect ?
       <th onClick={this.handleSelectAll} width="29"><input type="checkbox" checked={this.isAllSelected()} />
       </th> : null;
     return (
-      <table className="data-table table table-hover">
+      <table className={className}>
         <thead>
         <tr>
           {selectEl}

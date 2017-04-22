@@ -10,6 +10,7 @@ export default class CheckboxFieldFilter extends React.Component {
   };
 
   props: {
+    className: string,
     value: any,
     field: Object,
     onChange: Function,
@@ -43,12 +44,12 @@ export default class CheckboxFieldFilter extends React.Component {
 
   render() {
     const t = this.context.t;
-    const { field, onClose } = this.props;
+    let { className, field, onClose } = this.props;
     const { value } = this.state;
     const buttonClassName = 'btn btn-default';
     const buttonClassNameActive = 'btn btn-success';
     return (
-      <div className="row field-filter checkbox-field-filter">
+      <div className={className + 'checkbox-field-filter'}>
         <label className="col-xs-2 control-label text-right">{field.label}</label>
         <div className="col-xs-10">
           <div className="btn-group">

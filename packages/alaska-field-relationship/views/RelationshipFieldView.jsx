@@ -17,6 +17,7 @@ function getOptionValue(opt) {
 export default class RelationshipFieldView extends React.Component {
 
   props: {
+    className: string,
     model: Object,
     field: Object,
     data: Object,
@@ -118,8 +119,7 @@ export default class RelationshipFieldView extends React.Component {
   };
 
   render() {
-    console.log('render', this);
-    let { field, value, disabled, errorText } = this.props;
+    let { className, field, value, disabled, errorText } = this.props;
     const options = this.state.options;
     let help = field.help;
     let View = Select;
@@ -128,7 +128,7 @@ export default class RelationshipFieldView extends React.Component {
     } else if (field.switch) {
       View = Switch;
     }
-    let className = 'form-group relationship-field';
+    className += ' relationship-field';
     if (errorText) {
       className += ' has-error';
       help = errorText;

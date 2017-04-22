@@ -297,8 +297,15 @@ class ListPage extends React.Component {
     const onClose = () => {
       this.removeFilter(field.path);
     };
-    view = filterViewsMap[eventKey] =
-      <FilterView key={eventKey} field={field} onChange={onChange} onClose={onClose} value={filters[eventKey]} />;
+    let className = model.id + '-' + field.path + '-filter row field-filter';
+    view = filterViewsMap[eventKey] = <FilterView
+      key={eventKey}
+      className={className}
+      field={field}
+      onChange={onChange}
+      onClose={onClose}
+      value={filters[eventKey]}
+    />;
     filterViews.push(view);
     this.setState({ filterViews, filterViewsMap, filterItems: this.getFilterItems(model, filterViewsMap) });
   };
@@ -401,7 +408,6 @@ class ListPage extends React.Component {
         >{columnsItems}</DropdownButton>);
     }
 
-
     if (!location.query.norefresh) {
       titleBtns.push(
         <button
@@ -426,7 +432,7 @@ class ListPage extends React.Component {
     }
 
     return (
-      <Node id="list">
+      <Node id="list" className={model.serviceId + '-' + model.id}>
         <ContentHeader actions={titleBtns}>
           {t(model.label || model.name, service.id)} &nbsp;
           <i>{t('total records', { total: list.total })}</i>

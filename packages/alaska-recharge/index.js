@@ -1,6 +1,7 @@
 // @flow
 
 import { Service } from 'alaska';
+// $Flow
 import PAYMENT from 'alaska-payment';
 
 /**
@@ -17,6 +18,7 @@ class RechargeService extends Service {
   postLoadModels() {
     const Recharge = this.model('Recharge');
     const Payment = PAYMENT.model('Payment');
+    // $Flow
     Recharge._fields.type.options = Recharge._fields.type.options.concat(Payment.fields.type.options);
   }
 }

@@ -9,6 +9,7 @@ import MultiLevelSelect from './MultiLevelSelect';
 export default class CategoryFieldView extends React.Component {
 
   props: {
+    className: string,
     model: Object,
     field: Object,
     data: Object,
@@ -78,9 +79,9 @@ export default class CategoryFieldView extends React.Component {
   };
 
   render() {
-    let { field, value, disabled, errorText } = this.props;
+    let { className, field, value, disabled, errorText } = this.props;
     let help = field.help;
-    let className = 'form-group category-field';
+    className += ' category-field';
     if (errorText) {
       className += ' has-error';
       help = errorText;

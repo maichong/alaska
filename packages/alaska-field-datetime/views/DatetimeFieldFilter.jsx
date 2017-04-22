@@ -12,6 +12,7 @@ export default class DatetimeFieldFilter extends React.Component {
   };
 
   props: {
+    className: string,
     value: any,
     field: Object,
     onChange: Function,
@@ -114,7 +115,7 @@ export default class DatetimeFieldFilter extends React.Component {
 
   render() {
     const t = this.context.t;
-    const { field, onClose } = this.props;
+    let { className, field, onClose } = this.props;
     const { mode, value1, value2, error } = this.state;
     const buttonClassName = 'btn btn-default';
     const buttonClassNameActive = buttonClassName + ' btn-success';
@@ -129,7 +130,7 @@ export default class DatetimeFieldFilter extends React.Component {
         />
       </div>;
     }
-    let className = 'row field-filter datetime-field-filter' + (error ? ' error' : '');
+    className += ' datetime-field-filter' + (error ? ' error' : '');
     return (
       <div className={className}>
         <label className="col-xs-2 control-label text-right">{field.label}</label>

@@ -91,10 +91,12 @@ export default class Switch extends React.Component {
     return (
       <div className="btn-group">
         {_.map(options, (o) => {
-          let cls = 'btn btn-' + (o.style || 'default');
+          let cls = 'btn';
           let vid = getOptionValue(o);
           if (valueMap[vid]) {
-            cls += (o.style ? ' active' : ' btn-success');
+            cls += (o.style ? ' active btn-' + o.style : ' active btn-success');
+          } else {
+            cls += ' btn-default';
           }
           if (disabled) {
             cls += ' disabled';

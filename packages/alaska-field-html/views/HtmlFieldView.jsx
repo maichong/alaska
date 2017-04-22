@@ -12,6 +12,7 @@ export default class HtmlFieldView extends React.Component {
   };
 
   props: {
+    className: string,
     model: Object,
     field: Object,
     data: Object,
@@ -110,6 +111,7 @@ export default class HtmlFieldView extends React.Component {
 
   render() {
     let {
+      className,
       errorText,
       field,
       value
@@ -137,7 +139,7 @@ export default class HtmlFieldView extends React.Component {
     }
 
     let help = field.help;
-    let className = 'form-group html-field';
+    className += ' html-field';
     if (errorText) {
       className += ' has-error';
       help = errorText;

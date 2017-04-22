@@ -15,6 +15,7 @@ export default class DatetimeFieldView extends React.Component {
   };
 
   props: {
+    className: string,
     model: Object,
     field: Object,
     data: Object,
@@ -45,17 +46,13 @@ export default class DatetimeFieldView extends React.Component {
   }
 
   render() {
-    let props = this.props;
-    let value = props.value;
-    let field = props.field;
-    let disabled = props.disabled;
+    let { className, value, field, disabled, errorText, onChange } = this.props;
     let valueString: string = '';
     if (field.format && value) {
       valueString = moment(value).format(field.format);
     }
-    let errorText = props.errorText;
     let help = field.help;
-    let className = 'form-group datetime-field';
+    className += ' date-field';
     if (errorText) {
       className += ' has-error';
       help = errorText;
@@ -71,7 +68,7 @@ export default class DatetimeFieldView extends React.Component {
         value={valueString||value}
         dateFormat={field.dateFormat}
         timeFormat={field.timeFormat}
-        onChange={(value)=>{props.onChange(value.format())}}
+        onChange={(value)=>{onChange(value.format())}}
       />;
     }
 

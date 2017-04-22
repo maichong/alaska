@@ -119,15 +119,15 @@ export default class GoodsSkuEditor extends React.Component {
   props: {
     data: Object,
     value: Object[],
-    onChange:Function
+    onChange: Function
   };
 
   state: {
-    goodsProps:any,
-    goodsPropsMap:Object,
-    picPicker:boolean,
-    pics:any[],
-    value:any
+    goodsProps: any,
+    goodsPropsMap: Object,
+    picPicker: boolean,
+    pics: any[],
+    value: any
   };
   _trCache: Object;
   _skuIndex: number;
@@ -139,8 +139,9 @@ export default class GoodsSkuEditor extends React.Component {
       goodsPropsMap: createPropsMap(props.data.props),
       picPicker: false,
       pics: [],
-      value: updateValue(props.value, this.state.goodsProps, this.state.goodsPropsMap)
+      value: null
     };
+    this.state.value = updateValue(props.value, this.state.goodsProps, this.state.goodsPropsMap);
     this._trCache = {};
   }
 

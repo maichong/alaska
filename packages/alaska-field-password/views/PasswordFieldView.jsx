@@ -11,6 +11,7 @@ export default class PasswordFieldView extends React.Component {
   };
 
   props: {
+    className: string,
     model: Object,
     field: Object,
     data: Object,
@@ -70,9 +71,9 @@ export default class PasswordFieldView extends React.Component {
 
   render() {
     const t = this.context.t;
-    let { field, disabled } = this.props;
+    let { className, field, disabled } = this.props;
     let state = this.state;
-    let className = 'form-group password-field';
+    className += ' password-field';
 
     let help = field.help;
     let errorText = this.state.errorText || this.props.errorText;

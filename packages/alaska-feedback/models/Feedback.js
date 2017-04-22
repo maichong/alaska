@@ -59,8 +59,7 @@ export default class Feedback extends Model {
 
   static groups = {
     reply: {
-      title: 'Reply',
-      className: 'noborder'
+      title: 'Reply'
     }
   };
 
@@ -100,7 +99,8 @@ export default class Feedback extends Model {
       nolabel: true,
       horizontal: false,
       group: 'reply',
-      depends: '_id'
+      depends: '_id',
+      placeholder: 'Please enter the content to reply...'
     }
   };
   title: string;

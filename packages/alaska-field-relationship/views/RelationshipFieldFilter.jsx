@@ -23,6 +23,7 @@ export default class RelationshipFieldFilter extends React.Component {
   };
 
   props: {
+    className: string,
     value: any,
     field: Object,
     onChange: Function,
@@ -95,11 +96,11 @@ export default class RelationshipFieldFilter extends React.Component {
 
   render() {
     const t = this.context.t;
-    const { field, onClose } = this.props;
+    let { className, field, onClose } = this.props;
     const { value, inverse, error, options } = this.state;
     const buttonClassName = 'btn btn-default';
     const buttonClassNameActive = buttonClassName + ' btn-success';
-    let className = 'row field-filter relationship-field-filter' + (error ? ' error' : '');
+    className += ' relationship-field-filter' + (error ? ' error' : '');
     return (
       <div className={className}>
         <label className="col-xs-2 control-label text-right">{t(field.label)}</label>

@@ -29,6 +29,7 @@ export default class DataTableRow extends React.Component {
   render() {
     const { record, columns, model, onEdit, onRemove, onSelect, selected } = this.props;
     const { views } = this.context;
+    let className = model.id + '-';
     let selectEl = onSelect ?
       <td onClick={this.handleChange} className="pointer"><input type="checkbox" checked={!!selected} /></td> : null;
     return (
@@ -41,7 +42,7 @@ export default class DataTableRow extends React.Component {
             console.warn('Missing : ' + col.field.cell);
             return <td style={{ background: '#fcc' }} key={key}>{record[key]}</td>;
           }
-          return (<td key={key}>
+          return (<td key={key} className={className+key+'-cell'}>
             {React.createElement(CellViewClass, {
               value: record[key],
               model,

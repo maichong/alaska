@@ -98,7 +98,9 @@ export default class Income extends Model {
   title: string;
   user: User;
   type: string;
+  target: string;
   currency: string;
+  deposit: string;
   amount: number;
   balance: number;
   createdAt: Date;

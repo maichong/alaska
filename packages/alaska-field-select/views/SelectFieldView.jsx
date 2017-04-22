@@ -17,6 +17,7 @@ export default class SelectFieldView extends React.Component {
   };
 
   props: {
+    className: string,
     model: Object,
     field: Object,
     data: Object,
@@ -72,7 +73,7 @@ export default class SelectFieldView extends React.Component {
   }
 
   render() {
-    let { field, value, disabled, errorText, onChange } = this.props;
+    let { className, field, value, disabled, errorText, onChange } = this.props;
     let View = Select;
     if (field.checkbox) {
       View = SelectCheckbox;
@@ -86,7 +87,7 @@ export default class SelectFieldView extends React.Component {
       value = _.filter(value, (v) => v !== undefined && v !== null);
     }
     let help = field.help;
-    let className = 'form-group select-field';
+    className += ' select-field';
     if (errorText) {
       className += ' has-error';
       help = errorText;

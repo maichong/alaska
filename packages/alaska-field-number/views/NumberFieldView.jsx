@@ -14,6 +14,7 @@ export default class NumberFieldView extends React.Component {
   };
 
   props: {
+    className: string,
     value: any,
     model: Object,
     data: Object,
@@ -99,6 +100,7 @@ export default class NumberFieldView extends React.Component {
 
   render() {
     let {
+      className,
       field,
       disabled,
       value,
@@ -107,7 +109,7 @@ export default class NumberFieldView extends React.Component {
     } = this.props;
     const t = this.context.t;
     let help = field.help;
-    let className = 'form-group number-field';
+    className += ' number-field';
     if (errorText) {
       className += ' has-error';
       help = errorText;

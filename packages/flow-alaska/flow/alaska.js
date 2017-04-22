@@ -465,7 +465,7 @@ declare class Alaska$Model extends events$EventEmitter {
     [key:string]: {
       title:string;
       panel?:boolean;
-      className?:string;
+      style?:Alaska$style;
     }
   };
   static service:Alaska$Service;

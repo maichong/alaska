@@ -8,6 +8,7 @@ import shallowEqualWithout from 'shallow-equal-without';
 export default class MixedFieldView extends React.Component {
 
   props: {
+    className: string,
     model: Object,
     field: Object,
     data: Object,
@@ -90,7 +91,7 @@ export default class MixedFieldView extends React.Component {
   };
 
   render() {
-    let { field, disabled, errorText } = this.props;
+    let { className, field, disabled, errorText } = this.props;
 
     let inputElement;
     if (disabled || field.fixed) {
@@ -106,7 +107,7 @@ export default class MixedFieldView extends React.Component {
 
     let help = field.help;
 
-    let className = 'form-group mixed-field ' + (this.state.style || '');
+    className += ' mixed-field ' + (this.state.style || '');
     if (errorText) {
       className += ' has-error';
       help = errorText;

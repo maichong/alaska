@@ -26,6 +26,7 @@ export default class SelectFieldCell extends React.Component {
     const t = this.context.t;
     let { field, value, model } = this.props;
     let el;
+    let cls = 'select-field-cell';
 
     if (field.multi) {
       el = [];
@@ -40,7 +41,11 @@ export default class SelectFieldCell extends React.Component {
           if (el.length) {
             el.push(' , ');
           }
-          el.push(<span key={opt.value}>{label}</span>);
+          let c;
+          if (opt.style) {
+            c = 'text-' + opt.style;
+          }
+          el.push(<span className={c} key={opt.value}>{label}</span>);
         }
       });
     } else {
@@ -49,7 +54,10 @@ export default class SelectFieldCell extends React.Component {
       if (field.translate !== false) {
         el = t(el, model.serviceId);
       }
+      if (option && option.style) {
+        cls += ' text-' + option.style;
+      }
     }
-    return <div className="select-field-cell">{el}</div>;
+    return <div className={cls}>{el}</div>;
   }
 }

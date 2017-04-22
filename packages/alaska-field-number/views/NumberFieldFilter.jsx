@@ -12,6 +12,7 @@ export default class NumberFieldFilter extends React.Component {
   };
 
   props: {
+    className: string,
     field: Object,
     onChange: Function,
     onClose: Function,
@@ -129,7 +130,7 @@ export default class NumberFieldFilter extends React.Component {
 
   render() {
     const t = this.context.t;
-    const { field, onClose } = this.props;
+    let { className, field, onClose } = this.props;
     const { mode, value1, value2, error } = this.state;
     const buttonClassName = 'btn btn-default';
     const buttonClassNameActive = buttonClassName + ' btn-success';
@@ -143,7 +144,7 @@ export default class NumberFieldFilter extends React.Component {
         value={value2}
       />;
     }
-    let className = 'row field-filter number-field-filter' + (error ? ' error' : '');
+    className += ' number-field-filter' + (error ? ' error' : '');
     return (
       <div className={className}>
         <label className="col-xs-2 control-label text-right">{field.label}</label>
