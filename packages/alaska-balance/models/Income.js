@@ -54,7 +54,7 @@ export default class Income extends Model {
       label: 'Target',
       type: 'select',
       default: 'balance',
-      switch: true,
+      checkbox: true,
       options: [{
         label: 'Balance',
         value: 'balance'

@@ -41,7 +41,7 @@ export default class Recharge extends Model {
       label: 'Target',
       type: 'select',
       default: 'balance',
-      switch: true,
+      checkbox: true,
       options: [{
         label: 'Balance',
         value: 'balance'
@@ -53,7 +53,7 @@ export default class Recharge extends Model {
     currency: {
       label: 'Currency',
       type: 'select',
-      switch: true,
+      checkbox: true,
       options: BALANCE.currencies,
       default: BALANCE.defaultCurrency.value
     },
@@ -76,7 +76,7 @@ export default class Recharge extends Model {
     type: {
       label: 'Payment Type',
       type: 'select',
-      switch: true,
+      checkbox: true,
       default: 'manual',
       options: [{
         label: 'Manual',
@@ -93,7 +93,7 @@ export default class Recharge extends Model {
       label: 'State',
       type: 'select',
       number: true,
-      checkbox: true,
+      switch: true,
       default: 0,
       options: [{
         label: 'Pending',
