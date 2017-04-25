@@ -24,7 +24,7 @@ export default async function list(ctx: Alaska$Context) {
     .page(parseInt(ctx.state.page || ctx.query._page, 10) || 1)
     .limit(parseInt(ctx.state.limit || ctx.query._limit, 10) || Model.defaultLimit || 50);
 
-  let sort = ctx.state.sort || ctx.query.sort || Model.defaultSort;
+  let sort = ctx.state.sort || ctx.query._sort || Model.defaultSort;
   if (sort) {
     query.sort(sort);
   }

@@ -12,6 +12,6 @@
   "license": "MIT",
   "dependencies": {
     "moment": "^2.18.1",
-    "react-datetime": "^2.8.9"
+    "react-datetime": "^2.8.10"
   }
 }
