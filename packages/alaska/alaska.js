@@ -277,6 +277,17 @@ class Alaska {
           throw err;
         }
         ctx.set('Last-Modified', stats.mtime.toUTCString());
+        let lastModified = ctx.headers['if-modified-since'];
+        if (lastModified) {
+          try {
+            let date = new Date(lastModified);
+            if (date.getTime() === stats.mtime.getTime()) {
+              ctx.status = 304;
+              return;
+            }
+          } catch (e) {
+          }
+        }
         ctx.set('Content-Length', stats.size);
         ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 || 0));
         ctx.type = options.type || mime.lookup(filePath);
@@ -320,7 +331,7 @@ class Alaska {
             //没有cookie设置
             //自动判断
             locale = defaultLocale;
-            let languages = utils.pareseAcceptLanguage(ctx.get('accept-language'));
+            let languages = utils.parseAcceptLanguage(ctx.get('accept-language'));
             for (let lang of languages) {
               if (locales.indexOf(lang) > -1) {
                 locale = lang;

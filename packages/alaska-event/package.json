@@ -1,0 +1,16 @@
+{
+  "name": "alaska-event",
+  "version": "0.11.12",
+  "description": "Alaska event service",
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-event",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "alaska-user": "^0.11.13"
+  }
+}

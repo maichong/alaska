@@ -169,7 +169,7 @@ export function deepClone(dst: Object, src: Object): Object {
  * @param {string} header
  * @returns {Array}
  */
-export function pareseAcceptLanguage(header: string): string[] {
+export function parseAcceptLanguage(header: string): string[] {
   if (!header) {
     return [];
   }

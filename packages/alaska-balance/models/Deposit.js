@@ -1,9 +1,3 @@
-/**
- * @copyright Maichong Software Ltd. 2017 http://maichong.it
- * @date 2017-04-20
- * @author Liang <liang@maichong.it>
- */
-
 import _ from 'lodash';
 import moment from 'moment';
 import { Model } from 'alaska';

@@ -892,7 +892,7 @@ export default class Model {
       .page(parseInt(state.page || ctx.query._page, 10) || 1)
       .limit(parseInt(state.limit || ctx.query._limit, 10) || model.defaultLimit || 10);
 
-    const scopeKey = state.scope || ctx.query.scope || 'list';
+    const scopeKey = state.scope || ctx.query._scope || 'list';
     if (scopeKey && model.autoSelect && model.scopes[scopeKey]) {
       //仅仅查询scope指定的字段,优化性能
       query.select(model.scopes[scopeKey]);
@@ -975,7 +975,7 @@ export default class Model {
 
     let query = model.find(filters);
 
-    const scopeKey = state.scope || ctx.query.scope || 'list';
+    const scopeKey = state.scope || ctx.query._scope || 'list';
     if (scopeKey && model.autoSelect && model.scopes[scopeKey]) {
       //仅仅查询scope指定的字段,优化性能
       query.select(model.scopes[scopeKey]);
@@ -1066,7 +1066,7 @@ export default class Model {
       query.where(typeof model.defaultFilters === 'function' ? model.defaultFilters(ctx) : model.defaultFilters);
     }
 
-    const scopeKey = state.scope || ctx.query.scope || 'show';
+    const scopeKey = state.scope || ctx.query._scope || 'show';
     if (model.autoSelect && model.scopes[scopeKey]) {
       //仅仅查询scope指定的字段,优化性能
       query.select(model.scopes[scopeKey]);

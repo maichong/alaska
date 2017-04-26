@@ -16,6 +16,9 @@ export default class RelationshipField extends Field {
     if (Model) {
       options.ref = Model.path;
       options.title = Model.title;
+      if (!options.service && Model.service) {
+        options.service = Model.service.id;
+      }
     }
   }];
   static defaultOptions = {
@@ -26,7 +29,7 @@ export default class RelationshipField extends Field {
 
   service: string;
   model: string;
-  ref: void | Class < Alaska$Model > ;
+  ref: void | Class < Alaska$Model >;
   optional: boolean;
 
   /**
@@ -73,7 +76,10 @@ export default class RelationshipField extends Field {
         ref: ref.name
       };
 
-      this.service = ref.service.id;
+      if (ref.service) {
+        // 模型已经初始化
+        this.service = ref.service.id;
+      }
       this.model = ref.name;
     } else {
       //如果没有找到引用,说明是可选引用

@@ -23,6 +23,8 @@ import defaultConfig from './config';
  * 一个Service实例可以同时被多个Service依赖
  */
 export default class Service {
+  static classOfService = true;
+
   alaska: Alaska$Alaska;
   debug: Debugger;
   options: Alaska$Service$options;

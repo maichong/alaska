@@ -32,12 +32,14 @@ export async function count(ctx: Alaska$Context) {
     return;
   }
   let filters = Model.createFiltersByContext(ctx);
-  ctx.status = 200;
+
   if (code === OWNER) {
     //只允许用户列出自己的资源
     let userField = Model.userField;
-    filters[userField] = ctx.user;
+    // $Flow 这里可以确认ctx.user存在
+    filters[userField] = ctx.user._id;
   }
+
   ctx.body = {
     count: await Model.count(filters)
   };
@@ -48,7 +50,7 @@ export async function count(ctx: Alaska$Context) {
  */
 export async function paginate(ctx: Alaska$Context) {
   let Model = ctx.state.Model;
-  let code = Model.api.list;
+  let code = Model.api.paginate;
   if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
     ctx.status = 401;
@@ -56,18 +58,18 @@ export async function paginate(ctx: Alaska$Context) {
   }
   ctx.status = 200;
 
-  const scope = ctx.state.scope || ctx.query.scope || 'list';
+  const scope = ctx.state.scope || ctx.query._scope || 'list';
 
-  let query = Model.paginateByContext(ctx, { scope });
+  let filters = Model.createFiltersByContext(ctx);
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
     let userField = Model.userField;
-    // $Flow 已经确认ctx.user存在
-    query.where(userField, ctx.user._id);
+    // $Flow 这里可以确认ctx.user存在
+    filters[userField] = ctx.user._id;
   }
 
-  let results = await query;
+  let results = await Model.paginateByContext(ctx, { scope, filters });
 
   results.results = results.results.map((doc) => doc.data(scope));
   ctx.body = results;
@@ -78,7 +80,8 @@ export async function paginate(ctx: Alaska$Context) {
  */
 export async function list(ctx: Alaska$Context) {
   let Model = ctx.state.Model;
-  let code = Model.api.all;
+  let code = Model.api.list;
+  console.log('code', Model.api, ctx.user);
   if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
     ctx.status = 401;
@@ -86,18 +89,18 @@ export async function list(ctx: Alaska$Context) {
   }
   ctx.status = 200;
 
-  const scope = ctx.state.scope || ctx.query.scope || 'list';
+  const scope = ctx.state.scope || ctx.query._scope || 'list';
 
-  let query = Model.listByContext(ctx, { scope });
+  let filters = Model.createFiltersByContext(ctx);
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
     let userField = Model.userField;
-    // $Flow 已经确认ctx.user存在
-    query.where(userField, ctx.user._id);
+    // $Flow 这里可以确认ctx.user存在
+    filters[userField] = ctx.user._id;
   }
 
-  let results = await query;
+  let results = await Model.listByContext(ctx, { scope, filters });
 
   ctx.body = results.map((doc) => doc.data(scope));
 }
@@ -114,7 +117,7 @@ export async function show(ctx: Alaska$Context) {
     return;
   }
 
-  const scope = ctx.state.scope || ctx.query.scope || 'show';
+  const scope = ctx.state.scope || ctx.query._scope || 'show';
 
   let doc = await Model.showByContext(ctx, { scope });
   if (!doc) {
@@ -126,7 +129,7 @@ export async function show(ctx: Alaska$Context) {
     //404
     return;
   }
-  ctx.body = doc.data(ctx.state.scope || ctx.query.scope || scope);
+  ctx.body = doc.data(ctx.state.scope || ctx.query._scope || scope);
 }
 
 /**
@@ -161,7 +164,8 @@ export async function update(ctx: Alaska$Context) {
     ctx.status = 401;
     return;
   }
-  let filters = Model.createFilters('', ctx.state.filters || ctx.query);
+  let filters = Model.createFiltersByContext(ctx);
+
   let doc = await Model.findById(ctx.state.id || ctx.params.id).where(filters);
   if (!doc) {
     //404
@@ -196,11 +200,13 @@ export async function updateMulti(ctx: Alaska$Context) {
     ctx.status = 401;
     return;
   }
-  let filters = Model.createFilters('', ctx.state.filters || ctx.query);
+  let filters = Model.createFiltersByContext(ctx);
+
   if (code === OWNER) {
-    //只允许用户更新自己的资源
-    // $Flow 已经确认ctx.user存在
-    filters[Model.userField] = ctx.user._id;
+    //只允许用户列出自己的资源
+    let userField = Model.userField;
+    // $Flow 这里可以确认ctx.user存在
+    filters[userField] = ctx.user._id;
   }
 
   let body = Object.assign({}, ctx.state.body || ctx.request.body);
@@ -232,11 +238,18 @@ export async function remove(ctx: Alaska$Context) {
     return;
   }
   ctx.body = {};
-  let filters = Model.createFilters('', ctx.state.filters || ctx.query);
+
+  let filters = Model.createFiltersByContext(ctx);
+
+  if (code === OWNER) {
+    //只允许用户列出自己的资源
+    let userField = Model.userField;
+    // $Flow 这里可以确认ctx.user存在
+    filters[userField] = ctx.user._id;
+  }
+
   let doc = await Model.findById(ctx.state.id || ctx.params.id).where(filters);
   if (!doc) return;
-  // $Flow 已经确认ctx.user存在
-  if (code === OWNER && doc[Model.userField].toString() !== ctx.user.id) return;
   await doc.remove();
 }
 
@@ -252,11 +265,13 @@ export async function removeMulti(ctx: Alaska$Context) {
     return;
   }
   ctx.body = {};
-  let filters = Model.createFilters('', ctx.state.filters || ctx.query);
+  let filters = Model.createFiltersByContext(ctx);
+
   if (code === OWNER) {
-    //只允许用户删除自己的资源
-    // $Flow 已经确认ctx.user存在
-    filters[Model.userField] = ctx.user._id;
+    //只允许用户列出自己的资源
+    let userField = Model.userField;
+    // $Flow 这里可以确认ctx.user存在
+    filters[userField] = ctx.user._id;
   }
 
   let res = await Model.deleteMany(filters);

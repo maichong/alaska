@@ -5,6 +5,7 @@ import random from 'string-random';
 import _ from 'lodash';
 
 export default class Sled {
+  static classOfSled = true;
   static service: Alaska$Service;
   static name: string;
   static key: string;

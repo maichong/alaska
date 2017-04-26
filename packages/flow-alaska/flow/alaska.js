@@ -293,6 +293,7 @@ declare type Alaska$sledQueueItem={
 }
 
 declare class Alaska$Sled {
+  static classOfSled: true;
   static service:Alaska$Service;
   static name:string;
   static key:string;
@@ -327,6 +328,9 @@ declare type Alaska$Model$relationships={
   [key:string]:{
     key?:string;
     ref:Class<Alaska$Model> | string;
+    path: string,
+    title?: string,
+    private?: boolean,
     populations?:Alaska$Model$populations;
   };
 };
@@ -727,6 +731,7 @@ declare type Alaska$Field$depends= string | {
 };
 
 declare class Alaska$Service {
+  static classOfService: true;
   id:string;
   dir:string;
   version: string;
@@ -858,6 +863,7 @@ declare class Alaska$EmailDriver extends Alaska$Driver {
 }
 
 declare class Alaska$Renderer {
+  static classOfRenderer: true;
   service: Alaska$Service;
   options: Alaska$Config$renderer;
 

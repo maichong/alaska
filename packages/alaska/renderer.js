@@ -40,6 +40,7 @@ function objectToMap(obj: Object, path?: string, map?: { [file:string]:string })
 }
 
 export default class Renderer {
+  static classOfRenderer = true;
   service: Alaska$Service;
   options: Alaska$Config$renderer;
   _map: { [file:string]:string };
