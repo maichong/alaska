@@ -1,6 +1,6 @@
 {
   "name": "alaska-user",
-  "version": "0.11.13",
+  "version": "0.11.14",
   "description": "Alaska user service",
   "keywords": [
     "alaska",
@@ -15,7 +15,7 @@
     "alaska-field-image": "^0.11.12",
     "alaska-field-number": "^0.11.12",
     "alaska-field-password": "^0.11.12",
-    "alaska-field-relationship": "^0.11.12",
+    "alaska-field-relationship": "^0.11.14",
     "alaska-field-text": "^0.11.12",
     "alaska-middleware-session": "^0.11.0",
     "alaska-settings": "^0.11.12"
