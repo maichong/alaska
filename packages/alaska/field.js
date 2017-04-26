@@ -33,6 +33,7 @@ export default class Field {
   cell: string | void;
   view: string | void;
   filter: string | void;
+  after: string | void;
   depends: Alaska$Field$depends | void;
   dataType: Function;
 
@@ -163,7 +164,8 @@ export default class Field {
       cell: field.cell,
       view: field.view,
       filter: field.filter,
-      super: field.super
+      super: field.super,
+      after: field.after,
     };
 
     if (FieldClass.viewOptions && FieldClass.viewOptions.length) {

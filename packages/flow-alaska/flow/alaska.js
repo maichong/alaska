@@ -724,6 +724,7 @@ declare type Alaska$Field$options={
   view?:string;
   filter?:string|boolean;
   depends?:Alaska$Field$depends;
+  after?:string;
 };
 
 declare type Alaska$Field$depends= string | {

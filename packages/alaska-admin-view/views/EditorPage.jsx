@@ -306,6 +306,35 @@ class EditorPage extends React.Component {
       subTitle = id;
     }
     title = <div>{title} > {subTitle}</div>;
+
+    let map = _.reduce(model.fields, (res, f, path) => {
+      res[path] = {
+        path,
+        after: f.after,
+        afters: []
+      };
+      return res;
+    }, {});
+
+    let fieldPaths = [];
+
+    _.forEach(map, (f) => {
+      if (f.after && map[f.after]) {
+        map[f.after].afters.push(f);
+      } else {
+        fieldPaths.push(f);
+      }
+    });
+
+    let paths = [];
+
+    function flat(f) {
+      paths.push(f.path);
+      f.afters.forEach(flat);
+    }
+
+    _.forEach(fieldPaths, flat);
+
     let groups = {
       default: {
         title: '',
@@ -319,8 +348,9 @@ class EditorPage extends React.Component {
       group.fields = [];
       groups[groupKey] = group;
     }
-    for (let key of Object.keys(model.fields)) {
-      let cfg = model.fields[key];
+
+    for (let path of paths) {
+      let cfg = model.fields[path];
       if (cfg.hidden) continue;
       if (cfg.super && !settings.superMode) continue;
       if (!cfg.view) continue;
@@ -346,15 +376,15 @@ class EditorPage extends React.Component {
       let help = t(cfg.help, serviceId);
 
       let fieldProps = {
-        key,
-        value: data[key],
+        key: path,
+        value: data[path],
         model,
         data,
         field: cfg.merge({ label, help }),
         disabled,
-        errorText: errors[key],
-        onChange: this.handleChange.bind(this, key),
-        className: 'form-group ' + model.id + '-' + key + '-view'
+        errorText: errors[path],
+        onChange: this.handleChange.bind(this, path),
+        className: 'form-group ' + model.id + '-' + path + '-view'
       };
 
       let view = React.createElement(ViewClass, fieldProps);
