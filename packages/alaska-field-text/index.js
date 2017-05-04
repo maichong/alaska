@@ -22,10 +22,16 @@ export default class TextFeild extends Field {
   }
 
   createFilter(filter: Object): any|void {
+    if (filter instanceof RegExp) {
+      return filter;
+    }
     let exact = true;
     let inverse = false;
     let value = filter;
     if (typeof filter === 'object') {
+      if (filter.$not || filter.$in || filter.$nin) {
+        return filter;
+      }
       value = filter.value;
       //默认精确
       exact = filter.exact !== false && filter.exact !== 'false';
@@ -35,7 +41,7 @@ export default class TextFeild extends Field {
 
     if (value) {
       if (exact) {
-        result = new RegExp('^' + utils.escapeRegExp(value) + '$', 'i');
+        result = value;
       } else {
         result = new RegExp(utils.escapeRegExp(value), 'i');
       }

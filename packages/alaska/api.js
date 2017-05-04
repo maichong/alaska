@@ -81,7 +81,6 @@ export async function paginate(ctx: Alaska$Context) {
 export async function list(ctx: Alaska$Context) {
   let Model = ctx.state.Model;
   let code = Model.api.list;
-  console.log('code', Model.api, ctx.user);
   if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
     ctx.status = 401;

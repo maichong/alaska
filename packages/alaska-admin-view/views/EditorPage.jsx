@@ -307,7 +307,7 @@ class EditorPage extends React.Component {
     }
     title = <div>{title} > {subTitle}</div>;
 
-    let map = _.reduce(model.fields, (res, f, path) => {
+    let map = _.reduce(model.fields, (res: Object, f: Alaska$Field$options, path: string) => {
       res[path] = {
         path,
         after: f.after,

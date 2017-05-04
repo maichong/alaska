@@ -682,6 +682,7 @@ declare class Alaska$Field {
   view:void|string;
   filter:void|string|boolean;
   depends:void|Alaska$Field$depends;
+  after:void|string;
   private:boolean;
   _model:Class<Alaska$Model>;
   _schema: Mongoose$Schema;

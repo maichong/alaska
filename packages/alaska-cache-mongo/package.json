@@ -12,6 +12,6 @@
   "license": "MIT",
   "dependencies": {
     "mongodb": "^2.2.26",
-    "debug": "^2.6.4"
+    "debug": "^2.6.6"
   }
 }

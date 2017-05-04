@@ -136,6 +136,9 @@ export default class RelationshipField extends Field {
     let value = filter;
     let inverse = false;
     if (typeof filter === 'object' && filter.value) {
+      if (filter.$ne) {
+        return filter;
+      }
       value = filter.value;
       if (filter.inverse === true || filter.inverse === 'true') {
         inverse = true;

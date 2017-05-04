@@ -63,12 +63,15 @@ export default class TextFieldFilter extends React.Component {
       return;
     }
     this.setState({ error: false });
-    let filter: Alaska$filter = { value };
+    let filter: Alaska$filter = { value, exact: false };
     if (mode !== 2) {
       //不是包含：精确匹配
       filter.exact = true;
-    }
-    if (inverse) {
+      if (!inverse) {
+        // $Flow
+        filter = value;
+      }
+    } else if (inverse) {
       filter.inverse = true;
     }
     this.props.onChange(filter);
