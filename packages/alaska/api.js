@@ -185,7 +185,7 @@ export async function update(ctx: Alaska$Context) {
   });
   doc.set(body);
   await doc.save();
-  ctx.body = {};
+  ctx.body = doc.data('update');
 }
 
 /**

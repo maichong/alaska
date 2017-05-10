@@ -26,33 +26,33 @@ export default class AxisSelector extends React.Component {
     options:Object;
   };
 
-  componentWillMount() {
-    this.init(this.props);
+  constructor(props: Object) {
+    super(props);
+    this.state = this.initState(this.props)
   }
 
   componentWillReceiveProps(props: Object) {
-    this.init(props);
+    this.setState(this.initState(props));
   }
 
-  init(props: Object) {
+  initState(props: Object) {
     let newstate: Object = {
       model: null,
-      value: props.value
+      value: props.value,
+      options: []
     };
 
     const { data, field } = props;
 
     if (!data || !data.model) {
-      this.setState(newstate);
-      return;
+      return newstate;
     }
 
     const { settings, t } = this.context;
     let model = settings.models[props.data.model];
 
     if (!model) {
-      this.setState(newstate);
-      return;
+      return newstate;
     }
 
     newstate.model = model;
@@ -77,15 +77,11 @@ export default class AxisSelector extends React.Component {
     _.forEach(model.fields, (fieldItem, key) => {
       if (key === '_id') return;
       if (plains.indexOf(fieldItem.plain) === -1) return;
-      if (!fieldItem._label) {
-        fieldItem._label = fieldItem.label;
-        fieldItem.label = t(fieldItem.label);
-      }
-      options.push({ label: fieldItem.label, value: key });
+      options.push({ label: t(fieldItem.label), value: key });
     });
 
     newstate.options = options;
-    this.setState(newstate);
+    return newstate;
   }
 
   handleChange = (option: Object) => {
@@ -93,6 +89,7 @@ export default class AxisSelector extends React.Component {
   };
 
   render() {
+    console.log('render', this.state);
     const { value, disabled, field, errorText } = this.props;
     const { model, options } = this.state;
     if (!model) return null;

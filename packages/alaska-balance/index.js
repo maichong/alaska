@@ -88,7 +88,7 @@ class BalanceService extends Service {
     return this._defaultCurrency;
   }
 
-  async settings(ctx: ?Alaska$Context, user: ?User, settings: Object) {
+  async adminSettings(ctx: Alaska$Context, user: User, settings: Object) {
     settings.currencies = this._currenciesMap;
     settings.defaultCurrency = this._defaultCurrency;
   }

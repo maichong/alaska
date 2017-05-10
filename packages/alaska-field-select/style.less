@@ -20,17 +20,28 @@
     padding-bottom: 0 !important;
     border: solid 1px @border-color !important;
     border-radius: @input-border-radius !important;
+    height: @input-height-base - 2;
     &:hover {
       box-shadow: none !important;
     }
   }
+  .Select-value {
+    height: @input-height-base - 2;
+    span {
+      line-height: @input-height-base - 2;
+    }
+  }
+  .Select-input {
+    height: @input-height-base - 2;
+  }
   .Select-menu-outer {
     left: 0;
-    right: 0;
+    right: 1px;
     width: auto;
     box-shadow: none !important;
     border: solid 1px @input-border-focus !important;
     border-top-color: @border-color !important;
     border-radius: @input-border-radius !important;
+    z-index: 2000;
   }
 }

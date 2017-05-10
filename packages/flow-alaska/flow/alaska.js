@@ -758,7 +758,7 @@ declare class Alaska$Service {
   panic:(message: string|number, code?: number) => void;
   error:(message: string|number, code?: number) => void;
   try: <T>(promise: Promise<T>) => Promise<T>;
-  adminSettings?:(ctx: Alaska$Context, user: User, result: Object) => Promise <void>;
+  adminSettings(ctx: Alaska$Context, user: User, settings: Object): Promise <void>;
   addConfigDir(dir: string):void;
   applyConfig(config: Alaska$Config): void;
   config(key: string, defaultValue?: any, mainAsDefault?: boolean): any;

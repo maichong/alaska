@@ -26,7 +26,7 @@ function randomColor() {
   return new Color(`hsl(${h},${s}%,${l}%)`);
 }
 
-function randomColorList(count, clearer) {
+function randomColorList(count, lighten) {
   let res = {
     backgroundColor: [],
     hoverBackgroundColor: [],
@@ -42,13 +42,13 @@ function randomColorList(count, clearer) {
 
   while (count > 0) {
     count -= 1;
-    list.push(color.clone());
+    list.push(new Color(color));
     color.rotate(rotate);
   }
   list.sort(() => (Math.random() > 0.5 ? 1 : -1)).forEach((c) => {
-    let c1 = c.clearer(0.2).rgbString();
-    let c2 = c.clearer(0.1).rgbString();
-    let c3 = c.clearer(clearer || 0.1).rgbString();
+    let c1 = c.lighten(0.2).hex().toString();
+    let c2 = c.lighten(0.1).hex().toString();
+    let c3 = c.lighten(lighten || 0.1).hex().toString();
     res.borderColor.push(c1);
     res.hoverBackgroundColor.push(c2);
     res.backgroundColor.push(c3);
@@ -246,8 +246,7 @@ export default class Chart extends Model {
         }
         data = Object.keys(dataMap).sort().map((xx) => {
           let y = dataMap[xx];
-          // 原本代码为 let x = new Date(xx * 1);
-          let x = new Date(xx);
+          let x = new Date(parseInt(xx));
           return { x, y };
         });
       }

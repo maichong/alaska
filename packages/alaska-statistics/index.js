@@ -40,7 +40,7 @@ class StatisticsService extends Service {
     });
   }
 
-  async settings(ctx: Alaska$Context, user: User, settings: Object) {
+  async adminSettings(ctx: Alaska$Context, user: User, settings: Object) {
     if (!settings.services['alaska-statistics']) return;
     let options = [];
     _.forEach(settings.services, (service) => {

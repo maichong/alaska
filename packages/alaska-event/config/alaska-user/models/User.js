@@ -3,7 +3,8 @@ import Event from '../../../models/Event';
 export const relationships = {
   events: {
     ref: Event,
-    path: 'user'
+    path: 'user',
+    private: true
   }
 };
 
