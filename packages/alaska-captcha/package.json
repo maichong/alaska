@@ -1,6 +1,6 @@
 {
   "name": "alaska-captcha",
-  "version": "0.11.15",
+  "version": "0.11.16",
   "description": "Alaska captcha service",
   "keywords": [
     "alaska",
@@ -14,8 +14,8 @@
   "dependencies": {
     "alaska-field-number": "^0.11.12",
     "alaska-field-text": "^0.11.15",
-    "alaska-field-select": "^0.11.15",
-    "alaska-field-relationship": "^0.11.15",
+    "alaska-field-select": "^0.11.16",
+    "alaska-field-relationship": "^0.11.16",
     "string-random": "^0.1.0"
   }
 }
