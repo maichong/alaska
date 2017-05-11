@@ -26,16 +26,16 @@ export default class AxisSelector extends React.Component {
     options:Object;
   };
 
-  constructor(props: Object) {
+  constructor(props: Object, context: Object) {
     super(props);
-    this.state = this.initState(this.props)
+    this.state = this.initState(props, context)
   }
 
   componentWillReceiveProps(props: Object) {
-    this.setState(this.initState(props));
+    this.setState(this.initState(props, this.context));
   }
 
-  initState(props: Object) {
+  initState(props: Object, context: Object) {
     let newstate: Object = {
       model: null,
       value: props.value,
@@ -48,7 +48,7 @@ export default class AxisSelector extends React.Component {
       return newstate;
     }
 
-    const { settings, t } = this.context;
+    const { settings, t } = context;
     let model = settings.models[props.data.model];
 
     if (!model) {
@@ -89,7 +89,6 @@ export default class AxisSelector extends React.Component {
   };
 
   render() {
-    console.log('render', this.state);
     const { value, disabled, field, errorText } = this.props;
     const { model, options } = this.state;
     if (!model) return null;
