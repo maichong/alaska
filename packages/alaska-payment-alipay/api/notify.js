@@ -1,6 +1,6 @@
 // @flow
 
-import { PaymentService } from 'alaska-payment';
+import PAYMENT from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 
 export async function alipay(ctx: Alaska$Context) {
@@ -9,7 +9,7 @@ export async function alipay(ctx: Alaska$Context) {
   if (ctx.method !== 'POST') return;
   let body = ctx.state.body || ctx.request.body;
   if (!body || body.trade_status !== 'TRADE_SUCCESS') return;
-  let success = await PaymentService.payments.alipay.verify(body);
+  let success = await PAYMENT.payments.alipay.verify(body);
   if (!success) return;
   let paymentId = body.out_trade_no;
   // $Flow
@@ -18,7 +18,7 @@ export async function alipay(ctx: Alaska$Context) {
   payment.alipay_trade_no = body.trade_no;
   payment.alipay_buyer_email = body.buyer_email;
   try {
-    await PaymentService.run('Complete', { payment });
+    await PAYMENT.run('Complete', { payment });
     ctx.body = 'OK';
     ctx.status = 200;
   } catch (error) {
