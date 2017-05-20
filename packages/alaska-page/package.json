@@ -1,6 +1,6 @@
 {
   "name": "alaska-page",
-  "version": "0.11.15",
+  "version": "0.11.19",
   "keywords": [
     "alaska",
     "alaska-service"
@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "alaska-field-text": "^0.11.15",
-    "alaska-field-html": "^0.11.15",
+    "alaska-field-html": "^0.11.19",
     "alaska-field-datetime": "^0.11.13"
   }
 }
