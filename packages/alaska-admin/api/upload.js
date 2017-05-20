@@ -7,9 +7,9 @@ export default async function (ctx: Alaska$Context) {
     await ctx.checkAbility('admin');
     let serviceId = ctx.state.service || ctx.query._service;
     let modelName = ctx.state.model || ctx.query._model;
+    let path = ctx.state.path || ctx.query._path;
     let body = ctx.state.body || ctx.request.body;
     let id = body.id || ctx.request.body.id;
-    let path = body.path || ctx.request.body.path;
     if (!serviceId || !modelName || !path) {
       alaska.error('Invalid parameters');
     }
@@ -32,7 +32,7 @@ export default async function (ctx: Alaska$Context) {
     }
     // $Flow
     let img = await FieldType.upload(ctx.files.file, Model._fields[path]);
-    if (ctx.state.editor || ctx.query.editor) {
+    if (ctx.state.editor || ctx.query._editor) {
       ctx.body = {
         success: true,
         file_path: img.url
@@ -41,7 +41,7 @@ export default async function (ctx: Alaska$Context) {
       ctx.body = img;
     }
   } catch (error) {
-    if (ctx.state.editor || ctx.query.editor) {
+    if (ctx.state.editor || ctx.query._editor) {
       ctx.body = {
         success: false,
         msg: error.message

@@ -57,11 +57,8 @@ export default class HtmlFieldView extends React.Component {
       if (upload) {
         let adminService = this.context.settings.services['alaska-admin'];
         uploadConfig = {
-          url: `${adminService.prefix}/api/upload?service=${upload.service}&model=${upload.model}&editor=1`,
+          url: `${adminService.prefix}/api/upload?_service=${upload.service}&_model=${upload.model}&_path=${upload.path}&_editor=1`,
           fileKey: 'file',
-          query: {
-            path: upload.path
-          },
           leaveConfirm: upload.leaveConfirm
         };
       }
