@@ -95,9 +95,10 @@ export default class ImageFieldView extends React.Component {
       api.upload('/api/upload', {
         params: {
           _service: serviceId,
-          _model: modelName
+          _model: modelName,
+          _path: field.path || 'avatar',
         },
-        body: { file, id, path: field.path || 'avatar' }
+        body: { file, id }
       }).then((res) => {
         value = value.concat(res);
         if (this.props.onChange) {

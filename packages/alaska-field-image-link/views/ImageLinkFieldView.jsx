@@ -87,9 +87,10 @@ export default class ImageLinkFieldView extends React.Component {
       api.upload('/api/upload', {
         params: {
           _service: serviceId,
-          _model: modelName
+          _model: modelName,
+          _path: field.path || 'avatar',
         },
-        body: { file, id, path: path }
+        body: { file, id }
       }).then((res) => {
         value = value.concat(res.url);
         if (this.props.onChange) {
