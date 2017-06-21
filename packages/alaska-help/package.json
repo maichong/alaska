@@ -1,6 +1,6 @@
 {
   "name": "alaska-help",
-  "version": "0.11.19",
+  "version": "0.11.21",
   "description": "Alaska help service",
   "keywords": [
     "alaska",
@@ -11,7 +11,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-relationship": "^0.11.16",
+    "alaska-field-relationship": "^0.11.21",
     "alaska-field-text": "^0.11.15",
     "alaska-field-html": "^0.11.19",
     "alaska-field-datetime": "^0.11.13"
