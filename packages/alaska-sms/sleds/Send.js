@@ -38,7 +38,7 @@ export default class Send extends Sled {
     let sms = params.sms;
     if (sms && typeof sms === 'string') {
       // $Flow
-      let s:Sms = await Sms.findById(sms);
+      let s: Sms = await Sms.findById(sms);
       sms = s;
     }
     if (!message) {

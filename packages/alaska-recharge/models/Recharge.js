@@ -4,7 +4,6 @@ import { Model } from 'alaska';
 import BALANCE from 'alaska-balance';
 
 export default class Recharge extends Model {
-
   static label = 'Recharge';
   static icon = 'paypal';
   static titleField = 'title';

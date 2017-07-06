@@ -77,7 +77,6 @@ class UserService extends Service {
     await cache.del('abilities_list');
     await cache.del('roles_list');
   }
-
 }
 
 export default new UserService();

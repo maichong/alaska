@@ -3,7 +3,6 @@
 import { Model } from 'alaska';
 
 export default class Banner extends Model {
-
   static label = 'Banner';
   static icon = 'picture-o';
   static defaultSort = '-sort';

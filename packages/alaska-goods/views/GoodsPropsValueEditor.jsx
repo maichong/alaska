@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import * as saveRedux from 'alaska-admin-view/redux/save';
 
 class GoodsPropsValueEditor extends React.Component {
-
   static contextTypes = {
     t: PropTypes.func
   };

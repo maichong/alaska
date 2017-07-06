@@ -1,15 +1,15 @@
 // @flow
 
 declare module 'alaska-payment' {
-  declare export class PaymentService extends Alaska$Service {
-    constructor(options?: Alaska$Service$options):void;
+  declare class PaymentService extends Alaska$Service {
     static payments: Object;
     static run(name: string, params?: Object): Promise<any>;
-
     payments: Object;
   }
   declare var exports: PaymentService;
+  declare var PaymentService: Class<PaymentService>;
 }
+
 declare module 'alaska-payment/models/Payment' {
   declare class Payment extends Alaska$Model {
     title: string;

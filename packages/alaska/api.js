@@ -184,8 +184,17 @@ export async function update(ctx: Alaska$Context) {
     }
   });
   doc.set(body);
+  const scope = ctx.state.scope || ctx.query._scope;
+  if (!scope) {
+    doc.__modifiedPaths = [];
+  }
   await doc.save();
-  ctx.body = doc.data('update');
+  if (scope) {
+    ctx.body = doc.data(scope);
+  } else {
+    ctx.body = _.pick(doc.data('update'), 'id', doc.__modifiedPaths);
+    delete doc.__modifiedPaths;
+  }
 }
 
 /**

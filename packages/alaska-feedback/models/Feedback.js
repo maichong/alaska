@@ -3,7 +3,6 @@
 import { Model } from 'alaska';
 
 export default class Feedback extends Model {
-
   static label = 'Feedback';
   static icon = 'comment';
   static titleField = 'title';

@@ -6,10 +6,9 @@ import ChartData from '../models/ChartData';
 import BuildData from './BuildData';
 
 export default class AutoBuild extends Sled {
-
   async exec() {
     // $Flow  findOne
-    let source:ChartSource = await ChartSource.findOne()
+    let source: ChartSource = await ChartSource.findOne()
       .where('autoBuild').gt(0)
       .where({
         $or: [

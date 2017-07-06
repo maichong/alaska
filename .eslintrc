@@ -59,6 +59,7 @@
     "radix": 0,
     "max-len": [2, {"code": 120, "ignoreComments": true}],
     "require-yield": 1,
+    "jsx-a11y/href-no-hash": "off",
     "jsx-a11y/label-has-for": 0,
     "jsx-a11y/img-has-alt": 0,
     "jsx-a11y/no-static-element-interactions": 1,

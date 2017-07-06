@@ -6,7 +6,6 @@ import service from '../';
 import Email from '../models/Email';
 
 export default class EmailTask extends Model {
-
   static label = 'Email Task';
   static icon = 'paper-plane';
   static titleField = 'title';

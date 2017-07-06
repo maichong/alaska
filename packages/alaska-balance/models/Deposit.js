@@ -5,7 +5,6 @@ import service from '../';
 import Income from './Income';
 
 export default class Deposit extends Model {
-
   static label = 'Deposit';
   static icon = 'credit-card';
   static titleField = 'title';
@@ -61,7 +60,7 @@ export default class Deposit extends Model {
       this.createdAt = new Date();
     }
     if (!this.expiredAt) {
-      this.expiredAt = moment().add('1', 'months')
+      this.expiredAt = moment().add('1', 'months');
     }
   }
 

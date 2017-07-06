@@ -217,5 +217,4 @@ export default class RedisSubscribeDriver extends Driver {
     };
     this.cancel().then(destroy, destroy);
   }
-
 }

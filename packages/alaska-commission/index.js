@@ -3,11 +3,11 @@
 import alaska, { Service } from 'alaska';
 
 class CommissionService extends Service {
-  constructor(options?: Alaska$Service$options, mAlaska?: Alaska$Alaska) {
+  constructor(options?: Alaska$Service$options) {
     options = options || {};
     options.dir = options.dir || __dirname;
     options.id = options.id || 'alaska-commission';
-    super(options, mAlaska);
+    super(options);
   }
 
   postLoadConfig() {

@@ -25,10 +25,10 @@
     "react-redux": "^5.0.5",
     "react-router": "3.0.2",
     "react-toastr": "^2.8.2",
-    "redux": "^3.7.0",
-    "redux-actions": "^2.0.3",
+    "redux": "^3.7.1",
+    "redux-actions": "^2.2.1",
     "redux-logger": "^3.0.6",
-    "redux-saga": "^0.15.3",
+    "redux-saga": "^0.15.4",
     "seamless-immutable": "^7.1.2",
     "shallow-equal-without": "^0.1.0",
     "whatwg-fetch": "^2.0.3"

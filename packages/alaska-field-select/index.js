@@ -3,7 +3,6 @@
 import { Field } from 'alaska';
 
 export default class SelectField extends Field {
-
   static plain = String;
   static viewOptions = ['options', 'translate', 'checkbox', 'switch', 'multi'];
   static defaultOptions = {

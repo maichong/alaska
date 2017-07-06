@@ -5,7 +5,6 @@ import service from '../';
 import Order from '../models/Order';
 
 export default class OrderLog extends Model {
-
   static label = 'Order Log';
   static icon = 'hourglass-2';
   static defaultColumns = 'title order createdAt';

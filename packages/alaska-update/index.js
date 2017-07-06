@@ -6,11 +6,11 @@ import { Service } from 'alaska';
  * @class UpdateService
  */
 class UpdateService extends Service {
-  constructor(options?: Alaska$Service$options, alaska?: Alaska$Alaska) {
+  constructor(options?: Alaska$Service$options) {
     options = options || {};
     options.dir = options.dir || __dirname;
     options.id = options.id || 'alaska-update';
-    super(options, alaska);
+    super(options);
   }
 
   async postInit() {

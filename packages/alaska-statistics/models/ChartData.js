@@ -3,7 +3,6 @@
 import { Model } from 'alaska';
 
 export default class ChartData extends Model {
-
   static label = 'Chart Data';
   static hidden = true;
   static defaultColumns = 'source x y';
@@ -26,7 +25,7 @@ export default class ChartData extends Model {
   source: Object;
   x: Object;
   y: number;
-  createdAt:Date;
+  createdAt: Date;
 
   preSave() {
     if (!this.createdAt) {

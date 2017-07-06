@@ -5,7 +5,6 @@ import { Sled, utils } from 'alaska';
 import AppUpdate from '../models/AppUpdate';
 
 export default class Update extends Sled {
-
   async exec(params: Object) {
     const dir = params.dir;
     if (!dir) {

@@ -3,11 +3,11 @@
 import alaska, { Service } from 'alaska';
 
 class CaptchaService extends Service {
-  constructor(options?: Alaska$Service$options, mAlaska?: Alaska$Alaska) {
+  constructor(options?: Alaska$Service$options) {
     options = options || {};
     options.id = options.id || 'alaska-captcha';
     options.dir = options.dir || __dirname;
-    super(options, mAlaska);
+    super(options);
   }
 
   async preLoadModels() {
@@ -21,12 +21,12 @@ class CaptchaService extends Service {
     }
   }
 
-  middleware(toPath: ?string):Function {
+  middleware(toPath: ?string): Function {
     if (!toPath || typeof toPath !== 'string') {
       throw new Error('CaptchaService middleware \'toPath\' error');
     }
     let service = this;
-    return async function (ctx:Alaska$Context, next:Function) {
+    return async function (ctx: Alaska$Context, next: Function) {
       let body = ctx.state.body || ctx.request.body;
       let to = body[toPath] || ctx.request.body[toPath];
       let code = body._captcha || ctx.request.body._captcha;

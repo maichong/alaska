@@ -13,7 +13,7 @@
   "dependencies": {
     "react-chartjs": "^2.0.0-beta2",
     "alaska-field-select": "^0.11.21",
-    "color": "^1.0.3",
+    "color": "^2.0.0",
     "chart.js": "^2.6.0",
     "number-random": "^0.1.1"
   }

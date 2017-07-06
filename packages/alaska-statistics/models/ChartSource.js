@@ -5,7 +5,6 @@ import alaska, { Model } from 'alaska';
 import service from '../';
 
 export default class ChartSource extends Model {
-
   static label = 'Chart Source';
   static icon = 'database';
   static titleField = 'title';

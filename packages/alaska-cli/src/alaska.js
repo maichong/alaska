@@ -25,8 +25,8 @@ program
   .command('create <name>')
   .alias('c')
   .description('Create new project')
-  .action((name, options) => {
-    require('./create').default(name, options).catch((error) => console.error(error));
+  .action((name) => {
+    require('./create').default(name).catch((error) => console.error(error));
   });
 
 program
@@ -35,8 +35,8 @@ program
   .description('Build admin dashboard')
   .option('-w, --watch', 'watch mode')
   .option('-d, --dev', 'build dev lib')
-  .action((options) => {
-    require('./build').default(options);
+  .action(() => {
+    require('./build').default();
   });
 
 program
@@ -45,8 +45,8 @@ program
   .description('Install service')
   .option('-w, --watch', 'watch mode')
   .option('-d, --dev', 'build dev lib')
-  .action((name, options) => {
-    require('./install').default(name, options).catch((error) => console.error(error));
+  .action((name) => {
+    require('./install').default(name).catch((error) => console.error(error));
   });
 
 program.parse(process.argv);

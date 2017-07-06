@@ -6,12 +6,11 @@ import { Service } from 'alaska';
  * @class PaymentService
  */
 class PaymentService extends Service {
-
   static payments: Object;
 
   payments: Object;
 
-  constructor(options?:Alaska$Service$options) {
+  constructor(options?: Alaska$Service$options) {
     options = options || {};
     options.dir = options.dir || __dirname;
     options.id = options.id || 'alaska-payment';

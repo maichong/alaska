@@ -4,7 +4,7 @@ declare module 'alaska-captcha' {
     preLoadModels():void;
     middleware(toPath: ?string):Function;
   }
-  declare var exports:CaptchaService;
+  declare var exports: CaptchaService;
 }
 
 declare module 'alaska-captcha/models/Captcha' {

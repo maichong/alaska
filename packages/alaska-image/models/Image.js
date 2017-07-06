@@ -3,7 +3,6 @@
 import { Model } from 'alaska';
 
 export default class Image extends Model {
-
   static label = 'Image';
   static icon = 'picture-o';
   static defaultColumns = 'pic user createdAt';
@@ -26,9 +25,10 @@ export default class Image extends Model {
       type: Date
     }
   };
-  pic:Object;
-  user:Object;
-  createdAt:Date;
+  pic: Object;
+  user: Object;
+  createdAt: Date;
+
   preSave() {
     if (!this.createdAt) {
       this.createdAt = new Date();

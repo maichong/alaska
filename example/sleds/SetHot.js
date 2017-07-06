@@ -1,7 +1,6 @@
 import { Sled } from 'alaska';
 
 export default class SetHot extends Sled {
-
   async exec(params) {
     let article = params.article;
     if (article) {
@@ -18,5 +17,4 @@ export default class SetHot extends Sled {
       );
     }
   }
-
 }

@@ -7,7 +7,6 @@ import service from '../';
 import CartItem from '../models/CartItem';
 
 export default class Create extends Sled {
-
   /**
    * 加入购物车
    * @param params

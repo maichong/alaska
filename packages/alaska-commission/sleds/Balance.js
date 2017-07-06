@@ -5,13 +5,12 @@ import User from 'alaska-user/models/User';
 import BALANCE from 'alaska-balance';
 
 export default class Balance extends Sled {
-
   /**
    * @param params
    *        params.commission
    *        [params.user]
    */
-  async exec(params:Object) {
+  async exec(params: Object) {
     let user = params.user;
     let commission = params.commission;
 

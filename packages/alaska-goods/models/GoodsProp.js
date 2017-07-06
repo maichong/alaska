@@ -10,7 +10,6 @@ import GoodsCat from './GoodsCat';
  * @extends Model
  */
 export default class GoodsProp extends Model {
-
   static label = 'Goods Properties';
   static icon = 'th';
   static defaultColumns = 'title common required multi sku filter input activated sort createdAt';

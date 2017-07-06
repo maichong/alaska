@@ -3,7 +3,6 @@
 import { Model } from 'alaska';
 
 export default class Log extends Model {
-
   static label = 'Log';
   static icon = 'file-text-o';
   static titleField = 'title';
@@ -76,8 +75,8 @@ export default class Log extends Model {
   time: number;
   status: string;
   length: number;
-  details:Object;
-  createdAt:Date;
+  details: Object;
+  createdAt: Date;
 
   preSave() {
     if (!this.createdAt) {

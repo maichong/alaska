@@ -3,7 +3,6 @@
 import { Model } from 'alaska';
 
 export default class Special extends Model {
-
   static label = 'Special';
   static icon = 'hashtag';
   static titleField = 'title';

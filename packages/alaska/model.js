@@ -228,7 +228,7 @@ export default class Model {
 
   service: Alaska$Service;
 
-  constructor() {
+  constructor(doc?: Object|null, fields?: Object|null, skipId?: boolean) {
     throw new Error('Can not initialize a Model before register.');
   }
 
@@ -569,8 +569,21 @@ export default class Model {
               try {
                 let promise = collie.compose(preHooks, [], this);
                 promise.then(() => {
+                  if (action === 'save' && this.__modifiedPaths) {
+                    this.__modifiedPaths = this.modifiedPaths();
+                  }
                   next();
                 }, next);
+              } catch (error) {
+                next(error);
+              }
+            });
+          } else if (action === 'save') {
+            schema.pre(action, function (next) {
+              try {
+                if (this.__modifiedPaths) {
+                  this.__modifiedPaths = this.modifiedPaths();
+                }
               } catch (error) {
                 next(error);
               }

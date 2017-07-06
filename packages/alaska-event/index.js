@@ -3,11 +3,11 @@
 import { Service } from 'alaska';
 
 class EventService extends Service {
-  constructor(options?: Alaska$Service$options, alaska?: Alaska$Alaska) {
+  constructor(options?: Alaska$Service$options) {
     options = options || {};
     options.id = options.id || 'alaska-event';
     options.dir = options.dir || __dirname;
-    super(options, alaska);
+    super(options);
   }
 }
 

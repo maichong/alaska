@@ -3,7 +3,6 @@
 import { Model } from 'alaska';
 
 export default class Payment extends Model {
-
   static label = 'Payment Logs';
   static icon = 'money';
   static defaultColumns = 'title user type amount state createdAt';

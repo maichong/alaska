@@ -7,7 +7,6 @@ import Sku from './Sku';
 import GoodsCat from './GoodsCat';
 
 export default class Goods extends Model {
-
   static label = 'Goods';
   static icon = 'gift';
   static defaultColumns = 'pic title cat cats price inventory activated sort createdAt';

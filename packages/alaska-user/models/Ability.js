@@ -4,7 +4,6 @@ import { Model } from 'alaska';
 import service from '../';
 
 export default class Ability extends Model {
-
   static label = 'Ability';
   static icon = 'unlock-alt';
   static defaultColumns = '_id title service createdAt';

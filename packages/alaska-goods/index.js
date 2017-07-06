@@ -14,7 +14,7 @@ class GoodsService extends Service {
   }
 
   preLoadConfig() {
-    let ORDER:any = alaska.service('alaska-order', true);
+    let ORDER: any = alaska.service('alaska-order', true);
     if (ORDER) {
       ORDER.addConfigDir(`${__dirname}/config/alaska-order`);
     }
@@ -55,7 +55,9 @@ class GoodsService extends Service {
     cache.set(cats);
     return cats;
   }
-  _clearCacheTimer:?number;
+
+  _clearCacheTimer: ?number;
+
   clearCache() {
     if (!this._clearCacheTimer) {
       this._clearCacheTimer = setTimeout(() => {

@@ -111,7 +111,6 @@ function createPropsMap(props) {
 }
 
 export default class GoodsSkuEditor extends React.Component {
-
   static contextTypes = {
     t: PropTypes.func
   };

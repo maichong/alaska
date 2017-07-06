@@ -6,7 +6,6 @@ import GoodsCat from './GoodsCat';
 import GoodsProp from './GoodsProp';
 
 export default class GoodsPropValue extends Model {
-
   static label = 'Property Values';
   static icon = 'square';
   static defaultColumns = 'title prop common sort createdAt';

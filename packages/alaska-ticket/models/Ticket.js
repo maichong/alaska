@@ -61,8 +61,9 @@ export default class Ticket extends Model {
   userId: string;
   sessionId: string;
   state: Object;
-  result:Object;
+  result: Object;
   createdAt: Date;
+
   preSave() {
     if (!this.createdAt) {
       this.createdAt = new Date();

@@ -1,7 +1,6 @@
 // @flow
 
 import { Service } from 'alaska';
-// $Flow
 import PAYMENT from 'alaska-payment';
 
 /**

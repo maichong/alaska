@@ -10,7 +10,6 @@ import service from '../';
 const currenciesMap = BALANCE.currenciesMap;
 
 export default class Complete extends Sled {
-
   async exec(params: {
     recharge:Object
   }) {

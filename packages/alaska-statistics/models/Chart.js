@@ -72,7 +72,6 @@ function getCycleLabel(x, unit) {
 }
 
 export default class Chart extends Model {
-
   static label = 'Chart';
   static icon = 'line-chart';
   static defaultColumns = 'title type sources createdAt';

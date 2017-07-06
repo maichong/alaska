@@ -4,7 +4,6 @@ import { Model } from 'alaska';
 import service from '../';
 
 export default class Role extends Model {
-
   static label = 'Role';
   static icon = 'users';
   static defaultSort = '-sort';

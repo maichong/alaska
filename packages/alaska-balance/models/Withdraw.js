@@ -4,7 +4,6 @@ import { Model } from 'alaska';
 import service from '../';
 
 export default class Withdraw extends Model {
-
   static label = 'Withdraw';
   static icon = 'share-square';
   static titleField = 'title';

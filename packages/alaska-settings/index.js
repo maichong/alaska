@@ -8,7 +8,6 @@ const debug = require('debug')('alaska-settings');
  * @class SettingsService
  */
 class SettingsService extends Service {
-
   constructor(options?: Alaska$Service$options) {
     options = options || {};
     options.dir = options.dir || __dirname;

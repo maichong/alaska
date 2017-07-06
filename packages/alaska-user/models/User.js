@@ -4,7 +4,6 @@ import { Model } from 'alaska';
 import Role from './Role';
 
 export default class User extends Model {
-
   static label = 'User';
   static icon = 'user';
   static titleField = 'username';

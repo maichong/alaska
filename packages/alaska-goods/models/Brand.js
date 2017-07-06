@@ -3,7 +3,6 @@
 import { Model } from 'alaska';
 
 export default class Brand extends Model {
-
   static label = 'Brand';
   static icon = 'diamond';
   static titleField = 'title';

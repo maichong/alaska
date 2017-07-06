@@ -10,7 +10,6 @@ import Order from '../models/Order';
  * 下单Sled
  */
 export default class Create extends Sled {
-
   /**
    * @param params 订单数据对象
    *        params.pre    {boolean}

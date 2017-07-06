@@ -3,7 +3,6 @@
 import { Model } from 'alaska';
 
 export default class Email extends Model {
-
   static label = 'Email';
   static icon = 'envelope';
   static titleField = 'title';

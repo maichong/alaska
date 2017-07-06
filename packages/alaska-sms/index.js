@@ -7,11 +7,11 @@ import { Service } from 'alaska';
 import _ from 'lodash';
 
 class SmsService extends Service {
-  constructor(options?: Alaska$Service$options, alaska?: Alaska$Alaska) {
+  constructor(options?: Alaska$Service$options) {
     options = options || {};
     options.id = options.id || 'alaska-sms';
     options.dir = options.dir || __dirname;
-    super(options, alaska);
+    super(options);
   }
 
   preLoadModels() {

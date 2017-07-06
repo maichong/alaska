@@ -37,7 +37,6 @@ export const methods = {
     await this.save();
     return event;
   },
-
   /**
    * 设置某个事件已读
    * @param {Event|string|ObjectID} event

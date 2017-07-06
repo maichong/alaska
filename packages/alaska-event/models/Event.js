@@ -1,7 +1,6 @@
 import { Model } from 'alaska';
 
 export default class Event extends Model {
-
   static label = 'Event';
   static icon = 'bell';
   static titleField = 'title';

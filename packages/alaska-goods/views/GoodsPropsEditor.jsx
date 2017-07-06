@@ -9,7 +9,6 @@ import SelectCheckbox from 'alaska-field-select/views/SelectCheckbox';
 import Switch from 'alaska-field-select/views/Switch';
 
 export default class GoodsPropsEditor extends React.Component {
-
   static contextTypes = {
     settings: PropTypes.object,
     t: PropTypes.func

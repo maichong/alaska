@@ -44,5 +44,4 @@ export default class HtmlField extends Field {
     }
     return result;
   }
-
 }

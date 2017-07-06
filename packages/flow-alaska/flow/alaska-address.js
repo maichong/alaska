@@ -1,6 +1,5 @@
 declare module 'alaska-address' {
   declare class AddressService extends Alaska$Service {
-    constructor(options?: Alaska$Service$options, alaska?: Alaska$Alaska):void;
   }
   declare var exports: AddressService;
 }

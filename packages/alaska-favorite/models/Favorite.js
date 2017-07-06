@@ -3,7 +3,6 @@
 import { Model } from 'alaska';
 
 export default class Favorite extends Model {
-
   static label = 'Favorite';
   static icon = 'heart';
   static defaultColumns = 'pic title user sort createdAt';

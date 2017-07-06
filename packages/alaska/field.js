@@ -1,7 +1,6 @@
 // @flow
 
 export default class Field {
-
   static classOfField = true;
   static plain = String;
   static dbOptions: string[] | void;

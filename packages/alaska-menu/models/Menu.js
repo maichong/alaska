@@ -31,10 +31,11 @@ export default class Menu extends Model {
       private: true
     }
   };
-  _id:String|number|Object|any;
-  title:string;
-  items:Object;
-  createdAt:Date;
+  _id: String|number|Object|any;
+  title: string;
+  items: Object;
+  createdAt: Date;
+
   async preSave() {
     if (!this.createdAt) {
       this.createdAt = new Date();

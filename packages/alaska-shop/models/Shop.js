@@ -4,7 +4,6 @@ import { Model } from 'alaska';
 import Brand from 'alaska-goods/models/Brand';
 
 export default class Shop extends Model {
-
   static label = 'Shop';
   static icon = 'home';
   static defaultColumns = 'logo title user brand activated createdAt';

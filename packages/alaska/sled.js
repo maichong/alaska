@@ -22,7 +22,7 @@ export default class Sled {
   fromJSON: void|((params: Object) => void);
   toJSON: void|(() => Object);
   exec: ((params: Object) => Promise<any>);
-  validate: (() => Promise<any>);
+  validate: ((params: Object) => Promise<any>);
 
   /**
    * Sled构造函数

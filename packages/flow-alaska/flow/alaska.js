@@ -775,7 +775,7 @@ declare class Alaska$Alaska {
   main:Alaska$Service;
   services:{ [id:string]:Alaska$Service };
   app: Koa;
-  service(id: string):Alaska$Service;
+  service(id: string, optional?: boolean):Alaska$Service;
   registerModel(Model: Class<Alaska$Model>): Promise<Class<Alaska$Model>>;
   config(key: string, defaultValue: any): any;
   toJSON():Object;
@@ -876,6 +876,7 @@ declare class Alaska$Renderer {
 }
 
 declare class Alaska$NormalError extends Error {
+  constructor(message: string|number, code?: number):void;
 }
 
 declare module alaska {

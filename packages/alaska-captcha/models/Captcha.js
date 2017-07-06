@@ -37,7 +37,6 @@ if (EMAIL) {
 }
 
 export default class Captcha extends Model {
-
   static label = 'Captcha';
   static icon = 'lock';
   static titleField = 'title';

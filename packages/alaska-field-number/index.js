@@ -4,7 +4,6 @@ import { Field } from 'alaska';
 import numeral from 'numeral';
 
 export default class NumberField extends Field {
-
   static plain = Number;
   static dbOptions = ['min', 'max'];
   static viewOptions = ['min', 'max', 'format', 'addonBefore', 'addonAfter', 'placeholder'];

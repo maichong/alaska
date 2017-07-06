@@ -3,7 +3,6 @@
 import { Model } from 'alaska';
 
 export default class Sku extends Model {
-
   static label = 'Sku';
   static icon = 'cubes';
   static defaultColumns = 'pic goods desc inventory price valid';
@@ -81,7 +80,7 @@ export default class Sku extends Model {
   valid: boolean;
   props: Object;
   createdAt: Date;
-  __exist:boolean;
+  __exist: boolean;
 
   preSave() {
     if (!this.createdAt) {

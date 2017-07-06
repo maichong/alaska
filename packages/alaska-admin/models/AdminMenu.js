@@ -3,7 +3,6 @@
 import { Model } from 'alaska';
 
 export default class AdminMenu extends Model {
-
   static label = 'Admin Menu';
   static icon = 'bars';
   static titleField = 'label';

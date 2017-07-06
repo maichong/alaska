@@ -4,7 +4,6 @@ import { Model } from 'alaska';
 import BALANCE from 'alaska-balance';
 
 export default class Commission extends Model {
-
   static label = 'Commission';
   static icon = 'jpy';
   static titleField = 'title';

@@ -206,6 +206,4 @@ export default class RedisCacheDriver extends Driver {
     this._driver.quit();
     this._driver = {};
   }
-
 }
-

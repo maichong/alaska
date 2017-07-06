@@ -37,7 +37,7 @@ declare class Alaska$Model$Order extends Alaska$Model {
   _logShipping:boolean;
 
   createLog():Alaska$Model$OrderLog;
-  canAppendItem():boolean;
+  canAppendItem(item: Alaska$Model$OrderItem):boolean;
 }
 
 declare module 'alaska-order/models/Order' {

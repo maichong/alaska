@@ -3,7 +3,6 @@
 import { Field } from 'alaska';
 
 export default class CheckboxField extends Field {
-
   static plain = Boolean;
   static viewOptions = ['labelPosition'];
   static defaultOptions = {
