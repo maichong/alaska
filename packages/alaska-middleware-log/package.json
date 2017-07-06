@@ -1,6 +1,6 @@
 {
   "name": "alaska-middleware-log",
-  "version": "0.11.0",
+  "version": "0.11.22",
   "description": "Alaska HTTP log middleware",
   "keywords": [
     "alaska",
@@ -11,7 +11,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-log": "^0.11.0",
+    "alaska-log": "^0.11.22",
     "path-to-regexp": "*"
   }
 }
