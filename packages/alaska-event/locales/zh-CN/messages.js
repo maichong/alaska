@@ -9,4 +9,5 @@ export default {
   'Last Event': '最新事件',
   'Last Read Event': '最新已阅事件',
   'Last Read Event Date': '最新已阅事件日期',
+  Top: '置顶'
 };

@@ -1,6 +1,7 @@
 // @flow
 
 import { Service } from 'alaska';
+import Settings from './models/Settings';
 
 const debug = require('debug')('alaska-settings');
 
@@ -21,8 +22,6 @@ class SettingsService extends Service {
    * @returns {Settings}
    */
   async register(data: Object) {
-    const Settings = this.model('Settings');
-
     const id = data.id || data._id;
     // $Flow
     let settings: Settings = await Settings.findById(id);
@@ -42,7 +41,6 @@ class SettingsService extends Service {
    * @returns {*}
    */
   async get(id: string|number) {
-    const Settings = this.model('Settings');
     // $Flow
     let record = await Settings.findById(id);
     let value = record ? record.value : undefined;
@@ -58,7 +56,6 @@ class SettingsService extends Service {
    */
   async set(id: string|number, value: any) {
     debug('set', id, '=>', value);
-    const Settings = this.model('Settings');
     // $Flow
     let record = await Settings.findById(id);
     if (!record) {

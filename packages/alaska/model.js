@@ -584,6 +584,7 @@ export default class Model {
                 if (this.__modifiedPaths) {
                   this.__modifiedPaths = this.modifiedPaths();
                 }
+                next();
               } catch (error) {
                 next(error);
               }

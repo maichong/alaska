@@ -70,6 +70,11 @@ export default class Event extends Model {
         style: 'danger'
       }]
     },
+    top: {
+      label: 'Top',
+      type: Boolean,
+      default: false
+    },
     parent: {
       label: 'Parent Event',
       ref: 'Event'
