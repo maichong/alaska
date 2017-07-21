@@ -664,6 +664,11 @@ export default class Model {
                 }
               }
               doc[key] = objectToData(value, _fields);
+            } else if (value === undefined) {
+              let fieldConfig = model._fields[key];
+              if (fieldConfig && fieldConfig.defaultValue !== undefined) {
+                doc[key] = fieldConfig.defaultValue;
+              }
             } else {
               doc[key] = value;
             }

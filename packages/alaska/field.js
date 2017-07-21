@@ -19,6 +19,7 @@ export default class Field {
   select: boolean | void;
 
   // Alaska
+  defaultValue: any | void;
   label: string;
   path: string;
   group: string | void;

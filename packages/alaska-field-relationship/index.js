@@ -24,7 +24,8 @@ export default class RelationshipField extends Field {
   static defaultOptions = {
     cell: 'RelationshipFieldCell',
     view: 'RelationshipFieldView',
-    filter: 'RelationshipFieldFilter'
+    filter: 'RelationshipFieldFilter',
+    defaultValue: ''
   };
 
   service: string;
@@ -85,13 +86,20 @@ export default class RelationshipField extends Field {
       //如果没有找到引用,说明是可选引用
       this.hidden = true;
       type = dataType || TypeObjectId;
-      options = type;
+      options.type = type;
       if (typeof this.ref === 'string') {
         let arr = this.ref.split('.');
         this.model = arr[1];
         this.service = arr[0];
       }
     }
+
+    options.set = (value) => {
+      if (value === '' && type === TypeObjectId) {
+        return undefined;
+      }
+      return value;
+    };
 
     [
       'get',

@@ -665,6 +665,7 @@ declare class Alaska$Field {
 
   // Alaska
   type:Class<Alaska$Field>;
+  defaultValue:void|any;
   dataType:Function;
   label:string;
   path:string;
@@ -709,6 +710,7 @@ declare type Alaska$Field$options={
   // Alaska
   options?: Alaska$SelectField$option[];
   type?: Class<Alaska$Field> | string | Function | void;
+  defaultValue:void|any;
   ref?: Class<Alaska$Model> | string | [string];
   label?:string;
   path?:string;

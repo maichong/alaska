@@ -11,8 +11,8 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "peerDependencies": {
-    "alaska": "^0.11.21",
-    "alaska-user": "^0.11.21"
+    "alaska": "^0.11.23",
+    "alaska-user": "^0.11.23"
   },
   "dependencies": {
     "alaska-field-select": "^0.11.22"
