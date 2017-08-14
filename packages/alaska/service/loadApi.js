@@ -105,6 +105,7 @@ export default async function loadApi() {
     };
   }
 
+  // API错误处理
   router.all('/api/*', async(ctx, next) => {
     try {
       await next();
@@ -127,6 +128,7 @@ export default async function loadApi() {
     }
   });
 
+  // 所有支持的REST接口函数名
   const REST_ACTIONS = [
     'count',
     'show',
@@ -138,6 +140,8 @@ export default async function loadApi() {
     'update',
     'updateMulti'
   ];
+
+  // 记录下当前Service需要支持哪些REST API
   let restApis = {};
   _.forEach(this.models, (model) => {
     if (!model.api) return;
@@ -152,6 +156,7 @@ export default async function loadApi() {
     });
   });
 
+  // 注册某个类型API
   function restApi(action) {
     return function (ctx, next) {
       let modelId = ctx.params.model;
@@ -185,17 +190,8 @@ export default async function loadApi() {
     };
   }
 
-  //扩展接口
-  let extension = false;
-  _.forEach(apis, (api) => {
-    if (extension) return;
-    _.forEach(api, (fn, key) => {
-      if (extension || key[0] === '_') return;
-      if (REST_ACTIONS.indexOf(key) < 0) {
-        extension = true;
-      }
-    });
-  });
+  // 判断是否存在扩展接口
+  let extension = !!_.find(apis, (api) => _.find(api, (fn, key) => (key[0] !== '_' && REST_ACTIONS.indexOf(key) < 0)));
 
   if (extension) {
     router.register('/api/:controller?/:action?', ['POST', 'GET'], function (ctx, next) {
@@ -206,7 +202,7 @@ export default async function loadApi() {
       if (ctrl && ctrl[action] && action[0] !== '_') {
         try {
           if (REST_ACTIONS.indexOf(action) > -1) {
-            service.error(400);
+            return next();
           }
           let promise = ctrl[action](ctx, next);
           //异步函数
