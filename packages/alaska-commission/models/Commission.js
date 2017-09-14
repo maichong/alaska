@@ -11,6 +11,7 @@ export default class Commission extends Model {
   static defaultSort = '-createdAt';
 
   static api = {
+    paginate: 3,
     list: 3
   };
 

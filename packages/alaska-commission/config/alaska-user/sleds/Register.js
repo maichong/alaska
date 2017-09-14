@@ -8,7 +8,7 @@ export async function pre() {
   let user = this.params.user;
   if (this.params.promoter || !ctx || (user && user.promoter)) return;
   let promoter = ctx.cookies.get('promoter');
-  if (!promoter && !alaska.util.isObjectId(promoter)) return;
+  if (!promoter && !alaska.utils.isObjectId(promoter)) return;
   // $Flow findById
   promoter = await User.findById(promoter);
   if (promoter) {
