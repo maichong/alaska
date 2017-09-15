@@ -19,6 +19,5 @@ export function* logout() {
     yield akita.post('/api/login/logout');
     yield put(refreshSettings());
   } catch (e) {
-    throw e;
   }
 }

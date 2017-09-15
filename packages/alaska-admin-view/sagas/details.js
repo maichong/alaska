@@ -26,6 +26,5 @@ export default function* details({ payload }) {
       _id: payload.id,
       _error: e.message
     }));
-    throw e;
   }
 }
