@@ -12,7 +12,7 @@ export default class OrderItem extends Model {
   static defaultColumns = 'title order goods skuDesc price discount total quantity createdAt';
   static defaultSort = '-sort';
   static nocreate = true;
-  static noedit = true;
+  static noupdate = true;
   static noremove = true;
 
   static fields = {

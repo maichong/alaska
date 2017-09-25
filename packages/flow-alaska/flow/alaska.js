@@ -462,7 +462,7 @@ declare class Alaska$Model extends events$EventEmitter {
   static label:string;
   static icon:string;
   static nocreate:boolean;
-  static noedit:boolean;
+  static noupdate:boolean;
   static noremove:boolean;
   static collection?:string;
   static groups:{

@@ -7,7 +7,7 @@ export default class Ticket extends Model {
   static icon = 'ticket';
   static defaultSort = '-createdAt';
   static defaultColumns = 'title userId sessionId state createdAt';
-  static noedit = true;
+  static noupdate = true;
   static nocreate = true;
 
   static api = {

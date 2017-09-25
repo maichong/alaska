@@ -10,7 +10,7 @@ export default class Income extends Model {
   static defaultSort = '-createdAt';
   static searchFields = 'title';
   static nocreate = true;
-  static noedit = true;
+  static noupdate = true;
   static noremove = true;
 
   static api = {

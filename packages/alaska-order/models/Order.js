@@ -104,7 +104,7 @@ export default class Order extends Model {
     items: {
       label: 'Order Items',
       ref: ['OrderItem'],
-      noedit: true
+      noupdate: true
     },
     address: {
       label: 'Address',

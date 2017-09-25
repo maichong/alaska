@@ -10,7 +10,7 @@ export default class CartItem extends Model {
   static icon = 'shopping-cart';
   static defaultColumns = 'pic title user goods price sku createdAt';
   static defaultSort = '-sort';
-  static noedit = true;
+  static noupdate = true;
   static nocreate = true;
   static defaultLimit = 100;
 

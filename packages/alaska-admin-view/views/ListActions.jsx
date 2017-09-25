@@ -20,10 +20,10 @@ export default class ListActions extends React.Component {
   };
 
   context: {
-    settings:Settings;
-    t:Function;
-    confirm:Function;
-    toast:Function;
+    settings: Settings;
+    t: Function;
+    confirm: Function;
+    toast: Function;
   };
 
   props: {
@@ -96,7 +96,7 @@ export default class ListActions extends React.Component {
 
   render() {
     const { model, selected, refresh } = this.props;
-    const { t, settings } = this.context;
+    const { settings } = this.context;
     const actions = _.reduce(model.actions, (res, action, key) => {
       if (!action.list) return res;
       if (action.super && !settings.superMode) return res;
@@ -112,16 +112,18 @@ export default class ListActions extends React.Component {
       );
       return res;
     }, []);
+
+
     if (!model.noremove && model.abilities.remove && model.actions.remove !== false) {
       actions.push(<Action
         key="remove"
-        action={{
+        action={_.assign({
           key: 'remove',
           icon: 'close',
           needRecords: 1,
           style: 'danger',
           tooltip: 'Remove selected records'
-        }}
+        }, model.actions.remove)}
         selected={selected}
         model={model}
         onClick={this.handleRemove}
@@ -129,19 +131,18 @@ export default class ListActions extends React.Component {
       />);
     }
 
-    if (!model.nocreate && model.abilities.create && model.actions.create !== false) {
-      let href = '#/edit/' + model.serviceId + '/' + model.name + '/_new';
-      actions.push(
-        <OverlayTrigger
-          key="create"
-          placement="top"
-          overlay={<Tooltip id="tooltip">{t('Create record')}</Tooltip>}
-        >
-          <a
-            key="create"
-            className="btn btn-success" href={href}
-          ><i className="fa fa-plus" /></a>
-        </OverlayTrigger>);
+    if (!model.nocreate && model.abilities.create && model.actions.create !== false && model.actions.add !== false) {
+      actions.push(<Action
+        key="create"
+        action={_.assign({
+          key: 'create',
+          icon: 'plus',
+          style: 'success',
+          tooltip: 'Create record'
+        }, model.actions.create, model.actions.add)}
+        model={model}
+        link={'/edit/' + model.serviceId + '/' + model.name + '/_new'}
+      />);
     }
 
     return (

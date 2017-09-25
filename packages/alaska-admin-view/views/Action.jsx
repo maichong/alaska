@@ -4,20 +4,30 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import shallowEqualWithout from 'shallow-equal-without';
-import type { Model, Action as ActionData, Views }from '../types';
+import TooltipWrapper from './TooltipWrapper';
+import type { Model, Action as ActionData, Views } from '../types';
 
 const NULL = <div />;
 
 export default class Action extends React.Component {
+  static defaultProps = {
+    link: '',
+    refresh: null,
+    onClick: null,
+    disabled: false,
+    selected: [],
+    data: null
+  };
 
   static contextTypes = {
     views: PropTypes.object,
+    router: PropTypes.object,
     t: PropTypes.func
   };
 
   context: {
-    views:Views;
-    t:Function
+    views: Views;
+    t: Function
   };
 
   props: {
@@ -26,7 +36,8 @@ export default class Action extends React.Component {
     selected?: Array<any>,
     disabled?: boolean,
     data?: Object,
-    onClick: Function,
+    onClick?: Function,
+    link?: string;
     refresh?: Function,
   };
 
@@ -34,8 +45,19 @@ export default class Action extends React.Component {
     return !shallowEqualWithout(props, this.props);
   }
 
+  handleClick = () => {
+    const { onClick, link } = this.props;
+    if (onClick) {
+      onClick();
+      return;
+    }
+    if (link) {
+      this.context.router.push(link);
+    }
+  };
+
   render() {
-    let { model, action, data, selected, disabled, onClick, refresh } = this.props;
+    let { model, action, data, selected, disabled, refresh } = this.props;
     const { t } = this.context;
     if (action.view) {
       let View = this.context.views[action.view];
@@ -45,7 +67,7 @@ export default class Action extends React.Component {
       }
       return React.createElement(View, { model, action, selected, data, refresh });
     }
-    if (!model.abilities[action.key]) return NULL;
+    // if (!model.abilities[action.key]) return NULL;
     if (!disabled && !data && action.needRecords && (!selected || selected.length < action.needRecords)) {
       disabled = true;
     }
@@ -55,7 +77,7 @@ export default class Action extends React.Component {
     }
     let el = (
       <button
-        onClick={onClick}
+        onClick={this.handleClick}
         className={'btn btn-' + (action.style || 'default')}
         key={action.key}
         disabled={disabled}
@@ -63,10 +85,10 @@ export default class Action extends React.Component {
     );
     if (action.tooltip) {
       return (
-        <OverlayTrigger
+        <TooltipWrapper
           placement="top"
-          overlay={<Tooltip id={'action-tooltip-' + action.key}>{t(action.tooltip)}</Tooltip>}
-        >{el}</OverlayTrigger>
+          tooltip={t(action.tooltip)}
+        >{el}</TooltipWrapper>
       );
     }
     return el;

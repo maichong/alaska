@@ -10,7 +10,7 @@ export default class OrderLog extends Model {
   static defaultColumns = 'title order createdAt';
   static defaultSort = '-createdAt';
   static nocreate = true;
-  static noedit = true;
+  static noupdate = true;
   static noremove = true;
 
   static fields = {

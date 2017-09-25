@@ -39,7 +39,7 @@ export default class PostComment extends Model {
       label: 'User',
       type: 'relationship',
       ref: 'alaska-user.User',
-      noedit: true,
+      noupdate: true,
       index: true
     },
     content: {

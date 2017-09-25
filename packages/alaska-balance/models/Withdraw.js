@@ -20,7 +20,7 @@ export default class Withdraw extends Model {
   };
 
   static actions = {
-    save: false,
+    update: false,
     accept: {
       title: 'Accept',
       sled: 'WithdrawAccept',

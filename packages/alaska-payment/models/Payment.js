@@ -8,7 +8,7 @@ export default class Payment extends Model {
   static defaultColumns = 'title user type amount state createdAt';
   static defaultSort = '-createdAt';
   static nocreate = true;
-  static noedit = true;
+  static noupdate = true;
 
   static api = {
     create: 3,

@@ -30,24 +30,24 @@ class EditorPage extends React.Component {
   };
 
   context: {
-    settings:Settings;
-    views:Views;
-    t:Function;
-    router:Object;
-    toast:Function;
-    confirm:Function;
+    settings: Settings;
+    views: Views;
+    t: Function;
+    router: Object;
+    toast: Function;
+    confirm: Function;
   };
 
   props: {
-    loadDetails:Function,
-    refreshSettings:Function,
-    saveAction:Function,
+    loadDetails: Function,
+    refreshSettings: Function,
+    saveAction: Function,
     details: Details,
     save: Object,
     params: {
-      service:string;
-      model:string;
-      id:string;
+      service: string;
+      model: string;
+      id: string;
     }
   };
 
@@ -295,10 +295,12 @@ class EditorPage extends React.Component {
     if (data._error) {
       return <div className="editor-error">{data._error}</div>;
     }
-    let canSave = (id === '_new' && model.abilities.create) || (id !== '_new' && model.abilities.update && !model.noedit);
+    console.log('model.abilities', model.abilities);
+    const isNew = id === '_new';
+    let canSave = (id === '_new' && model.abilities.create) || (id !== '_new' && model.abilities.update && !model.noupdate);
     let title = <a onClick={this.handleBack}>{t(model.label || model.name, serviceId)}</a>;
     let subTitle = '';
-    if (id == '_new') {
+    if (isNew) {
       subTitle = t('Create');
     } else if (model.titleField) {
       subTitle = t(data[model.titleField], serviceId);
@@ -362,7 +364,7 @@ class EditorPage extends React.Component {
       }
 
       let disabled = false;
-      if (model.noedit || this.loading || !canSave) {
+      if (model.noupdate || this.loading || !canSave) {
         disabled = true;
       } else if (cfg.disabled) {
         if (cfg.disabled === true) {
@@ -380,7 +382,7 @@ class EditorPage extends React.Component {
         value: data[path],
         model,
         data,
-        field: cfg.merge({ label, help }),
+        field: _.assign({}, cfg, { label, help }),
         disabled,
         errorText: errors[path],
         onChange: this.handleChange.bind(this, path),
@@ -409,47 +411,91 @@ class EditorPage extends React.Component {
     let actionElements = [];
     let removeDialogElement = null;
 
-    if (canSave && model.actions.save && model.actions.save.depends && !checkDepends(model.actions.save.depends, data)) {
-      canSave = false;
-    }
-
-    if (canSave && model.actions.save !== false) {
-      actionElements.push(<button
-        className="btn btn-primary"
-        onClick={this.handleSave}
-        key="save"
-        disabled={this.loading}
-      ><i className="fa fa-save" /></button>);
-    }
-    let canRemove = true;
-    if (model.actions.remove && model.actions.remove.depends && !checkDepends(model.actions.remove.depends, data)) {
-      canRemove = false;
-    }
-    if (canRemove && !model.noremove && id !== '_new' && model.abilities.remove && model.actions.remove !== false) {
-      actionElements.push(<button
-        className="btn btn-danger"
-        onClick={this.handleRemove}
-        key="remove"
-        disabled={this.loading}
-      ><i className="fa fa-close" /></button>);
-    }
-
-    let canCreate = true;
-    if (model.actions.create && model.actions.create.depends && !checkDepends(model.actions.create.depends, data)) {
-      canCreate = false;
-    }
-    if (canCreate && !model.nocreate && id !== '_new' && model.abilities.create) {
-      actionElements.push(<button
-        onClick={this.handleCreate}
-        className="btn btn-success"
+    // 创建时，显示保存按钮
+    if (
+      isNew
+      && model.abilities.create
+      && !model.nocreate
+      && !(model.actions.create && model.actions.create.depends && !checkDepends(model.actions.create.depends, data))
+    ) {
+      actionElements.push(<Action
         key="create"
+        action={_.assign({
+          key: 'create',
+          icon: 'save',
+          style: 'primary',
+          tooltip: 'Save'
+        }, model.actions.create)}
+        model={model}
         disabled={this.loading}
-      ><i className="fa fa-plus" /></button>);
+        onClick={this.handleSave}
+      />);
+    } else if (
+      !isNew
+      && model.abilities.update
+      && !model.noupdate
+      && !(model.actions.update && model.actions.update.depends && !checkDepends(model.actions.update.depends, data))
+    ) {
+      actionElements.push(<Action
+        key="update"
+        action={_.assign({
+          key: 'update',
+          icon: 'save',
+          style: 'primary',
+          tooltip: 'Save'
+        }, model.actions.update)}
+        model={model}
+        disabled={this.loading}
+        onClick={this.handleSave}
+      />);
+    }
+
+    if (
+      !isNew
+      && !model.noremove
+      && model.abilities.remove
+      && model.actions.remove !== false
+      && !( model.actions.remove && model.actions.remove.depends && !checkDepends(model.actions.remove.depends, data))
+    ) {
+      actionElements.push(<Action
+        key="remove"
+        action={_.assign({
+          key: 'remove',
+          icon: 'close',
+          style: 'danger',
+          tooltip: 'Remove'
+        }, model.actions.remove)}
+        model={model}
+        disabled={this.loading}
+        onClick={this.handleRemove}
+      />);
+    }
+
+    if (
+      !isNew
+      && !model.nocreate
+      && model.abilities.create
+      && model.actions.create !== false
+      && model.actions.add !== false
+    ) {
+      // 创建另一个
+      actionElements.push(<Action
+        key="add"
+        action={_.assign({
+          key: 'create',
+          icon: 'plus',
+          style: 'success',
+          tooltip: 'Create record'
+        }, model.actions.create, model.actions.add)}
+        model={model}
+        disabled={this.loading}
+        onClick={this.handleCreate}
+      />);
     }
 
     //扩展动作按钮
     _.forEach(model.actions, (action, key) => {
-      if (['create', 'save', 'remove'].indexOf(key) > -1) return;
+      if (['add', 'create', 'update', 'remove'].indexOf(key) > -1) return;
       if (action.super && !settings.superMode) return;
       if (action.depends && !checkDepends(action.depends, data)) return;
       if (action.list && !action.editor) return;
@@ -469,7 +515,7 @@ class EditorPage extends React.Component {
     });
 
     let relationships = null;
-    if (id != '_new' && model.relationships) {
+    if (!isNew && model.relationships) {
       relationships = _.map(
         model.relationships,
         (r: Object, key: string) => {
@@ -491,9 +537,7 @@ class EditorPage extends React.Component {
         <ContentHeader>
           {title}
         </ContentHeader>
-        {
-          id === '_new' ? null : <div >ID : {id}</div>
-        }
+        {isNew ? null : <div>ID : {id}</div>}
         {groupElements}
         {removeDialogElement}
         {relationships}

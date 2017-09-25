@@ -7,7 +7,7 @@ export default class Sku extends Model {
   static icon = 'cubes';
   static defaultColumns = 'pic goods desc inventory price valid';
   static defaultSort = '-sort';
-  static noedit = true;
+  static noupdate = true;
   static noremove = true;
   static nocreate = true;
   static titleField = 'desc';

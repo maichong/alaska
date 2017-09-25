@@ -85,7 +85,7 @@ class AdminService extends Service {
           defaultSort: Model.defaultSort,
           defaultColumns: Model.defaultColumns,
           nocreate: Model.nocreate,
-          noedit: Model.noedit,
+          noupdate: Model.noupdate,
           noremove: Model.noremove,
           groups: Model.groups,
           relationships: _.reduce(Model.relationships, (res, r, key) => {
