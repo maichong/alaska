@@ -34,27 +34,27 @@ class ListPage extends React.Component {
     location: Object,
     loadList: Function,
     refreshSettings: Function;
-    params:{
-      service:string;
-      model:string
+    params: {
+      service: string;
+      model: string
     };
-    lists:Lists
+    lists: Lists
   };
 
   state: {
-    data?:Record,
-    search:string,
-    filters:Object,
-    page:number,
-    list:Object,
-    sort:string,
-    columnsItems:any[],
+    data?: Record,
+    search: string,
+    filters: Object,
+    page: number,
+    list: Object,
+    sort: string,
+    columnsItems: any[],
     columnsKeys: any[],
     filterItems: any[],
     filterViews: any[],
     filterViewsMap: Object,
     selected: any[],
-    model:Model,
+    model: Model,
     service: Service
   };
 
@@ -282,8 +282,6 @@ class ListPage extends React.Component {
     let field = model.fields[eventKey];
     if (!field) return;
 
-    field = field.set('label', t(field.label, model.serviceId));
-
     const views = this.context.views;
     let FilterView = views[field.filter];
     let view;
@@ -325,9 +323,8 @@ class ListPage extends React.Component {
   };
 
   handleScroll = () => {
-    let body = document.body;
     // $Flow
-    if (body.scrollTop + document.documentElement.clientHeight >= body.scrollHeight) {
+    if (window.scrollY + window.innerHeight >= document.body.scrollHeight) {
       if (!this.state.list.next || this._loading) return;
       this.loadMore();
     }
