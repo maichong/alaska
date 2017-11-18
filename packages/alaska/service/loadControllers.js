@@ -66,4 +66,4 @@ export default async function loadControllers() {
     }
     return next();
   });
-};
+}

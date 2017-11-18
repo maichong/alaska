@@ -83,7 +83,7 @@ export default class PostCat extends Model {
   }
 
   /**
-   * [async] 获取当前分类的子分类对象列表
+   * 获取当前分类的子分类对象列表
    * @returns {[PostCat]}
    */
   async subs() {
@@ -94,7 +94,7 @@ export default class PostCat extends Model {
   }
 
   /**
-   * [async] 获取当前分类的所有子分类对象列表
+   * 获取当前分类的所有子分类对象列表
    * @returns {{}}
    */
   async allSubs() {

@@ -1,8 +1,6 @@
 // @flow
 
 /* eslint no-console:0 */
-/* eslint global-require:0 */
-/* eslint import/no-dynamic-require:0 */
 
 import * as utils from '../utils';
 
@@ -37,4 +35,4 @@ export default async function init() {
     console.error(`${this.id} init field:`, error.message);
     throw error;
   }
-};
+}

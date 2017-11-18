@@ -5,37 +5,25 @@ import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
 import DateTime from 'react-datetime';
 import moment from 'moment';
-// $Flow
-import 'moment/locale/zh-cn';
 
-export default class DateFieldView extends React.Component {
-
+export default class DateFieldView extends React.Component<Alaska$view$Field$View$Props> {
   static contextTypes = {
     settings: PropTypes.object
-  };
-
-  props: {
-    className: string,
-    model: Object,
-    field: Object,
-    data: Object,
-    errorText: string,
-    disabled: boolean,
-    value: any,
-    onChange: Function,
   };
 
   componentWillMount() {
     moment.locale(this.context.settings.locale);
   }
 
-  shouldComponentUpdate(props: Object) {
-    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model');
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props) {
+    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model');
   }
 
   render() {
-    let { className, value, field, disabled, errorText, onChange } = this.props;
-    let help = field.help;
+    let {
+      className, value, field, disabled, errorText, onChange
+    } = this.props;
+    let { help } = field;
     className += ' date-field';
     if (errorText) {
       className += ' has-error';

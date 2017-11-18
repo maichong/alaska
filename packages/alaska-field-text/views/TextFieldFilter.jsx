@@ -3,31 +3,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class TextFieldFilter extends React.Component {
+type State = {
+  mode: 1 | 2,
+  value: string,
+  error: boolean,
+  inverse: boolean
+};
 
+export default class TextFieldFilter extends React.Component<Alaska$view$Field$Filter$Props, State> {
   static contextTypes = {
     t: PropTypes.func,
-  };
-
-  props: {
-    className: string,
-    value: any,
-    field: Object,
-    onChange: Function,
-    onClose: Function,
-  };
-
-  state: {
-    mode: 1 | 2;
-    value: string;
-    error: boolean;
-    inverse: boolean;
   };
 
   handleMode1: Function;
   handleMode2: Function;
 
-  constructor(props: Object) {
+  constructor(props: Alaska$view$Field$Filter$Props) {
     super(props);
     let v = props.value || {};
     if (typeof v === 'string') {
@@ -48,7 +39,7 @@ export default class TextFieldFilter extends React.Component {
     this.setState({ mode }, () => this.handleBlur());
   }
 
-  handleChange = (event: ReactInputEvent) => {
+  handleChange = (event: SyntheticInputEvent<*>) => {
     this.setState({ value: event.target.value });
   };
 
@@ -78,9 +69,11 @@ export default class TextFieldFilter extends React.Component {
   };
 
   render() {
-    const t = this.context.t;
+    const { t } = this.context;
     let { className, field, onClose } = this.props;
-    const { mode, value, error, inverse } = this.state;
+    const {
+      mode, value, error, inverse
+    } = this.state;
     const buttonClassName = 'btn btn-default';
     const buttonClassNameActive = buttonClassName + ' btn-success';
     className += ' text-field-filter' + (error ? ' error' : '');
@@ -92,11 +85,13 @@ export default class TextFieldFilter extends React.Component {
             <a
               className={mode === 1 ? buttonClassNameActive : buttonClassName}
               onClick={this.handleMode1}
-            >{t('equal')}</a>
+            >{t('equal')}
+            </a>
             <a
               className={mode === 2 ? buttonClassNameActive : buttonClassName}
               onClick={this.handleMode2}
-            >{t('contain')}</a>
+            >{t('contain')}
+            </a>
           </div>
           <input
             type="text"
@@ -108,7 +103,8 @@ export default class TextFieldFilter extends React.Component {
           <a
             className={inverse ? buttonClassNameActive : buttonClassName}
             onClick={this.handleInverse}
-          >{t('inverse')}</a>
+          >{t('inverse')}
+          </a>
         </div>
         <a className="btn field-filter-close" onClick={onClose}><i className="fa fa-close" /></a>
       </div>

@@ -58,15 +58,18 @@
     "import/prefer-default-export": 0,
     "radix": 0,
     "max-len": [2, {"code": 120, "ignoreComments": true}],
-    "require-yield": 1,
+    "jsx-a11y/anchor-is-valid": 1,
+    "jsx-a11y/click-events-have-key-events": 0,
     "jsx-a11y/href-no-hash": "off",
     "jsx-a11y/label-has-for": 0,
     "jsx-a11y/img-has-alt": 0,
     "jsx-a11y/no-static-element-interactions": 1,
+    "jsx-a11y/no-noninteractive-element-interactions": 1,
     "react/forbid-prop-types": 0,
     "react/no-unused-prop-types": 1,
     "react/prefer-stateless-function": 0,
     "react/jsx-wrap-multilines": [2, {"declaration": false, "assignment": false, "return": true}],
+    "react/jsx-closing-tag-location": 0,
     "react/sort-comp": [
       2, {
         "order": [

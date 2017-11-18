@@ -1,26 +1,27 @@
 // @flow
 
-/* eslint global-require:0 */
-/* eslint import/no-dynamic-require:0 */
-
 import { Field } from 'alaska';
 import mongoose from 'mongoose';
+import _ from 'lodash';
 
 const TypeObjectId = mongoose.Schema.Types.ObjectId;
-const ObjectId = mongoose.Types.ObjectId;
+const { ObjectId } = mongoose.Types;
 
 export default class RelationshipField extends Field {
   static plain = TypeObjectId;
-  static viewOptions = ['filters', 'service', 'model', 'multi', 'checkbox', 'switch', function (options, field) {
-    let Model = field.ref;
-    if (Model) {
-      options.ref = Model.path;
-      options.title = Model.title;
-      if (!options.service && Model.service) {
-        options.service = Model.service.id;
+  static viewOptions = [
+    'filters', 'service', 'model', 'multi', 'checkbox', 'switch',
+    (options: Object, field: Alaska$Field) => {
+      let Model = field.ref;
+      if (Model) {
+        options.ref = Model.path;
+        options.title = Model.title;
+        if (!options.service && Model.service) {
+          options.service = Model.service.id;
+        }
       }
     }
-  }];
+  ];
   static defaultOptions = {
     cell: 'RelationshipFieldCell',
     view: 'RelationshipFieldView',
@@ -30,7 +31,7 @@ export default class RelationshipField extends Field {
 
   service: string;
   model: string;
-  ref: void | Class < Alaska$Model >;
+  ref: void | Class<Alaska$Model>;
   optional: boolean;
 
   /**
@@ -39,11 +40,10 @@ export default class RelationshipField extends Field {
   initSchema() {
     let schema = this._schema;
     let model = this._model;
-    let dataType = this.dataType;
+    let { dataType, ref } = this;
     if (dataType === 'ObjectId' || dataType === ObjectId) {
       dataType = TypeObjectId;
     }
-    let ref = this.ref;
     if (typeof ref === 'string') {
       //查找引用模型
       //ref 当this.optional为true时,ref有可能为null
@@ -59,6 +59,7 @@ export default class RelationshipField extends Field {
       } else if (ref.fields._id) {
         type = ref.fields._id;
         if (type.type) {
+          // eslint-disable-next-line
           type = type.type;
         }
         if (typeof type === 'string') {
@@ -89,7 +90,9 @@ export default class RelationshipField extends Field {
       options.type = type;
       if (typeof this.ref === 'string') {
         let arr = this.ref.split('.');
+        // eslint-disable-next-line prefer-destructuring
         this.model = arr[1];
+        // eslint-disable-next-line prefer-destructuring
         this.service = arr[0];
       }
     }
@@ -98,6 +101,7 @@ export default class RelationshipField extends Field {
       if (value === '' && type === TypeObjectId) {
         return undefined;
       }
+      // eslint-disable-next-line
       return value;
     };
 
@@ -130,7 +134,7 @@ export default class RelationshipField extends Field {
           next();
           return;
         }
-        let id = record.id;
+        let { id } = record;
         if (id && String(id) === String(record.get(field.path))) {
           next(new Error('Can not relate to record self, ' + model.path + '#' + field.path));
           return;
@@ -147,6 +151,7 @@ export default class RelationshipField extends Field {
       if (filter.$ne) {
         return filter;
       }
+      // eslint-disable-next-line prefer-destructuring
       value = filter.value;
       if (filter.inverse === true || filter.inverse === 'true') {
         inverse = true;
@@ -167,7 +172,7 @@ export default class RelationshipField extends Field {
       }
     } else if (this.dataType === Number) {
       value = parseInt(value);
-      if (isNaN(value)) return null;
+      if (_.isNaN(value)) return null;
       return inverse ? { $ne: value } : value;
     }
     return null;

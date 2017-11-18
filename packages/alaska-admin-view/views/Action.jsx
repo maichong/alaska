@@ -2,21 +2,33 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import shallowEqualWithout from 'shallow-equal-without';
 import TooltipWrapper from './TooltipWrapper';
-import type { Model, Action as ActionData, Views } from '../types';
 
 const NULL = <div />;
 
-export default class Action extends React.Component {
+type Props = {
+  model: Alaska$view$Model,
+  action: Alaska$Model$action,
+  selected?: Array<any>,
+  disabled?: boolean,
+  record?: Object,
+  onClick?: Function,
+  link?: string,
+  refresh?: Function,
+};
+
+type Context = {
+  views: Alaska$view$Views,
+  router: Object,
+  t: Function
+};
+
+export default class Action extends React.Component<Props> {
   static defaultProps = {
     link: '',
-    refresh: null,
-    onClick: null,
     disabled: false,
-    selected: [],
-    data: null
+    selected: []
   };
 
   static contextTypes = {
@@ -25,23 +37,9 @@ export default class Action extends React.Component {
     t: PropTypes.func
   };
 
-  context: {
-    views: Views;
-    t: Function
-  };
+  context: Context;
 
-  props: {
-    model: Model,
-    action: ActionData,
-    selected?: Array<any>,
-    disabled?: boolean,
-    data?: Object,
-    onClick?: Function,
-    link?: string;
-    refresh?: Function,
-  };
-
-  shouldComponentUpdate(props: Object) {
+  shouldComponentUpdate(props: Props) {
     return !shallowEqualWithout(props, this.props);
   }
 
@@ -57,7 +55,9 @@ export default class Action extends React.Component {
   };
 
   render() {
-    let { model, action, data, selected, disabled, refresh } = this.props;
+    let {
+      model, action, record, selected, disabled, refresh
+    } = this.props;
     const { t } = this.context;
     if (action.view) {
       let View = this.context.views[action.view];
@@ -65,10 +65,13 @@ export default class Action extends React.Component {
         console.error(`Action view ${action.view} missing`);
         return NULL;
       }
-      return React.createElement(View, { model, action, selected, data, refresh });
+      // $Flow
+      return React.createElement(View, {
+        model, action, selected, record, refresh
+      });
     }
     // if (!model.abilities[action.key]) return NULL;
-    if (!disabled && !data && action.needRecords && (!selected || selected.length < action.needRecords)) {
+    if (!disabled && !record && action.needRecords && (!selected || selected.length < action.needRecords)) {
       disabled = true;
     }
     let title;
@@ -81,14 +84,16 @@ export default class Action extends React.Component {
         className={'btn btn-' + (action.style || 'default')}
         key={action.key}
         disabled={disabled}
-      >{action.icon ? <i className={'fa fa-' + action.icon} /> : null} {title}</button>
+      >{action.icon ? <i className={'fa fa-' + action.icon} /> : null} {title}
+      </button>
     );
     if (action.tooltip) {
       return (
         <TooltipWrapper
           placement="top"
           tooltip={t(action.tooltip)}
-        >{el}</TooltipWrapper>
+        >{el}
+        </TooltipWrapper>
       );
     }
     return el;

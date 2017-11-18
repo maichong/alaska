@@ -8,32 +8,22 @@ import _ from 'lodash';
 
 const CHECK_ICON = <i className="fa fa-check" />;
 
-export default class FilterFieldView extends React.Component {
+type State = {
+  ref: string,
+  modelPath: string,
+  model: any,
+  selectedFields: Object
+};
 
+export default class FilterFieldView extends React.Component<Alaska$view$Field$View$Props, State> {
   static contextTypes = {
     settings: PropTypes.object,
     t: PropTypes.func
   };
 
-  props: {
-    className: string,
-    field: Object,
-    errorText: string,
-    disabled: boolean,
-    value: any,
-    onChange: Function,
-  };
-
-  state: {
-    ref:boolean,
-    modelPath:string,
-    model:any,
-    selectedFields:Object
-  };
-
   componentWillMount() {
     this.state = {
-      ref: false,
+      ref: '',
       modelPath: '',
       model: null,
       selectedFields: {}
@@ -41,19 +31,20 @@ export default class FilterFieldView extends React.Component {
     this.init(this.props);
   }
 
-  componentWillReceiveProps(props: Object) {
+  componentWillReceiveProps(props: Alaska$view$Field$View$Props) {
     this.init(props);
   }
 
-  init(props: Object) {
-    const { field, data, value } = props;
+  init(props: Alaska$view$Field$View$Props) {
+    const { field, record, value } = props;
     const { settings } = this.context;
     let state = {};
-    if (field.ref[0] === ':') {
-      state.ref = field.ref.substr(1);
-      state.modelPath = data[state.ref];
+    let ref = field.ref || '';
+    if (ref[0] === ':') {
+      state.ref = ref.substr(1);
+      state.modelPath = record[state.ref];
     } else {
-      state.ref = false;
+      state.ref = '';
       state.modelPath = field.ref;
     }
 
@@ -64,14 +55,16 @@ export default class FilterFieldView extends React.Component {
     }
 
     state.selectedFields = {};
-    _.keys(value).forEach((key) => (state.selectedFields[key] = true));
+    _.keys(value).forEach((key) => {
+      state.selectedFields[key] = true;
+    });
 
     this.setState(state);
   }
 
   getFilterItems() {
     const { selectedFields, model } = this.state;
-    const t = this.context.t;
+    const { t } = this.context;
     // $Flow  flow不知道该用哪种描述  lodash_v4.x.x.js:211 212
     return _.reduce(model.fields, (res, field, index) => {
       if (!field._label) {
@@ -84,7 +77,8 @@ export default class FilterFieldView extends React.Component {
         key={index}
         eventKey={field.path}
         className="with-icon"
-      >{icon} {field.label}</MenuItem>);
+      >{icon} {field.label}
+      </MenuItem>);
       return res;
     }, []);
   }
@@ -105,7 +99,9 @@ export default class FilterFieldView extends React.Component {
   };
 
   render() {
-    let { className, field, value, disabled, onChange, errorText } = this.props;
+    let {
+      className, field, value, disabled, onChange, errorText
+    } = this.props;
     const { model, selectedFields } = this.state;
     className += ' filter-field';
     if (errorText) {
@@ -130,7 +126,8 @@ export default class FilterFieldView extends React.Component {
           bsStyle="success"
           title={<i className="fa fa-plus" />}
           onSelect={this.handleFilter}
-        >{this.getFilterItems()}</DropdownButton>
+        >{this.getFilterItems()}
+        </DropdownButton>
       ];
     }
 

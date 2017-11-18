@@ -4,7 +4,7 @@ import alaska, { Service } from 'alaska';
 
 class CaptchaService extends Service {
   constructor(options?: Alaska$Service$options) {
-    options = options || {};
+    options = options || { dir: '', id: '' };
     options.id = options.id || 'alaska-captcha';
     options.dir = options.dir || __dirname;
     super(options);

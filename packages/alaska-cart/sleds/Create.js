@@ -21,7 +21,9 @@ export default class Create extends Sled {
     skuId?:string;
     quantity?:number;
   }): Promise<Object> {
-    let { user, goodsId, skuId, quantity } = params;
+    let {
+      user, goodsId, skuId, quantity
+    } = params;
     let sku: ?Sku;
     let goods: ?Goods;
 

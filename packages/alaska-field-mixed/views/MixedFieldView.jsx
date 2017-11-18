@@ -5,25 +5,13 @@
 import React from 'react';
 import shallowEqualWithout from 'shallow-equal-without';
 
-export default class MixedFieldView extends React.Component {
+type State = {
+  text: string,
+  style: ?string
+};
 
-  props: {
-    className: string,
-    model: Object,
-    field: Object,
-    data: Object,
-    errorText: string,
-    disabled: boolean,
-    value: any,
-    onChange: Function,
-  };
-
-  state: {
-    text:string,
-    style:?string
-  };
-
-  constructor(props: Object) {
+export default class MixedFieldView extends React.Component<Alaska$view$Field$View$Props, State> {
+  constructor(props: Alaska$view$Field$View$Props) {
     super(props);
     this.state = {
       text: JSON.stringify(props.value, null, 4),
@@ -31,7 +19,7 @@ export default class MixedFieldView extends React.Component {
     };
   }
 
-  componentWillReceiveProps(props: Object) {
+  componentWillReceiveProps(props: Alaska$view$Field$View$Props) {
     if (props.value !== undefined) {
       this.setState({
         text: JSON.stringify(props.value, null, 4)
@@ -39,14 +27,13 @@ export default class MixedFieldView extends React.Component {
     }
   }
 
-  shouldComponentUpdate(props: Object, state: Object) {
-    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model')
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props, state: State) {
+    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model')
       || !shallowEqualWithout(state, this.state);
   }
 
-  handleChange = (e: Event) => {
-    // $Flow 已确认e.target.value属性存在
-    let value = e.target.value;
+  handleChange = (e: SyntheticInputEvent<*>) => {
+    let { value } = e.target;
     let state = {
       text: value,
       style: undefined
@@ -65,9 +52,8 @@ export default class MixedFieldView extends React.Component {
     this.setState(state);
   };
 
-  handleBlur = (e: Event) => {
-    // $Flow 已确认e.target.value属性存在
-    let value = e.target.value;
+  handleBlur = (e: SyntheticInputEvent<*>) => {
+    let { value } = e.target;
     let json;
     let state: Object = {
       text: value,
@@ -91,7 +77,9 @@ export default class MixedFieldView extends React.Component {
   };
 
   render() {
-    let { className, field, disabled, errorText } = this.props;
+    let {
+      className, field, disabled, errorText
+    } = this.props;
 
     let inputElement;
     if (disabled || field.fixed) {
@@ -105,7 +93,7 @@ export default class MixedFieldView extends React.Component {
       />;
     }
 
-    let help = field.help;
+    let { help } = field;
 
     className += ' mixed-field ' + (this.state.style || '');
     if (errorText) {

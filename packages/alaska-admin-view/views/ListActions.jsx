@@ -5,13 +5,17 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import akita from 'akita';
 import shallowEqualWithout from 'shallow-equal-without';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Node from './Node';
 import Action from './Action';
-import type { Model, Record, Settings } from '../types';
 
-export default class ListActions extends React.Component {
+type Props = {
+  selected?: Alaska$view$Record[],
+  model: Alaska$view$Model,
+  refresh: Function,
+  refreshSettings: Function,
+};
 
+export default class ListActions extends React.Component<Props, Context> {
   static contextTypes = {
     settings: PropTypes.object,
     t: PropTypes.func,
@@ -20,40 +24,36 @@ export default class ListActions extends React.Component {
   };
 
   context: {
-    settings: Settings;
+    settings: Alaska$view$Settings;
     t: Function;
     confirm: Function;
     toast: Function;
   };
 
-  props: {
-    selected?: Record[],
-    model: Model,
-    refresh: Function,
-    refreshSettings: Function,
-  };
-
-  shouldComponentUpdate(props: Object) {
+  shouldComponentUpdate(props: Props) {
     return !shallowEqualWithout(props, this.props);
   }
 
-  handleAction = async(action: Object) => {
+  handleAction = async(action: string) => {
     const { model, selected } = this.props;
     const { t, toast, confirm } = this.context;
 
     const config = model.actions[action];
-    if (config && config.confirm) {
+    if (!config) return;
+    if (config.confirm) {
       await confirm(t('Confirm'), t(config.confirm, model.serviceId));
     }
 
     try {
       if (config.pre && config.pre.substr(0, 3) === 'js:') {
+        // eslint-disable-next-line no-eval
         if (!eval(config.pre.substr(3))) {
           return;
         }
       }
 
       if (config.script && config.script.substr(0, 3) === 'js:') {
+        // eslint-disable-next-line no-eval
         eval(config.script.substr(3));
       } else {
         await akita.post('/api/action', {
@@ -68,6 +68,7 @@ export default class ListActions extends React.Component {
         this.props.refresh();
       }
       if (config.post && config.post.substr(0, 3) === 'js:') {
+        // eslint-disable-next-line no-eval
         eval(config.post.substr(3));
       }
     } catch (error) {
@@ -100,19 +101,16 @@ export default class ListActions extends React.Component {
     const actions = _.reduce(model.actions, (res, action, key) => {
       if (!action.list) return res;
       if (action.super && !settings.superMode) return res;
-      res.push(
-        <Action
-          key={key}
-          model={model}
-          selected={selected}
-          action={action}
-          refresh={refresh}
-          onClick={() => this.handleAction(key)}
-        />
-      );
+      res.push(<Action
+        key={key}
+        model={model}
+        selected={selected}
+        action={action}
+        refresh={refresh}
+        onClick={() => this.handleAction(key)}
+      />);
       return res;
     }, []);
-
 
     if (!model.noremove && model.abilities.remove && model.actions.remove !== false) {
       actions.push(<Action

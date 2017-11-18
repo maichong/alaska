@@ -1,8 +1,6 @@
 // @flow
 
 /* eslint no-useless-escape:0 */
-/* eslint global-require:0 */
-/* eslint import/no-dynamic-require:0 */
 
 import fs from 'fs';
 import type { Stats } from 'fs';

@@ -1,11 +1,6 @@
 // @flow
 
-/* eslint global-require:0 */
 /* eslint new-cap:0 */
-/* eslint import/no-dynamic-require:0 */
-/* eslint import/no-extraneous-dependencies:0 */
-/* eslint import/no-unresolved:0 */
-/* eslint import/extensions:0 */
 
 import path from 'path';
 import fs from 'fs';
@@ -25,7 +20,7 @@ const debug = Debugger('alaska');
  * @class {NormalError}
  */
 export class NormalError extends Error {
-  code: number|void;
+  code: number | void;
 
   constructor(message: string, code?: number) {
     super(message);
@@ -38,7 +33,7 @@ export class NormalError extends Error {
  * @class {PanicError}
  */
 export class PanicError extends Error {
-  code: number|void;
+  code: number | void;
 
   constructor(message: string, code?: number) {
     super(message);
@@ -83,7 +78,7 @@ class Alaska {
   _app: Koa;
   main: Alaska$Service;
   services: {
-    [id:string]: Alaska$Service
+    [id: string]: Alaska$Service
   };
   _missingService = {};
   _mounts = {};
@@ -108,7 +103,6 @@ class Alaska {
   get app(): Koa {
     if (!this._app) {
       this._app = new Koa();
-      this._app.name = this.config('name');
       this._app.env = this.config('env');
       this._app.proxy = this.config('proxy');
       this._app.subdomainOffset = this.config('subdomainOffset');
@@ -123,7 +117,7 @@ class Alaska {
    * @param {boolean} [optional] 可选,默认false,如果为true则不会主动加载,并且未找到时不抛出异常
    * @return {Service|null}
    */
-  service(id: string, optional?: boolean): Alaska$Service|null {
+  service(id: string, optional?: boolean): Alaska$Service | null {
     let service = this.services[id];
 
     if (service) {
@@ -189,7 +183,7 @@ class Alaska {
     const mountKeys = Object.keys(this._mounts);
 
     this.app.use(async(ctx, next) => {
-      const hostname = ctx.hostname;
+      const { hostname } = ctx;
       for (let point of mountKeys) {
         debug('test', point);
         let service = alaska._mounts[point];
@@ -230,7 +224,7 @@ class Alaska {
     // $Flow
     const alaska: Alaska$Alaska = this;
     const MAIN = this.main;
-    const app = this.app;
+    const { app } = this;
 
     const locales = this.config('locales');
     const localeCookieKey = this.config('localeCookieKey');
@@ -253,7 +247,7 @@ class Alaska {
       ctx.sendfile = async function (filePath, options) {
         options = options || {};
         let trailingSlash = filePath[filePath.length - 1] === '/';
-        let index = options.index;
+        let { index } = options;
         if (index && trailingSlash) filePath += index;
         let maxage = options.maxage || options.maxAge || 0;
         let hidden = options.hidden || false;
@@ -286,6 +280,7 @@ class Alaska {
               return;
             }
           } catch (e) {
+            console.error(e);
           }
         }
         ctx.set('Content-Length', stats.size);
@@ -296,7 +291,7 @@ class Alaska {
 
       //toJSON
       {
-        let toJSON = ctx.toJSON;
+        let { toJSON } = ctx;
         ctx.toJSON = function () {
           let json = toJSON.call(ctx);
           json.session = ctx.session || null;
@@ -360,6 +355,7 @@ class Alaska {
           locale = null;
         }
         if (!locale) {
+          // eslint-disable-next-line prefer-destructuring
           locale = ctx.locale;
         }
         return ctx.service.t(message, locale, values);
@@ -404,8 +400,11 @@ class Alaska {
         let options;
         let sort = 0;
         if (typeof id === 'object') {
+          // eslint-disable-next-line prefer-destructuring
           options = id.options;
+          // eslint-disable-next-line prefer-destructuring
           sort = id.sort || 0;
+          // eslint-disable-next-line prefer-destructuring
           id = id.id;
         }
         if (id.startsWith('.')) {
@@ -457,7 +456,7 @@ class Alaska {
    * @param {string|number|Error} message
    * @param {string|number} [code]
    */
-  panic(message: string|number, code?: number) {
+  panic(message: string | number, code?: number) {
     if (!code && typeof message === 'number') {
       let msg = statuses[message];
       if (msg) {
@@ -479,7 +478,7 @@ class Alaska {
    * @param {string|number|Error} message
    * @param {string|number} [code]
    */
-  error(message: string|number, code?: number) {
+  error(message: string | number, code?: number) {
     if (!code && typeof message === 'number') {
       let msg = statuses[message];
       if (msg) {
@@ -496,7 +495,7 @@ class Alaska {
   }
 
   /**
-   * [async]执行一个异步任务,如果失败则抛出NormalError
+   * 执行一个异步任务,如果失败则抛出NormalError
    * @param {Promise} promise
    * @returns {*}
    */

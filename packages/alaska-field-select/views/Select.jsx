@@ -28,34 +28,33 @@ function createFromSearchMulti(options, values, search) {
   return { label: search, value: search };
 }
 
-export default class Select extends React.Component {
+type Props = {
+  allowCreate?: boolean,
+  disabled?: boolean,
+  multi?: boolean,
+  renderValue?: Function,
+  onChange: Function,
+  loadOptions?: Function,
+  value: any,
+  options: Object[]
+};
 
+type State = {
+  options: Alaska$SelectField$option[];
+  optionsMap: {
+    [value: string]: Alaska$SelectField$option;
+  };
+  value?: Alaska$SelectField$option | Alaska$SelectField$option[];
+};
+
+export default class Select extends React.Component<Props, State> {
   static contextTypes = {
     t: PropTypes.func
   };
 
-  props: {
-    allowCreate?: boolean,
-    disabled?: boolean,
-    multi?: boolean,
-    renderValue?: Function,
-    onChange: Function,
-    loadOptions?: Function,
-    value: any,
-    options: Object[]
-  };
-
-  state: {
-    options: Alaska$SelectField$option[];
-    optionsMap: {
-      [value:string]:Alaska$SelectField$option;
-    };
-    value?:Alaska$SelectField$option | Alaska$SelectField$option[];
-  };
-
   _cache: Object;
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       options: props.options,
@@ -77,7 +76,7 @@ export default class Select extends React.Component {
     }
   }
 
-  componentWillReceiveProps(props: Object) {
+  componentWillReceiveProps(props: Props) {
     let state = {};
     if (props.options !== this.props.options) {
       state.options = props.options;
@@ -130,7 +129,7 @@ export default class Select extends React.Component {
     return processOne(value);
   };
 
-  handleChange = (value: Alaska$SelectField$option|Alaska$SelectField$option[]) => {
+  handleChange = (value: Alaska$SelectField$option | Alaska$SelectField$option[]) => {
     let optionsMap = this.state.optionsMap;
     if (value) {
       if (value instanceof Array) {
@@ -177,7 +176,8 @@ export default class Select extends React.Component {
         <span
           className="simple-value-remove"
           onClick={handleRemove}
-        >x</span>
+        >x
+        </span>
         <span>{item.label}</span>
       </div>
     );

@@ -5,53 +5,29 @@ import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
 import DateTime from 'react-datetime';
 import moment from 'moment';
-// $Flow
-import 'moment/locale/zh-cn';
 
-export default class DatetimeFieldView extends React.Component {
-
+export default class DatetimeFieldView extends React.Component<Alaska$view$Field$View$Props> {
   static contextTypes = {
     settings: PropTypes.object
   };
-
-  props: {
-    className: string,
-    model: Object,
-    field: Object,
-    data: Object,
-    errorText: string,
-    disabled: boolean,
-    value: string,
-    onChange: Function,
-  };
-
-  state: {
-    value: Object;
-  };
-
-  constructor(props: Object) {
-    super(props);
-    this.state = {
-      value: moment(props.value)
-    };
-  }
 
   componentWillMount() {
     moment.locale(this.context.settings.locale);
   }
 
-  shouldComponentUpdate(props: Object, state: Object) {
-    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model')
-      || !shallowEqualWithout(state, this.state);
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props) {
+    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model');
   }
 
   render() {
-    let { className, value, field, disabled, errorText, onChange } = this.props;
+    let {
+      className, value, field, disabled, errorText, onChange
+    } = this.props;
     let valueString: string = '';
     if (field.format && value) {
       valueString = moment(value).format(field.format);
     }
-    let help = field.help;
+    let { help } = field;
     className += ' date-field';
     if (errorText) {
       className += ' has-error';
@@ -65,10 +41,12 @@ export default class DatetimeFieldView extends React.Component {
       inputElement = <input type="text" className="form-control" disabled value={valueString} />;
     } else {
       inputElement = <DateTime
-        value={valueString||value}
+        value={valueString || value}
         dateFormat={field.dateFormat}
         timeFormat={field.timeFormat}
-        onChange={(value)=>{onChange(value.format())}}
+        onChange={(value) => {
+          onChange(value.format());
+        }}
       />;
     }
 

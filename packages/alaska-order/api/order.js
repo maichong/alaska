@@ -86,7 +86,9 @@ export async function refund(ctx: Alaska$Context) {
     amount = order.payed;
   }
   if (amount > order.payed) service.error('Invalid refund amount');
-  await service.run('Refund', { ctx, order, reason, amount });
+  await service.run('Refund', {
+    ctx, order, reason, amount
+  });
   ctx.body = order.data();
 }
 

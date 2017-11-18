@@ -8,22 +8,28 @@ import Select from 'alaska-field-select/views/Select';
 import SelectCheckbox from 'alaska-field-select/views/SelectCheckbox';
 import Switch from 'alaska-field-select/views/Switch';
 
-export default class GoodsPropsEditor extends React.Component {
+type Props = {
+  value: any,
+  data: any,
+  onChange: Function
+};
+
+type State = {
+  service: {},
+  goodsProps: any,
+  goodsPropsMap: {};
+  valueMap: {}
+};
+
+export default class GoodsPropsEditor extends React.Component<Props, State> {
   static contextTypes = {
     settings: PropTypes.object,
     t: PropTypes.func
   };
 
-  state: {
-    service:Object;
-    goodsProps:any;
-    goodsPropsMap: {};
-    valueMap:{}
-  };
-
   _cat: any;
 
-  constructor(props: Object, context: Object) {
+  constructor(props: Props, context: Object) {
     super(props);
     let service: Object = context.settings.services['alaska-goods'];
     this.state = {
@@ -38,7 +44,7 @@ export default class GoodsPropsEditor extends React.Component {
     this.fetchProps();
   }
 
-  componentWillReceiveProps(props: Object) {
+  componentWillReceiveProps(props: Props) {
     let newState = {};
     if (props.value) {
       newState.valueMap = this.arrayToMap(props.value);
@@ -94,7 +100,7 @@ export default class GoodsPropsEditor extends React.Component {
   render() {
     let props = this.props;
     let data = props.data;
-    const t = this.context.t;
+    const { t } = this.context;
     if (!data.cat) {
       return <p className="text-center">{t('Select goods category first!', 'alaska-goods')}</p>;
     }

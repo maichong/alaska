@@ -2,7 +2,7 @@
 
 import { Field } from 'alaska';
 import fs from 'fs';
-import path from 'path';
+import Path from 'path';
 import moment from 'moment';
 import mime from 'mime';
 import mkdirp from 'mkdirp';
@@ -33,19 +33,30 @@ export default class ImageField extends Field {
    * @param {Field} field
    * @returns {{}}
    */
-  static upload(file, field) {
+  static upload(file: Alaska$UploadFile | string | Buffer, field: ImageField): Promise<{
+    _id: string,
+    ext: string,
+    size: number,
+    path: string,
+    thumbUrl: string,
+    url: string,
+    name: string
+  }> {
     return new Promise((resolve, reject) => {
       if (!file) {
         reject(new Error('File not found'));
         return;
       }
-      let name = file.filename || '';
-      let ext = (file.ext || '').toLowerCase();
-      let mimeType = file.mime || file.mimeType;
+      // $Flow
+      let name: string = file.filename || '';
+      // $Flow
+      let ext: string = (file.ext || '').toLowerCase();
+      // $Flow
+      let mimeType: string = file.mime || file.mimeType || '';
       let filePath;
       let buffer;
+      let { dir } = field;
       let local = field.dir;
-      let dir = field.dir;
       let url = field.prefix;
       let id = new ObjectId();
       let img = {
@@ -66,7 +77,7 @@ export default class ImageField extends Field {
       } else if (typeof file === 'string') {
         //文件路径
         mimeType = mime.lookup(file);
-        name = path.basename(file);
+        name = Path.basename(file);
         filePath = file;
       } else if (file.path) {
         //上传文件
@@ -77,7 +88,7 @@ export default class ImageField extends Field {
       }
 
       if (!ext && name) {
-        ext = path.extname(name);
+        ext = Path.extname(name);
         if (ext) {
           ext = ext.substr(1).toLowerCase();
         }
@@ -85,13 +96,14 @@ export default class ImageField extends Field {
       if (!ext) {
         ext = mime.extension(mimeType).replace('jpeg', 'jpg');
       }
-      if (field.allowed.indexOf(ext) < 0) {
+      if (field.allowed && field.allowed.indexOf(ext) < 0) {
         reject(new Error('Image format error'));
         return;
       }
 
       function writeFile() {
-        fs.writeFile(local, buffer, (error) => {
+        // $Flow
+        fs.writeFile(local, buffer, (error: Error) => {
           if (error) {
             reject(error);
             return;
@@ -100,7 +112,7 @@ export default class ImageField extends Field {
         });
       }
 
-      function onReadFile(error, data) {
+      function onReadFile(error: Error | null, data: Buffer) {
         if (error) {
           reject(error);
           return;
@@ -137,8 +149,10 @@ export default class ImageField extends Field {
       }
 
       if (filePath) {
+        // $Flow
         fs.readFile(file.path, onReadFile);
       } else {
+        // $Flow
         onReadFile(null, file);
       }
     });

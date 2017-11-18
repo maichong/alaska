@@ -9,5 +9,7 @@ export default async function create(ctx:Alaska$Context) {
   let skuId = body.sku || ctx.request.body.sku;
   let quantity = body.quantity || ctx.request.body.quantity;
   if (!goodsId) service.error(400);
-  ctx.body = await service.run('Create', { user: ctx.user, goodsId, skuId, quantity });
+  ctx.body = await service.run('Create', {
+    user: ctx.user, goodsId, skuId, quantity
+  });
 }

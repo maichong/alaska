@@ -5,24 +5,23 @@ import React from 'react';
 import ChartJS from 'react-chartjs';
 import { api } from 'alaska-admin-view';
 
-export default class Chart extends React.Component {
+type Props = {
+  chart: string,
+  width?: number,
+  height?: number,
+  onLoadData?: Function
+};
 
-  props: {
-    chart: string,
-    width?: number,
-    height?: number,
-    onLoadData?: Function
-  };
+type State = {
+  raw: ?Object,
+  type: string,
+  data: ?Object,
+  options: ?Object,
+  error: ?Object
+};
 
-  state: {
-    raw:?Object;
-    type:string;
-    data:?Object;
-    options:?Object;
-    error:?Object;
-  };
-
-  constructor(props: Object) {
+export default class Chart extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       raw: null,
@@ -37,12 +36,12 @@ export default class Chart extends React.Component {
     this.refresh(this.props);
   }
 
-  componentWillReceiveProps(props: Object) {
+  componentWillReceiveProps(props: Props) {
     if (this.props.chart.toString() === props.chart.toString()) return;
     this.refresh(props);
   }
 
-  async refresh(props: ?Object) {
+  async refresh(props: ?Props) {
     if (!props) {
       props = this.props;
     }
@@ -73,13 +72,17 @@ export default class Chart extends React.Component {
         lastClick = now;
       };
     }
-    let tmp: Object = { raw, error, type, data, options };
+    let tmp: Object = {
+      raw, error, type, data, options
+    };
     this.setState(tmp);
   }
 
   render() {
     const { width, height } = this.props;
-    const { error, type, data, options } = this.state;
+    const {
+      error, type, data, options
+    } = this.state;
     if (!data) {
       return <div className="chart-error">No Data</div>;
     }

@@ -1,8 +1,5 @@
 // @flow
 
-/* eslint global-require:0 */
-/* eslint import/no-dynamic-require:0 */
-
 import alaska from 'alaska';
 import random from 'string-random';
 import pathToRegexp from 'path-to-regexp';

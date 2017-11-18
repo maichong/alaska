@@ -257,7 +257,7 @@ export default class Order extends Model {
   }
 
   /**
-   * [async] 创建并保存订单日志
+   * 创建并保存订单日志
    * @param title
    * @returns {*}
    */

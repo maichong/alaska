@@ -3,21 +3,15 @@
 import React from 'react';
 import _ from 'lodash';
 
-export default class ImageLinkFieldCell extends React.Component {
-
-  props: {
-    field: Object,
-    value: string
-  };
-
-  shouldComponentUpdate(props: Object) {
+export default class ImageLinkFieldCell extends React.Component<Alaska$view$Field$Cell$Props> {
+  shouldComponentUpdate(props: Alaska$view$Field$Cell$Props) {
     return props.value !== this.props.value;
   }
 
   render() {
     const { value, field } = this.props;
     if (!value) {
-      return <div className="image-link-field-cell"/>;
+      return <div className="image-link-field-cell" />;
     }
     let style = {
       height: 40,

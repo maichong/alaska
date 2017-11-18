@@ -15,12 +15,12 @@ export default class Sled {
 
   id: string;
   params: Object;
-  item: null|Alaska$sledQueueItem;
+  item: null | Alaska$sledQueueItem;
   fromQueue: boolean;
-  result: void|any;
-  error: void|Error;
-  fromJSON: void|((params: Object) => void);
-  toJSON: void|(() => Object);
+  result: void | any;
+  error: void | Error;
+  fromJSON: void | ((params: Object) => void);
+  toJSON: void | (() => Object);
   exec: ((params: Object) => Promise<any>);
   validate: ((params: Object) => Promise<any>);
 
@@ -117,10 +117,9 @@ export default class Sled {
    * @private
    * @returns {Object}
    */
-  static get config() {
+  static get config(): Object {
     if (!this._config) {
-      let service = this.service;
-      let key = this.key;
+      let { service, key } = this;
       let name = 'sled.' + key;
       let config = service.config(name, undefined, true);
       if (!config) {
@@ -140,12 +139,12 @@ export default class Sled {
    * @returns {Alaska$QueueDriver}
    */
   static createQueueDriver(): Alaska$QueueDriver {
-    let config = this.config;
+    let { config, key } = this;
     if (!config.queue) {
       throw new ReferenceError('sled queue config not found');
     }
     // $Flow
-    return this.service.createDriver(_.defaults({}, config.queue, { key: this.key }));
+    return this.service.createDriver(_.defaults({}, config.queue, { key }));
   }
 
   /**
@@ -155,7 +154,7 @@ export default class Sled {
    * @returns {Alaska$SubscribeDriver}
    */
   static createSubscribeDriver(channel: string): Alaska$SubscribeDriver {
-    let config = this.config;
+    let { config } = this;
     if (!config.subscribe) {
       throw new ReferenceError('sled subscribe config not found');
     }
@@ -168,7 +167,7 @@ export default class Sled {
    * @param {Object} [params]
    * @returns {Promise<any>}
    */
-  static run(params): Promise<any> {
+  static run(params?: Object): Promise<any> {
     let sled = new this(params);
     return sled.run();
   }
@@ -189,16 +188,15 @@ export default class Sled {
     //默认60天超时
     timeout = timeout || 60 * 86400;
 
-    let params = this.params;
+    let { params, key, id } = this;
     if (this.toJSON) {
       params = this.toJSON();
     }
 
-    let key = this.key;
-    if (!this.id) {
-      this.id = 'sled.' + key + '.' + random(10);
+    if (!id) {
+      id = 'sled.' + key + '.' + random(10);
+      this.id = id;
     }
-    let id = this.id;
     let item = {
       id,
       key,
@@ -222,7 +220,7 @@ export default class Sled {
    * 从队列中读取一个sled
    * @param {number} [timeout] 读取超时,单位毫秒,默认Infinity
    */
-  static async read(timeout?: number): Promise<Alaska$Sled|null> {
+  static async read(timeout?: number): Promise<Alaska$Sled | null> {
     let queue = this.createQueueDriver();
     let item: Alaska$sledQueueItem = await queue.pop(timeout);
     queue.free();
@@ -264,7 +262,7 @@ export default class Sled {
       this.id = 'sled.' + this.key + '.' + random(10);
     }
 
-    let id = this.id;
+    let { id } = this;
 
     if (!this.item) {
       //异步将sled插入队列
@@ -307,7 +305,7 @@ export default class Sled {
       await collie.compose(this.constructor._pre, [], this);
     }
 
-    let result = this.result;
+    let { result } = this;
     //如果已经有result,说明在前置hooks中已经执行完成任务
 
     try {

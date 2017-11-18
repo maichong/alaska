@@ -2,6 +2,7 @@
 
 import { Field } from 'alaska';
 import numeral from 'numeral';
+import _ from 'lodash';
 
 export default class NumberField extends Field {
   static plain = Number;
@@ -32,7 +33,7 @@ export default class NumberField extends Field {
     }
     if (value !== undefined) {
       let v = parseFloat(value);
-      return isNaN(v) ? undefined : v;
+      return _.isNaN(v) ? undefined : v;
     }
 
     //区间
@@ -47,7 +48,7 @@ export default class NumberField extends Field {
     if (bt && bt.length === 2) {
       let start = parseFloat(bt[0]);
       let end = parseFloat(bt[1]);
-      if (isNaN(start) || isNaN(end)) return null;
+      if (_.isNaN(start) || _.isNaN(end)) return null;
       return { $gte: start, $lte: end };
     }
 
@@ -56,7 +57,7 @@ export default class NumberField extends Field {
       let val = filter[key] || filter['$' + key];
       if (val === undefined) return;
       val = parseFloat(val);
-      if (isNaN(val)) return;
+      if (_.isNaN(val)) return;
       if (!value) {
         value = {};
       }

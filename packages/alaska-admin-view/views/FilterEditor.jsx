@@ -3,35 +3,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import type { Model } from '../types';
 
-export default class FilterEditor extends React.Component {
+type Props = {
+  value: Object,
+  model: Alaska$view$Model,
+  fields: Object,
+  onChange: Function,
+  onFieldsChange: Function,
+  disabled: boolean
+};
 
+type State = {
+  value: {}
+};
+
+export default class FilterEditor extends React.Component<Props, State> {
   static contextTypes = {
     views: PropTypes.object
   };
 
-  props: {
-    value: Object,
-    model: Model,
-    fields: Object,
-    onChange: Function,
-    onFieldsChange: Function,
-    disabled: boolean
-  };
-
-  state: {
-    value:Object;
-  };
-
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       value: props.value
     };
   }
 
-  componentWillReceiveProps(props: Object) {
+  componentWillReceiveProps(props: Props) {
     if (props.value !== this.state.value) {
       this.setState({ value: props.value });
     }
@@ -65,7 +63,8 @@ export default class FilterEditor extends React.Component {
             />
           );
         })
-      }</div>
+      }
+      </div>
     );
   }
 }

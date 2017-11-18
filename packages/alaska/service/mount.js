@@ -4,7 +4,7 @@ import * as utils from '../utils';
 
 export default async function mount() {
   this.mount = utils.resolved;
-  const alaska = this.alaska;
+  const { alaska } = this;
 
   for (let sub of this.serviceList) {
     await sub.mount('mount');
@@ -30,4 +30,4 @@ export default async function mount() {
   this.domain = domain;
   this.prefix = prefix;
   this.routes = this.router.routes();
-};
+}

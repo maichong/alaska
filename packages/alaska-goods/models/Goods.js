@@ -18,7 +18,7 @@ export default class Goods extends Model {
     show: 1
   };
 
-  static defaultFilters = (ctx) => {
+  static defaultFilters = (ctx: Alaska$Context) => {
     if (ctx.service.id === 'alaska-admin') return null;
     return {
       activated: true
@@ -214,7 +214,7 @@ export default class Goods extends Model {
       nolabel: true
     }
   };
-  _id: string|number|Object|any;
+  _id: string | number | Object | any;
   title: string;
   brief: string;
   pic: Object;

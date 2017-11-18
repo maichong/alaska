@@ -3,16 +3,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Node from './Node';
-import type { Settings } from '../types';
 
-export default class Logo extends React.Component {
-
+export default class Logo extends React.Component<any> {
   static contextTypes = {
     settings: PropTypes.object
   };
 
   context: {
-    settings: Settings
+    settings: Alaska$view$Settings
   };
 
   render() {

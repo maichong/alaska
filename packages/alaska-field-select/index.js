@@ -1,5 +1,6 @@
 // @flow
 
+import _ from 'lodash';
 import { Field } from 'alaska';
 
 export default class SelectField extends Field {
@@ -49,7 +50,7 @@ export default class SelectField extends Field {
     schema.path(this.path, options);
   }
 
-  createFilter(filter: Object): any|void {
+  createFilter(filter: Object): any | void {
     let value = filter;
     let inverse = false;
     if (typeof filter === 'object' && filter.value) {
@@ -63,7 +64,7 @@ export default class SelectField extends Field {
     }
     if (this.number) {
       value = parseInt(value);
-      if (isNaN(value)) return null;
+      if (_.isNaN(value)) return null;
       return inverse ? { $ne: value } : value;
     }
     if (this.boolean) {

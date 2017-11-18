@@ -55,4 +55,4 @@ export default async function (ctx: Alaska$Context) {
     user: Object.assign({ access }, user.data()),
     settings
   };
-};
+}

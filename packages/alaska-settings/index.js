@@ -10,7 +10,7 @@ const debug = require('debug')('alaska-settings');
  */
 class SettingsService extends Service {
   constructor(options?: Alaska$Service$options) {
-    options = options || {};
+    options = options || { dir: '', id: '' };
     options.dir = options.dir || __dirname;
     options.id = options.id || 'alaska-settings';
     super(options);

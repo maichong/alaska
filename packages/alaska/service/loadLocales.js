@@ -1,8 +1,5 @@
 // @flow
 
-/* eslint global-require:0 */
-/* eslint import/no-dynamic-require:0 */
-
 import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
@@ -10,7 +7,7 @@ import * as utils from '../utils';
 
 export default async function loadLocales() {
   this.loadLocales = utils.resolved;
-  const alaska = this.alaska;
+  const { alaska } = this;
 
   for (let sub of this.serviceList) {
     await sub.loadLocales();
@@ -20,7 +17,7 @@ export default async function loadLocales() {
 
   this.locales = {};
 
-  const locales = this.locales;
+  const { locales } = this;
 
   const allowed = alaska.main.config('locales', []);
 

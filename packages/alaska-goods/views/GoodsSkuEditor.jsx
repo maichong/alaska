@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal } from 'react-bootstrap';
+import { Modal, ModalHeader, ModalBody } from 'react-bootstrap';
 import _ from 'lodash';
 
 /**
@@ -56,9 +56,9 @@ function updateValue(value, goodsProps, goodsPropsMap) {
     let sortedKeys = Object.keys(s.props).sort();
     s.key = sortedKeys.map((id) => id + ':' + s.props[id]).join('|');
     //规格:散装|套餐:官方套餐
-    s.desc = sortedKeys.map(
-      (id) => (goodsPropsMap[id].title + ':' + goodsPropsMap[id].valueMap[s.props[id]].label)
-    ).join('|');
+    s.desc = sortedKeys
+      .map((id) => (goodsPropsMap[id].title + ':' + goodsPropsMap[id].valueMap[s.props[id]].label))
+      .join('|');
     s.valid = true;
     res[s.key] = s;
     return res;
@@ -110,32 +110,32 @@ function createPropsMap(props) {
   return map;
 }
 
-export default class GoodsSkuEditor extends React.Component {
+type Props = {
+  record: Object,
+  value: Object[],
+  onChange: Function
+};
+
+type State = {
+  goodsProps: any,
+  goodsPropsMap: Object,
+  picPicker: boolean,
+  pics: any[],
+  value: any
+};
+
+export default class GoodsSkuEditor extends React.Component<Props, State> {
   static contextTypes = {
     t: PropTypes.func
-  };
-
-  props: {
-    data: Object,
-    value: Object[],
-    onChange: Function
-  };
-
-  state: {
-    goodsProps: any,
-    goodsPropsMap: Object,
-    picPicker: boolean,
-    pics: any[],
-    value: any
   };
   _trCache: Object;
   _skuIndex: number;
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.state = {
-      goodsProps: props.data.props,
-      goodsPropsMap: createPropsMap(props.data.props),
+      goodsProps: props.record.props,
+      goodsPropsMap: createPropsMap(props.record.props),
       picPicker: false,
       pics: [],
       value: null
@@ -144,26 +144,26 @@ export default class GoodsSkuEditor extends React.Component {
     this._trCache = {};
   }
 
-  componentWillReceiveProps(props: Object) {
+  componentWillReceiveProps(props: Props) {
     let newState = {};
     if (props.value !== undefined) {
       newState.value = props.value;
     }
-    if (props.data && props.data.props !== this.state.goodsProps) {
-      newState.goodsProps = props.data.props;
-      newState.goodsPropsMap = createPropsMap(props.data.props);
+    if (props.record && props.record.props !== this.state.goodsProps) {
+      newState.goodsProps = props.record.props;
+      newState.goodsPropsMap = createPropsMap(props.record.props);
       newState.value = updateValue(props.value || this.state.value, newState.goodsProps, newState.goodsPropsMap);
       this._trCache = {};
     }
     this.setState(newState);
   }
 
-  shouldComponentUpdate(props: Object, state: Object) {
+  shouldComponentUpdate(props: Props, state: State) {
     return state.value !== this.state.value || state.picPicker !== this.state.picPicker;
   }
 
   selectPicture = (pic: any) => () => {
-    const value = this.state.value;
+    const { value } = this.state;
     const newValue = [];
     value.forEach((sku, index) => {
       if (index === this._skuIndex) {
@@ -175,16 +175,15 @@ export default class GoodsSkuEditor extends React.Component {
     this.setState({ value: newValue, picPicker: false });
   };
 
-
   closePicker = () => {
     this.setState({ picPicker: false });
   };
 
-  handlePic = (event: MouseEvent) => {
-    const data = this.props.data;
-    // $Flow MouseEvent.target中是有dataset属性的 line 172
+  handlePic = (event: SyntheticMouseEvent<HTMLImageElement>) => {
+    const { record } = this.props;
+    // $Flow
     this._skuIndex = parseInt(event.target.dataset.index);
-    let pics = [data.pic].concat(data.pics);
+    let pics = [record.pic].concat(record.pics);
     this.setState({
       picPicker: true,
       pics
@@ -196,7 +195,7 @@ export default class GoodsSkuEditor extends React.Component {
   render() {
     //let { value } = this.props;
     const { value, pics, picPicker } = this.state;
-    const t = this.context.t;
+    const { t } = this.context;
 
     let content;
     if (value.length) {
@@ -208,6 +207,7 @@ export default class GoodsSkuEditor extends React.Component {
           trs.push(trCache[s.key]);
           return;
         }
+
         function onChangeInventory(e) {
           s.inventory = parseInt(e.target.value);
           delete trCache[s.key];
@@ -237,11 +237,11 @@ export default class GoodsSkuEditor extends React.Component {
             me.props.onChange(_.without(value, s));
           };
         }
-        let pic = s.pic || this.props.data.pic;
+        let pic = s.pic || this.props.record.pic;
         trCache[s.key] = (
-          <tr key={index} className={className}>
+          <tr key={s.key} className={className}>
             <td className="sku-pic-field">
-              <img alt="'" src={pic.thumbUrl} onClick={this.handlePic} data-index={index} />
+              <img alt="" src={pic.thumbUrl} onClick={this.handlePic} data-index={index} />
             </td>
             <td className="desc" dangerouslySetInnerHTML={{ __html: s.desc.replace(/\|/g, '<br/>') }} />
             <td>
@@ -262,17 +262,17 @@ export default class GoodsSkuEditor extends React.Component {
       });
       content = (<table className="table goods-sku-editor">
         <thead>
-        <tr>
-          <th>{t('Picture', 'alaska-goods')}</th>
-          <th>{t('Properties', 'alaska-goods')}</th>
-          <th>{t('Inventory', 'alaska-goods')}</th>
-          <th>{t('Price', 'alaska-goods')}</th>
-          <th>{t('Discount', 'alaska-goods')}</th>
-          <th />
-        </tr>
+          <tr>
+            <th>{t('Picture', 'alaska-goods')}</th>
+            <th>{t('Properties', 'alaska-goods')}</th>
+            <th>{t('Inventory', 'alaska-goods')}</th>
+            <th>{t('Price', 'alaska-goods')}</th>
+            <th>{t('Discount', 'alaska-goods')}</th>
+            <th />
+          </tr>
         </thead>
         <tbody>
-        {trs}
+          {trs}
         </tbody>
       </table>);
     } else {
@@ -283,15 +283,16 @@ export default class GoodsSkuEditor extends React.Component {
         <div className="panel-heading">SKU</div>
         {content}
         <Modal show={picPicker} onHide={this.closePicker}>
-          <Modal.Header>{t('Select picture')}</Modal.Header>
-          <Modal.Body className="sku-pic-picker">
-            {_.map(pics, (pic, index) => <img
+          <ModalHeader>{t('Select picture')}</ModalHeader>
+          <ModalBody className="sku-pic-picker">
+            {_.map(pics, (pic, index) => (<img
               alt=""
               src={pic.thumbUrl}
               key={index}
-              onClick={this.selectPicture(pic)} />)
+              onClick={this.selectPicture(pic)}
+            />))
             }
-          </Modal.Body>
+          </ModalBody>
         </Modal>
       </div>
     );

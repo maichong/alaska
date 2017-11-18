@@ -12,3 +12,4 @@ rollup.*
 gulpfile.js
 runtime/
 alaska-init/public/
+dist/

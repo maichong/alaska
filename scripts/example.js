@@ -27,7 +27,7 @@ fs.readdirSync(packagesDir).forEach((lib) => {
 });
 
 try {
-  execSync('npm install', {
+  execSync('node_modules/.bin/npm install', {
     cwd: exampleDir,
     stdio: ['inherit', 'inherit', 'inherit']
   });

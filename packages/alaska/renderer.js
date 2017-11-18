@@ -24,7 +24,7 @@ function readDir(dir: string): Object {
   return map;
 }
 
-function objectToMap(obj: Object, path?: string, map?: { [file:string]:string }): { [file:string]:string } {
+function objectToMap(obj: Object, path?: string, map?: { [file: string]: string }): { [file: string]: string } {
   path = path ? path + '/' : '';
   map = map || {};
   for (let key of Object.keys(obj)) {
@@ -43,7 +43,7 @@ export default class Renderer {
   static classOfRenderer = true;
   service: Alaska$Service;
   options: Alaska$Config$renderer;
-  _map: { [file:string]:string };
+  _map: { [file: string]: string };
 
   constructor(service: Alaska$Service, options: Alaska$Config$renderer) {
     this.service = service;
@@ -58,7 +58,7 @@ export default class Renderer {
    * 获取模板文件映射
    * @returns {*}
    */
-  getFileMap(): { [file:string]:string } {
+  getFileMap(): { [file: string]: string } {
     if (this.options.cache && this._map) {
       return this._map;
     }

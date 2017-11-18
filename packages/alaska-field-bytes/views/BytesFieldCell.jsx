@@ -3,14 +3,8 @@
 import React from 'react';
 import _ from 'lodash';
 
-export default class BytesFieldCell extends React.Component {
-
-  props: {
-    value: string;
-    field: any
-  };
-
-  shouldComponentUpdate(props: Object) {
+export default class BytesFieldCell extends React.Component<Alaska$view$Field$Cell$Props> {
+  shouldComponentUpdate(props: Alaska$view$Field$Cell$Props) {
     return props.value !== this.props.value;
   }
 
@@ -20,11 +14,11 @@ export default class BytesFieldCell extends React.Component {
     if (display) {
       let { unit, size, precision } = field;
       let units = ['', 'K', 'M', 'G', 'T', 'P', 'E'];
-      while (display > size && units.length > 1) {
-        display /= size;
+      while (display > (size || 0) && units.length > 1) {
+        display /= (size || 0);
         units.shift();
       }
-      display = _.round(display, precision) + units[0] + unit;
+      display = _.round(display, precision) + units[0] + (unit || '');
     }
     return (
       <div>{display}</div>

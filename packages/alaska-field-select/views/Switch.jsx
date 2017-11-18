@@ -4,22 +4,21 @@ import React from 'react';
 import _ from 'lodash';
 import { getOptionValue } from './utils';
 
-export default class Switch extends React.Component {
+type Props = {
+  disabled?: boolean,
+  multi?: boolean,
+  onChange: Function,
+  loadOptions?: Function,
+  value: any,
+  options: Object[]
+};
 
-  props: {
-    disabled?: boolean,
-    multi?: boolean,
-    onChange: Function,
-    loadOptions?: Function,
-    value: any,
-    options: Object[]
-  };
+type State = {
+  options: Alaska$SelectField$option[]
+};
 
-  state: {
-    options:Alaska$SelectField$option[]
-  };
-
-  constructor(props: Object) {
+export default class Switch extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       options: props.options
@@ -37,7 +36,7 @@ export default class Switch extends React.Component {
     }
   }
 
-  componentWillReceiveProps(props: Object) {
+  componentWillReceiveProps(props: Props) {
     this.setState({
       options: props.options
     });
@@ -101,7 +100,7 @@ export default class Switch extends React.Component {
           if (disabled) {
             cls += ' disabled';
           }
-          return <div key={vid} className={cls} onClick={disabled?null:() => this.handleClick(vid)}>{o.label}</div>;
+          return <div key={vid} className={cls} onClick={disabled ? null : () => this.handleClick(vid)}>{o.label}</div>;
         })}
       </div>
     );

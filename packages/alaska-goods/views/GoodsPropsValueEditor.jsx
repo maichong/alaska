@@ -6,28 +6,28 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as saveRedux from 'alaska-admin-view/redux/save';
 
-class GoodsPropsValueEditor extends React.Component {
+type Props = {
+  record: Alaska$view$Record,
+  save: Function
+};
+
+type State = {
+  value: string
+};
+
+class GoodsPropsValueEditor extends React.Component<Props, State> {
   static contextTypes = {
     t: PropTypes.func
   };
 
-  props: {
-    data:Object;
-    save:Function;
-  };
-
-  state: {
-    value:string
-  };
-
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       value: ''
     };
   }
 
-  shouldComponentUpdate(props, state) {
+  shouldComponentUpdate(props: Props, state: State) {
     return state.value !== this.state.value;
   }
 
@@ -40,15 +40,16 @@ class GoodsPropsValueEditor extends React.Component {
       model: 'GoodsPropValue',
       key: 'alaska-goods.goods-prop-value'
     }, {
-      prop: this.props.data._id,
+      prop: this.props.record._id,
       title: this.state.value
     });
   };
 
-  handleChange = (event) => {
+  handleChange = (event: SyntheticInputEvent<*>) => {
     this.setState({ value: event.target.value });
   };
-  handleKeyPress = (event) => {
+
+  handleKeyPress = (event: SyntheticKeyboardEvent<*>) => {
     if (event.key === 'Enter') {
       this.handleSave();
       event.preventDefault();
@@ -56,14 +57,15 @@ class GoodsPropsValueEditor extends React.Component {
   };
 
   render() {
-    const t = this.context.t;
-    let state = this.state;
+    const { t } = this.context;
+    let { value } = this.state;
     return (
       <div className="row">
         <div className="col-md-5 col-md-offset-2">
           <input
-            className="form-control" placeholder={t('Please input property value', 'alaska-goods')}
-            value={state.value}
+            className="form-control"
+            placeholder={t('Please input property value', 'alaska-goods')}
+            value={value}
             onKeyPress={this.handleKeyPress}
             onChange={this.handleChange}
           />

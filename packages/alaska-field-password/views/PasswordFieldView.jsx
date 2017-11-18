@@ -4,33 +4,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
 
-export default class PasswordFieldView extends React.Component {
+type State = {
+  value1: string,
+  value2: string,
+  errorText: string
+};
 
+export default class PasswordFieldView extends React.Component<Alaska$view$Field$View$Props, State> {
   static contextTypes = {
     t: PropTypes.func
-  };
-
-  props: {
-    className: string,
-    model: Object,
-    field: Object,
-    data: Object,
-    errorText: string,
-    disabled: boolean,
-    value: any,
-    onChange: Function,
-  };
-
-  state: {
-    value1:string,
-    value2:string,
-    errorText:string
   };
 
   handleChange1: Function;
   handleChange2: Function;
 
-  constructor(props: Object) {
+  constructor(props: Alaska$view$Field$View$Props) {
     super(props);
     this.state = {
       value1: '',
@@ -41,19 +29,18 @@ export default class PasswordFieldView extends React.Component {
     this.handleChange2 = this.handleChange.bind(this, 2);
   }
 
-  shouldComponentUpdate(props: Object, state: Object) {
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props, state: State) {
     return props.disabled !== this.props.disabled || !shallowEqualWithout(state, this.state);
   }
 
-  handleChange(index: number, e: Event) {
+  handleChange(index: number, e: SyntheticInputEvent<*>) {
     // $Flow e.target.value确认存在
     this.setState({ ['value' + index]: e.target.value });
   }
 
   handleBlur = () => {
-    const t = this.context.t;
-    let value1 = this.state.value1;
-    let value2 = this.state.value2;
+    const { t } = this.context;
+    let { value1, value2 } = this.state;
     let newState = {
       errorText: ''
     };
@@ -70,13 +57,13 @@ export default class PasswordFieldView extends React.Component {
   };
 
   render() {
-    const t = this.context.t;
+    const { t } = this.context;
     let { className, field, disabled } = this.props;
-    let state = this.state;
+    const { state, props } = this;
     className += ' password-field';
 
-    let help = field.help;
-    let errorText = this.state.errorText || this.props.errorText;
+    let { help } = field;
+    let errorText = state.errorText || props.errorText;
     if (errorText) {
       help = errorText;
       className += ' has-error';

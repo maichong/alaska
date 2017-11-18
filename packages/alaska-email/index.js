@@ -1,8 +1,5 @@
 // @flow
 
-/* eslint global-require:0 */
-/* eslint import/no-dynamic-require:0 */
-
 import _ from 'lodash';
 import alaska, { Service } from 'alaska';
 import User from 'alaska-user/models/User';
@@ -18,7 +15,7 @@ class EmailService extends Service {
   timer: number;
 
   constructor(options?: Alaska$Service$options) {
-    options = options || {};
+    options = options || { dir: '', id: '' };
     options.id = options.id || 'alaska-email';
     options.dir = options.dir || __dirname;
     super(options);

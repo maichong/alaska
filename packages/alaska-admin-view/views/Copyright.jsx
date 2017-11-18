@@ -3,12 +3,11 @@
 import React from 'react';
 import Node from './Node';
 
-export default class Copyright extends React.Component {
+type Props = {
+  layout: string
+};
 
-  props: {
-    layout: string
-  };
-
+export default class Copyright extends React.Component<Props> {
   render() {
     if (this.props.layout == 'icon') {
       return <Node id="copyright">Alaska</Node>;

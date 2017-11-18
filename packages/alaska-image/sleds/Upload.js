@@ -10,7 +10,9 @@ const client = akita.resolve('alaska-image');
 
 export default class Upload extends Sled {
   async exec(params: Object) {
-    let { file, data, url, user, headers, filename, ext, mimeType, returnImage } = params;
+    let {
+      file, data, url, user, headers, filename, ext, mimeType, returnImage
+    } = params;
 
     if (!file && data) {
       if (Buffer.isBuffer(data)) {

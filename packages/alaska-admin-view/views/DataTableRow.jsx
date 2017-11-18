@@ -4,20 +4,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IF, ELSE } from 'jsx-plus';
 
-export default class DataTableRow extends React.Component {
+type Props = {
+  columns: Object[],
+  record: Object,
+  model: Object,
+  onEdit: Function,
+  onSelect?: Function | null,
+  onRemove?: Function,
+  selected: boolean,
+};
 
+export default class DataTableRow extends React.Component<Props> {
   static contextTypes = {
     views: PropTypes.object
-  };
-
-  props: {
-    columns: Array<any>,
-    record: Object,
-    model: Object,
-    onEdit: Function,
-    onSelect?: Function|null,
-    onRemove: Function,
-    selected: boolean,
   };
 
   handleChange = () => {
@@ -27,7 +26,9 @@ export default class DataTableRow extends React.Component {
   };
 
   render() {
-    const { record, columns, model, onEdit, onRemove, onSelect, selected } = this.props;
+    const {
+      record, columns, model, onEdit, onRemove, onSelect, selected
+    } = this.props;
     const { views } = this.context;
     let className = model.id + '-';
     let selectEl = onSelect ?
@@ -42,7 +43,7 @@ export default class DataTableRow extends React.Component {
             console.warn('Missing : ' + col.field.cell);
             return <td style={{ background: '#fcc' }} key={key}>{record[key]}</td>;
           }
-          return (<td key={key} className={className+key+'-cell'}>
+          return (<td key={key} className={className + key + '-cell'}>
             {React.createElement(CellViewClass, {
               value: record[key],
               model,
@@ -53,9 +54,7 @@ export default class DataTableRow extends React.Component {
         })}
         <td key="_a" className="actions">
           <i className="fa fa-edit" onClick={() => onEdit(record)} />
-          <IF test={onRemove} tag="span">
-            <i className="fa fa-close text-danger" onClick={() => onRemove(record)} />
-          </IF>
+          {onRemove ? <span><i className="fa fa-close text-danger" onClick={() => onRemove(record)} /></span> : null}
         </td>
       </tr>
     );

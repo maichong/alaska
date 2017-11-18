@@ -3,26 +3,13 @@
 import React from 'react';
 import shallowEqualWithout from 'shallow-equal-without';
 
-export default class IconFieldView extends React.Component {
-
-  props: {
-    className: string,
-    model: Object,
-    field: Object,
-    data: Object,
-    errorText: string,
-    disabled: boolean,
-    value: string,
-    onChange: Function,
-  };
-
-  shouldComponentUpdate(props: Object) {
-    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model', 'field');
+export default class IconFieldView extends React.Component<Alaska$view$Field$View$Props> {
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props) {
+    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model', 'field');
   }
 
-  handleChange = (event: Event) => {
+  handleChange = (event: SyntheticInputEvent<*>) => {
     if (this.props.onChange) {
-      // $Flow Event.target.value属性确认是存在的
       this.props.onChange(event.target.value);
     }
   };
@@ -35,7 +22,7 @@ export default class IconFieldView extends React.Component {
       value,
       errorText
     } = this.props;
-    let help = field.help;
+    let { help } = field;
     className += ' icon-field';
     if (errorText) {
       className += ' has-error';
@@ -55,7 +42,7 @@ export default class IconFieldView extends React.Component {
           type="text"
           className="form-control"
           onChange={this.handleChange}
-          value={value||''}
+          value={value || ''}
           disabled={disabled}
         />
         <span className="input-group-addon">{icon}</span>

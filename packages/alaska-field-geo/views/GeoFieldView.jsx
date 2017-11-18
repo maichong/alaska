@@ -4,23 +4,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
 
-export default class GeoFieldView extends React.Component {
-
+export default class GeoFieldView extends React.Component<Alaska$view$Field$View$Props> {
   static contextTypes = {
     t: PropTypes.func,
   };
 
-  props: {
-    className: string,
-    model: Object,
-    field: Object,
-    errorText: string,
-    disabled: boolean,
-    value: any,
-  };
-
-  shouldComponentUpdate(props: Object) {
-    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model', 'field');
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props) {
+    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model', 'field');
   }
 
   render() {
@@ -30,8 +20,8 @@ export default class GeoFieldView extends React.Component {
       value,
       errorText
     } = this.props;
-    const t = this.context.t;
-    let help = field.help;
+    const { t } = this.context;
+    let { help } = field;
     className += ' geo-field';
     if (errorText) {
       className += ' has-error';
@@ -48,7 +38,8 @@ export default class GeoFieldView extends React.Component {
         }
         target="_blank"
         rel="noopener noreferrer"
-      >{t('LNG')}:{value[0]} {t('LAT')}:{value[1]}</a>;
+      >{t('LNG')}:{value[0]} {t('LAT')}:{value[1]}
+      </a>;
     } else {
       value = null;
     }

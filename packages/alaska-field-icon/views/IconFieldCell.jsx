@@ -2,12 +2,8 @@
 
 import React from 'react';
 
-export default class IconFieldCell extends React.Component {
-  props: {
-    value: string
-  };
-
-  shouldComponentUpdate(props: Object) {
+export default class IconFieldCell extends React.Component<Alaska$view$Field$Cell$Props> {
+  shouldComponentUpdate(props: Alaska$view$Field$Cell$Props) {
     return props.value !== this.props.value;
   }
 

@@ -6,7 +6,7 @@ import Select from 'alaska-field-select/views/Select';
 import { api } from 'alaska-admin-view';
 import _ from 'lodash';
 
-function getFilters(filters: Object) {
+function getFilters(filters?: Object) {
   if (!filters) return {};
   return _.reduce(filters, (res, value, key) => {
     if (!_.isString(value) || value[0] !== ':') {
@@ -16,28 +16,19 @@ function getFilters(filters: Object) {
   }, {});
 }
 
-export default class RelationshipFieldFilter extends React.Component {
+type State = {
+  value: string | number,
+  inverse: boolean,
+  error: boolean,
+  options: Alaska$SelectField$option[]
+};
 
+export default class RelationshipFieldFilter extends React.Component<Alaska$view$Field$Filter$Props, State> {
   static contextTypes = {
     t: PropTypes.func,
   };
 
-  props: {
-    className: string,
-    value: any,
-    field: Object,
-    onChange: Function,
-    onClose: Function,
-  };
-
-  state: {
-    value:string|number;
-    inverse:boolean;
-    error:boolean;
-    options:Alaska$SelectField$option[]
-  };
-
-  constructor(props: Object) {
+  constructor(props: Alaska$view$Field$Filter$Props) {
     super(props);
     let v = props.value || {};
     if (typeof v === 'string') {
@@ -52,9 +43,9 @@ export default class RelationshipFieldFilter extends React.Component {
     };
   }
 
-  componentWillReceiveProps(props: Object) {
-    if (props.value !== this.props.value) {
-      let value = props.value;
+  componentWillReceiveProps(props: Alaska$view$Field$Filter$Props) {
+    let { value } = props;
+    if (value !== this.props.value) {
       if (typeof value === 'string') {
         value = { value };
       }
@@ -67,11 +58,11 @@ export default class RelationshipFieldFilter extends React.Component {
   };
 
   handleSearch = (keyword: string, callback: Function) => {
-    let field = this.props.field;
+    let { field, value } = this.props;
     api('/api/relation')
       .param('service', field.service)
       .param('model', field.model)
-      .param('value', field.value)
+      .param('value', value)
       .search(keyword)
       .where(getFilters(field.filters))
       .then((res) => {
@@ -95,9 +86,11 @@ export default class RelationshipFieldFilter extends React.Component {
   };
 
   render() {
-    const t = this.context.t;
+    const { t } = this.context;
     let { className, field, onClose } = this.props;
-    const { value, inverse, error, options } = this.state;
+    const {
+      value, inverse, error, options
+    } = this.state;
     const buttonClassName = 'btn btn-default';
     const buttonClassNameActive = buttonClassName + ' btn-success';
     className += ' relationship-field-filter' + (error ? ' error' : '');
@@ -116,7 +109,8 @@ export default class RelationshipFieldFilter extends React.Component {
           <a
             className={inverse ? buttonClassNameActive : buttonClassName}
             onClick={this.handleInverse}
-          >{t('inverse')}</a>
+          >{t('inverse')}
+          </a>
         </div>
         <a className="btn field-filter-close" onClick={onClose}><i className="fa fa-close" /></a>
       </div>

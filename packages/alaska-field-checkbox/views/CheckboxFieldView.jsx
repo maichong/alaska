@@ -4,20 +4,9 @@ import React from 'react';
 import shallowEqualWithout from 'shallow-equal-without';
 import Checkbox from './Checkbox';
 
-export default class CheckboxFieldView extends React.Component {
-
-  props: {
-    model: Object,
-    field: Object,
-    data: Object,
-    errorText: string,
-    disabled: boolean,
-    value: boolean,
-    onChange: Function,
-  };
-
-  shouldComponentUpdate(props: Object) {
-    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model');
+export default class CheckboxFieldView extends React.Component<Alaska$view$Field$View$Props> {
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props) {
+    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model');
   }
 
   handleCheck = (checked: boolean) => {
@@ -33,7 +22,7 @@ export default class CheckboxFieldView extends React.Component {
       errorText,
       disabled
     } = this.props;
-    let help = field.help;
+    let { help } = field;
     let className = 'form-group checkbox-field';
     if (errorText) {
       className += ' has-error';

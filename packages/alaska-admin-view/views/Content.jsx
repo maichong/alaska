@@ -3,12 +3,11 @@
 import React from 'react';
 import Node from './Node';
 
-export default class Content extends React.Component {
+type Props = {
+  children: React$Node
+};
 
-  props: {
-    children?: React$Element<any>
-  };
-
+export default class Content extends React.Component<Props> {
   render() {
     let { children } = this.props;
     return (

@@ -6,33 +6,21 @@ import _ from 'lodash';
 import shallowEqualWithout from 'shallow-equal-without';
 import { api } from 'alaska-admin-view';
 
-export default class ImageLinkFieldView extends React.Component {
+type State = {
+  max: number,
+  errorText: string,
+  multi: any
+};
 
+export default class ImageLinkFieldView extends React.Component<Alaska$view$Field$View$Props, State> {
   static contextTypes = {
     settings: PropTypes.object,
     t: PropTypes.func
   };
 
-  props: {
-    className: string,
-    model: Object,
-    field: Object,
-    data: Object,
-    errorText: string,
-    disabled: boolean,
-    value: string | string[],
-    onChange: Function,
-  };
-
-  state: {
-    max: number,
-    errorText: string,
-    multi: any
-  };
-
   imageInput: any;
 
-  constructor(props: Object) {
+  constructor(props: Alaska$view$Field$View$Props) {
     super(props);
     this.state = {
       max: props.field.max || 1000,
@@ -44,7 +32,7 @@ export default class ImageLinkFieldView extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps: Object) {
+  componentWillReceiveProps(nextProps: Alaska$view$Field$View$Props) {
     let newState = {};
     if (nextProps.errorText !== undefined) {
       newState.errorText = nextProps.errorText;
@@ -52,15 +40,15 @@ export default class ImageLinkFieldView extends React.Component {
     }
   }
 
-  shouldComponentUpdate(props: Object, state: Object) {
-    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model')
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props, state: State) {
+    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model')
       || !shallowEqualWithout(state, this.state);
   }
 
   handleAddImage = () => {
-    const t = this.context.t;
+    const { t } = this.context;
     let { field, value } = this.props;
-    let multi = field.multi;
+    let { multi, target } = field;
     if (value) {
       if (!multi) {
         // $Flow
@@ -71,7 +59,7 @@ export default class ImageLinkFieldView extends React.Component {
     } else {
       value = [];
     }
-    let [serviceId, modelName, path] = field.target.split('.');
+    let [serviceId, modelName] = (target || '').split('.');
     let id = '_new';
     let nextState = {
       errorText: ''
@@ -122,7 +110,9 @@ export default class ImageLinkFieldView extends React.Component {
   }
 
   render() {
-    let { className, field, value, disabled } = this.props;
+    let {
+      className, field, value, disabled
+    } = this.props;
     let { errorText, max } = this.state;
     if (!field.multi) {
       value = value ? [value] : [];
@@ -136,10 +126,11 @@ export default class ImageLinkFieldView extends React.Component {
         <img alt="" src={item + thumbSuffix} />
         {
           readonly ? null : <button
-              className="btn btn-link btn-block"
-              disabled={disabled}
-              onClick={() => this.handleRemoveItem(item)}
-            >删除</button>
+            className="btn btn-link btn-block"
+            disabled={disabled}
+            onClick={() => this.handleRemoveItem(item)}
+          >删除
+          </button>
         }
       </div>);
     });
@@ -149,7 +140,9 @@ export default class ImageLinkFieldView extends React.Component {
         items.push(<div className="image-field-item image-field-add" key="add">
           <i className="fa fa-plus-square-o" />
           <input
-            ref={(r) => { this.imageInput = r; }}
+            ref={(r) => {
+              this.imageInput = r;
+            }}
             multiple={this.state.multi}
             accept="image/png;image/jpg;"
             type="file"
@@ -165,7 +158,7 @@ export default class ImageLinkFieldView extends React.Component {
       </div>);
     }
 
-    let help = field.help;
+    let { help } = field;
     className += ' image-field image-link-field';
     if (errorText) {
       className += ' has-error';

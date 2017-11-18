@@ -5,27 +5,14 @@ import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
 import Simditor from 'simditor';
 
-export default class HtmlFieldView extends React.Component {
-
+export default class HtmlFieldView extends React.Component<Alaska$view$Field$View$Props> {
   static contextTypes = {
     settings: PropTypes.object,
   };
-
-  props: {
-    className: string,
-    model: Object,
-    field: Object,
-    data: Object,
-    errorText: string,
-    disabled: boolean,
-    value: string,
-    onChange: Function,
-  };
-
   _editor: any;
   _textarea: any;
 
-  constructor(props: Object) {
+  constructor(props: Alaska$view$Field$View$Props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
   }
@@ -34,8 +21,8 @@ export default class HtmlFieldView extends React.Component {
     this.init();
   }
 
-  shouldComponentUpdate(props: Object) {
-    return !shallowEqualWithout(props, this.props, 'data', 'model');
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props) {
+    return !shallowEqualWithout(props, this.props, 'record', 'model');
   }
 
   componentWillUnmount() {
@@ -57,6 +44,7 @@ export default class HtmlFieldView extends React.Component {
       if (upload) {
         let adminService = this.context.settings.services['alaska-admin'];
         uploadConfig = {
+          // eslint-disable-next-line
           url: `${adminService.prefix}/api/upload?_service=${upload.service}&_model=${upload.model}&_path=${upload.path}&_editor=1`,
           fileKey: 'file',
           leaveConfirm: upload.leaveConfirm
@@ -135,7 +123,7 @@ export default class HtmlFieldView extends React.Component {
       />;
     }
 
-    let help = field.help;
+    let { help } = field;
     className += ' html-field';
     if (errorText) {
       className += ' has-error';

@@ -27,7 +27,15 @@ export default class AliyunImageField extends Field {
    * @param {Field} field
    * @returns {{}}
    */
-  static upload(file: any, field: any) {
+  static upload(file: any, field: any): Promise<{
+    _id: string,
+    ext: string,
+    size: number,
+    path: string,
+    thumbUrl: string,
+    url: string,
+    name: string
+  }> {
     return new Promise((resolve, reject) => {
       if (!file) {
         reject(new Error('File not found'));

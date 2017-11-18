@@ -83,7 +83,7 @@ export default class Captcha extends Model {
     ...fields
   };
 
-  _id: string|number|Object|any;
+  _id: string | number | Object | any;
   title: string;
   type: string;
   numbers: string;

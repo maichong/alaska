@@ -3,13 +3,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import IntlMessageFormat from 'intl-messageformat';
-import { Router, Route, IndexRoute, useRouterHistory } from 'react-router';
-import createHashHistory from 'history/lib/createHashHistory';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
 import { ToastContainer, ToastMessage } from 'react-toastr';
-import qs from 'qs';
 import _ from 'lodash';
 import * as layoutRedux from '../redux/layout';
 import Node from './Node';
@@ -19,18 +17,25 @@ import Manage from './Manage';
 import Dashboard from './Dashboard';
 import EditorPage from './EditorPage';
 import ListPage from './ListPage';
-import type { Settings, User } from '../types';
 
 const ToastMessageFactory = React.createFactory(ToastMessage.animation);
 
-const createAppHistory = useRouterHistory(createHashHistory);
-const history = createAppHistory({
-  parseQueryString: qs.parse,
-  stringifyQuery: qs.stringify
-});
+type Props = {
+  views: Object,
+  user: Alaska$view$User,
+  settings: Alaska$view$Settings,
+  layout: string,
+  applyLayout: Function
+};
 
-class App extends React.Component {
+type State = {
+  modalTitle: string,
+  modalBody: string,
+  modalOpen: boolean,
+  modalActions: any
+};
 
+class App extends React.Component<Props, State> {
   static childContextTypes = {
     views: PropTypes.object,
     settings: PropTypes.object,
@@ -40,23 +45,9 @@ class App extends React.Component {
     toast: PropTypes.func,
   };
 
-  props: {
-    views: Object,
-    user: User,
-    settings: Settings,
-    layout: string,
-    applyLayout: Function
-  };
-
-  state: {
-    modalTitle: string;
-    modalBody: string;
-    modalOpen: boolean;
-    modalActions: any;
-  };
   _messageCache: Object;
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       modalTitle: '',
@@ -86,7 +77,7 @@ class App extends React.Component {
     window.removeEventListener(this.handleResize);
   }
 
-  t = (message, serviceId, values, formats) => {
+  t = (message: string, serviceId?: string, values?: Object, formats?: Object) => {
     if (typeof serviceId === 'object') {
       formats = values;
       values = serviceId;
@@ -134,60 +125,57 @@ class App extends React.Component {
     return this._messageCache[locale][message].format(values);
   };
 
-  alert = (title, body) => (new Promise(
-      (resolve) => {
-        this.setState({
-          modalTitle: title,
-          modalBody: body,
-          modalActions: <button
-            className={'btn btn-success'}
-            onClick={() => {
-              this.handleCloseModal();
-              resolve();
-            }}
-          >{this.t('Confirm')}</button>,
-          modalOpen: true
-        });
-      })
-  );
+  alert = (title: string, body?: string): Promise<void> => new Promise((resolve) => {
+    this.setState({
+      modalTitle: title,
+      modalBody: body,
+      modalActions: <button
+        className="btn btn-success"
+        onClick={() => {
+            this.handleCloseModal();
+            resolve();
+          }}
+      >{this.t('Confirm')}
+      </button>,
+      modalOpen: true
+    });
+  });
 
-  confirm = (title, body, buttons = []) => (new Promise(
-      (resolve, reject) => {
-        let defaults = [{
-          title: this.t('Confirm'),
-          style: 'success'
-        }, {
-          title: this.t('Cancel'),
-          style: 'default'
-        }];
-        let handles = [() => {
-          this.handleCloseModal();
-          resolve();
-        }, () => {
-          this.handleCloseModal();
-          reject();
-        }];
-        let modalActions = _.map([0, 1], (i) => {
-          let config = buttons[i];
-          if (typeof config === 'string') {
-            config = {
-              title: config
-            };
-          }
-          config = _.defaults({}, config, defaults[i]);
-          return <button key={i} className={'btn btn-' + config.style} onClick={handles[i]}>{config.title}</button>;
-        });
+  confirm = (title: string, body: string, buttons?: Array<{ title: string } | string> = []): Promise<void> => new Promise((resolve, reject) => {
+    let defaults = [{
+      title: this.t('Confirm'),
+      style: 'success'
+    }, {
+      title: this.t('Cancel'),
+      style: 'default'
+    }];
+    let handles = [() => {
+      this.handleCloseModal();
+      resolve();
+    }, () => {
+      this.handleCloseModal();
+      reject();
+    }];
+    let modalActions = _.map([0, 1], (i) => {
+      let config = buttons[i];
+      if (typeof config === 'string') {
+        config = {
+          title: config
+        };
+      }
+      config = _.defaults({}, config, defaults[i]);
+      return <button key={i} className={'btn btn-' + config.style} onClick={handles[i]}>{config.title}</button>;
+    });
 
-        this.setState({
-          modalTitle: title,
-          modalBody: body,
-          modalActions,
-          modalOpen: true
-        });
-      })
-  );
+    this.setState({
+      modalTitle: title,
+      modalBody: body,
+      modalActions,
+      modalOpen: true
+    });
+  });
 
-  toast = (method, title, body, options) => {
+  toast = (method: string, title: string, body?: string | Object, options?: Object) => {
     if (typeof body === 'object') {
       options = body;
       body = '';
@@ -226,26 +214,35 @@ class App extends React.Component {
   };
 
   render() {
-    const { layout, user, settings, views } = this.props;
+    const {
+      layout, user, settings, views
+    } = this.props;
     const state = this.state;
     let el;
 
     //有权限
     if (user.access) {
-      el = <Router history={history}>
-        <Route component={Manage} path="/">
-          <IndexRoute component={Dashboard} />
-          <Route component={ListPage} path="list/:service/:model" />
-          <Route component={EditorPage} path="edit/:service/:model/:id" />
-          {
-            (views.routes || []).map(
-              (item, index) => (<Route key={index} component={item.component} path={item.path} />))
-          }
-        </Route>
+      el = <Router>
+        <Route
+          path="/"
+          component={(props) => (
+            <Manage {...props}>
+              <Switch>
+                <Route component={Dashboard} path="" />
+                <Route component={ListPage} path="list/:service/:model" />
+                <Route component={EditorPage} path="edit/:service/:model/:id" />
+                {
+                (views.routes || []).map((item, index) => (
+                  <Route key={index} component={item.component} path={item.path} />))
+              }
+              </Switch>
+            </Manage>
+        )}
+        />
       </Router>;
     } else if (user.id) { //已登录,但无权限
       el = <Locked />;
-    } else if (settings.locale) {  //未登录,已加载设置
+    } else if (settings.locale) { //未登录,已加载设置
       el = <Login />;
     } else {
       el = <div className="boot-loading">Loading...</div>;

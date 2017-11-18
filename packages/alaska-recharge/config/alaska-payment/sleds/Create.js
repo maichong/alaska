@@ -43,7 +43,6 @@ export async function pre() {
   }
   if (amount <= 0) service.error('Invalid amount!');
 
-
   let record = new Recharge({
     title: params.title || 'Recharge-' + amount,
     user,

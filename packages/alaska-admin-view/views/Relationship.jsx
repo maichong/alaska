@@ -7,37 +7,33 @@ import { bindActionCreators } from 'redux';
 import qs from 'qs';
 import DataTable from './DataTable';
 import * as listRedux from '../redux/lists';
-import type { Model, Record } from '../types';
 
-class Relationship extends React.Component {
+type Props = {
+  loadList: Function,
+  filters: Object,
+  lists: Object,
+  service: string,
+  model: Alaska$view$Model,
+  path: string,
+  from: string,
+  title: string,
+};
 
+type State = {
+  records: Alaska$view$Record[] | null,
+  filters: {}
+};
+
+class Relationship extends React.Component<Props, State> {
   static contextTypes = {
     settings: PropTypes.object,
     t: PropTypes.func,
   };
 
-  props: {
-    loadList: Function,
-    filters: Object,
-    lists: Object,
-    service: string,
-    model: string,
-    path: string,
-    from: string,
-    title: string,
-  };
-
-  state: {
-    data:Record;
-    model:Model;
-    filters:Object;
-  };
-
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.state = {
-      data: null,
-      model: null,
+      records: null,
       filters: {}
     };
   }
@@ -46,27 +42,27 @@ class Relationship extends React.Component {
     this.init();
   }
 
-  componentWillReceiveProps(props: Object) {
-    let model = this.state.model;
+  componentWillReceiveProps(props: Props) {
     if (props.from !== this.props.from) {
       this.setState({
-        data: null
+        records: null
       }, () => {
         this.init();
       });
     }
-    if (props.lists && props.lists[model.key] !== this.props.lists[model.key]) {
-      let list = props.lists[model.key];
+    let { model, lists } = props;
+    if (lists[model.key] !== this.props.lists[model.key]) {
+      let list = lists[model.key];
       this.setState({
-        data: list ? list.results : null
+        records: list ? list.results : null
       }, () => {
         this.init();
       });
     }
   }
 
-  shouldComponentUpdate(props: Object, state: Object) {
-    return state.data !== this.state.data || state.model !== this.state.model;
+  shouldComponentUpdate(props: Props, state: State) {
+    return state.records !== this.state.records;
   }
 
   init() {
@@ -75,29 +71,31 @@ class Relationship extends React.Component {
     let model = this.context.settings.services[serviceId].models[modelName];
     if (!model) return;
     let list = this.props.lists[model.key];
-    if (list && model === this.state.model && this.state.data) return;
+    if (list && model === this.state.model && this.state.records) return;
+    // $Flow
+    let filters = Object.assign({}, this.props.filters, {
+      [this.props.path]: this.props.from
+    });
     let args = {
       service: serviceId,
       model: modelName,
       key: model.key,
+      filters
     };
-    // $Flow
-    let filters = args.filters = Object.assign({}, this.props.filters, {
-      [this.props.path]: this.props.from
-    });
-    this.setState({ model, filters }, () => {
-      if (!this.state.data) {
+    this.setState({ filters }, () => {
+      if (!this.state.records) {
         this.props.loadList(args);
       }
     });
   }
 
   render() {
-    let { model, data, filters } = this.state;
-    if (!model || !data) {
+    const { model } = this.props;
+    let { records, filters } = this.state;
+    if (!records) {
       return <div />;
     }
-    const t = this.context.t;
+    const { t } = this.context;
     let title = this.props.title ? t(this.props.title, model.serviceId)
       : t('Relationship') + `: ${t(model.label, model.serviceId)}`;
     let filtersString = qs.stringify({ filters });
@@ -108,10 +106,11 @@ class Relationship extends React.Component {
             <a
               className="relationship-more"
               href={`#/list/${model.serviceId}/${model.name}?${filtersString}`}
-            >{t('More')}</a>
+            >{t('More')}
+            </a>
           </h3>
         </div>
-        <div className="inner"><DataTable model={model} data={data} /></div>
+        <div className="inner"><DataTable model={model} records={records} /></div>
       </div>
     );
   }

@@ -5,7 +5,6 @@ import WithdrawModel from '../models/Withdraw';
 import service from '../';
 
 export default class Withdraw extends Sled {
-
   /**
    * @param params
    *        params.user

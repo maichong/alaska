@@ -5,25 +5,16 @@ import PropTypes from 'prop-types';
 import DateTime from 'react-datetime';
 import moment from 'moment';
 
-export default class DatetimeFieldFilter extends React.Component {
+type State = {
+  mode: 1 | 2 | 3 | 4,
+  value1: moment,
+  value2: moment,
+  error: boolean
+};
 
+export default class DatetimeFieldFilter extends React.Component<Alaska$view$Field$Filter$Props, State> {
   static contextTypes = {
     t: PropTypes.func,
-  };
-
-  props: {
-    className: string,
-    value: any,
-    field: Object,
-    onChange: Function,
-    onClose: Function,
-  };
-
-  state: {
-    mode:1|2|3|4;
-    value1:moment;
-    value2:moment;
-    error:boolean;
   };
 
   handleMode1: () => void;
@@ -31,7 +22,7 @@ export default class DatetimeFieldFilter extends React.Component {
   handleMode3: () => void;
   handleMode4: () => void;
 
-  constructor(props: Object) {
+  constructor(props: Alaska$view$Field$Filter$Props) {
     super(props);
     let value = props.value || {};
     if (typeof value === 'string') {
@@ -74,7 +65,7 @@ export default class DatetimeFieldFilter extends React.Component {
     this.handleMode4 = this.handleMode.bind(this, 4);
   }
 
-  handleMode(mode: 1|2|3|4) {
+  handleMode(mode: 1 | 2 | 3 | 4) {
     this.setState({ mode }, () => this.handleBlur());
   }
 
@@ -114,9 +105,11 @@ export default class DatetimeFieldFilter extends React.Component {
   };
 
   render() {
-    const t = this.context.t;
+    const { t } = this.context;
     let { className, field, onClose } = this.props;
-    const { mode, value1, value2, error } = this.state;
+    const {
+      mode, value1, value2, error
+    } = this.state;
     const buttonClassName = 'btn btn-default';
     const buttonClassNameActive = buttonClassName + ' btn-success';
     let input2 = null;
@@ -139,19 +132,23 @@ export default class DatetimeFieldFilter extends React.Component {
             <a
               className={mode === 1 ? buttonClassNameActive : buttonClassName}
               onClick={this.handleMode1}
-            >{t('equal')}</a>
+            >{t('equal')}
+            </a>
             <a
               className={mode === 2 ? buttonClassNameActive : buttonClassName}
               onClick={this.handleMode2}
-            >{t('greater')}</a>
+            >{t('greater')}
+            </a>
             <a
               className={mode === 3 ? buttonClassNameActive : buttonClassName}
               onClick={this.handleMode3}
-            >{t('lesser')}</a>
+            >{t('lesser')}
+            </a>
             <a
               className={mode === 4 ? buttonClassNameActive : buttonClassName}
               onClick={this.handleMode4}
-            >{t('between')}</a>
+            >{t('between')}
+            </a>
           </div>
           <div className="form-group">
             <DateTime

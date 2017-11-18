@@ -191,7 +191,7 @@ export default class Field {
    * @param {Object} filters  此次查询所有的filters,特殊情况下可以不返回值,而直接修改此对象
    * @returns {Object}        返回格式化后的值
    */
-  createFilter: (filter: Object, filters: Object)=> Object;
+  createFilter: (filter: Object, filters: Object) => Object;
 
   /**
    * 自定义初始化方法

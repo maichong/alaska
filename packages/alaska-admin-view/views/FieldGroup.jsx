@@ -3,19 +3,20 @@
 import React from 'react';
 import Node from './Node';
 
-export default class FieldGroup extends React.Component {
+type Props = {
+  children: React$Node,
+  form?: boolean,
+  panel?: boolean,
+  className?: string,
+  title?: string,
+  wrapper?: string,
+};
 
-  props: {
-    children?: React$Element<any>,
-    form?: boolean,
-    panel?: boolean,
-    className?: string,
-    title?: string,
-    wrapper?: string,
-  };
-
+export default class FieldGroup extends React.Component<Props> {
   render() {
-    const { title, panel, form, className, wrapper, children } = this.props;
+    const {
+      title, panel, form, className, wrapper, children
+    } = this.props;
     let el = children;
     if (form !== false) {
       el = <div className="field-group-form form-horizontal">

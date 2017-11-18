@@ -6,16 +6,14 @@ import Node from './Node';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Content from './Content';
-import type { Settings } from '../types';
 
-class Manage extends React.Component {
+type Props = {
+  children: React$Node,
+  settings: Alaska$view$Settings,
+  layout: string
+};
 
-  props: {
-    children: any;
-    settings: Settings;
-    layout: string;
-  };
-
+class Manage extends React.Component<Props> {
   render() {
     let { children, settings, layout } = this.props;
     return (<Node id="manage">
@@ -28,4 +26,7 @@ class Manage extends React.Component {
   }
 }
 
-export default connect(({ settings, layout }) => ({ settings, layout }))(Manage);
+export default connect(
+  ({ settings, layout }) => ({ settings, layout }),
+  () => ({})
+)(Manage);

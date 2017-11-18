@@ -11,3 +11,5 @@ temp/
 runtime
 example/public/admin/
 example/public/uploads
+dist/
+package-lock.json

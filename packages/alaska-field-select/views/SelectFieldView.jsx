@@ -10,45 +10,35 @@ import SelectCheckbox from './SelectCheckbox';
 import Switch from './Switch';
 import { getOptionValue } from './utils';
 
-export default class SelectFieldView extends React.Component {
+type State = {
+  options: Alaska$SelectField$option[]
+};
 
+export default class SelectFieldView extends React.Component<Alaska$view$Field$View$Props, State> {
   static contextTypes = {
     t: PropTypes.func,
   };
 
-  props: {
-    className: string,
-    model: Object,
-    field: Object,
-    data: Object,
-    errorText: string,
-    disabled: boolean,
-    value: any,
-    onChange: Function,
-  };
-
-  state = {};
-
   componentWillMount() {
     this.setState({
-      options: this.filter(this.props.field.options, this.props.data)
+      options: this.filter(this.props.field.options, this.props.record)
     });
   }
 
-  componentWillReceiveProps(nextProps: Object) {
-    if (nextProps.field !== this.props.field || nextProps.data !== this.props.data) {
+  componentWillReceiveProps(nextProps: Alaska$view$Field$View$Props) {
+    if (nextProps.field !== this.props.field || nextProps.record !== this.props.record) {
       this.setState({
-        options: this.filter(nextProps.field.options, nextProps.data)
+        options: this.filter(nextProps.field.options, nextProps.record)
       });
     }
   }
 
-  shouldComponentUpdate(props: Object, state: Object) {
-    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model') || state !== this.state;
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props, state: State) {
+    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model') || state !== this.state;
   }
 
   t(opt: Alaska$SelectField$option) {
-    const t = this.context.t;
+    const { t } = this.context;
     if (this.props.field.translate === false || !t) {
       return opt;
     }
@@ -59,13 +49,13 @@ export default class SelectFieldView extends React.Component {
     };
   }
 
-  filter(options: Alaska$SelectField$option[], data: Object) {
-    if (!options || !data || !options.length) {
-      return options;
+  filter(options?: Alaska$SelectField$option[], record: Object): Alaska$SelectField$option[] {
+    if (!options || !record || !options.length) {
+      return [];
     }
     let res = [];
     _.forEach(options, (opt) => {
-      if (checkDepends(opt.depends, data)) {
+      if (checkDepends(opt.depends, record)) {
         res.push(this.t(opt));
       }
     });
@@ -73,20 +63,22 @@ export default class SelectFieldView extends React.Component {
   }
 
   render() {
-    let { className, field, value, disabled, errorText, onChange } = this.props;
+    let {
+      className, field, value, disabled, errorText, onChange
+    } = this.props;
     let View = Select;
     if (field.checkbox) {
       View = SelectCheckbox;
     } else if (field.switch) {
       View = Switch;
     }
-    if (field.multi) {
+    let { help, multi } = field;
+    if (multi) {
       if (!_.isArray(value)) {
         value = [value];
       }
       value = _.filter(value, (v) => v !== undefined && v !== null);
     }
-    let help = field.help;
     className += ' select-field';
     if (errorText) {
       className += ' has-error';
@@ -98,7 +90,9 @@ export default class SelectFieldView extends React.Component {
       if (field.multi) {
         let elements = [];
         let valueMap = {};
-        _.forEach(value, (v) => (valueMap[getOptionValue(v)] = true));
+        _.forEach(value, (v) => {
+          valueMap[getOptionValue(v)] = true;
+        });
         _.forEach(this.state.options, (opt) => {
           if (valueMap[String(opt.value)]) {
             elements.push(<span key={opt.value}>{opt.label || opt.value}</span>);

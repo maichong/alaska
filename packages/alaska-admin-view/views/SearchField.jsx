@@ -2,27 +2,27 @@
 
 import React from 'react';
 
-export default class SearchField extends React.Component {
+type Props = {
+  value: string,
+  onChange: Function;
+  placeholder?: string
+};
 
-  props: {
-    value: string,
-    onChange: Function;
-    placeholder?:string
-  };
+type State = {
+  value: string
+};
 
-  state: {
-    value:string
-  };
+export default class SearchField extends React.Component<Props, State> {
   _timer: any;
 
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       value: ''
     };
   }
 
-  componentWillReceiveProps(props: Object) {
+  componentWillReceiveProps(props: Props) {
     if (props.value !== this.state.value) {
       this.setState({
         value: props.value
@@ -30,7 +30,7 @@ export default class SearchField extends React.Component {
     }
   }
 
-  handleChange = (event: Object) => {
+  handleChange = (event: SyntheticInputEvent<*>) => {
     let value = event.target.value;
     this.setState({ value });
     if (this._timer) {
@@ -43,7 +43,10 @@ export default class SearchField extends React.Component {
 
   render() {
     return (<input
-      className="form-control" type="text" value={this.state.value} onChange={this.handleChange}
+      className="form-control"
+      type="text"
+      value={this.state.value}
+      onChange={this.handleChange}
       placeholder={this.props.placeholder}
     />);
   }

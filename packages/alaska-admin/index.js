@@ -11,7 +11,7 @@ import AdminMenu from './models/AdminMenu';
  */
 class AdminService extends Service {
   constructor(options?: Alaska$Service$options) {
-    options = options || {};
+    options = options || { dir: '', id: '' };
     options.dir = options.dir || __dirname;
     options.id = options.id || 'alaska-admin';
     super(options);
@@ -44,7 +44,7 @@ class AdminService extends Service {
   }
 
   /**
-   * [async] 获取管理平台前台配置
+   * 获取管理平台前台配置
    * @param {Alaska$Context} ctx
    * @param {User} user
    * @returns {Promise<Object>}

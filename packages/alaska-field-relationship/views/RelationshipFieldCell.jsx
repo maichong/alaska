@@ -3,41 +3,40 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { loadDetails } from 'alaska-admin-view/redux/details';
 
-class RelationshipFieldCell extends React.Component {
+type Props = {
+  +model: Alaska$view$Model,
+  +field: Alaska$view$Field,
+  +value: any,
+  settings: Alaska$view$Settings,
+  details: Alaska$view$details,
+  loadDetails: Function
+};
 
-  props: {
-    field:Object;
-    value:any;
-    settings:Object;
-    details:Object;
-    loadDetails:Function;
-  };
-
-  shouldComponentUpdate(props: Object) {
-    let field = this.props.field;
-    let key = field.key;
-    let details = this.props.details;
-    let value = props.value;
+class RelationshipFieldCell extends React.Component<Props> {
+  shouldComponentUpdate(newProps: Props) {
+    let { details, model } = this.props;
+    let { key } = model;
+    let { value } = newProps;
     if (!value) {
       return false;
     }
     if (value !== this.props.value) {
       return true;
     }
-    if (!props.details[key] || !details[key]) {
+    if (!newProps.details[key] || !details[key]) {
       return true;
     }
     if (typeof value === 'string') {
-      if (props.details[key][value] !== details[key][value]) {
+      if (newProps.details[key][value] !== details[key][value]) {
         return true;
       }
     } else {
       for (let i of Object.keys(value)) {
         let id = value[i];
-        if (props.details[key][id] !== details[key][id]) {
+        if (newProps.details[key][id] !== details[key][id]) {
           return true;
         }
       }
@@ -45,11 +44,11 @@ class RelationshipFieldCell extends React.Component {
     return false;
   }
 
-  getLink(value) {
-    let field = this.props.field;
-    let details = this.props.details;
-    let Model = this.props.settings.models[field.ref];
-    let key = Model.key;
+  getLink(value: string) {
+    let { field, details, settings } = this.props;
+    if (!field.ref) return null;
+    let Model = settings.models[field.ref];
+    let { key } = Model;
     let title = value;
     if (value && details && details[key] && details[key][value]) {
       title = details[key][value][Model.titleField] || value;
@@ -63,28 +62,27 @@ class RelationshipFieldCell extends React.Component {
         });
       });
     }
-    return <Link
+    return (<Link
       key={value}
       to={'/edit/' + field.service + '/' + field.model + '/' + encodeURIComponent(value)}
-    >{title}</Link>;
+    >{title}</Link>);
   }
 
   render() {
-    let value = this.props.value;
+    let { value } = this.props;
     if (!value) {
       return <div className="relationship-field-cell" />;
     }
     let display;
     if (Array.isArray(value)) {
-      display = [];
+      let arr = [];
       value.forEach((v) => {
-        if (display.length) {
-          // $Flow
-          display.push(' , ');
+        if (arr.length) {
+          arr.push(' , ');
         }
-        // $Flow
-        display.push(this.getLink(v));
+        arr.push(this.getLink(v));
       });
+      display = arr;
     } else {
       display = this.getLink(value);
     }

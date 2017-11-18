@@ -9,7 +9,7 @@ export default class Help extends Model {
   static defaultSort = '-sort';
   static searchFields = 'title content';
 
-  static defaultFilters = (ctx) => {
+  static defaultFilters = (ctx: Alaska$Context) => {
     if (ctx.service.id === 'alaska-admin') return null;
     return {
       activated: true

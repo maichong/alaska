@@ -4,28 +4,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
 
-export default class TextFieldView extends React.Component {
-
+export default class TextFieldView extends React.Component<Alaska$view$Field$View$Props> {
   static contextTypes = {
     t: PropTypes.func,
   };
 
-  props: {
-    className: string,
-    model: Object,
-    field: Object,
-    data: Object,
-    errorText: string,
-    disabled: boolean,
-    value: any,
-    onChange: Function,
-  };
-
-  shouldComponentUpdate(props: Object): boolean {
-    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model', 'field');
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props): boolean {
+    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model', 'field');
   }
 
-  handleChange = (event: ReactInputEvent) => {
+  handleChange = (event: SyntheticInputEvent<*>) => {
     if (this.props.onChange) {
       this.props.onChange(event.target.value);
     }
@@ -40,8 +28,8 @@ export default class TextFieldView extends React.Component {
       errorText,
       model
     } = this.props;
-    const t = this.context.t;
-    let help = field.help;
+    const { t } = this.context.t;
+    let { help } = field;
     className += ' text-field';
     if (errorText) {
       className += ' has-error';
@@ -62,7 +50,8 @@ export default class TextFieldView extends React.Component {
           className="form-control"
           placeholder={placeholder}
           onChange={this.handleChange}
-          disabled={disabled} value={value}
+          disabled={disabled}
+          value={value}
         />);
       } else {
         inputElement = (<input
@@ -70,7 +59,8 @@ export default class TextFieldView extends React.Component {
           className="form-control"
           placeholder={placeholder}
           onChange={this.handleChange}
-          value={value} disabled={disabled}
+          value={value}
+          disabled={disabled}
         />);
         let addonAfter = field.addonAfter ?
           <span className="input-group-addon">{t(field.addonAfter, field.service || model.serviceId)}</span> : null;

@@ -6,32 +6,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
 import shallowEqualWithout from 'shallow-equal-without';
+import _ from 'lodash';
 
-export default class NumberFieldView extends React.Component {
+type State = {
+  value: any,
+  display: string
+};
 
+export default class NumberFieldView extends React.Component<Alaska$view$Field$View$Props, State> {
   static contextTypes = {
     t: PropTypes.func,
   };
 
-  props: {
-    className: string,
-    value: any,
-    model: Object,
-    data: Object,
-    field: Object,
-    disabled: boolean,
-    errorText: string,
-    onChange: Function,
-  };
-
-  state: {
-    value: any;
-    display:string;
-  };
-
   focused: boolean;
 
-  constructor(props: Object) {
+  constructor(props: Alaska$view$Field$View$Props) {
     super(props);
     this.state = {
       display: props.value,
@@ -42,7 +31,7 @@ export default class NumberFieldView extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps: Object) {
+  componentWillReceiveProps(nextProps: Alaska$view$Field$View$Props) {
     let newState = {};
     if (typeof nextProps.value !== 'undefined' || typeof nextProps.field.default === 'undefined') {
       newState.value = nextProps.value;
@@ -60,12 +49,12 @@ export default class NumberFieldView extends React.Component {
     this.setState(newState);
   }
 
-  shouldComponentUpdate(props: Object, state: Object) {
-    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model')
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props, state: State) {
+    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model')
       || !shallowEqualWithout(state, this.state);
   }
 
-  handleChange = (event: ReactInputEvent) => {
+  handleChange = (event: SyntheticInputEvent<*>) => {
     let display = event.target.value;
     this.setState({ display });
   };
@@ -76,12 +65,12 @@ export default class NumberFieldView extends React.Component {
 
   handleBlur = () => {
     this.focused = false;
-    let field = this.props.field;
+    const { field } = this.props;
     let value = this.state.display;
     let unfomarted;
     if (field.format) {
       unfomarted = numeral(value).value();
-      if (isNaN(unfomarted)) {
+      if (_.isNaN(unfomarted)) {
         unfomarted = 0;
       }
       this.setState({ display: numeral(unfomarted).format(field.format) });
@@ -107,8 +96,8 @@ export default class NumberFieldView extends React.Component {
       errorText,
       model
     } = this.props;
-    const t = this.context.t;
-    let help = field.help;
+    const { t } = this.context;
+    let { help } = field;
     className += ' number-field';
     if (errorText) {
       className += ' has-error';

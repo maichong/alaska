@@ -1,7 +1,5 @@
 // @flow
 
-/* eslint global-require:0 */
-/* eslint import/no-dynamic-require:0 */
 /* eslint no-proto:0 no-unused-expressions:0 */
 
 import _ from 'lodash';
@@ -9,7 +7,7 @@ import collie from 'collie';
 import mongoose from 'mongoose';
 import * as utils from './utils';
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 // $Flow
 mongoose.Promise = global.Promise;
@@ -18,7 +16,7 @@ function panic() {
   throw new Error('Can not call the function when Model has been registered.');
 }
 
-function processScope(fields: string|Object, Model: Class<Alaska$Model>): Object {
+function processScope(fields: string | Object, Model: Class<Alaska$Model>): Object {
   if (typeof fields === 'object') return fields;
   let keys = {};
   fields.split(' ').map((s) => s.trim()).filter((s) => s).forEach((s) => {
@@ -153,7 +151,7 @@ function createRelationshipQuery(r, res, scopeKey) {
  */
 const Data = {
   pick(...args) {
-    let getRecord = this.getRecord;
+    let { getRecord } = this;
     let data = _.pick(this, ...args) || {};
     Object.setPrototypeOf(data, Data);
     if (getRecord) {
@@ -162,7 +160,7 @@ const Data = {
     return data;
   },
   omit(...args) {
-    let getRecord = this.getRecord;
+    let { getRecord } = this;
     let data = _.omit(this, ...args) || {};
     Object.setPrototypeOf(data, Data);
     if (getRecord) {
@@ -203,32 +201,33 @@ function objectToData(value, fields) {
 export default class Model {
   static service: Alaska$Service;
   static fields: {
-    [path:string]:Alaska$Field$options
+    [path: string]: Alaska$Field$options
   };
 
   static collection = '';
   static classOfModel = true;
 
   static _pre: {
-    [action:string]:Function[]
+    [action: string]: Function[]
   };
   static _post: {
-    [action:string]:Function[]
+    [action: string]: Function[]
   };
   static _underscore: {
-    [field:string]:{
-      [name:string]:Function
+    [field: string]: {
+      [name: string]: Function
     }
   };
   static __methods: {
-    [field:string]:{
-      [name:string]:Function
+    [field: string]: {
+      [name: string]: Function
     }
   };
 
   service: Alaska$Service;
 
-  constructor(doc?: Object|null, fields?: Object|null, skipId?: boolean) {
+  // eslint-disable-next-line
+  constructor(doc?: Object | null, fields?: Object | null, skipId?: boolean) {
     throw new Error('Can not initialize a Model before register.');
   }
 
@@ -271,7 +270,7 @@ export default class Model {
    * 注册
    */
   static register() {
-    const service = this.service;
+    const { service } = this;
     // $Flow
     const model: Class<Alaska$Model> = this;
     model._fields = {};
@@ -289,7 +288,7 @@ export default class Model {
     }
 
     try {
-      const db = service.db;
+      const { db } = service;
       model.db = db;
 
       /**
@@ -304,7 +303,7 @@ export default class Model {
        */
       model.classOfModel = true;
 
-      let name = model.name;
+      let { name } = model;
       model.id = utils.nameToKey(name);
       model.key = service.id + '.' + model.id;
       model.path = service.id + '.' + model.name;
@@ -357,6 +356,7 @@ export default class Model {
               if (options.ref) {
                 options.type = 'relationship';
                 if (Array.isArray(options.ref)) {
+                  // eslint-disable-next-line prefer-destructuring
                   options.ref = options.ref[0];
                   options.multi = true;
                 }
@@ -630,7 +630,7 @@ export default class Model {
        * @returns {Data}
        */
       schema.methods.data = function (scope) {
-        let doc: { [key:string]:any } = {
+        let doc: { [key: string]: any } = {
           id: this.id
         };
         let fields = model.defaultScope;
@@ -748,7 +748,7 @@ export default class Model {
    * @param {string} [search]
    * @param {object|json} [filters]
    */
-  static createFilters(search: string, filters?: Object|string): Alaska$filters {
+  static createFilters(search: string, filters?: Object | string): Alaska$filters {
     if (filters && typeof filters === 'string') {
       filters = JSON.parse(filters);
     }
@@ -775,6 +775,7 @@ export default class Model {
           $or: searchFilters
         };
       } else {
+        // eslint-disable-next-line prefer-destructuring
         result = searchFilters[0];
       }
     }
@@ -964,7 +965,9 @@ export default class Model {
                 promise.then(() => {
                   if (record[path]) {
                     let poplated = Array.isArray(record[path]) ? record[path] : [record[path]];
-                    poplated.forEach((tmp) => (tmp.___fields = config.select));
+                    poplated.forEach((tmp) => {
+                      tmp.___fields = config.select;
+                    });
                   }
                 });
               }
@@ -1049,7 +1052,9 @@ export default class Model {
                 promise.then(() => {
                   if (record[path]) {
                     let poplated = Array.isArray(record[path]) ? record[path] : [record[path]];
-                    poplated.forEach((tmp) => (tmp.___fields = config.select));
+                    poplated.forEach((tmp) => {
+                      tmp.___fields = config.select;
+                    });
                   }
                 });
               }

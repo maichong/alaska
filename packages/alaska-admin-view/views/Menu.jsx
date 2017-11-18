@@ -17,24 +17,26 @@ function findSubs(subs, id) {
   return false;
 }
 
-export default class Menu extends React.Component {
+type Props = {
+  items: Object[],
+  level: number,
+  layout: string,
+  value: string,
+  onChange: Function
+};
 
+type State = {
+  activated: string,
+  opened: string
+};
+
+export default class Menu extends React.Component<Props, State> {
   static contextTypes = {
     views: PropTypes.object,
     t: PropTypes.func
   };
 
-  props: {
-    items: Object[],
-    level: number,
-    layout: string,
-    value: string,
-    onChange: Function
-  };
-
-  state: Object;
-
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       activated: '',
@@ -42,14 +44,14 @@ export default class Menu extends React.Component {
     };
   }
 
-  shouldComponentUpdate(props: Object, state: Object) {
+  shouldComponentUpdate(props: Props, state: State) {
     return state.activated !== this.state.activated ||
       state.opened !== this.state.opened || !shallowEqualWithout(props, this.props);
   }
 
   createMenuItem(item: Object, level: number) {
     const me = this;
-    const t = this.context.t;
+    const { t } = this.context;
     const { layout, onChange, value } = this.props;
     let subMenu;
     let itemId = item.id;
@@ -123,7 +125,7 @@ export default class Menu extends React.Component {
     let level = this.props.level || 0;
     let items = (props.items || []).map((item) => this.createMenuItem(item, level));
     return (<Node wrapper="menu" tag="ul" className={'sidebar-menu menu-' + level}>
-      { items }
+      {items}
     </Node>);
   }
 }

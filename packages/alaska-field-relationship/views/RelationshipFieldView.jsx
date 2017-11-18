@@ -14,55 +14,42 @@ function getOptionValue(opt) {
   return opt;
 }
 
-export default class RelationshipFieldView extends React.Component {
+type State = {
+  value?: string | number | Array<any>;
+  options?: Alaska$SelectField$option[]
+};
 
-  props: {
-    className: string,
-    model: Object,
-    field: Object,
-    data: Object,
-    errorText: string,
-    disabled: boolean,
-    value: any,
-    onChange: Function,
-  };
-
-  state: {
-    value?: string | number | Array<any>;
-    options: Alaska$SelectField$option[] | null
-  };
-
+export default class RelationshipFieldView extends React.Component<Alaska$view$Field$View$Props, State> {
   cache: Object;
 
-  constructor(props: Object) {
+  constructor(props: Alaska$view$Field$View$Props) {
     super(props);
     this.cache = {};
     this.state = {
-      options: null
+      options: undefined
     };
   }
 
-  componentWillReceiveProps(props: Object) {
+  componentWillReceiveProps(props: Alaska$view$Field$View$Props) {
     if (props.value !== this.props.value) {
       if (_.find(this.state.options, (o) => o.value === props.value)) return;
       this.setState({ options: [] }, this.handleSearch);
     }
   }
 
-  shouldComponentUpdate(props: Object, state: Object) {
-    if (props.data !== this.props.data) {
-      let filters = props.field.filters;
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props, state: State) {
+    if (props.record !== this.props.record) {
       if (
         _.find(
-          filters,
-          (v) => (_.isString(v) && v[0] === ':' && props.data[v.substr(1)] !== this.props.data[v.substr(1)])
+          props.field.filters,
+          (v) => (_.isString(v) && v[0] === ':' && props.record[v.substr(1)] !== this.props.record[v.substr(1)])
         )
       ) {
         setTimeout(this.handleSearch);
         return true;
       }
     }
-    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'search')
+    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'search')
       || this.state.options !== state.options;
   }
 
@@ -70,7 +57,7 @@ export default class RelationshipFieldView extends React.Component {
     this.cache = {};
   }
 
-  handleChange = (value: string|number) => {
+  handleChange = (value: string | number) => {
     if (this.props.onChange) {
       let val = null;
       if (this.props.field.multi) {
@@ -80,18 +67,18 @@ export default class RelationshipFieldView extends React.Component {
       } else if (value) {
         val = getOptionValue(value);
       }
-      this.setState({ value });
+      //this.setState({ value });
       this.props.onChange(val);
     }
   };
 
   handleSearch = (keyword?: string) => {
     keyword = keyword || '';
-    const { field, data } = this.props;
-    let filters = _.reduce(field.filters || {}, (res: {}, value: any, key: string) => {
-      res[key] = value;
-      if (_.isString(value) && value[0] === ':') {
-        res[key] = data[value.substr(1)];
+    const { field, record, value } = this.props;
+    let filters = _.reduce(field.filters || {}, (res: {}, v: any, key: string) => {
+      res[key] = v;
+      if (_.isString(v) && v[0] === ':') {
+        res[key] = record[v.substr(1)];
       }
       return res;
     }, {});
@@ -108,7 +95,7 @@ export default class RelationshipFieldView extends React.Component {
     api('/api/relation')
       .param('service', field.service)
       .param('model', field.model)
-      .param('value', field.value)
+      .param('value', value)
       .search(keyword)
       .where(filters)
       .then((res) => {
@@ -119,9 +106,11 @@ export default class RelationshipFieldView extends React.Component {
   };
 
   render() {
-    let { className, field, value, disabled, errorText } = this.props;
-    const options = this.state.options;
-    let help = field.help;
+    let {
+      className, field, value, disabled, errorText
+    } = this.props;
+    const { options } = this.state;
+    let { help } = field;
     let View = Select;
     if (field.checkbox) {
       View = SelectCheckbox;
@@ -138,28 +127,26 @@ export default class RelationshipFieldView extends React.Component {
     let inputElement;
     if (field.fixed) {
       let opts = [];
-      if (!options) {
-        this.handleSearch();
-      } else {
+      if (options) {
         if (typeof value === 'string') {
           value = [value];
         }
         _.forEach(value, (v) => {
-          let opt: Alaska$SelectField$option = _.find(options, (o) => o.value === v);
+          let opt: ?Alaska$SelectField$option = _.find(options, (o) => o.value === v);
           opts.push(opt || { value: v, label: v });
         });
+      } else {
+        this.handleSearch();
       }
 
-      inputElement = <p className="form-control-static">
-        {
-          opts.map(
-            (opt: Alaska$SelectField$option) => <a
-              key={opt.value}
-              href={`#/edit/${field.service}/${field.model}/${String(opt.value)}`}
-              style={{ paddingRight: 10 }}
-            >{opt.label}</a>
-          )
-        }
+      inputElement = <p className="form-control-static">{
+        opts.map((opt: Alaska$SelectField$option) => (<a
+          key={opt.value}
+          href={`#/edit/${field.service}/${field.model}/${String(opt.value)}`}
+          style={{ paddingRight: 10 }}
+        >{opt.label}
+        </a>))
+      }
       </p>;
     } else {
       inputElement = (

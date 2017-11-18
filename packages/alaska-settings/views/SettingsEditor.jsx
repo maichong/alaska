@@ -10,29 +10,28 @@ import { save } from 'alaska-admin-view/redux/save';
 
 const KEY = 'alaska-settings.settings';
 
-class SettingsEditor extends React.Component {
+type Props = {
+  lists: Object,
+  actions: Object,
+  loadList: Function,
+  save: Function,
+};
 
+type State = {
+  values: {},
+  fields: {},
+  map: {},
+  groups: {}
+};
+
+class SettingsEditor extends React.Component<Props, State> {
   static contextTypes = {
     views: PropTypes.object,
     settings: PropTypes.object,
     t: PropTypes.func
   };
 
-  props: {
-    lists: Object,
-    actions: Object,
-    loadList:Function,
-    save:Function,
-  };
-
-  state: {
-    values: {},
-    fields: {},
-    map: {},
-    groups: {}
-  };
-
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       values: {},
@@ -46,7 +45,7 @@ class SettingsEditor extends React.Component {
     this.refresh();
   }
 
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps(props: Props) {
     let newState = {};
     if (props.lists[KEY]) {
       const { t } = this.context;
@@ -87,7 +86,7 @@ class SettingsEditor extends React.Component {
     });
   };
 
-  handleChange(key, value) {
+  handleChange(key: string, value: any) {
     let values = Object.assign({}, this.state.values, {
       [key]: value
     });
@@ -152,11 +151,13 @@ class SettingsEditor extends React.Component {
               <button
                 onClick={this.handleSave}
                 className="btn btn-primary"
-              >{t('Save')}</button>
+              >{t('Save')}
+              </button>
               <button
                 onClick={this.refresh}
                 className="btn btn-warning"
-              >{t('Refresh')}</button>
+              >{t('Refresh')}
+              </button>
             </div>
           </div>
         </nav>

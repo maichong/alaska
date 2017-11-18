@@ -24,7 +24,7 @@ import { PUBLIC, OWNER } from './alaska';
  * 统计接口
  */
 export async function count(ctx: Alaska$Context) {
-  let Model = ctx.state.Model;
+  let { Model } = ctx.state;
   let code = Model.api.count;
   if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
@@ -35,7 +35,7 @@ export async function count(ctx: Alaska$Context) {
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
-    let userField = Model.userField;
+    let { userField } = Model;
     // $Flow 这里可以确认ctx.user存在
     filters[userField] = ctx.user._id;
   }
@@ -49,7 +49,7 @@ export async function count(ctx: Alaska$Context) {
  * 分页列表接口
  */
 export async function paginate(ctx: Alaska$Context) {
-  let Model = ctx.state.Model;
+  let { Model } = ctx.state;
   let code = Model.api.paginate;
   if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
@@ -64,7 +64,7 @@ export async function paginate(ctx: Alaska$Context) {
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
-    let userField = Model.userField;
+    let { userField } = Model.userField;
     // $Flow 这里可以确认ctx.user存在
     filters[userField] = ctx.user._id;
   }
@@ -79,7 +79,7 @@ export async function paginate(ctx: Alaska$Context) {
  * 所有数据列表接口
  */
 export async function list(ctx: Alaska$Context) {
-  let Model = ctx.state.Model;
+  let { Model } = ctx.state;
   let code = Model.api.list;
   if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
@@ -94,7 +94,7 @@ export async function list(ctx: Alaska$Context) {
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
-    let userField = Model.userField;
+    let { userField } = Model.userField;
     // $Flow 这里可以确认ctx.user存在
     filters[userField] = ctx.user._id;
   }
@@ -108,7 +108,7 @@ export async function list(ctx: Alaska$Context) {
  * 获取单个对象详细信息
  */
 export async function show(ctx: Alaska$Context) {
-  let Model = ctx.state.Model;
+  let { Model } = ctx.state;
   let code = Model.api.show;
   if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
@@ -135,7 +135,7 @@ export async function show(ctx: Alaska$Context) {
  * 创建一个对象
  */
 export async function create(ctx: Alaska$Context) {
-  let Model = ctx.state.Model;
+  let { Model } = ctx.state;
   let code = Model.api.create;
   if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
@@ -144,7 +144,7 @@ export async function create(ctx: Alaska$Context) {
   }
   let doc = new Model(ctx.state.body || ctx.request.body);
   if (code > PUBLIC) {
-    let userField = Model.userField;
+    let { userField } = Model.userField;
     // $Flow 已经确认ctx.user存在
     doc.set(userField, ctx.user._id);
   }
@@ -156,7 +156,7 @@ export async function create(ctx: Alaska$Context) {
  * 更新一个对象
  */
 export async function update(ctx: Alaska$Context) {
-  let Model = ctx.state.Model;
+  let { Model } = ctx.state;
   let code = Model.api.update;
   if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
@@ -201,7 +201,7 @@ export async function update(ctx: Alaska$Context) {
  * 使用Filters同时更新多条记录
  */
 export async function updateMulti(ctx: Alaska$Context) {
-  let Model = ctx.state.Model;
+  let { Model } = ctx.state;
   let code = Model.api.updateMulti;
   if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
@@ -212,7 +212,7 @@ export async function updateMulti(ctx: Alaska$Context) {
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
-    let userField = Model.userField;
+    let { userField } = Model.userField;
     // $Flow 这里可以确认ctx.user存在
     filters[userField] = ctx.user._id;
   }
@@ -238,7 +238,7 @@ export async function updateMulti(ctx: Alaska$Context) {
  * 删除一个对象
  */
 export async function remove(ctx: Alaska$Context) {
-  let Model = ctx.state.Model;
+  let { Model } = ctx.state;
   let code = Model.api.remove;
   if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
@@ -251,7 +251,7 @@ export async function remove(ctx: Alaska$Context) {
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
-    let userField = Model.userField;
+    let { userField } = Model.userField;
     // $Flow 这里可以确认ctx.user存在
     filters[userField] = ctx.user._id;
   }
@@ -265,7 +265,7 @@ export async function remove(ctx: Alaska$Context) {
  * 使用Filters同时删除多条记录
  */
 export async function removeMulti(ctx: Alaska$Context) {
-  let Model = ctx.state.Model;
+  let { Model } = ctx.state;
   let code = Model.api.removeMulti;
   if (code > PUBLIC && !ctx.user) {
     //未登录,需要认证
@@ -277,7 +277,7 @@ export async function removeMulti(ctx: Alaska$Context) {
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
-    let userField = Model.userField;
+    let { userField } = Model.userField;
     // $Flow 这里可以确认ctx.user存在
     filters[userField] = ctx.user._id;
   }

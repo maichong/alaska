@@ -41,7 +41,7 @@ export default class Complete extends Sled {
     } else if (recharge.target === 'deposit') {
       let deposit = await Deposit.findById(recharge.deposit);
       if (!deposit) service.error('Can not find deposit!');
-      deposit.balance = deposit.balance + recharge.amount;
+      deposit.balance += recharge.amount;
       await deposit.save();
       income.currency = deposit.currency;
       income.balance = deposit.balance;
@@ -54,5 +54,4 @@ export default class Complete extends Sled {
     recharge.state = 1;
     await recharge.save();
   }
-
 }

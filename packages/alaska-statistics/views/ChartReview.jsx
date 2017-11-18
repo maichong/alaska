@@ -3,12 +3,11 @@
 import React from 'react';
 import Chart from './Chart';
 
-export default class ChartReview extends React.Component {
+type Props = {
+  data: Object
+};
 
-  props: {
-    data: Object
-  };
-
+export default class ChartReview extends React.Component<Props> {
   render() {
     const { data } = this.props;
     if (!data || !data._id) return null;

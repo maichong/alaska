@@ -26,12 +26,13 @@ export function list(ctx: Alaska$Context, next: Function): Function {
  */
 export async function newest(ctx: Alaska$Context) {
   let cid: any = ctx.query.cid || service.error(400);
-  const cache = service.cache;
+  const { cache } = service;
   let cacheKey = `goods_newest_${cid}`;
-  let results: ?Goods[]|Object[] = await cache.get(cacheKey);
+  let results: ?Goods[] | Object[] = await cache.get(cacheKey);
   if (!results) {
     // $Flow find
-    let mResults:Goods[] = await Goods.find({ activated: true, cats: cid }).sort('-createdAt').limit(10);
+    let mResults: Goods[] = await Goods.find({ activated: true, cats: cid }).sort('-createdAt').limit(10);
+    // $Flow
     results = mResults.map((goods: Goods) => (goods.data().omit('desc', 'pics', 'skus', 'cat')));
     cache.set(cacheKey, results, 600 * 1000);
   }
@@ -45,12 +46,13 @@ export async function newest(ctx: Alaska$Context) {
  */
 export async function popular(ctx: Alaska$Context) {
   let cid: any = ctx.query.cid || service.error(400);
-  const cache = service.cache;
+  const { cache } = service;
   let cacheKey = `goods_popular_${cid}`;
-  let results: ?Goods[]|Object[] = await cache.get(cacheKey);
+  let results: ?Goods[] | Object[] = await cache.get(cacheKey);
   if (!results) {
     // $Flow find
-    let mResults:Goods[] = await Goods.find({ activated: true, cats: cid }).sort('-volume -sort').limit(10);
+    let mResults: Goods[] = await Goods.find({ activated: true, cats: cid }).sort('-volume -sort').limit(10);
+    // $Flow
     results = mResults.map((goods: Goods) => goods.data().omit('desc', 'pics', 'skus', 'cat'));
     cache.set(cacheKey, results, 600 * 1000);
   }

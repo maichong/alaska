@@ -1,8 +1,5 @@
 // @flow
 
-/* eslint global-require:0 */
-/* eslint import/no-dynamic-require:0 */
-
 import path from 'path';
 import * as utils from '../utils';
 

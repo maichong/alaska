@@ -5,9 +5,8 @@
 import React from 'react';
 import numeral from 'numeral';
 
-export default class NumberFieldCell extends React.Component {
-
-  shouldComponentUpdate(props: Object) {
+export default class NumberFieldCell extends React.Component<Alaska$view$Field$Cell$Props> {
+  shouldComponentUpdate(props: Alaska$view$Field$Cell$Props) {
     return props.value != this.props.value;
   }
 

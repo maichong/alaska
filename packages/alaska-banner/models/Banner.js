@@ -11,7 +11,7 @@ export default class Banner extends Model {
     list: 1
   };
 
-  static defaultFilters = (ctx) => {
+  static defaultFilters = (ctx: Alaska$Context) => {
     if (ctx.service.id === 'alaska-admin') return null;
     return {
       activated: true,

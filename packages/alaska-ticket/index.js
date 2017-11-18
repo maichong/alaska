@@ -7,7 +7,7 @@ import { Service } from 'alaska';
  */
 class TicketService extends Service {
   constructor(options?: Alaska$Service$options) {
-    options = options || {};
+    options = options || { dir: '', id: '' };
     options.dir = options.dir || __dirname;
     options.id = options.id || 'alaska-ticket';
     super(options);

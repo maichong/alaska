@@ -37,7 +37,7 @@ export default class PasswordField extends Field {
     });
 
     /**
-     * [async] 比较密码
+     * 比较密码
      * @params {string} candidate
      */
     this.underscoreMethod('compare', function (candidate) {

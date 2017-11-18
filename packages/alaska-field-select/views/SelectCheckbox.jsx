@@ -7,21 +7,21 @@ import Checkbox from 'alaska-field-checkbox/views/Checkbox';
 import _ from 'lodash';
 import { getOptionValue } from './utils';
 
-export default class SelectCheckbox extends React.Component {
-  props: {
-    disabled?: boolean,
-    multi?: boolean,
-    onChange: Function,
-    loadOptions?: Function,
-    value: any,
-    options: Object[]
-  };
+type Props = {
+  disabled?: boolean,
+  multi?: boolean,
+  onChange: Function,
+  loadOptions?: Function,
+  value: any,
+  options: Object[]
+};
 
-  state: {
-    options:Alaska$SelectField$option[]
-  };
+type State = {
+  options: Alaska$SelectField$option[]
+};
 
-  constructor(props: Object) {
+export default class SelectCheckbox extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       options: props.options
@@ -39,7 +39,7 @@ export default class SelectCheckbox extends React.Component {
     }
   }
 
-  componentWillReceiveProps(props: Object) {
+  componentWillReceiveProps(props: Props) {
     this.setState({
       options: props.options
     });
@@ -112,9 +112,10 @@ export default class SelectCheckbox extends React.Component {
             }
             style={{ display: 'inline-block', marginRight: 16 }}
             onCheck={() => this.handleCheck(vid)}
-          />)
+          />);
         })
-      }</div>
+      }
+      </div>
     );
   }
 }

@@ -5,34 +5,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class NumberFieldFilter extends React.Component {
+type State = {
+  value1: any,
+  value2: any,
+  error: boolean,
+  mode: 1 | 2 | 3 | 4 | 5 | 6
+};
 
+export default class NumberFieldFilter extends React.Component<Alaska$view$Field$Filter$Props, State> {
   static contextTypes = {
     t: PropTypes.func,
   };
 
-  props: {
-    className: string,
-    field: Object,
-    onChange: Function,
-    onClose: Function,
-  };
+  handleMode1: () => void;
+  handleMode2: () => void;
+  handleMode3: () => void;
+  handleMode4: () => void;
+  handleMode5: () => void;
+  handleMode6: () => void;
 
-  state: {
-    value1:any;
-    value2:any;
-    error:boolean;
-    mode: 1|2|3|4|5|6
-  };
-
-  handleMode1: ()=>void;
-  handleMode2: ()=>void;
-  handleMode3: ()=>void;
-  handleMode4: ()=>void;
-  handleMode5: ()=>void;
-  handleMode6: ()=>void;
-
-  constructor(props: Object) {
+  constructor(props: Alaska$view$Field$Filter$Props) {
     super(props);
     let value = props.value || {};
     if (typeof value === 'string') {
@@ -86,17 +78,17 @@ export default class NumberFieldFilter extends React.Component {
     this.handleMode6 = this.handleMode.bind(this, 6);
   }
 
-  handleMode(mode: 1|2|3|4|5|6) {
+  handleMode(mode: 1 | 2 | 3 | 4 | 5 | 6) {
     this.setState({ mode }, () => this.handleBlur());
   }
 
-  handleChange1 = (event: ReactInputEvent) => {
+  handleChange1 = (event: SyntheticInputEvent<*>) => {
     this.setState({
       value1: event.target.value
     });
   };
 
-  handleChange2 = (event: ReactInputEvent) => {
+  handleChange2 = (event: SyntheticInputEvent<*>) => {
     this.setState({
       value2: event.target.value
     });
@@ -129,9 +121,11 @@ export default class NumberFieldFilter extends React.Component {
   };
 
   render() {
-    const t = this.context.t;
+    const { t } = this.context;
     let { className, field, onClose } = this.props;
-    const { mode, value1, value2, error } = this.state;
+    const {
+      mode, value1, value2, error
+    } = this.state;
     const buttonClassName = 'btn btn-default';
     const buttonClassNameActive = buttonClassName + ' btn-success';
     let input2 = null;
@@ -153,23 +147,28 @@ export default class NumberFieldFilter extends React.Component {
             <a
               className={mode === 1 ? buttonClassNameActive : buttonClassName}
               onClick={this.handleMode1}
-            >=</a>
+            >=
+            </a>
             <a
               className={mode === 2 ? buttonClassNameActive : buttonClassName}
               onClick={this.handleMode2}
-            >&gt;</a>
+            >&gt;
+            </a>
             <a
               className={mode === 3 ? buttonClassNameActive : buttonClassName}
               onClick={this.handleMode3}
-            >&lt;</a>
+            >&lt;
+            </a>
             <a
               className={mode === 4 ? buttonClassNameActive : buttonClassName}
               onClick={this.handleMode4}
-            >&gt;=</a>
+            >&gt;=
+            </a>
             <a
               className={mode === 5 ? buttonClassNameActive : buttonClassName}
               onClick={this.handleMode5}
-            >&lt;=</a>
+            >&lt;=
+            </a>
             <a
               className={mode === 6 ? buttonClassNameActive : buttonClassName}
               onClick={this.handleMode6}

@@ -3,14 +3,27 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router';
-import { IF, ELSE } from 'jsx-plus';
 import shallowEqualWithout from 'shallow-equal-without';
 import DataTableRow from './DataTableRow';
-import type { Model, Record } from '../types';
 
-export default class DataTable extends React.Component {
+type Props = {
+  model: Alaska$view$Model,
+  columns?: string[],
+  selected?: Alaska$view$Record[],
+  records?: Alaska$view$Record[],
+  sort?: string,
+  onSort?: Function,
+  onSelect?: Function,
+  onRemove?: Function
+};
 
+type State = {
+  records: Alaska$view$Record[],
+  columns: Object[],
+  selected: {}
+};
+
+export default class DataTable extends React.Component<Props, State> {
   static contextTypes = {
     router: PropTypes.object,
     settings: PropTypes.object,
@@ -18,26 +31,10 @@ export default class DataTable extends React.Component {
     t: PropTypes.func,
   };
 
-  props: {
-    model: Model,
-    selected?: Record[],
-    data?: Record[],
-    sort?: string,
-    onSort?: Function,
-    onSelect?: Function,
-    onRemove?: Function
-  };
-
-  state: {
-    data:Record[];
-    columns:Object[];
-    selected:Object;
-  };
-
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.state = {
-      data: props.data || [],
+      records: props.records || [],
       selected: {},
       columns: []
     };
@@ -47,25 +44,25 @@ export default class DataTable extends React.Component {
     this.init(this.props);
   }
 
-  componentWillReceiveProps(nextProps: Object) {
+  componentWillReceiveProps(nextProps: Props) {
     this.init(nextProps);
   }
 
-  shouldComponentUpdate(props: Object, state: Object) {
-    if (!state.data || !state.columns) {
+  shouldComponentUpdate(props: Props, state: State) {
+    if (!state.records || !state.columns) {
       return false;
     }
     return !shallowEqualWithout(state, this.state);
   }
 
-  init(props: Object) {
+  init(props: Props) {
     let model = props.model || this.props.model;
     if (!model) return;
     const { settings } = this.context;
 
     let state = {};
-    if (props.data) {
-      state.data = props.data;
+    if (props.records) {
+      state.records = props.records;
     }
     if (props.selected) {
       state.selected = _.reduce(props.selected, (res, record) => {
@@ -75,7 +72,7 @@ export default class DataTable extends React.Component {
     }
 
     let columns = [];
-    (props.columns || model.defaultColumns).forEach(key => {
+    _.forEach(props.columns || model.defaultColumns, (key) => {
       let field = model.fields[key];
       if (field) {
         if (field.super && !settings.superMode) return;
@@ -90,20 +87,20 @@ export default class DataTable extends React.Component {
   }
 
   isAllSelected() {
-    const { data, selected } = this.state;
-    if (!data || !data.length) {
+    const { records, selected } = this.state;
+    if (!records || !records.length) {
       return false;
     }
-    for (let record of data) {
+    for (let record of records) {
       if (!selected[record._id]) return false;
     }
     return true;
-  };
+  }
 
   handleSelectAll = () => {
     let records = [];
     if (!this.isAllSelected()) {
-      records = _.clone(this.state.data);
+      records = _.clone(this.state.records);
     }
     if (this.props.onSelect) {
       this.props.onSelect(records);
@@ -117,7 +114,7 @@ export default class DataTable extends React.Component {
       delete selected[record._id];
     }
     this.setState({ selected });
-    let records = _.filter(this.state.data, (record) => selected[record._id]);
+    let records = _.filter(this.state.records, (r) => selected[r._id]);
     if (this.props.onSelect) {
       this.props.onSelect(records);
     }
@@ -130,14 +127,16 @@ export default class DataTable extends React.Component {
   };
 
   render() {
-    const { model, sort, onSort, onSelect, onRemove } = this.props;
+    const {
+      model, sort, onSort, onSelect, onRemove
+    } = this.props;
     const { t } = this.context;
-    const { columns, data, selected } = this.state;
+    const { columns, records, selected } = this.state;
     if (!model || !columns) {
       return <div className="loading">Loading...</div>;
     }
 
-    let className = 'data-table table table-hover ' + model.serviceId + '-' + model.id + '-data';
+    let className = 'data-table table table-hover ' + model.serviceId + '-' + model.id + '-record';
 
     let selectEl = onSelect ?
       <th onClick={this.handleSelectAll} width="29"><input type="checkbox" checked={this.isAllSelected()} />
@@ -145,43 +144,44 @@ export default class DataTable extends React.Component {
     return (
       <table className={className}>
         <thead>
-        <tr>
-          {selectEl}
-          {
-            columns.map((col) => {
-              let sortIcon = null;
-              let handleClick;
-              if (!col.nosort && onSort) {
-                if (col.key === sort) {
-                  sortIcon = <i className="fa fa-sort-asc" />;
-                  handleClick = () => onSort('-' + col.key);
-                } else if ('-' + col.key === sort) {
-                  sortIcon = <i className="fa fa-sort-desc" />;
-                  handleClick = () => onSort(col.key);
-                } else {
-                  handleClick = () => onSort('-' + col.key);
+          <tr>
+            {selectEl}
+            {
+              columns.map((col) => {
+                let sortIcon = null;
+                let handleClick;
+                if (!col.nosort && onSort) {
+                  if (col.key === sort) {
+                    sortIcon = <i className="fa fa-sort-asc" />;
+                    handleClick = () => onSort('-' + col.key);
+                  } else if ('-' + col.key === sort) {
+                    sortIcon = <i className="fa fa-sort-desc" />;
+                    handleClick = () => onSort(col.key);
+                  } else {
+                    handleClick = () => onSort('-' + col.key);
+                  }
                 }
-              }
-              return <th
-                key={col.field.path}
-                onClick={handleClick}
-              >{t(col.field.label, model.serviceId)}{sortIcon}</th>;
-            })
-          }
-          <th></th>
-        </tr>
+                return (<th
+                  key={col.field.path}
+                  onClick={handleClick}
+                >{t(col.field.label, model.serviceId)}{sortIcon}
+                </th>);
+              })
+            }
+            <th />
+          </tr>
         </thead>
         <tbody>
-        {data.map((record, index) => <DataTableRow
-          key={index}
-          record={record}
-          columns={columns}
-          model={model}
-          onEdit={this.handleEdit}
-          onSelect={onSelect?this.handleSelect:null}
-          onRemove={onRemove}
-          selected={selected[record._id]}
-        />)}
+          {records.map((record, index) => (<DataTableRow
+            key={record._id || index}
+            record={record}
+            columns={columns}
+            model={model}
+            onEdit={this.handleEdit}
+            onSelect={onSelect ? this.handleSelect : null}
+            onRemove={onRemove}
+            selected={selected[record._id]}
+          />))}
         </tbody>
       </table>
     );

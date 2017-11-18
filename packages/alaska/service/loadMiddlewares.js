@@ -1,8 +1,5 @@
 // @flow
 
-/* eslint global-require:0 */
-/* eslint import/no-dynamic-require:0 */
-
 import * as utils from '../utils';
 
 export default async function loadMiddlewares() {
@@ -15,16 +12,15 @@ export default async function loadMiddlewares() {
 
   this.debug('loadMiddlewares');
 
-  const router = this.router;
+  const { router } = this;
 
   this.config('middlewares', []).forEach((item: Alaska$Config$middleware) => {
-    let id = item.id;
+    let { id, path } = item;
     if (id.startsWith('.')) {
       id = this.dir + id;
     }
     // $Flow
     let middleware = require(id);
-    let path = item.path;
     if (!path) {
       router.use(middleware(item.options));
       return;
@@ -46,4 +42,4 @@ export default async function loadMiddlewares() {
 
   this._configDirs.forEach((dir) => load(dir));
   load(this.dir);
-};
+}

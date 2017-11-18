@@ -29,7 +29,7 @@ export const methods = {
    * @param {Object} data
    * @returns {Promise.<Event>}
    */
-  async createEvent(data){
+  async createEvent(data) {
     let event = new Event(data);
     event.user = this;
     await event.save();
@@ -42,7 +42,7 @@ export const methods = {
    * @param {Event|string|ObjectID} event
    * @returns {Promise.<void>}
    */
-  async readEvent(event){
+  async readEvent(event) {
     if (!event.save) {
       event = await Event.findById(event);
     }

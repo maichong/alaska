@@ -5,9 +5,8 @@
 import React from 'react';
 import moment from 'moment';
 
-export default class DatetimeFieldCell extends React.Component {
-
-  shouldComponentUpdate(props: Object) {
+export default class DatetimeFieldCell extends React.Component<Alaska$view$Field$Cell$Props> {
+  shouldComponentUpdate(props: Alaska$view$Field$Cell$Props) {
     return props.value != this.props.value;
   }
 

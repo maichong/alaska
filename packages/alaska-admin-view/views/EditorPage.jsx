@@ -16,10 +16,40 @@ import FieldGroup from './FieldGroup';
 import Relationship from './Relationship';
 import ContentHeader from './ContentHeader';
 import * as settingsRedux from '../redux/settings';
-import type { Settings, Details, Views } from '../types';
 
-class EditorPage extends React.Component {
+type Props = {
+  loadDetails: Function,
+  refreshSettings: Function,
+  saveAction: Function,
+  details: Alaska$view$details,
+  save: Alaska$view$save,
+  params: {
+    service: string,
+    model: string,
+    id: string
+  }
+};
 
+type State = {
+  serviceId: string,
+  modelName: string,
+  id: string,
+  errors: {},
+  service: {},
+  model: Alaska$view$Model,
+  record?: Alaska$view$Record
+};
+
+type Context = {
+  settings: Alaska$view$Settings,
+  views: Alaska$view$Views,
+  t: Function,
+  router: Object,
+  toast: Function,
+  confirm: Function
+};
+
+class EditorPage extends React.Component<Props, State> {
   static contextTypes = {
     views: PropTypes.object,
     settings: PropTypes.object,
@@ -29,33 +59,13 @@ class EditorPage extends React.Component {
     confirm: PropTypes.func,
   };
 
-  context: {
-    settings: Settings;
-    views: Views;
-    t: Function;
-    router: Object;
-    toast: Function;
-    confirm: Function;
-  };
-
-  props: {
-    loadDetails: Function,
-    refreshSettings: Function,
-    saveAction: Function,
-    details: Details,
-    save: Object,
-    params: {
-      service: string;
-      model: string;
-      id: string;
-    }
-  };
-
   state: Object;
   _r: number;
   loading: boolean;
 
-  constructor(props, context) {
+  context: Context;
+
+  constructor(props: Props, context: Context) {
     super(props);
 
     this._r = Math.random();
@@ -66,7 +76,7 @@ class EditorPage extends React.Component {
       id: props.params.id,
       errors: {},
       service: {},
-      model: { key: '' }
+      model: {}
     };
 
     let service = context.settings.services[this.state.serviceId];
@@ -81,8 +91,8 @@ class EditorPage extends React.Component {
     this.init();
   }
 
-  componentWillReceiveProps(nextProps) {
-    const toast = this.context.toast;
+  componentWillReceiveProps(nextProps: Props) {
+    const { toast, t } = this.context;
     let newState = {};
     if (nextProps.params) {
       newState.serviceId = nextProps.params.service;
@@ -90,7 +100,7 @@ class EditorPage extends React.Component {
       newState.id = nextProps.params.id;
       if (newState.id === '_new' && this.state.id && this.state.id !== '_new') {
         //新建时候清空表单
-        newState.data = immutable({});
+        newState.record = immutable({});
       }
 
       let service = this.context.settings.services[newState.serviceId];
@@ -102,17 +112,17 @@ class EditorPage extends React.Component {
         }
       }
     }
-    let save = nextProps.save;
-    if (save && save._r == this._r && !save.fetching) {
+    let { save } = nextProps;
+    if (save._r === this._r && !save.fetching) {
       this._r = Math.random();
-      let t = this.context.t;
       this.loading = false;
       if (save.error) {
         //保存失败
+        // $Flow save.error一定存在
         toast('error', t('Save failed'), save.error.message);
       } else {
         toast('success', t('Saved successfully'));
-        let state = this.state;
+        const { state } = this;
         if (state.id === '_new') {
           let url = '/edit/' + state.serviceId + '/' + state.modelName + '/' + encodeURIComponent(save.res._id);
           this.context.router.replace(url);
@@ -125,26 +135,28 @@ class EditorPage extends React.Component {
   }
 
   init() {
-    const state = this.state;
-    if (!state.model) return;
-    let id = state.id;
+    const { details } = this.props;
+    let { id, model, record } = this.state;
+    if (!model) return;
     if (id === '_new') {
-      let data = state.data || {};
+      if (!record) {
+        record = {};
+      }
       let newData = {};
-      _.forEach(state.model.fields, (field) => {
-        if (data[field.path] !== undefined) {
-          newData[field.path] = data[field.path];
+      _.forEach(model.fields, (field) => {
+        if (record[field.path] !== undefined) {
+          newData[field.path] = record[field.path];
         } else if (field.default !== undefined) {
           newData[field.path] = field.default;
         }
       });
-      this.setState({ data: immutable(newData) });
+      this.setState({ record: immutable(newData) });
       return;
     }
-    let key = state.model.key;
-    if (this.props.details[key] && this.props.details[key][id]) {
+    let { key } = model;
+    if (details[key] && details[key][id]) {
       this.setState({
-        data: this.props.details[key][id]
+        record: details[key][id]
       });
     } else {
       this.refresh();
@@ -152,19 +164,20 @@ class EditorPage extends React.Component {
   }
 
   refresh() {
-    const state = this.state;
-    const id = state.id;
+    const {
+      id, serviceId, modelName, model
+    } = this.state;
     this.props.loadDetails({
-      service: state.serviceId,
-      model: state.modelName,
-      key: state.model.key,
+      service: serviceId,
+      model: modelName,
+      key: model.key,
       id
     });
   }
 
   handleChange(key: any, value: any) {
     this.setState({
-      data: this.state.data.set(key, value)
+      record: this.state.record.set(key, value)
     });
   }
 
@@ -202,24 +215,22 @@ class EditorPage extends React.Component {
 
   handleSave = () => {
     let {
-      data,
+      record,
       model,
       id
     } = this.state;
-    let fields = model.fields;
+    let { fields } = model;
     let errors = {};
     let hasError = false;
-    const t = this.context.t;
-    for (let key in fields) {
-      let field = fields[key];
-
-      if (field.required && !data[key]) {
-        if (field.required === true || checkDepends(field.required, data)) {
+    const { t } = this.context;
+    _.forEach(fields, (field, key) => {
+      if (field.required && !record[key]) {
+        if (field.required === true || checkDepends(field.required, record)) {
           errors[key] = t('This field is required!');
           hasError = true;
         }
       }
-    }
+    });
     this.setState({ errors });
     if (hasError) return;
     this._r = Math.random();
@@ -230,11 +241,11 @@ class EditorPage extends React.Component {
       model: model.name,
       key: model.key,
       _r: this._r
-    }, data.set('id', id.toString() === '_new' ? undefined : id));
+    }, record.set('id', id.toString() === '_new' ? undefined : id));
   };
 
-  async handleAction(action) {
-    const { model, data, id } = this.state;
+  async handleAction(action: string) {
+    const { model, record, id } = this.state;
     const { t, toast, confirm } = this.context;
 
     const config = model.actions[action];
@@ -244,15 +255,17 @@ class EditorPage extends React.Component {
 
     try {
       if (config.pre && config.pre.substr(0, 3) === 'js:') {
+        // eslint-disable-next-line
         if (!eval(config.pre.substr(3))) {
           return;
         }
       }
 
       if (config.script && config.script.substr(0, 3) === 'js:') {
+        // eslint-disable-next-line
         eval(config.script.substr(3));
       } else {
-        let body = Object.assign({}, data, { id: id.toString() === '_new' ? '' : id });
+        let body = Object.assign({}, record, { id: id.toString() === '_new' ? '' : id });
         await akita.post('/api/action', {
           params: {
             _service: model.serviceId,
@@ -269,6 +282,7 @@ class EditorPage extends React.Component {
         this.refresh();
       }
       if (config.post && config.post.substr(0, 3) === 'js:') {
+        // eslint-disable-next-line
         eval(config.post.substr(3));
       }
     } catch (error) {
@@ -284,30 +298,31 @@ class EditorPage extends React.Component {
     let {
       id,
       model,
-      data,
+      record,
       errors,
       serviceId
     } = this.state;
     const { views, t, settings } = this.context;
-    if (!data) {
+    if (!record) {
       return <div className="loading">Loading...</div>;
     }
-    if (data._error) {
-      return <div className="editor-error">{data._error}</div>;
+    if (record._error) {
+      return <div className="editor-error">{record._error}</div>;
     }
-    console.log('model.abilities', model.abilities);
+    //console.log('model.abilities', model.abilities);
     const isNew = id === '_new';
-    let canSave = (id === '_new' && model.abilities.create) || (id !== '_new' && model.abilities.update && !model.noupdate);
+    let canSave = (isNew && model.abilities.create) || (!isNew && model.abilities.update && !model.noupdate);
+    // eslint-disable-next-line
     let title = <a onClick={this.handleBack}>{t(model.label || model.name, serviceId)}</a>;
     let subTitle = '';
     if (isNew) {
       subTitle = t('Create');
     } else if (model.titleField) {
-      subTitle = t(data[model.titleField], serviceId);
+      subTitle = t(record[model.titleField], serviceId);
     } else {
       subTitle = id;
     }
-    title = <div>{title} > {subTitle}</div>;
+    title = <div>{title} &gt; {subTitle}</div>;
 
     let map = _.reduce(model.fields, (res: Object, f: Alaska$Field$options, path: string) => {
       res[path] = {
@@ -356,7 +371,7 @@ class EditorPage extends React.Component {
       if (cfg.hidden) continue;
       if (cfg.super && !settings.superMode) continue;
       if (!cfg.view) continue;
-      if (cfg.depends && !checkDepends(cfg.depends, data)) continue;
+      if (cfg.depends && !checkDepends(cfg.depends, record)) continue;
       let ViewClass = views[cfg.view];
       if (!ViewClass) {
         console.warn('Missing : ' + cfg.view);
@@ -370,7 +385,7 @@ class EditorPage extends React.Component {
         if (cfg.disabled === true) {
           disabled = true;
         } else {
-          disabled = checkDepends(cfg.disabled, data);
+          disabled = checkDepends(cfg.disabled, record);
         }
       }
 
@@ -379,16 +394,17 @@ class EditorPage extends React.Component {
 
       let fieldProps = {
         key: path,
-        value: data[path],
+        value: record[path],
         model,
-        data,
+        record,
         field: _.assign({}, cfg, { label, help }),
         disabled,
         errorText: errors[path],
-        onChange: this.handleChange.bind(this, path),
+        onChange: this.handleChange.bind(this, path), // eslint-disable-line react/jsx-no-bind
         className: 'form-group ' + model.id + '-' + path + '-view'
       };
 
+      // $Flow
       let view = React.createElement(ViewClass, fieldProps);
       let group = groups.default;
       if (cfg.group && groups[cfg.group]) {
@@ -416,7 +432,7 @@ class EditorPage extends React.Component {
       isNew
       && model.abilities.create
       && !model.nocreate
-      && !(model.actions.create && model.actions.create.depends && !checkDepends(model.actions.create.depends, data))
+      && !(model.actions.create && model.actions.create.depends && !checkDepends(model.actions.create.depends, record))
     ) {
       actionElements.push(<Action
         key="create"
@@ -434,7 +450,7 @@ class EditorPage extends React.Component {
       !isNew
       && model.abilities.update
       && !model.noupdate
-      && !(model.actions.update && model.actions.update.depends && !checkDepends(model.actions.update.depends, data))
+      && !(model.actions.update && model.actions.update.depends && !checkDepends(model.actions.update.depends, record))
     ) {
       actionElements.push(<Action
         key="update"
@@ -455,7 +471,7 @@ class EditorPage extends React.Component {
       && !model.noremove
       && model.abilities.remove
       && model.actions.remove !== false
-      && !( model.actions.remove && model.actions.remove.depends && !checkDepends(model.actions.remove.depends, data))
+      && !(model.actions.remove && model.actions.remove.depends && !checkDepends(model.actions.remove.depends, record))
     ) {
       actionElements.push(<Action
         key="remove"
@@ -497,11 +513,11 @@ class EditorPage extends React.Component {
     _.forEach(model.actions, (action, key) => {
       if (['add', 'create', 'update', 'remove'].indexOf(key) > -1) return;
       if (action.super && !settings.superMode) return;
-      if (action.depends && !checkDepends(action.depends, data)) return;
+      if (action.depends && !checkDepends(action.depends, record)) return;
       if (action.list && !action.editor) return;
       let disabled = this.loading;
       if (!disabled && action.disabled) {
-        disabled = checkDepends(action.disabled, data);
+        disabled = checkDepends(action.disabled, record);
       }
       actionElements.push(<Action
         onClick={() => this.handleAction(key)}
@@ -509,7 +525,7 @@ class EditorPage extends React.Component {
         disabled={disabled}
         model={model}
         action={action}
-        data={data}
+        record={record}
         id={id}
       />);
     });
@@ -519,17 +535,18 @@ class EditorPage extends React.Component {
       relationships = _.map(
         model.relationships,
         (r: Object, key: string) => {
-          if (r.super && !settings.superMode) return;
-          return <Relationship
+          if (r.super && !settings.superMode) return null;
+          return (<Relationship
             key={key}
             from={id}
             path={r.path}
             service={r.service}
-            model={r.model}
+            model={model}
             filters={r.filters}
             title={r.title}
-          />
-        });
+          />);
+        }
+      );
     }
 
     return (

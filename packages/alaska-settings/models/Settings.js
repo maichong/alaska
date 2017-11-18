@@ -9,7 +9,7 @@ export default class Settings extends Model {
   static defaultColumns = '_id title group service';
   static cache = 600; //缓存10分钟
 
-  static defaultFilters = (ctx) => {
+  static defaultFilters = (ctx: Alaska$Context) => {
     if (!ctx.state.superMode) {
       return { super: { $ne: true } };
     }
@@ -84,7 +84,7 @@ export default class Settings extends Model {
       default: {}
     }
   };
-  _id: string|number|Object|any;
+  _id: string | number | Object | any;
   title: string;
   service: string;
   group: string;

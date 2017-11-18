@@ -9,7 +9,7 @@ export default class Shop extends Model {
   static defaultColumns = 'logo title user brand activated createdAt';
   static defaultSort = '-createdAt';
 
-  static defaultFilters = (ctx) => {
+  static defaultFilters = (ctx: Alaska$Context) => {
     if (ctx.service.id === 'alaska-admin') return null;
     return {
       activated: true

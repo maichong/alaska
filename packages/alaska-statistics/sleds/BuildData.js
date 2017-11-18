@@ -74,7 +74,9 @@ function getTimeX(date, unit) {
 }
 
 async function buildTimeData(source, Model, filters) {
-  const { x, y, reducer, unit } = source;
+  const {
+    x, y, reducer, unit
+  } = source;
   // $Flow findOne
   let query: Alaska$Query = Model.findOne(filters);
   if (!filters || !filters[x]) {
@@ -228,7 +230,9 @@ async function buildTimeData(source, Model, filters) {
 }
 
 async function buildCycleData(source, Model, filters) {
-  const { x, y, reducer, unit } = source;
+  const {
+    x, y, reducer, unit
+  } = source;
   let last;
   let result = {};
   let count = {};
@@ -371,7 +375,9 @@ async function buildCustomData(source, Model, filters, custom) {
 }
 
 async function buildChartSource(chartSource, startDate) {
-  const { model, type, reducer, x } = chartSource;
+  const {
+    model, type, reducer, x
+  } = chartSource;
   let filters = chartSource._.filters.filter();
 
   //增量更新

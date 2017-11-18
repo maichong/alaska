@@ -25,8 +25,6 @@ export async function relations(ctx: Alaska$Context) {
   // $Flow  findById
   let postTarget: ?Post = await Post.findById(postId).populate('relations');
   if (!postTarget) return;
-  ctx.body = postTarget.relations.map(
-    (post) => post.data().pick('id', 'title', 'pic', 'hots', 'createdAt')
-  );
+  ctx.body = postTarget.relations.map((post) => post.data().pick('id', 'title', 'pic', 'hots', 'createdAt'));
 }
 

@@ -12,29 +12,28 @@ import Node from './Node';
 import LocaleNav from './LocaleNav';
 import * as loginRedux from '../redux/login';
 
-class Header extends React.Component {
+type Props = {
+  children: React$Node,
+  user: Object,
+  layout: string,
+  logout: Function,
+  applyLayout: Function,
+  refreshSettings: Function
+};
 
+type State = {
+  open: boolean,
+  anchorEl: Object | null
+};
+
+class Header extends React.Component<Props, State> {
   static contextTypes = {
     actions: PropTypes.object,
     views: PropTypes.object,
     t: PropTypes.func,
   };
 
-  props: {
-    children: any,
-    user: Object,
-    layout: string;
-    logout: Function;
-    applyLayout: Function;
-    refreshSettings: Function;
-  };
-
-  state: {
-    open:boolean;
-    anchorEl:?Object;
-  };
-
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       open: false,
@@ -122,7 +121,8 @@ class Header extends React.Component {
               </MenuItem>
               <MenuItem eventKey={3.2} onClick={this.handleLogout}>{t('Logout')}<i
                 className="fa fa-sign-out pull-right"
-              /></MenuItem>
+              />
+              </MenuItem>
             </NavDropdown>
           </Node>
         </div>

@@ -18,13 +18,13 @@ declare module 'alaska-field-select' {
 }
 
 declare module 'alaska-field-select/views/Select' {
-  declare var exports: Class<React$Component<void, Object, void>>;
+  declare var exports: Class<React$Component<Object, Object>>;
 }
 
 declare module 'alaska-field-select/views/Switch' {
-  declare var exports: Class<React$Component<void, Object, void>>;
+  declare var exports: Class<React$Component<Object, Object>>;
 }
 
 declare module 'alaska-field-select/views/SelectCheckbox' {
-  declare var exports: Class<React$Component<void, Object, void>>;
+  declare var exports: Class<React$Component<Object, Object>>;
 }

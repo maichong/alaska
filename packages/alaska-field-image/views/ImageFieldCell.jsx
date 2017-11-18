@@ -2,13 +2,8 @@
 
 import React from 'react';
 
-export default class ImageFieldCell extends React.Component {
-
-  props: {
-    value: Object
-  };
-
-  shouldComponentUpdate(props: Object) {
+export default class ImageFieldCell extends React.Component<Alaska$view$Field$Cell$Props> {
+  shouldComponentUpdate(props: Alaska$view$Field$Cell$Props) {
     return props.value !== this.props.value;
   }
 

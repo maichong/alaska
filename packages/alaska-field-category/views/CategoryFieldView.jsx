@@ -6,29 +6,15 @@ import { api } from 'alaska-admin-view';
 import shallowEqualWithout from 'shallow-equal-without';
 import MultiLevelSelect from './MultiLevelSelect';
 
-export default class CategoryFieldView extends React.Component {
+type State = {
+  options: any[]
+};
 
-  props: {
-    className: string,
-    model: Object,
-    field: Object,
-    data: Object,
-    errorText: string,
-    disabled: boolean,
-    value: any,
-    onChange: Function,
-  };
-
-  state: {
-    options: any[],
-    value: any|null
-  };
-
-  constructor(props: Object) {
+export default class CategoryFieldView extends React.Component<Alaska$view$Field$View$Props, State> {
+  constructor(props: Alaska$view$Field$View$Props) {
     super(props);
     this.state = {
-      options: [],
-      value: null
+      options: []
     };
   }
 
@@ -36,17 +22,17 @@ export default class CategoryFieldView extends React.Component {
     this.init();
   }
 
-  shouldComponentUpdate(props: Object, state: Object) {
-    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'search')
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props, state: State) {
+    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'search')
       || this.state.options !== state.options;
   }
 
   init() {
-    let field = this.props.field;
+    let { field, value } = this.props;
     api('/api/relation')
       .param('service', field.service)
       .param('model', field.model)
-      .param('value', field.value)
+      .param('value', value)
       .where(field.filters || {})
       .then((res) => {
         this.setState({ options: res.results });
@@ -79,8 +65,10 @@ export default class CategoryFieldView extends React.Component {
   };
 
   render() {
-    let { className, field, value, disabled, errorText } = this.props;
-    let help = field.help;
+    let {
+      className, field, value, disabled, errorText
+    } = this.props;
+    let { help } = field;
     className += ' category-field';
     if (errorText) {
       className += ' has-error';
@@ -98,13 +86,13 @@ export default class CategoryFieldView extends React.Component {
         value.push(null);
       }
       // $Flow
-      inputElement = _.map(value, (v, index) => <MultiLevelSelect
+      inputElement = _.map(value, (v, index) => (<MultiLevelSelect
         key={index}
         value={v || ''}
         disabled={disabled}
         onChange={(va) => this.handleChange(index, va)}
         options={this.state.options}
-      />);
+      />));
       if (!disabled) {
         inputElement.push(<div className="btn btn-success" key="add" onClick={this.handleAdd}>
           <i className="fa fa-plus" />

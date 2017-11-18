@@ -35,5 +35,4 @@ export default class AutoBuild extends Sled {
     }
     await BuildData.run({ chartSource: source, startDate });
   }
-
 }

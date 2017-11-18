@@ -56,7 +56,7 @@ export default class SwigRenderer extends Renderer {
    * @param {Object} locals   模板值
    * @returns {Promise<string>}
    */
-  renderFile(pathName: string, locals: Object) {
+  renderFile(pathName: string, locals: Object): Promise<string> {
     return new Promise((resolve, reject) => {
       this.swig.renderFile(pathName, locals, (error, output) => {
         if (error) {
@@ -74,7 +74,7 @@ export default class SwigRenderer extends Renderer {
    * @param {Object} locals   模板值
    * @returns {string}
    */
-  render(template: string, locals: Object) {
+  render(template: string, locals: Object): string {
     return this.swig.render(template, { locals });
   }
 }

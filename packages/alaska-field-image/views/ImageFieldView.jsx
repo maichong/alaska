@@ -6,33 +6,21 @@ import _ from 'lodash';
 import shallowEqualWithout from 'shallow-equal-without';
 import { api } from 'alaska-admin-view';
 
-export default class ImageFieldView extends React.Component {
+type State = {
+  max: number,
+  errorText: string,
+  multi: any
+};
 
+export default class ImageFieldView extends React.Component<Alaska$view$Field$View$Props, State> {
   static contextTypes = {
     settings: PropTypes.object,
     t: PropTypes.func
   };
 
-  props: {
-    className: string,
-    model: Object,
-    field: Object,
-    data: Object,
-    errorText: string,
-    disabled: boolean,
-    value: any,
-    onChange: Function,
-  };
-
-  state: {
-    max: number,
-    errorText: string,
-    multi: any
-  };
-
   imageInput: any;
 
-  constructor(props: Object) {
+  constructor(props: Alaska$view$Field$View$Props) {
     super(props);
     this.state = {
       max: props.field.max || 1000,
@@ -44,7 +32,7 @@ export default class ImageFieldView extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps: Object) {
+  componentWillReceiveProps(nextProps: Alaska$view$Field$View$Props) {
     let newState = {};
     if (nextProps.errorText !== undefined) {
       newState.errorText = nextProps.errorText;
@@ -52,15 +40,17 @@ export default class ImageFieldView extends React.Component {
     }
   }
 
-  shouldComponentUpdate(props: Object, state: Object) {
-    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model')
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props, state: State) {
+    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model')
       || !shallowEqualWithout(state, this.state);
   }
 
   handleAddImage = () => {
-    const t = this.context.t;
-    let { model, field, data, value } = this.props;
-    let multi = field.multi;
+    const { t } = this.context;
+    let {
+      model, field, record, value
+    } = this.props;
+    let { multi } = field;
     if (value) {
       if (!multi) {
         value = [value];
@@ -70,15 +60,11 @@ export default class ImageFieldView extends React.Component {
     } else {
       value = [];
     }
-    let serviceId = 'alaska-user';
-    let modelName = 'User';
+
     let id = '_new';
-    if (model) {
-      serviceId = model.serviceId;
-      modelName = model.name;
-    }
-    if (data && data._id) {
-      id = data._id;
+    let { serviceId, name: modelName } = model || { serviceId: 'alaska-user', name: 'User' };
+    if (record && record._id) {
+      id = record._id;
     }
     let nextState = {
       errorText: ''
@@ -112,9 +98,8 @@ export default class ImageFieldView extends React.Component {
   };
 
   handleRemoveItem(item: any) {
-    let multi = this.props.field.multi;
     let value = null;
-    if (multi) {
+    if (this.props.field.multi) {
       value = [];
       _.forEach(this.props.value, (i) => {
         if (i !== item) {
@@ -129,7 +114,9 @@ export default class ImageFieldView extends React.Component {
   }
 
   render() {
-    let { className, field, value, disabled } = this.props;
+    let {
+      className, field, value, disabled
+    } = this.props;
     let { errorText, max } = this.state;
     if (!field.multi) {
       value = value ? [value] : [];
@@ -138,40 +125,50 @@ export default class ImageFieldView extends React.Component {
     let readonly = disabled || field.fixed;
     // $Flow 和lodash的flow不匹配
     _.forEach(value, (item, index) => {
-      items.push(<div key={index} className="image-field-item">
-        <img alt="" src={item.thumbUrl} />
-        {
-          readonly ? null : <button
-              className="btn btn-link btn-block"
-              disabled={disabled}
-              onClick={() => this.handleRemoveItem(item)}
-            >删除</button>
-        }
-      </div>);
+      items.push((
+        <div key={index} className="image-field-item">
+          <img alt="" src={item.thumbUrl} />
+          {
+            readonly ? null : (
+              <button
+                className="btn btn-link btn-block"
+                disabled={disabled}
+                onClick={() => this.handleRemoveItem(item)}
+              >删除</button>
+            )
+          }
+        </div>
+      ));
     });
     if (items.length < max) {
       //还未超出
       if (!readonly) {
-        items.push(<div className="image-field-item image-field-add" key="add">
-          <i className="fa fa-plus-square-o" />
-          <input
-            ref={(r) => { this.imageInput = r; }}
-            multiple={this.state.multi}
-            accept="image/png;image/jpg;"
-            type="file"
-            onChange={this.handleAddImage}
-          />
-        </div>);
+        items.push((
+          <div className="image-field-item image-field-add" key="add">
+            <i className="fa fa-plus-square-o" />
+            <input
+              ref={(r) => {
+                this.imageInput = r;
+              }}
+              multiple={this.state.multi}
+              accept="image/png;image/jpg;"
+              type="file"
+              onChange={this.handleAddImage}
+            />
+          </div>
+        ));
       }
     }
 
     if (!items.length && readonly) {
-      items.push(<div className="image-field-item image-field-add" key="add">
-        <i className="fa fa-picture-o" />
-      </div>);
+      items.push((
+        <div className="image-field-item image-field-add" key="add">
+          <i className="fa fa-picture-o" />
+        </div>
+      ));
     }
 
-    let help = field.help;
+    let { help } = field;
     className += ' image-field';
     if (errorText) {
       className += ' has-error';

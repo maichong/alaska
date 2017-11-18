@@ -1,14 +1,11 @@
 // @flow
 
-/* eslint global-require:0 */
-/* eslint import/no-dynamic-require:0 */
-
 import { Service } from 'alaska';
 import _ from 'lodash';
 
 class SmsService extends Service {
   constructor(options?: Alaska$Service$options) {
-    options = options || {};
+    options = options || { dir: '', id: '' };
     options.id = options.id || 'alaska-sms';
     options.dir = options.dir || __dirname;
     super(options);

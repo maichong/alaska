@@ -8,7 +8,7 @@ import path from 'path';
  */
 class ShopService extends Service {
   constructor(options?: Alaska$Service$options) {
-    options = options || {};
+    options = options || { dir: '', id: '' };
     options.dir = options.dir || __dirname;
     options.id = options.id || 'alaska-shop';
     super(options);

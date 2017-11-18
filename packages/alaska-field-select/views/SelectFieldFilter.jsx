@@ -8,27 +8,18 @@ import SelectCheckbox from './SelectCheckbox';
 import Switch from './Switch';
 import { getOptionValue } from './utils';
 
-export default class SelectFieldFilter extends React.Component {
+type State = {
+  value: any,
+  inverse: boolean,
+  error: boolean
+};
 
+export default class SelectFieldFilter extends React.Component<Alaska$view$Field$Filter$Props, State> {
   static contextTypes = {
     t: PropTypes.func,
   };
 
-  props: {
-    className: string,
-    value: any,
-    field: Object,
-    onChange: Function,
-    onClose: Function,
-  };
-
-  state: {
-    value: any,
-    inverse: boolean,
-    error: boolean
-  };
-
-  constructor(props: Object) {
+  constructor(props: Alaska$view$Field$Filter$Props) {
     super(props);
     let u = props.value || {};
     if (typeof u === 'string') {
@@ -43,7 +34,7 @@ export default class SelectFieldFilter extends React.Component {
   }
 
   t(opt: Alaska$SelectField$option) {
-    const t = this.context.t;
+    const { t } = this.context;
     if (this.props.field.translate === false || !t) {
       return opt;
     }
@@ -74,7 +65,7 @@ export default class SelectFieldFilter extends React.Component {
   };
 
   render() {
-    const t = this.context.t;
+    const { t } = this.context;
     let { className, field, onClose } = this.props;
     const { value, inverse, error } = this.state;
     const buttonClassName = 'btn btn-default';
@@ -100,7 +91,8 @@ export default class SelectFieldFilter extends React.Component {
           <a
             className={inverse ? buttonClassNameActive : buttonClassName}
             onClick={this.handleInverse}
-          >{t('inverse')}</a>
+          >{t('inverse')}
+          </a>
         </div>
         <a className="btn field-filter-close" onClick={onClose}><i className="fa fa-close" /></a>
       </div>

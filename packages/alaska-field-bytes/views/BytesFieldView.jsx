@@ -5,26 +5,15 @@ import numeral from 'numeral';
 import _ from 'lodash';
 import shallowEqualWithout from 'shallow-equal-without';
 
-export default class BytesFieldView extends React.Component {
+type State = {
+  display: string,
+  value: string
+};
 
-  props: {
-    className: string,
-    value: any,
-    model: Object,
-    data: Object,
-    field: Object,
-    disabled: boolean,
-    errorText: string,
-    onChange: Function,
-  };
-
-  state: {
-    display: string,
-    value: string
-  };
+export default class BytesFieldView extends React.Component<Alaska$view$Field$View$Props, State> {
   focused: boolean;
 
-  constructor(props: Object) {
+  constructor(props: Alaska$view$Field$View$Props) {
     super(props);
     this.state = {
       display: numeral(props.value).format('0,0'),
@@ -32,7 +21,7 @@ export default class BytesFieldView extends React.Component {
     };
   }
 
-  componentWillReceiveProps(nextProps: Object) {
+  componentWillReceiveProps(nextProps: Alaska$view$Field$View$Props) {
     let newState = {};
     if (nextProps.value) {
       newState.value = numeral(nextProps.value).format('0,0');
@@ -47,13 +36,12 @@ export default class BytesFieldView extends React.Component {
     this.setState(newState);
   }
 
-  shouldComponentUpdate(props: Object, state: Object) {
-    return !shallowEqualWithout(props, this.props, 'data', 'onChange', 'model')
+  shouldComponentUpdate(props: Alaska$view$Field$View$Props, state: State) {
+    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model')
       || !shallowEqualWithout(state, this.state);
   }
 
-  handleChange = (event: Event) => {
-    // $Flow 确认event.target.value属性值存在
+  handleChange = (event: SyntheticInputEvent<*>) => {
     let display = event.target.value;
     this.setState({ display });
   };
@@ -67,7 +55,7 @@ export default class BytesFieldView extends React.Component {
     this.focused = false;
     let value = this.state.display;
     let unfomarted = numeral(value).value();
-    if (isNaN(unfomarted)) {
+    if (_.isNaN(unfomarted)) {
       unfomarted = 0;
     }
     this.setState({ display: numeral(unfomarted).format('0,0') }, () => this.forceUpdate());
@@ -85,7 +73,9 @@ export default class BytesFieldView extends React.Component {
       disabled,
       errorText,
     } = this.props;
-    let { help, unit, size, precision } = field;
+    let {
+      help, unit, size, precision
+    } = field;
     className += ' bytes-field';
     if (errorText) {
       className += ' has-error';
@@ -94,11 +84,11 @@ export default class BytesFieldView extends React.Component {
     let value: number = numeral(this.state.display).value() || 0;
     let units = ['', 'K', 'M', 'G', 'T', 'P', 'E'];
     let num = value;
-    while (num > size && units.length > 1) {
-      num /= size;
+    while (num > (size || 0) && units.length > 1) {
+      num /= (size || 0);
       units.shift();
     }
-    let u = this.focused ? unit : (units[0] + unit);
+    let u = this.focused ? unit : (units[0] + (unit || ''));
     let display = this.focused ? value : _.round(num, precision);
     let helpElement = help ? <p className="help-block">{help}</p> : null;
     let inputElement;

@@ -5,29 +5,21 @@ import PropTypes from 'prop-types';
 import { api } from 'alaska-admin-view';
 import MultiLevelSelect from './MultiLevelSelect';
 
-export default class CategoryFieldFilter extends React.Component {
+type State = {
+  value: any,
+  inverse: boolean,
+  error: string | boolean,
+  options: Object[]
+};
+
+export default class CategoryFieldFilter extends React.Component<Alaska$view$Field$Filter$Props, State> {
   static contextTypes = {
     t: PropTypes.func
   };
 
-  props: {
-    className: string,
-    value: any,
-    field: Object,
-    onChange: Function,
-    onClose: Function
-  };
-
-  state: {
-    value: any,
-    inverse: boolean,
-    error: string|boolean,
-    options: Object[]
-  };
-
-  constructor(props: Object) {
+  constructor(props: Alaska$view$Field$Filter$Props) {
     super(props);
-    let value: string|Object = props.value || {};
+    let value: string | Object = props.value || {};
     if (typeof value === 'string') {
       value = { value, inverse: false };
     }
@@ -43,9 +35,9 @@ export default class CategoryFieldFilter extends React.Component {
     this.init();
   }
 
-  componentWillReceiveProps(props: Object) {
-    if (props.value !== this.props.value) {
-      let value = props.value;
+  componentWillReceiveProps(props: Alaska$view$Field$Filter$Props) {
+    let { value } = props;
+    if (value !== this.props.value) {
       if (typeof value === 'string') {
         value = { value };
       }
@@ -54,11 +46,11 @@ export default class CategoryFieldFilter extends React.Component {
   }
 
   init() {
-    let field = this.props.field;
+    let { field, value } = this.props;
     api('/api/relation')
       .param('service', field.service)
       .param('model', field.model)
-      .param('value', field.value)
+      .param('value', value)
       .where(field.filters || {})
       .then((res) => {
         this.setState({ options: res.results });
@@ -85,9 +77,11 @@ export default class CategoryFieldFilter extends React.Component {
   };
 
   render() {
-    const t = this.context.t;
+    const { t } = this.context;
     let { className, field, onClose } = this.props;
-    const { value, inverse, error, options } = this.state;
+    const {
+      value, inverse, error, options
+    } = this.state;
     const buttonClassName = 'btn btn-default';
     const buttonClassNameActive = buttonClassName + ' btn-success';
     className += ' category-field-filter' + (error ? ' error' : '');

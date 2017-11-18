@@ -3,12 +3,10 @@
 import React from 'react';
 import Node from './Node';
 
-export default class Dashboard extends React.Component {
-
-  props: {
-    children: any
-  };
-
+type Props = {
+  children: React$Node
+};
+export default class Dashboard extends React.Component<Props> {
   render() {
     return (
       <Node id="dashboard">

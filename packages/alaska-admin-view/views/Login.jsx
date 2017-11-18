@@ -8,28 +8,27 @@ import { connect } from 'react-redux';
 import * as loginRedux from '../redux/login';
 import Node from './Node';
 
-class Login extends React.Component {
+type Props = {
+  login: Alaska$view$Login,
+  loginAction: Function
+};
 
+type State = {
+  username: string,
+  password: string,
+  errorMsg: string,
+  usernameError: string,
+  passwordError: string
+};
+
+class Login extends React.Component<Props, State> {
   static contextTypes = {
     actions: PropTypes.object,
     settings: PropTypes.object,
     t: PropTypes.func,
   };
 
-  props: {
-    login: Object;
-    loginAction:Function
-  };
-
-  state: {
-    username: string,
-    password: string,
-    errorMsg: string,
-    usernameError: string,
-    passwordError: string
-  };
-
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       username: '',
@@ -40,7 +39,7 @@ class Login extends React.Component {
     };
   }
 
-  componentWillReceiveProps(nextProps: Object) {
+  componentWillReceiveProps(nextProps: Props) {
     let newState = { errorMsg: '' };
     if (nextProps.login && nextProps.login.errorMsg) {
       newState.errorMsg = nextProps.login.errorMsg;
@@ -48,11 +47,11 @@ class Login extends React.Component {
     this.setState(newState);
   }
 
-  handleUsername = (e: Object) => {
+  handleUsername = (e: SyntheticInputEvent<*>) => {
     this.setState({ username: e.target.value });
   };
 
-  handlePassword = (e: Object) => {
+  handlePassword = (e: SyntheticInputEvent<*>) => {
     this.setState({ password: e.target.value });
   };
 
@@ -83,7 +82,7 @@ class Login extends React.Component {
 
   render() {
     let state = this.state;
-    const t = this.context.t;
+    const { t } = this.context;
     const loginLogo = this.context.settings.loginLogo;
 
     return (
@@ -119,9 +118,11 @@ class Login extends React.Component {
           </Node>
 
           <Node
-            id="loginButton" className="btn btn-primary btn-block"
+            id="loginButton"
+            className="btn btn-primary btn-block"
             onClick={this.handleLogin}
-          >{t('Login')}</Node>
+          >{t('Login')}
+          </Node>
 
           <IF test={state.errorMsg}>
             <Node id="loginError" className="label label-danger">{state.errorMsg}</Node>
@@ -132,7 +133,9 @@ class Login extends React.Component {
   }
 }
 
-export default connect(({ login }) => ({ login }),
+export default connect(
+  ({ login }) => ({ login }),
   (dispatch) => bindActionCreators({
     loginAction: loginRedux.login
-  }, dispatch))(Login);
+  }, dispatch)
+)(Login);

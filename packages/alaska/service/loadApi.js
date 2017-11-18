@@ -22,7 +22,7 @@ export default async function loadApi() {
 
   const service: Alaska$Service = this;
 
-  const router = service.router;
+  const { router } = service;
 
   this._apiControllers = utils.include(this.dir + '/api', false) || {};
 
@@ -195,8 +195,10 @@ export default async function loadApi() {
 
   if (extension) {
     router.register('/api/:controller?/:action?', ['POST', 'GET'], function (ctx, next) {
-      let controller = ctx.params.controller;
-      let action = ctx.params.action || 'default';
+      let { controller, action } = ctx.params;
+      if (!action) {
+        action = 'default';
+      }
       // $Flow
       let ctrl = service._apiControllers[controller];
       if (ctrl && ctrl[action] && action[0] !== '_') {

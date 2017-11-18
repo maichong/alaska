@@ -5,37 +5,36 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import Select from 'alaska-field-select/views/Select';
 
-export default class AxisSelector extends React.Component {
+type Props = {
+  data: Object,
+  field: Object,
+  value: string,
+  errorText: string,
+  disabled: boolean,
+  onChange: Function
+};
 
+type State = {
+  model: ?Object,
+  options: Object
+};
+
+export default class AxisSelector extends React.Component<Props, State> {
   static contextTypes = {
     settings: PropTypes.object,
     t: PropTypes.func
   };
 
-  props: {
-    data: Object,
-    field: Object,
-    value: string,
-    errorText: string,
-    disabled: boolean,
-    onChange: Function
-  };
-
-  state: {
-    model:?Object;
-    options:Object;
-  };
-
-  constructor(props: Object, context: Object) {
+  constructor(props: Props, context: Object) {
     super(props);
-    this.state = this.initState(props, context)
+    this.state = this.initState(props, context);
   }
 
-  componentWillReceiveProps(props: Object) {
+  componentWillReceiveProps(props: Props) {
     this.setState(this.initState(props, this.context));
   }
 
-  initState(props: Object, context: Object) {
+  initState(props: Props, context: Object) {
     let newstate: Object = {
       model: null,
       value: props.value,
@@ -89,7 +88,9 @@ export default class AxisSelector extends React.Component {
   };
 
   render() {
-    const { value, disabled, field, errorText } = this.props;
+    const {
+      value, disabled, field, errorText
+    } = this.props;
     const { model, options } = this.state;
     if (!model) return null;
     let className = 'form-group axis-selector-field';

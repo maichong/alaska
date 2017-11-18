@@ -87,7 +87,7 @@ export default class GoodsPropValue extends Model {
   }
 
   /**
-   * [async] 整理相应属性的属性值
+   * 整理相应属性的属性值
    */
   async processProp() {
     // $Flow findById

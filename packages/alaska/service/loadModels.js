@@ -1,8 +1,5 @@
 // @flow
 
-/* eslint global-require:0 */
-/* eslint import/no-dynamic-require:0 */
-
 import _ from 'lodash';
 import * as utils from '../utils';
 
@@ -105,4 +102,4 @@ export default async function loadModels() {
     } //end of 加载扩展配置
     await this.registerModel(Model);
   } //end of 遍历模型
-};
+}

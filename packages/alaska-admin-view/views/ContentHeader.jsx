@@ -4,18 +4,17 @@ import React from 'react';
 import { Overlay } from 'react-bootstrap';
 import Node from './Node';
 
-export default class ContentHeader extends React.Component {
+type Props = {
+  children: React$Node,
+  actions?: Array<React$Element<any>>
+};
 
-  props: {
-    children?: React$Element<any>,
-    actions?: Array<React$Element<any>>
-  };
+type State = {
+  show: boolean
+};
 
-  state: {
-    show:boolean;
-  };
-
-  constructor(props: Object) {
+export default class ContentHeader extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       show: false
@@ -35,7 +34,7 @@ export default class ContentHeader extends React.Component {
       el = <i className="fa fa-bars" />;
       let overlay = null;
       if (this.state.show) {
-        overlay = <Overlay show={true} onHide={() => this.setState({ show: false })} rootClose={true}>
+        overlay = <Overlay show onHide={() => this.setState({ show: false })} rootClose>
           <div className="content-header-actions overlay">
             <div>{actions.map((a, index) => <div key={index} className="action">{a}</div>)}</div>
           </div>

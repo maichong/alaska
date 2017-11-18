@@ -7,20 +7,17 @@ import Copyright from './Copyright';
 import Node from './Node';
 import Logo from './Logo';
 
-export default class Sidebar extends React.Component {
+type Props = {
+  menu: Object[],
+  layout: string
+};
 
+export default class Sidebar extends React.Component<Props, Object> {
   static contextTypes = {
     router: PropTypes.object
   };
 
-  props: {
-    menu: Object[],
-    layout: string
-  };
-
-  state: Object;
-
-  constructor(props: Object) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       menu: ''

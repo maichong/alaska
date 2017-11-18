@@ -1,11 +1,5 @@
 // @flow
 
-/* eslint global-require:0 */
-/* eslint import/no-dynamic-require:0 */
-/* eslint import/no-extraneous-dependencies:0 */
-/* eslint import/no-unresolved:0 */
-/* eslint import/extensions:0 */
-
 import type Koa from 'koa';
 import _ from 'lodash';
 import Debugger from 'debug';
@@ -35,40 +29,40 @@ export default class Service {
   _controllers = {};
   _apiControllers = {};
   _messageCache: {
-    [locale: string]:{
+    [locale: string]: {
       [message: string]: IntlMessageFormat
     }
   };
 
-  _cacheDrivers: { [id:string]:Alaska$CacheDriver };
+  _cacheDrivers: { [id: string]: Alaska$CacheDriver };
 
-  _idleDrivers: { [idleId:string]:Alaska$Driver[] };
+  _idleDrivers: { [idleId: string]: Alaska$Driver[] };
   _freeIdleTimer = 0;
   /**
    * 所依赖的子Service实例对象别名映射表
    * @type {Object}
    */
-  services: { [id:string]:Alaska$Service };
+  services: { [id: string]: Alaska$Service };
   /**
    * 本Service Sled列表
    * @type {Object}
    */
-  sleds: { [name:string]:Class<Alaska$Sled> };
+  sleds: { [name: string]: Class<Alaska$Sled> };
   /**
    * 本Service Plugin列表
    * @type {Object}
    */
-  plugins: { [key:string]:Plugin };
+  plugins: { [key: string]: Plugin };
   /**
    * 本Service数据模型列表
    * @type {Object}
    */
-  models: { [name:string]:Class<Alaska$Model> };
+  models: { [name: string]: Class<Alaska$Model> };
   /**
    * 本Service本地化配置
    * @type {Object}
    */
-  locales: { [locale:string]:Object };
+  locales: { [locale: string]: Object };
   /**
    * 数据库连接实例
    * @type {mongoose.Connection}
@@ -316,7 +310,7 @@ export default class Service {
    * @param {string|Error} message
    * @param {string|number} [code]
    */
-  panic: (message: string|number, code?: number) => void;
+  panic: (message: string | number, code?: number) => void;
 
   /**
    * 抛出普通异常
@@ -324,7 +318,7 @@ export default class Service {
    * @param {string|Error} message
    * @param {string|number} [code]
    */
-  error: (message: string|number, code?: number) => void;
+  error: (message: string | number, code?: number) => void;
 
   /**
    * 执行一个异步任务,如果失败则抛出NormalError
@@ -332,7 +326,7 @@ export default class Service {
    * @param {Promise} promise
    * @returns {Promise<T>}
    */
-  try: <T>(promise: Promise<T>)=> Promise<T>;
+  try: <T>(promise: Promise<T>) => Promise<T>;
 
   /**
    * 初始化
@@ -449,7 +443,7 @@ export default class Service {
    * 如果返回false,代表本Service不需要数据库支持
    * @returns {mongoose.Connection | Boolean}
    */
-  get db(): Mongoose$Connection|boolean {
+  get db(): Mongoose$Connection | boolean {
     if (this._db) {
       return this._db;
     }
@@ -555,7 +549,7 @@ export default class Service {
     if (driver.idle) return;
     if (driver.idleId) {
       //允许空闲
-      let idleId = driver.idleId;
+      let { idleId } = driver;
       if (!this._idleDrivers[idleId]) {
         this._idleDrivers[idleId] = [];
       }

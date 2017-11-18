@@ -14,7 +14,7 @@ class BalanceService extends Service {
   currencies: Alaska$SelectField$option[];
 
   constructor(options?: Alaska$Service$options) {
-    options = options || {};
+    options = options || { dir: '', id: '' };
     options.dir = options.dir || __dirname;
     options.id = options.id || 'alaska-balance';
     super(options);
