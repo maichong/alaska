@@ -3,7 +3,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
-import { IF } from 'jsx-plus';
 import { connect } from 'react-redux';
 import * as loginRedux from '../redux/login';
 import Node from './Node';
@@ -123,10 +122,7 @@ class Login extends React.Component<Props, State> {
             onClick={this.handleLogin}
           >{t('Login')}
           </Node>
-
-          <IF test={state.errorMsg}>
-            <Node id="loginError" className="label label-danger">{state.errorMsg}</Node>
-          </IF>
+          {state.errorMsg ? <Node id="loginError" className="label label-danger">{state.errorMsg}</Node> : null}
         </Node>
       </Node>
     );

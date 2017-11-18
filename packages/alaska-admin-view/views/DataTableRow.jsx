@@ -2,7 +2,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { IF, ELSE } from 'jsx-plus';
 
 type Props = {
   columns: Object[],

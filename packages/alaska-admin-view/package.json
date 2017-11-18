@@ -16,7 +16,6 @@
     "akita": "^0.3.7",
     "check-depends": "^0.2.0",
     "intl-messageformat": "^2.2.0",
-    "jsx-plus": "^0.2.1",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0",
     "react": "^16.1.1",
