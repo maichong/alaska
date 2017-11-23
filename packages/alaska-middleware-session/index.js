@@ -9,8 +9,10 @@ export default function (options: Alaska$Config$session) {
   const storeOpts = options.store || {};
   const cookieOpts = options.cookie || {};
   const key: string = cookieOpts.key || 'alaska.sid';
-  // $Flow require参数需要为字符串
-  const Store = require(storeOpts.type).default;
+  const Store = alaska.modules.drivers[storeOpts.type];
+  if (!Store) {
+    alaska.panic(`Session store driver '${storeOpts.type}' not found!`);
+  }
   const store = new Store(alaska.main, storeOpts);
   let ignore: ?RegExp[] = null;
 

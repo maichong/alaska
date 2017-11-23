@@ -12,6 +12,10 @@ class BalanceService extends Service {
   _currenciesMap: Object;
   _defaultCurrency: Alaska$SelectField$option;
   currencies: Alaska$SelectField$option[];
+  _currenciesPromise: void | Promise<Alaska$SelectField$option[]>;
+  _currenciesPromiseCallback: void | Function;
+  _defaultCurrencyPromise: void | Promise<Alaska$SelectField$option>;
+  _defaultCurrencyPromiseCallback: void | Function;
 
   constructor(options?: Alaska$Service$options) {
     options = options || { dir: '', id: '' };
@@ -23,11 +27,11 @@ class BalanceService extends Service {
   postInit() {
     let service = this;
     USER.pre('registerModel', (Model) => {
-      if (Model.name !== 'User') return;
+      if (Model.modelName !== 'User') return;
       service._currencies.forEach((c) => {
         Model.underscoreMethod(c.value, 'income', async function (amount: number, title: string, type: ?string) {
           // 只能在这里导入模型，如果在头部import会循环引用
-          const Income = service.model('Income');
+          const Income = service.getModel('Income');
           let user = this;
           let balance = (user.get(c.value) + amount) || 0;
           if (c.precision !== undefined) {
@@ -58,7 +62,7 @@ class BalanceService extends Service {
   }
 
   postLoadConfig() {
-    let currencies = this.config('currencies');
+    let currencies = this.getConfig('currencies');
     if (!currencies || !currencies.length) {
       throw new Error('alaska-balance service require currency settings.');
     }
@@ -74,6 +78,14 @@ class BalanceService extends Service {
     if (!this._defaultCurrency) {
       throw new Error('Default currency not specified.');
     }
+
+    // Callbacks
+    if (this._currenciesPromiseCallback) {
+      this._currenciesPromiseCallback(currencies);
+    }
+    if (this._defaultCurrencyPromiseCallback) {
+      this._defaultCurrencyPromiseCallback(this._defaultCurrency);
+    }
   }
 
   get currencies(): Alaska$SelectField$option[] {
@@ -86,6 +98,40 @@ class BalanceService extends Service {
 
   get defaultCurrency(): Alaska$SelectField$option {
     return this._defaultCurrency;
+  }
+
+  /**
+   * 异步获取货币列表
+   * @returns {void|Promise.<Alaska$SelectField$option[]>}
+   */
+  getCurrenciesAsync(): Promise<Alaska$SelectField$option[]> {
+    if (!this._currenciesPromise) {
+      this._currenciesPromise = new Promise((resolve) => {
+        if (this._currencies) {
+          resolve(this._currencies);
+        } else {
+          this._currenciesPromiseCallback = resolve;
+        }
+      });
+    }
+    return this._currenciesPromise;
+  }
+
+  /**
+   * 异步获取默认货币
+   * @returns {void|Promise.<Alaska$SelectField$option>}
+   */
+  getDefaultCurrencyAsync(): Promise<Alaska$SelectField$option> {
+    if (!this._defaultCurrencyPromise) {
+      this._defaultCurrencyPromise = new Promise((resolve) => {
+        if (this._defaultCurrency) {
+          resolve(this._defaultCurrency);
+        } else {
+          this._defaultCurrencyPromiseCallback = resolve;
+        }
+      });
+    }
+    return this._defaultCurrencyPromise;
   }
 
   async adminSettings(ctx: Alaska$Context, user: User, settings: Object) {

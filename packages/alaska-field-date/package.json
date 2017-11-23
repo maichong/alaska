@@ -1,11 +1,12 @@
 {
   "name": "alaska-field-date",
-  "version": "0.11.13",
+  "version": "0.12.0",
   "description": "Alaska date field",
   "keywords": [
     "alaska",
     "alaska-field"
   ],
+  "alaska": "field",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-date",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
@@ -13,6 +14,6 @@
   "dependencies": {
     "moment": "^2.19.2",
     "react-datetime": "^2.11.0",
-    "alaska-field-datetime": "^0.11.13"
+    "alaska-field-datetime": "^0.12.0"
   }
 }

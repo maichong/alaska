@@ -4,7 +4,7 @@ import type Router from 'koa-router';
 import service from '../';
 
 export default function (router: Router) {
-  let superMode = service.config('superMode');
+  let superMode = service.getConfig('superMode');
   if (typeof superMode === 'string') {
     superMode = {
       cookie: superMode

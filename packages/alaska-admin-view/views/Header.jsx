@@ -112,7 +112,7 @@ class Header extends React.Component<Props, State> {
             <LocaleNav />
             <NavDropdown
               eventKey={3}
-              title={<div><img alt="" src={user.avatar || 'static/img/avatar.png'} />{username}</div>}
+              title={<div><img alt="" src={user.avatar || 'statics/img/avatar.png'} />{username}</div>}
               id="userNav"
             >
               <MenuItem eventKey={3.1} onClick={this.handleRefresh}>{t('Refresh')}<i

@@ -54,8 +54,8 @@ export default class Withdraw extends Model {
     currency: {
       label: 'Currency',
       type: 'select',
-      options: service.currencies,
-      default: service.defaultCurrency.value,
+      options: service.getCurrenciesAsync(),
+      default: service.getDefaultCurrencyAsync().then((cur) => cur.value),
       static: true
     },
     amount: {

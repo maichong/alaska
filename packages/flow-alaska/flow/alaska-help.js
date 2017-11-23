@@ -3,6 +3,7 @@
 declare module 'alaska-help' {
   declare class HelpService extends Alaska$Service {
   }
+
   declare var exports: HelpService;
 }
 declare module 'alaska-help/models/Help' {
@@ -14,7 +15,8 @@ declare module 'alaska-help/models/Help' {
     activated: boolean;
     createdAt: Date;
     content: string;
-    preSave():void;
+    preSave(): void;
   }
+
   declare var exports: Class<Help>;
 }

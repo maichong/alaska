@@ -1,6 +1,7 @@
 declare module 'alaska-user' {
   declare class UserService extends Alaska$Service {
   }
+
   declare var exports: UserService
 }
 
@@ -30,6 +31,7 @@ declare module 'alaska-user/models/Ability' {
     service: string;
     createdAt: Date;
   }
+
   declare var exports: Class<Ability>
 }
 
@@ -39,8 +41,9 @@ declare module 'alaska-user/models/Role' {
     abilities: Object[];
     sort: number;
     createdAt: Date;
-    hasAbility(id: string|Object): Promise<boolean>
+    hasAbility(id: string | Object): Promise<boolean>
   }
+
   declare var exports: Class<Role>
 }
 

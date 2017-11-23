@@ -1,9 +1,9 @@
-
 export default {
   prefix: '/goods',
-  controllers: false,
-  middlewares: false,
   services: {
-    'alaska-balance': {}
+    'alaska-balance': {},
+    'alaska-order': {
+      optional: true
+    }
   }
 };

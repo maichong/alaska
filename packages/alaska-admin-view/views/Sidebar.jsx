@@ -25,7 +25,8 @@ export default class Sidebar extends React.Component<Props, Object> {
   }
 
   handleChange = (item: Object) => {
-    this.context.router.push(item.link);
+    const { history } = this.context.router;
+    history.push(item.link);
     this.setState({ menu: item.id });
   };
 

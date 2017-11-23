@@ -1,38 +1,33 @@
 // @flow
 
-import fs from 'fs';
-import { Sled, utils } from 'alaska';
+import alaska, { Sled } from 'alaska';
 import AppUpdate from '../models/AppUpdate';
 
 export default class Update extends Sled {
-  async exec(params: Object) {
-    const dir = params.dir;
-    if (!dir) {
-      throw new ReferenceError('alaska-update sled Update data.dir is required');
-    }
+  async exec() {
+    const serviceModules = alaska.modules.services[alaska.main.id];
+    if (!serviceModules || !serviceModules.updates) return;
 
-    let files;
-    try {
-      files = fs.readdirSync(dir);
-    } catch (error) {
-      return;
-    }
-    if (files.length) {
-      for (let file of files) {
-        let has = await AppUpdate.count({ key: file });
-        if (!has) {
-          console.log('Apply update script ', file);
-          let mod = utils.include(dir + file, true);
+    let records = await AppUpdate.find();
+    let recordsMap = {};
+    records.forEach((record) => {
+      recordsMap[record.key] = record;
+    });
 
-          if (!(typeof mod === 'function')) {
-            console.log(`Update script "${file}" must export a async function as default!`);
-            process.exit();
-          }
+    // eslint-disable-next-line
+    for (let key in serviceModules.updates) {
+      if (recordsMap[key]) continue;
 
-          await mod();
-          await (new AppUpdate({ key: file })).save();
-        }
+      console.log('Apply update script ', key);
+
+      let mod = serviceModules.updates[key];
+      if (!(typeof mod === 'function')) {
+        console.log(`Update script "${key}" must export a async function as default!`);
+        process.exit();
       }
+
+      await mod();
+      await (new AppUpdate({ key })).save();
     }
   }
 }

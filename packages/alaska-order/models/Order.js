@@ -113,8 +113,8 @@ export default class Order extends Model {
     currency: {
       label: 'Currency',
       type: 'select',
-      options: BALANCE.currencies,
-      default: BALANCE.defaultCurrency.value
+      options: BALANCE.getCurrenciesAsync(),
+      default: BALANCE.getDefaultCurrencyAsync().then((cur) => cur.value)
     },
     shipping: {
       //邮费,不包含在total中,由各个OrderItem.shipping相加
@@ -170,7 +170,7 @@ export default class Order extends Model {
       number: true,
       index: true,
       default: 200,
-      options: service.config('status')
+      options: service.getConfig('status')
     },
     failure: {
       label: 'Failure Reason',

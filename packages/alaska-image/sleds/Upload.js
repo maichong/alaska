@@ -2,7 +2,7 @@
 
 import alaska, { Sled } from 'alaska';
 import akita from 'akita-node';
-import mime from 'mime';
+import mime from 'mime-types';
 import path from 'path';
 import Image from '../models/Image';
 

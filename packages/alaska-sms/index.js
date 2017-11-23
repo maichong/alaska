@@ -4,6 +4,14 @@ import { Service } from 'alaska';
 import _ from 'lodash';
 
 class SmsService extends Service {
+  driversOptions: Alaska$SelectField$option[];
+  defaultDriver: void | Alaska$SmsDriver;
+  driversMap: {
+    [key: string]: Alaska$SmsDriver
+  };
+  _optionsPromise: Promise<Alaska$SelectField$option[]>;
+  _optionsPromiseCallback: void | Function;
+
   constructor(options?: Alaska$Service$options) {
     options = options || { dir: '', id: '' };
     options.id = options.id || 'alaska-sms';
@@ -12,7 +20,7 @@ class SmsService extends Service {
   }
 
   preLoadModels() {
-    let drivers = this.config('drivers');
+    let drivers = this.getConfig('drivers');
     if (!drivers || !Object.keys(drivers).length) {
       throw new Error('No sms driver found');
     }
@@ -37,11 +45,23 @@ class SmsService extends Service {
     this.driversOptions = driversOptions;
     this.defaultDriver = defaultDriver;
     this.driversMap = driversMap;
+    if (this._optionsPromiseCallback) {
+      this._optionsPromiseCallback(driversOptions);
+    }
   }
 
-  driversOptions: Object[];
-  defaultDriver: any;
-  driversMap: Object;
+  getDriverOptionsAsync(): Promise<Alaska$SelectField$option[]> {
+    if (!this._optionsPromise) {
+      this._optionsPromise = new Promise((resolve) => {
+        if (this.driversOptions) {
+          resolve(this.driversOptions);
+        } else {
+          this._optionsPromiseCallback = resolve;
+        }
+      });
+    }
+    return this._optionsPromise;
+  }
 }
 
 export default new SmsService();

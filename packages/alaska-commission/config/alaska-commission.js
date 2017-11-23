@@ -1,8 +1,6 @@
 
 export default {
   prefix: '/commission',
-  middlewares: false,
-  controllers: false,
   services: {
     'alaska-user': {},
     'alaska-balance': {}

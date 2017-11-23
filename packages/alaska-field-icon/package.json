@@ -1,16 +1,17 @@
 {
   "name": "alaska-field-icon",
-  "version": "0.11.15",
+  "version": "0.12.0",
   "description": "alaska icon field",
   "keywords": [
     "alaska",
     "alaska-field"
   ],
+  "alaska": "field",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-icon",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-text": "^0.11.15"
+    "alaska-field-text": "^0.12.0"
   }
 }

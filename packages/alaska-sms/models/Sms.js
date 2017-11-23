@@ -23,11 +23,10 @@ export default class Sms extends Model {
     driver: {
       label: 'Driver',
       type: 'select',
-      options: service.driversOptions,
-      default: service.defaultDriver.key
+      options: service.getDriverOptionsAsync()
     },
     content: {
-      label: '内容',
+      label: 'Content',
       type: String,
       required: true,
       multiLine: true
@@ -37,7 +36,25 @@ export default class Sms extends Model {
       type: Date
     }
   };
-  _id: string|number|Object|any;
+
+  static preRegister() {
+    let locales = alaska.main.getConfig('locales');
+
+    if (locales && locales.length > 1) {
+      let SmsModel: Class<Alaska$Model> = Sms;
+      SmsModel.fields.content.help = 'Default';
+      locales.forEach((locale) => {
+        SmsModel.fields['content_' + locale.replace('-', '_')] = {
+          label: 'Content',
+          type: String,
+          multiLine: true,
+          help: service.t('lang', locale)
+        };
+      });
+    }
+  }
+
+  _id: string | number | Object | any;
   title: string;
   driver: Object;
   content: string;
@@ -50,17 +67,3 @@ export default class Sms extends Model {
   }
 }
 
-let locales = alaska.main.config('locales');
-
-if (locales && locales.length > 1) {
-  let SmsModel: Class<Alaska$Model> = Sms;
-  SmsModel.fields.content.help = 'Default';
-  locales.forEach((locale) => {
-    SmsModel.fields['content_' + locale.replace('-', '_')] = {
-      label: 'Content',
-      type: String,
-      multiLine: true,
-      help: service.t('lang', locale)
-    };
-  });
-}

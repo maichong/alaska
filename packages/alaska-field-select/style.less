@@ -1,4 +1,4 @@
-@import (less) "../react-select/dist/react-select.css";
+@import "../react-select/less/select.less";
 
 .select-field-filter {
   .form-group {
@@ -9,6 +9,7 @@
 }
 
 .Select {
+  @space: 3px;
   outline: none !important;
   &.is-focused {
     .Select-control {
@@ -20,19 +21,21 @@
     padding-bottom: 0 !important;
     border: solid 1px @border-color !important;
     border-radius: @input-border-radius !important;
-    height: @input-height-base - 2;
+    height: @input-height-base;
     &:hover {
       box-shadow: none !important;
     }
   }
   .Select-value {
-    height: @input-height-base - 2;
+    height: @input-height-base - 2 - (@space * 2);
+    margin-top: @space;
+    margin-left: @space;
     span {
-      line-height: @input-height-base - 2;
+      line-height: @input-height-base -  2 - (@space * 2) - ( @select-item-padding-vertical * 2);
     }
   }
   .Select-input {
-    height: @input-height-base - 2;
+    height: @input-height-base -  2 - (@space * 2);
   }
   .Select-menu-outer {
     left: 0;

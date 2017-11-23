@@ -3,6 +3,7 @@
 declare module 'alaska-post' {
   declare class PostService extends Alaska$Service {
   }
+
   declare var exports: PostService;
 }
 declare module 'alaska-post/models/Post' {
@@ -25,8 +26,9 @@ declare module 'alaska-post/models/Post' {
     relations: Object[];
     topics: Object[];
     createdAt: Date;
-    preSave():void;
+    preSave(): void;
   }
+
   declare var exports: Class<Post>;
 }
 declare module 'alaska-post/models/PostCat' {
@@ -36,8 +38,9 @@ declare module 'alaska-post/models/PostCat' {
     subCats: Object[];
     sort: number;
     createdAt: Date;
-    preSave():void;
+    preSave(): void;
   }
+
   declare var exports: Class<PostCat>;
 }
 declare module 'alaska-post/models/PostComment' {
@@ -50,16 +53,18 @@ declare module 'alaska-post/models/PostComment' {
     agree: number;
     oppose: number;
     createdAt: Date;
-    preSave():void;
+    preSave(): void;
   }
+
   declare var exports: Class<PostComment>;
 }
 declare module 'alaska-post/models/PostTag' {
   declare class PostTag extends Alaska$Model {
     title: string;
     createdAt: Date;
-    preSave():void;
+    preSave(): void;
   }
+
   declare var exports: Class<PostTag>;
 }
 declare module 'alaska-post/models/PostTopic' {
@@ -74,7 +79,8 @@ declare module 'alaska-post/models/PostTopic' {
     hots: number;
     template: string;
     createdAt: Date;
-    preSave():void;
+    preSave(): void;
   }
+
   declare var exports: Class<PostTopic>;
 }

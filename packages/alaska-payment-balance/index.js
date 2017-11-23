@@ -12,6 +12,7 @@ export default class BalancePlugin {
   constructor(service: PaymentService) {
     this.service = service;
     service.payments.balance = this;
+    // TODO
     service.addConfigDir(__dirname);
   }
 
@@ -26,7 +27,7 @@ export default class BalancePlugin {
     if (payment.populated('user')) {
       user = payment.user;
     } else {
-      const User = USER.model('User');
+      const User = USER.getModel('User');
       // $Flow
       let userTmp = await User.findById(payment.user);
       user = userTmp;

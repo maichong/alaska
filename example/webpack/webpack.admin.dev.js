@@ -1,17 +1,16 @@
 'use strict';
 
-const path = require('path');
+const Path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
   devtool: 'cheap-module-source-map',
   entry: [
-    __dirname + '/views/admin.jsx'
+    Path.join(__dirname, '../views/admin.jsx')
   ],
   output: {
     filename: 'app.js',
-    path: process.cwd() + '/public/admin/js/',
-    publicPath: '/assets/'
+    path: process.cwd() + '/public/admin/js/'
   },
   resolve: {
     modules: ['node_modules'],

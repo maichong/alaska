@@ -5,11 +5,7 @@ import service from '../';
 import User from '../models/User';
 import Encryption from '../utils/encryption';
 
-const autoLogin = alaska.main.config('autoLogin');
-let encryption;
-if (autoLogin && autoLogin.key && autoLogin.secret) {
-  encryption = new Encryption(autoLogin.secret);
-}
+let encryption: ?Encryption;
 
 /**
  * 登录
@@ -56,10 +52,16 @@ export default class Login extends Sled {
 
     params.ctx.session.userId = user.id;
 
-    if (params.remember !== false && encryption) {
-      let cookie = user.id + ':' + encryption.hash(user.password) + ':' + Date.now().toString(36);
-      cookie = encryption.encrypt(cookie).toString('base64');
-      params.ctx.cookies.set(autoLogin.key, cookie, autoLogin);
+    if (params.remember !== false) {
+      const autoLogin = alaska.main.getConfig('autoLogin');
+      if (autoLogin && autoLogin.key && autoLogin.secret) {
+        if (!encryption) {
+          encryption = new Encryption(autoLogin.secret);
+        }
+        let cookie = user.id + ':' + encryption.hash(user.password) + ':' + Date.now().toString(36);
+        cookie = encryption.encrypt(cookie).toString('base64');
+        params.ctx.cookies.set(autoLogin.key, cookie, autoLogin);
+      }
     }
 
     return user;

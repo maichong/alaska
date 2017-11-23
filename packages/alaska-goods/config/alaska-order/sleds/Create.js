@@ -8,9 +8,8 @@ import ORDER from 'alaska-order';
 import Order from 'alaska-order/models/Order';
 import OrderItem from 'alaska-order/models/OrderItem';
 
-const currenciesMap = BALANCE.currenciesMap;
-
 export async function pre() {
+  const currenciesMap = BALANCE.currenciesMap;
   let params = this.params;
   let gids = params.goods;
   if (!gids || !gids.length) {

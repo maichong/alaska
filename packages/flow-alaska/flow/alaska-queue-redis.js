@@ -1,6 +1,6 @@
 declare module 'alaska-queue-redis' {
   declare class RedisQueueDriver {
-    constructor(options: Object):void;
+    constructor(options: Object): void;
     key: string;
     options: Object;
     isQueueDriver: boolean;

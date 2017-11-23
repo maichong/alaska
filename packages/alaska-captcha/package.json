@@ -1,21 +1,22 @@
 {
   "name": "alaska-captcha",
-  "version": "0.11.24",
+  "version": "0.12.0",
   "description": "Alaska captcha service",
   "keywords": [
     "alaska",
     "alaska-service"
   ],
+  "alaska": "service",
   "main": "index.js",
   "scripts": {},
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-captcha",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-number": "^0.11.22",
-    "alaska-field-text": "^0.11.15",
-    "alaska-field-select": "^0.11.22",
-    "alaska-field-relationship": "^0.11.24",
+    "alaska-field-number": "^0.12.0",
+    "alaska-field-text": "^0.12.0",
+    "alaska-field-select": "^0.12.0",
+    "alaska-field-relationship": "^0.12.0",
     "string-random": "^0.1.0"
   }
 }

@@ -1,19 +1,20 @@
 {
   "name": "alaska-settings",
-  "version": "0.11.23",
+  "version": "0.12.0",
   "description": "Alaska settings service",
   "keywords": [
     "alaska",
     "alaska-service"
   ],
+  "alaska": "service",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-settings",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-mixed": "^0.11.12",
-    "alaska-field-select": "^0.11.22",
-    "alaska-field-text": "^0.11.15",
+    "alaska-field-mixed": "^0.12.0",
+    "alaska-field-select": "^0.12.0",
+    "alaska-field-text": "^0.12.0",
     "debug": "^3.1.0"
   }
 }

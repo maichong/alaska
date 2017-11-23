@@ -4,9 +4,8 @@ import redis from 'redis';
 import { Driver } from 'alaska';
 
 export default class RedisSubscribeDriver extends Driver {
-  static classOfSubscribeDriver: true;
-
-  instanceOfSubscribeDriver: true;
+  static classOfSubscribeDriver = true;
+  instanceOfSubscribeDriver = true;
   channel: string;
   _driver: Object;
   _subscribed: boolean;
@@ -21,7 +20,6 @@ export default class RedisSubscribeDriver extends Driver {
    */
   constructor(service: Alaska$Service, options: Object) {
     super(service, options);
-    this.instanceOfSubscribeDriver = true;
     this.channel = options.channel;
     this.options = options;
     this._driver = redis.createClient(options);
@@ -65,7 +63,7 @@ export default class RedisSubscribeDriver extends Driver {
    */
   subscribe(): Promise<Object> {
     if (this._subscribed) {
-      return Promise.reject('driver has already subscribed.');
+      return Promise.reject(new Error('driver has already subscribed.'));
     }
     this._subscribed = true;
     return new Promise((resolve, reject) => {
@@ -96,9 +94,9 @@ export default class RedisSubscribeDriver extends Driver {
    * @param {number} timeout 超时时间,单位毫秒,默认为Infinity,超时后返回null
    * @returns {Promise<Object|null>}
    */
-  read(timeout: ?number): Promise<Object|null> {
+  read(timeout: ?number): Promise<Object | null> {
     if (!this._subscribed) {
-      return Promise.reject('the driver is not subscribed.');
+      return Promise.reject(new Error('the driver is not subscribed.'));
     }
     if (this._messages.length) {
       return Promise.resolve(this._messages.shift());
@@ -134,9 +132,9 @@ export default class RedisSubscribeDriver extends Driver {
    * @param {number} timeout 超时时间,单位毫秒,默认为Infinity,超时后返回null
    * @returns {Promise<Object|null>}
    */
-  once(timeout: ?number): Promise<Object|null> {
+  once(timeout: ?number): Promise<Object | null> {
     if (this._subscribed) {
-      return Promise.reject('driver has already subscribed.');
+      return Promise.reject(new Error('driver has already subscribed.'));
     }
     this._subscribed = true;
     if (timeout === undefined) {

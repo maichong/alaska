@@ -162,7 +162,7 @@ export default class GoodsProp extends Model {
   }
 
   async preRemove() {
-    const GoodsPropValue = service.model('GoodsPropValue');
+    const GoodsPropValue = service.getModel('GoodsPropValue');
     if (await GoodsPropValue.count({ prop: this._id })) {
       throw new Error('Can not remove this goods prop, please remove the values first!');
     }

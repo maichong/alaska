@@ -1,16 +1,17 @@
 {
   "name": "alaska-sms",
-  "version": "0.11.22",
+  "version": "0.12.0",
   "description": "Alaska sms service",
   "keywords": [
     "alaska",
     "alaska-service"
   ],
+  "alaska": "service",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-sms",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-sms-test": "^0.11.9"
+    "alaska-sms-test": "^0.12.0"
   }
 }

@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
 import akita from 'akita';
+import qs from 'qs';
 import Node from './Node';
 import DataTable from './DataTable';
 import SearchField from './SearchField';
@@ -21,10 +22,10 @@ type Props = {
   location: Object,
   loadList: Function,
   refreshSettings: Function,
-  params: {
+  match: Alaska$view$match<{
     service: string,
     model: string
-  };
+  }>,
   lists: Alaska$view$lists
 };
 
@@ -37,14 +38,15 @@ type State = {
   search: string,
   filters: Object,
   page: number,
-  list: Object,
+  list: Alaska$view$RecordList,
   sort: string,
   columnsItems: Array<React$Element<any>>,
   columnsKeys: string[],
   filterItems: Array<React$Element<any>>,
   filterViews: Array<React$Element<any>>,
   filterViewsMap: ElementMap,
-  selected: Alaska$view$Record[]
+  selected: Alaska$view$Record[],
+  query: {}
 };
 
 class ListPage extends React.Component<Props, State> {
@@ -62,12 +64,14 @@ class ListPage extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    let query = props.location.query || {};
+    let search = (props.location.search || '').substr(1);
+    let query: Object = qs.parse(search) || {};
     this.state = {
       records: null,
       search: query.search || '',
       filters: query.filters || {},
       page: 0,
+      // $Flow
       list: {},
       sort: query.sort || '',
       columnsItems: [],
@@ -77,7 +81,8 @@ class ListPage extends React.Component<Props, State> {
       filterViewsMap: {},
       selected: [],
       model: null,
-      service: null
+      service: null,
+      query
     };
   }
 
@@ -87,8 +92,11 @@ class ListPage extends React.Component<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    let newState = {};
-    if (nextProps.params.model !== this.props.params.model) {
+    let search = (nextProps.location.search || '').substr(1);
+    let query = qs.parse(search) || {};
+    // $Flow
+    let newState: State = { query };
+    if (nextProps.match.params.model !== this.props.match.params.model) {
       this.init(nextProps);
     }
     let { lists } = nextProps;
@@ -98,6 +106,7 @@ class ListPage extends React.Component<Props, State> {
         newState.list = lists[model.key];
         newState.records = lists[model.key].results;
       } else {
+        // $Flow
         newState.list = {};
         newState.records = null;
       }
@@ -116,8 +125,8 @@ class ListPage extends React.Component<Props, State> {
 
   init(props) {
     const { settings } = this.context;
-    let serviceId = props.params.service;
-    let modelName = props.params.model;
+    let serviceId = props.match.params.service;
+    let modelName = props.match.params.model;
     if (!serviceId || !modelName || !settings || !settings.services) return;
     let service = settings.services[serviceId];
     if (!service) return;
@@ -126,7 +135,7 @@ class ListPage extends React.Component<Props, State> {
     let {
       records, sort, search, filters, filterViews, filterViewsMap, columnsKeys
     } = this.state;
-    if (this.state.model && this.state.model.name !== model.name) {
+    if (this.state.model && this.state.model.modelName !== model.modelName) {
       //更新了model
       records = null;
       filters = {};
@@ -148,7 +157,6 @@ class ListPage extends React.Component<Props, State> {
     let columnsItems = this.getColumnItems(model, columnsKeys);
 
     if (!sort) {
-      // eslint-disable-next-line prefer-destructuring
       sort = model.defaultSort.split(' ')[0];
     }
     this.setState({
@@ -220,7 +228,7 @@ class ListPage extends React.Component<Props, State> {
     if (!model) return;
     let page = (state.page || 0) + 1;
     this.props.loadList({
-      service: model.serviceId, model: model.name, page, filters, search, key: model.key, sort
+      service: model.serviceId, model: model.modelName, page, filters, search, key: model.key, sort
     });
     this.setState({ page });
   }
@@ -266,8 +274,8 @@ class ListPage extends React.Component<Props, State> {
       query.filters = filters;
     }
     query.columns = columnsKeys.join('-');
-    let { pathname, state } = this.props.location.pathname;
-    this.context.router.replace({ pathname, query, state });
+    let { pathname } = this.props.location;
+    this.context.router.history.replace({ pathname, search: '?' + qs.stringify(query) });
   }
 
   handleFilter = (eventKey) => {
@@ -359,7 +367,7 @@ class ListPage extends React.Component<Props, State> {
       await akita.post('/api/remove', {
         params: {
           _service: model.serviceId,
-          _model: model.name
+          _model: model.modelName
         },
         body: { id: record._id }
       });
@@ -371,7 +379,6 @@ class ListPage extends React.Component<Props, State> {
   };
 
   render() {
-    const { location } = this.props;
     const {
       search,
       service,
@@ -383,7 +390,8 @@ class ListPage extends React.Component<Props, State> {
       filterViews,
       columnsItems,
       columnsKeys,
-      selected
+      selected,
+      query
     } = this.state;
     if (!service || !model) {
       return <div className="loading">Loading...</div>;
@@ -391,7 +399,7 @@ class ListPage extends React.Component<Props, State> {
     const { t } = this.context;
     let titleBtns = [];
 
-    if (!location.query.nofilter && filterItems.length) {
+    if (!query.nofilter && filterItems.length) {
       titleBtns.push(<DropdownButton
         id="listFilterDropdown"
         key="listFilterDropdown"
@@ -401,7 +409,7 @@ class ListPage extends React.Component<Props, State> {
       </DropdownButton>);
     }
 
-    if (!location.query.nocolumns) {
+    if (!query.nocolumns) {
       titleBtns.push(<DropdownButton
         id="columnsDropdown"
         key="columnsDropdown"
@@ -411,7 +419,7 @@ class ListPage extends React.Component<Props, State> {
       </DropdownButton>);
     }
 
-    if (!location.query.norefresh) {
+    if (!query.norefresh) {
       titleBtns.push(<button
         key="refresh"
         className="btn btn-primary"
@@ -438,7 +446,7 @@ class ListPage extends React.Component<Props, State> {
     return (
       <Node id="list" className={model.serviceId + '-' + model.id}>
         <ContentHeader actions={titleBtns}>
-          {t(model.label || model.name, service.id)} &nbsp;
+          {t(model.label || model.modelName, service.id)} &nbsp;
           <i>{t('total records', { total: list.total })}</i>
         </ContentHeader>
         <div>{filterViews}</div>

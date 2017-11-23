@@ -1,9 +1,10 @@
 // @flow
 
 import { Service } from 'alaska';
+import Debugger from 'debug';
 import Settings from './models/Settings';
 
-const debug = require('debug')('alaska-settings');
+const debug = Debugger('alaska-settings');
 
 /**
  * @class SettingsService
@@ -40,7 +41,7 @@ class SettingsService extends Service {
    * @param id
    * @returns {*}
    */
-  async get(id: string|number) {
+  async get(id: string | number) {
     // $Flow
     let record = await Settings.findById(id);
     let value = record ? record.value : undefined;
@@ -54,7 +55,7 @@ class SettingsService extends Service {
    * @param {*} value
    * @returns {Settings}
    */
-  async set(id: string|number, value: any) {
+  async set(id: string | number, value: any) {
     debug('set', id, '=>', value);
     // $Flow
     let record = await Settings.findById(id);

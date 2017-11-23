@@ -1,18 +1,19 @@
 {
   "name": "alaska-statistics",
-  "version": "0.11.22",
+  "version": "0.12.0",
   "description": "Alaska statistics service",
   "keywords": [
     "alaska",
     "alaska-service"
   ],
+  "alaska": "service",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-statistics",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "react-chartjs": "^2.0.0-beta2",
-    "alaska-field-select": "^0.11.22",
+    "react-chartjs-2": "^2.6.4",
+    "alaska-field-select": "^0.12.0",
     "color": "^2.0.1",
     "chart.js": "^2.7.1",
     "number-random": "^0.1.1"

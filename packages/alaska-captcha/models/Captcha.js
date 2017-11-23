@@ -3,12 +3,9 @@
 import alaska, { Model } from 'alaska';
 import service from '../';
 
-const SMS = alaska.service('alaska-sms', true);
-const EMAIL = alaska.service('alaska-email', true);
-
 const options = [];
 const fields = {};
-if (SMS) {
+if (alaska.hasService('alaska-sms')) {
   options.push({
     label: 'SMS',
     value: 'sms'
@@ -22,7 +19,7 @@ if (SMS) {
   };
 }
 
-if (EMAIL) {
+if (alaska.hasService('alaska-email')) {
   options.push({
     label: 'Email',
     value: 'email'

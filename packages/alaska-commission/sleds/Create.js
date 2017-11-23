@@ -27,7 +27,7 @@ export default class Create extends Sled {
   async exec(params: Object) {
     if (!params.user) throw new Error('user required when create commission');
 
-    const commissionRates = service.config('commissionRates');
+    const commissionRates = service.getConfig('commissionRates');
     const currencies = BALANCE.currenciesMap;
     const defaultCurrency = BALANCE.defaultCurrency;
 

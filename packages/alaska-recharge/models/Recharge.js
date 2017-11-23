@@ -53,8 +53,8 @@ export default class Recharge extends Model {
       label: 'Currency',
       type: 'select',
       checkbox: true,
-      options: BALANCE.currencies,
-      default: BALANCE.defaultCurrency.value
+      options: BALANCE.getCurrenciesAsync(),
+      default: BALANCE.getDefaultCurrencyAsync().then((cur) => cur.value)
     },
     deposit: {
       label: 'Deposit',

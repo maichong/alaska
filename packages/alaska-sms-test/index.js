@@ -1,11 +1,10 @@
 // @flow
 
-export default class SmsTestDriver {
-  service: Alaska$Service;
+import { Driver } from 'alaska';
 
-  constructor(service: Alaska$Service) {
-    this.service = service;
-  }
+export default class SmsTestDriver extends Driver {
+  static classOfSmsDriver = true;
+  instanceOfSmsDriver = true;
 
   /**
    * @param {string} to

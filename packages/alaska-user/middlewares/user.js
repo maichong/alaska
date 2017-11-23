@@ -7,8 +7,8 @@ import User from '../models/User';
 import Encryption from '../utils/encryption';
 
 export default function () {
-  let key = alaska.main.config('autoLogin.key');
-  let secret = alaska.main.config('autoLogin.secret');
+  let key = alaska.main.getConfig('autoLogin.key');
+  let secret = alaska.main.getConfig('autoLogin.secret');
   let encryption;
   if (key && secret) {
     encryption = new Encryption(secret);

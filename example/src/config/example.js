@@ -1,11 +1,10 @@
 export default {
   db: process.env.DB,
-  appMiddlewares: [
-    {
-      id: 'koa-logger',
+  middlewares: {
+    'koa-logger': {
       sort: 1000
     }
-  ],
+  },
   session: {
     cookie: {},
     store: {
@@ -15,6 +14,8 @@ export default {
       maxAge: 3600 * 1000
     }
   },
+  locales: ['zh-CN'],
+  plugins: [],
   services: {
     'alaska-update': {},
     'alaska-user': {},

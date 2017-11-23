@@ -1,6 +1,7 @@
 declare module 'alaska-banner' {
   declare class BannerService extends Alaska$Service {
   }
+
   declare var exports: BannerService;
 }
 declare module 'alaska-banner/models/Banner' {
@@ -16,8 +17,9 @@ declare module 'alaska-banner/models/Banner' {
     startAt: Date;
     endAt: Date;
     createdAt: Date;
-    preSave():void;
-    isValid():boolean;
+    preSave(): void;
+    isValid(): boolean;
   }
+
   declare var exports: Class<Banner>;
 }

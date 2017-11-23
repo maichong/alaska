@@ -12,13 +12,13 @@ export default async function loadStatics() {
 
   this.debug('loadStatics');
 
-  this.config('statics', []).forEach((c) => {
+  this.getConfig('statics', []).forEach((c) => {
     let root = path.resolve(this.dir, c.root);
     let prefix = (c.prefix || '');
     if (prefix === '/') {
       prefix = '';
     }
-    let prefixLength = this.config('prefix').length + prefix.length;
+    let prefixLength = this.getConfig('prefix').length + prefix.length;
     let index = c.index === false ? false : (c.index || 'index.html');
     this.router.register(prefix + '/*', ['GET', 'HEAD'], async(ctx, next) => {
       await next();

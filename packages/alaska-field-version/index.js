@@ -13,10 +13,11 @@ export default class VersionField extends NumberField {
     let schema = this._schema;
     let model = this._model;
 
-    let cacheDriver = alaska.main.getCacheDriver(field.cache);
-    let key: string = field.key || model.name + '.' + field.path;
+    // $Flow
+    let cacheDriver: Alaska$CacheDriver = (alaska.main.createDriver(field.cache): Alaska$CacheDriver);
+    let key: string = field.key || model.modelName + '.' + field.path;
 
-    schema.pre('save', function (next: Function): Function|void {
+    schema.pre('save', function (next: Function): Function | void {
       let record = this;
       cacheDriver.inc(key).then((f) => {
         record.set(field.path, f);

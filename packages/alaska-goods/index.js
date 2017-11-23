@@ -13,13 +13,6 @@ class GoodsService extends Service {
     super(options);
   }
 
-  preLoadConfig() {
-    let ORDER: any = alaska.service('alaska-order', true);
-    if (ORDER) {
-      ORDER.addConfigDir(`${__dirname}/config/alaska-order`);
-    }
-  }
-
   /**
    * 获取商品分类列表
    */
@@ -29,7 +22,7 @@ class GoodsService extends Service {
     if (data) {
       return data;
     }
-    const GoodsCat = this.model('GoodsCat');
+    const GoodsCat = this.getModel('GoodsCat');
     let map = {};
     // $Flow
     let cats = await GoodsCat.find().sort('-sort');

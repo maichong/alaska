@@ -1,11 +1,12 @@
 {
   "name": "alaska-field-number",
-  "version": "0.11.22",
+  "version": "0.12.0",
   "description": "Alaska number field",
   "keywords": [
     "alaska",
     "alaska-field"
   ],
+  "alaska": "field",
   "main": "index.js",
   "scripts": {},
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-number",

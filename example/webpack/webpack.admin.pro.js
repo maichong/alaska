@@ -1,16 +1,16 @@
 'use strict';
 
-const path = require('path');
+const Path = require('path');
 const webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   entry: [
-    __dirname + '/views/admin.jsx'
+    Path.join(__dirname, '../views/admin.jsx')
   ],
   output: {
     filename: 'app.min.js',
-    path: process.cwd() + '/public/admin/js/',
-    publicPath: '/assets/'
+    path: process.cwd() + '/public/admin/js/'
   },
   resolve: {
     modules: ['node_modules'],
@@ -18,27 +18,13 @@ module.exports = {
     mainFields: ['webpack', 'jsnext:main', 'browser', 'main']
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        dead_code: true,
-        drop_debugger: true,
-        unsafe: true,
-        unused: true,
-        drop_console: true,
-        if_return: true,
-        properties: true,
-        comparisons: true,
-        loops: true,
-        join_vars: true,
-        cascade: true
-      }
-    }),
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      },
-      '__DEVTOOLS__': false
+        NODE_ENV: JSON.stringify('production')
+      }
+    }),
+    new UglifyJsPlugin({
+      uglifyOptions: {}
     })
   ],
   module: {

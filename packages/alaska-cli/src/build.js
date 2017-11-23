@@ -6,13 +6,13 @@
 
 import fs from 'fs';
 import mkdirp from 'mkdirp';
-import path from 'path';
+import Path from 'path';
 import chalk from 'chalk';
 import slash from 'slash';
 import * as uitls from './utils';
 
 export default async function build() {
-  console.log(chalk.green('Alaska build admin dashboard...'));
+  console.log(chalk.green('Alaska build...'));
   const dir = process.cwd() + '/';
   if (!uitls.isFile(dir + '.alaska')) {
     throw new Error('Current folder is not an alaska project!');
@@ -23,20 +23,38 @@ export default async function build() {
     throw new Error('.alaska file error!');
   }
 
+  const modulesDir = dir + 'node_modules/';
+
+  // build modules
+  console.log(chalk.green('Build modules...'));
+  let alaskaModulesPath = Path.join(modulesDir, 'alaska-modules');
+  if (!uitls.isDirectory(alaskaModulesPath)) {
+    console.log(chalk.red('alaska-modules is not installed!'));
+  } else {
+    const createScript = require(Path.join(alaskaModulesPath, 'script')).default;
+    createScript(rc.id, process.cwd() + '/src', rc.id + '.js');
+  }
+
+  // build admin
+  console.log(chalk.green('Build admin dashboard...'));
+  if (!uitls.isDirectory(Path.join(modulesDir, 'alaska-admin-view'))) {
+    console.log(chalk.grey('alaska-admin-view is not installed!'));
+    return;
+  }
+
   if (!uitls.isDirectory(dir + 'runtime/alaska-admin-view')) {
     mkdirp.sync('runtime/alaska-admin-view');
   }
 
-  const modulesDir = dir + 'node_modules/';
   const modulesList = fs.readdirSync(modulesDir)
     .filter((file) => file[0] !== '.' && file.startsWith('alaska-') && file !== 'alaska-admin-view');
 
   let runtimeStyleFile = dir + 'runtime/alaska-admin-view/style.less';
 
   let styles = modulesList.map((name) => {
-    let styleFile = path.join(modulesDir, name, 'style.less');
+    let styleFile = Path.join(modulesDir, name, 'style.less');
     if (uitls.isFile(styleFile)) {
-      let p = slash(path.relative(path.dirname(runtimeStyleFile), styleFile));
+      let p = slash(Path.relative(Path.dirname(runtimeStyleFile), styleFile));
       return `@import "${p}";`;
     }
     return false;
@@ -44,8 +62,8 @@ export default async function build() {
 
   fs.writeFileSync(runtimeStyleFile, styles);
 
-  let views: { [name:string]:string } = {};
-  let wrappers: { [name:string]:string[] } = {};
+  let views: { [name: string]: string } = {};
+  let wrappers: { [name: string]: string[] } = {};
   let routes: Object[] = [];
   let navs = [];
 
@@ -92,8 +110,8 @@ export default async function build() {
 
   modulesList.forEach((name) => {
     try {
-      let viewsDir = path.join(modulesDir, name, 'views');
-      let viewsFile = path.join(viewsDir, 'index.js');
+      let viewsDir = Path.join(modulesDir, name, 'views');
+      let viewsFile = Path.join(viewsDir, 'index.js');
       if (uitls.isFile(viewsFile)) {
         // 如果views配置文件存在
         // $Flow require()
@@ -105,7 +123,7 @@ export default async function build() {
         fs.readdirSync(viewsDir)
           .filter((f) => f[0] !== '.' && f.endsWith('.jsx'))
           .forEach((f) => {
-            config.views[f.replace(/\.jsx$/, '')] = path.join(viewsDir, f);
+            config.views[f.replace(/\.jsx$/, '')] = Path.join(viewsDir, f);
           });
         parse(config);
       }
@@ -119,7 +137,7 @@ export default async function build() {
 
   // 输出views
   for (let name of Object.keys(views)) {
-    let r = slash(path.relative(dir, views[name]));
+    let r = slash(Path.relative(dir, views[name]));
     content += `export ${name} from '../../${r}';\n`;
     console.log(`view : ${name} -> ${r}`);
   }
@@ -131,7 +149,7 @@ export default async function build() {
     console.log(`wrapper : ${name}`);
     contentTmp += `  '${name}':[`;
     wrappers[name].forEach((file, i) => {
-      let r = slash(path.relative(dir, file));
+      let r = slash(Path.relative(dir, file));
       let com = 'Wrapper$' + index + '$' + i;
       content += `import ${com} from '../../${r}';\n`;
       contentTmp += ` ${com},`;
@@ -145,7 +163,7 @@ export default async function build() {
   content += '\n\n';
   contentTmp = '\nexport const routes = [\n';
   routes.forEach((route, index) => {
-    let r = slash(path.relative(dir, route.component));
+    let r = slash(Path.relative(dir, route.component));
     let com = 'Route' + index;
     content += `import ${com} from '../../${r}';\n`;
     contentTmp += `  {\n    component: ${com},\n    path: '${route.path}'\n  },\n`;
@@ -158,7 +176,7 @@ export default async function build() {
   contentTmp = '\nexport const navs = [\n';
 
   navs.forEach((nav, index) => {
-    let r = slash(path.relative(dir, nav));
+    let r = slash(Path.relative(dir, nav));
     let com = 'Nav' + index;
     content += `import ${com} from '../../${r}';\n`;
     contentTmp += `  ${com},\n`;

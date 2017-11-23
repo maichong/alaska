@@ -57,7 +57,7 @@ export default class ListActions extends React.Component<Props, Context> {
         eval(config.script.substr(3));
       } else {
         await akita.post('/api/action', {
-          params: { _service: model.serviceId, _model: model.name, _action: action },
+          params: { _service: model.serviceId, _model: model.modelName, _action: action },
           body: { records: _.map(selected, (record) => record._id) }
         });
       }
@@ -84,7 +84,7 @@ export default class ListActions extends React.Component<Props, Context> {
       await akita.post('/api/remove', {
         params: {
           _service: model.serviceId,
-          _model: model.name
+          _model: model.modelName
         },
         body: { records: _.map(selected, (record) => record._id) }
       });
@@ -139,7 +139,7 @@ export default class ListActions extends React.Component<Props, Context> {
           tooltip: 'Create record'
         }, model.actions.create, model.actions.add)}
         model={model}
-        link={'/edit/' + model.serviceId + '/' + model.name + '/_new'}
+        link={'/edit/' + model.serviceId + '/' + model.modelName + '/_new'}
       />);
     }
 

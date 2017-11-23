@@ -1,10 +1,12 @@
-
 export default {
   prefix: '/order',
   services: {
     'alaska-user': {},
     'alaska-balance': {},
     'alaska-settings': {},
+    'alaska-payment': {
+      optional: true
+    }
   },
   status: [{
     label: 'Order_New',

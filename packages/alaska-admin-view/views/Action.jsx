@@ -50,7 +50,7 @@ export default class Action extends React.Component<Props> {
       return;
     }
     if (link) {
-      this.context.router.push(link);
+      this.context.router.history.push(link);
     }
   };
 

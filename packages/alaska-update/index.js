@@ -15,11 +15,10 @@ class UpdateService extends Service {
 
   async postInit() {
     let MAIN = this.alaska.main;
-    if (MAIN.config('autoUpdate')) {
+    if (MAIN.getConfig('autoUpdate')) {
       MAIN.pre('mount', async() => {
         //检查更新脚本
-        let dir = MAIN.dir + '/updates/';
-        await this.run('Update', { dir });
+        await this.run('Update');
       });
     }
   }

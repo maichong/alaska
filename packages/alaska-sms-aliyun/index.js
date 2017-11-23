@@ -9,7 +9,8 @@ import crypto from 'crypto';
 const api = akita.resolve('aliyun-sms-dirver');
 
 export default class SmsAliyunDriver extends Driver {
-  service: Alaska$Service;
+  static classOfSmsDriver = true;
+  instanceOfSmsDriver = true;
 
   constructor(service: Alaska$Service, options: Object) {
     super(service, options);

@@ -78,7 +78,7 @@ export default class Init extends Sled {
           let id = ability + action;
           USER.run('RegisterAbility', {
             id,
-            title: `${action} ${Model.name}`,
+            title: `${action} ${Model.modelName}`,
             service: 'alaska-admin'
           });
           if (root.abilities.indexOf(id) < 0) {
@@ -100,7 +100,7 @@ export default class Init extends Sled {
           label: Model.label,
           icon: Model.icon,
           type: 'link',
-          link: `/list/${ser.id}/${Model.name}`,
+          link: `/list/${ser.id}/${Model.modelName}`,
           ability: [ability + 'read'],
           service: serviceId,
           activated: true

@@ -1,5 +1,6 @@
 // @flow
 
+import _ from 'lodash';
 import * as utils from '../utils';
 
 export default async function loadSleds() {
@@ -11,26 +12,22 @@ export default async function loadSleds() {
 
   this.debug('loadSleds');
 
-  this.sleds = utils.include(this.dir + '/sleds', true) || {};
+  let serviceModules = this.alaska.modules.services[this.id];
 
-  for (let Sled of this.sledList) {
-    Sled.service = this;
-    Sled.key = utils.nameToKey(this.id + '.' + Sled.name);
-    //加载扩展配置
-    for (let dir of this._configDirs) {
-      let file = dir + '/sleds/' + Sled.name + '.js';
-      if (utils.isFile(file)) {
-        let ext = utils.include(file, false);
-        if (ext.pre) {
-          Sled.pre(ext.pre);
-        }
-        if (ext.post) {
-          Sled.post(ext.post);
-        }
-        if (ext.default) {
-          ext.default(Sled);
-        }
+  _.forEach(this.sleds, (Sled, name) => {
+    // 加载扩展配置
+    _.forEach(serviceModules.plugins, (plugin) => {
+      if (!plugin.sleds || !plugin.sleds[name]) return;
+      let ext = plugin.sleds[name];
+      if (ext.pre) {
+        Sled.pre(ext.pre);
       }
-    }
-  }
+      if (ext.post) {
+        Sled.post(ext.post);
+      }
+      if (ext.default) {
+        ext.default(Sled);
+      }
+    });
+  });
 }

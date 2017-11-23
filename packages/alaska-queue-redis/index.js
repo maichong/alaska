@@ -4,15 +4,14 @@ import redis from 'redis';
 import { Driver } from 'alaska';
 
 export default class RedisQueueDriver extends Driver {
-  static classOfCacheDriver = true;
-  instanceOfQueueDriver: true;
+  static classOfQueueDriver = true;
+  instanceOfQueueDriver = true;
   key: string;
   _driver: any;
 
   constructor(service: Alaska$Service, options: Object) {
     super(service, options);
     this.key = options.key;
-    this.instanceOfQueueDriver = true;
     this._driver = redis.createClient(options);
   }
 

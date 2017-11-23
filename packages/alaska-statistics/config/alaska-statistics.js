@@ -1,4 +1,9 @@
 export default {
   prefix: '/statistics',
-  reducers: {}
+  reducers: {},
+  services: {
+    'alaska-admin': {
+      optional: true
+    }
+  }
 };

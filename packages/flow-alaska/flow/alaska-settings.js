@@ -1,15 +1,15 @@
-
 declare module 'alaska-settings' {
   declare class SettingsService extends Alaska$Service {
-    register(data: Object):Settings;
-    get(id: string|number):any;
-    set(id: string|number, value: any):any;
+    register(data: Object): Settings;
+    get(id: string | number): any;
+    set(id: string | number, value: any): any;
   }
+
   declare var exports: SettingsService;
 }
 
 declare class Settings extends Alaska$Model {
-  _id: string|number|Object|any;
+  _id: string | number | Object | any;
   title: string;
   service: string;
   group: string;
@@ -19,6 +19,7 @@ declare class Settings extends Alaska$Model {
   super: boolean;
   options: Object;
 }
+
 declare module 'alaska-settings/models/Settings' {
 
   declare var exports: Class<Settings>;

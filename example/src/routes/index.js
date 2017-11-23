@@ -10,6 +10,7 @@ export default function (router) {
     await next();
     if (ctx.status === 404 && !ctx.body) {
       await ctx.show('404');
+      ctx.status = 404;
     }
   });
 }

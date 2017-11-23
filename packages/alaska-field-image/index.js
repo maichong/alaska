@@ -4,7 +4,7 @@ import { Field } from 'alaska';
 import fs from 'fs';
 import Path from 'path';
 import moment from 'moment';
-import mime from 'mime';
+import mime from 'mime-types';
 import mkdirp from 'mkdirp';
 import mongoose from 'mongoose';
 
@@ -94,7 +94,7 @@ export default class ImageField extends Field {
         }
       }
       if (!ext) {
-        ext = mime.extension(mimeType).replace('jpeg', 'jpg');
+        ext = mime.getExtension(mimeType).replace('jpeg', 'jpg');
       }
       if (field.allowed && field.allowed.indexOf(ext) < 0) {
         reject(new Error('Image format error'));

@@ -10,11 +10,11 @@ export default async function list(ctx: Alaska$Context) {
   if (!serviceId || !modelName || !id) {
     alaska.error('Invalid parameters');
   }
-  let s = alaska.service(serviceId, true);
-  if (!s) {
+  if (!alaska.hasService(serviceId)) {
     alaska.error('Invalid parameters');
   }
-  let Model = s.model(modelName);
+  let s = alaska.getService(serviceId);
+  let Model = s.getModel(modelName);
   let ability = `admin.${Model.key}.read`;
   await ctx.checkAbility(ability);
 

@@ -39,33 +39,6 @@ export function isDirectory(path: string): boolean {
 }
 
 /**
- * 智能导入
- * @param {string} path 文件或文件夹路径
- * @param {boolean} [importDefault]
- * @returns {Object}
- */
-export function include(path: string, importDefault: boolean = true): Object {
-  let result = {};
-  if (isFile(path)) {
-    // $Flow
-    result = require(path);
-    if (importDefault && result.default) {
-      result = result.default;
-    }
-  } else if (isDirectory(path)) {
-    fs.readdirSync(path).forEach((file) => {
-      if (file.endsWith('.js')) {
-        let name = file.slice(0, -3);
-        // $Flow
-        let obj = require(path + '/' + file);
-        result[name] = importDefault && obj.default ? obj.default : obj;
-      }
-    });
-  }
-  return result;
-}
-
-/**
  * 读取JSON文件
  * @param path
  */

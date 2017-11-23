@@ -1,11 +1,12 @@
 {
   "name": "alaska-field-mixed",
-  "version": "0.11.12",
+  "version": "0.12.0",
   "description": "Alaska mixed data field",
   "keywords": [
     "alaska",
     "alaska-field"
   ],
+  "alaska": "field",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-mixed",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",

@@ -5,9 +5,7 @@ import alaska, { Sled } from 'alaska';
 import service from '../';
 import Captcha from '../models/Captcha';
 
-const SMS = alaska.service('alaska-sms', true);
-const EMAIL = alaska.service('alaska-email', true);
-const locales = service.config('locales');
+const locales = service.getConfig('locales');
 const CACHE = service.cache;
 
 export default class Send extends Sled {
@@ -48,15 +46,15 @@ export default class Send extends Sled {
     let cacheKey = 'captcha_' + to;
     CACHE.set(cacheKey, code, captcha.lifetime * 1000 || 1800 * 1000);
 
-    if (SMS && captcha.type === 'sms' && captcha.sms) {
-      await SMS.run('Send', {
+    if (captcha.type === 'sms' && captcha.sms && alaska.hasService('alaska-sms')) {
+      await alaska.getService('alaska-sms').run('Send', {
         to,
         sms: captcha.sms,
         locale,
         values
       });
-    } else if (EMAIL && captcha.type === 'email' && captcha.email) {
-      await EMAIL.run('Send', {
+    } else if (captcha.type === 'email' && captcha.email && alaska.hasService('alaska-email')) {
+      await alaska.getService('alaska-email').run('Send', {
         to,
         email: captcha.email,
         locale,

@@ -4,7 +4,7 @@ export default class Driver {
   static classOfDriver = true;
   service: Alaska$Service;
   options: Object;
-  instanceOfDriver: boolean;
+  instanceOfDriver: true;
   idle: number;
   idleId: string;
   onDestroy: void | Function;

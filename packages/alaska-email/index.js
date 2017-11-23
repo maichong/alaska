@@ -25,7 +25,7 @@ class EmailService extends Service {
   }
 
   preLoadModels() {
-    let drivers = this.config('drivers');
+    let drivers = this.getConfig('drivers');
     if (!drivers || !Object.keys(drivers).length) {
       throw new Error('No email driver found');
     }
@@ -38,10 +38,8 @@ class EmailService extends Service {
       if (driver.send) {
         //已经实例化的driver
       } else if (driver.type) {
-        // $Flow  require参数必须是文本字符串
-        let Driver: Class<Alaska$EmailDriver> = require(driver.type).default;
-
-        driver = new Driver(this, driver);
+        // $Flow
+        driver = this.createDriver(driver);
       } else {
         throw new Error('invalid email driver config ' + key);
       }
@@ -59,7 +57,7 @@ class EmailService extends Service {
     Email.fields.driver.options = driversOptions;
     Email.fields.driver.default = defaultDriver.key;
 
-    let locales = alaska.main.config('locales');
+    let locales = alaska.main.getConfig('locales');
     if (locales && locales.length > 1) {
       Email.fields.content.help = 'Default';
       locales.forEach((locale) => {

@@ -16,6 +16,7 @@ export default {
   Ability: '权限',
   Relationship: '关联',
   More: '更多',
+  Sort: '排序',
   'Parent Menu': '父菜单',
   'Admin Menu': '管理菜单',
   'Access Denied': '无权访问',

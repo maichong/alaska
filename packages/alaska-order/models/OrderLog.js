@@ -30,7 +30,7 @@ export default class OrderLog extends Model {
       label: 'State',
       type: 'select',
       number: true,
-      options: service.config('status')
+      options: service.getConfig('status')
     },
     createdAt: {
       label: '添加时间',

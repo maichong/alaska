@@ -1,6 +1,7 @@
 declare module 'alaska-address' {
   declare class AddressService extends Alaska$Service {
   }
+
   declare var exports: AddressService;
 }
 declare module 'alaska-address/model/Address' {
@@ -9,7 +10,7 @@ declare module 'alaska-address/model/Address' {
     name: string;
     tel: string;
     zip: string;
-    geo: [number,number];
+    geo: [number, number];
     country: string;
     province: string;
     city: string;
@@ -18,7 +19,8 @@ declare module 'alaska-address/model/Address' {
     building: string;
     detail: string;
     createdAt: Date;
-    preSave():void;
+    preSave(): void;
   }
+
   declare var exports: Class<Address>;
 }

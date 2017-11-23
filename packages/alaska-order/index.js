@@ -10,13 +10,6 @@ class OrderService extends Service {
     options.id = options.id || 'alaska-order';
     super(options);
   }
-
-  preLoadConfig() {
-    let PAYMENT: any = alaska.service('alaska-payment', true);
-    if (PAYMENT) {
-      PAYMENT.addConfigDir(path.join(__dirname, '/config/alaska-payment'));
-    }
-  }
 }
 
 export default new OrderService();

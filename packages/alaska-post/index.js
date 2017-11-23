@@ -1,6 +1,6 @@
 // @flow
 
-import { Service } from 'alaska';
+import alaska, { Service } from 'alaska';
 
 /**
  * @class PostService
@@ -11,13 +11,6 @@ class PostService extends Service {
     options.dir = options.dir || __dirname;
     options.id = options.id || 'alaska-post';
     super(options);
-  }
-
-  preLoadConfig() {
-    let ADMIN = this.alaska.service('alaska-admin', true);
-    if (ADMIN) {
-      ADMIN.addConfigDir(this.dir + '/config/alaska-admin');
-    }
   }
 }
 

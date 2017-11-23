@@ -121,9 +121,9 @@ export default class DataTable extends React.Component<Props, State> {
   };
   handleEdit = (record: Object) => {
     const { model } = this.props;
-    const { router } = this.context;
-    let url = '/edit/' + model.serviceId + '/' + model.name + '/' + encodeURIComponent(record._id);
-    router.push(url);
+    const { history } = this.context.router;
+    let url = '/edit/' + model.serviceId + '/' + model.modelName + '/' + encodeURIComponent(record._id);
+    history.push(url);
   };
 
   render() {

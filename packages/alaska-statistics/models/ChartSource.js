@@ -231,7 +231,7 @@ export default class ChartSource extends Model {
       this.title = this.model;
     }
     if (this.x && this.type === 'enum') {
-      let ServiceModel = service.model(this.model);
+      let ServiceModel = service.getModel(this.model);
       let field = ServiceModel.fields[this.x];
       if (!field) service.error('X Axis field is not exist!');
       if (field.options) {
@@ -245,7 +245,7 @@ export default class ChartSource extends Model {
   }
 
   postRemove() {
-    const ChartData = service.model('ChartData');
+    const ChartData = service.getModel('ChartData');
     ChartData.remove({ source: this._id }).exec();
   }
 
@@ -255,7 +255,7 @@ export default class ChartSource extends Model {
       return xLabelMap[label];
     }
 
-    let ServiceModel = service.model(this.model);
+    let ServiceModel = service.getModel(this.model);
     let field: Alaska$Field$options = ServiceModel.fields[this.x];
     if (field && field.ref) {
       let Ref = field.ref;

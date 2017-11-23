@@ -7,12 +7,11 @@ import Deposit from 'alaska-balance/models/Deposit';
 import Income from 'alaska-balance/models/Income';
 import service from '../';
 
-const currenciesMap = BALANCE.currenciesMap;
-
 export default class Complete extends Sled {
   async exec(params: {
-    recharge:Object
+    recharge: Object
   }) {
+    const currenciesMap = BALANCE.currenciesMap;
     let recharge = params.recharge;
     if (recharge.state !== 0) service.error('Recharge record state error!');
 

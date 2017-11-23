@@ -1,6 +1,6 @@
 {
   "name": "alaska-queue-redis",
-  "version": "0.11.7",
+  "version": "0.12.0",
   "description": "Alaska redis queue driver",
   "keywords": [
     "alaska",
@@ -8,6 +8,8 @@
     "alaska-redis",
     "redis"
   ],
+  "alaska": "driver",
+  "alaksa-driver": "queue",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-queue-redis",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",

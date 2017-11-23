@@ -1,4 +1,11 @@
-
 export default {
-  prefix: '/shop'
+  prefix: '/shop',
+  services: {
+    'alaska-goods': {
+      optional: true
+    },
+    'alaska-order': {
+      optional: true
+    }
+  }
 };

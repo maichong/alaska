@@ -1,6 +1,6 @@
 declare module 'alaska-cache-redis' {
   declare class RedisCacheDriver {
-    constructor(options?: Object):void;
+    constructor(options?: Object): void;
     classOfCacheDriver: boolean;
     instanceOfCacheDriver: true;
     _maxAge: number;
@@ -19,6 +19,7 @@ declare module 'alaska-cache-redis' {
     prune(): Promise<void>;
     flush(): Promise<void>;
   }
+
   declare var exports: Class<RedisCacheDriver>;
 }
 

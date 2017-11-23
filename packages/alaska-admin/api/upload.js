@@ -17,7 +17,7 @@ export default async function (ctx: Alaska$Context) {
     if (!s) {
       alaska.error('Invalid parameters');
     }
-    let Model: Class<Alaska$Model> = s.model(modelName);
+    let Model: Class<Alaska$Model> = s.getModel(modelName);
     let ability = `admin.${Model.key}.`;
     if (id) {
       ability += 'update';

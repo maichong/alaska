@@ -41,6 +41,7 @@ function objectToMap(obj: Object, path?: string, map?: { [file: string]: string 
 
 export default class Renderer {
   static classOfRenderer = true;
+  instanceOfRenderer: true;
   service: Alaska$Service;
   options: Alaska$Config$renderer;
   _map: { [file: string]: string };
@@ -48,6 +49,7 @@ export default class Renderer {
   constructor(service: Alaska$Service, options: Alaska$Config$renderer) {
     this.service = service;
     this.options = options || {};
+    this.instanceOfRenderer = true;
 
     if (process.env.NODE_ENV !== 'production') {
       this.options.cache = false;

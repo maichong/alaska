@@ -4,7 +4,7 @@ export default {
     root: process.cwd() + '/public/admin',
     prefix: '/'
   }, {
-    root: process.cwd() + '/node_modules/alaska-admin/static',
-    prefix: '/static'
+    root: process.cwd() + '/node_modules/alaska-admin/statics',
+    prefix: '/statics'
   }]
 };

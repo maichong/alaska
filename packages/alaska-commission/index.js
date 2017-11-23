@@ -12,14 +12,16 @@ class CommissionService extends Service {
 
   postLoadConfig() {
     alaska.main.applyConfig({
-      '+appMiddlewares': [{
-        id: `${__dirname}/middlewares/promoter.js`,
-        sort: 0,
-        options: {
-          queryKey: this.config('queryKey'),
-          cookieOptions: this.config('cookieOptions')
+      middlewares: {
+        promoter: {
+          fn: require('./middlewares/promoter'), // eslint-disable-line global-require
+          sort: 0,
+          options: {
+            queryKey: this.getConfig('queryKey'),
+            cookieOptions: this.getConfig('cookieOptions')
+          }
         }
-      }]
+      }
     });
   }
 }

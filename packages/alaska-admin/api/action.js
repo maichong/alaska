@@ -21,7 +21,7 @@ export default async function (ctx: Alaska$Context) {
   if (!s) {
     alaska.error('Invalid parameters');
   }
-  let Model = s.model(modelName);
+  let Model = s.getModel(modelName);
 
   if (!Model.actions || !Model.actions[action] || !Model.actions[action].sled) service.error('Invalid action');
 
@@ -37,9 +37,9 @@ export default async function (ctx: Alaska$Context) {
   }
 
   // $Flow
-  const Sled: Class<Alaska$Sled> = s.sled(Model.actions[action].sled);
+  const Sled: Class<Alaska$Sled> = s.getSled(Model.actions[action].sled);
 
-  const recordModelName = Model.name.replace(/^\w/, (w) => w.toLowerCase());
+  const recordModelName = Model.modelName.replace(/^\w/, (w) => w.toLowerCase());
 
   if (records.length) {
     records = await Model.find().where('_id').in(records);

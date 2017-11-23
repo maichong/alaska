@@ -51,8 +51,8 @@ export default class CartItem extends Model {
     currency: {
       label: 'Currency',
       type: 'select',
-      options: BALANCE.currencies,
-      default: BALANCE.defaultCurrency.value,
+      options: BALANCE.getCurrenciesAsync(),
+      default: BALANCE.getDefaultCurrencyAsync().then((cur) => cur.value),
       group: 'price'
     },
     price: {

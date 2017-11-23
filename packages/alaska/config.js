@@ -15,13 +15,18 @@ export default {
 
   /**
    * [APP] APP中间件列表
-   * @type {Array}
-   * [{
-   *   id:'alaska-middleware-session',
-   *   options:{}
-   * }]
+   * @type {Object}
+   * @example
+   * {
+   *    'alaska-middleware-session': {
+   *       id:'alaska-middleware-session',
+   *       fn: null,
+   *       sort: 0,
+   *       options:{}
+   *    }
+   * }
    */
-  appMiddlewares: [],
+  middlewares: {},
 
   /**
    * [APP] 监听端口
@@ -140,11 +145,6 @@ export default {
     type: 'alaska-renderer-swig'
   },
   /**
-   * [Service] 模板目录
-   * @type {string}
-   */
-  templates: 'templates',
-  /**
    * [Service] 该Service依赖的子Service列表
    * @type {Object}
    */
@@ -174,20 +174,5 @@ export default {
     type: 'alaska-cache-lru',
     prefix: false,
     maxAge: 3600 * 1000
-  },
-  /**
-   * [Service] 该Service的路由中间件,如果为false,则不加载middlewares/index.js
-   * @type {Array|boolean}
-   */
-  middlewares: [],
-  /**
-   * 是否开启控制器路由
-   * @type {boolean}
-   */
-  controllers: true,
-  /**
-   * 是否开启rest api
-   * @type {boolean}
-   */
-  api: true
+  }
 };

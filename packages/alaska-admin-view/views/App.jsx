@@ -7,8 +7,9 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
-import { ToastContainer, ToastMessage } from 'react-toastr';
+import { ToastContainer } from 'react-toastr';
 import _ from 'lodash';
+import shallowEqualWithout from 'shallow-equal-without';
 import * as layoutRedux from '../redux/layout';
 import Node from './Node';
 import Login from './Login';
@@ -17,8 +18,6 @@ import Manage from './Manage';
 import Dashboard from './Dashboard';
 import EditorPage from './EditorPage';
 import ListPage from './ListPage';
-
-const ToastMessageFactory = React.createFactory(ToastMessage.animation);
 
 type Props = {
   views: Object,
@@ -45,7 +44,11 @@ class App extends React.Component<Props, State> {
     toast: PropTypes.func,
   };
 
+  toastContainer: void | React$Node;
   _messageCache: Object;
+
+  _page: React$Node;
+  _pageInfo;
 
   constructor(props: Props) {
     super(props);
@@ -132,9 +135,9 @@ class App extends React.Component<Props, State> {
       modalActions: <button
         className="btn btn-success"
         onClick={() => {
-            this.handleCloseModal();
-            resolve();
-          }}
+          this.handleCloseModal();
+          resolve();
+        }}
       >{this.t('Confirm')}
       </button>,
       modalOpen: true
@@ -193,7 +196,10 @@ class App extends React.Component<Props, State> {
     if (!options.timeOut) {
       options.timeOut = 10000;
     }
-    this.refs.container[method](title, body, options);
+    if (this.toastContainer) {
+      // $Flow
+      this.toastContainer[method](title, body, options);
+    }
   };
 
   handleCloseModal = () => {
@@ -213,31 +219,34 @@ class App extends React.Component<Props, State> {
     }
   };
 
-  render() {
-    const {
-      layout, user, settings, views
-    } = this.props;
-    const state = this.state;
+  renderPage() {
+    const { user, settings, views } = this.props;
+
+    let info = [user.access, user.id, settings.locale];
+    if (shallowEqualWithout(info, this._pageInfo)) {
+      return this._page;
+    }
+
     let el;
 
     //有权限
     if (user.access) {
       el = <Router>
         <Route
-          path="/"
+          path=""
           component={(props) => (
             <Manage {...props}>
               <Switch>
-                <Route component={Dashboard} path="" />
-                <Route component={ListPage} path="list/:service/:model" />
-                <Route component={EditorPage} path="edit/:service/:model/:id" />
+                <Route component={Dashboard} exact path="/" />
+                <Route component={ListPage} exact path="/list/:service/:model" />
+                <Route component={EditorPage} exact path="/edit/:service/:model/:id" />
                 {
-                (views.routes || []).map((item, index) => (
-                  <Route key={index} component={item.component} path={item.path} />))
-              }
+                  (views.routes || []).map((item) => (
+                    <Route key={item.path} component={item.component} exact path={item.path} />))
+                }
               </Switch>
             </Manage>
-        )}
+          )}
         />
       </Router>;
     } else if (user.id) { //已登录,但无权限
@@ -248,11 +257,23 @@ class App extends React.Component<Props, State> {
       el = <div className="boot-loading">Loading...</div>;
     }
 
+    this._page = el;
+    this._pageInfo = info;
+    return el;
+  }
+
+  render() {
+    const {
+      layout
+    } = this.props;
+    const state = this.state;
+
     return (<Node id="app" className={layout}>
-      {el}
+      {this.renderPage()}
       <ToastContainer
-        ref="container"
-        toastMessageFactory={ToastMessageFactory}
+        ref={(r) => {
+          this.toastContainer = r;
+        }}
         className="toast-top-right"
       />
       <Modal show={state.modalOpen}>

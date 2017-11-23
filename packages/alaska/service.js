@@ -1,14 +1,21 @@
 // @flow
 
+/* eslint global-require:0 */
+
 import type Koa from 'koa';
 import _ from 'lodash';
 import Debugger from 'debug';
 import Router from 'koa-router';
 import collie from 'collie';
 import IntlMessageFormat from 'intl-messageformat';
-import alaska from './alaska';
+import jsonMerge from 'json-merge-patch';
+import mongoose from 'mongoose';
+import depd from 'depd';
+import alaska, { PanicError } from './alaska';
 import * as utils from './utils';
 import defaultConfig from './config';
+
+const deprecate = depd('alaska.service');
 
 /**
  * Service指代一个项目中某些功能组件的集合,包括控制器/数据模型/视图和配置信息等
@@ -47,7 +54,7 @@ export default class Service {
    * 本Service Sled列表
    * @type {Object}
    */
-  sleds: { [name: string]: Class<Alaska$Sled> };
+  sleds: { [sledName: string]: Class<Alaska$Sled> };
   /**
    * 本Service Plugin列表
    * @type {Object}
@@ -57,7 +64,7 @@ export default class Service {
    * 本Service数据模型列表
    * @type {Object}
    */
-  models: { [name: string]: Class<Alaska$Model> };
+  models: { [modelName: string]: Class<Alaska$Model> };
   /**
    * 本Service本地化配置
    * @type {Object}
@@ -75,12 +82,6 @@ export default class Service {
    * @private
    */
   _config = {};
-  /**
-   * 本Service的所有额外配置目录
-   * @type {[string]}
-   * @private
-   */
-  _configDirs = [];
   /**
    * 本Service的所有模板目录
    * @type {[string]}
@@ -113,12 +114,6 @@ export default class Service {
       throw new Error('Service dir is not specified.');
     }
 
-    try {
-      this.version = utils.readJson(options.dir + '/package.json').version;
-    } catch (e) {
-      //
-    }
-
     if (!options.configFile) {
       //Service默认配置文件
       options.configFile = options.id + '.js';
@@ -129,7 +124,6 @@ export default class Service {
     this.debug = Debugger(options.id);
     this.panic = alaska.panic;
     this.error = alaska.error;
-    this.try = alaska.try;
     this.debug('constructor');
 
     collie(this, 'init', require('./service/init').default);
@@ -138,7 +132,7 @@ export default class Service {
     collie(this, 'loadLocales', require('./service/loadLocales').default);
     collie(this, 'loadModels', require('./service/loadModels').default);
     collie(this, 'loadSleds', require('./service/loadSleds').default);
-    collie(this, 'loadMiddlewares', require('./service/loadMiddlewares').default);
+    collie(this, 'loadRoutes', require('./service/loadRoutes').default);
     collie(this, 'loadApi', require('./service/loadApi').default);
     collie(this, 'loadControllers', require('./service/loadControllers').default);
     collie(this, 'loadStatics', require('./service/loadStatics').default);
@@ -147,18 +141,6 @@ export default class Service {
     collie(this, 'registerModel');
 
     this._config = _.defaultsDeep({}, defaultConfig);
-
-    {
-      //载入配置
-      // $Flow
-      let configFilePath = this.options.dir + '/config/' + this.options.configFile;
-      let config = utils.include(configFilePath, true);
-      if (config) {
-        this.applyConfig(config);
-      } else {
-        console.warn('Missing config file %s', configFilePath);
-      }
-    }
 
     // $Flow
     alaska.registerService(this);
@@ -180,12 +162,9 @@ export default class Service {
     return this.options.dir;
   }
 
-  /**
-   * 判断当前Service是否是主Service
-   * @returns Boolean
-   */
-  isMain() {
-    return alaska.main === this;
+  get configFile(): string {
+    // $Flow
+    return this.options.configFile;
   }
 
   /**
@@ -202,6 +181,20 @@ export default class Service {
    */
   get main(): Alaska$Service {
     return this.alaska.main;
+  }
+
+  /**
+   * 获取Service实例路由器
+   * @returns {Router}
+   */
+  get router(): Router {
+    if (!this._router) {
+      this._router = new Router({
+        prefix: this.getConfig('prefix'),
+        methods: this.getConfig('methods', ['GET', 'POST'])
+      });
+    }
+    return this._router;
   }
 
   /**
@@ -229,14 +222,72 @@ export default class Service {
   }
 
   /**
-   * 为Service增加配置目录,Service启动后再调用此方法将无效果
-   * @param {string} dir
+   * 获取当前Service的数据链接
+   * 如果本Service不是主Service且没有配置数据链接,则返回主配置链接
+   * 如果返回false,代表本Service不需要数据库支持
+   * @returns {mongoose.Connection | Boolean}
    */
-  addConfigDir(dir: string) {
-    this._configDirs.push(dir);
-    if (utils.isDirectory(dir + '/templates')) {
-      this.templatesDirs.unshift(dir + '/templates');
+  get db(): Mongoose$Connection | boolean {
+    if (this._db) {
+      return this._db;
     }
+    let config = this.getConfig('db');
+    if (config === false) {
+      return false;
+    }
+    if (!config) {
+      if (this.isMain()) {
+        console.warn('No database config');
+      } else {
+        this._db = this.alaska.db;
+        return this._db;
+      }
+    }
+    this._db = mongoose.createConnection(config);
+    this._db.on('error', (error) => {
+      console.error(error);
+      process.exit(1);
+    });
+    return this._db;
+  }
+
+  /**
+   * 获取默认缓存驱动
+   * @returns {LruCacheDriver|*}
+   */
+  get cache(): Alaska$CacheDriver {
+    if (!this._cache) {
+      // $Flow
+      this._cache = (this.createDriver(this.getConfig('cache')): Alaska$CacheDriver);
+    }
+    return this._cache;
+  }
+
+  /**
+   * 获取模板引擎
+   * @returns {*}
+   */
+  get renderer(): Alaska$Renderer {
+    if (!this._renderer) {
+      let config = this.getConfig('renderer');
+      if (typeof config === 'string') {
+        config = { type: config };
+      }
+      let Renderer = alaska.modules.renderers[config.type];
+      if (!Renderer) {
+        this.panic(`Renderer '${config.type}' not found`);
+      }
+      this._renderer = new Renderer(this, config);
+    }
+    return this._renderer;
+  }
+
+  /**
+   * 判断当前Service是否是主Service
+   * @returns Boolean
+   */
+  isMain() {
+    return alaska.main === this;
   }
 
   /**
@@ -244,64 +295,325 @@ export default class Service {
    * @param {Object} config
    */
   applyConfig(config: Alaska$Config): void {
-    Object.keys(config).forEach((key) => {
-      let value = config[key];
-      //增加配置项
-      if (key[0] === '+') {
-        key = key.slice(1);
-        if (Array.isArray(this._config[key])) {
-          this._config[key] = this._config[key].concat(value);
-        } else if (typeof this._config[key] === 'object') {
-          Object.assign(this._config[key], value);
-        } else {
-          throw new Error(`Apply config error at '+${key}'`);
-        }
-      } else
+    jsonMerge.apply(this._config, config);
+  }
 
-      //移除配置项
-      if (key[0] === '-') {
-        key = key.slice(1);
-        if (Array.isArray(value)) {
-          this._config[key] = _.without(this._config[key], ...value);
-        } else if (typeof this._config[key] === 'object') {
-          let keys = [];
-          if (typeof value === 'string') {
-            keys = [value];
-          } else if (Array.isArray(value)) {
-            keys = value;
-          } else {
-            throw new Error(`Apply config error at '+${key}'`);
-          }
-          // $Flow
-          this._config[key] = _.omit(this._config[key], ...keys);
-        } else {
-          throw new Error(`Apply config error at '${key}'`);
-        }
-      } else
+  /**
+   * 获取当前Service配置
+   * @deprecated
+   * @param {string} key 配置名
+   * @param {*} [defaultValue] 默认值
+   * @param {boolean} [mainAsDefault] 如果当前Service中不存在配置,则获取主Service的配置
+   */
+  config(key: string, defaultValue?: any, mainAsDefault?: boolean): any {
+    deprecate('config()');
+    return this.getConfig(key, defaultValue, mainAsDefault);
+  }
 
-      //深度继承
-      if (key[0] === '*') {
-        key = key.slice(1);
-        // $Flow
-        this._config[key] = _.defaultsDeep({}, value, this._config[key]);
-      } else {
-        this._config[key] = value;
+  /**
+   * 获取当前Service配置
+   * @since 0.12.0
+   * @param {string} key 配置名
+   * @param {*} [defaultValue] 默认值
+   * @param {boolean} [mainAsDefault] 如果当前Service中不存在配置,则获取主Service的配置
+   */
+  getConfig(key: string, defaultValue?: any, mainAsDefault?: boolean): any {
+    let value = _.get(this._config, key, defaultValue);
+    if (!mainAsDefault || value !== undefined || this.isMain()) {
+      return value;
+    }
+    return alaska.getConfig(key);
+  }
+
+  /**
+   * 启动Service
+   * @method launch
+   */
+  async launch(modules: Object) {
+    this.debug('launch');
+    // $Flow
+    this.launch = utils.resolved;
+    alaska.modules = modules;
+    await this.init();
+    await this.loadConfig();
+    await this.loadPlugins();
+    await this.loadLocales();
+    await this.loadModels();
+    await this.loadSleds();
+    await this.loadRoutes();
+    await this.loadApi();
+    await this.loadControllers();
+    await this.loadStatics();
+    await this.mount();
+    await alaska.loadMiddlewares();
+    await alaska.listen();
+  }
+
+  /**
+   * 通用创建驱动方法
+   * @param {Object} options
+   * @returns {Driver}
+   */
+  createDriver(options: Object): Alaska$Driver {
+    let idleId = '';
+    if (options.idle) {
+      //允许空闲
+      idleId = JSON.stringify(options);
+      //当前有空闲驱动
+      if (this._idleDrivers[idleId] && this._idleDrivers[idleId].length) {
+        let d = this._idleDrivers[idleId].shift();
+        d.idle = 0;
+        return d;
+      }
+    }
+
+    //当前无空闲驱动,创建新驱动
+    const Driver = alaska.modules.drivers[options.type];
+    if (!Driver) throw new PanicError(`Driver '${options.type}' not found!`);
+    let driver = new Driver(this, options);
+    driver.idleId = idleId;
+    driver.idle = 0;
+    return driver;
+  }
+
+  /**
+   * 释放驱动
+   * @param {Driver|*} driver
+   */
+  freeDriver(driver: Alaska$Driver) {
+    // 已经空闲
+    if (driver.idle) return;
+    if (driver.idleId) {
+      //允许空闲
+      let { idleId } = driver;
+      if (!this._idleDrivers[idleId]) {
+        this._idleDrivers[idleId] = [];
+      }
+      if (this._idleDrivers[idleId].length > driver.options.idle) {
+        this._idleDrivers[idleId].shift().destroy();
+      }
+      if (driver.onFree) {
+        driver.onFree();
+      }
+      driver.idle = Date.now();
+      this._idleDrivers[idleId].push(driver);
+      if (!this._freeIdleTimer) {
+        this._freeIdleTimer = setInterval(() => this._destroyIdleDrivers(), 60 * 1000);
+      }
+      return;
+    }
+    driver.destroy();
+  }
+
+  /**
+   * 销毁过期空闲驱动
+   * @private
+   */
+  _destroyIdleDrivers() {
+    Object.keys(this._idleDrivers).forEach((idleId) => {
+      let drivers = this._idleDrivers[idleId];
+      for (let d of drivers) {
+        if (d.idle && Date.now() - d.idle > 5 * 60 * 1000) {
+          _.pull(drivers, d);
+          d.destroy();
+        }
       }
     });
   }
 
   /**
-   * 获取Service实例路由器
-   * @returns {Router}
+   * 注册模型
+   * @param {string} modelName
+   * @param {Model} Model
+   * @returns {Model}
    */
-  get router(): Router {
-    if (!this._router) {
-      this._router = new Router({
-        prefix: this.config('prefix'),
-        methods: this.config('methods', ['GET', 'POST'])
-      });
+  async registerModel(modelName: string, Model: Class<Alaska$Model>): Promise<Class<Alaska$Model>> {
+    await Model.register(modelName);
+    return Model;
+  }
+
+  /**
+   * 获取指定Model
+   * @deprecated
+   * @param {string} modelName 模型名称,例如User或blog.User
+   * @returns {Model|null}
+   */
+  model(modelName: string): Class<Alaska$Model> {
+    deprecate('model()');
+    return this.getModel(modelName);
+  }
+
+  /**
+   * 获取指定Model
+   * @since 0.12.0
+   * @param {string} modelName 模型名称,例如User或blog.User
+   * @returns {Model}
+   */
+  getModel(modelName: string): Class<Alaska$Model> {
+    if (_.isObject(this.models[modelName])) {
+      return this.models[modelName];
     }
-    return this._router;
+
+    let index = modelName.indexOf('.');
+    if (index > -1) {
+      let serviceId = modelName.substr(0, index);
+      modelName = modelName.substr(index + 1);
+      return alaska.getService(serviceId).getModel(modelName);
+    }
+    throw new PanicError(`"${modelName}" model not found`);
+  }
+
+  /**
+   * 判断是否存在指定Model
+   * @since 0.12.0
+   * @param {string} modelName 模型名称,例如User或blog.User
+   * @returns {boolean}
+   */
+  hasModel(modelName: string): boolean {
+    if (_.isObject(this.models[modelName])) {
+      return true;
+    }
+    let index = modelName.indexOf('.');
+    if (index > -1) {
+      let serviceId = modelName.substr(0, index);
+      if (!alaska.hasService(serviceId)) return false;
+      modelName = modelName.substr(index + 1);
+      return alaska.getService(serviceId).hasModel(modelName);
+    }
+    return false;
+  }
+
+  /**
+   * 获取指定Sled
+   * @deprecated
+   * @param {string} sledName sled名称,例如Register或user.Register
+   * @returns {Sled}
+   */
+  sled(sledName: string): Class<Alaska$Sled> {
+    deprecate('sled()');
+    return this.getSled(sledName);
+  }
+
+  /**
+   * 获取指定Sled
+   * @since 0.12.0
+   * @param {string} sledName sled名称,例如Register或user.Register
+   * @returns {Sled}
+   */
+  getSled(sledName: string): Class<Alaska$Sled> {
+    if (this.sleds[sledName]) {
+      return this.sleds[sledName];
+    }
+    let index = sledName.indexOf('.');
+    if (index > -1) {
+      let serviceId = sledName.substr(0, index);
+      if (alaska.hasService(serviceId)) {
+        sledName = sledName.substr(index + 1);
+        return alaska.getService(serviceId).getSled(sledName);
+      }
+    }
+    throw new PanicError(`"${sledName}" sled not found`);
+  }
+
+  /**
+   * 判断指定Sled是否存在
+   * @since 0.12.0
+   * @param {string} sledName sled名称,例如Register或user.Register
+   * @returns {boolean}
+   */
+  hasSled(sledName: string): boolean {
+    if (_.isObject(this.sleds[sledName])) {
+      return true;
+    }
+    let index = sledName.indexOf('.');
+    if (index > -1) {
+      let serviceId = sledName.substr(0, index);
+      if (!alaska.hasService(serviceId)) return false;
+      sledName = sledName.substr(index + 1);
+      return alaska.getService(serviceId).hasSled(sledName);
+    }
+    return false;
+  }
+
+  /**
+   * 运行一个Sled
+   * @param {string} sledName
+   * @param {Object} [data]
+   * @returns {Promise<*>}
+   */
+  run(sledName: string, data?: Object): Promise<any> {
+    try {
+      let SledClass = this.getSled(sledName);
+      let sled = new SledClass(data);
+      return sled.run();
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  /**
+   * 翻译消息
+   * @param {string} message
+   * @param {string} [locale]
+   * @param {Object} [values]
+   * @param {Object} [formats]
+   * @returns {string}
+   */
+  t(message: string, locale?: string, values?: Object, formats?: Object): string {
+    if (!locale) {
+      locale = this.getConfig('defaultLocale');
+    }
+    let messages = this.locales[locale];
+    if (!messages) {
+      messages = alaska.locales[locale];
+      if (!messages) return message;
+    }
+    let template = messages[message];
+    if (!template) {
+      if (alaska.locales[locale]) template = alaska.locales[locale][message];
+      if (!template) return message;
+    }
+    if (!values) {
+      return template;
+    }
+    if (!this._messageCache[locale]) {
+      this._messageCache[locale] = {};
+    }
+    if (!this._messageCache[locale][message]) {
+      this._messageCache[locale][message] = new IntlMessageFormat(template, locale, formats);
+    }
+    return this._messageCache[locale][message].format(values);
+  }
+
+  /**
+   * 输出Service实例JSON调试信息
+   * @returns {Object}
+   */
+  toJSON() {
+    let res = {
+      id: this.id,
+      version: this.version,
+      options: this.options,
+      config: this._config,
+      api: {},
+      controllers: {},
+      models: {},
+      services: Object.keys(this.services)
+    };
+    Object.keys(this._apiControllers).forEach((key) => {
+      let c = this._apiControllers[key];
+      res.api[key] = Object.keys(c).filter((name) => name[0] !== '_');
+    });
+    Object.keys(this._controllers).forEach((key) => {
+      let c = this._controllers[key];
+      res.controllers[key] = Object.keys(c).filter((name) => name[0] !== '_');
+    });
+    for (let m of this.modelList) {
+      res.models[m.modelName] = {
+        api: m.api
+      };
+    }
+    return res;
   }
 
   /**
@@ -366,9 +678,9 @@ export default class Service {
 
   /**
    * 载入Service中间件
-   * @method loadMiddlewares
+   * @method loadRoutes
    */
-  loadMiddlewares: () => Promise<void>;
+  loadRoutes: () => Promise<void>;
 
   /**
    * 载入API接口控制器
@@ -393,366 +705,4 @@ export default class Service {
    * @method mount
    */
   mount: () => Promise<void>;
-
-  /**
-   * 启动Service
-   * @method launch
-   */
-  async launch() {
-    this.debug('launch');
-    // $Flow
-    this.launch = utils.resolved;
-    try {
-      await this.init();
-      await this.loadConfig();
-      await this.loadPlugins();
-      await this.loadLocales();
-      await this.loadModels();
-      await this.loadSleds();
-      await alaska.loadMiddlewares();
-      await this.loadMiddlewares();
-      await this.loadApi();
-      await this.loadControllers();
-      await this.loadStatics();
-      await this.mount();
-      await alaska.listen();
-    } catch (error) {
-      console.error('Alaska launch failed!');
-      console.error(error.stack);
-      throw error;
-    }
-  }
-
-  /**
-   * 获取当前Service配置
-   * @param {string} key 配置名
-   * @param {*} [defaultValue] 默认值
-   * @param {boolean} [mainAsDefault] 如果当前Service中不存在配置,则获取主Service的配置
-   */
-  config(key: string, defaultValue?: any, mainAsDefault?: boolean): any {
-    let value = _.get(this._config, key, defaultValue);
-    if (!mainAsDefault || value !== undefined || this.isMain()) {
-      return value;
-    }
-    return alaska.config(key);
-  }
-
-  /**
-   * 获取当前Service的数据链接
-   * 如果本Service不是主Service且没有配置数据链接,则返回主配置链接
-   * 如果返回false,代表本Service不需要数据库支持
-   * @returns {mongoose.Connection | Boolean}
-   */
-  get db(): Mongoose$Connection | boolean {
-    if (this._db) {
-      return this._db;
-    }
-    let config = this.config('db');
-    if (config === false) {
-      return false;
-    }
-    if (!config) {
-      if (this.isMain()) {
-        console.warn('No database config');
-      } else {
-        this._db = this.alaska.db;
-        return this._db;
-      }
-    }
-    // $Flow
-    this._db = require('mongoose').createConnection(config);
-    this._db.on('error', (error) => {
-      console.error(error);
-      process.exit(1);
-    });
-    return this._db;
-  }
-
-  /**
-   * 获取默认缓存驱动
-   * @returns {LruCacheDriver|*}
-   */
-  get cache(): Alaska$CacheDriver {
-    if (!this._cache) {
-      this._cache = this.getCacheDriver(this.config('cache'));
-    }
-    return this._cache;
-  }
-
-  /**
-   * 创建或获取缓存驱动
-   * @param {object|string} options 驱动初始化设置,如果为字符串,则获取指定id的当前实例
-   * @param {boolean} [createNew] 如果为true则创建新驱动,否则使用之前的实例
-   * @returns {Alaska$CacheDriver|*}
-   */
-  getCacheDriver(options: Object | string, createNew?: boolean): Alaska$CacheDriver {
-    //options is driver id
-    if (typeof options === 'string') {
-      if (!this._cacheDrivers[options]) {
-        throw new Error('Can not get cache driver ' + options);
-      }
-      return this._cacheDrivers[options];
-    }
-    if (options.instanceOfCacheDriver) {
-      return options;
-    }
-    let driver;
-    let id = options.id || JSON.stringify(options);
-    if (createNew || !this._cacheDrivers[id]) {
-      // $Flow
-      let Driver: Class<Alaska$CacheDriver> = require(options.type).default;
-      // $Flow
-      driver = new Driver(this, options);
-    }
-
-    if (!driver) {
-      driver = this._cacheDrivers[id];
-    } else if (!this._cacheDrivers[id]) {
-      this._cacheDrivers[id] = driver;
-    }
-    return driver;
-  }
-
-  /**
-   * 通用创建驱动方法
-   * @param {Object} options
-   * @returns {Driver|*}
-   */
-  createDriver(options: Object): Alaska$Driver {
-    let idleId = '';
-    if (options.idle) {
-      //允许空闲
-      idleId = JSON.stringify(options);
-      //当前有空闲驱动
-      if (this._idleDrivers[idleId] && this._idleDrivers[idleId].length) {
-        let d = this._idleDrivers[idleId].shift();
-        d.idle = 0;
-        return d;
-      }
-    }
-
-    //当前无空闲驱动,创建新驱动
-    // $Flow
-    const Driver = require(options.type).default;
-    let driver = new Driver(this, options);
-    driver.idleId = idleId;
-    driver.idle = 0;
-    return driver;
-  }
-
-  /**
-   * 释放驱动
-   * @param {Driver|*} driver
-   */
-  freeDriver(driver: Alaska$Driver) {
-    // 已经空闲
-    if (driver.idle) return;
-    if (driver.idleId) {
-      //允许空闲
-      let { idleId } = driver;
-      if (!this._idleDrivers[idleId]) {
-        this._idleDrivers[idleId] = [];
-      }
-      if (this._idleDrivers[idleId].length > driver.options.idle) {
-        this._idleDrivers[idleId].shift().destroy();
-      }
-      if (driver.onFree) {
-        driver.onFree();
-      }
-      driver.idle = Date.now();
-      this._idleDrivers[idleId].push(driver);
-      if (!this._freeIdleTimer) {
-        this._freeIdleTimer = setInterval(() => this._destroyIdleDrivers(), 60 * 1000);
-      }
-      return;
-    }
-    driver.destroy();
-  }
-
-  /**
-   * 销毁过期空闲驱动
-   * @private
-   */
-  _destroyIdleDrivers() {
-    Object.keys(this._idleDrivers).forEach((idleId) => {
-      let drivers = this._idleDrivers[idleId];
-      for (let d of drivers) {
-        if (d.idle && Date.now() - d.idle > 5 * 60 * 1000) {
-          _.pull(drivers, d);
-          d.destroy();
-        }
-      }
-    });
-  }
-
-  /**
-   * 获取模板引擎
-   * @returns {*}
-   */
-  get renderer(): Alaska$Renderer {
-    if (!this._renderer) {
-      let config = this.config('renderer');
-      if (typeof config === 'string') {
-        config = { type: config };
-      }
-      // $Flow
-      let Renderer = require(config.type).default;
-      this._renderer = new Renderer(this, config);
-    }
-    return this._renderer;
-  }
-
-  /**
-   * 注册模型
-   * @param {Model} Model
-   * @returns {Model}
-   */
-  async registerModel(Model: Class<Alaska$Model>): Promise<Class<Alaska$Model>> {
-    Model.register();
-    return Model;
-  }
-
-  /**
-   * 输出Service实例JSON调试信息
-   * @returns {Object}
-   */
-  toJSON() {
-    let res = {
-      id: this.id,
-      version: this.version,
-      options: this.options,
-      config: this._config,
-      configDirs: this._configDirs,
-      api: {},
-      controllers: {},
-      models: {},
-      services: Object.keys(this.services)
-    };
-    Object.keys(this._apiControllers).forEach((key) => {
-      let c = this._apiControllers[key];
-      res.api[key] = Object.keys(c).filter((name) => name[0] !== '_');
-    });
-    Object.keys(this._controllers).forEach((key) => {
-      let c = this._controllers[key];
-      res.controllers[key] = Object.keys(c).filter((name) => name[0] !== '_');
-    });
-    for (let m of this.modelList) {
-      res.models[m.name] = {
-        api: m.api
-      };
-    }
-    return res;
-  }
-
-  /**
-   * 找回此Service下定义的Model
-   * @param {string} name 模型名称,例如User或blog.User
-   * @param {boolean} [optional] 可选,默认false,如果为true则未找到时不抛出异常
-   * @returns {Model|null}
-   */
-  model(name: string, optional?: boolean): Class<Alaska$Model> {
-    if (this.models[name]) {
-      return this.models[name];
-    }
-
-    let index = name.indexOf('.');
-    if (index > -1) {
-      let serviceId = name.substr(0, index);
-      name = name.substr(index + 1);
-      let service = this.services[serviceId];
-      if (serviceId === 'main') {
-        service = this.main;
-      }
-      if (!service) {
-        service = alaska.service(serviceId, optional);
-      }
-      if (service) {
-        return service.model(name, optional);
-      }
-    }
-    if (!optional) {
-      this.panic(`"${name}" model not found`);
-    }
-    // $Flow
-    return null;
-  }
-
-  /**
-   * 找回此Service下定义的Sled
-   * @param {string} name sled名称,例如Register或user.Register
-   * @returns {Sled|null}
-   */
-  sled(name: string): Class<Alaska$Sled> {
-    if (this.sleds[name]) {
-      return this.sleds[name];
-    }
-
-    let index = name.indexOf('.');
-    if (index > -1) {
-      let serviceId = name.substr(0, index);
-      name = name.substr(index + 1);
-      let service = this.services[serviceId];
-      if (serviceId === 'main') {
-        service = this.main;
-      }
-      if (!service) {
-        service = alaska.service(serviceId);
-      }
-      if (service) {
-        return service.sled(name);
-      }
-    }
-    // $Flow
-    return this.panic(`"${name}" sled not found`);
-  }
-
-  /**
-   * 运行一个Sled
-   * @param {string} name
-   * @param {Object} [data]
-   * @returns {Promise<*>}
-   */
-  run(name: string, data?: Object): Promise<any> {
-    try {
-      let SledClass = this.sled(name);
-      let sled = new SledClass(data);
-      return sled.run();
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  }
-
-  /**
-   * 翻译消息
-   * @param {string} message
-   * @param {string} [locale]
-   * @param {Object} [values]
-   * @param {Object} [formats]
-   * @returns {string}
-   */
-  t(message: string, locale?: string, values?: Object, formats?: Object): string {
-    if (!locale) {
-      locale = this.config('defaultLocale');
-    }
-    let messages = this.locales[locale];
-    if (!messages) {
-      messages = alaska.locales[locale];
-      if (!messages) return message;
-    }
-    let template = messages[message];
-    if (!template) {
-      if (alaska.locales[locale]) template = alaska.locales[locale][message];
-      if (!template) return message;
-    }
-    if (!values) {
-      return template;
-    }
-    if (!this._messageCache[locale]) {
-      this._messageCache[locale] = {};
-    }
-    if (!this._messageCache[locale][message]) {
-      this._messageCache[locale][message] = new IntlMessageFormat(template, locale, formats);
-    }
-    return this._messageCache[locale][message].format(values);
-  }
 }

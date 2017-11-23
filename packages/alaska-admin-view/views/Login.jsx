@@ -86,7 +86,7 @@ class Login extends React.Component<Props, State> {
 
     return (
       <Node id="login" className="panel">
-        <Node id="loginLogo"><img alt="" src={loginLogo || 'static/img/logo_reverse.png'} /> </Node>
+        <Node id="loginLogo"><img alt="" src={loginLogo || 'statics/img/logo_reverse.png'} /> </Node>
         <Node id="loginForm" tag="form">
           <Node id="loginField">
             <div className={'form-group' + state.usernameError}>

@@ -19,7 +19,7 @@ export default async function remove(ctx: Alaska$Context) {
   if (!s) {
     alaska.error('Invalid parameters');
   }
-  let Model: Class<Alaska$Model> = s.model(modelName);
+  let Model: Class<Alaska$Model> = s.getModel(modelName);
 
   let ability = `admin.${Model.key}.remove`;
   await ctx.checkAbility(ability);
@@ -30,12 +30,12 @@ export default async function remove(ctx: Alaska$Context) {
       alaska.error('Record not found');
     }
 
-    await alaska.try(record.remove());
+    await record.remove();
   } else if (records) {
     for (let value of _.values(records)) {
       let record = await Model.findById(value);
       if (record) {
-        await alaska.try(record.remove());
+        await record.remove();
       }
     }
   } else {

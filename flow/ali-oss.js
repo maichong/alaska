@@ -1,3 +1,3 @@
-declare module 'aliyun-sdk' {
+declare module 'ali-oss' {
   declare var exports: any;
 }

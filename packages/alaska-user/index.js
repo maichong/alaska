@@ -1,7 +1,6 @@
 // @flow
 
 import alaska, { Service } from 'alaska';
-import path from 'path';
 import Ability from './models/Ability';
 import Role from './models/Role';
 
@@ -17,16 +16,23 @@ class UserService extends Service {
   }
 
   postInit() {
-    alaska.main.applyConfig({
-      '+appMiddlewares': [{
-        id: 'alaska-middleware-session',
+    let middlewares = alaska.getConfig('middlewares');
+    let newConfigs = {
+      middlewares: {
+        user: {
+          fn: require('./middlewares/user').default, // eslint-disable-line global-require
+          sort: 700
+        }
+      }
+    };
+    if (!middlewares['alaska-middleware-session']) {
+      newConfigs.middlewares['alaska-middleware-session'] = {  // eslint-disable-line
+        fn: require('alaska-middleware-session'), // eslint-disable-line
         sort: 800,
-        options: alaska.main.config('session')
-      }, {
-        id: path.join(__dirname, '/middlewares/user.js'),
-        sort: 700
-      }]
-    });
+        options: alaska.main.getConfig('session')
+      };
+    }
+    alaska.main.applyConfig(newConfigs);
   }
 
   /**
@@ -34,7 +40,7 @@ class UserService extends Service {
    * @returns {Ability[]}
    */
   async abilities(): Promise<Ability[]> {
-    let cache = this.cache;
+    let { cache } = this;
     let data = await cache.get('abilities_list');
     if (data) {
       // $Flow
@@ -54,7 +60,7 @@ class UserService extends Service {
    * @returns {Role[]}
    */
   async roles(): Promise<Role[]> {
-    let cache = this.cache;
+    let { cache } = this;
     let data = await cache.get('roles_list');
     if (data) {
       // $Flow
@@ -73,7 +79,7 @@ class UserService extends Service {
    * 清空本模块缓存
    */
   async clearCache(): Promise<void> {
-    let cache = this.cache;
+    let { cache } = this;
     await cache.del('abilities_list');
     await cache.del('roles_list');
   }

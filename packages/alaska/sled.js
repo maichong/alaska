@@ -7,7 +7,7 @@ import _ from 'lodash';
 export default class Sled {
   static classOfSled = true;
   static service: Alaska$Service;
-  static name: string;
+  static sledName: string;
   static key: string;
   static _pre: Function[];
   static _post: Function[];
@@ -50,8 +50,8 @@ export default class Sled {
    * 获取Sled name
    * @returns {string}
    */
-  get name(): string {
-    return this.constructor.name;
+  get sledName(): string {
+    return this.constructor.sledName || this.constructor.name;
   }
 
   /**
@@ -121,9 +121,9 @@ export default class Sled {
     if (!this._config) {
       let { service, key } = this;
       let name = 'sled.' + key;
-      let config = service.config(name, undefined, true);
+      let config = service.getConfig(name, undefined, true);
       if (!config) {
-        config = service.config('sled', undefined, true);
+        config = service.getConfig('sled', undefined, true);
       }
       this._config = config;
     }
@@ -202,7 +202,7 @@ export default class Sled {
       key,
       notify: notify || false,
       params,
-      name: this.name,
+      sledName: this.sledName,
       result: undefined,
       error: undefined,
       timeout: timeout || 0,

@@ -10,8 +10,8 @@ export default async function mount() {
     await sub.mount('mount');
   }
 
-  const domain = this.config('domain', '', true) || '';
-  let prefix = this.config('prefix');
+  const domain = this.getConfig('domain', '', true) || '';
+  let prefix = this.getConfig('prefix');
   if (prefix === false) return;
   this.debug('mount');
   if (!prefix) {

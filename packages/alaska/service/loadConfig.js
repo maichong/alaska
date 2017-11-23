@@ -1,6 +1,7 @@
 // @flow
 
-import path from 'path';
+import Path from 'path';
+import _ from 'lodash';
 import * as utils from '../utils';
 
 export default async function loadConfig() {
@@ -12,36 +13,27 @@ export default async function loadConfig() {
 
   this.debug('loadConfig');
 
-  //加载扩展配置
-  for (let dir of this._configDirs) {
-    let configFile = dir + '.js';
-    if (utils.isFile(configFile)) {
-      // $Flow
-      this.applyConfig(require(configFile).default);
+  let serviceModules = this.alaska.modules.services[this.id];
+
+  _.forEach(serviceModules.plugins, (plugin) => {
+    if (plugin.config) {
+      this.applyConfig(plugin.config);
     }
-    configFile = dir + '/config.js';
-    if (utils.isFile(configFile)) {
-      // $Flow
-      this.applyConfig(require(configFile).default);
+  });
+
+  if (this.isMain()) {
+    let mainMiddlewares = this.getConfig('middlewares', {});
+    for (let sub of this.serviceList) {
+      let middlewares = sub.getConfig('middlewares', {});
+      _.forEach(middlewares, (cfg, id) => {
+        if (!mainMiddlewares[id]) {
+          mainMiddlewares[id] = cfg;
+        }
+      });
     }
   }
 
-  //数据库collection前缀
-  let dbPrefix = this.config('dbPrefix');
-  if (dbPrefix === false) {
-    this.dbPrefix = '';
-  } else if (typeof dbPrefix === 'string') {
-    this.dbPrefix = dbPrefix;
-  } else {
-    this.dbPrefix = this.id.replace('alaska-', '') + '_';
-  }
-
-  //templates 目录
-  let templates = this.config('templates');
-  if (templates) {
-    if (templates[0] !== '/') {
-      templates = path.join(this.dir, templates);
-    }
-    this.templatesDirs.unshift(templates);
-  }
+  _.forEach(serviceModules.templatesDirs, (dir) => {
+    this.templatesDirs.unshift(Path.relative(process.cwd(), dir));
+  });
 }

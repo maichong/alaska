@@ -1,13 +1,14 @@
 {
   "name": "alaska-admin-view",
-  "version": "0.11.30",
+  "version": "0.12.0",
   "description": "Alaska admin view",
   "keywords": [
     "alaska",
     "alaska-admin",
     "admin",
-    "template"
+    "view"
   ],
+  "alaska": "view",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-admin-view",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",

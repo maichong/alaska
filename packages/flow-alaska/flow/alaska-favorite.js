@@ -1,6 +1,7 @@
 declare module 'alaska-favorite' {
   declare class FavoriteService extends Alaska$Service {
   }
+
   declare var exports: FavoriteService;
 }
 
@@ -13,5 +14,6 @@ declare module 'alaska-favorite/models/Favorite' {
     target: string;
     createdAt: Date;
   }
+
   declare var exports: Class<Favorite>;
 }

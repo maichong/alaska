@@ -394,12 +394,12 @@ async function buildChartSource(chartSource, startDate) {
   } else {
     await ChartData.remove({ source: chartSource._id });
   }
-  let Model = service.model(model);
+  let Model = service.getModel(model);
   let count = await Model.where(filters).count();
 
   if (!count) return;
 
-  const reducers = service.config('reducers') || {};
+  const reducers = service.getConfig('reducers') || {};
   let custom = reducers[reducer];
 
   if (custom) {

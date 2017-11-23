@@ -11,19 +11,18 @@ const MongoClient = mongodb.MongoClient;
 const debug = Debugger('alaska-cache-mongo');
 
 export default class MongoCacheDriver extends Driver {
-  static classOfCacheDriver: true;
+  static classOfCacheDriver = true;
+  instanceOfCacheDriver = true;
 
-  instanceOfCacheDriver: true;
   _maxAge: number;
-  _connecting: Object|null;
+  _connecting: Object | null;
   _driver: Object;
   _db: Object;
 
   constructor(service: Alaska$Service, options: Object) {
     super(service, options);
-    this.instanceOfCacheDriver = true;
     this._maxAge = options.maxAge || 0;
-    this._connecting = MongoClient.connect(options.url, _.omit(options, 'url', 'type', 'collection', 'maxAge'));
+    this._connecting = MongoClient.connect(options.url, _.omit(options, 'id', 'url', 'type', 'collection', 'maxAge'));
     this._connecting.then((db) => {
       this._db = db;
       this._connecting = null;

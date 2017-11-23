@@ -48,8 +48,8 @@ export default class OrderItem extends Model {
     currency: {
       label: 'Currency',
       type: 'select',
-      options: BALANCE.currencies,
-      default: BALANCE.defaultCurrency.value
+      options: BALANCE.getCurrenciesAsync(),
+      default: BALANCE.getDefaultCurrencyAsync().then((cur) => cur.value)
     },
     price: {
       label: 'Price',

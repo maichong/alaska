@@ -15,7 +15,7 @@ class TicketService extends Service {
 
   postLoadModels() {
     let service = this;
-    const Ticket = service.model('Ticket');
+    const Ticket = service.getModel('Ticket');
     const alaska = service.alaska;
     alaska.post('loadMiddlewares', () => {
       alaska.app.use(async(ctx: Alaska$Context, next: Function) => {

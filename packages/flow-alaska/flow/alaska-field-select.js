@@ -1,20 +1,20 @@
-declare type Alaska$SelectField$option={
-  value:any;
-  label:string;
-  style?:Alaska$style;
-  depends?:Alaska$Field$depends;
-  unit?:any;
-  precision?:number;
+declare type Alaska$SelectField$option = {
+  value: any;
+  label: string;
+  style?: Alaska$style;
+  depends?: Alaska$Field$depends;
+  unit?: any;
+  precision?: number;
 };
 
 declare module 'alaska-field-select' {
   declare class SelectField extends Alaska$Field {
-    number?:boolean;
-    boolean:boolean;
-    options:Alaska$SelectField$option[]
+    number?: boolean;
+    boolean: boolean;
+    options: Alaska$SelectField$option[]
   }
 
-  declare var exports: Class <SelectField>;
+  declare var exports: Class<SelectField>;
 }
 
 declare module 'alaska-field-select/views/Select' {

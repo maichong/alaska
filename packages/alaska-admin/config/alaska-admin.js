@@ -1,13 +1,21 @@
 import path from 'path';
 
 export default {
+  middlewares: {
+    'koa-bodyparser': {
+      sort: 1000
+    },
+    'alaska-middleware-upload': {
+      sort: 1000
+    }
+  },
   prefix: '/admin',
   statics: [{
     root: process.cwd() + '/runtime/alaska-admin-view/build',
     prefix: '/js'
   }, {
-    root: path.join(__dirname, '../static'),
-    prefix: '/static'
+    root: path.join(__dirname, '../statics'),
+    prefix: '/statics'
   }],
   services: {
     'alaska-user': {},

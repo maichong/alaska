@@ -1,6 +1,6 @@
 declare module 'alaska-queue-array' {
   declare class ArrayQueueDriver {
-    constructor(options: Object):void;
+    constructor(options: Object): void;
     key: string;
     options: Object;
     _free: boolean;

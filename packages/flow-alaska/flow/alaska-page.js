@@ -3,11 +3,12 @@
 declare module 'alaska-page' {
   declare class PageService extends Alaska$Service {
   }
+
   declare var exports: PageService;
 }
 declare module 'alaska-page/models/Page' {
   declare class Page extends Alaska$Model {
-    _id: string|number|Object|any;
+    _id: string | number | Object | any;
     title: string;
     seoTitle: string;
     seoKeywords: string;
@@ -15,7 +16,8 @@ declare module 'alaska-page/models/Page' {
     template: string;
     createdAt: Date;
     content: string;
-    preSave():void;
+    preSave(): void;
   }
+
   declare var exports: Class<Page>;
 }

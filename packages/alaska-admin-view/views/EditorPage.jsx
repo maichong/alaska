@@ -23,11 +23,11 @@ type Props = {
   saveAction: Function,
   details: Alaska$view$details,
   save: Alaska$view$save,
-  params: {
+  match: Alaska$view$match<{
     service: string,
     model: string,
     id: string
-  }
+  }>
 };
 
 type State = {
@@ -71,9 +71,9 @@ class EditorPage extends React.Component<Props, State> {
     this._r = Math.random();
 
     this.state = {
-      serviceId: props.params.service,
-      modelName: props.params.model,
-      id: props.params.id,
+      serviceId: props.match.params.service,
+      modelName: props.match.params.model,
+      id: props.match.params.id,
       errors: {},
       service: {},
       model: {}
@@ -94,10 +94,10 @@ class EditorPage extends React.Component<Props, State> {
   componentWillReceiveProps(nextProps: Props) {
     const { toast, t } = this.context;
     let newState = {};
-    if (nextProps.params) {
-      newState.serviceId = nextProps.params.service;
-      newState.modelName = nextProps.params.model;
-      newState.id = nextProps.params.id;
+    if (nextProps.match.params) {
+      newState.serviceId = nextProps.match.params.service;
+      newState.modelName = nextProps.match.params.model;
+      newState.id = nextProps.match.params.id;
       if (newState.id === '_new' && this.state.id && this.state.id !== '_new') {
         //新建时候清空表单
         newState.record = immutable({});
@@ -125,7 +125,7 @@ class EditorPage extends React.Component<Props, State> {
         const { state } = this;
         if (state.id === '_new') {
           let url = '/edit/' + state.serviceId + '/' + state.modelName + '/' + encodeURIComponent(save.res._id);
-          this.context.router.replace(url);
+          this.context.router.history.replace(url);
         }
       }
     }
@@ -183,7 +183,7 @@ class EditorPage extends React.Component<Props, State> {
 
   handleCreate = () => {
     let url = '/edit/' + this.state.serviceId + '/' + this.state.modelName + '/_new';
-    this.context.router.replace(url);
+    this.context.router.history.replace(url);
   };
 
   handleRemove = async() => {
@@ -206,7 +206,7 @@ class EditorPage extends React.Component<Props, State> {
       this.loading = false;
 
       let url = '/list/' + serviceId + '/' + modelName;
-      this.context.router.replace(url);
+      this.context.router.history.replace(url);
     } catch (error) {
       //console.error(error.stack);
       toast('error', t('Failed'), error.message);
@@ -238,7 +238,7 @@ class EditorPage extends React.Component<Props, State> {
 
     this.props.saveAction({
       service: model.serviceId,
-      model: model.name,
+      model: model.modelName,
       key: model.key,
       _r: this._r
     }, record.set('id', id.toString() === '_new' ? undefined : id));
@@ -269,7 +269,7 @@ class EditorPage extends React.Component<Props, State> {
         await akita.post('/api/action', {
           params: {
             _service: model.serviceId,
-            _model: model.name,
+            _model: model.modelName,
             _action: action
           },
           body
@@ -291,7 +291,7 @@ class EditorPage extends React.Component<Props, State> {
   }
 
   handleBack = () => {
-    this.context.router.goBack();
+    this.context.router.history.goBack();
   };
 
   render() {
@@ -313,7 +313,7 @@ class EditorPage extends React.Component<Props, State> {
     const isNew = id === '_new';
     let canSave = (isNew && model.abilities.create) || (!isNew && model.abilities.update && !model.noupdate);
     // eslint-disable-next-line
-    let title = <a onClick={this.handleBack}>{t(model.label || model.name, serviceId)}</a>;
+    let title = <a onClick={this.handleBack}>{t(model.label || model.modelName, serviceId)}</a>;
     let subTitle = '';
     if (isNew) {
       subTitle = t('Create');

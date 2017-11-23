@@ -2,18 +2,21 @@
 
 /* eslint new-cap:0 */
 
-import path from 'path';
 import fs from 'fs';
-import mime from 'mime';
+import _ from 'lodash';
+import mime from 'mime-types';
 import Koa from 'koa';
+import jsonMerge from 'json-merge-patch';
 // $Flow
 import KoaQS from 'koa-qs';
 import statuses from 'statuses';
 import collie from 'collie';
 import Debugger from 'debug';
+import depd from 'depd';
 import * as utils from './utils';
 
 const debug = Debugger('alaska');
+const deprecate = depd('alaska');
 
 /**
  * 一般错误
@@ -63,24 +66,19 @@ export const AUTHENTICATED = 2;
 export const OWNER = 3;
 
 /**
- * Alaska主类,一个项目运行时可以实例化多个Alaska对象,每个Alaska对象会监听一个端口
- * 默认情况下通过 `require('alaska')` 获取默认Alaska实例
+ * Alaska主类,通过import获取Alaska实例对象
  * ```js
- * const alaska = require('alaska');
- *
- * alaska.launch('blog').then(function(){
- *     console.log('blog launched');
- * });
+ * import alaska from 'alaska';
  * ```
  */
 class Alaska {
   _callbackMode = false;
   _app: Koa;
+  modules: Object;
   main: Alaska$Service;
   services: {
     [id: string]: Alaska$Service
   };
-  _missingService = {};
   _mounts = {};
   locales = {};
 
@@ -103,9 +101,9 @@ class Alaska {
   get app(): Koa {
     if (!this._app) {
       this._app = new Koa();
-      this._app.env = this.config('env');
-      this._app.proxy = this.config('proxy');
-      this._app.subdomainOffset = this.config('subdomainOffset');
+      this._app.env = this.getConfig('env');
+      this._app.proxy = this.getConfig('proxy');
+      this._app.subdomainOffset = this.getConfig('subdomainOffset');
       KoaQS(this._app);
     }
     return this._app;
@@ -113,34 +111,42 @@ class Alaska {
 
   /**
    * 获取本Alaska实例中注册的Service
-   * @param {string} id Service ID 或 别名
-   * @param {boolean} [optional] 可选,默认false,如果为true则不会主动加载,并且未找到时不抛出异常
+   * @deprecated
+   * @param {string} id Service ID
    * @return {Service|null}
    */
-  service(id: string, optional?: boolean): Alaska$Service | null {
+  service(id: string): Alaska$Service {
+    deprecate('service()');
+    return this.getService(id);
+  }
+
+  /**
+   * 获取本Alaska实例中注册的Service
+   * @since 0.12.0
+   * @param {string} id Service ID
+   * @return {Service}
+   */
+  getService(id: string): Alaska$Service {
+    if (id === 'main') {
+      return this.main;
+    }
     let service = this.services[id];
-
-    if (service) {
-      return service;
-    }
-
-    if (optional && this._missingService[id]) {
-      return null;
-    }
-
-    if (!service) {
-      try {
-        // $Flow
-        service = require(id).default;
-      } catch (error) {
-        this._missingService[id] = true;
-        if (optional) return null;
-        console.error('Load service "%s" failed', id);
-        console.error(error.stack);
-        process.exit(1);
-      }
+    if (!_.isObject(service)) {
+      this.panic(`Can not resolve '${id}' service!`);
     }
     return service;
+  }
+
+  /**
+   * 判断是否存在指定Service
+   * @param {string} id Service ID
+   * @returns {boolean}
+   */
+  hasService(id: string): boolean {
+    if (id === 'main' && this.main) {
+      return true;
+    }
+    return _.isObject(this.services[id]);
   }
 
   /**
@@ -156,12 +162,25 @@ class Alaska {
 
   /**
    * 获取当前Alaska实例的主Service配置
+   * @deprecated
    * @param {string} key 配置名
    * @param {*} [defaultValue] 默认值
    * @returns {*}
    */
   config(key: string, defaultValue: any): any {
-    return this.main.config(key, defaultValue);
+    deprecate('config()');
+    return this.getConfig(key, defaultValue);
+  }
+
+  /**
+   * 获取当前Alaska实例的主Service配置
+   * @since 0.12.0
+   * @param {string} key 配置名
+   * @param {*} [defaultValue] 默认值
+   * @returns {*}
+   */
+  getConfig(key: string, defaultValue: any): any {
+    return this.main.getConfig(key, defaultValue);
   }
 
   /**
@@ -185,7 +204,7 @@ class Alaska {
     this.app.use(async(ctx, next) => {
       const { hostname } = ctx;
       for (let point of mountKeys) {
-        debug('test', point);
+        debug('test endpoint', point);
         let service = alaska._mounts[point];
         if (!service.domain || service.domain === hostname) {
           if (ctx.path.startsWith(service.prefix)) {
@@ -202,7 +221,7 @@ class Alaska {
     });
 
     if (!this._callbackMode) {
-      this.app.listen(this.config('port'));
+      this.app.listen(this.getConfig('port'));
     }
   }
 
@@ -226,10 +245,10 @@ class Alaska {
     const MAIN = this.main;
     const { app } = this;
 
-    const locales = this.config('locales');
-    const localeCookieKey = this.config('localeCookieKey');
-    const localeQueryKey = this.config('localeQueryKey');
-    const defaultLocale = MAIN.config('defaultLocale');
+    const locales = this.getConfig('locales');
+    const localeCookieKey = this.getConfig('localeCookieKey');
+    const localeQueryKey = this.getConfig('localeQueryKey');
+    const defaultLocale = MAIN.getConfig('defaultLocale');
     app.use((ctx: Alaska$Context, next) => {
       ctx.set('X-Powered-By', 'Alaska');
       ctx.alaska = alaska;
@@ -237,7 +256,6 @@ class Alaska {
       ctx.service = MAIN;
       ctx.panic = alaska.panic;
       ctx.error = alaska.error;
-      ctx.try = alaska.try;
 
       /**
        * 发送文件
@@ -363,7 +381,7 @@ class Alaska {
       ctx.state.t = ctx.t;
 
       //config
-      ctx.state.c = (a, b, c) => ctx.service.config(a, b, c);
+      ctx.state.c = (a, b, c) => ctx.service.getConfig(a, b, c);
 
       //env
       ctx.state.env = process.env.NODE_ENV || 'production';
@@ -385,58 +403,40 @@ class Alaska {
       return next();
     });
 
-    let _middlewares = {};
-    this.config('appMiddlewares', [])
-      .map((id) => {
-        if (typeof id === 'function') {
-          //数组中直接就是一个中间件函数
-          return {
-            fn: id,
-            sort: id.sort || 0,
-            id: id.name || Math.random(),
-            name: id.name || '-'
-          };
-        }
-        let options;
-        let sort = 0;
-        if (typeof id === 'object') {
-          // eslint-disable-next-line prefer-destructuring
-          options = id.options;
-          // eslint-disable-next-line prefer-destructuring
-          sort = id.sort || 0;
-          // eslint-disable-next-line prefer-destructuring
-          id = id.id;
-        }
-        if (id.startsWith('.')) {
-          //如果是一个文件路径
-          id = path.join(MAIN.dir, id);
-        }
-        return {
-          id,
-          sort,
-          options
-        };
-      })
-      .filter((item) => {
-        if (_middlewares[item.id]) {
-          return false;
-        }
-        _middlewares[item.id] = item;
-        return true;
-      })
+    _.map(this.getConfig('middlewares', {}), (item, id) => {
+      if (!item.id) {
+        item.id = id;
+      }
+      return item;
+    })
       .sort((a, b) => a.sort < b.sort)
-      .forEach((item) => {
-        debug('middleware', item.name || item.id);
-        if (item.fn) {
-          app.use(item.fn);
-        } else {
-          // $Flow
-          let middleware = require(item.id);
-          if (middleware.default) {
-            middleware = middleware.default;
-          }
-          app.use(middleware(item.options));
+      .forEach((item: Alaska$Config$middleware) => {
+        let { id, fn, options } = item;
+        if (_.isObject(fn) && _.isFunction(fn.default)) {
+          fn = fn.default;
         }
+        let name = id || (fn ? fn.name : 'unknown');
+        debug('middleware', name);
+
+        if (!_.isFunction(fn)) {
+          fn = this.modules.middlewares[id];
+          if (!fn) {
+            throw new PanicError(`Middleware '${name}' not found!`);
+          }
+          if (_.isObject(fn) && _.isFunction(fn.default)) {
+            fn = fn.default;
+          }
+        }
+        if (!options) {
+          options = {};
+        }
+        if (id) {
+          let defaultOptions = this.getConfig(id);
+          if (_.isObject(defaultOptions)) {
+            options = jsonMerge(_.cloneDeep(defaultOptions), options);
+          }
+        }
+        app.use(fn(options));
       });
   }
 
@@ -492,29 +492,6 @@ class Alaska {
       error.code = code;
     }
     throw error;
-  }
-
-  /**
-   * 执行一个异步任务,如果失败则抛出NormalError
-   * @param {Promise} promise
-   * @returns {*}
-   */
-  async try<T>(promise: Promise<T>): Promise<T> {
-    try {
-      return await promise;
-    } catch (error) {
-      if (
-        error instanceof TypeError ||
-        error instanceof SyntaxError ||
-        error instanceof ReferenceError
-      ) {
-        throw error;
-      } else {
-        this.error(error);
-      }
-    }
-    // $Flow 我们知道程序永远不会运行到此
-    return null;
   }
 }
 

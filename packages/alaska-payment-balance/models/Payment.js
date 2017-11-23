@@ -5,7 +5,8 @@ export const fields = {
   currency: {
     label: 'Currency',
     type: 'select',
-    options: BALANCE.currencies
+    options: BALANCE.getCurrenciesAsync(),
+    default: BALANCE.getDefaultCurrencyAsync().then((cur) => cur.value)
   }
 };
 

@@ -5,6 +5,7 @@
 import _ from 'lodash';
 import collie from 'collie';
 import mongoose from 'mongoose';
+import alaska from './alaska';
 import * as utils from './utils';
 
 const { Schema } = mongoose;
@@ -269,14 +270,14 @@ export default class Model {
   /**
    * 注册
    */
-  static register() {
+  static async register(modelName: string) {
     const { service } = this;
     // $Flow
     const model: Class<Alaska$Model> = this;
     model._fields = {};
 
-    function loadFieldConfig(fieldTypeName) {
-      let config = service.config(fieldTypeName, undefined, true);
+    function loadFieldConfig(fieldTypeName: string) {
+      let config = service.getConfig(fieldTypeName, undefined, true);
       if (!config) {
         return {};
       }
@@ -303,10 +304,14 @@ export default class Model {
        */
       model.classOfModel = true;
 
-      let { name } = model;
-      model.id = utils.nameToKey(name);
+      if (model.modelName) {
+        modelName = model.modelName;
+      }
+
+      model.modelName = modelName;
+      model.id = utils.nameToKey(modelName);
       model.key = service.id + '.' + model.id;
-      model.path = service.id + '.' + model.name;
+      model.path = service.id + '.' + modelName;
 
       _.defaults(model, {
         titleField: 'title',
@@ -316,7 +321,7 @@ export default class Model {
         defaultFilters: null,
         defaultSort: '',
         defaultColumns: '',
-        label: model.name,
+        label: modelName,
         actions: {},
         groups: {}
       });
@@ -326,8 +331,16 @@ export default class Model {
         model.autoSelect = true;
       }
 
+      if (this._pre && this._pre.register) {
+        await collie.compose(this._pre.register, [], this);
+        delete this._pre.register;
+      }
+      if (typeof this.preRegister === 'function') {
+        await this.preRegister();
+      }
+
       const schema = new Schema({}, {
-        collection: model.collection || ((service.config('dbPrefix') || '') + model.id.replace(/-/g, '_'))
+        collection: model.collection || ((service.getConfig('dbPrefix') || '') + model.id.replace(/-/g, '_'))
       });
 
       model.schema = schema;
@@ -337,7 +350,7 @@ export default class Model {
        */
       try {
         if (!model.fields) {
-          throw new Error(name + ' model has no fields.');
+          throw new Error(modelName + ' model has no fields.');
         }
 
         model.defaultScope = {};
@@ -361,7 +374,7 @@ export default class Model {
                   options.multi = true;
                 }
               } else {
-                throw new Error(model.name + '.' + path + ' field type not specified');
+                throw new Error(modelName + '.' + path + ' field type not specified');
               }
             }
 
@@ -371,7 +384,7 @@ export default class Model {
             if (typeof options.type === 'object' && options.type.classOfField) {
               FieldClass = options.type;
             } else {
-              let fieldTypeName;
+              let fieldTypeName = '';
               if (options.type === String) {
                 fieldTypeName = 'alaska-field-text';
               } else if (options.type === Date) {
@@ -385,16 +398,18 @@ export default class Model {
               } else if (typeof options.type === 'string') {
                 fieldTypeName = 'alaska-field-' + options.type;
               } else {
-                throw new Error(`Unsupported field type for ${model.name}.${path}`);
+                throw new Error(`Unsupported field type for ${modelName}.${path}`);
               }
               delete options.type;
               Object.assign(options, loadFieldConfig(fieldTypeName));
-              if (options.type) {
+              if (options.type && typeof options.type === 'string') {
                 fieldTypeName = options.type;
               }
-              // $Flow
-              options.type = require(fieldTypeName).default;
-              FieldClass = options.type;
+              FieldClass = alaska.modules.fields[fieldTypeName];
+              if (!FieldClass) {
+                console.error(`Field type '${fieldTypeName}' not found!`);
+              }
+              options.type = FieldClass;
             }
             options.label = options.label || path.toUpperCase();
             let field = new FieldClass(options, schema, model);
@@ -404,7 +419,7 @@ export default class Model {
               model.defaultScope[path] = true;
             }
           } catch (e) {
-            console.error(`${service.id}.${model.name}.fields.${path} init failed!`);
+            console.error(`${service.id}.${modelName}.fields.${path} init failed!`);
             throw e;
           }
         });
@@ -447,7 +462,7 @@ export default class Model {
             //'Model'
             let Ref = r.ref || service.error(`${model.path}.relationships.${key}.ref is undefined`);
             if (typeof Ref === 'string') {
-              Ref = service.model(r.ref);
+              Ref = service.getModel(r.ref);
             }
             r.key = key;
             r.ref = Ref;
@@ -481,7 +496,7 @@ export default class Model {
           }
           let field: Alaska$Field = model._fields[p.path];
           if (!field) {
-            throw new Error(`${service.id}.${model.name}.populations error, can not populate '${p.path}'`);
+            throw new Error(`${service.id}.${modelName}.populations error, can not populate '${p.path}'`);
           }
           p.model = model._fields[p.path].ref;
           populations[p.path] = p;
@@ -688,14 +703,14 @@ export default class Model {
       {
         let keys = Object.keys(model._pre);
         if (keys.length) {
-          console.warn('Unknown pre hooks ' + keys.toString() + ' of ' + name);
+          console.warn('Unknown pre hooks ' + keys.toString() + ' of ' + modelName);
         }
       }
 
       {
         let keys = Object.keys(model._post);
         if (keys.length) {
-          console.warn('Unknown post hooks ' + keys.toString() + ' of ' + name);
+          console.warn('Unknown post hooks ' + keys.toString() + ' of ' + modelName);
         }
       }
 
@@ -707,7 +722,6 @@ export default class Model {
       // $Flow
       model.post = panic;
       delete model._pre;
-      delete model._post;
 
       [
         'paginateByContext',
@@ -726,7 +740,7 @@ export default class Model {
 
       //register
 
-      let MongooseModel = db.model(name, schema);
+      let MongooseModel = db.model(modelName, schema);
 
       /**
        * 原始Mongoose模型
@@ -737,8 +751,17 @@ export default class Model {
       Object.setPrototypeOf(model, MongooseModel);
       // $Flow
       Object.setPrototypeOf(model.prototype, MongooseModel.prototype);
+
+      if (typeof this.postRegister === 'function') {
+        await this.postRegister();
+      }
+      if (this._post && this._post.register) {
+        await collie.compose(this._post.register, [], this);
+        delete this._post.register;
+      }
+      delete model._post;
     } catch (e) {
-      console.error(`${service.id}.${model.name}.register failed!`);
+      console.error(`${service.id}.${modelName}.register failed!`);
       throw e;
     }
   }

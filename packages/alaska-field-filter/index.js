@@ -36,9 +36,8 @@ export default class FilterField extends Field {
       if (!modelPath) {
         return null;
       }
-      let Model = service.model(modelPath, true);
-      if (!Model) return null;
-      return Model.createFilters('', data);
+      if (!service.hasModel(modelPath)) return null;
+      return service.getModel(modelPath).createFilters('', data);
     });
   }
 }

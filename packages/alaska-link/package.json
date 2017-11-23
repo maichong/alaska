@@ -1,11 +1,12 @@
 {
   "name": "alaska-link",
-  "version": "0.11.3",
+  "version": "0.12.0",
   "description": "Alaska link service",
   "keywords": [
     "alaska",
     "alaska-service"
   ],
+  "alaska": "service",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-link",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",

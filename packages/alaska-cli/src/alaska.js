@@ -32,7 +32,7 @@ program
 program
   .command('build')
   .alias('b')
-  .description('Build admin dashboard')
+  .description('Build source code and admin dashboard')
   .option('-w, --watch', 'watch mode')
   .option('-d, --dev', 'build dev lib')
   .action(() => {

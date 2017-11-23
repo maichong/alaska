@@ -105,7 +105,7 @@ class Relationship extends React.Component<Props, State> {
           <h3 className="panel-title">{title}
             <a
               className="relationship-more"
-              href={`#/list/${model.serviceId}/${model.name}?${filtersString}`}
+              href={`#/list/${model.serviceId}/${model.modelName}?${filtersString}`}
             >{t('More')}
             </a>
           </h3>

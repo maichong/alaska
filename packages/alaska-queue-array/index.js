@@ -16,8 +16,8 @@ function sleep(seconds: number): Promise<void> {
 const queues = {};
 
 export default class ArrayQueueDriver extends Driver {
-  static classOfCacheDriver = true;
-  instanceOfQueueDriver: true;
+  static classOfQueueDriver = true;
+  instanceOfQueueDriver = true;
 
   key: string;
   _free: boolean;
@@ -25,7 +25,6 @@ export default class ArrayQueueDriver extends Driver {
   constructor(service: Alaska$Service, options: Object) {
     super(service, options);
     this.key = options.key;
-    this.instanceOfQueueDriver = true;
     this._free = false;
     if (!queues[this.key]) {
       queues[this.key] = [];

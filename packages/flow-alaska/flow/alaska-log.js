@@ -14,8 +14,8 @@ declare module 'alaska-log/models/Log' {
     time: number;
     status: string;
     length: number;
-    details:Object;
-    createdAt:Date;
+    details: Object;
+    createdAt: Date;
   }
 
   declare var exports: Class<Log>;
@@ -24,5 +24,6 @@ declare module 'alaska-log/models/Log' {
 declare module 'alaska-log/sleds/Create' {
   declare class Create extends Alaska$Sled {
   }
+
   declare var exports: Class<Create>;
 }

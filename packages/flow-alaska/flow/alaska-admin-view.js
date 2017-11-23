@@ -93,7 +93,7 @@ declare type Alaska$view$Field = {
 }
 
 declare type Alaska$view$Model = {
-  +name: string, // User
+  +modelName: string, // User
   +id: string, // user
   +path: string, // alaska-user.User
   +key: string, // alaska-user.user
@@ -217,6 +217,32 @@ declare type Alaska$view$Views = {
   }>,
   navs: Array<React$Component<any, any>>
 }
+
+declare type Alaska$view$match<P> = {
+  isExact: boolean,
+  params: P,
+  path: string,
+  url: string,
+}
+
+declare type Alaska$view$location = {
+  pathname: string,
+  search: string,
+  hash: string,
+  state?: string,
+}
+
+declare type Alaska$view$history = {
+  length: number,
+  action: string,
+  location: Alaska$view$location,
+  push: (path: string, state?: string) => void,
+  replace: (path: string, state?: string) => void,
+  go: (n: number) => void,
+  goBack: () => void,
+  goForward: () => void,
+  block: (prompt: string) => void
+};
 
 declare module 'alaska-admin-view' {
   declare export var api: Akita$Client;

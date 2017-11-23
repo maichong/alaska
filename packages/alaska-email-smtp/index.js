@@ -4,7 +4,9 @@ import Nodemailer from 'nodemailer';
 import { Driver } from 'alaska';
 
 export default class EmailSmtpDriver extends Driver {
-  transporter: null|Object;
+  static classOfEmailDriver = true;
+  instanceOfEmailDriver = true;
+  transporter: null | Object;
 
   constructor(service: Alaska$Service, options: Object) {
     super(service, options);

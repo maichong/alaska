@@ -7,9 +7,8 @@ import Recharge from 'alaska-recharge/models/Recharge';
 import BALANCE from 'alaska-balance';
 import Deposit from 'alaska-balance/models/Deposit';
 
-const currenciesMap = BALANCE.currenciesMap;
-
 export async function pre() {
+  const currenciesMap = BALANCE.currenciesMap;
   let params = this.params;
   console.log('params', params);
   // balance | deposit

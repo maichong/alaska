@@ -6,6 +6,7 @@ declare module 'alaska-payment' {
     static run(name: string, params?: Object): Promise<any>;
     payments: Object;
   }
+
   declare var exports: PaymentService;
   declare var PaymentService: Class<PaymentService>;
 }
@@ -20,12 +21,13 @@ declare module 'alaska-payment/models/Payment' {
     state: number;
     failure: string;
     createdAt: Date;
-    currency:string;
-    preSave():void;
+    currency: string;
+    preSave(): void;
 
-    alipay_trade_no:string;
-    alipay_buyer_email:string;
+    alipay_trade_no: string;
+    alipay_buyer_email: string;
   }
+
   declare var exports: Class<Payment>;
 }
 

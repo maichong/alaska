@@ -1,8 +1,10 @@
 declare module 'alaska-balance' {
   declare class BalanceService extends Alaska$Service {
-    currencies:Alaska$SelectField$option[];
-    currenciesMap:Object;
-    defaultCurrency:Alaska$SelectField$option;
+    currencies: Alaska$SelectField$option[];
+    currenciesMap: Object;
+    defaultCurrency: Alaska$SelectField$option;
+    getCurrenciesAsync(): Promise<Alaska$SelectField$option[]>;
+    getDefaultCurrencyAsync(): Promise<Alaska$SelectField$option>;
   }
 
   declare var exports: BalanceService;
@@ -47,6 +49,7 @@ declare class Alaska$Model$Withdraw extends Alaska$Model {
   state: number;
   reason: string;
 }
+
 declare module 'alaska-balance/models/Withdraw' {
   declare var exports: Class<Alaska$Model$Withdraw>;
 }

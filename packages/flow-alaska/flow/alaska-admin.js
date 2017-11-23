@@ -1,6 +1,7 @@
 declare module 'alaska-admin' {
   declare class AdminService extends Alaska$Service {
   }
+
   declare var exports: AdminService
 }
 
@@ -15,6 +16,7 @@ declare module 'alaska-admin/models/AdminMenu' {
     super: boolean;
     activated: boolean;
   }
+
   declare var exports: Class<AdminMenu>
 }
 

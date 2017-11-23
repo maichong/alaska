@@ -1,15 +1,15 @@
 // @flow
 
 /* eslint no-console:0 */
-/* eslint global-require:0 */
 /* eslint prefer-arrow-callback:0 */
 /* eslint no-restricted-syntax:0 */
 /* eslint guard-for-in:0 */
 
 import _ from 'lodash';
 import compose from 'koa-compose';
-import * as utils from '../utils';
 import { NormalError } from '../alaska';
+import * as utils from '../utils';
+import * as defaultApiController from '../api';
 
 export default async function loadApi() {
   this.loadApi = utils.resolved;
@@ -17,38 +17,40 @@ export default async function loadApi() {
   for (let sub of this.serviceList) {
     await sub.loadApi();
   }
-  if (this.config('prefix') === false || this.config('api') === false) return;
+  if (this.getConfig('prefix') === false) return;
+
   this.debug('loadApi');
 
   const service: Alaska$Service = this;
 
   const { router } = service;
 
-  this._apiControllers = utils.include(this.dir + '/api', false) || {};
+  let serviceModules = this.alaska.modules.services[this.id];
+
+  this._apiControllers = serviceModules.api || {};
 
   const apis = this._apiControllers;
 
-  this._configDirs.forEach((dir) => {
-    dir += '/api';
-    if (utils.isDirectory(dir)) {
-      let patches = utils.include(dir, false) || {};
-      _.forEach(patches, (patch, c) => {
-        if (!apis[c]) {
-          apis[c] = {};
+  // plugins
+  _.forEach(serviceModules.plugins, (plugin) => {
+    _.forEach(plugin.api, (patch, group) => {
+      if (!apis[group]) {
+        apis[group] = {};
+      }
+      _.forEach(patch, (fn, name) => {
+        if (name[0] === '_' || typeof fn !== 'function') return;
+        if (!apis[group][name]) {
+          apis[group][name] = fn;
+        } else if (typeof apis[group][name] === 'function') {
+          apis[group][name] = [fn, apis[group][name]];
+        } else if (Array.isArray(apis[group][name])) {
+          apis[group][name].unshift(fn);
         }
-        _.forEach(patch, (fn, name) => {
-          if (name[0] === '_' || typeof fn !== 'function') return;
-          if (!apis[c][name]) {
-            apis[c][name] = fn;
-          } else if (typeof apis[c][name] === 'function') {
-            apis[c][name] = [fn, apis[c][name]];
-          } else if (Array.isArray(apis[c][name])) {
-            apis[c][name].unshift(fn);
-          }
-        });
       });
-    }
+    });
   });
+
+  if (!_.size(apis)) return;
 
   //将某些API的多个中间件转换成一个
   _.forEach(apis, (api) => {
@@ -58,8 +60,6 @@ export default async function loadApi() {
       }
     });
   });
-
-  const defaultApiController = require('../api');
 
   const models = _.reduce(this.models, (res, Model) => {
     res[Model.id] = Model;

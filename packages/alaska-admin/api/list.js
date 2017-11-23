@@ -13,7 +13,7 @@ export default async function list(ctx: Alaska$Context) {
   if (!s) {
     alaska.error('Invalid parameters');
   }
-  let Model: Class<Alaska$Model> = s.model(modelName);
+  let Model: Class<Alaska$Model> = s.getModel(modelName);
 
   let ability = `admin.${Model.key}.read`;
   await ctx.checkAbility(ability);

@@ -17,7 +17,7 @@ export default class TextFeild extends Field {
 
   init() {
     if (this.match && !(this.match instanceof RegExp)) {
-      throw new Error(`${this._model.name}.${this.path} field "match" option must be instance of RegExp`);
+      throw new Error(`${this._model.modelName}.${this.path} field "match" option must be instance of RegExp`);
     }
   }
 

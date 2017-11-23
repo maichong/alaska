@@ -2,7 +2,7 @@
 
 import React from 'react';
 // $Flow
-import ChartJS from 'react-chartjs';
+import ChartJS from 'react-chartjs-2';
 import { api } from 'alaska-admin-view';
 
 type Props = {

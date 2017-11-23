@@ -1,6 +1,6 @@
 // @flow
 
-import { Field } from 'alaska';
+import alaska, { Field } from 'alaska';
 import mongoose from 'mongoose';
 import _ from 'lodash';
 
@@ -47,7 +47,11 @@ export default class RelationshipField extends Field {
     if (typeof ref === 'string') {
       //查找引用模型
       //ref 当this.optional为true时,ref有可能为null
-      ref = model.service.model(ref, this.optional);
+      if (this.optional && !model.service.hasModel(ref)) {
+        ref = null;
+      } else {
+        ref = model.service.getModel(ref);
+      }
     }
 
     let options: Indexed = {};
@@ -63,8 +67,10 @@ export default class RelationshipField extends Field {
           type = type.type;
         }
         if (typeof type === 'string') {
-          // $Flow
-          type = require('alaska-field-' + type).default;
+          type = alaska.modules.fields['alaska-field-' + type];
+          if (!type) {
+            alaska.panic(`Field type 'alaska-field-${type}' not found!`);
+          }
         }
         if (type.plain) {
           type = type.plain;
@@ -75,14 +81,14 @@ export default class RelationshipField extends Field {
       }
       options = {
         type,
-        ref: ref.name
+        ref: ref.modelName
       };
 
       if (ref.service) {
         // 模型已经初始化
         this.service = ref.service.id;
       }
-      this.model = ref.name;
+      this.model = ref.modelName;
     } else {
       //如果没有找到引用,说明是可选引用
       this.hidden = true;

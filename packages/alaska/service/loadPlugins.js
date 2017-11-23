@@ -12,13 +12,12 @@ export default async function loadPlugins() {
 
   this.debug('loadPlugins');
 
+  let serviceModules = this.alaska.modules.services[this.id];
+
   this.plugins = {};
 
-  _.forEach(this.config('plugins', {}), (Plugin, key) => {
-    if (typeof Plugin === 'string') {
-      // $Flow
-      Plugin = require(Plugin).default;
-    }
+  _.forEach(serviceModules.plugins, ({ Plugin }, key) => {
+    if (!Plugin) return;
     this.plugins[key] = new Plugin(this);
   });
 }

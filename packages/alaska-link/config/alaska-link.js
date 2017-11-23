@@ -1,6 +1,4 @@
 
 export default {
-  prefix: '/link',
-  middlewares: false,
-  controllers: false
+  prefix: '/link'
 };

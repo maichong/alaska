@@ -173,18 +173,11 @@ declare type Alaska$Context = {
   toJSON: () => Object;
 };
 
-declare type Alaska$Config$appMiddleware = {
-  id: string;
-  sort?: number;
-  options?: Object;
-};
-
 declare type Alaska$Config$middleware = {
-  id: string;
-  path?: string;
-  sort?: number;
-  options?: Object;
-  methods?: string[]
+  id?: string,
+  fn?: Function,
+  sort?: number,
+  options?: Object
 };
 
 declare type Alaska$Config$cache = {
@@ -221,7 +214,10 @@ declare type Alaska$Config$static = {
 };
 
 declare type Alaska$Config$services = {
-  [id: string]: Object
+  [id: string]: {
+    dir?: string,
+    optional?: boolean
+  }
 };
 
 
@@ -230,9 +226,11 @@ declare type Alaska$Config = {
 
   // project
   name?: string;
-  appMiddlewares?: Alaska$Config$appMiddleware[];
   port?: number;
   env?: string;
+  middlewares: {
+    [id: string]: Alaska$Config$middleware
+  };
   session?: Alaska$Config$session;
   locales?: string[];
   defaultLocale?: string;
@@ -253,7 +251,6 @@ declare type Alaska$Config = {
   methods?: string[];
   statics?: Alaska$Config$static[];
   renderer?: Alaska$Config$renderer;
-  templates?: string;
   services?: Alaska$Config$services;
   plugins?: {
     [key: string]: string | Class<Alaska$Plugin>
@@ -261,9 +258,6 @@ declare type Alaska$Config = {
   db?: false | string;
   dbPrefix?: false | string;
   cache?: Alaska$Config$cache | string;
-  middlewares?: false | Alaska$Config$middleware[];
-  controllers?: boolean;
-  api?: boolean;
 };
 
 declare type Alaska$filter = {
@@ -291,7 +285,7 @@ declare type Alaska$sledQueueItem = {
   key: string;
   notify: boolean;
   params: Object;
-  name: string;
+  sledName: string;
   result: void | any;
   error: void | string;
   timeout: number;
@@ -302,7 +296,7 @@ declare type Alaska$sledQueueItem = {
 declare class Alaska$Sled {
   static classOfSled: true;
   static service: Alaska$Service;
-  static name: string;
+  static sledName: string;
   static key: string;
   static config: Object;
   static run(params?: Object): Promise<any>;
@@ -427,10 +421,6 @@ declare class Alaska$Model extends events$EventEmitter {
 
   db: Mongoose$Connection;
   collection: Mongoose$Collection;
-  modelName: string;
-  baseModelName: string;
-  base: Mongoose;
-  discriminators: Alaska$Model[];
 
   static remove(conditions: Object, callback?: Function): Alaska$Query;
   static find(conditions?: Object, projection?: Object, options?: Object, callback?: Function): Alaska$Query & Promise<Alaska$Model[]>;
@@ -489,10 +479,9 @@ declare class Alaska$Model extends events$EventEmitter {
   };
   static _virtuals: { [path: string]: boolean };
 
-  static classOfModel: true;
-  static title?: string;
   static registered: boolean;
-  static name: string;
+  static classOfModel: true;
+  static modelName: string;
   static id: string;
   static key: string;
   static path: string;
@@ -547,7 +536,7 @@ declare class Alaska$Model extends events$EventEmitter {
 
   static pre(action: string, fn: Function): void;
   static post(action: string, fn: Function): void;
-  static register(): void;
+  static register(modelName: string): Promise<void>;
   static underscoreMethod(field: string, name: string, fn: Function): void;
   static createFilters(search: string, filters?: Object | string): Alaska$filters;
   static createFiltersByContext(ctx: Alaska$Context, state?: Object): Alaska$filters;
@@ -716,7 +705,7 @@ declare type Alaska$Field$options = {
   // Mongoose
   get?: Function;
   set?: Function;
-  default?: any;
+  default?: any | Promise<any>;
   index?: boolean;
   unique?: boolean;
   sparse?: boolean;
@@ -725,7 +714,7 @@ declare type Alaska$Field$options = {
   select?: boolean;
 
   // Alaska
-  options?: Alaska$SelectField$option[];
+  options?: Alaska$SelectField$option[] | Promise<Alaska$SelectField$option[]>;
   type?: Class<Alaska$Field> | string | Function | void;
   defaultValue?: any;
   ref?: Class<Alaska$Model> | string | [string];
@@ -755,6 +744,7 @@ declare class Alaska$Service {
   static classOfService: true;
   id: string;
   dir: string;
+  configFile: string;
   version: string;
   alaska: Alaska$Alaska;
   debug: Debugger;
@@ -769,7 +759,6 @@ declare class Alaska$Service {
   templatesDirs: string[];
 
   constructor(options?: Alaska$Service$options): void;
-  getCacheDriver(options: Object | string, createNew?: boolean): Alaska$CacheDriver;
   createDriver(options: Object): Alaska$Driver;
   freeDriver(driver: Alaska$Driver): void;
   pre(action: string, fn: Function): void;
@@ -778,25 +767,29 @@ declare class Alaska$Service {
   error: (message: string | number, code?: number) => void;
   try: <T>(promise: Promise<T>) => Promise<T>;
   adminSettings(ctx: Alaska$Context, user: User, settings: Object): Promise<void>;
-  addConfigDir(dir: string): void;
   applyConfig(config: Alaska$Config): void;
-  config(key: string, defaultValue?: any, mainAsDefault?: boolean): any;
-  model(name: string, optional?: boolean): Class<Alaska$Model>;
-  sled(name: string): Class<Alaska$Sled>;
-  run(name: string, params?: Object): Promise<any>;
+  getConfig(key: string, defaultValue?: any, mainAsDefault?: boolean): any;
+  registerModel(Model: Class<Alaska$Model>): Promise<Class<Alaska$Model>>;
+  hasModel(modelName: string): boolean;
+  getModel(modelName: string): Class<Alaska$Model>;
+  hasSled(sledName: string): boolean;
+  getSled(sledName: string): Class<Alaska$Sled>;
+  run(sledName: string, params?: Object): Promise<any>;
   t(message: string, locale?: string, values?: Object, formats?: Object): string;
   toJSON(): Object;
   loadModels(): void;
 }
 
 declare class Alaska$Alaska {
+  modules: Object,
   db: Mongoose$Connection;
   main: Alaska$Service;
   services: { [id: string]: Alaska$Service };
   app: Koa;
-  service(id: string, optional?: boolean): Alaska$Service;
-  registerModel(Model: Class<Alaska$Model>): Promise<Class<Alaska$Model>>;
-  config(key: string, defaultValue: any): any;
+  registerService(service: Alaska$Service): void;
+  hasService(id: string): boolean;
+  getService(id: string): Alaska$Service;
+  getConfig(key: string, defaultValue: any): any;
   toJSON(): Object;
   post(action: string, fn: Function): void;
   panic: (message: string | number, code?: number) => void;
@@ -883,8 +876,17 @@ declare class Alaska$EmailDriver extends Alaska$Driver {
   send(data: Alaska$emailMessage): Promise<Object>;
 }
 
+declare class Alaska$SmsDriver extends Alaska$Driver {
+  static classOfSmsDriver: true;
+  instanceOfSmsDriver: true;
+
+  constructor(service: Alaska$Service, options: Object): void;
+  send(to: string, message: string): Promise<Object>;
+}
+
 declare class Alaska$Renderer {
   static classOfRenderer: true;
+  instanceOfRenderer: true;
   service: Alaska$Service;
   options: Alaska$Config$renderer;
 
@@ -914,4 +916,14 @@ declare module alaska {
   declare export var OWNER: 3;
   declare var exports: Alaska$Alaska;
   declare export default Alaska$Alaska;
+}
+
+declare module 'alaska/utils' {
+  declare function isFile(path: string): boolean;
+
+  declare function isDirectory(path: string): boolean;
+
+  declare function readJson(path: string): Object;
+
+  declare function isHidden(path: string): boolean;
 }

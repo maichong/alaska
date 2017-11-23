@@ -21,17 +21,10 @@ class StatisticsService extends Service {
     super(options);
   }
 
-  postLoadConfig() {
-    let ADMIN = alaska.service('alaska-admin', true);
-    if (ADMIN) {
-      ADMIN.addConfigDir(path.join(__dirname, '/config/alaska-admin'));
-    }
-  }
-
   postLoadModels() {
-    let reducers = this.config('reducers');
+    let reducers = this.getConfig('reducers');
     if (_.isEmpty(reducers)) return;
-    const ChartSource = this.model('ChartSource');
+    const ChartSource = this.getModel('ChartSource');
     _.forEach(reducers, (reducer, key) => {
       let options = _.omit(reducer, 'fn', 'final');
       options.value = key;

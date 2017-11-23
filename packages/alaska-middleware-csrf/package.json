@@ -1,9 +1,0 @@
-{
-  "name": "alaska-csrf",
-  "version": "0.11.0",
-  "description": "Alaska csrf middleare",
-  "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-meddleware-csrf",
-  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
-  "license": "MIT"
-}

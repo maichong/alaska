@@ -1,6 +1,6 @@
 {
   "name": "alaska-cli",
-  "version": "0.11.22",
+  "version": "0.12.0",
   "description": "Alaska command line interface",
   "keywords": [
     "alaska"
@@ -12,6 +12,7 @@
   "bin": {
     "alaska": "bin/alaska"
   },
+  "alaska": "cli",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-cli",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",

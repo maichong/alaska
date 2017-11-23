@@ -13,17 +13,6 @@ class ShopService extends Service {
     options.id = options.id || 'alaska-shop';
     super(options);
   }
-
-  preLoadConfig() {
-    let ORDER: any = alaska.service('alaska-order', true);
-    if (ORDER) {
-      ORDER.addConfigDir(path.join(__dirname, '/config/alaska-order'));
-    }
-    let GOODS: any = alaska.service('alaska-goods', true);
-    if (GOODS) {
-      GOODS.addConfigDir(path.join(__dirname, '/config/alaska-goods'));
-    }
-  }
 }
 
 export default new ShopService();

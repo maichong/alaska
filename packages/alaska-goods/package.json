@@ -1,20 +1,21 @@
 {
   "name": "alaska-goods",
-  "version": "0.11.29",
+  "version": "0.12.0",
   "description": "Alaska goods service",
   "keywords": [
     "alaska",
     "alaska-service"
   ],
+  "alaska": "service",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-goods",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-balance": "^0.11.29",
-    "alaska-field-category": "^0.11.12",
-    "alaska-field-html": "^0.11.22",
-    "alaska-field-mixed": "^0.11.12",
-    "alaska-field-select": "^0.11.22"
+    "alaska-balance": "^0.12.0",
+    "alaska-field-category": "^0.12.0",
+    "alaska-field-html": "^0.12.0",
+    "alaska-field-mixed": "^0.12.0",
+    "alaska-field-select": "^0.12.0"
   }
 }

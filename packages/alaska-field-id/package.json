@@ -1,11 +1,12 @@
 {
   "name": "alaska-field-id",
-  "version": "0.11.15",
+  "version": "0.12.0",
   "description": "Alaska object id field",
   "keywords": [
     "alaska",
     "alaska-field"
   ],
+  "alaska": "field",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-id",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",

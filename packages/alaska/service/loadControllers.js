@@ -10,36 +10,37 @@ export default async function loadControllers() {
   for (let sub of this.serviceList) {
     await sub.loadControllers();
   }
-  if (this.config('prefix') === false || this.config('controllers') === false) return;
+  if (this.getConfig('prefix') === false) return;
   this.debug('loadControllers');
 
   const service = this;
 
-  this._controllers = utils.include(this.dir + '/controllers', false) || {};
+  let serviceModules = this.alaska.modules.services[this.id];
+
+  this._controllers = serviceModules.controllers || {};
 
   const controllers = this._controllers;
 
-  this._configDirs.forEach((dir) => {
-    dir += '/controllers';
-    if (utils.isDirectory(dir)) {
-      let patches = utils.include(dir, false) || {};
-      _.forEach(patches, (patch, c) => {
-        if (!controllers[c]) {
-          controllers[c] = {};
+  // plugins
+  _.forEach(serviceModules.plugins, (plugin) => {
+    _.forEach(plugin.controllers, (patch, group) => {
+      if (!controllers[group]) {
+        controllers[group] = {};
+      }
+      _.forEach(patch, (fn, name) => {
+        if (name[0] === '_' || typeof fn !== 'function') return;
+        if (!controllers[group][name]) {
+          controllers[group][name] = fn;
+        } else if (typeof controllers[group][name] === 'function') {
+          controllers[group][name] = [fn, controllers[group][name]];
+        } else if (Array.isArray(controllers[group][name])) {
+          controllers[group][name].unshift(fn);
         }
-        _.forEach(patch, (fn, name) => {
-          if (name[0] === '_' || typeof fn !== 'function') return;
-          if (!controllers[c][name]) {
-            controllers[c][name] = fn;
-          } else if (typeof controllers[c][name] === 'function') {
-            controllers[c][name] = [fn, controllers[c][name]];
-          } else if (Array.isArray(controllers[c][name])) {
-            controllers[c][name].unshift(fn);
-          }
-        });
       });
-    }
+    });
   });
+
+  if (!_.size(controllers)) return;
 
   //将某些控制器的多个中间件转换成一个
   _.forEach(controllers, (ctrl) => {
@@ -50,11 +51,11 @@ export default async function loadControllers() {
     });
   });
 
-  const defaultController = this.config('defaultController');
-  const defaultAction = this.config('defaultAction');
+  const defaultController = this.getConfig('defaultController');
+  const defaultAction = this.getConfig('defaultAction');
 
-  const suffix = this.config('suffix');
-  this.router.register('/:controller?/:action?', this.config('methods'), (ctx, next) => {
+  const suffix = this.getConfig('suffix');
+  this.router.register('/:controller?/:action?', this.getConfig('methods'), (ctx, next) => {
     let controller = ctx.params.controller || defaultController;
     let action = ctx.params.action || defaultAction;
     if (suffix && action && action.endsWith(suffix)) {

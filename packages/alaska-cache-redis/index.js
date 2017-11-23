@@ -10,14 +10,12 @@ const debug = Debugger('alaska-cache-redis');
 
 export default class RedisCacheDriver extends Driver {
   static classOfCacheDriver = true;
-
-  instanceOfCacheDriver: true;
+  instanceOfCacheDriver = true;
   _maxAge: number;
   _driver: Object;
 
   constructor(service: Alaska$Service, options: Object) {
     super(service, options);
-    this.instanceOfCacheDriver = true;
     this._maxAge = options.maxAge || 0;
     this._driver = redis.createClient(options);
   }

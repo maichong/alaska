@@ -1,6 +1,7 @@
 declare module 'alaska-ticket' {
   declare class TicketService extends Alaska$Service {
   }
+
   declare var exports: TicketService;
 }
 
@@ -16,5 +17,6 @@ declare module 'alaska-ticket/models/Ticket' {
     preSave(): void;
     verify(ctx: Alaska$Context): boolean;
   }
+
   declare var exports: Class<Ticket>;
 }

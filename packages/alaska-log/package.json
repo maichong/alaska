@@ -1,7 +1,8 @@
 {
   "name": "alaska-log",
-  "version": "0.11.22",
+  "version": "0.12.0",
   "description": "Alaska log service",
+  "alaska": "service",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-log",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",

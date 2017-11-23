@@ -11,13 +11,11 @@ class CaptchaService extends Service {
   }
 
   async preLoadModels() {
-    const SMS = alaska.service('alaska-sms', true);
-    if (SMS) {
-      await SMS.loadModels();
+    if (alaska.hasService('alaska-sms')) {
+      await alaska.getService('alaska-sms').loadModels();
     }
-    const EMAIL = alaska.service('alaska-email', true);
-    if (EMAIL) {
-      await EMAIL.loadModels();
+    if (alaska.hasService('alaska-email')) {
+      await alaska.getService('alaska-email').loadModels();
     }
   }
 

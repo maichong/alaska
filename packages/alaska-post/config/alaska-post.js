@@ -1,8 +1,9 @@
 export default {
   prefix: '/post',
   services: {
-    'alaska-user': {}
-  },
-  controllers: false,
-  middlewares: false
+    'alaska-user': {},
+    'alaska-admin': {
+      optional: true
+    }
+  }
 };

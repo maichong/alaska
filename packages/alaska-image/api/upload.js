@@ -5,7 +5,7 @@ import Upload from '../sleds/Upload';
 
 export default async function (ctx:Alaska$Context) {
   if (ctx.method !== 'POST') service.error(400);
-  let auth = service.config('auth');
+  let auth = service.getConfig('auth');
   if (auth && !ctx.user) service.error(403);
   let body = ctx.state.body || ctx.request.body;
   let file;

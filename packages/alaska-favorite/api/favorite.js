@@ -11,7 +11,7 @@ export async function create(ctx:Alaska$Context, next:Function) {
   let title = body.title;
   let pic = body.pic;
   if (!pic || !title) {
-    let Model = service.model(type);
+    let Model = service.getModel(type);
     // $Flow findById
     let record:Alaska$Model = await Model.findById(target);
     if (!record) service.error('missing favorite target record');

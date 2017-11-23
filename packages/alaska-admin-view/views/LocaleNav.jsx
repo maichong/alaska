@@ -15,14 +15,14 @@ export default class LocaleNav extends React.Component<any> {
     if (settings && settings.locales && Object.keys(settings.locales.all).length > 1) {
       let all = settings.locales.all;
       let locale = settings.locale;
-      return (<NavDropdown title={<img alt="" src={'static/img/locales/' + locale + '.png'} />} id="localeNav">{
+      return (<NavDropdown title={<img alt="" src={'statics/img/locales/' + locale + '.png'} />} id="localeNav">{
         Object.keys(all).map((key) => (<MenuItem
           key={key}
           className="locales-nav-item"
           onClick={() => {
             location.href = '?locale=' + key + location.hash;
           }}
-        ><img alt="" src={'static/img/locales/' + key + '.png'} /> {(all[key] || {}).lang || key}
+        ><img alt="" src={'statics/img/locales/' + key + '.png'} /> {(all[key] || {}).lang || key}
         </MenuItem>))
       }
       </NavDropdown>);

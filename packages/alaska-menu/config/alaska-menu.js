@@ -1,6 +1,4 @@
 
 export default {
-  prefix: '/menu',
-  middlewares: false,
-  controllers: false
+  prefix: '/menu'
 };

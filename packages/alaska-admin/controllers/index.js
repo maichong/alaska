@@ -4,7 +4,7 @@ export default async function (ctx: Alaska$Context) {
     return;
   }
   await ctx.show('index.swig', {
-    prefix: ctx.service.config('prefix'),
+    prefix: ctx.service.getConfig('prefix'),
     env: process.env.NODE_ENV || 'production'
   });
 }

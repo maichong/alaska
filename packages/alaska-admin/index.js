@@ -17,25 +17,11 @@ class AdminService extends Service {
     super(options);
   }
 
-  postInit() {
-    alaska.main.applyConfig({
-      '+appMiddlewares': [{
-        id: 'koa-bodyparser',
-        sort: 1000,
-        options: alaska.main.config('koa-bodyparser')
-      }, {
-        id: 'alaska-middleware-upload',
-        sort: 1000,
-        options: alaska.main.config('alaska-middleware-upload')
-      }]
-    });
-  }
-
   async preMount() {
-    if (this.config('autoInit')) {
+    if (this.getConfig('autoInit')) {
       let services = Object.keys(alaska.services);
       for (let serviceId of services) {
-        let Init = alaska.service(serviceId).sleds.Init;
+        let Init = alaska.getService(serviceId).sleds.Init;
         if (Init) {
           await Init.run();
         }
@@ -65,9 +51,9 @@ class AdminService extends Service {
       let service = alaska.services[serviceId];
       let settings = {};
       settings.id = serviceId;
-      settings.domain = service.config('domain');
-      settings.prefix = service.config('prefix');
-      settings.api = service.config('api');
+      settings.domain = service.getConfig('domain');
+      settings.prefix = service.getConfig('prefix');
+      settings.api = service.getConfig('api');
       settings.models = {};
       locales[serviceId] = service.locales;
       for (let modelName of Object.keys(service.models)) {
@@ -76,7 +62,7 @@ class AdminService extends Service {
           continue;
         }
         let model = {
-          name: Model.name,
+          modelName: Model.modelName,
           label: Model.label,
           id: Model.id,
           path: Model.path,
@@ -95,7 +81,7 @@ class AdminService extends Service {
               title: r.title,
               filters: r.filters,
               service: r.ref.service.id,
-              model: r.ref.name
+              model: r.ref.modelName
             };
             return res;
           }, {}),
@@ -147,7 +133,7 @@ class AdminService extends Service {
             plain: 'id'
           };
         }
-        settings.models[Model.name] = model;
+        settings.models[Model.modelName] = model;
       }
       services[service.id] = settings;
     }
