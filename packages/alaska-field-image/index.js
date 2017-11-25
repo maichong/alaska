@@ -94,7 +94,7 @@ export default class ImageField extends Field {
         }
       }
       if (!ext) {
-        ext = mime.getExtension(mimeType).replace('jpeg', 'jpg');
+        ext = mime.extension(mimeType).replace('jpeg', 'jpg');
       }
       if (field.allowed && field.allowed.indexOf(ext) < 0) {
         reject(new Error('Image format error'));

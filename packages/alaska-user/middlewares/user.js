@@ -47,7 +47,7 @@ export default function () {
       let cookie = ctx.cookies.get(key);
       if (cookie) {
         try {
-          let data = encryption.decrypt(new Buffer(cookie, 'base64')).toString();
+          let data = encryption.decrypt(Buffer.from(cookie, 'base64')).toString();
           if (data) {
             data = data.split(':').filter((d) => d);
             if (data.length >= 2) {

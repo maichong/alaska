@@ -50,7 +50,9 @@ export default class SelectCheckbox extends React.Component<Props, State> {
     const { options } = this.state;
 
     let optionsMap: Indexed = {};
-    _.forEach(options, (o) => (optionsMap[getOptionValue(o)] = o));
+    _.forEach(options, (o) => {
+      optionsMap[getOptionValue(o)] = o;
+    });
 
     if (!multi) {
       if (optionsMap[opt]) {

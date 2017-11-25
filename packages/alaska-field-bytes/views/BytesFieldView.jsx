@@ -6,8 +6,7 @@ import _ from 'lodash';
 import shallowEqualWithout from 'shallow-equal-without';
 
 type State = {
-  display: string,
-  value: string
+  display: string
 };
 
 export default class BytesFieldView extends React.Component<Alaska$view$Field$View$Props, State> {
@@ -16,21 +15,19 @@ export default class BytesFieldView extends React.Component<Alaska$view$Field$Vi
   constructor(props: Alaska$view$Field$View$Props) {
     super(props);
     this.state = {
-      display: numeral(props.value).format('0,0'),
-      value: ''
+      display: numeral(props.value).format('0,0')
     };
   }
 
   componentWillReceiveProps(nextProps: Alaska$view$Field$View$Props) {
     let newState = {};
     if (nextProps.value) {
-      newState.value = numeral(nextProps.value).format('0,0');
       if (this.focused) {
         //正在输入
         newState.display = nextProps.value;
       } else {
         //不在输入状态
-        newState.display = newState.value;
+        newState.display = numeral(nextProps.value).format('0,0');
       }
     }
     this.setState(newState);

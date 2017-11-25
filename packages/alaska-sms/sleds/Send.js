@@ -19,12 +19,12 @@ export default class Send extends Sled {
    *        [params.values] 短信内容中填充的数据
    */
   async exec(params: {
-    sms:Object,
-    to:string,
-    message:string,
-    driver:string|Object,
-    locale:string,
-    values:string
+    sms: Sms,
+    to: string,
+    message: string,
+    driver: string | Object,
+    locale: string,
+    values: string
   }) {
     let message = params.message;
     let driver = params.driver;
@@ -70,6 +70,7 @@ export default class Send extends Sled {
       message = messageCache[message].format(values);
     }
 
+    if (!driver) throw new Error('Can not resolve sms driver!');
     return await driver.send(to, message);
   }
 }

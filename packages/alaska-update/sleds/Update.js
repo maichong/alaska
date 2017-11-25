@@ -8,7 +8,8 @@ export default class Update extends Sled {
     const serviceModules = alaska.modules.services[alaska.main.id];
     if (!serviceModules || !serviceModules.updates) return;
 
-    let records = await AppUpdate.find();
+    // $Flow
+    let records: AppUpdate[] = await AppUpdate.find();
     let recordsMap = {};
     records.forEach((record) => {
       recordsMap[record.key] = record;

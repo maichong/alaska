@@ -62,7 +62,7 @@ export default class ImageFieldView extends React.Component<Alaska$view$Field$Vi
     }
 
     let id = '_new';
-    let { serviceId, name: modelName } = model || { serviceId: 'alaska-user', name: 'User' };
+    let { serviceId, modelName } = model || { serviceId: 'alaska-user', name: 'User' };
     if (record && record._id) {
       id = record._id;
     }

@@ -15,7 +15,7 @@ export default class RelationshipField extends Field {
       let Model = field.ref;
       if (Model) {
         options.ref = Model.path;
-        options.title = Model.title;
+        options.title = Model.titleField;
         if (!options.service && Model.service) {
           options.service = Model.service.id;
         }
@@ -127,6 +127,7 @@ export default class RelationshipField extends Field {
       }
     });
 
+    // $Flow
     this.ref = ref;
     // $Flow
     this.dataType = type;

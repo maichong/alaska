@@ -1,7 +1,6 @@
 // @flow
 
-import alaska, { Service } from 'alaska';
-import path from 'path';
+import { Service } from 'alaska';
 
 class OrderService extends Service {
   constructor(options?: Alaska$Service$options) {

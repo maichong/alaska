@@ -24,14 +24,14 @@ export default class ImageLinkFieldCell extends React.Component<Alaska$view$Fiel
       return (
         <div className="image-link-field-cell">
           {
-            _.map(value, (link) => <img src={link + thumbSuffix} style={style} />)
+            _.map(value, (link) => (<img alt={link} src={link + thumbSuffix} style={style} />))
           }
         </div>
       );
     }
 
     return (
-      <img src={value + thumbSuffix} style={style} />
+      <img alt={value} src={value + thumbSuffix} style={style} />
     );
   }
 }

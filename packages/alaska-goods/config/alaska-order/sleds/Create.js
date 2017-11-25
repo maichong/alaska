@@ -98,7 +98,7 @@ export async function pre() {
 
 export async function post() {
   let orders = this.params.orders;
-  for (let order of orders) {
-    //TODO 减少商品库存
-  }
+  //TODO 减少商品库存
+  // for (let order of orders) {
+  // }
 }

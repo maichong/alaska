@@ -26,6 +26,7 @@ class UserService extends Service {
       }
     };
     if (!middlewares['alaska-middleware-session']) {
+      // $Flow
       newConfigs.middlewares['alaska-middleware-session'] = {  // eslint-disable-line
         fn: require('alaska-middleware-session'), // eslint-disable-line
         sort: 800,

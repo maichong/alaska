@@ -20,7 +20,7 @@ export default async function list(ctx: Alaska$Context) {
 
   let filters = Model.createFiltersByContext(ctx);
 
-  let query: Alaska$PaginateQuery = Model.paginate(filters)
+  let query: Alaska$PaginateQuery<Alaska$Model> = Model.paginate(filters)
     .page(parseInt(ctx.state.page || ctx.query._page, 10) || 1)
     .limit(parseInt(ctx.state.limit || ctx.query._limit, 10) || Model.defaultLimit || 50);
 

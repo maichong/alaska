@@ -31,6 +31,7 @@ export default async function build() {
   if (!uitls.isDirectory(alaskaModulesPath)) {
     console.log(chalk.red('alaska-modules is not installed!'));
   } else {
+    // $Flow
     const createScript = require(Path.join(alaskaModulesPath, 'script')).default;
     createScript(rc.id, process.cwd() + '/src', rc.id + '.js');
   }

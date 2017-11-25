@@ -10,10 +10,12 @@ rollup.*
 gulpfile.js
 runtime/
 dist/
+example/src/modules.js
 example/public/
 example/dist/
 example/node_modules/
 example/runtime/
+alaska-init/src/modules.js
 alaska-init/public/
 alaska-init/dist/
 alaska-init/node_modules/

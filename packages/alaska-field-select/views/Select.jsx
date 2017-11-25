@@ -152,37 +152,6 @@ export default class Select extends React.Component<Props, State> {
     }
   };
 
-  renderValueWithRemove = (item: Alaska$SelectField$option) => {
-    let me = this;
-
-    function handleRemove() {
-      let values = [];
-      let value = me.state.value;
-      if (value instanceof Array) {
-        value.forEach((v) => {
-          if (v.value != item.value) {
-            values.push(v);
-          }
-        });
-      }
-      me.setState({ value: values });
-      if (me.props.onChange) {
-        me.props.onChange(values);
-      }
-    }
-
-    return (
-      <div className="simple-value">
-        <span
-          className="simple-value-remove"
-          onClick={handleRemove}
-        >x
-        </span>
-        <span>{item.label}</span>
-      </div>
-    );
-  };
-
   handleSearchChange = (search: string) => {
     if (this._cache[search]) {
       this.setState({ options: this._cache[search] });
@@ -212,6 +181,37 @@ export default class Select extends React.Component<Props, State> {
         this.setState({ options, value, optionsMap });
       }
     });
+  };
+
+  renderValueWithRemove = (item: Alaska$SelectField$option) => {
+    let me = this;
+
+    function handleRemove() {
+      let values = [];
+      let value = me.state.value;
+      if (value instanceof Array) {
+        value.forEach((v) => {
+          if (v.value != item.value) {
+            values.push(v);
+          }
+        });
+      }
+      me.setState({ value: values });
+      if (me.props.onChange) {
+        me.props.onChange(values);
+      }
+    }
+
+    return (
+      <div className="simple-value">
+        <span
+          className="simple-value-remove"
+          onClick={handleRemove}
+        >x
+        </span>
+        <span>{item.label}</span>
+      </div>
+    );
   };
 
   render() {

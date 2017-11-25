@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
 import { ToastContainer } from 'react-toastr';
 import _ from 'lodash';
-import shallowEqualWithout from 'shallow-equal-without';
 import * as layoutRedux from '../redux/layout';
 import Node from './Node';
 import Login from './Login';
@@ -47,8 +46,8 @@ class App extends React.Component<Props, State> {
   toastContainer: void | React$Node;
   _messageCache: Object;
 
-  _page: React$Node;
-  _pageInfo;
+  _page: void | React$Node;
+  _pageInfo: any;
 
   constructor(props: Props) {
     super(props);
@@ -144,6 +143,7 @@ class App extends React.Component<Props, State> {
     });
   });
 
+  // eslint-disable-next-line max-len
   confirm = (title: string, body: string, buttons?: Array<{ title: string } | string> = []): Promise<void> => new Promise((resolve, reject) => {
     let defaults = [{
       title: this.t('Confirm'),
@@ -223,7 +223,7 @@ class App extends React.Component<Props, State> {
     const { user, settings, views } = this.props;
 
     let info = [user.access, user.id, settings.locale];
-    if (shallowEqualWithout(info, this._pageInfo)) {
+    if (_.isEqual(info, this._pageInfo)) {
       return this._page;
     }
 

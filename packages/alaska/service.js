@@ -243,6 +243,7 @@ export default class Service {
         return this._db;
       }
     }
+    // $Flow
     this._db = mongoose.createConnection(config);
     this._db.on('error', (error) => {
       console.error(error);

@@ -846,7 +846,7 @@ export default class Model {
    * @param {Object} [conditions]
    * @returns {Alaska$PaginateQuery}
    */
-  static paginate(conditions?: Object): Alaska$PaginateQuery {
+  static paginate(conditions?: Object): Alaska$PaginateQuery<this> {
     // $Flow
     let model: Class<Alaska$Model> = this;
     let query = model.find(conditions);
@@ -931,7 +931,7 @@ export default class Model {
 
     state = Object.assign({}, ctx.state, state);
 
-    let query: Alaska$PaginateQuery = model.paginate(filters)
+    let query: Alaska$PaginateQuery<Alaska$Model> = model.paginate(filters)
       .page(parseInt(state.page || ctx.query._page, 10) || 1)
       .limit(parseInt(state.limit || ctx.query._limit, 10) || model.defaultLimit || 10);
 

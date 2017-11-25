@@ -79,6 +79,7 @@
           "lifecycle",
           "everything-else",
           "/^handle.+$/",
+          "/^render.+$/",
           "render"
         ],
         "groups": {

@@ -13,7 +13,6 @@ type Props = {
 };
 
 type State = {
-  raw: ?Object,
   type: string,
   data: ?Object,
   options: ?Object,
@@ -24,7 +23,6 @@ export default class Chart extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      raw: null,
       type: '',
       data: null,
       options: null,
@@ -73,7 +71,7 @@ export default class Chart extends React.Component<Props, State> {
       };
     }
     let tmp: Object = {
-      raw, error, type, data, options
+      error, type, data, options
     };
     this.setState(tmp);
   }

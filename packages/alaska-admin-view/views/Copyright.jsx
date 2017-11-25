@@ -9,7 +9,7 @@ type Props = {
 
 export default class Copyright extends React.Component<Props> {
   render() {
-    if (this.props.layout == 'icon') {
+    if (this.props.layout === 'icon') {
       return <Node id="copyright">Alaska</Node>;
     }
     return <Node id="copyright">Powered By Alaska</Node>;

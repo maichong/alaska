@@ -56,7 +56,7 @@ export default class Sms extends Model {
 
   _id: string | number | Object | any;
   title: string;
-  driver: Object;
+  driver: string;
   content: string;
   createdAt: Date;
 

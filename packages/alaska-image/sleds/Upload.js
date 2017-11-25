@@ -20,7 +20,7 @@ export default class Upload extends Sled {
         file = data;
       } else if (typeof data === 'string') {
         //base64
-        file = new Buffer(data, 'base64');
+        file = Buffer.from(data, 'base64');
       }
     }
 

@@ -44,8 +44,8 @@ export default class DatetimeFieldView extends React.Component<Alaska$view$Field
         value={valueString || value}
         dateFormat={field.dateFormat}
         timeFormat={field.timeFormat}
-        onChange={(value) => {
-          onChange(value.format());
+        onChange={(v) => {
+          onChange(v.format());
         }}
       />;
     }

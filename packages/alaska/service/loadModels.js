@@ -16,7 +16,7 @@ export default async function loadModels() {
   this.debug('loadModels');
 
   //遍历模型
-  for (let name in this.models) { // eslint-disable-line no-restricted-syntax guard-for-in
+  for (let name in this.models) { // eslint-disable-line
     let Model = this.models[name];
     //加载扩展配置
     _.forEach(serviceModules.plugins, (plugin) => {

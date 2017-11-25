@@ -36,7 +36,7 @@ export default class ContentHeader extends React.Component<Props, State> {
       if (this.state.show) {
         overlay = <Overlay show onHide={() => this.setState({ show: false })} rootClose>
           <div className="content-header-actions overlay">
-            <div>{actions.map((a, index) => <div key={index} className="action">{a}</div>)}</div>
+            <div>{actions.map((a) => <div key={a.key} className="action">{a}</div>)}</div>
           </div>
         </Overlay>;
       }

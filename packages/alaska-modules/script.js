@@ -135,8 +135,8 @@ export default function createScript(id: string, dir: string, configFile: string
     // templatesDirs
     if (_.size(service.templatesDirs)) {
       script += `    templatesDirs: [\n`;
-      _.forEach(service.templatesDirs, (dir) => {
-        script += `      '${slash(Path.relative(process.cwd(), dir))}',\n`;
+      _.forEach(service.templatesDirs, (d) => {
+        script += `      '${slash(Path.relative(process.cwd(), d))}',\n`;
       });
       script += `    ],\n`;
     }

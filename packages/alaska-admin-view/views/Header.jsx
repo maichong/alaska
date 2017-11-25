@@ -21,25 +21,12 @@ type Props = {
   refreshSettings: Function
 };
 
-type State = {
-  open: boolean,
-  anchorEl: Object | null
-};
-
-class Header extends React.Component<Props, State> {
+class Header extends React.Component<Props> {
   static contextTypes = {
     actions: PropTypes.object,
     views: PropTypes.object,
     t: PropTypes.func,
   };
-
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      open: false,
-      anchorEl: null
-    };
-  }
 
   componentWillReceiveProps() {
     let newState = {};
@@ -63,31 +50,12 @@ class Header extends React.Component<Props, State> {
     this.props.applyLayout(layout);
   };
 
-  handleTouchTap = (event) => {
-    this.setState({
-      open: true,
-      anchorEl: event.currentTarget,
-    });
-  };
-
-  handleRequestClose = () => {
-    this.setState({
-      open: false
-    });
-  };
-
   handleRefresh = () => {
     this.props.refreshSettings();
-    this.setState({
-      open: false
-    });
   };
 
   handleLogout = () => {
     this.props.logout();
-    this.setState({
-      open: false
-    });
   };
 
   render() {

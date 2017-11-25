@@ -93,8 +93,14 @@ export default function (options: Alaska$Config$session) {
         return null;
       },
       set(val) {
-        if (val === null) return (session = false);
-        if (typeof val === 'object') return (session = new Session(ctx, val));
+        if (val === null) {
+          session = false;
+          return;
+        }
+        if (typeof val === 'object') {
+          session = new Session(ctx, val);
+          return;
+        }
         throw new Error('ctx.session can only be set as null or an object.');
       }
     });

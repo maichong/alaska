@@ -4,6 +4,9 @@
  * @author Liang <liang@maichong.it>
  */
 
+/* eslint global-require:0 */
+/* eslint import/no-dynamic-require:0 */
+
 import fs from 'fs';
 import Path from 'path';
 import _ from 'lodash';

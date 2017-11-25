@@ -403,6 +403,7 @@ class Alaska {
       return next();
     });
 
+    // $Flow
     _.map(this.getConfig('middlewares', {}), (item, id) => {
       if (!item.id) {
         item.id = id;
@@ -412,7 +413,7 @@ class Alaska {
       .sort((a, b) => a.sort < b.sort)
       .forEach((item: Alaska$Config$middleware) => {
         let { id, fn, options } = item;
-        if (_.isObject(fn) && _.isFunction(fn.default)) {
+        if (fn && typeof fn.default === 'function') {
           fn = fn.default;
         }
         let name = id || (fn ? fn.name : 'unknown');
@@ -433,10 +434,14 @@ class Alaska {
         if (id) {
           let defaultOptions = this.getConfig(id);
           if (_.isObject(defaultOptions)) {
-            options = jsonMerge(_.cloneDeep(defaultOptions), options);
+            options = jsonMerge.apply(_.cloneDeep(defaultOptions), options);
           }
         }
-        app.use(fn(options));
+        if (typeof fn === 'function') {
+          app.use(fn(options));
+        } else {
+          throw new PanicError(`Middleware '${name}' is invalid!`);
+        }
       });
   }
 

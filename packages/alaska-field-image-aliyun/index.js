@@ -116,11 +116,9 @@ export default class AliyunImageField extends Field {
   initSchema() {
     let field = this;
     let schema = this._schema;
-    ['Bucket', 'oss'].forEach((key) => {
-      if (!field[key]) {
-        throw new Error(`Aliyun image field config "'${key}'" is required in '${field._model.modelName}'.'${field.path}`);
-      }
-    });
+    if (!field.oss) {
+      throw new Error(`Aliyun image field config "oss" is required in '${field._model.modelName}'.'${field.path}`);
+    }
 
     field._oss = OSS(field.oss);
 

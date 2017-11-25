@@ -4,7 +4,8 @@
  * @author Liang <liang@maichong.it>
  */
 
-// @flow
+/* eslint global-require:0 */
+/* eslint import/no-dynamic-require:0 */
 
 import _ from 'lodash';
 import createMetadata from './metadata';

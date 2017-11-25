@@ -3,19 +3,13 @@
 import service from '../';
 
 export default async function (ctx: Alaska$Context) {
-  if (ctx.method !== 'POST') {
-    service.error(400);
-  }
-  let username = ctx.request.body.username;
-  let password = ctx.request.body.password;
+  if (ctx.method !== 'POST') ctx.error(400);
 
-  if (!username) {
-    service.error('Username is required');
-  }
+  let { username, password } = ctx.request.body;
 
-  if (!password) {
-    service.error('Password is required');
-  }
+  if (!username) ctx.error('Username is required');
+
+  if (!password) ctx.error('Password is required');
 
   let user = await service.run('Login', { ctx, username, password });
   ctx.body = user.data('info');

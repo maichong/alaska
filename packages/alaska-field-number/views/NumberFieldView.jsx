@@ -9,7 +9,6 @@ import shallowEqualWithout from 'shallow-equal-without';
 import _ from 'lodash';
 
 type State = {
-  value: any,
   display: string
 };
 
@@ -23,8 +22,7 @@ export default class NumberFieldView extends React.Component<Alaska$view$Field$V
   constructor(props: Alaska$view$Field$View$Props) {
     super(props);
     this.state = {
-      display: props.value,
-      value: props.value
+      display: props.value
     };
     if (props.field.format) {
       this.state.display = numeral(props.value).format(props.field.format);
@@ -34,16 +32,12 @@ export default class NumberFieldView extends React.Component<Alaska$view$Field$V
   componentWillReceiveProps(nextProps: Alaska$view$Field$View$Props) {
     let newState = {};
     if (typeof nextProps.value !== 'undefined' || typeof nextProps.field.default === 'undefined') {
-      newState.value = nextProps.value;
-      if (this.props.field.format) {
-        newState.value = numeral(nextProps.value).format(this.props.field.format);
-      }
       if (this.focused) {
         //正在输入
         newState.display = nextProps.value;
       } else {
         //不在输入状态
-        newState.display = newState.value;
+        newState.display = numeral(nextProps.value).format(this.props.field.format);
       }
     }
     this.setState(newState);

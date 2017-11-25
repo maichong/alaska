@@ -1,6 +1,6 @@
 // @flow
 
-import alaska, { Service } from 'alaska';
+import { Service } from 'alaska';
 
 /**
  * @class GoodsService

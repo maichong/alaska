@@ -49,12 +49,14 @@ class SettingsEditor extends React.Component<Props, State> {
     let newState = {};
     if (props.lists[KEY]) {
       const { t } = this.context;
-      const results = props.lists[KEY].results;
-      const map = newState.map = {};
-      _.forEach(results, (item) => (map[item._id] = item));
-
-      const fields = newState.fields = {};
-      const groups = newState.groups = {};
+      const { results } = props.lists[KEY];
+      newState.map = {};
+      newState.fields = {};
+      newState.groups = {};
+      const { map, fields, groups } = newState.map;
+      _.forEach(results, (item) => {
+        map[item._id] = item;
+      });
       _.forEach(results, (item) => {
         let groupKey = item.group || 'Basic Settings';
         if (!groups[groupKey]) {
@@ -95,10 +97,9 @@ class SettingsEditor extends React.Component<Props, State> {
 
   handleSave = () => {
     const { values, map } = this.state;
-    const save = this.props.save;
     _.forEach(values, (value, id) => {
       let data = Object.assign({}, map[id], { id, value });
-      save({
+      this.props.save({
         service: 'alaska-settings',
         model: 'Settings',
         key: KEY,
@@ -128,7 +129,7 @@ class SettingsEditor extends React.Component<Props, State> {
             key={itemIndex}
             field={fields[item._id]}
             value={value}
-            onChange={this.handleChange.bind(this, item._id)}
+            onChange={(v) => this.handleChange(item._id, v)}
           />);
         });
         content.push(<div className="panel panel-default" key={index}>

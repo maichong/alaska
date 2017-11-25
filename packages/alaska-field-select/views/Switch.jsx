@@ -47,7 +47,9 @@ export default class Switch extends React.Component<Props, State> {
     const { options } = this.state;
 
     let optionsMap: Indexed = {};
-    _.forEach(options, (o) => (optionsMap[getOptionValue(o)] = o));
+    _.forEach(options, (o) => {
+      optionsMap[getOptionValue(o)] = o;
+    });
 
     if (!multi) {
       if (optionsMap[opt]) {
@@ -83,7 +85,9 @@ export default class Switch extends React.Component<Props, State> {
     const { options } = this.state;
     let valueMap = {};
     if (multi) {
-      _.forEach(value, (v) => (valueMap[getOptionValue(v)] = true));
+      _.forEach(value, (v) => {
+        valueMap[getOptionValue(v)] = true;
+      });
     } else if (value !== undefined) {
       valueMap[getOptionValue(value)] = true;
     }

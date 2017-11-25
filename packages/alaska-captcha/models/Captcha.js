@@ -88,6 +88,8 @@ export default class Captcha extends Model {
   length: number;
   lifetime: number;
   createdAt: Date;
+  sms: string;
+  email: string;
 
   preSave() {
     if (!this.createdAt) {

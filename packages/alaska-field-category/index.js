@@ -7,7 +7,7 @@ export default class CategoryField extends RelationshipField {
     let Model = field.ref;
     if (Model) {
       options.ref = Model.path;
-      options.title = Model.title;
+      options.title = Model.titleField;
     }
   }];
   static defaultOptions = {

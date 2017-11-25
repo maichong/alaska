@@ -1,7 +1,7 @@
 // @flow
 
 import _ from 'lodash';
-import alaska, { Service } from 'alaska';
+import { Service } from 'alaska';
 import path from 'path';
 
 export const views = {

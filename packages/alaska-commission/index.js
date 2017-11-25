@@ -14,7 +14,7 @@ class CommissionService extends Service {
     alaska.main.applyConfig({
       middlewares: {
         promoter: {
-          fn: require('./middlewares/promoter'), // eslint-disable-line global-require
+          fn: require('./middlewares/promoter').default, // eslint-disable-line global-require
           sort: 0,
           options: {
             queryKey: this.getConfig('queryKey'),

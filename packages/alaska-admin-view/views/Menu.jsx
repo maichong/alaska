@@ -1,5 +1,7 @@
 // @flow
 
+/* eslint no-script-url:0 */
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';

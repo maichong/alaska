@@ -22,7 +22,7 @@ export async function chpass(ctx: Alaska$Context) {
     service.error(403);
   } else {
     // 已登录
-    let password = ctx.request.body.password;
+    let { password } = ctx.request.body;
 
     if (!password) {
       service.error('New password is required');

@@ -15,9 +15,7 @@ type Props = {
 };
 
 type State = {
-  service: {},
   goodsProps: any,
-  goodsPropsMap: {};
   valueMap: {}
 };
 
@@ -29,13 +27,10 @@ export default class GoodsPropsEditor extends React.Component<Props, State> {
 
   _cat: any;
 
-  constructor(props: Props, context: Object) {
+  constructor(props: Props) {
     super(props);
-    let service: Object = context.settings.services['alaska-goods'];
     this.state = {
-      service,
       goodsProps: [],
-      goodsPropsMap: {},
       valueMap: this.arrayToMap(props.value)
     };
   }
@@ -56,8 +51,7 @@ export default class GoodsPropsEditor extends React.Component<Props, State> {
   }
 
   onChange = () => {
-    let goodsProps = this.state.goodsProps;
-    let valueMap = this.state.valueMap;
+    let { goodsProps, valueMap } = this.state;
     let values = [];
     _.forEach(goodsProps, (p) => {
       let prop = valueMap[p.id];
@@ -82,10 +76,8 @@ export default class GoodsPropsEditor extends React.Component<Props, State> {
         prop.options = _.map(prop.values, (v) => ({ label: v.title, value: v.id }));
       });
       me.setState({
-        goodsProps: res.results,
-        goodsPropsMap: map
-        // $Flow 没找到update方法 不知道有什么用
-      }, me.update);
+        goodsProps: res.results
+      });
     });
   };
 

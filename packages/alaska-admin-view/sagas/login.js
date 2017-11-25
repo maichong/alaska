@@ -10,6 +10,7 @@ export function* login({ payload }) {
     yield put(loginSuccess());
     yield put(refreshSettings());
   } catch (e) {
+    console.error(e);
     yield put(loginFailure(e));
   }
 }
@@ -19,5 +20,6 @@ export function* logout() {
     yield akita.post('/api/login/logout');
     yield put(refreshSettings());
   } catch (e) {
+    console.error(e);
   }
 }
