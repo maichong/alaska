@@ -15,7 +15,7 @@
     "flow": "flow check --show-all-errors",
     "update": "node scripts/update.js",
     "watch": "node scripts/watch.js",
-    "publish": "node scripts/publish.js",
+    "publish": "node scripts/publish.js && lerna publish",
     "sync": "node scripts/sync.js",
     "example": "node scripts/example.js"
   },
