@@ -1,0 +1,57 @@
+.checkbox {
+  display: inline-block;
+  cursor: pointer;
+  vertical-align: middle;
+
+  .fa {
+    display: inline-block;
+    width: 18px;
+    text-align: center;
+    font-size: 18px;
+    vertical-align: middle;
+    color: @gray;
+    margin-right: 4px;
+  }
+
+  &.text-danger.checked {
+    .fa {
+      color: @brand-danger;
+    }
+  }
+
+  &.text-warning.checked {
+    .fa {
+      color: @brand-warning;
+    }
+  }
+
+  &.text-info.checked {
+    .fa {
+      color: @brand-info;
+    }
+  }
+
+  &.text-danger.checked {
+    .fa {
+      color: @brand-danger;
+    }
+  }
+
+  &.text-primary.checked {
+    .fa {
+      color: @brand-primary;
+    }
+  }
+
+  &.checked {
+    .fa {
+      color: @brand-success;
+    }
+  }
+
+  &.disabled {
+    .fa {
+      color: @gray-light;
+    }
+  }
+}

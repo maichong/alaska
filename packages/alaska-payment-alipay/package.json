@@ -1,0 +1,16 @@
+{
+  "name": "alaska-payment-alipay",
+  "version": "0.12.0",
+  "description": "Alipay plugin for alaska.",
+  "keywords": [
+    "alaska",
+    "alaska-payment",
+    "alaska-payment-plugin"
+  ],
+  "alaska": "plugin",
+  "alaska-plugin": "alaska-payment",
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-payment-alipay",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT"
+}

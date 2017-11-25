@@ -1,0 +1,65 @@
+
+body, html {
+  background: #eaf0f5;
+}
+
+body {
+  font-size: 14px;
+}
+
+.navbar-fixed-bottom .navbar-form .btn {
+  line-height: 25px;
+}
+
+.dropdown-menu > li > a {
+  padding: 16px;
+  line-height: 1em;
+  &:hover {
+    background-color: rgba(202, 206, 209, 0.5) !important;
+  }
+}
+
+.dropdown-menu > li.with-icon {
+  & > a {
+    padding-left: 36px;
+    position: relative;
+    .fa {
+      position: absolute;
+      top: 15px;
+      left: 12px;
+    }
+  }
+}
+
+.loading {
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+  line-height: 50px;
+  margin-top: 100px;
+}
+
+.noborder {
+  border-width: 0;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.form-control:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.btn-default {
+  border-color: @border-color !important;
+}
+
+@import "body";
+@import "editor";
+@import "header";
+@import "list";
+@import "login";
+@import "menu";
+@import "toastr";

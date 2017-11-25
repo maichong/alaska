@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+
+'use strict';
+
+process.title = 'alaska';
+
+require('babel-register')({
+  ignore: [
+    /node_modules\/(?!alaska)/
+  ],
+  babelrc: false,
+  plugins: [
+    'syntax-flow',
+    'transform-class-properties',
+    'transform-es2015-modules-commonjs',
+    'transform-flow-strip-types',
+    'transform-object-rest-spread'
+  ]
+});
+
+require('../src/alaska');

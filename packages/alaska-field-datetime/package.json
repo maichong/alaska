@@ -1,0 +1,18 @@
+{
+  "name": "alaska-field-datetime",
+  "version": "0.12.0",
+  "description": "Alaska datetime field",
+  "keywords": [
+    "alaska",
+    "alaska-field"
+  ],
+  "alaska": "field",
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-field-datetime",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "moment": "^2.19.2",
+    "react-datetime": "^2.11.0"
+  }
+}

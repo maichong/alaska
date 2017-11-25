@@ -1,0 +1,17 @@
+{
+  "name": "alaska-middleware-upload",
+  "version": "0.12.0",
+  "description": "Alaska upload middleware",
+  "keywords": [
+    "alaska",
+    "alaska-middleware"
+  ],
+  "alaska": "middleware",
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-middleware-upload",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "async-busboy": "0.0.4"
+  }
+}

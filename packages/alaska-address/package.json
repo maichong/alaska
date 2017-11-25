@@ -1,0 +1,19 @@
+{
+  "name": "alaska-address",
+  "version": "0.12.0",
+  "description": "Alaska address service",
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
+  "alaska": "service",
+  "main": "index.js",
+  "scripts": {},
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-address",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "alaska-field-geo": "^0.12.0",
+    "alaska-user": "^0.12.0"
+  }
+}

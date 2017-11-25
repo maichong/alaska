@@ -11,6 +11,5 @@ temp/
 runtime
 example/public/admin/
 example/public/uploads
-packages/
 package-lock.json
 server.min

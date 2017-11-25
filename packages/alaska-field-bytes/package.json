@@ -1,0 +1,14 @@
+{
+  "name": "alaska-field-bytes",
+  "version": "0.12.0",
+  "description": "Alaska bytes field",
+  "keywords": [
+    "alaska",
+    "alaska-field"
+  ],
+  "alaska": "field",
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-field-bytes",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT"
+}

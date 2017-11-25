@@ -1,0 +1,17 @@
+{
+  "name": "alaska-field-password",
+  "version": "0.12.0",
+  "description": "Alaska password field",
+  "keywords": [
+    "alaska",
+    "alaska-field"
+  ],
+  "alaska": "field",
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-field-password",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3"
+  }
+}

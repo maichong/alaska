@@ -1,0 +1,100 @@
+#app.hidden {
+  display: block !important;
+}
+
+#body {
+  margin-top: 56px;
+  margin-left: 240px;
+  #app.icon & {
+    margin-left: 45px;
+  }
+  #app.hidden & {
+    margin-left: 0;
+  }
+}
+
+#contentInner {
+  padding: 1px 10px 50px
+}
+
+.content-header {
+  position: relative;
+  background: #eaf0f5;
+  padding: 10px 0;
+  z-index: 900;
+  .content-header-title {
+    font-size: 24px;
+    padding-right: 40px;
+    i {
+      color: #999;
+    }
+    a {
+      cursor: pointer;
+    }
+  }
+  .content-header-actions {
+    position: absolute;
+    right: 0;
+    top: 10px;
+    .btn {
+      margin-left: 10px;
+    }
+  }
+}
+
+.content-header-actions.overlay {
+  & > div {
+    max-width: 300px;
+    position: fixed;
+    z-index: 20010;
+    top: 110px;
+    right: 0;
+    background: #fff;
+    padding-bottom: 10px;
+    text-align: right;
+  }
+  .btn {
+    margin: 10px 10px 0 10px;
+  }
+}
+
+.bottom-bar {
+  #app.icon & {
+    left: 45px;
+  }
+  #app.hidden & {
+    left: 0;
+    .navbar-form {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+  left: 240px;
+  background: @dark-color;
+  z-index: 999;
+  .btn {
+    margin-left: 10px;
+  }
+}
+
+.actions-toggle {
+  cursor: pointer;
+  top: 17px !important;
+  .fa {
+    font-size: 28px;
+  }
+}
+
+@media (min-width: 768px) {
+  .content-header {
+    .content-header-title {
+      padding-right: 200px;
+    }
+  }
+}
+
+.dashboard-placeholder {
+  font-size: 24px;
+  text-align: center;
+  margin-top: 100px;
+}
