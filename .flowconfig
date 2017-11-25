@@ -11,7 +11,7 @@ packages/.*
 
 [libs]
 flow/
-packages/flow-alaska/flow/
+src/flow-alaska/flow/
 #node_modules/flow-mongoose/flow/
 node_modules/flow-statuses/flow/
 node_modules/flow-koa-compose/flow/
