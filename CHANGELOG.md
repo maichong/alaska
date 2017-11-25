@@ -31,7 +31,7 @@
 - 去除Service级别 middlewares，appMiddlewares 配置变更为 middlewares，即老版本middlewares指的是Service上挂载的中间件，而0.12新版本middlewares指的是App上挂载的中间件。
 - 允许子Service中定义middlewares，从而更新主Service的middlewares配置。
 - middlewares配置中各个中间件会依据其id，而从主Service中获取默认中间件配置，类似field获取默认配置。
-- alaska-field-image-aliyun 底层OSS驱动从aliyun-sdk 更换为 ali-oss，需要更新配置。 [参考](https://github.com/maichong/alaska/tree/master/packages/alaska-field-image-aliyun)
+- alaska-field-image-aliyun 底层OSS驱动从aliyun-sdk 更换为 ali-oss，需要更新配置。 [参考](https://github.com/maichong/alaska/tree/master/src/alaska-field-image-aliyun)
 - 主Service源码目录存放于 src 文件夹中，可以参考 [example项目目录](https://github.com/maichong/alaska/tree/master/example)。
 - Model.register() 方法变更为async函数
 

@@ -1,0 +1,18 @@
+{
+  "name": "alaska-middleware-session",
+  "version": "0.12.0",
+  "description": "Alaska session middleware",
+  "keywords": [
+    "alaska",
+    "alaska-middleware"
+  ],
+  "alaska": "middleware",
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-meddleware-session",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "path-to-regexp": "*",
+    "string-random": "^0.1.0"
+  }
+}

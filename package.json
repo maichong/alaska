@@ -1,6 +1,6 @@
 {
   "name": "alaska-dev",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Componentized and pluggable web framework for Node.js",
   "keywords": [
     "alaska",
@@ -15,6 +15,7 @@
     "flow": "flow check --show-all-errors",
     "update": "node scripts/update.js",
     "watch": "node scripts/watch.js",
+    "publish": "node scripts/publish.js",
     "sync": "node scripts/sync.js",
     "example": "node scripts/example.js"
   },
@@ -57,9 +58,10 @@
     "flow-statuses": "^0.1.0",
     "fs-extra": "^4.0.2",
     "ghooks": "^2.0.0",
-    "lerna": "2.0.0-beta.32",
+    "lerna": "^2.5.1",
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
+    "mz": "^2.7.0",
     "read-promise": "^1.0.0",
     "semver": "^5.4.1",
     "shelljs": "^0.7.8"

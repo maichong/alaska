@@ -1,0 +1,19 @@
+{
+  "name": "alaska-page",
+  "version": "0.12.0",
+  "description": "Alaska page service",
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
+  "alaska": "service",
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-page",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "alaska-field-text": "^0.12.0",
+    "alaska-field-html": "^0.12.0",
+    "alaska-field-datetime": "^0.12.0"
+  }
+}

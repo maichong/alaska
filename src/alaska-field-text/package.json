@@ -1,0 +1,14 @@
+{
+  "name": "alaska-field-text",
+  "version": "0.12.0",
+  "description": "Alaska text field",
+  "keywords": [
+    "alaska",
+    "alaska-field"
+  ],
+  "alaska": "field",
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-field-text",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT"
+}

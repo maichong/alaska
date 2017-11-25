@@ -9,24 +9,22 @@ const babel = require('babel-core');
 const utils = require('./utils');
 
 const dir = process.cwd() + '/';
-const packagesPath = dir + 'packages/';
-const distPath = dir + 'dist/';
+const srcPath = dir + 'src/';
+const distPath = dir + 'packages/';
 let projectPath = dir + 'example/';
-//projectPath = '/Users/liang/dev/cloud/core/';
-//projectPath = '/Users/liang/www/supervise/';
 
-chokidar.watch(packagesPath, {
+chokidar.watch(srcPath, {
   ignored: /node_modules|[\/\\]\./
 }).on('all', (event, file) => {
   if (file.endsWith('_')) return;
   if (utils.isFile(file)) {
-    let relative = path.relative(packagesPath, file);
+    let relative = path.relative(srcPath, file);
     let dist = path.join(distPath, relative);
     //console.log(file, relative);
     mkdirp.sync(path.dirname(dist));
     let transformd = false;
     let code = '';
-    if (file.endsWith('.js') && !relative.match(/\/flow\//)) {
+    if (file.endsWith('.js') && !/\/flow\//.test(file)) {
       transformd = true;
       try {
         code = babel.transformFileSync(file, {

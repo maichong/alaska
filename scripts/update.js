@@ -6,7 +6,7 @@ const semver = require('semver');
 const akita = require('akita-node');
 const read = require('read-promise');
 const utils = require('./utils');
-const dir = process.cwd() + '/packages';
+const dir = process.cwd() + '/src';
 
 const libVersions = {};
 

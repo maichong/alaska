@@ -1,0 +1,14 @@
+{
+  "name": "alaska-update",
+  "version": "0.12.0",
+  "description": "Alaska update service",
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
+  "alaska": "service",
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-update",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT"
+}

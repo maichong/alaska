@@ -8,7 +8,7 @@ const shell = require('shelljs');
 const _ = require('lodash');
 
 const exampleDir = path.join(__dirname, '../example');
-const packagesDir = path.join(__dirname, '../dist');
+const packagesDir = path.join(__dirname, '../packages');
 const exampleModulesDir = path.join(__dirname, '../example/node_modules');
 
 if (!fs.existsSync(exampleModulesDir)) {

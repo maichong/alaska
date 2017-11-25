@@ -1,0 +1,15 @@
+{
+  "name": "alaska-email-test",
+  "version": "0.12.0",
+  "description": "Alaska email test driver",
+  "keywords": [
+    "alaska",
+    "alaska-email"
+  ],
+  "alaska": "plugin",
+  "alaska-plugin": "alaska-email",
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-email",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT"
+}

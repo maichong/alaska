@@ -1,0 +1,18 @@
+{
+  "name": "alaska-image",
+  "version": "0.12.0",
+  "description": "Alaska image service",
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
+  "alaska": "service",
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-image",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "alaska-field-image": "^0.12.0",
+    "akita-node": "^0.3.7"
+  }
+}
