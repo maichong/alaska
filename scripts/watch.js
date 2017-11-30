@@ -31,6 +31,7 @@ chokidar.watch(srcPath, {
         code = babel.transformFileSync(file, {
           babelrc: false,
           plugins: [
+            'syntax-class-properties',
             'syntax-export-extensions',
             'syntax-flow',
             'transform-class-properties',

@@ -30,6 +30,7 @@ async function copyFile(file) {
     let code = babel.transformFileSync(srcFull, {
       babelrc: false,
       plugins: [
+        'syntax-class-properties',
         'syntax-export-extensions',
         'syntax-flow',
         'transform-class-properties',
