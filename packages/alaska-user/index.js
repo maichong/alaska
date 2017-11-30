@@ -33,7 +33,7 @@ class UserService extends _alaska.Service {
     let middlewares = _alaska2.default.getConfig('middlewares');
     let newConfigs = {
       middlewares: {
-        user: {
+        'alaska-user': {
           fn: require('./middlewares/user').default, // eslint-disable-line global-require
           sort: 700
         }

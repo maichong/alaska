@@ -53,7 +53,7 @@ class SettingsEditor extends React.Component<Props, State> {
       newState.map = {};
       newState.fields = {};
       newState.groups = {};
-      const { map, fields, groups } = newState.map;
+      const { map, fields, groups } = newState;
       _.forEach(results, (item) => {
         map[item._id] = item;
       });

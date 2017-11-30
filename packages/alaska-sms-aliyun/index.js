@@ -24,7 +24,7 @@ var _crypto2 = _interopRequireDefault(_crypto);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const api = _akitaNode2.default.resolve('aliyun-sms-dirver');
+const api = _akitaNode2.default.resolve('aliyun-sms-driver');
 
 class SmsAliyunDriver extends _alaska.Driver {
 

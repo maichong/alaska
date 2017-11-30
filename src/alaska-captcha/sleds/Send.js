@@ -5,9 +5,6 @@ import alaska, { Sled } from 'alaska';
 import service from '../';
 import Captcha from '../models/Captcha';
 
-const locales = service.getConfig('locales');
-const CACHE = service.cache;
-
 export default class Send extends Sled {
   /**
    * 发送验证码
@@ -20,6 +17,8 @@ export default class Send extends Sled {
    *        [params.values] 信息模板值
    */
   async exec(params: Object) {
+    const locales = service.getConfig('locales');
+    const CACHE = service.cache;
     let id = params.id;
     let to = params.to;
     let locale = params.locale;

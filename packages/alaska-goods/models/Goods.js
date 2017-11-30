@@ -12,6 +12,10 @@ var _alaska = require('alaska');
 
 var _alaska2 = _interopRequireDefault(_alaska);
 
+var _utils = require('alaska/utils');
+
+var utils = _interopRequireWildcard(_utils);
+
 var _alaskaBalance = require('alaska-balance');
 
 var _alaskaBalance2 = _interopRequireDefault(_alaskaBalance);
@@ -23,6 +27,8 @@ var _Sku2 = _interopRequireDefault(_Sku);
 var _GoodsCat = require('./GoodsCat');
 
 var _GoodsCat2 = _interopRequireDefault(_GoodsCat);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50,8 +56,7 @@ class Goods extends _alaska.Model {
       _lodash2.default.each(this.props, prop => {
         if (prop.filter) {
           _lodash2.default.each(prop.values, value => {
-            // $Flow util 未定义
-            if (_alaska2.default.util.isObjectId(value.value)) {
+            if (utils.isObjectId(value.value)) {
               propValues.push(value.value);
             }
           });

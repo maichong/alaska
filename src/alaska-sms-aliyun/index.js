@@ -6,7 +6,7 @@ import moment from 'moment';
 import akita from 'akita-node';
 import crypto from 'crypto';
 
-const api = akita.resolve('aliyun-sms-dirver');
+const api = akita.resolve('aliyun-sms-driver');
 
 export default class SmsAliyunDriver extends Driver {
   static classOfSmsDriver = true;

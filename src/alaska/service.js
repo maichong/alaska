@@ -8,7 +8,6 @@ import Debugger from 'debug';
 import Router from 'koa-router';
 import collie from 'collie';
 import IntlMessageFormat from 'intl-messageformat';
-import jsonMerge from 'json-merge-patch';
 import mongoose from 'mongoose';
 import depd from 'depd';
 import alaska, { PanicError } from './alaska';
@@ -296,7 +295,7 @@ export default class Service {
    * @param {Object} config
    */
   applyConfig(config: Alaska$Config): void {
-    jsonMerge.apply(this._config, config);
+    utils.merge(this._config, config);
   }
 
   /**

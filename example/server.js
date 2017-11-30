@@ -30,7 +30,6 @@ const modules = createModules(service);
 service.launch(modules).then(() => {
   console.log('server started');
   console.log('listen :' + service.getConfig('port'));
-  console.log(service.getConfig('middlewares'));
 }, (error) => {
   console.error(error.stack);
   process.exit(1);

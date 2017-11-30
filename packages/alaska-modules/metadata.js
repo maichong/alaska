@@ -27,10 +27,6 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _jsonMergePatch = require('json-merge-patch');
-
-var _jsonMergePatch2 = _interopRequireDefault(_jsonMergePatch);
-
 var _utils = require('alaska/utils');
 
 var _config = require('alaska/config');
@@ -270,7 +266,7 @@ function createMetadata(id, dir, mainConfigFile) {
       if ((0, _utils.isFile)(pluginConfigFile)) {
         let pluginConfig = require(pluginConfigFile).default;
         resolvePluginPath(pluginConfig, pluginConfigFile);
-        configs[name] = _jsonMergePatch2.default.apply(configs[name], pluginConfig);
+        configs[name] = (0, _utils.merge)(configs[name], pluginConfig);
       }
     });
   });

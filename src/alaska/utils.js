@@ -3,10 +3,14 @@
 /* eslint no-useless-escape:0 */
 
 import fs from 'fs';
-import type { Stats } from 'fs';
 import _ from 'lodash';
 
-export function statAsync(path: string): Promise<Stats> {
+/**
+ * 异步获取文件信息
+ * @param {string} path
+ * @returns {Promise<Stats>}
+ */
+export function statAsync(path: string): Promise<Object> {
   return new Promise((resolve, reject) => {
     fs.stat(path, (error, stats) => (error ? reject(error) : resolve(stats)));
   });
@@ -119,20 +123,45 @@ export function nameToKey(name: string): string {
 
 /**
  * 深度克隆对象
- * @param {Object} dst 目标对象
+ * @param {Object} target 目标对象
  * @param {Object} src 原始对象
  * @returns {Object}
  */
-export function deepClone(dst: Object, src: Object): Object {
-  dst = dst || {};
+export function deepClone(target: Object, src: Object): Object {
+  target = target || {};
   Object.keys(src).forEach((key) => {
-    if (typeof dst[key] !== 'object' || Array.isArray(dst[key])) {
-      dst[key] = src[key];
+    if (typeof target[key] !== 'object' || Array.isArray(target[key])) {
+      target[key] = src[key];
     } else {
-      dst[key] = _.defaultsDeep({}, src[key], dst[key]);
+      target[key] = _.defaultsDeep({}, src[key], target[key]);
     }
   });
-  return dst;
+  return target;
+}
+
+/**
+ * 合并对象，RFC 7396
+ * @param {Object} target
+ * @param {Object} patch
+ * @returns {Object}
+ */
+export function merge(target: Object, patch: Object): Object {
+  if (!_.isPlainObject(patch)) {
+    return patch;
+  }
+  if (!_.isPlainObject(target)) {
+    target = {};
+  }
+  _.forEach(patch, (value, key) => {
+    if (value === null) {
+      if (target.hasOwnProperty(key)) {
+        delete target[key];
+      }
+    } else {
+      target[key] = merge(target[key], value);
+    }
+  });
+  return target;
 }
 
 /**

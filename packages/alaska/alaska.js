@@ -21,10 +21,6 @@ var _koa = require('koa');
 
 var _koa2 = _interopRequireDefault(_koa);
 
-var _jsonMergePatch = require('json-merge-patch');
-
-var _jsonMergePatch2 = _interopRequireDefault(_jsonMergePatch);
-
 var _koaQs = require('koa-qs');
 
 var _koaQs2 = _interopRequireDefault(_koaQs);
@@ -54,10 +50,11 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // $Flow
-const debug = (0, _debug2.default)('alaska');
+
 
 /* eslint new-cap:0 */
 
+const debug = (0, _debug2.default)('alaska');
 const deprecate = (0, _depd2.default)('alaska');
 
 /**
@@ -468,7 +465,7 @@ class Alaska {
       if (id) {
         let defaultOptions = this.getConfig(id);
         if (_lodash2.default.isObject(defaultOptions)) {
-          options = _jsonMergePatch2.default.apply(_lodash2.default.cloneDeep(defaultOptions), options);
+          options = utils.merge(_lodash2.default.cloneDeep(defaultOptions), options);
         }
       }
       if (typeof fn === 'function') {

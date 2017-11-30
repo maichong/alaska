@@ -15,6 +15,7 @@ exports.escapeRegExp = escapeRegExp;
 exports.isObjectId = isObjectId;
 exports.nameToKey = nameToKey;
 exports.deepClone = deepClone;
+exports.merge = merge;
 exports.parseAcceptLanguage = parseAcceptLanguage;
 
 var _fs = require('fs');
@@ -26,6 +27,13 @@ var _lodash = require('lodash');
 var _lodash2 = _interopRequireDefault(_lodash);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * 异步获取文件信息
+ * @param {string} path
+ * @returns {Promise<Stats>}
+ */
+
 
 /* eslint no-useless-escape:0 */
 
@@ -143,20 +151,45 @@ function nameToKey(name) {
 
 /**
  * 深度克隆对象
- * @param {Object} dst 目标对象
+ * @param {Object} target 目标对象
  * @param {Object} src 原始对象
  * @returns {Object}
  */
-function deepClone(dst, src) {
-  dst = dst || {};
+function deepClone(target, src) {
+  target = target || {};
   Object.keys(src).forEach(key => {
-    if (typeof dst[key] !== 'object' || Array.isArray(dst[key])) {
-      dst[key] = src[key];
+    if (typeof target[key] !== 'object' || Array.isArray(target[key])) {
+      target[key] = src[key];
     } else {
-      dst[key] = _lodash2.default.defaultsDeep({}, src[key], dst[key]);
+      target[key] = _lodash2.default.defaultsDeep({}, src[key], target[key]);
     }
   });
-  return dst;
+  return target;
+}
+
+/**
+ * 合并对象，RFC 7396
+ * @param {Object} target
+ * @param {Object} patch
+ * @returns {Object}
+ */
+function merge(target, patch) {
+  if (!_lodash2.default.isPlainObject(patch)) {
+    return patch;
+  }
+  if (!_lodash2.default.isPlainObject(target)) {
+    target = {};
+  }
+  _lodash2.default.forEach(patch, (value, key) => {
+    if (value === null) {
+      if (target.hasOwnProperty(key)) {
+        delete target[key];
+      }
+    } else {
+      target[key] = merge(target[key], value);
+    }
+  });
+  return target;
 }
 
 /**

@@ -2,6 +2,7 @@
 
 import _ from 'lodash';
 import alaska, { Model } from 'alaska';
+import * as utils from 'alaska/utils';
 import BALANCE from 'alaska-balance';
 import Sku from './Sku';
 import GoodsCat from './GoodsCat';
@@ -275,8 +276,7 @@ export default class Goods extends Model {
       _.each(this.props, (prop) => {
         if (prop.filter) {
           _.each(prop.values, (value) => {
-            // $Flow util 未定义
-            if (alaska.util.isObjectId(value.value)) {
+            if (utils.isObjectId(value.value)) {
               propValues.push(value.value);
             }
           });

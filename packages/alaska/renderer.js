@@ -76,7 +76,7 @@ class Renderer {
     }
 
     let files = {};
-    this.service.templatesDirs.forEach(dir => {
+    _lodash2.default.forEachRight(this.service.templatesDirs, dir => {
       files = _lodash2.default.defaultsDeep({}, readDir(dir), files);
     });
 

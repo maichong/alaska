@@ -44,15 +44,6 @@
 - 移除Service级别middleware，middlewares中的文件不会被自动加载
 
 
-
-
-#### TODO：
-
-- admin view
-
-
-
-
 ## [0.11.29] - 2017-09-25
 
 ### Added

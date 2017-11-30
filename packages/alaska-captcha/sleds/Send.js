@@ -22,9 +22,6 @@ var _Captcha2 = _interopRequireDefault(_Captcha);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const locales = _2.default.getConfig('locales');
-const CACHE = _2.default.cache;
-
 class Send extends _alaska.Sled {
   /**
    * 发送验证码
@@ -37,6 +34,8 @@ class Send extends _alaska.Sled {
    *        [params.values] 信息模板值
    */
   async exec(params) {
+    const locales = _2.default.getConfig('locales');
+    const CACHE = _2.default.cache;
     let id = params.id;
     let to = params.to;
     let locale = params.locale;

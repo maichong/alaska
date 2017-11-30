@@ -7,7 +7,7 @@
     "alaska-sms"
   ],
   "alaska": "driver",
-  "alaska-dirver": "sms",
+  "alaska-driver": "sms",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-sms-test",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",

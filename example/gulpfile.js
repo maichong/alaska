@@ -2,12 +2,12 @@
 
 const gulp = require('gulp');
 const less = require('gulp-less');
-const minify = require('gulp-minify-css');
+const cleanCss = require('gulp-clean-css');
 
 gulp.task('admin-less', () => {
   gulp.src('less/admin.less')
     .pipe(less())
-    .pipe(minify())
+    .pipe(cleanCss())
     .pipe(gulp.dest('public/admin/css/'));
 });
 

@@ -6,7 +6,6 @@ import fs from 'fs';
 import _ from 'lodash';
 import mime from 'mime-types';
 import Koa from 'koa';
-import jsonMerge from 'json-merge-patch';
 // $Flow
 import KoaQS from 'koa-qs';
 import statuses from 'statuses';
@@ -434,7 +433,7 @@ class Alaska {
         if (id) {
           let defaultOptions = this.getConfig(id);
           if (_.isObject(defaultOptions)) {
-            options = jsonMerge.apply(_.cloneDeep(defaultOptions), options);
+            options = utils.merge(_.cloneDeep(defaultOptions), options);
           }
         }
         if (typeof fn === 'function') {

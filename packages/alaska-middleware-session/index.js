@@ -19,7 +19,7 @@ exports.default = function (options) {
     if (typeof input === 'string') {
       // $Flow
       ignore.push((0, _pathToRegexp2.default)(input));
-    } else if (input.test) {
+    } else if (input instanceof RegExp || typeof input === 'function') {
       // $Flow
       ignore.push(input);
     } else {
@@ -39,7 +39,7 @@ exports.default = function (options) {
   return async function sessionMiddleware(ctx, next) {
     if (ignore) {
       for (let reg of ignore) {
-        if (reg.test(ctx.path)) {
+        if (reg instanceof RegExp && reg.test(ctx.path) || typeof reg === 'function' && reg(ctx.path)) {
           await next();
           return;
         }

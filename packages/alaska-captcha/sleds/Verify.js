@@ -12,8 +12,6 @@ var _2 = _interopRequireDefault(_);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const CACHE = _2.default.cache;
-
 class Verify extends _alaska.Sled {
   /**
    * 验证
@@ -23,6 +21,7 @@ class Verify extends _alaska.Sled {
    */
   async exec(params) {
     if (!params.to || !params.code) return false;
+    const CACHE = _2.default.cache;
     let cacheKey = 'captcha_' + params.to;
     let cache = await CACHE.get(cacheKey);
     if (!cache || cache !== params.code) {

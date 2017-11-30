@@ -43,7 +43,7 @@ export default {
   redirect: '',
   statics: [
     {
-      root: 'public',
+      root: '../public',
       prefix: ''
     }
   ],

@@ -6,7 +6,7 @@
     "alaska",
     "alaska-email"
   ],
-  "alaska": "dirver",
+  "alaska": "driver",
   "alaska-dirver": "email",
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-email-smtp",

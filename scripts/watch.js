@@ -12,6 +12,7 @@ const dir = process.cwd() + '/';
 const srcPath = dir + 'src/';
 const distPath = dir + 'packages/';
 let projectPath = dir + 'example/';
+projectPath = '/Users/liang/dev/cloud/core/';
 
 chokidar.watch(srcPath, {
   ignored: /node_modules|[\/\\]\./

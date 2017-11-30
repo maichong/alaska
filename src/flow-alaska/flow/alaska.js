@@ -1,4 +1,4 @@
-import type { WriteStream } from 'fs';
+import type { WriteStream, Stats } from 'fs';
 import type Debugger from 'debug';
 import type Router from 'koa-router';
 import Koa from 'koa';
@@ -205,7 +205,7 @@ declare type Alaska$Config$session = {
     set?: (ctx: Alaska$Context, key: string, sid: string, cookieOpts: Object) => void;
   };
   store?: Alaska$Config$cache;
-  ignore?: RegExp | string | Array<RegExp | string>
+  ignore?: RegExp | string | Function | Array<RegExp | string | Function>
 };
 
 declare type Alaska$Config$static = {
@@ -918,6 +918,9 @@ declare module alaska {
 }
 
 declare module 'alaska/utils' {
+
+  declare function statAsync(path: string): Promise<Stats>;
+
   declare function isFile(path: string): boolean;
 
   declare function isDirectory(path: string): boolean;
@@ -925,4 +928,22 @@ declare module 'alaska/utils' {
   declare function readJson(path: string): Object;
 
   declare function isHidden(path: string): boolean;
+
+  declare function resolved(): Promise<null>;
+
+  declare function noop(): void;
+
+  declare function bindMethods(obj: Object, scope: Object): Object;
+
+  declare function escapeRegExp(str: string): string;
+
+  declare function isObjectId(id: string): boolean;
+
+  declare function nameToKey(name: string): string;
+
+  declare function deepClone(target: Object, patch: Object): Object;
+
+  declare function merge(target: Object, patch: Object): Object;
+
+  declare function parseAcceptLanguage(header: string): string[];
 }

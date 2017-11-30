@@ -18,7 +18,7 @@ export default {
     oss: {
       // https://github.com/ali-sdk/ali-oss#ossoptions
       accessKeyId: 'accessKeyId',
-      secretAccessKey: 'secretAccessKey',
+      accessKeySecret: 'accessKeySecret',
       endpoint: 'http://oss-cn-hangzhou.aliyuncs.com',
       bucket: 'your bucket',
     }

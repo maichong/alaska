@@ -2,6 +2,7 @@
 
 import _ from 'lodash';
 import * as utils from '../utils';
+import defaultLocals from '../locales';
 
 export default async function loadLocales() {
   this.loadLocales = utils.resolved;
@@ -15,9 +16,13 @@ export default async function loadLocales() {
 
   let serviceModules = this.alaska.modules.services[this.id];
 
-  this.locales = serviceModules.locales || {};
+  this.locales = {};
 
   const { locales } = this;
+
+  _.forEach(serviceModules.locales, (messages, name) => {
+    locales[name] = _.assign({}, defaultLocals[name], messages);
+  });
 
   _.forEach(serviceModules.plugins, (plugin) => {
     if (plugin.locales) {

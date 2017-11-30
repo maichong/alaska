@@ -24,10 +24,6 @@ var _intlMessageformat = require('intl-messageformat');
 
 var _intlMessageformat2 = _interopRequireDefault(_intlMessageformat);
 
-var _jsonMergePatch = require('json-merge-patch');
-
-var _jsonMergePatch2 = _interopRequireDefault(_jsonMergePatch);
-
 var _mongoose = require('mongoose');
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
@@ -52,8 +48,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/* eslint global-require:0 */
-
 const deprecate = (0, _depd2.default)('alaska.service');
 
 /**
@@ -62,6 +56,10 @@ const deprecate = (0, _depd2.default)('alaska.service');
  * Service实例可以依赖其他Service
  * 一个Service实例可以同时被多个Service依赖
  */
+
+
+/* eslint global-require:0 */
+
 class Service {
 
   /**
@@ -319,7 +317,7 @@ class Service {
    * @param {Object} config
    */
   applyConfig(config) {
-    _jsonMergePatch2.default.apply(this._config, config);
+    utils.merge(this._config, config);
   }
 
   /**

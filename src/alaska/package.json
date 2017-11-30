@@ -21,7 +21,6 @@
     "collie": "^0.2.1",
     "debug": "^3.1.0",
     "depd": "^1.1.1",
-    "json-merge-patch": "^0.2.3",
     "intl-messageformat": "^2.2.0",
     "koa": "^2.4.1",
     "koa-compose": "^4.0.0",

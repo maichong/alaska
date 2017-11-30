@@ -13,7 +13,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-geo": "^0.12.0",
-    "alaska-user": "^0.12.0"
+    "alaska-user": "^0.12.0",
+    "alaska-field-geo": "^0.12.0"
   }
 }

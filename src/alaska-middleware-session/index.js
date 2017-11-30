@@ -20,7 +20,7 @@ export default function (options: Alaska$Config$session) {
     if (typeof input === 'string') {
       // $Flow
       ignore.push(pathToRegexp(input));
-    } else if (input.test) {
+    } else if (input instanceof RegExp || typeof input === 'function') {
       // $Flow
       ignore.push(input);
     } else {
@@ -40,7 +40,10 @@ export default function (options: Alaska$Config$session) {
   return async function sessionMiddleware(ctx: Alaska$Context, next: Function) {
     if (ignore) {
       for (let reg of ignore) {
-        if (reg.test(ctx.path)) {
+        if (
+          (reg instanceof RegExp && reg.test(ctx.path))
+          || (typeof reg === 'function' && reg(ctx.path))
+        ) {
           await next();
           return;
         }

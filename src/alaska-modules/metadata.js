@@ -10,8 +10,7 @@
 import fs from 'fs';
 import Path from 'path';
 import _ from 'lodash';
-import jsonMerge from 'json-merge-patch';
-import { isFile, isDirectory, readJson } from 'alaska/utils';
+import { isFile, isDirectory, readJson, merge } from 'alaska/utils';
 import defaultConfig from 'alaska/config';
 
 const modulesDir = Path.join(process.cwd(), 'node_modules');
@@ -247,7 +246,7 @@ export default function createMetadata(id: string, dir: string, mainConfigFile: 
       if (isFile(pluginConfigFile)) {
         let pluginConfig = require(pluginConfigFile).default;
         resolvePluginPath(pluginConfig, pluginConfigFile);
-        configs[name] = jsonMerge.apply(configs[name], pluginConfig);
+        configs[name] = merge(configs[name], pluginConfig);
       }
     });
   });
