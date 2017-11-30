@@ -1,6 +1,6 @@
 {
   "name": "alaska-field-version",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "description": "Alaska auto increment version field",
   "keywords": [
     "alaska",
@@ -12,6 +12,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-number": "^0.12.0"
+    "alaska-field-number": "^0.12.1"
   }
 }
