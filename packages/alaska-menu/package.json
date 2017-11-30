@@ -1,6 +1,6 @@
 {
   "name": "alaska-menu",
-  "version": "0.12.0",
+  "version": "0.12.2",
   "description": "Alaska menu service",
   "keywords": [
     "alaska",
@@ -12,8 +12,8 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-datetime": "^0.12.0",
-    "alaska-field-mixed": "^0.12.0",
-    "alaska-field-text": "^0.12.0"
+    "alaska-field-datetime": "^0.12.2",
+    "alaska-field-mixed": "^0.12.2",
+    "alaska-field-text": "^0.12.2"
   }
 }
