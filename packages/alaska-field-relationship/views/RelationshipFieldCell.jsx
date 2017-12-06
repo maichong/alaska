@@ -46,17 +46,20 @@ class RelationshipFieldCell extends React.Component<Props> {
 
   getLink(value: string) {
     let { field, details, settings } = this.props;
-    if (!field.ref) return null;
-    let Model = settings.models[field.ref];
+    // $Flow 下方做了判断，保证ref一定存在
+    const ref: string = field.ref;
+    if (!ref) return null;
+    let Model = settings.models[ref];
     let { key } = Model;
     let title = value;
+    let [refServiceId, refModelName] = ref.split('.');
     if (value && details && details[key] && details[key][value]) {
       title = details[key][value][Model.titleField] || value;
     } else {
       setTimeout(() => {
         this.props.loadDetails({
-          service: field.service,
-          model: field.model,
+          service: refServiceId,
+          model: refModelName,
           key,
           id: value
         });
@@ -64,7 +67,7 @@ class RelationshipFieldCell extends React.Component<Props> {
     }
     return (<Link
       key={value}
-      to={'/edit/' + field.service + '/' + field.model + '/' + encodeURIComponent(value)}
+      to={'/edit/' + refServiceId + '/' + refModelName + '/' + encodeURIComponent(value)}
     >{title}</Link>);
   }
 

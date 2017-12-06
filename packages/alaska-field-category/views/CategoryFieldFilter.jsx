@@ -19,13 +19,14 @@ export default class CategoryFieldFilter extends React.Component<Alaska$view$Fie
 
   constructor(props: Alaska$view$Field$Filter$Props) {
     super(props);
-    let value: string | Object = props.value || {};
-    if (typeof value === 'string') {
-      value = { value, inverse: false };
+    // $Flow
+    let value: Object = props.value || {};
+    if (typeof value !== 'object') {
+      value = { value };
     }
     this.state = {
       value: value.value,
-      inverse: value.inverse,
+      inverse: value.inverse === true || value.inverse === 'true',
       error: value.value === undefined,
       options: []
     };
@@ -38,7 +39,7 @@ export default class CategoryFieldFilter extends React.Component<Alaska$view$Fie
   componentWillReceiveProps(props: Alaska$view$Field$Filter$Props) {
     let { value } = props;
     if (value !== this.props.value) {
-      if (typeof value === 'string') {
+      if (typeof value !== 'object') {
         value = { value };
       }
       this.setState(value);
@@ -47,9 +48,13 @@ export default class CategoryFieldFilter extends React.Component<Alaska$view$Fie
 
   init() {
     let { field, value } = this.props;
+    // $Flow 下方做了判断，保证ref一定存在
+    const ref: string = field.ref;
+    if (!ref) return;
+    let [refServiceId, refModelName] = ref.split('.');
     api('/api/relation')
-      .param('service', field.service)
-      .param('model', field.model)
+      .param('service', refServiceId)
+      .param('model', refModelName)
       .param('value', value)
       .where(field.filters || {})
       .then((res) => {

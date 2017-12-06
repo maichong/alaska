@@ -35,8 +35,6 @@ class AlipayPlugin {
   init(service) {
     this.service = service;
     service.payments.alipay = this;
-    // TODO
-    service.addConfigDir(__dirname);
     this.label = 'Alipay';
     let configTmp = service.getConfig('alipay');
 

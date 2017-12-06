@@ -12,10 +12,6 @@ var _alaskaUser = require('alaska-user');
 
 var _alaskaUser2 = _interopRequireDefault(_alaskaUser);
 
-var _Payment = require('alaska-payment/models/Payment');
-
-var _Payment2 = _interopRequireDefault(_Payment);
-
 var _alaska = require('alaska');
 
 var _alaska2 = _interopRequireDefault(_alaska);
@@ -27,8 +23,6 @@ class BalancePlugin {
   constructor(service) {
     this.service = service;
     service.payments.balance = this;
-    // TODO
-    service.addConfigDir(__dirname);
   }
 
   /**

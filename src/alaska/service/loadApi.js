@@ -50,8 +50,6 @@ export default async function loadApi() {
     });
   });
 
-  if (!_.size(apis)) return;
-
   //将某些API的多个中间件转换成一个
   _.forEach(apis, (api) => {
     _.forEach(api, (fn, key) => {
@@ -66,7 +64,9 @@ export default async function loadApi() {
     return res;
   }, {});
 
-  function onError(ctx: Context, error) {
+  if (!_.size(apis) && !_.size(models)) return;
+
+  function onError(ctx: Alaska$Context, error) {
     if (ctx.status === 404) {
       ctx.status = 500;
     }
@@ -107,6 +107,7 @@ export default async function loadApi() {
 
   // API错误处理
   router.all('/api/*', async(ctx, next) => {
+    console.log('api', ctx.path);
     try {
       await next();
     } catch (error) {

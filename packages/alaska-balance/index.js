@@ -106,7 +106,7 @@ class BalanceService extends _alaska.Service {
 
   /**
    * 异步获取货币列表
-   * @returns {void|Promise.<Alaska$SelectField$option[]>}
+   * @returns {void|Promise.<Alaska$Currency[]>}
    */
   getCurrenciesAsync() {
     if (!this._currenciesPromise) {
@@ -123,7 +123,7 @@ class BalanceService extends _alaska.Service {
 
   /**
    * 异步获取默认货币
-   * @returns {void|Promise.<Alaska$SelectField$option>}
+   * @returns {void|Promise.<Alaska$Currency>}
    */
   getDefaultCurrencyAsync() {
     if (!this._defaultCurrencyPromise) {

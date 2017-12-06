@@ -37,16 +37,15 @@ export default class SelectFieldView extends React.Component<Alaska$view$Field$V
     return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model') || state !== this.state;
   }
 
-  t(opt: Alaska$SelectField$option) {
+  t(opt: Alaska$SelectField$option): Alaska$SelectField$option {
     const { t } = this.context;
     if (this.props.field.translate === false || !t) {
       return opt;
     }
-    return {
-      label: t(opt.label, this.props.model.serviceId),
-      value: opt.value,
-      style: opt.style
-    };
+    // $Flow
+    return Object.assign({}, opt, {
+      label: t(opt.label)
+    });
   }
 
   filter(options?: Alaska$SelectField$option[], record: Object): Alaska$SelectField$option[] {
@@ -95,7 +94,7 @@ export default class SelectFieldView extends React.Component<Alaska$view$Field$V
         });
         _.forEach(this.state.options, (opt) => {
           if (valueMap[String(opt.value)]) {
-            elements.push(<span key={opt.value}>{opt.label || opt.value}</span>);
+            elements.push(<span key={String(opt.value)}>{opt.label || opt.value}</span>);
           }
         });
         inputElement = elements;

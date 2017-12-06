@@ -13,3 +13,4 @@ example/public/admin/
 example/public/uploads
 package-lock.json
 server.min
+flow-declarations

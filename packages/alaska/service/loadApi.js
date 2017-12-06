@@ -65,8 +65,6 @@ exports.default = async function loadApi() {
     });
   });
 
-  if (!_lodash2.default.size(apis)) return;
-
   //将某些API的多个中间件转换成一个
   _lodash2.default.forEach(apis, api => {
     _lodash2.default.forEach(api, (fn, key) => {
@@ -80,6 +78,8 @@ exports.default = async function loadApi() {
     res[Model.id] = Model;
     return res;
   }, {});
+
+  if (!_lodash2.default.size(apis) && !_lodash2.default.size(models)) return;
 
   function onError(ctx, error) {
     if (ctx.status === 404) {
@@ -122,6 +122,7 @@ exports.default = async function loadApi() {
 
   // API错误处理
   router.all('/api/*', async (ctx, next) => {
+    console.log('api', ctx.path);
     try {
       await next();
     } catch (error) {

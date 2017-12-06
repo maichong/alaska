@@ -10,6 +10,7 @@ import { api } from 'alaska-admin-view';
 import immutable from 'seamless-immutable';
 
 function getOptionValue(opt) {
+  if (Array.isArray(opt)) return '';
   if (opt && typeof opt === 'object') return opt.value;
   return opt;
 }
@@ -57,7 +58,7 @@ export default class RelationshipFieldView extends React.Component<Alaska$view$F
     this.cache = {};
   }
 
-  handleChange = (value: string | number) => {
+  handleChange = (value: Alaska$SelectField$value) => {
     if (this.props.onChange) {
       let val = null;
       if (this.props.field.multi) {
@@ -75,6 +76,9 @@ export default class RelationshipFieldView extends React.Component<Alaska$view$F
   handleSearch = (keyword?: string) => {
     keyword = keyword || '';
     const { field, record, value } = this.props;
+    // $Flow 下方做了判断，保证ref一定存在
+    const ref: string = field.ref;
+    if (!ref) return;
     let filters = _.reduce(field.filters || {}, (res: {}, v: any, key: string) => {
       res[key] = v;
       if (_.isString(v) && v[0] === ':') {
@@ -92,9 +96,11 @@ export default class RelationshipFieldView extends React.Component<Alaska$view$F
       return;
     }
 
+    const [serviceId, modelName] = ref.split('.');
+
     api('/api/relation')
-      .param('service', field.service)
-      .param('model', field.model)
+      .param('service', serviceId)
+      .param('model', modelName)
       .param('value', value)
       .search(keyword)
       .where(filters)
@@ -123,6 +129,13 @@ export default class RelationshipFieldView extends React.Component<Alaska$view$F
       help = errorText;
     }
     let helpElement = help ? <p className="help-block">{help}</p> : null;
+    let refServiceId = '';
+    let refModelName = '';
+    // $Flow 下方做了判断，保证ref一定存在
+    const ref: string = field.ref;
+    if (ref) {
+      [refServiceId, refModelName] = ref.split('.');
+    }
 
     let inputElement;
     if (field.fixed) {
@@ -141,8 +154,8 @@ export default class RelationshipFieldView extends React.Component<Alaska$view$F
 
       inputElement = <p className="form-control-static">{
         opts.map((opt: Alaska$SelectField$option) => (<a
-          key={opt.value}
-          href={`#/edit/${field.service}/${field.model}/${String(opt.value)}`}
+          key={String(opt.value)}
+          href={`#/edit/${refServiceId}/${refModelName}/${String(opt.value)}`}
           style={{ paddingRight: 10 }}
         >{opt.label}
         </a>))

@@ -13,10 +13,10 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-number": "^0.12.0",
-    "alaska-field-text": "^0.12.0",
-    "alaska-field-select": "^0.12.0",
-    "alaska-field-relationship": "^0.12.0",
+    "alaska-field-number": "^0.12.2",
+    "alaska-field-text": "^0.12.2",
+    "alaska-field-select": "^0.12.2",
+    "alaska-field-relationship": "^0.12.2",
     "string-random": "^0.1.0"
   }
 }

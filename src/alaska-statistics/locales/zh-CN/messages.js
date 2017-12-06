@@ -1,6 +1,7 @@
 export default {
   Chart: '图表',
   Model: '模型',
+  Review: '预览',
   Reducer: '处理器',
   'X Axis': 'X轴',
   'Y Axis': 'Y轴',

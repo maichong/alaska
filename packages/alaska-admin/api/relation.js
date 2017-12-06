@@ -83,7 +83,7 @@ exports.default = async function (ctx) {
       if (record) {
         let tmp = {
           value: record.id,
-          label: record.get(titleField) || id
+          label: record.get(titleField) || String(id)
         };
         if (record.parent) {
           tmp.parent = record.parent;

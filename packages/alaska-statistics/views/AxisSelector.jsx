@@ -16,7 +16,7 @@ type Props = {
 
 type State = {
   model: ?Object,
-  options: Object
+  options: Alaska$SelectField$option[]
 };
 
 export default class AxisSelector extends React.Component<Props, State> {
@@ -83,13 +83,9 @@ export default class AxisSelector extends React.Component<Props, State> {
     return newstate;
   }
 
-  handleChange = (option: Object) => {
-    this.props.onChange(option && option.value ? option.value : option);
-  };
-
   render() {
     const {
-      value, disabled, field, errorText
+      value, disabled, field, errorText, onChange
     } = this.props;
     const { model, options } = this.state;
     if (!model) return null;
@@ -108,7 +104,7 @@ export default class AxisSelector extends React.Component<Props, State> {
             value={value}
             disabled={disabled}
             options={options}
-            onChange={this.handleChange}
+            onChange={onChange}
           />
           {helpElement}
         </div>

@@ -1,6 +1,7 @@
 // @flow
 
 import { Model } from 'alaska';
+import type User from 'alaska-user/models/User';
 
 export default class Ticket extends Model {
   static label = 'Ticket';

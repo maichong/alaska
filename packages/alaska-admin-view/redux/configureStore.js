@@ -34,6 +34,7 @@ function configureStore(rootReducer, rootSaga) {
   // 合并中间件
   enhancers.push((0, _redux.applyMiddleware)(...middleware));
 
+  // $Flow
   const store = (0, _redux.createStore)(rootReducer, (0, _redux.compose)(...enhancers));
 
   // kick off root saga

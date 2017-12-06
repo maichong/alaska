@@ -39,13 +39,16 @@ export default class FilterFieldView extends React.Component<Alaska$view$Field$V
     const { field, record, value } = props;
     const { settings } = this.context;
     let state = {};
-    let ref = field.ref || '';
+
+    // $Flow
+    const ref: string = field.ref || '';
+
     if (ref[0] === ':') {
       state.ref = ref.substr(1);
       state.modelPath = record[state.ref];
     } else {
       state.ref = '';
-      state.modelPath = field.ref;
+      state.modelPath = ref;
     }
 
     if (state.modelPath === this.state.modelPath) return;

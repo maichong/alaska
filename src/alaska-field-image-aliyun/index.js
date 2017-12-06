@@ -2,7 +2,7 @@
 
 import { Field } from 'alaska';
 import path from 'path';
-import fs from 'mz/fs';
+import * as fs from 'mz/fs';
 import moment from 'moment';
 import mime from 'mime-types';
 import mongoose from 'mongoose';
@@ -30,7 +30,7 @@ export default class AliyunImageField extends Field {
    * @returns {{}}
    */
   static async upload(file: any, field: any): Promise<{
-    _id: string,
+    _id: bson$ObjectId,
     ext: string,
     size: number,
     path: string,

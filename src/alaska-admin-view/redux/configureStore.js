@@ -23,6 +23,7 @@ export default function configureStore(rootReducer: Function, rootSaga: Function
   // 合并中间件
   enhancers.push(applyMiddleware(...middleware));
 
+  // $Flow
   const store = createStore(rootReducer, compose(...enhancers));
 
   // kick off root saga

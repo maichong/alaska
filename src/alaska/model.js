@@ -571,7 +571,8 @@ export default class Model {
       model._pre || (model._pre = {});
       model._post || (model._post = {});
       ['Init', 'Validate', 'Save', 'Remove'].forEach((Action) => {
-        let action = Action.toLowerCase();
+        // $Flow
+        let action: Mongoose$SchemaHookTypes = Action.toLowerCase();
         {
           let preHooks = model._pre[action] || [];
           if (model.prototype['pre' + Action]) {
@@ -580,7 +581,7 @@ export default class Model {
           }
 
           if (preHooks.length) {
-            schema.pre(action, function (next) {
+            schema.pre(action, function (next: Function) {
               try {
                 let promise = collie.compose(preHooks, [], this);
                 promise.then(() => {

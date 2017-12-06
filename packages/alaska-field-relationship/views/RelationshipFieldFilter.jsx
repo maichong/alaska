@@ -30,14 +30,16 @@ export default class RelationshipFieldFilter extends React.Component<Alaska$view
 
   constructor(props: Alaska$view$Field$Filter$Props) {
     super(props);
-    let v = props.value || {};
-    if (typeof v === 'string') {
-      v = { value: v };
+    let value: {
+      value?: string | number
+      // $Flow
+    } = props.value || {};
+    if (typeof value === 'string' || typeof value === 'number') {
+      value = { value };
     }
-    let value: Alaska$filter = v;
     this.state = {
       value: value.value === undefined ? '' : value.value,
-      inverse: value.inverse || false,
+      inverse: value.inverse === true || value.inverse === 'true',
       error: value.value === undefined,
       options: []
     };
@@ -46,9 +48,10 @@ export default class RelationshipFieldFilter extends React.Component<Alaska$view
   componentWillReceiveProps(props: Alaska$view$Field$Filter$Props) {
     let { value } = props;
     if (value !== this.props.value) {
-      if (typeof value === 'string') {
+      if (typeof value !== 'object') {
         value = { value };
       }
+      // $Flow
       this.setState(value);
     }
   }
@@ -59,9 +62,13 @@ export default class RelationshipFieldFilter extends React.Component<Alaska$view
 
   handleSearch = (keyword: string, callback: Function) => {
     let { field, value } = this.props;
+    // $Flow 下方做了判断，保证ref一定存在
+    const ref: string = field.ref;
+    if (!ref) return;
+    let [refServiceId, refModelName] = ref.split('.');
     api('/api/relation')
-      .param('service', field.service)
-      .param('model', field.model)
+      .param('service', refServiceId)
+      .param('model', refModelName)
       .param('value', value)
       .search(keyword)
       .where(getFilters(field.filters))
@@ -70,7 +77,8 @@ export default class RelationshipFieldFilter extends React.Component<Alaska$view
       }, callback);
   };
 
-  handleChange = (value: string) => {
+  handleChange = (value: Alaska$SelectField$value) => {
+    // $Flow 我们知道这里value不会是数组
     this.setState({ value }, () => this.handleBlur());
   };
 

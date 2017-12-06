@@ -248,6 +248,7 @@ class Alaska {
     const localeCookieKey = this.getConfig('localeCookieKey');
     const localeQueryKey = this.getConfig('localeQueryKey');
     const defaultLocale = MAIN.getConfig('defaultLocale');
+    // $Flow
     app.use((ctx: Alaska$Context, next) => {
       ctx.set('X-Powered-By', 'Alaska');
       ctx.alaska = alaska;

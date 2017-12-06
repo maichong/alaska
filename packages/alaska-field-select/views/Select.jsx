@@ -8,43 +8,14 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import ReactSelect from 'react-select';
 
-function createFromSearchSimple(options, search) {
-  if (!search) {
-    return null;
-  }
-  search = search.trim();
-  return search ? { label: search, value: search } : null;
-}
-
-function createFromSearchMulti(options, values, search) {
-  if (!search) {
-    return null;
-  }
-  search = search.trim();
-  let labels = values.map((v) => v.label);
-  if (!search || labels.indexOf(search) > -1) {
-    return null;
-  }
-  return { label: search, value: search };
-}
-
-type Props = {
-  allowCreate?: boolean,
-  disabled?: boolean,
-  multi?: boolean,
-  renderValue?: Function,
-  onChange: Function,
-  loadOptions?: Function,
-  value: any,
-  options: Object[]
-};
+type Props = Alaska$SelectField$Props;
 
 type State = {
-  options: Alaska$SelectField$option[];
+  options?: Alaska$SelectField$option[],
   optionsMap: {
-    [value: string]: Alaska$SelectField$option;
-  };
-  value?: Alaska$SelectField$option | Alaska$SelectField$option[];
+    [value: string]: Alaska$SelectField$option,
+  },
+  value?: Alaska$SelectField$value
 };
 
 export default class Select extends React.Component<Props, State> {
@@ -62,7 +33,7 @@ export default class Select extends React.Component<Props, State> {
     };
     if (props.options) {
       for (let o of props.options) {
-        this.state.optionsMap[o.value] = o;
+        this.state.optionsMap[String(o.value)] = o;
       }
     }
     this.state.value = this.processValue(props.value);
@@ -83,7 +54,7 @@ export default class Select extends React.Component<Props, State> {
       state.optionsMap = {};
       if (props.options) {
         for (let o of props.options) {
-          state.optionsMap[o.value] = o;
+          state.optionsMap[String(o.value)] = o;
         }
       }
     }
@@ -104,20 +75,17 @@ export default class Select extends React.Component<Props, State> {
   processValue = (value: any) => {
     let optionsMap = this.state.optionsMap;
 
-    function processOne(v): Alaska$SelectField$option {
+    function processOne(v): string | number | boolean {
       if (v && typeof v === 'object') {
-        if (v.label !== v.value) {
-          return v;
-        }
-        if (optionsMap[v.value]) {
-          return optionsMap[v.value];
+        if (v.value !== undefined) {
+          return v.value;
         }
         return v;
       }
-      if (optionsMap[v]) {
-        return optionsMap[v];
+      if (optionsMap[String(v)]) {
+        return optionsMap[String(v)].value;
       }
-      return { label: v, value: v };
+      return v;
     }
 
     if (this.props.multi) {
@@ -130,25 +98,27 @@ export default class Select extends React.Component<Props, State> {
   };
 
   handleChange = (value: Alaska$SelectField$option | Alaska$SelectField$option[]) => {
-    let optionsMap = this.state.optionsMap;
+    let { optionsMap } = this.state;
+    let newValue = '';
     if (value) {
-      if (value instanceof Array) {
+      if (Array.isArray(value)) {
         let arr = [];
-        value.forEach((vv) => {
+        value.forEach((vv: Alaska$SelectField$option) => {
           if (vv.label != String(vv.value)) {
             optionsMap[String(vv.value)] = vv;
           }
           arr.push(vv.value);
         });
-        value = arr;
+        newValue = arr;
       } else {
         optionsMap[String(value.value)] = value;
-        value = value.value;
+        newValue = value.value;
       }
     }
-    this.setState({ optionsMap, value });
+    // $Flow
+    this.setState({ optionsMap, value: newValue });
     if (this.props.onChange) {
-      this.props.onChange(value);
+      this.props.onChange(newValue);
     }
   };
 
@@ -160,58 +130,15 @@ export default class Select extends React.Component<Props, State> {
     // $Flow 我们知道此处 loadOptions 一定存在
     this.props.loadOptions(search, (error, res) => {
       if (!error && res.options) {
-        let options = this._cache[search] = res.options;
-        let optionsMap = this.state.optionsMap;
+        this._cache[search] = res.options;
+        let options = this._cache[search];
+        let optionsMap = {};
         options.forEach((o) => {
           optionsMap[o.value] = o;
         });
-        let value = this.state.value;
-        if (value instanceof Array) {
-          if (this.props.multi) {
-            value.forEach((v) => {
-              let vStr = String(v.value);
-              if (v.label == vStr && optionsMap[vStr]) {
-                v.label = optionsMap[vStr].label;
-              }
-            });
-          }
-        } else if (value && value.label == String(value.value) && optionsMap[String(value.value)]) {
-          value.label = optionsMap[String(value.value)].label;
-        }
-        this.setState({ options, value, optionsMap });
+        this.setState({ options, optionsMap });
       }
     });
-  };
-
-  renderValueWithRemove = (item: Alaska$SelectField$option) => {
-    let me = this;
-
-    function handleRemove() {
-      let values = [];
-      let value = me.state.value;
-      if (value instanceof Array) {
-        value.forEach((v) => {
-          if (v.value != item.value) {
-            values.push(v);
-          }
-        });
-      }
-      me.setState({ value: values });
-      if (me.props.onChange) {
-        me.props.onChange(values);
-      }
-    }
-
-    return (
-      <div className="simple-value">
-        <span
-          className="simple-value-remove"
-          onClick={handleRemove}
-        >x
-        </span>
-        <span>{item.label}</span>
-      </div>
-    );
   };
 
   render() {
@@ -239,8 +166,9 @@ export default class Select extends React.Component<Props, State> {
         multi={multi}
         onChange={this.handleChange}
         value={this.state.value}
-        onInputChange={loadOptions ? this.handleSearchChange : null}
-        options={this.state.options}
+        onInputChange={loadOptions ? this.handleSearchChange : undefined}
+        // $Flow
+        options={this.state.options || []}
         disabled={disabled}
         placeholder={t('Select...')}
         {...others}

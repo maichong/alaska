@@ -28,7 +28,7 @@ export default class SelectFieldCell extends React.Component<Alaska$view$Field$C
         valueMap[getOptionValue(v)] = true;
       });
       _.forEach(field.options, (opt) => {
-        if (valueMap[opt.value]) {
+        if (valueMap[String(opt.value)]) {
           let label = opt.label || opt.value;
           if (field.translate !== false) {
             label = t(label, model.serviceId);
@@ -40,7 +40,7 @@ export default class SelectFieldCell extends React.Component<Alaska$view$Field$C
           if (opt.style) {
             c = 'text-' + opt.style;
           }
-          arr.push(<span className={c} key={opt.value}>{label}</span>);
+          arr.push(<span className={c} key={String(opt.value)}>{label}</span>);
         }
       });
       el = arr;

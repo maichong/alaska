@@ -4,17 +4,10 @@ import React from 'react';
 import _ from 'lodash';
 import { getOptionValue } from './utils';
 
-type Props = {
-  disabled?: boolean,
-  multi?: boolean,
-  onChange: Function,
-  loadOptions?: Function,
-  value: any,
-  options: Object[]
-};
+type Props = Alaska$SelectField$Props;
 
 type State = {
-  options: Alaska$SelectField$option[]
+  options?: Alaska$SelectField$option[]
 };
 
 export default class Switch extends React.Component<Props, State> {
@@ -26,58 +19,79 @@ export default class Switch extends React.Component<Props, State> {
   }
 
   componentWillMount() {
-    let props = this.props;
+    this.init(this.props);
+  }
+
+  componentWillReceiveProps(props: Props) {
+    this.init(props);
+  }
+
+  init(props: Alaska$SelectField$Props) {
     if (props.loadOptions && (!props.options || !props.options.length)) {
       props.loadOptions('', (error, res) => {
         if (!error && res.options) {
           this.setState({ options: res.options });
         }
       });
+    } else {
+      this.setState({ options: props.options });
     }
-  }
-
-  componentWillReceiveProps(props: Props) {
-    this.setState({
-      options: props.options
-    });
   }
 
   handleClick(opt: string) {
     const { value, multi, onChange } = this.props;
     const { options } = this.state;
 
-    let optionsMap: Indexed = {};
+    let optionsMap: Indexed<Alaska$SelectField$option> = {};
     _.forEach(options, (o) => {
       optionsMap[getOptionValue(o)] = o;
     });
 
     if (!multi) {
       if (optionsMap[opt]) {
-        return onChange(optionsMap[opt].value);
+        onChange(optionsMap[opt].value);
+      } else {
+        onChange(opt);
       }
-      return onChange(opt);
+      return;
     }
 
     //multi
     if (!value || !value.length) {
-      onChange([opt]);
-      return null;
+      if (optionsMap[opt] !== undefined && optionsMap[opt].value !== undefined) {
+        onChange([optionsMap[opt].value]);
+      } else {
+        onChange([opt]);
+      }
+      return;
+    }
+
+    let valueArray: Array<string | number | boolean> = [];
+
+    if (Array.isArray(value)) {
+      valueArray = value;
+    } else if (typeof value === 'number' || typeof value === 'string' || typeof value === 'boolean') {
+      valueArray = [value];
     }
 
     let res = [];
     let found = false;
-    _.forEach(value, (v) => {
-      let vid = getOptionValue(v);
+    _.forEach(valueArray, (v: string | number | boolean) => {
+      let vid = String(v);
       if (vid === opt) {
         found = true;
-      } else if (optionsMap[vid]) {
-        res.push(vid);
+      } else if (optionsMap[vid] !== undefined) {
+        if (optionsMap[vid].value !== undefined) {
+          res.push(optionsMap[vid].value);
+        } else {
+          res.push(vid);
+        }
       }
     });
     if (!found) {
       res.push(opt);
     }
-    return onChange(res);
+    onChange(res);
   }
 
   render() {
@@ -85,9 +99,11 @@ export default class Switch extends React.Component<Props, State> {
     const { options } = this.state;
     let valueMap = {};
     if (multi) {
-      _.forEach(value, (v) => {
-        valueMap[getOptionValue(v)] = true;
-      });
+      if (Array.isArray(value)) {
+        _.forEach(value, (v) => {
+          valueMap[getOptionValue(v)] = true;
+        });
+      }
     } else if (value !== undefined) {
       valueMap[getOptionValue(value)] = true;
     }

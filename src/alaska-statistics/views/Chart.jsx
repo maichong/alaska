@@ -2,7 +2,7 @@
 
 import React from 'react';
 // $Flow
-import ChartJS from 'react-chartjs-2';
+import * as ChartJS from 'react-chartjs-2';
 import { api } from 'alaska-admin-view';
 
 type Props = {
@@ -17,6 +17,15 @@ type State = {
   data: ?Object,
   options: ?Object,
   error: ?Object
+};
+
+const chartMap = {
+  line: ChartJS.Line,
+  bar: ChartJS.Bar,
+  radar: ChartJS.Radar,
+  pie: ChartJS.Pie,
+  doughnut: ChartJS.Doughnut,
+  polarArea: ChartJS.Polar,
 };
 
 export default class Chart extends React.Component<Props, State> {
@@ -59,7 +68,7 @@ export default class Chart extends React.Component<Props, State> {
     let data = raw.data;
     let options = raw.options;
     if (!error) {
-      type = (raw.type || '').replace(/^\S/, (s) => s.toUpperCase());
+      type = (raw.type || '');
       let lastClick = 0;
       options.onClick = () => {
         let now = Date.now();
@@ -88,14 +97,15 @@ export default class Chart extends React.Component<Props, State> {
       return <div className="chart-error">{error}</div>;
     }
 
-    let TypeChart = ChartJS[type];
+    console.log(type, chartMap);
+    let TypeChart = chartMap[type];
     if (!TypeChart) {
       return <div className="chart-error">Unknown chart type</div>;
     }
 
     return (
       <div className="chart-box">
-        <TypeChart width={width} height={height} data={data} options={options} />
+        <TypeChart type={type} width={width} height={height} data={data} options={options} />
       </div>
     );
   }

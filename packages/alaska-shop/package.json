@@ -1,6 +1,6 @@
 {
   "name": "alaska-shop",
-  "version": "0.12.2",
+  "version": "0.12.0",
   "description": "Alaska shop service",
   "alaska": "service",
   "main": "index.js",

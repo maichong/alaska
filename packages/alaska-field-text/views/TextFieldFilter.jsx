@@ -20,16 +20,19 @@ export default class TextFieldFilter extends React.Component<Alaska$view$Field$F
 
   constructor(props: Alaska$view$Field$Filter$Props) {
     super(props);
-    let v = props.value || {};
-    if (typeof v === 'string') {
-      v = { value: v };
+    let value: {
+      value?: string,
+      inverse?: boolean
+      // $Flow
+    } = props.value || {};
+    if (typeof value === 'string') {
+      value = { value };
     }
-    let value: Alaska$filter = v;
     this.state = {
       mode: value.exact === false || value.exact === 'false' ? 2 : 1, // 1 精确匹配 2 包含
       value: value.value || '',
       error: !value.value,
-      inverse: value.inverse || false
+      inverse: value.inverse === true || value.inverse === 'true'
     };
     this.handleMode1 = this.handleMode.bind(this, 1);
     this.handleMode2 = this.handleMode.bind(this, 2);

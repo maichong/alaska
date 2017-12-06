@@ -8,13 +8,13 @@ import USER from 'alaska-user';
  * @class BalanceService
  */
 class BalanceService extends Service {
-  _currencies: Alaska$SelectField$option[];
+  _currencies: Alaska$Currency[];
   _currenciesMap: Object;
-  _defaultCurrency: Alaska$SelectField$option;
-  currencies: Alaska$SelectField$option[];
-  _currenciesPromise: void | Promise<Alaska$SelectField$option[]>;
+  _defaultCurrency: Alaska$Currency;
+  currencies: Alaska$Currency[];
+  _currenciesPromise: void | Promise<Alaska$Currency[]>;
   _currenciesPromiseCallback: void | Function;
-  _defaultCurrencyPromise: void | Promise<Alaska$SelectField$option>;
+  _defaultCurrencyPromise: void | Promise<Alaska$Currency>;
   _defaultCurrencyPromiseCallback: void | Function;
 
   constructor(options?: Alaska$Service$options) {
@@ -88,7 +88,7 @@ class BalanceService extends Service {
     }
   }
 
-  get currencies(): Alaska$SelectField$option[] {
+  get currencies(): Alaska$Currency[] {
     return this._currencies;
   }
 
@@ -96,15 +96,15 @@ class BalanceService extends Service {
     return this._currenciesMap;
   }
 
-  get defaultCurrency(): Alaska$SelectField$option {
+  get defaultCurrency(): Alaska$Currency {
     return this._defaultCurrency;
   }
 
   /**
    * 异步获取货币列表
-   * @returns {void|Promise.<Alaska$SelectField$option[]>}
+   * @returns {void|Promise.<Alaska$Currency[]>}
    */
-  getCurrenciesAsync(): Promise<Alaska$SelectField$option[]> {
+  getCurrenciesAsync(): Promise<Alaska$Currency[]> {
     if (!this._currenciesPromise) {
       this._currenciesPromise = new Promise((resolve) => {
         if (this._currencies) {
@@ -119,9 +119,9 @@ class BalanceService extends Service {
 
   /**
    * 异步获取默认货币
-   * @returns {void|Promise.<Alaska$SelectField$option>}
+   * @returns {void|Promise.<Alaska$Currency>}
    */
-  getDefaultCurrencyAsync(): Promise<Alaska$SelectField$option> {
+  getDefaultCurrencyAsync(): Promise<Alaska$Currency> {
     if (!this._defaultCurrencyPromise) {
       this._defaultCurrencyPromise = new Promise((resolve) => {
         if (this._defaultCurrency) {

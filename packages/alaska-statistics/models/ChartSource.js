@@ -46,7 +46,7 @@ class ChartSource extends _alaska.Model {
       if (field.options) {
         let map = {};
         _lodash2.default.forEach(field.options, opt => {
-          map[opt.value] = opt.label;
+          map[String(opt.value)] = opt.label;
         });
         this.xLabelMap = map;
       }
@@ -58,10 +58,11 @@ class ChartSource extends _alaska.Model {
     ChartData.remove({ source: this._id }).exec();
   }
 
+  // $Flow TODO
   async getXLabel(label) {
     let xLabelMap = this.xLabelMap || {};
     if (xLabelMap[label]) {
-      return xLabelMap[label];
+      return xLabelMap[label] || '';
     }
 
     let ServiceModel = _3.default.getModel(this.model);

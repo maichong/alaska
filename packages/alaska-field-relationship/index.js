@@ -111,6 +111,7 @@ class RelationshipField extends _alaska.Field {
     this.ref = ref;
     // $Flow
     this.dataType = type;
+    // $Flow
     schema.path(this.path, this.multi ? [options] : options);
 
     if (ref === model) {
@@ -167,14 +168,11 @@ class RelationshipField extends _alaska.Field {
 }
 exports.default = RelationshipField;
 RelationshipField.plain = TypeObjectId;
-RelationshipField.viewOptions = ['filters', 'service', 'model', 'multi', 'checkbox', 'switch', (options, field) => {
+RelationshipField.viewOptions = ['filters', 'multi', 'checkbox', 'switch', (options, field) => {
   let Model = field.ref;
   if (Model) {
     options.ref = Model.path;
     options.title = Model.titleField;
-    if (!options.service && Model.service) {
-      options.service = Model.service.id;
-    }
   }
 }];
 RelationshipField.defaultOptions = {

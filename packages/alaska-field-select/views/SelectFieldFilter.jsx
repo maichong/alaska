@@ -9,7 +9,7 @@ import Switch from './Switch';
 import { getOptionValue } from './utils';
 
 type State = {
-  value: any,
+  value: Alaska$SelectField$value,
   inverse: boolean,
   error: boolean
 };
@@ -21,36 +21,38 @@ export default class SelectFieldFilter extends React.Component<Alaska$view$Field
 
   constructor(props: Alaska$view$Field$Filter$Props) {
     super(props);
-    let u = props.value || {};
-    if (typeof u === 'string') {
-      u = { value: u };
+    let value: {
+      value?: string,
+      inverse?: boolean
+      // $Flow
+    } = props.value || {};
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      value = { value };
     }
-    let value: Alaska$filter = u;
     this.state = {
-      value: value.value,
+      value: value.value || '',
       inverse: value.inverse === true || value.inverse === 'true',
       error: value.value === undefined
     };
   }
 
-  t(opt: Alaska$SelectField$option) {
+  t(opt: Alaska$SelectField$option): Alaska$SelectField$option {
     const { t } = this.context;
     if (this.props.field.translate === false || !t) {
       return opt;
     }
-    return {
-      label: t(opt.label),
-      value: opt.value,
-      style: opt.style
-    };
+    // $Flow
+    return Object.assign({}, opt, {
+      label: t(opt.label)
+    });
   }
 
   handleInverse = () => {
     this.setState({ inverse: !this.state.inverse }, () => this.handleBlur());
   };
 
-  handleChange = (option: Alaska$SelectField$option) => {
-    this.setState({ value: getOptionValue(option) }, () => this.handleBlur());
+  handleChange = (value: Alaska$SelectField$value) => {
+    this.setState({ value }, () => this.handleBlur());
   };
 
   handleBlur = () => {

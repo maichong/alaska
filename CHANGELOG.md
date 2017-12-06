@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.12.3]
+
+### Changed
+
+- 废弃flow-alaska，使用flow-declarations
+
 ## [0.12.0]
 
 ### Added

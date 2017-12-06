@@ -3,7 +3,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import immutable from 'seamless-immutable';
+import Immutable from 'seamless-immutable';
+import type { ImmutableObject } from 'seamless-immutable';
 import _ from 'lodash';
 import akita from 'akita';
 import checkDepends from 'check-depends';
@@ -37,7 +38,7 @@ type State = {
   errors: {},
   service: {},
   model: Alaska$view$Model,
-  record?: Alaska$view$Record
+  record?: ImmutableObject<Alaska$view$Record>
 };
 
 type Context = {
@@ -97,10 +98,10 @@ class EditorPage extends React.Component<Props, State> {
     if (nextProps.match.params) {
       newState.serviceId = nextProps.match.params.service;
       newState.modelName = nextProps.match.params.model;
-      newState.id = nextProps.match.params.id;
+      newState.id = decodeURIComponent(nextProps.match.params.id);
       if (newState.id === '_new' && this.state.id && this.state.id !== '_new') {
         //新建时候清空表单
-        newState.record = immutable({});
+        newState.record = Immutable({ _id: '' });
       }
 
       let service = this.context.settings.services[newState.serviceId];
@@ -142,7 +143,7 @@ class EditorPage extends React.Component<Props, State> {
       if (!record) {
         record = {};
       }
-      let newData = {};
+      let newData = { _id: '' };
       _.forEach(model.fields, (field) => {
         if (record[field.path] !== undefined) {
           newData[field.path] = record[field.path];
@@ -150,7 +151,7 @@ class EditorPage extends React.Component<Props, State> {
           newData[field.path] = field.default;
         }
       });
-      this.setState({ record: immutable(newData) });
+      this.setState({ record: Immutable(newData) });
       return;
     }
     let { key } = model;
@@ -360,7 +361,7 @@ class EditorPage extends React.Component<Props, State> {
     };
 
     for (let groupKey of Object.keys(model.groups)) {
-      let group = model.groups[groupKey].asMutable();
+      let group = _.clone(model.groups[groupKey]);
       group.title = t(group.title, serviceId);
       group.fields = [];
       groups[groupKey] = group;

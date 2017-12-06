@@ -209,7 +209,9 @@ export default class ChartSource extends Model {
   createdAt: Date;
   nextAt: Date;
   autoBuild: number;
-  xLabelMap: Object;
+  xLabelMap: {
+    [value: string]: string
+  };
 
   preSave() {
     if (!this.unit && ['time', 'cycle'].indexOf(this.type) > -1) {
@@ -236,8 +238,8 @@ export default class ChartSource extends Model {
       if (!field) service.error('X Axis field is not exist!');
       if (field.options) {
         let map = {};
-        _.forEach(field.options, (opt) => {
-          map[opt.value] = opt.label;
+        _.forEach(field.options, (opt: Alaska$SelectField$option) => {
+          map[String(opt.value)] = opt.label;
         });
         this.xLabelMap = map;
       }
@@ -249,10 +251,11 @@ export default class ChartSource extends Model {
     ChartData.remove({ source: this._id }).exec();
   }
 
-  async getXLabel(label: Object) {
+  // $Flow TODO
+  async getXLabel(label) {
     let xLabelMap = this.xLabelMap || {};
     if (xLabelMap[label]) {
-      return xLabelMap[label];
+      return xLabelMap[label] || '';
     }
 
     let ServiceModel = service.getModel(this.model);
@@ -261,7 +264,7 @@ export default class ChartSource extends Model {
       let Ref = field.ref;
       // $Flow findById
       let record: Alaska$Model = await Ref.findById(label).select(Ref.title);
-      let title = label;
+      let title: string = label;
       if (record) {
         // $Flow Ref有可能为string和[string]
         title = record.get(Ref.titleField || '') || label;

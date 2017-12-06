@@ -10,15 +10,12 @@ const { ObjectId } = mongoose.Types;
 export default class RelationshipField extends Field {
   static plain = TypeObjectId;
   static viewOptions = [
-    'filters', 'service', 'model', 'multi', 'checkbox', 'switch',
+    'filters', 'multi', 'checkbox', 'switch',
     (options: Object, field: Alaska$Field) => {
       let Model = field.ref;
       if (Model) {
         options.ref = Model.path;
         options.title = Model.titleField;
-        if (!options.service && Model.service) {
-          options.service = Model.service.id;
-        }
       }
     }
   ];
@@ -54,7 +51,7 @@ export default class RelationshipField extends Field {
       }
     }
 
-    let options: Indexed = {};
+    let options: Indexed<any> = {};
     let type;
     if (ref) {
       //找到了引用模型
@@ -131,6 +128,7 @@ export default class RelationshipField extends Field {
     this.ref = ref;
     // $Flow
     this.dataType = type;
+    // $Flow
     schema.path(this.path, this.multi ? [options] : options);
 
     if (ref === model) {

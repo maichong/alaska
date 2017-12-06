@@ -12,7 +12,7 @@ var _path2 = _interopRequireDefault(_path);
 
 var _fs = require('mz/fs');
 
-var _fs2 = _interopRequireDefault(_fs);
+var fs = _interopRequireWildcard(_fs);
 
 var _moment = require('moment');
 
@@ -33,6 +33,8 @@ var _co2 = _interopRequireDefault(_co);
 var _aliOss = require('ali-oss');
 
 var _aliOss2 = _interopRequireDefault(_aliOss);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -77,9 +79,9 @@ class AliyunImageField extends _alaska.Field {
     }
 
     if (filePath) {
-      let stat = await _fs2.default.stat(file.path);
+      let stat = await fs.stat(file.path);
       size = stat.size;
-      data = _fs2.default.createReadStream(filePath);
+      data = fs.createReadStream(filePath);
     }
 
     if (!ext && name) {

@@ -34,7 +34,7 @@ export default class ImageField extends Field {
    * @returns {{}}
    */
   static upload(file: Alaska$UploadFile | string | Buffer, field: ImageField): Promise<{
-    _id: string,
+    _id: bson$ObjectId,
     ext: string,
     size: number,
     path: string,
@@ -160,7 +160,7 @@ export default class ImageField extends Field {
 
   initSchema() {
     let field = this;
-    let schema: Mongoose$Schema = this._schema;
+    let schema: Mongoose$Schema<*> = this._schema;
     let defaultValue = field.default || {};
 
     let paths = {};

@@ -15,7 +15,7 @@ type Props = {
   refreshSettings: Function,
 };
 
-export default class ListActions extends React.Component<Props, Context> {
+export default class ListActions extends React.Component<Props> {
   static contextTypes = {
     settings: PropTypes.object,
     t: PropTypes.func,

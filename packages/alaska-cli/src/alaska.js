@@ -12,10 +12,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /* eslint global-require:0 */
 
-// $Flow
 const pkg = require('../package.json');
-// $Flow
-
 
 const notifier = (0, _updateNotifier2.default)({
   pkg,
@@ -43,4 +40,5 @@ _commander2.default.command('install <name>').alias('i').description('Install se
 
 _commander2.default.parse(process.argv);
 
+// $Flow
 if (!_commander2.default.args.length) _commander2.default.help();

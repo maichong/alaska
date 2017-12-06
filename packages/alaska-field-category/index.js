@@ -12,7 +12,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 class CategoryField extends _alaskaFieldRelationship2.default {}
 exports.default = CategoryField;
-CategoryField.viewOptions = ['filters', 'service', 'model', 'multi', function (options, field) {
+CategoryField.viewOptions = ['filters', 'multi', function (options, field) {
   let Model = field.ref;
   if (Model) {
     options.ref = Model.path;

@@ -47,7 +47,7 @@ export default async function (ctx: Alaska$Context) {
 
   let recordsMap = {};
   let records = _.map(results.results, (record) => {
-    let tmp: Indexed = {
+    let tmp: Indexed<string> = {
       value: record.id
     };
     tmp.label = record[titleField] || tmp.value;
@@ -72,9 +72,9 @@ export default async function (ctx: Alaska$Context) {
       // $Flow
       let record: Alaska$Model = await Model.findById(id);
       if (record) {
-        let tmp: Indexed = {
+        let tmp: { value: any, label: string, parent?: any } = {
           value: record.id,
-          label: record.get(titleField) || id
+          label: record.get(titleField) || String(id)
         };
         if (record.parent) {
           tmp.parent = record.parent;

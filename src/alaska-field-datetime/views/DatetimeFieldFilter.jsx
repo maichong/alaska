@@ -24,7 +24,13 @@ export default class DatetimeFieldFilter extends React.Component<Alaska$view$Fie
 
   constructor(props: Alaska$view$Field$Filter$Props) {
     super(props);
-    let value = props.value || {};
+    let value: {
+      value1?: string,
+      value2?: string,
+      gte?: string,
+      lte?: string,
+      // $Flow
+    } = props.value || {};
     if (typeof value === 'string') {
       value = { value1: value };
     }

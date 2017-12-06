@@ -561,6 +561,7 @@ class Model {
       model._pre || (model._pre = {});
       model._post || (model._post = {});
       ['Init', 'Validate', 'Save', 'Remove'].forEach(Action => {
+        // $Flow
         let action = Action.toLowerCase();
         {
           let preHooks = model._pre[action] || [];

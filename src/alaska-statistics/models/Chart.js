@@ -5,8 +5,9 @@ import moment from 'moment';
 import Color from 'color';
 import { Model } from 'alaska';
 import random from 'number-random';
+import type { ChartType, ChartColor, ChartData, ChartPoint, ChartDataSets, ChartOptions } from 'chart.js';
 import service from '../';
-import ChartData from './ChartData';
+import ChartDataModel from './ChartData';
 import ChartSource from './ChartSource';
 
 const monthLabels = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'Aguest',
@@ -19,14 +20,19 @@ const backgroundClearer = {
   bar: 0.8
 };
 
-function randomColor() {
+function randomColor(): Color {
   let h = random(2, 30) + [0, 120, 240][random(0, 2)];
   let s = random(40, 90);
   let l = random(30, 70);
   return new Color(`hsl(${h},${s}%,${l}%)`);
 }
 
-function randomColorList(count, lighten) {
+function randomColorList(count, lighten): {
+  backgroundColor: string[],
+  hoverBackgroundColor: string[],
+  borderColor: string[],
+  queue: Array<[string, string, string]>
+} {
   let res = {
     backgroundColor: [],
     hoverBackgroundColor: [],
@@ -42,13 +48,13 @@ function randomColorList(count, lighten) {
 
   while (count > 0) {
     count -= 1;
-    list.push(new Color(color));
+    list.push(new Color(color.rgb()));
     color.rotate(rotate);
   }
   list.sort(() => (Math.random() > 0.5 ? 1 : -1)).forEach((c) => {
-    let c1 = c.lighten(0.2).hex().toString();
-    let c2 = c.lighten(0.1).hex().toString();
-    let c3 = c.lighten(lighten || 0.1).hex().toString();
+    let c1 = c.lighten(0.2).hex();
+    let c2 = c.lighten(0.1).hex();
+    let c3 = c.lighten(lighten || 0.1).hex();
     res.borderColor.push(c1);
     res.hoverBackgroundColor.push(c2);
     res.backgroundColor.push(c3);
@@ -58,17 +64,17 @@ function randomColorList(count, lighten) {
   return res;
 }
 
-function getCycleLabel(x, unit) {
+function getCycleLabel(x: number, unit: string): string {
   if (unit === 'week') {
-    return weekLabels[x] || x;
+    return weekLabels[x] || String(x);
   }
   if (unit === 'quarter') {
-    return quarterLabels[x] || x;
+    return quarterLabels[x] || String(x);
   }
   if (unit === 'month') {
-    return monthLabels[x] || x;
+    return monthLabels[x] || String(x);
   }
-  return x;
+  return String(x);
 }
 
 export default class Chart extends Model {
@@ -153,10 +159,10 @@ export default class Chart extends Model {
     }
   };
   title: string;
-  type: string;
+  type: ChartType;
   sources: Object[];
-  options: Object;
-  datasets: Object;
+  options: ChartOptions;
+  datasets: { [id: string]: ChartDataSets };
   abilities: Object[];
   createdAt: Date;
   review: string;
@@ -170,19 +176,25 @@ export default class Chart extends Model {
   async getData(ctx: Alaska$Context) {
     const t = ctx ? ctx.t : (str) => service.t(str);
     let chart: Chart = this;
-    let options = _.defaultsDeep({
+    let options: ChartOptions = _.defaultsDeep({
       responsive: true
     }, chart.options);
-    let res = {
+
+    let res: {
+      type: ChartType,
+      data: ChartData,
+      options: ChartOptions
+    } = {
       type: chart.type,
-      data: {},
+      data: {
+        datasets: [],
+        labels: []
+      },
       options
     };
 
-    res.data.datasets = [];
-    let datasets = res.data.datasets;
-    res.data.labels = [];
-    let labels = res.data.labels;
+    let datasets: ChartDataSets[] = res.data.datasets;
+    let labels: string[] = res.data.labels;
 
     let datasetsConfigs = chart.datasets || {};
 
@@ -209,7 +221,7 @@ export default class Chart extends Model {
     let colorsQueue = randomColorList(30, backgroundClearer[chart.type]).queue;
 
     for (let source of sources) {
-      let query = ChartData.find({ source: source._id }).select('x y');
+      let query = ChartDataModel.find({ source: source._id }).select('x y');
       if (source.type === 'cycle' || source.type === 'time') {
         query.sort('x');
       } else if (source.sort) {
@@ -223,16 +235,17 @@ export default class Chart extends Model {
         }
       }
       // $Flow  find
-      let data: ChartData[] = await query;
+      let dataRecords: ChartDataModel[] = await query;
+      let dataPoints: ChartPoint[] = [];
       //填充0
-      if (chart.type === 'line' && source.type === 'time' && data.length) {
+      if (chart.type === 'line' && source.type === 'time' && dataRecords.length) {
         let dataMap = {};
-        for (let d of data) {
+        for (let d of dataRecords) {
           let key = d.x.getTime().toString();
           dataMap[key] = d.y;
         }
-        let start = moment(data[0].x);
-        let end = data[data.length - 1].x;
+        let start = moment(dataRecords[0].x);
+        let end = dataRecords[dataRecords.length - 1].x;
         if (source.limit) {
           end = moment(start).add(source.limit, source.unit + 's');
         }
@@ -243,13 +256,13 @@ export default class Chart extends Model {
           }
           start.add(1, source.unit + 's');
         }
-        data = Object.keys(dataMap).sort().map((xx) => {
+        dataPoints = Object.keys(dataMap).sort().map((xx) => {
           let y = dataMap[xx];
           let x = new Date(parseInt(xx));
           return { x, y };
         });
       }
-      let tmp = _.defaultsDeep({}, datasetsConfigs[source.id], {
+      let tmp: ChartDataSets = _.defaultsDeep({}, datasetsConfigs[source.id], {
         label: source.title,
         data: [],
         borderWidth: 1
@@ -273,10 +286,12 @@ export default class Chart extends Model {
 
       //映射label与Y周值
       if (chart.type !== 'line' || source.type !== 'time') {
-        tmp.backgroundColor = [];
-        tmp.hoverBackgroundColor = [];
-        tmp.borderColor = [];
-        for (let d of data) {
+        let backgroundColors: string[] = [];
+        let hoverBackgroundColors: string[] = [];
+        let borderColors: string[] = [];
+        let chartData: number[] = [];
+        for (let d: ChartDataModel of dataRecords) {
+          // $Flow TODO
           let label = await source.getXLabel(d.x);
           label = t(getCycleLabel(label, source.unit));
           let index = labels.indexOf(label);
@@ -284,30 +299,33 @@ export default class Chart extends Model {
             index = labels.length;
             labels.push(label);
           }
-          tmp.data[index] = d.y;
+          chartData[index] = d.y;
           if (chart.type !== 'bar') {
             let color = colorMap[label];
             if (!color) {
-              let c = colorsQueue.shift();
-              if (c) {
-                colorMap[label] = c;
-                color = c;
-              } else {
-                c = randomColorList(1, backgroundClearer[chart.type]);
-                colorMap[label] = [c.borderColor[0], c.hoverBackgroundColor[0], c.backgroundColor[0]];
-                color = colorMap[label];
+              let c: [string, string, string] = colorsQueue.shift();
+              if (!c) {
+                c = randomColorList(1, backgroundClearer[chart.type]).queue[0];
               }
+              colorMap[label] = c;
+              color = c;
             }
-            tmp.borderColor[index] = color[0];
-            tmp.hoverBackgroundColor[index] = color[1];
-            tmp.backgroundColor[index] = color[2];
+            backgroundColors.push(color[0]);
+            hoverBackgroundColors.push(color[1]);
+            borderColors.push(color[2]);
           }
         }
+        tmp.borderColor = borderColors;
+        tmp.hoverBackgroundColor = hoverBackgroundColors;
+        tmp.backgroundColor = backgroundColors;
+        tmp.data = chartData;
         if (chart.type !== 'bar') continue;
       } else {
-        for (let d of data) {
-          tmp.data.push({ x: d.x, y: d.y });
+        let chartData: ChartPoint[] = [];
+        for (let d of dataPoints) {
+          chartData.push(d);
         }
+        tmp.data = chartData;
       }
 
       //判断是否需要多种颜色

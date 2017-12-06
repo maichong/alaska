@@ -3,7 +3,7 @@
 import BALANCE from 'alaska-balance';
 import USER from 'alaska-user';
 import type { PaymentService } from 'alaska-payment';
-import Payment from 'alaska-payment/models/Payment';
+import type Payment from 'alaska-payment/models/Payment';
 import alaska from 'alaska';
 
 export default class BalancePlugin {
@@ -12,8 +12,6 @@ export default class BalancePlugin {
   constructor(service: PaymentService) {
     this.service = service;
     service.payments.balance = this;
-    // TODO
-    service.addConfigDir(__dirname);
   }
 
   /**

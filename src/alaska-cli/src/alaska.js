@@ -2,9 +2,7 @@
 
 /* eslint global-require:0 */
 
-// $Flow
 import program from 'commander';
-// $Flow
 import updateNotifier from 'update-notifier';
 
 const pkg = require('../package.json');
@@ -51,4 +49,5 @@ program
 
 program.parse(process.argv);
 
+// $Flow
 if (!program.args.length) program.help();

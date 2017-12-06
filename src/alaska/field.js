@@ -5,7 +5,7 @@ export default class Field {
   static plain = String;
   static dbOptions: string[] | void;
   static viewOptions: string[] | void;
-  static defaultOptions: Indexed | void;
+  static defaultOptions: Indexed<any> | void;
 
   // Mongoose
   get: Function | void;
@@ -38,7 +38,7 @@ export default class Field {
   dataType: Function;
 
   _options: Alaska$Field$options;
-  _schema: Mongoose$Schema;
+  _schema: Mongoose$Schema<*>;
   _model: Class<Alaska$Model>;
   type: Class<Alaska$Field>;
 

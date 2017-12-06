@@ -29,9 +29,13 @@ export default class CategoryFieldView extends React.Component<Alaska$view$Field
 
   init() {
     let { field, value } = this.props;
+    // $Flow 下方做了判断，保证ref一定存在
+    const ref: string = field.ref;
+    if (!ref) return;
+    let [refServiceId, refModelName] = ref.split('.');
     api('/api/relation')
-      .param('service', field.service)
-      .param('model', field.model)
+      .param('service', refServiceId)
+      .param('model', refModelName)
       .param('value', value)
       .where(field.filters || {})
       .then((res) => {

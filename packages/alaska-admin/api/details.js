@@ -14,7 +14,7 @@ exports.default = async function list(ctx) {
   await ctx.checkAbility('admin');
   let serviceId = ctx.state.service || ctx.query._service;
   let modelName = ctx.state.model || ctx.query._model;
-  let id = ctx.state.id || ctx.query._id;
+  let id = ctx.state.id || decodeURIComponent(ctx.query._id);
   if (!serviceId || !modelName || !id) {
     _alaska2.default.error('Invalid parameters');
   }

@@ -7,20 +7,13 @@ alaska-init/.*
 example/.*
 scripts/.*
 temp/.*
-packages/.*
+.*/packages/.*
 
 [libs]
-flow/
-src/flow-alaska/flow/
-#node_modules/flow-mongoose/flow/
-node_modules/flow-statuses/flow/
-node_modules/flow-koa-compose/flow/
-node_modules/flow-intl-messageformat/flow/
-node_modules/flow-numeral/flow/
-node_modules/flow-path-to-regexp/flow/
-node_modules/akita/flow/
+node_modules/flow-declarations/flow/
 
 [options]
 suppress_comment= \\(.\\|\n\\)*\\$Flow
 unsafe.enable_getters_and_setters=true
 esproposal.decorators=ignore
+esproposal.export_star_as=enable

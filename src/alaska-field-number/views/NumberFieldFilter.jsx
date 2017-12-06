@@ -26,12 +26,19 @@ export default class NumberFieldFilter extends React.Component<Alaska$view$Field
 
   constructor(props: Alaska$view$Field$Filter$Props) {
     super(props);
-    let value = props.value || {};
+    let value: {
+      value1?: string,
+      gte?: string,
+      lte?: string,
+      gt?: string,
+      lt?: string,
+      // $Flow
+    } = props.value || {};
     if (typeof value === 'string') {
       value = { value1: value };
     }
     let mode = 1;
-    let value1 = value.value1;
+    let value1 = value.value1 || '';
     let value2 = '';
     if (value.gte) {
       value1 = value.gte;
