@@ -119,8 +119,14 @@ function readPlugin(pluginDir) {
     });
   }
 
+  let classFile = _path2.default.join(pluginDir, 'index.js');
+  if (!(0, _utils.isFile)(classFile)) {
+    classFile = '';
+  }
+
   let res = {
     dir: pluginDir,
+    pluginClass: classFile,
     api: getFiles(_path2.default.join(pluginDir, 'api')),
     controllers: getFiles(_path2.default.join(pluginDir, 'controllers')),
     routes: getFiles(_path2.default.join(pluginDir, 'routes')),
@@ -172,10 +178,12 @@ function createMetadata(id, dir, mainConfigFile) {
 
   resolvePluginPath(mainConfig, mainConfigFilePath);
 
+  // 各个Service的配置信息
   let configs = {
     [id]: mainConfig
   };
 
+  // 各个Service插件列表
   let plugins = {};
 
   // 读取主Service信息
@@ -242,25 +250,25 @@ function createMetadata(id, dir, mainConfigFile) {
   // 加载子Service配置
   _lodash2.default.forEachRight(metadata.services, (service, serviceId) => {
     let configDir = _path2.default.join(service.dir, 'config');
+    // 遍历配置目录，寻找子Service配置
     _fs2.default.readdirSync(configDir).forEach(name => {
       if (name[0] === '.') return;
-      if (name === serviceId + '.js') return;
+      if (name === serviceId + '.js') return; // 此文件是当前Service配置，不是子Service配置
       let path = _path2.default.join(configDir, name);
       if (name.endsWith('.js')) {
         name = name.substr(0, name.length - 3);
       }
-      //if (!isDirectory(path)) return;
-      if (!_lodash2.default.isPlainObject(metadata.services[name])) return;
+      if (!_lodash2.default.isPlainObject(metadata.services[name])) return; // 没有依赖此子Service
       // 检查依赖
       let serviceConfig = configs[serviceId];
-      if (!serviceConfig) return;
+      if (!serviceConfig) return; // 项目没有安装当前子Service
       if (!_lodash2.default.isPlainObject(serviceConfig.services[name])) return;
       if (!plugins[name]) {
         plugins[name] = [];
       }
       plugins[name].push(path);
       let pluginConfigFile = path;
-      if (path.endsWith('.js')) {
+      if (!path.endsWith('.js')) {
         pluginConfigFile = _path2.default.join(configDir, name, 'config.js');
       }
       if ((0, _utils.isFile)(pluginConfigFile)) {

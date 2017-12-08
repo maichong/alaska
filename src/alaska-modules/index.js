@@ -80,6 +80,9 @@ export default function createModules(mainService: Alaska$Service) {
     if (cfg.plugins) {
       service.plugins = _.map(cfg.plugins, (plugin) => {
         let res = {};
+        if (plugin.pluginClass) {
+          res.pluginClass = require(plugin.pluginClass).default;
+        }
         if (plugin.config) {
           res.config = require(plugin.config).default;
         }

@@ -1,5 +1,6 @@
 // @flow
 
+import _ from 'lodash';
 import alaska from 'alaska';
 
 export default async function (ctx: Alaska$Context) {
@@ -36,6 +37,9 @@ export default async function (ctx: Alaska$Context) {
     record = doc;
   } else {
     record = new Model();
+  }
+  if (body._id === '') {
+    body = _.omit(body, '_id');
   }
   record.set(body);
 

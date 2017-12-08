@@ -4,8 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _alaska = require('alaska');
 
 var _alaska2 = _interopRequireDefault(_alaska);
@@ -16,37 +14,45 @@ var _2 = _interopRequireDefault(_);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const options = [];
-const fields = {};
-if (_alaska2.default.hasService('alaska-sms')) {
-  options.push({
-    label: 'SMS',
-    value: 'sms'
-  });
-  fields.sms = {
-    label: 'SMS Template',
-    ref: 'alaska-sms.Sms',
-    depends: {
-      type: 'sms'
-    }
-  };
-}
-
-if (_alaska2.default.hasService('alaska-email')) {
-  options.push({
-    label: 'Email',
-    value: 'email'
-  });
-  fields.email = {
-    label: 'Email Template',
-    ref: 'alaska-email.Email',
-    depends: {
-      type: 'email'
-    }
-  };
-}
-
 class Captcha extends _alaska.Model {
+
+  static preRegister() {
+    if (_alaska2.default.hasService('alaska-sms')) {
+      // $Flow
+      this.fields.type.options.push({
+        label: 'SMS',
+        value: 'sms'
+      });
+      if (!this.fields.sms) {
+        // $Flow
+        this.fields.sms = {
+          label: 'SMS Template',
+          ref: 'alaska-sms.Sms',
+          depends: {
+            type: 'sms'
+          }
+        };
+      }
+    }
+
+    if (_alaska2.default.hasService('alaska-email')) {
+      // $Flow
+      this.fields.type.options.push({
+        label: 'Email',
+        value: 'email'
+      });
+      if (!this.fields.email) {
+        // $Flow
+        this.fields.email = {
+          label: 'Email Template',
+          ref: 'alaska-email.Email',
+          depends: {
+            type: 'email'
+          }
+        };
+      }
+    }
+  }
 
   preSave() {
     if (!this.createdAt) {
@@ -62,7 +68,7 @@ Captcha.icon = 'lock';
 Captcha.titleField = 'title';
 Captcha.defaultColumns = '_id title type length sms email';
 Captcha.defaultSort = '_id';
-Captcha.fields = _extends({
+Captcha.fields = {
   _id: {
     type: String,
     required: true
@@ -76,7 +82,7 @@ Captcha.fields = _extends({
     label: 'Type',
     type: 'select',
     default: 'sms',
-    options
+    options: []
   },
   numbers: {
     label: 'Numbers',
@@ -99,4 +105,4 @@ Captcha.fields = _extends({
     default: 1800,
     addonAfter: 'seconds'
   }
-}, fields);
+};

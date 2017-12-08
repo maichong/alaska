@@ -107,7 +107,6 @@ export default async function loadApi() {
 
   // API错误处理
   router.all('/api/*', async(ctx, next) => {
-    console.log('api', ctx.path);
     try {
       await next();
     } catch (error) {

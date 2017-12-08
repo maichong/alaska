@@ -115,9 +115,12 @@ export default function createScript(id: string, dir: string, configFile: string
     if (_.size(service.plugins)) {
       script += `    plugins: [{\n`;
       _.forEach(service.plugins, (plugin, index) => {
-        console.log('plugin :', slash(Path.relative(process.cwd(), plugin.dir)));
+        console.log('    plugin :', slash(Path.relative(process.cwd(), plugin.dir)));
         if (index > 0) {
           script += `    }, {\n`;
+        }
+        if (plugin.pluginClass) {
+          script += `      pluginClass: require('${relative(plugin.pluginClass)}').default,\n`;
         }
         if (plugin.config) {
           script += `      config: require('${relative(plugin.config)}').default,\n`;

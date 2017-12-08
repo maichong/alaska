@@ -36,7 +36,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 async function pre() {
   const currenciesMap = _alaskaBalance2.default.currenciesMap;
   let params = this.params;
-  console.log('params', params);
   // balance | deposit
   let recharge = params.recharge;
   if (!recharge) return;

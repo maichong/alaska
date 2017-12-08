@@ -137,9 +137,12 @@ function createScript(id, dir, configFile) {
     if (_lodash2.default.size(service.plugins)) {
       script += `    plugins: [{\n`;
       _lodash2.default.forEach(service.plugins, (plugin, index) => {
-        console.log('plugin :', (0, _slash2.default)(_path2.default.relative(process.cwd(), plugin.dir)));
+        console.log('    plugin :', (0, _slash2.default)(_path2.default.relative(process.cwd(), plugin.dir)));
         if (index > 0) {
           script += `    }, {\n`;
+        }
+        if (plugin.pluginClass) {
+          script += `      pluginClass: require('${relative(plugin.pluginClass)}').default,\n`;
         }
         if (plugin.config) {
           script += `      config: require('${relative(plugin.config)}').default,\n`;

@@ -94,6 +94,9 @@ function createModules(mainService) {
     if (cfg.plugins) {
       service.plugins = _lodash2.default.map(cfg.plugins, plugin => {
         let res = {};
+        if (plugin.pluginClass) {
+          res.pluginClass = require(plugin.pluginClass).default;
+        }
         if (plugin.config) {
           res.config = require(plugin.config).default;
         }

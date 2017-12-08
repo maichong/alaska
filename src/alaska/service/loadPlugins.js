@@ -16,8 +16,10 @@ export default async function loadPlugins() {
 
   this.plugins = {};
 
-  _.forEach(serviceModules.plugins, ({ Plugin }, key) => {
-    if (!Plugin) return;
-    this.plugins[key] = new Plugin(this);
+  _.forEach(serviceModules.plugins, ({ pluginClass }, key) => {
+    if (!pluginClass) return;
+    this.debug('plugin', pluginClass.name);
+    // eslint-disable-next-line new-cap
+    this.plugins[key] = new pluginClass(this);
   });
 }

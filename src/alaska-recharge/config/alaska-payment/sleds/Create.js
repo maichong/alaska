@@ -10,7 +10,6 @@ import Deposit from 'alaska-balance/models/Deposit';
 export async function pre() {
   const currenciesMap = BALANCE.currenciesMap;
   let params = this.params;
-  console.log('params', params);
   // balance | deposit
   let recharge = params.recharge;
   if (!recharge) return;

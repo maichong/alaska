@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
 var _alaska = require('alaska');
 
 var _alaska2 = _interopRequireDefault(_alaska);
@@ -44,6 +48,9 @@ exports.default = async function (ctx) {
     record = doc;
   } else {
     record = new Model();
+  }
+  if (body._id === '') {
+    body = _lodash2.default.omit(body, '_id');
   }
   record.set(body);
 

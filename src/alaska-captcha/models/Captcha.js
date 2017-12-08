@@ -3,36 +3,6 @@
 import alaska, { Model } from 'alaska';
 import service from '../';
 
-const options = [];
-const fields = {};
-if (alaska.hasService('alaska-sms')) {
-  options.push({
-    label: 'SMS',
-    value: 'sms'
-  });
-  fields.sms = {
-    label: 'SMS Template',
-    ref: 'alaska-sms.Sms',
-    depends: {
-      type: 'sms'
-    }
-  };
-}
-
-if (alaska.hasService('alaska-email')) {
-  options.push({
-    label: 'Email',
-    value: 'email'
-  });
-  fields.email = {
-    label: 'Email Template',
-    ref: 'alaska-email.Email',
-    depends: {
-      type: 'email'
-    }
-  };
-}
-
 export default class Captcha extends Model {
   static label = 'Captcha';
   static icon = 'lock';
@@ -54,7 +24,7 @@ export default class Captcha extends Model {
       label: 'Type',
       type: 'select',
       default: 'sms',
-      options,
+      options: [],
     },
     numbers: {
       label: 'Numbers',
@@ -76,8 +46,7 @@ export default class Captcha extends Model {
       type: Number,
       default: 1800,
       addonAfter: 'seconds'
-    },
-    ...fields
+    }
   };
 
   _id: string | number | Object | any;
@@ -90,6 +59,44 @@ export default class Captcha extends Model {
   createdAt: Date;
   sms: string;
   email: string;
+
+  static preRegister() {
+    if (alaska.hasService('alaska-sms')) {
+      // $Flow
+      this.fields.type.options.push({
+        label: 'SMS',
+        value: 'sms'
+      });
+      if (!this.fields.sms) {
+        // $Flow
+        this.fields.sms = {
+          label: 'SMS Template',
+          ref: 'alaska-sms.Sms',
+          depends: {
+            type: 'sms'
+          }
+        };
+      }
+    }
+
+    if (alaska.hasService('alaska-email')) {
+      // $Flow
+      this.fields.type.options.push({
+        label: 'Email',
+        value: 'email'
+      });
+      if (!this.fields.email) {
+        // $Flow
+        this.fields.email = {
+          label: 'Email Template',
+          ref: 'alaska-email.Email',
+          depends: {
+            type: 'email'
+          }
+        };
+      }
+    }
+  }
 
   preSave() {
     if (!this.createdAt) {

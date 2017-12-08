@@ -97,8 +97,14 @@ function readPlugin(pluginDir: string) {
     });
   }
 
+  let classFile = Path.join(pluginDir, 'index.js');
+  if (!isFile(classFile)) {
+    classFile = '';
+  }
+
   let res = {
     dir: pluginDir,
+    pluginClass: classFile,
     api: getFiles(Path.join(pluginDir, 'api')),
     controllers: getFiles(Path.join(pluginDir, 'controllers')),
     routes: getFiles(Path.join(pluginDir, 'routes')),
@@ -150,10 +156,12 @@ export default function createMetadata(id: string, dir: string, mainConfigFile: 
 
   resolvePluginPath(mainConfig, mainConfigFilePath);
 
+  // 各个Service的配置信息
   let configs = {
     [id]: mainConfig
   };
 
+  // 各个Service插件列表
   let plugins = {};
 
   // 读取主Service信息
@@ -222,25 +230,25 @@ export default function createMetadata(id: string, dir: string, mainConfigFile: 
   // 加载子Service配置
   _.forEachRight(metadata.services, (service, serviceId) => {
     let configDir = Path.join(service.dir, 'config');
+    // 遍历配置目录，寻找子Service配置
     fs.readdirSync(configDir).forEach((name) => {
       if (name[0] === '.') return;
-      if (name === serviceId + '.js') return;
+      if (name === serviceId + '.js') return; // 此文件是当前Service配置，不是子Service配置
       let path = Path.join(configDir, name);
       if (name.endsWith('.js')) {
         name = name.substr(0, name.length - 3);
       }
-      //if (!isDirectory(path)) return;
-      if (!_.isPlainObject(metadata.services[name])) return;
+      if (!_.isPlainObject(metadata.services[name])) return; // 没有依赖此子Service
       // 检查依赖
       let serviceConfig = configs[serviceId];
-      if (!serviceConfig) return;
+      if (!serviceConfig) return; // 项目没有安装当前子Service
       if (!_.isPlainObject(serviceConfig.services[name])) return;
       if (!plugins[name]) {
         plugins[name] = [];
       }
       plugins[name].push(path);
       let pluginConfigFile = path;
-      if (path.endsWith('.js')) {
+      if (!path.endsWith('.js')) {
         pluginConfigFile = Path.join(configDir, name, 'config.js');
       }
       if (isFile(pluginConfigFile)) {

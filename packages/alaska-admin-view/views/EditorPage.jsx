@@ -237,12 +237,20 @@ class EditorPage extends React.Component<Props, State> {
     this._r = Math.random();
     this.loading = true;
 
+    let _id;
+    if (id !== '_new' && id !== '') {
+      _id = id;
+    }
+
     this.props.saveAction({
       service: model.serviceId,
       model: model.modelName,
       key: model.key,
       _r: this._r
-    }, record.set('id', id.toString() === '_new' ? undefined : id));
+    }, record.merge({
+      id: _id,
+      _id
+    }));
   };
 
   async handleAction(action: string) {
