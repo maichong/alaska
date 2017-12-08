@@ -1,6 +1,6 @@
 {
   "name": "alaska-field-relationship",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "description": "Alaska relationship field",
   "keywords": [
     "alaska",
@@ -12,6 +12,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-select": "^0.12.3"
+    "alaska-field-select": "^0.12.4"
   }
 }
