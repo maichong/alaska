@@ -15,8 +15,8 @@
   "dependencies": {
     "alaska-field-number": "^0.12.3",
     "alaska-field-text": "^0.12.3",
-    "alaska-field-select": "^0.12.3",
-    "alaska-field-relationship": "^0.12.3",
+    "alaska-field-select": "^0.12.4",
+    "alaska-field-relationship": "^0.12.4",
     "string-random": "^0.1.0"
   }
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.5]
+
+### Changed
+
+- alaska build 命令会自动将src中的代码转码到dist目录中，不需要再单独使用babel命令转码，同时src目录下的非代码文件会被复制到dist目录
+- alaska-modules 生成的 modules.js 中的 templatesDirs 配置项，路径变为与主Service.dir的相对路径，而非与工作目录的相对路径
+
 ## [0.12.3]
 
 ### Changed

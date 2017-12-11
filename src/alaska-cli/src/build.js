@@ -36,6 +36,10 @@ export default async function build() {
     createScript(rc.id, process.cwd() + '/src', rc.id + '.js');
   }
 
+  // babel transform
+  console.log(chalk.green('Babel transform...'));
+  uitls.transformSrouceDir(Path.join(dir, 'src'), Path.join(dir, 'dist'));
+
   // build admin
   console.log(chalk.green('Build admin dashboard...'));
   if (!uitls.isDirectory(Path.join(modulesDir, 'alaska-admin-view'))) {

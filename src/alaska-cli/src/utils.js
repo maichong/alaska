@@ -1,4 +1,8 @@
 import fs from 'fs';
+import Path from 'path';
+import mkdirp from 'mkdirp';
+import chalk from 'chalk';
+import * as babel from 'babel-core';
 import read from 'read-promise';
 
 /**
@@ -67,3 +71,39 @@ export async function readBool(options, def) {
   }
   return await readBool(options);
 }
+
+function transformSrouceFile(from, to) {
+  mkdirp.sync(Path.dirname(to));
+  let relative = Path.relative(process.cwd(), from);
+
+  let needBabel = false;
+  if (to.endsWith('.js')) {
+    needBabel = true;
+  }
+  if (needBabel) {
+    console.log(chalk.blue('    transform'), relative);
+    let code = babel.transformFileSync(from, {}).code;
+    fs.writeFileSync(to, code);
+  } else {
+    console.log(chalk.blue('    copy'), relative);
+    fs.copyFileSync(from, to);
+  }
+}
+
+export function transformSrouceDir(from, to) {
+  mkdirp.sync(Path.dirname(to));
+
+  let files = fs.readdirSync(from);
+
+  for (let file of files) {
+    if (file === '.DS_Store') continue;
+    let fromPath = Path.join(from, file);
+    let toPath = Path.join(to, file);
+    if (isFile(fromPath)) {
+      transformSrouceFile(fromPath, toPath);
+    } else {
+      transformSrouceDir(fromPath, toPath);
+    }
+  }
+}
+

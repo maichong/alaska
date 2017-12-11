@@ -161,7 +161,7 @@ function createScript(id, dir, configFile) {
     if (_lodash2.default.size(service.templatesDirs)) {
       script += `    templatesDirs: [\n`;
       _lodash2.default.forEach(service.templatesDirs, d => {
-        script += `      '${(0, _slash2.default)(_path2.default.relative(process.cwd(), d))}',\n`;
+        script += `      '${(0, _slash2.default)(_path2.default.relative(dir, d))}',\n`;
       });
       script += `    ],\n`;
     }

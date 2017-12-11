@@ -33,7 +33,8 @@ export default async function loadConfig() {
     }
   }
 
+  let mainDir = this.alaska.main.dir;
   _.forEach(serviceModules.templatesDirs, (dir) => {
-    this.templatesDirs.unshift(Path.relative(process.cwd(), dir));
+    this.templatesDirs.push(Path.join(mainDir, dir));
   });
 }

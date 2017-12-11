@@ -188,10 +188,10 @@ class App extends React.Component<Props, State> {
       options.closeButton = true;
     }
     if (!options.showAnimation) {
-      options.showAnimation = 'fadeIn';
+      options.showAnimation = 'animated fadeInRight';
     }
     if (!options.hideAnimation) {
-      options.hideAnimation = 'fadeOut';
+      options.hideAnimation = 'animated fadeOutRight';
     }
     if (!options.timeOut) {
       options.timeOut = 10000;

@@ -9,20 +9,15 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
 var _metadata = require('./metadata');
 
 var _metadata2 = _interopRequireDefault(_metadata);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * @copyright Maichong Software Ltd. 2017 http://maichong.it
- * @date 2017-11-20
- * @author Liang <liang@maichong.it>
- */
-
-/* eslint global-require:0 */
-/* eslint import/no-dynamic-require:0 */
 
 function requireFiles(files, withDefault) {
   let res = {};
@@ -31,7 +26,14 @@ function requireFiles(files, withDefault) {
     res[key] = withDefault ? m.default : m;
   });
   return res;
-}
+} /**
+   * @copyright Maichong Software Ltd. 2017 http://maichong.it
+   * @date 2017-11-20
+   * @author Liang <liang@maichong.it>
+   */
+
+/* eslint global-require:0 */
+/* eslint import/no-dynamic-require:0 */
 
 function createModules(mainService) {
   let metadata = (0, _metadata2.default)(mainService.id, mainService.dir, mainService.configFile);
@@ -89,7 +91,7 @@ function createModules(mainService) {
       service.updates = requireFiles(cfg.updates, true);
     }
     if (cfg.templatesDirs) {
-      service.templatesDirs = cfg.templatesDirs;
+      service.templatesDirs = cfg.templatesDirs.map(d => _path2.default.relative(mainService.dir, d));
     }
     if (cfg.plugins) {
       service.plugins = _lodash2.default.map(cfg.plugins, plugin => {

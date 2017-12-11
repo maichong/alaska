@@ -139,7 +139,7 @@ export default function createScript(id: string, dir: string, configFile: string
     if (_.size(service.templatesDirs)) {
       script += `    templatesDirs: [\n`;
       _.forEach(service.templatesDirs, (d) => {
-        script += `      '${slash(Path.relative(process.cwd(), d))}',\n`;
+        script += `      '${slash(Path.relative(dir, d))}',\n`;
       });
       script += `    ],\n`;
     }

@@ -49,7 +49,8 @@ exports.default = async function loadConfig() {
     }
   }
 
+  let mainDir = this.alaska.main.dir;
   _lodash2.default.forEach(serviceModules.templatesDirs, dir => {
-    this.templatesDirs.unshift(_path2.default.relative(process.cwd(), dir));
+    this.templatesDirs.push(_path2.default.join(mainDir, dir));
   });
 };

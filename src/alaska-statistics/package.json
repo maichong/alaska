@@ -13,7 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "react-chartjs-2": "^2.6.4",
-    "alaska-field-select": "^0.12.3",
+    "alaska-field-select": "^0.12.4",
     "color": "^2.0.1",
     "chart.js": "^2.7.1",
     "number-random": "^0.1.1"

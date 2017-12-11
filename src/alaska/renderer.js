@@ -66,7 +66,7 @@ export default class Renderer {
     }
 
     let files = {};
-    _.forEachRight(this.service.templatesDirs, (dir) => {
+    _.forEach(this.service.templatesDirs, (dir) => {
       files = _.defaultsDeep({}, readDir(dir), files);
     });
 

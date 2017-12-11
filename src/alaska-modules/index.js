@@ -8,6 +8,7 @@
 /* eslint import/no-dynamic-require:0 */
 
 import _ from 'lodash';
+import Path from 'path';
 import createMetadata from './metadata';
 
 function requireFiles(files, withDefault) {
@@ -75,7 +76,7 @@ export default function createModules(mainService: Alaska$Service) {
       service.updates = requireFiles(cfg.updates, true);
     }
     if (cfg.templatesDirs) {
-      service.templatesDirs = cfg.templatesDirs;
+      service.templatesDirs = cfg.templatesDirs.map((d) => Path.relative(mainService.dir, d));
     }
     if (cfg.plugins) {
       service.plugins = _.map(cfg.plugins, (plugin) => {
