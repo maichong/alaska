@@ -237,9 +237,11 @@ class EditorPage extends React.Component<Props, State> {
     this._r = Math.random();
     this.loading = true;
 
-    let _id;
+    let _id = record._id || undefined;
     if (id !== '_new' && id !== '') {
       _id = id;
+    } else {
+      id = '';
     }
 
     this.props.saveAction({
@@ -248,7 +250,7 @@ class EditorPage extends React.Component<Props, State> {
       key: model.key,
       _r: this._r
     }, record.merge({
-      id: _id,
+      id,
       _id
     }));
   };

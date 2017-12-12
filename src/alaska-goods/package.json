@@ -12,10 +12,10 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-balance": "^0.12.4",
+    "alaska-balance": "^0.12.5",
     "alaska-field-category": "^0.12.3",
     "alaska-field-html": "^0.12.3",
     "alaska-field-mixed": "^0.12.3",
-    "alaska-field-select": "^0.12.4"
+    "alaska-field-select": "^0.12.5"
   }
 }

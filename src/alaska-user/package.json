@@ -12,13 +12,13 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-datetime": "^0.12.3",
-    "alaska-field-image": "^0.12.3",
+    "alaska-field-datetime": "^0.12.5",
+    "alaska-field-image": "^0.12.5",
     "alaska-field-number": "^0.12.3",
     "alaska-field-password": "^0.12.3",
-    "alaska-field-relationship": "^0.12.4",
+    "alaska-field-relationship": "^0.12.5",
     "alaska-field-text": "^0.12.3",
     "alaska-middleware-session": "^0.12.3",
-    "alaska-settings": "^0.12.4"
+    "alaska-settings": "^0.12.5"
   }
 }

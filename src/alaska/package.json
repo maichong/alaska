@@ -28,7 +28,7 @@
     "koa-router": "^7.3.0",
     "lodash": "^4.17.4",
     "mime-types": "^2.1.17",
-    "mongoose": "^4.13.6",
+    "mongoose": "^4.13.7",
     "statuses": "^1.4.0",
     "string-random": "^0.1.0"
   }
