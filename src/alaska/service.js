@@ -333,6 +333,27 @@ export default class Service {
     this.debug('launch');
     // $Flow
     this.launch = utils.resolved;
+    _.forEach(modules.services, (service) => {
+      _.forEach(service.models, (Model, name) => {
+        if (!Model.modelName) {
+          Model.modelName = name;
+        }
+        if (!Model.service && service.service) {
+          Model.service = service.service;
+        }
+      });
+      _.forEach(service.sleds, (Sled, name) => {
+        if (!Sled.sledName) {
+          Sled.sledName = name;
+        }
+        if (!Sled.key) {
+          Sled.key = utils.nameToKey(service.service.id + '.' + name);
+        }
+        if (!Sled.service && service.service) {
+          Sled.service = service.service;
+        }
+      });
+    });
     alaska.modules = modules;
     await this.init();
     await this.loadConfig();
@@ -423,12 +444,11 @@ export default class Service {
 
   /**
    * 注册模型
-   * @param {string} modelName
    * @param {Model} Model
    * @returns {Model}
    */
-  async registerModel(modelName: string, Model: Class<Alaska$Model>): Promise<Class<Alaska$Model>> {
-    await Model.register(modelName);
+  async registerModel(Model: Class<Alaska$Model>): Promise<Class<Alaska$Model>> {
+    await Model.register();
     return Model;
   }
 

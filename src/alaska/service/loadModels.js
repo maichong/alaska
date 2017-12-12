@@ -83,7 +83,7 @@ export default async function loadModels() {
             'methods',
             'virtuals'
           ].indexOf(key) === -1
-          && !/^(pre|post)(Init|Validate|Save|Remove)$/.test(key)
+          && !/^(pre|post)(Register|Init|Validate|Save|Remove)$/.test(key)
         ) {
           Model[key] = ext[key];
         }
@@ -92,6 +92,6 @@ export default async function loadModels() {
         ext.default(Model);
       }
     });
-    await this.registerModel(name, Model);
+    await this.registerModel(Model);
   }
 }

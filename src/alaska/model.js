@@ -270,10 +270,11 @@ export default class Model {
   /**
    * 注册
    */
-  static async register(modelName: string) {
+  static async register() {
     const { service } = this;
     // $Flow
     const model: Class<Alaska$Model> = this;
+    const modelName = model.modelName;
     model._fields = {};
 
     function loadFieldConfig(fieldTypeName: string) {
@@ -304,11 +305,6 @@ export default class Model {
        */
       model.classOfModel = true;
 
-      if (model.modelName) {
-        modelName = model.modelName;
-      }
-
-      model.modelName = modelName;
       model.id = utils.nameToKey(modelName);
       model.key = service.id + '.' + model.id;
       model.path = service.id + '.' + modelName;

@@ -26,15 +26,11 @@ export default async function init() {
 
     // Models
     _.forEach(serviceModules.models, (Model, name) => {
-      Model.service = this;
       this.models[name] = Model;
     });
 
     // Sleds
     _.forEach(serviceModules.sleds, (Sled, name) => {
-      Sled.service = this;
-      Sled.sledName = name;
-      Sled.key = utils.nameToKey(this.id + '.' + name);
       this.sleds[name] = Sled;
     });
 
