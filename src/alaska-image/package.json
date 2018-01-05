@@ -12,7 +12,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-image": "^0.12.5",
+    "alaska-field-image": "^0.12.7",
     "akita-node": "^0.3.7"
   }
 }

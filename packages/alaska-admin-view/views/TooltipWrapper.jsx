@@ -14,9 +14,7 @@ type Props = {
 };
 
 export default class TooltipWrapper extends React.Component<Props> {
-  static defaultProps = {
-    placement: 'top'
-  };
+  static defaultProps = { placement: 'top' };
 
   constructor(props: Props) {
     super(props);

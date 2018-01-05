@@ -11,7 +11,7 @@ import qs from 'qs';
 import Node from './Node';
 import DataTable from './DataTable';
 import SearchField from './SearchField';
-import ContentHeader from './ContentHeader';
+import TopToolbar from './TopToolbar';
 import ListActions from './ListActions';
 import * as listRedux from '../redux/lists';
 import { refreshSettings } from '../redux/settings';
@@ -428,9 +428,6 @@ class ListPage extends React.Component<Props, State> {
       </button>);
     }
 
-    let searchInput = model.searchFields.length ?
-      <SearchField placeholder={t('Search')} onChange={this.handleSearch} value={search} /> : null;
-
     let handleSelect;
     if (!model.noremove || _.find(model.actions, (a) => (a.list && a.list))) {
       // eslint-disable-next-line prefer-destructuring
@@ -445,10 +442,11 @@ class ListPage extends React.Component<Props, State> {
 
     return (
       <Node id="list" className={model.serviceId + '-' + model.id}>
-        <ContentHeader actions={titleBtns}>
-          {t(model.label || model.modelName, service.id)} &nbsp;
-          <i>{t('total records', { total: list.total })}</i>
-        </ContentHeader>
+        <TopToolbar actions={titleBtns}>
+          {t(model.label || model.modelName, service.id)}
+          {search ? <i>  &nbsp; ( {t('Search')} : {search} ) </i> : null}
+          &nbsp; <i>{list.total !== undefined ? t('total records', { total: list.total }) : null}</i>
+        </TopToolbar>
         <div>{filterViews}</div>
         <div className="panel panel-default noborder">
           <div className="scroll">
@@ -464,11 +462,17 @@ class ListPage extends React.Component<Props, State> {
             />
           </div>
         </div>
-        <nav className="navbar navbar-fixed-bottom bottom-bar">
+        <nav className="navbar navbar-fixed-bottom bottom-toolbar">
           <div className="container-fluid">
             <div className="navbar-form navbar-left">
               <div className="form-group">
-                {searchInput}
+                {model.searchFields.length ?
+                  <SearchField
+                    placeholder={t('Press enter to search')}
+                    onChange={this.handleSearch}
+                    value={search}
+                  /> : null
+                }
               </div>
             </div>
             <ListActions

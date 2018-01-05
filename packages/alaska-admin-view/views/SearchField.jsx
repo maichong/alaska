@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import Node from './Node';
 
 type Props = {
   value: string,
@@ -13,41 +14,58 @@ type State = {
 };
 
 export default class SearchField extends React.Component<Props, State> {
-  _timer: any;
-
   constructor(props: Props) {
     super(props);
-    this.state = {
-      value: ''
-    };
+    this.state = { value: props.value || '' };
   }
 
   componentWillReceiveProps(props: Props) {
     if (props.value !== this.state.value) {
-      this.setState({
-        value: props.value
-      });
+      this.setState({ value: props.value });
     }
   }
 
   handleChange = (event: SyntheticInputEvent<*>) => {
     let value = event.target.value;
     this.setState({ value });
-    if (this._timer) {
-      clearTimeout(this._timer);
+  };
+
+  handleBlur = () => {
+    let value = this.state.value.trim();
+    this.props.onChange(value);
+  };
+
+  handleKeyPress = (event: SyntheticKeyboardEvent<*>) => {
+    if (event.key === 'Enter') {
+      this.handleBlur();
     }
-    this._timer = setTimeout(() => {
-      this.props.onChange(this.state.value);
-    }, 50);
+  };
+
+  handleClear = () => {
+    this.setState({ value: '' });
+    if (this.props.value) {
+      this.props.onChange('');
+    }
   };
 
   render() {
-    return (<input
-      className="form-control"
-      type="text"
-      value={this.state.value}
-      onChange={this.handleChange}
-      placeholder={this.props.placeholder}
-    />);
+    return (
+      <Node id="searchField" className="search-field">
+        <input
+          className="form-control"
+          type="search"
+          value={this.state.value}
+          onChange={this.handleChange}
+          onBlur={this.handleBlur}
+          onKeyPress={this.handleKeyPress}
+          placeholder={this.props.placeholder}
+        />
+        {this.state.value ?
+          <div className="search-clear" onClick={this.handleClear}>
+            <i className="fa fa-close" />
+          </div> : null
+        }
+      </Node>
+    );
   }
 }

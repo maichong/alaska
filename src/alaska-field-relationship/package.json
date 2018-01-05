@@ -12,6 +12,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-select": "^0.12.5"
+    "alaska-field-select": "^0.12.7"
   }
 }

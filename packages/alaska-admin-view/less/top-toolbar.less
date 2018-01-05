@@ -1,0 +1,45 @@
+.top-toolbar {
+  height: @top-toolbar-height;
+  position: fixed;
+  top: @header-height;
+  left: @menu-width;
+  right: 0;
+  background: #fff;
+  border-bottom: solid 1px @border-color;
+  z-index: 100;
+
+  #app.icon & {
+    left: @menu-icon-width;
+  }
+  #app.hidden & {
+    left: 0;
+  }
+}
+
+.top-toolbar-inner {
+  position: relative;
+}
+
+.top-toolbar-title {
+  height: @top-toolbar-height;
+  overflow: hidden;
+  line-height: @top-toolbar-height;
+  padding-left: 10px;
+  font-size: 16px;
+  i {
+    font-size: 12px;
+    color: #aaa;
+  }
+}
+
+.top-toolbar-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 200;
+  line-height: @input-height-base;
+  padding-top: ( @top-toolbar-height - @input-height-base ) / 2 - 1;
+  & > * {
+    margin-right: ( @top-toolbar-height - @input-height-base ) / 2;
+  }
+}

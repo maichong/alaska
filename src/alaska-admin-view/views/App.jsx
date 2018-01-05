@@ -162,9 +162,7 @@ class App extends React.Component<Props, State> {
     let modalActions = _.map([0, 1], (i) => {
       let config = buttons[i];
       if (typeof config === 'string') {
-        config = {
-          title: config
-        };
+        config = { title: config };
       }
       config = _.defaults({}, config, defaults[i]);
       return <button key={i} className={'btn btn-' + config.style} onClick={handles[i]}>{config.title}</button>;
@@ -203,9 +201,7 @@ class App extends React.Component<Props, State> {
   };
 
   handleCloseModal = () => {
-    this.setState({
-      modalOpen: false
-    });
+    this.setState({ modalOpen: false });
   };
 
   handleResize = () => {
@@ -263,9 +259,7 @@ class App extends React.Component<Props, State> {
   }
 
   render() {
-    const {
-      layout
-    } = this.props;
+    const { layout } = this.props;
     const state = this.state;
 
     return (<Node id="app" className={layout}>
@@ -289,6 +283,4 @@ export default connect(({ user, settings, layout }) => ({
   user,
   settings,
   layout
-}), (dispatch) => bindActionCreators({
-  applyLayout: layoutRedux.applyLayout
-}, dispatch))(App);
+}), (dispatch) => bindActionCreators({ applyLayout: layoutRedux.applyLayout }, dispatch))(App);

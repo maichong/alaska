@@ -24,7 +24,7 @@ class Login extends React.Component<Props, State> {
   static contextTypes = {
     actions: PropTypes.object,
     settings: PropTypes.object,
-    t: PropTypes.func,
+    t: PropTypes.func
   };
 
   constructor(props: Props) {
@@ -131,7 +131,5 @@ class Login extends React.Component<Props, State> {
 
 export default connect(
   ({ login }) => ({ login }),
-  (dispatch) => bindActionCreators({
-    loginAction: loginRedux.login
-  }, dispatch)
+  (dispatch) => bindActionCreators({ loginAction: loginRedux.login }, dispatch)
 )(Login);

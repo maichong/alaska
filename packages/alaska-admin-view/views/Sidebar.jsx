@@ -13,15 +13,11 @@ type Props = {
 };
 
 export default class Sidebar extends React.Component<Props, Object> {
-  static contextTypes = {
-    router: PropTypes.object
-  };
+  static contextTypes = { router: PropTypes.object };
 
   constructor(props: Props) {
     super(props);
-    this.state = {
-      menu: ''
-    };
+    this.state = { menu: '' };
   }
 
   handleChange = (item: Object) => {

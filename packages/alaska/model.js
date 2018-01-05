@@ -260,10 +260,11 @@ class Model {
   /**
    * 注册
    */
-  static async register(modelName) {
+  static async register() {
     const { service } = this;
     // $Flow
     const model = this;
+    const modelName = model.modelName;
     model._fields = {};
 
     function loadFieldConfig(fieldTypeName) {
@@ -294,11 +295,6 @@ class Model {
        */
       model.classOfModel = true;
 
-      if (model.modelName) {
-        modelName = model.modelName;
-      }
-
-      model.modelName = modelName;
       model.id = utils.nameToKey(modelName);
       model.key = service.id + '.' + model.id;
       model.path = service.id + '.' + modelName;
@@ -625,7 +621,7 @@ class Model {
 
       schema.virtual('_').get(function () {
         if (!this.__methods) {
-          this.__methods = utils.bindMethods(model._underscore, this);
+          this.__methods = utils.bindMethods(model._underscore || {}, this);
         }
         return this.__methods;
       });

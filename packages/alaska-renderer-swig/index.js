@@ -16,14 +16,15 @@ var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
 
+var _slash = require('slash');
+
+var _slash2 = _interopRequireDefault(_slash);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //const Swig = swig.Swig;
 
-/* eslint import/no-extraneous-dependencies:0 */
-/* eslint import/no-unresolved:0 */
-/* eslint import/extensions:0 */
-
+// $Flow
 class SwigRenderer extends _alaska.Renderer {
 
   constructor(service, options) {
@@ -43,6 +44,7 @@ class SwigRenderer extends _alaska.Renderer {
         return _path2.default.join(from, to);
       },
       load(identifier, cb) {
+        identifier = (0, _slash2.default)(identifier);
         let map = me.getFileMap();
         let file = map[identifier];
         if (!file) {
@@ -90,4 +92,7 @@ class SwigRenderer extends _alaska.Renderer {
   }
 }
 exports.default = SwigRenderer;
-// $Flow
+
+/* eslint import/no-extraneous-dependencies:0 */
+/* eslint import/no-unresolved:0 */
+/* eslint import/extensions:0 */

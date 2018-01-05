@@ -355,6 +355,27 @@ class Service {
     this.debug('launch');
     // $Flow
     this.launch = utils.resolved;
+    _lodash2.default.forEach(modules.services, service => {
+      _lodash2.default.forEach(service.models, (Model, name) => {
+        if (!Model.modelName) {
+          Model.modelName = name;
+        }
+        if (!Model.service && service.service) {
+          Model.service = service.service;
+        }
+      });
+      _lodash2.default.forEach(service.sleds, (Sled, name) => {
+        if (!Sled.sledName) {
+          Sled.sledName = name;
+        }
+        if (!Sled.key) {
+          Sled.key = utils.nameToKey(service.service.id + '.' + name);
+        }
+        if (!Sled.service && service.service) {
+          Sled.service = service.service;
+        }
+      });
+    });
     _alaska2.default.modules = modules;
     await this.init();
     await this.loadConfig();
@@ -445,12 +466,11 @@ class Service {
 
   /**
    * 注册模型
-   * @param {string} modelName
    * @param {Model} Model
    * @returns {Model}
    */
-  async registerModel(modelName, Model) {
-    await Model.register(modelName);
+  async registerModel(Model) {
+    await Model.register();
     return Model;
   }
 

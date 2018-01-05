@@ -1,32 +1,35 @@
 
 #header {
+  border-left: none;
+  border-right: none;
+
   #app.icon & {
-    left: 45px;
+    left: @menu-icon-width;
   }
   #app.hidden & {
     left: 0;
   }
-  @height: 56px;
   position: fixed;
   top: 0;
-  left: 240px;
+  left: @menu-width;
   right: 0;
   z-index: 1000;
-  height: @height;
+  min-height: @header-height;
+  height: @header-height;
   background: #fff;
   border-radius: 0;
   .navbar-header {
-    height: @height;
+    height: @header-height;
     img {
       display: block;
-      height: @height;
+      height: @header-height;
     }
   }
   .container-fluid {
     padding: 0;
   }
   .nav > li {
-    height: 56px;
+    height: @header-height;
     &:hover {
       background: #f3f4f5;
     }
@@ -39,22 +42,23 @@
 
 .menu-toggle {
   float: left;
-  width: 56px;
-  padding-top: 14px;
+  width: @header-height;
+  padding-top: (@header-height - @header-toggle-size) / 2;
   text-align: center;
   cursor: pointer;
   .fa {
-    font-size: 28px;
+    font-size: @header-toggle-size;
   }
 }
 
 #topNav {
-  float: right !important;
-  margin: 0 !important;
+  float: right;
+  margin: 0;
   & > li {
     float: left;
     & > a {
-      padding: 15px 21px !important;
+      height: @header-height - 1;
+      padding: (@header-height - @header-avatar-size)/2 21px !important;
     }
   }
   & > li.open {
@@ -96,10 +100,9 @@
   }
   img {
     display: inline-block;
-    border-radius: 16px;
+    border-radius: 50%;
     overflow: hidden;
-    margin-top: -4px;
-    width: 32px;
+    height: @header-avatar-size;
   }
   .caret {
     display: none;

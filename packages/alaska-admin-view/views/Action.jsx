@@ -5,12 +5,10 @@ import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
 import TooltipWrapper from './TooltipWrapper';
 
-const NULL = <div />;
-
 type Props = {
   model: Alaska$view$Model,
   action: Alaska$Model$action,
-  selected?: Array<any>,
+  selected?: Alaska$view$Record[],
   disabled?: boolean,
   record?: Object,
   onClick?: Function,
@@ -63,14 +61,14 @@ export default class Action extends React.Component<Props> {
       let View = this.context.views[action.view];
       if (!View) {
         console.error(`Action view ${action.view} missing`);
-        return NULL;
+        return null;
       }
       // $Flow
       return React.createElement(View, {
         model, action, selected, record, refresh
       });
     }
-    // if (!model.abilities[action.key]) return NULL;
+    // if (!model.abilities[action.key]) return null;
     if (!disabled && !record && action.needRecords && (!selected || selected.length < action.needRecords)) {
       disabled = true;
     }

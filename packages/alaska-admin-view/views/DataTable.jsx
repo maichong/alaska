@@ -4,13 +4,15 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
+import Checkbox from 'alaska-field-checkbox/views/Checkbox';
 import DataTableRow from './DataTableRow';
+import Node from './Node';
 
 type Props = {
   model: Alaska$view$Model,
   columns?: string[],
   selected?: Alaska$view$Record[],
-  records?: Alaska$view$Record[],
+  records: Alaska$view$Record[],
   sort?: string,
   onSort?: Function,
   onSelect?: Function,
@@ -18,9 +20,8 @@ type Props = {
 };
 
 type State = {
-  records: Alaska$view$Record[],
-  columns: Object[],
-  selected: {}
+  columnList: Object[],
+  selectedIdMap: {}
 };
 
 export default class DataTable extends React.Component<Props, State> {
@@ -28,15 +29,14 @@ export default class DataTable extends React.Component<Props, State> {
     router: PropTypes.object,
     settings: PropTypes.object,
     views: PropTypes.object,
-    t: PropTypes.func,
+    t: PropTypes.func
   };
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      records: props.records || [],
-      selected: {},
-      columns: []
+      selectedIdMap: {},
+      columnList: []
     };
   }
 
@@ -48,51 +48,49 @@ export default class DataTable extends React.Component<Props, State> {
     this.init(nextProps);
   }
 
-  shouldComponentUpdate(props: Props, state: State) {
-    if (!state.records || !state.columns) {
+  shouldComponentUpdate(nextProps: Props, state: State) {
+    if (!state.columnList) {
       return false;
     }
-    return !shallowEqualWithout(state, this.state);
+    return !shallowEqualWithout(state, this.state) || nextProps.records !== this.props.records;
   }
 
   init(props: Props) {
-    let model = props.model || this.props.model;
+    let model = props.model;
     if (!model) return;
     const { settings } = this.context;
 
     let state = {};
-    if (props.records) {
-      state.records = props.records;
-    }
     if (props.selected) {
-      state.selected = _.reduce(props.selected, (res, record) => {
+      state.selectedIdMap = _.reduce(props.selected, (res, record) => {
         res[record._id] = true;
         return res;
       }, {});
     }
 
-    let columns = [];
+    let columnList = [];
     _.forEach(props.columns || model.defaultColumns, (key) => {
       let field = model.fields[key];
       if (field) {
         if (field.super && !settings.superMode) return;
-        columns.push({
+        columnList.push({
           key,
           field
         });
       }
     });
-    state.columns = columns;
+    state.columnList = columnList;
     this.setState(state);
   }
 
   isAllSelected() {
-    const { records, selected } = this.state;
+    const { records } = this.props;
+    const { selectedIdMap } = this.state;
     if (!records || !records.length) {
       return false;
     }
     for (let record of records) {
-      if (!selected[record._id]) return false;
+      if (!selectedIdMap[record._id]) return false;
     }
     return true;
   }
@@ -100,25 +98,27 @@ export default class DataTable extends React.Component<Props, State> {
   handleSelectAll = () => {
     let records = [];
     if (!this.isAllSelected()) {
-      records = _.clone(this.state.records);
+      records = _.clone(this.props.records);
     }
     if (this.props.onSelect) {
       this.props.onSelect(records);
     }
   };
+
   handleSelect = (record: Object, isSelected: boolean) => {
-    let selected = _.clone(this.state.selected);
+    let selectedIdMap = _.clone(this.state.selectedIdMap);
     if (isSelected) {
-      selected[record._id] = true;
+      selectedIdMap[record._id] = true;
     } else {
-      delete selected[record._id];
+      delete selectedIdMap[record._id];
     }
-    this.setState({ selected });
-    let records = _.filter(this.state.records, (r) => selected[r._id]);
+    this.setState({ selectedIdMap });
+    let records = _.filter(this.props.records, (r) => selectedIdMap[r._id]);
     if (this.props.onSelect) {
       this.props.onSelect(records);
     }
   };
+
   handleEdit = (record: Object) => {
     const { model } = this.props;
     const { history } = this.context.router;
@@ -128,26 +128,41 @@ export default class DataTable extends React.Component<Props, State> {
 
   render() {
     const {
-      model, sort, onSort, onSelect, onRemove
+      model, records, selected, sort, onSort, onSelect, onRemove
     } = this.props;
     const { t } = this.context;
-    const { columns, records, selected } = this.state;
-    if (!model || !columns) {
+    const { columnList, selectedIdMap } = this.state;
+    if (!model || !columnList) {
       return <div className="loading">Loading...</div>;
     }
 
     let className = 'data-table table table-hover ' + model.serviceId + '-' + model.id + '-record';
 
     let selectEl = onSelect ?
-      <th onClick={this.handleSelectAll} width="29"><input type="checkbox" checked={this.isAllSelected()} />
-      </th> : null;
+      <Node
+        tag="th"
+        wrapper="dataTableSelect"
+        props={{
+          model, records, selected, selectedIdMap
+        }}
+        onClick={this.handleSelectAll}
+        width="29"
+      >
+        <Checkbox value={this.isAllSelected()} />
+      </Node> : null;
     return (
-      <table className={className}>
+      <Node tag="table" wrapper="dataTable" className={className}>
         <thead>
-          <tr>
+          <Node
+            wrapper="dataTableHeader"
+            tag="tr"
+            props={{
+              model, records, selected, selectedIdMap
+            }}
+          >
             {selectEl}
             {
-              columns.map((col) => {
+              columnList.map((col) => {
                 let sortIcon = null;
                 let handleClick;
                 if (!col.nosort && onSort) {
@@ -169,21 +184,21 @@ export default class DataTable extends React.Component<Props, State> {
               })
             }
             <th />
-          </tr>
+          </Node>
         </thead>
         <tbody>
-          {records.map((record, index) => (<DataTableRow
+          {_.map(records, (record, index) => (<DataTableRow
             key={record._id || index}
             record={record}
-            columns={columns}
+            columnList={columnList}
             model={model}
             onEdit={this.handleEdit}
             onSelect={onSelect ? this.handleSelect : null}
             onRemove={onRemove}
-            selected={selected[record._id]}
+            selected={selectedIdMap[record._id]}
           />))}
         </tbody>
-      </table>
+      </Node>
     );
   }
 }

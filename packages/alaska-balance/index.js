@@ -28,43 +28,6 @@ class BalanceService extends _alaska.Service {
     super(options);
   }
 
-  postInit() {
-    let service = this;
-    _alaskaUser2.default.pre('registerModel', Model => {
-      if (Model.modelName !== 'User') return;
-      service._currencies.forEach(c => {
-        Model.underscoreMethod(c.value, 'income', async function (amount, title, type) {
-          // 只能在这里导入模型，如果在头部import会循环引用
-          const Income = service.getModel('Income');
-          let user = this;
-          let balance = user.get(c.value) + amount || 0;
-          if (c.precision !== undefined) {
-            balance = _lodash2.default.round(balance, c.precision);
-          }
-          user.set(c.value, balance);
-          let income = new Income({
-            type,
-            title,
-            amount,
-            balance,
-            target: 'balance',
-            currency: c.value,
-            user
-          });
-          await income.save();
-          await user.save();
-        });
-        if (Model.fields[c.value]) return;
-        Model.fields[c.value] = {
-          label: c.label,
-          type: Number,
-          default: 0,
-          addonAfter: c.unit
-        };
-      });
-    });
-  }
-
   postLoadConfig() {
     let currencies = this.getConfig('currencies');
     if (!currencies || !currencies.length) {

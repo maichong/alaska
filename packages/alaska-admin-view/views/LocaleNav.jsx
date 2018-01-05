@@ -5,9 +5,7 @@ import PropTypes from 'prop-types';
 import { NavDropdown, MenuItem } from 'react-bootstrap';
 
 export default class LocaleNav extends React.Component<any> {
-  static contextTypes = {
-    settings: PropTypes.object
-  };
+  static contextTypes = { settings: PropTypes.object };
 
   render() {
     const { settings } = this.context;

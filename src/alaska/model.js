@@ -631,7 +631,7 @@ export default class Model {
 
       schema.virtual('_').get(function () {
         if (!this.__methods) {
-          this.__methods = utils.bindMethods(model._underscore, this);
+          this.__methods = utils.bindMethods(model._underscore || {}, this);
         }
         return this.__methods;
       });

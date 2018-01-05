@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.INITIAL_STATE = exports.applyDetails = exports.loadDetails = exports.APPLY_DETAILS = exports.LOAD_DETAILS = undefined;
+exports.INITIAL_STATE = exports.applyBatchDetails = exports.applyDetails = exports.loadDetails = exports.APPLY_BATCH_DETAILS = exports.APPLY_DETAILS = exports.LOAD_DETAILS = undefined;
 
 var _reduxActions = require('redux-actions');
 
@@ -15,6 +15,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const LOAD_DETAILS = exports.LOAD_DETAILS = 'LOAD_DETAILS';
 const APPLY_DETAILS = exports.APPLY_DETAILS = 'APPLY_DETAILS';
+const APPLY_BATCH_DETAILS = exports.APPLY_BATCH_DETAILS = 'APPLY_BATCH_DETAILS';
 
 /**
  * 加载详情
@@ -33,6 +34,12 @@ const loadDetails = exports.loadDetails = (0, _reduxActions.createAction)(LOAD_D
  */
 const applyDetails = exports.applyDetails = (0, _reduxActions.createAction)(APPLY_DETAILS, (key, data) => ({ key, data }));
 
+/**
+ * 批量更新详情数据
+ * @param {Array<{key:string, data:Object}>} list
+ */
+const applyBatchDetails = exports.applyBatchDetails = (0, _reduxActions.createAction)(APPLY_BATCH_DETAILS, list => ({ list }));
+
 // 初始state
 const INITIAL_STATE = exports.INITIAL_STATE = (0, _seamlessImmutable2.default)({});
 
@@ -42,6 +49,17 @@ exports.default = (0, _reduxActions.handleActions)({
     let datas = state[key] || (0, _seamlessImmutable2.default)({});
     datas = datas.set(data._id, data);
     return state.set(key, datas);
+  },
+  APPLY_BATCH_DETAILS: (state, { payload }) => {
+    const { list } = payload;
+    for (let _ref of list) {
+      let { key, data } = _ref;
+
+      let datas = state[key] || (0, _seamlessImmutable2.default)({});
+      datas = datas.set(data._id, data);
+      state = state.set(key, datas);
+    }
+    return state;
   },
   LOGOUT: () => INITIAL_STATE
 }, INITIAL_STATE);

@@ -12,10 +12,10 @@ import { bindActionCreators } from 'redux';
 import * as detailsRedux from '../redux/details';
 import * as saveRedux from '../redux/save';
 import Node from './Node';
-import Action from './Action';
 import FieldGroup from './FieldGroup';
 import Relationship from './Relationship';
-import ContentHeader from './ContentHeader';
+import TopToolbar from './TopToolbar';
+import EditorActions from './EditorActions';
 import * as settingsRedux from '../redux/settings';
 
 type Props = {
@@ -156,9 +156,7 @@ class EditorPage extends React.Component<Props, State> {
     }
     let { key } = model;
     if (details[key] && details[key][id]) {
-      this.setState({
-        record: details[key][id]
-      });
+      this.setState({ record: details[key][id] });
     } else {
       this.refresh();
     }
@@ -177,15 +175,8 @@ class EditorPage extends React.Component<Props, State> {
   }
 
   handleChange(key: any, value: any) {
-    this.setState({
-      record: this.state.record.set(key, value)
-    });
+    this.setState({ record: this.state.record.set(key, value) });
   }
-
-  handleCreate = () => {
-    let url = '/edit/' + this.state.serviceId + '/' + this.state.modelName + '/_new';
-    this.context.router.history.replace(url);
-  };
 
   handleRemove = async() => {
     const { serviceId, modelName, id } = this.state;
@@ -255,52 +246,6 @@ class EditorPage extends React.Component<Props, State> {
     }));
   };
 
-  async handleAction(action: string) {
-    const { model, record, id } = this.state;
-    const { t, toast, confirm } = this.context;
-
-    const config = model.actions[action];
-    if (config && config.confirm) {
-      await confirm(t('Confirm'), t(config.confirm, model.serviceId));
-    }
-
-    try {
-      if (config.pre && config.pre.substr(0, 3) === 'js:') {
-        // eslint-disable-next-line
-        if (!eval(config.pre.substr(3))) {
-          return;
-        }
-      }
-
-      if (config.script && config.script.substr(0, 3) === 'js:') {
-        // eslint-disable-next-line
-        eval(config.script.substr(3));
-      } else {
-        let body = Object.assign({}, record, { id: id.toString() === '_new' ? '' : id });
-        await akita.post('/api/action', {
-          params: {
-            _service: model.serviceId,
-            _model: model.modelName,
-            _action: action
-          },
-          body
-        });
-      }
-      toast('success', t('Successfully'));
-      if (config.post === 'refresh') {
-        this.props.refreshSettings();
-      } else {
-        this.refresh();
-      }
-      if (config.post && config.post.substr(0, 3) === 'js:') {
-        // eslint-disable-next-line
-        eval(config.post.substr(3));
-      }
-    } catch (error) {
-      toast('error', t('Failed'), error.message);
-    }
-  }
-
   handleBack = () => {
     this.context.router.history.goBack();
   };
@@ -324,7 +269,7 @@ class EditorPage extends React.Component<Props, State> {
     const isNew = id === '_new';
     let canSave = (isNew && model.abilities.create) || (!isNew && model.abilities.update && !model.noupdate);
     // eslint-disable-next-line
-    let title = <a onClick={this.handleBack}>{t(model.label || model.modelName, serviceId)}</a>;
+    let title = <a onClick={this.handleBack} className="pointer">{t(model.label || model.modelName, serviceId)}</a>;
     let subTitle = '';
     if (isNew) {
       subTitle = t('Create');
@@ -435,112 +380,6 @@ class EditorPage extends React.Component<Props, State> {
       groupElements.push(groupEl);
     }
 
-    let actionElements = [];
-    let removeDialogElement = null;
-
-    // 创建时，显示保存按钮
-    if (
-      isNew
-      && model.abilities.create
-      && !model.nocreate
-      && !(model.actions.create && model.actions.create.depends && !checkDepends(model.actions.create.depends, record))
-    ) {
-      actionElements.push(<Action
-        key="create"
-        action={_.assign({
-          key: 'create',
-          icon: 'save',
-          style: 'primary',
-          tooltip: 'Save'
-        }, model.actions.create)}
-        model={model}
-        disabled={this.loading}
-        onClick={this.handleSave}
-      />);
-    } else if (
-      !isNew
-      && model.abilities.update
-      && !model.noupdate
-      && !(model.actions.update && model.actions.update.depends && !checkDepends(model.actions.update.depends, record))
-    ) {
-      actionElements.push(<Action
-        key="update"
-        action={_.assign({
-          key: 'update',
-          icon: 'save',
-          style: 'primary',
-          tooltip: 'Save'
-        }, model.actions.update)}
-        model={model}
-        disabled={this.loading}
-        onClick={this.handleSave}
-      />);
-    }
-
-    if (
-      !isNew
-      && !model.noremove
-      && model.abilities.remove
-      && model.actions.remove !== false
-      && !(model.actions.remove && model.actions.remove.depends && !checkDepends(model.actions.remove.depends, record))
-    ) {
-      actionElements.push(<Action
-        key="remove"
-        action={_.assign({
-          key: 'remove',
-          icon: 'close',
-          style: 'danger',
-          tooltip: 'Remove'
-        }, model.actions.remove)}
-        model={model}
-        disabled={this.loading}
-        onClick={this.handleRemove}
-      />);
-    }
-
-    if (
-      !isNew
-      && !model.nocreate
-      && model.abilities.create
-      && model.actions.create !== false
-      && model.actions.add !== false
-    ) {
-      // 创建另一个
-      actionElements.push(<Action
-        key="add"
-        action={_.assign({
-          key: 'create',
-          icon: 'plus',
-          style: 'success',
-          tooltip: 'Create record'
-        }, model.actions.create, model.actions.add)}
-        model={model}
-        disabled={this.loading}
-        onClick={this.handleCreate}
-      />);
-    }
-
-    //扩展动作按钮
-    _.forEach(model.actions, (action, key) => {
-      if (['add', 'create', 'update', 'remove'].indexOf(key) > -1) return;
-      if (action.super && !settings.superMode) return;
-      if (action.depends && !checkDepends(action.depends, record)) return;
-      if (action.list && !action.editor) return;
-      let disabled = this.loading;
-      if (!disabled && action.disabled) {
-        disabled = checkDepends(action.disabled, record);
-      }
-      actionElements.push(<Action
-        onClick={() => this.handleAction(key)}
-        key={key}
-        disabled={disabled}
-        model={model}
-        action={action}
-        record={record}
-        id={id}
-      />);
-    });
-
     let relationships = null;
     if (!isNew && model.relationships) {
       relationships = _.map(
@@ -562,18 +401,24 @@ class EditorPage extends React.Component<Props, State> {
 
     return (
       <Node id="editor" props={this.props} state={this.state} className={serviceId + '-' + model.id}>
-        <ContentHeader>
+        <TopToolbar actions={isNew ? null : <div className="top-toolbar-id hidden-xs">ID : {id}</div>}>
           {title}
-        </ContentHeader>
-        {isNew ? null : <div>ID : {id}</div>}
+        </TopToolbar>
+        {isNew ? null : <div className="top-toolbar-id visible-xs-block">ID : {id}</div>}
         {groupElements}
-        {removeDialogElement}
         {relationships}
-        <nav className="navbar navbar-fixed-bottom bottom-bar">
+        <nav className="navbar navbar-fixed-bottom bottom-toolbar">
           <div className="container-fluid">
-            <div className="navbar-form navbar-right">
-              {actionElements}
-            </div>
+            <EditorActions
+              model={model}
+              record={record}
+              id={id}
+              isNew={isNew}
+              refreshSettings={this.props.refreshSettings}
+              onSave={this.handleSave}
+              onRemove={this.handleRemove}
+              loading={this.loading}
+            />
           </div>
         </nav>
       </Node>

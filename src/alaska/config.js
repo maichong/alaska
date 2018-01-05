@@ -41,6 +41,12 @@ export default {
   env: process.env.NODE_ENV || 'production',
 
   /**
+   * [APP] 如果有unhandledRejection，则自动退出
+   * @type {boolean}
+   */
+  unhandledRejectionExit: true,
+
+  /**
    * [APP] session
    * @type {Object}
    */

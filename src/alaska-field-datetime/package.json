@@ -12,7 +12,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "moment": "^2.19.4",
+    "moment": "^2.20.1",
     "react-datetime": "^2.11.1"
   }
 }

@@ -5,17 +5,22 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = details;
 
-var _effects = require('redux-saga/effects');
-
 var _akita = require('akita');
 
 var _akita2 = _interopRequireDefault(_akita);
 
 var _details = require('../redux/details');
 
+var _redux = require('../redux');
+
+var _redux2 = _interopRequireDefault(_redux);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const fetching = {};
+
+let queue = [];
+let timer = 0;
 
 function* details({ payload }) {
   let fetchingKey = payload.key + '/' + payload.id;
@@ -32,12 +37,25 @@ function* details({ payload }) {
       }
     });
     fetching[fetchingKey] = false;
-    yield (0, _effects.put)((0, _details.applyDetails)(payload.key, res));
+    queue.push({ key: payload.key, data: res });
   } catch (e) {
     fetching[fetchingKey] = false;
-    yield (0, _effects.put)((0, _details.applyDetails)(payload.key, {
-      _id: payload.id,
-      _error: e.message
-    }));
+    queue.push({
+      key: payload.key,
+      data: {
+        _id: payload.id,
+        _error: e.message
+      }
+    });
+  }
+  if (!timer) {
+    timer = setTimeout(() => {
+      timer = 0;
+      let cur = queue;
+      queue = [];
+      if (cur.length) {
+        _redux2.default.dispatch((0, _details.applyBatchDetails)(cur));
+      }
+    }, 50);
   }
 }

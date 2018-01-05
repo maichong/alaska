@@ -18,6 +18,7 @@ exports.default = Event;
 Event.label = 'Event';
 Event.icon = 'bell';
 Event.titleField = 'title';
+Event.searchFields = 'title';
 Event.defaultColumns = 'pic title user type parent read createdAt';
 Event.defaultSort = '-createdAt';
 Event.populations = {
@@ -82,7 +83,7 @@ Event.fields = {
     }]
   },
   top: {
-    label: 'Top',
+    label: 'Top Event',
     type: Boolean,
     default: false
   },

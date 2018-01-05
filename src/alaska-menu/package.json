@@ -12,7 +12,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-datetime": "^0.12.5",
+    "alaska-field-datetime": "^0.12.7",
     "alaska-field-mixed": "^0.12.3",
     "alaska-field-text": "^0.12.3"
   }

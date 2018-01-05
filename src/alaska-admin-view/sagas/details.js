@@ -1,8 +1,11 @@
-import { put } from 'redux-saga/effects';
 import akita from 'akita';
-import { applyDetails } from '../redux/details';
+import { applyBatchDetails } from '../redux/details';
+import store from '../redux';
 
 const fetching = {};
+
+let queue = [];
+let timer = 0;
 
 export default function* details({ payload }) {
   let fetchingKey = payload.key + '/' + payload.id;
@@ -19,12 +22,25 @@ export default function* details({ payload }) {
       }
     });
     fetching[fetchingKey] = false;
-    yield put(applyDetails(payload.key, res));
+    queue.push({ key: payload.key, data: res });
   } catch (e) {
     fetching[fetchingKey] = false;
-    yield put(applyDetails(payload.key, {
-      _id: payload.id,
-      _error: e.message
-    }));
+    queue.push({
+      key: payload.key,
+      data: {
+        _id: payload.id,
+        _error: e.message
+      }
+    });
+  }
+  if (!timer) {
+    timer = setTimeout(() => {
+      timer = 0;
+      let cur = queue;
+      queue = [];
+      if (cur.length) {
+        store.dispatch(applyBatchDetails(cur));
+      }
+    }, 50);
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "alaska-field-date",
-  "version": "0.12.7",
+  "version": "0.12.3",
   "description": "Alaska date field",
   "keywords": [
     "alaska",
@@ -12,8 +12,8 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-datetime": "^0.12.5",
-    "moment": "^2.19.4",
-    "react-datetime": "^2.11.1"
+    "moment": "^2.20.1",
+    "react-datetime": "^2.11.1",
+    "alaska-field-datetime": "^0.12.7"
   }
 }

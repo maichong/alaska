@@ -9,19 +9,19 @@ type Props = {
   value: boolean,
   disabled?: boolean,
   label?: string,
-  onCheck: Function,
+  onChange?: Function,
 };
 
 export default class Checkbox extends React.Component<Props> {
   handleCheck = () => {
-    if (this.props.onCheck) {
-      this.props.onCheck(!this.props.value);
+    if (this.props.onChange) {
+      this.props.onChange(!this.props.value);
     }
   };
 
   render() {
     let {
-      className, radio, value, disabled, label, style
+      className, radio, value, disabled, label, style, onChange
     } = this.props;
     className = className || '';
     className += ' checkbox';
@@ -46,7 +46,7 @@ export default class Checkbox extends React.Component<Props> {
     }
 
     return (
-      <label className={className} onClick={disabled ? null : this.handleCheck} style={style}>
+      <label className={className} onClick={disabled || !onChange ? null : this.handleCheck} style={style}>
         <i className={'fa fa-' + icon} />
         {label}
       </label>

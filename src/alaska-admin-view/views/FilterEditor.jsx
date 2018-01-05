@@ -18,15 +18,11 @@ type State = {
 };
 
 export default class FilterEditor extends React.Component<Props, State> {
-  static contextTypes = {
-    views: PropTypes.object
-  };
+  static contextTypes = { views: PropTypes.object };
 
   constructor(props: Props) {
     super(props);
-    this.state = {
-      value: props.value
-    };
+    this.state = { value: props.value };
   }
 
   componentWillReceiveProps(props: Props) {

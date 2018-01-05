@@ -27,15 +27,24 @@ const notifier = (0, _updateNotifier2.default)({
 });
 
 _commander2.default.command('create <name>').alias('c').description('Create new project').action(name => {
-  require('./create').default(name).catch(error => console.error(error));
+  require('./create').default(name).catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
 });
 
 _commander2.default.command('build').alias('b').description('Build source code and admin dashboard').option('-w, --watch', 'watch mode').option('-d, --dev', 'build dev lib').action(() => {
-  require('./build').default();
+  require('./build').default().catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
 });
 
 _commander2.default.command('install <name>').alias('i').description('Install service').option('-w, --watch', 'watch mode').option('-d, --dev', 'build dev lib').action(name => {
-  require('./install').default(name).catch(error => console.error(error));
+  require('./install').default(name).catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
 });
 
 _commander2.default.parse(process.argv);

@@ -74,7 +74,12 @@ exports.default = async function loadControllers() {
   this.router.register('/:controller?/:action?', this.getConfig('methods'), (ctx, next) => {
     let controller = ctx.params.controller || defaultController;
     let action = ctx.params.action || defaultAction;
+    if (suffix && controller && controller.endsWith(suffix) && action === defaultAction) {
+      // about.html
+      controller = controller.substr(0, controller.length - suffix.length);
+    }
     if (suffix && action && action.endsWith(suffix)) {
+      // about/us.html
       action = action.substr(0, action.length - suffix.length);
     }
     service.debug('route %s:%s', controller, action);

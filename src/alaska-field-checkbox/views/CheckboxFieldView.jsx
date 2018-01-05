@@ -9,7 +9,7 @@ export default class CheckboxFieldView extends React.Component<Alaska$view$Field
     return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model');
   }
 
-  handleCheck = (checked: boolean) => {
+  handleChange = (checked: boolean) => {
     if (this.props.onChange) {
       this.props.onChange(checked);
     }
@@ -36,7 +36,7 @@ export default class CheckboxFieldView extends React.Component<Alaska$view$Field
     let input = (<Checkbox
       label={field.label}
       value={value}
-      onCheck={this.handleCheck}
+      onChange={this.handleChange}
       disabled={disabled}
     />);
 

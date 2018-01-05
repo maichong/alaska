@@ -2,9 +2,11 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import Checkbox from 'alaska-field-checkbox/views/Checkbox';
+import Node from './Node';
 
 type Props = {
-  columns: Object[],
+  columnList: Object[],
   record: Object,
   model: Object,
   onEdit: Function,
@@ -14,9 +16,7 @@ type Props = {
 };
 
 export default class DataTableRow extends React.Component<Props> {
-  static contextTypes = {
-    views: PropTypes.object
-  };
+  static contextTypes = { views: PropTypes.object };
 
   handleChange = () => {
     if (this.props.onSelect) {
@@ -26,16 +26,24 @@ export default class DataTableRow extends React.Component<Props> {
 
   render() {
     const {
-      record, columns, model, onEdit, onRemove, onSelect, selected
+      record, columnList, model, onEdit, onRemove, onSelect, selected
     } = this.props;
     const { views } = this.context;
     let className = model.id + '-';
     let selectEl = onSelect ?
-      <td onClick={this.handleChange} className="pointer"><input type="checkbox" checked={!!selected} /></td> : null;
+      <Node
+        tag="th"
+        props={{ model, record, selected }}
+        wrapper="dataTableRowSelect"
+        onClick={this.handleChange}
+        className="pointer"
+      >
+        <Checkbox value={!!selected} />
+      </Node> : null;
     return (
-      <tr onDoubleClick={() => onEdit(record)}>
+      <Node tag="tr" wrapper="dataTableRow" onDoubleClick={() => onEdit(record)}>
         {selectEl}
-        {columns.map((col) => {
+        {columnList.map((col) => {
           let key = col.key;
           let CellViewClass = views[col.field.cell];
           if (!CellViewClass) {
@@ -52,10 +60,11 @@ export default class DataTableRow extends React.Component<Props> {
           </td>);
         })}
         <td key="_a" className="actions">
-          <i className="fa fa-edit" onClick={() => onEdit(record)} />
-          {onRemove ? <span><i className="fa fa-close text-danger" onClick={() => onRemove(record)} /></span> : null}
+          <i className="fa fa-edit text-primary icon-btn" onClick={() => onEdit(record)} />
+          {onRemove ?
+            <span><i className="fa fa-close text-danger icon-btn" onClick={() => onRemove(record)} /></span> : null}
         </td>
-      </tr>
+      </Node>
     );
   }
 }

@@ -160,7 +160,7 @@ export default async function build() {
       contentTmp += ` ${com},`;
       console.log(`\t-> ${r}`);
     });
-    contentTmp += ' ]\n';
+    contentTmp += ' ],\n';
   });
   content += contentTmp + '};';
 

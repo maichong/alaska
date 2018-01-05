@@ -4,6 +4,7 @@ export default class Event extends Model {
   static label = 'Event';
   static icon = 'bell';
   static titleField = 'title';
+  static searchFields = 'title';
   static defaultColumns = 'pic title user type parent read createdAt';
   static defaultSort = '-createdAt';
 
@@ -71,7 +72,7 @@ export default class Event extends Model {
       }]
     },
     top: {
-      label: 'Top',
+      label: 'Top Event',
       type: Boolean,
       default: false
     },

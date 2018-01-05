@@ -13,11 +13,11 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-image": "^0.12.5",
-    "ali-oss": "^4.11.2",
+    "alaska-field-image": "^0.12.7",
+    "ali-oss": "^4.11.3",
     "co": "^4.6.0",
     "mime-types": "^2.1.17",
-    "moment": "^2.19.4",
+    "moment": "^2.20.1",
     "mz": "^2.7.0"
   }
 }

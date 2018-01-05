@@ -5,9 +5,7 @@ import PropTypes from 'prop-types';
 import Node from './Node';
 
 export default class Locked extends React.Component<any> {
-  static contextTypes = {
-    t: PropTypes.func
-  };
+  static contextTypes = { t: PropTypes.func };
 
   render() {
     const { t } = this.context;

@@ -47,6 +47,7 @@ exports.default = {
   'Username is required': '请输入用户名',
   'Password is required': '请输入密码',
   'Alaska admin dashboard': 'Alaska管理平台',
+  'Press enter to search': '按回车键搜索',
   Search: '搜索',
   Filter: '过滤',
   equal: '等于',

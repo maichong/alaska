@@ -9,6 +9,7 @@ import { Renderer } from 'alaska';
 import { Swig } from 'swig';
 import path from 'path';
 import fs from 'fs';
+import slash from 'slash';
 
 //const Swig = swig.Swig;
 
@@ -32,6 +33,7 @@ export default class SwigRenderer extends Renderer {
         return path.join(from, to);
       },
       load(identifier, cb) {
+        identifier = slash(identifier);
         let map = me.getFileMap();
         let file = map[identifier];
         if (!file) {

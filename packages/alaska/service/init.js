@@ -39,15 +39,11 @@ exports.default = async function init() {
 
     // Models
     _lodash2.default.forEach(serviceModules.models, (Model, name) => {
-      Model.service = this;
       this.models[name] = Model;
     });
 
     // Sleds
     _lodash2.default.forEach(serviceModules.sleds, (Sled, name) => {
-      Sled.service = this;
-      Sled.sledName = name;
-      Sled.key = utils.nameToKey(this.id + '.' + name);
       this.sleds[name] = Sled;
     });
 

@@ -26,19 +26,31 @@ class RelationshipFieldCell extends React.Component<Props> {
     if (value !== this.props.value) {
       return true;
     }
-    if (!newProps.details[key] || !details[key]) {
+    if (!newProps.details[key]) {
       return true;
+    }
+    if (Array.isArray(value)) {
+      for (let id of value) {
+        if (newProps.details[key][id] !== details[key][id]) {
+          if (
+            details[key][id] &&
+            details[key][id][model.titleField] === newProps.details[key][id][model.titleField]
+          ) {
+            continue;
+          }
+          return true;
+        }
+      }
     }
     if (typeof value === 'string') {
       if (newProps.details[key][value] !== details[key][value]) {
-        return true;
-      }
-    } else {
-      for (let i of Object.keys(value)) {
-        let id = value[i];
-        if (newProps.details[key][id] !== details[key][id]) {
-          return true;
+        if (
+          details[key][value] &&
+          details[key][value][model.titleField] === newProps.details[key][value][model.titleField]
+        ) {
+          return false;
         }
+        return true;
       }
     }
     return false;
@@ -55,7 +67,7 @@ class RelationshipFieldCell extends React.Component<Props> {
     let [refServiceId, refModelName] = ref.split('.');
     if (value && details && details[key] && details[key][value]) {
       title = details[key][value][Model.titleField] || value;
-    } else {
+    } else if (!details[key] || !details[key][value]) {
       setTimeout(() => {
         this.props.loadDetails({
           service: refServiceId,
@@ -64,6 +76,7 @@ class RelationshipFieldCell extends React.Component<Props> {
           id: value
         });
       });
+      return null;
     }
     return (<Link
       key={value}

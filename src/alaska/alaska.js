@@ -502,6 +502,15 @@ class Alaska {
 
 export default new Alaska();
 
+process.on('unhandledRejection', (error) => {
+  console.error('Unhandled Rejection:', error.stack || error);
+  let alaska = module.exports.defualt;
+  if (alaska && alaska.main && alaska.main.getConfig('unhandledRejectionExit') === false) {
+    return;
+  }
+  process.exit(1);
+});
+
 exports.utils = utils;
 exports.Field = require('./field').default;
 exports.Model = require('./model').default;

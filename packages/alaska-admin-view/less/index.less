@@ -7,8 +7,31 @@ body {
   font-size: 14px;
 }
 
-.navbar-fixed-bottom .navbar-form .btn {
-  line-height: 25px;
+#app.hidden {
+  display: block !important;
+}
+
+#body {
+  margin-top: @header-height + 1;
+  margin-left: @menu-width;
+  #app.icon & {
+    margin-left: @menu-icon-width;
+  }
+  #app.hidden & {
+    margin-left: 0;
+  }
+}
+
+#content {
+  position: relative;
+}
+
+#contentInner {
+  padding: (@top-toolbar-height + @content-space) @content-space 50px
+}
+
+.scroll {
+  overflow-x: auto;
 }
 
 .dropdown-menu > li > a {
@@ -47,6 +70,15 @@ body {
   cursor: pointer;
 }
 
+.icon-btn {
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  font-size: 18px;
+  text-align: center;
+  cursor: pointer;
+}
+
 .form-control:focus {
   outline: none !important;
   box-shadow: none !important;
@@ -56,9 +88,22 @@ body {
   border-color: @border-color !important;
 }
 
-@import "body";
+.modal-footer {
+  border-top: none;
+  padding-top: 0;
+}
+
+.dashboard-placeholder {
+  font-size: 24px;
+  text-align: center;
+  margin-top: 100px;
+}
+
+@import "top-toolbar";
+@import "bottom-toolbar";
 @import "editor";
 @import "header";
+@import "data-table";
 @import "list";
 @import "login";
 @import "menu";

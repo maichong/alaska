@@ -14,9 +14,7 @@ type Props = {
 };
 
 export default class Node extends React.Component<Props> {
-  static contextTypes = {
-    views: PropTypes.object
-  };
+  static contextTypes = { views: PropTypes.object };
 
   render() {
     let {

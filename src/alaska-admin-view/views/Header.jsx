@@ -25,7 +25,7 @@ class Header extends React.Component<Props> {
   static contextTypes = {
     actions: PropTypes.object,
     views: PropTypes.object,
-    t: PropTypes.func,
+    t: PropTypes.func
   };
 
   componentWillReceiveProps() {
@@ -102,5 +102,5 @@ class Header extends React.Component<Props> {
 export default connect(({ user, layout }) => ({ user, layout }), (dispatch) => bindActionCreators({
   logout: loginRedux.logout,
   applyLayout: layoutRedux.applyLayout,
-  refreshSettings: settingsRedux.refreshSettings,
+  refreshSettings: settingsRedux.refreshSettings
 }, dispatch))(Header);

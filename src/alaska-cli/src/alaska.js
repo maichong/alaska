@@ -24,7 +24,10 @@ program
   .alias('c')
   .description('Create new project')
   .action((name) => {
-    require('./create').default(name).catch((error) => console.error(error));
+    require('./create').default(name).catch((error) => {
+      console.error(error);
+      process.exit(1);
+    });
   });
 
 program
@@ -34,7 +37,10 @@ program
   .option('-w, --watch', 'watch mode')
   .option('-d, --dev', 'build dev lib')
   .action(() => {
-    require('./build').default();
+    require('./build').default().catch((error) => {
+      console.error(error);
+      process.exit(1);
+    });
   });
 
 program
@@ -44,7 +50,10 @@ program
   .option('-w, --watch', 'watch mode')
   .option('-d, --dev', 'build dev lib')
   .action((name) => {
-    require('./install').default(name).catch((error) => console.error(error));
+    require('./install').default(name).catch((error) => {
+      console.error(error);
+      process.exit(1);
+    });
   });
 
 program.parse(process.argv);

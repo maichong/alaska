@@ -86,7 +86,7 @@ exports.default = async function loadModels() {
         }
       });
       Object.keys(ext).forEach(key => {
-        if (['fields', 'groups', 'scopes', 'populations', 'relationships', 'actions', 'methods', 'virtuals'].indexOf(key) === -1 && !/^(pre|post)(Init|Validate|Save|Remove)$/.test(key)) {
+        if (['fields', 'groups', 'scopes', 'populations', 'relationships', 'actions', 'methods', 'virtuals'].indexOf(key) === -1 && !/^(pre|post)(Register|Init|Validate|Save|Remove)$/.test(key)) {
           Model[key] = ext[key];
         }
       });
@@ -94,6 +94,6 @@ exports.default = async function loadModels() {
         ext.default(Model);
       }
     });
-    await this.registerModel(name, Model);
+    await this.registerModel(Model);
   }
 };

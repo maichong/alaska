@@ -14,6 +14,5 @@ node_modules/flow-declarations/flow/
 
 [options]
 suppress_comment= \\(.\\|\n\\)*\\$Flow
-unsafe.enable_getters_and_setters=true
 esproposal.decorators=ignore
 esproposal.export_star_as=enable

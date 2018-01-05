@@ -1,6 +1,6 @@
 {
   "name": "alaska-field-image",
-  "version": "0.12.7",
+  "version": "0.12.3",
   "description": "Alaska image field",
   "keywords": [
     "alaska",
@@ -14,7 +14,7 @@
   "dependencies": {
     "mime-types": "^2.1.17",
     "mkdirp": "^0.5.1",
-    "moment": "^2.19.4",
+    "moment": "^2.20.1",
     "qs": "*"
   }
 }

@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.12.8]
+
+### Added
+
+- 自动识别 .html 结尾的路径到控制器，比如 `/about.html` 指向 'about' 控制器
+- 自动捕获Node.js unhandledRejection错误，并直接退出程序，如果不希望退出程序，请在主Service中配置`unhandledRejectionExit`为false
+
+### Changed
+
+- 重新规划了 admin view 组件、调整了样式
+- `less/admin.less` 需要增加 `@import "../node_modules/alaska-admin-view/less/variables.less";` [参考](https://github.com/maichong/alaska-init/blob/goods/less/admin.less)
+
+### Fixed
+
+- Windows 系统中模板加载BUG
+- 模型中如果不存在number或Date类型字段，API接口报错的BUG
+
+
+
 ## [0.12.5]
 
 ### Changed
