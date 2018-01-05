@@ -1,6 +1,6 @@
 {
   "name": "alaska-admin",
-  "version": "0.12.0",
+  "version": "0.12.8",
   "description": "Alaska admin service",
   "keywords": [
     "alaska",
@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "alaska-field-category": "^0.12.3",
-    "alaska-field-checkbox": "^0.12.3",
+    "alaska-field-checkbox": "^0.12.8",
     "alaska-field-icon": "^0.12.7",
     "alaska-field-select": "^0.12.7",
     "alaska-middleware-upload": "^0.12.3",
