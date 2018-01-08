@@ -5,6 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
 import Checkbox from 'alaska-field-checkbox/views/Checkbox';
+import checkDepends from 'check-depends';
 import DataTableRow from './DataTableRow';
 import Node from './Node';
 
@@ -13,14 +14,16 @@ type Props = {
   columns?: string[],
   selected?: Alaska$view$Record[],
   records: Alaska$view$Record[],
+  activated?: Alaska$view$Record,
   sort?: string,
   onSort?: Function,
+  onActive?: Function,
   onSelect?: Function,
   onRemove?: Function
 };
 
 type State = {
-  columnList: Object[],
+  columnList: Alaska$view$Field[],
   selectedIdMap: {}
 };
 
@@ -72,11 +75,8 @@ export default class DataTable extends React.Component<Props, State> {
     _.forEach(props.columns || model.defaultColumns, (key) => {
       let field = model.fields[key];
       if (field) {
-        if (field.super && !settings.superMode) return;
-        columnList.push({
-          key,
-          field
-        });
+        if (!settings.superMode && field.super) return;
+        columnList.push(field);
       }
     });
     state.columnList = columnList;
@@ -128,7 +128,7 @@ export default class DataTable extends React.Component<Props, State> {
 
   render() {
     const {
-      model, records, selected, sort, onSort, onSelect, onRemove
+      model, records, activated, selected, sort, onSort, onSelect, onRemove, onActive
     } = this.props;
     const { t } = this.context;
     const { columnList, selectedIdMap } = this.state;
@@ -162,24 +162,24 @@ export default class DataTable extends React.Component<Props, State> {
           >
             {selectEl}
             {
-              columnList.map((col) => {
+              columnList.map((field) => {
                 let sortIcon = null;
                 let handleClick;
-                if (!col.nosort && onSort) {
-                  if (col.key === sort) {
+                if (!field.nosort && onSort) {
+                  if (field.path === sort) {
                     sortIcon = <i className="fa fa-sort-asc" />;
-                    handleClick = () => onSort('-' + col.key);
-                  } else if ('-' + col.key === sort) {
+                    handleClick = () => onSort('-' + field.path);
+                  } else if ('-' + field.path === sort) {
                     sortIcon = <i className="fa fa-sort-desc" />;
-                    handleClick = () => onSort(col.key);
+                    handleClick = () => onSort(field.path);
                   } else {
-                    handleClick = () => onSort('-' + col.key);
+                    handleClick = () => onSort('-' + field.path);
                   }
                 }
                 return (<th
-                  key={col.field.path}
+                  key={field.path}
                   onClick={handleClick}
-                >{t(col.field.label, model.serviceId)}{sortIcon}
+                >{t(field.label, model.serviceId)}{sortIcon}
                 </th>);
               })
             }
@@ -190,12 +190,14 @@ export default class DataTable extends React.Component<Props, State> {
           {_.map(records, (record, index) => (<DataTableRow
             key={record._id || index}
             record={record}
+            active={activated === record}
+            selected={selectedIdMap[record._id] || false}
             columnList={columnList}
             model={model}
             onEdit={this.handleEdit}
             onSelect={onSelect ? this.handleSelect : null}
+            onActive={onActive ? () => onActive(record) : undefined}
             onRemove={onRemove}
-            selected={selectedIdMap[record._id]}
           />))}
         </tbody>
       </Node>

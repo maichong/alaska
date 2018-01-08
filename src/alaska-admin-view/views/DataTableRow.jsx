@@ -6,13 +6,15 @@ import Checkbox from 'alaska-field-checkbox/views/Checkbox';
 import Node from './Node';
 
 type Props = {
-  columnList: Object[],
+  columnList: Alaska$view$Field[],
   record: Object,
+  active: boolean,
+  selected: boolean,
   model: Object,
   onEdit: Function,
+  onActive?: Function,
   onSelect?: Function | null,
   onRemove?: Function,
-  selected: boolean,
 };
 
 export default class DataTableRow extends React.Component<Props> {
@@ -25,11 +27,11 @@ export default class DataTableRow extends React.Component<Props> {
   };
 
   render() {
-    const {
-      record, columnList, model, onEdit, onRemove, onSelect, selected
-    } = this.props;
     const { views } = this.context;
-    let className = model.id + '-';
+    const {
+      record, columnList, model, onEdit, onRemove, onSelect, onActive, selected, active
+    } = this.props;
+    let cellClassName = model.id + '-';
     let selectEl = onSelect ?
       <Node
         tag="th"
@@ -40,22 +42,30 @@ export default class DataTableRow extends React.Component<Props> {
       >
         <Checkbox value={!!selected} />
       </Node> : null;
-    return (
-      <Node tag="tr" wrapper="dataTableRow" onDoubleClick={() => onEdit(record)}>
+    let rowClassName = active ? 'active' : undefined;
+    let el = (
+      <Node
+        key={record._id}
+        tag="tr"
+        wrapper="dataTableRow"
+        className={rowClassName}
+        onClick={active ? null : onActive}
+        onDoubleClick={() => onEdit(record)}
+      >
         {selectEl}
-        {columnList.map((col) => {
-          let key = col.key;
-          let CellViewClass = views[col.field.cell];
+        {columnList.map((field) => {
+          let key = field.path;
+          let CellViewClass = views[field.cell];
           if (!CellViewClass) {
-            console.warn('Missing : ' + col.field.cell);
+            console.warn('Missing : ' + field.cell);
             return <td style={{ background: '#fcc' }} key={key}>{record[key]}</td>;
           }
-          return (<td key={key} className={className + key + '-cell'}>
+          return (<td key={key} className={cellClassName + key + '-cell'}>
             {React.createElement(CellViewClass, {
               value: record[key],
               model,
               key,
-              field: col.field
+              field
             })}
           </td>);
         })}
@@ -66,5 +76,27 @@ export default class DataTableRow extends React.Component<Props> {
         </td>
       </Node>
     );
+
+    if (active && model.preview) {
+      let View = views[model.preview];
+      if (View) {
+        let preivew = (
+          <tr key={record._id + '-preivew'} className="preview-line">
+            <td colSpan={columnList.length + (onSelect ? 2 : 1)}>
+              <View
+                model={model}
+                columnList={columnList}
+                record={record}
+                selected={selected}
+              />
+            </td>
+          </tr>
+        );
+        return [el, preivew];
+      }
+      console.warn('Missing : ' + model.preview);
+    }
+
+    return el;
   }
 }

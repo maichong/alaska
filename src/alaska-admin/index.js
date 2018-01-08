@@ -67,6 +67,7 @@ class AdminService extends Service {
           id: Model.id,
           path: Model.path,
           key: Model.key,
+          preview: Model.preview,
           titleField: Model.titleField,
           defaultSort: Model.defaultSort,
           defaultColumns: Model.defaultColumns,

@@ -95,10 +95,10 @@ export default class FieldGroup extends React.Component<Props> {
     const {
       path, title, panel, form, wrapper, style, loading, model, record, isNew
     } = props;
-    if (props.ability && !settings.abilities[props.ability]) return ''; // ability
-    if (checkDepends(props.hidden, record)) return ''; // hidden
-    if (props.depends && !checkDepends(props.depends, record)) return ''; // depends
-    if (!settings.superMode && checkDepends(props.super, record)) return ''; // super
+    if (props.ability && !settings.abilities[props.ability]) return 'ability'; // ability
+    if (checkDepends(props.hidden, record)) return 'hidden'; // hidden
+    if (props.depends && !checkDepends(props.depends, record)) return 'depends'; // depends
+    if (!settings.superMode && checkDepends(props.super, record)) return 'super'; // super
 
     let disabled = loading;
     if (!disabled) {

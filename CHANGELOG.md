@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.12.9]
+
+### Added
+
+- field.depends 支持 DependsQueryExpression 语法
+- field.hidden 支持 DependsQueryExpression 语法
+- field.super 支持 DependsQueryExpression 语法
+- field.disabled 支持 DependsQueryExpression 语法
+- 增加 group.ability
+- 增加 group.depends 并支持 DependsQueryExpression 语法
+- 增加 group.hidden 并支持 DependsQueryExpression 语法
+- 增加 group.super 并支持 DependsQueryExpression 语法
+- 增加 group.disabled 并支持 DependsQueryExpression 语法
+- 增加 group.wrapper 支持Group自定义Wrapper
+- action.depends 支持 DependsQueryExpression 语法
+- action.super 支持 DependsQueryExpression 语法
+- 增加 action.ability
+- 增加 action.disabled 并支持 DependsQueryExpression 语法
+- 增加 action.hidden 并支持 DependsQueryExpression 语法
+- 增加 action.after 排序
+- 模型增加 preview 设置，可以在后台数据列表中插入自定义组件
+
+### Changed
+
+- Model.createFiltersByContext 变更为async函数
+- Model.defaultFilters 支持async函数
+- AdminMenu ability 字段从数组改为字符串
+- 取消了模型中 action = false 简写方式，请使用 action:{ hidden:true }
+
+
 ## [0.12.8]
 
 ### Added
