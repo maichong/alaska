@@ -66,15 +66,18 @@ export default class RelationshipFieldFilter extends React.Component<Alaska$view
     const ref: string = field.ref;
     if (!ref) return;
     let [refServiceId, refModelName] = ref.split('.');
-    api('/api/relation')
-      .param('service', refServiceId)
-      .param('model', refModelName)
-      .param('value', value)
-      .search(keyword)
-      .where(getFilters(field.filters))
-      .then((res) => {
-        callback(null, { options: res.results });
-      }, callback);
+
+    api.post('/api/relation', {
+      params: {
+        _service: refServiceId,
+        _model: refModelName,
+        _search: keyword,
+        ...getFilters(field.filters)
+      },
+      body: { value }
+    }).then((res) => {
+      callback(null, { options: res.results });
+    }, callback);
   };
 
   handleChange = (value: Alaska$SelectField$value) => {

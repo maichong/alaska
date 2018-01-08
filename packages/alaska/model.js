@@ -799,15 +799,23 @@ class Model {
    * @param {Alaska$Context} ctx
    * @param {Object} [state]
    */
-  static createFiltersByContext(ctx, state) {
+  static async createFiltersByContext(ctx, state) {
     // $Flow
     state = _lodash2.default.defaultsDeep({}, state, ctx.state);
 
     // $Flow
     let model = this;
     let filters = model.createFilters((state.search || ctx.query._search || '').trim(), state.filters || ctx.query);
-    if (model.defaultFilters) {
-      Object.assign(filters, typeof model.defaultFilters === 'function' ? model.defaultFilters(ctx) : model.defaultFilters);
+    let { defaultFilters } = model;
+    if (defaultFilters) {
+      if (typeof defaultFilters === 'function') {
+        defaultFilters = defaultFilters(ctx);
+        if (defaultFilters && typeof defaultFilters.then === 'function') {
+          // async defaultFilters
+          defaultFilters = await defaultFilters;
+        }
+      }
+      _lodash2.default.assign(filters, defaultFilters);
     }
     return filters;
   }
@@ -898,7 +906,7 @@ class Model {
     // $Flow
     let model = this;
 
-    let filters = model.createFiltersByContext(ctx, state);
+    let filters = await model.createFiltersByContext(ctx, state);
 
     state = Object.assign({}, ctx.state, state);
 
@@ -983,7 +991,7 @@ class Model {
     // $Flow
     let model = this;
 
-    let filters = model.createFiltersByContext(ctx, state);
+    let filters = await model.createFiltersByContext(ctx, state);
 
     state = Object.assign({}, ctx.state, state);
 
@@ -1078,8 +1086,16 @@ class Model {
     // $Flow
     let query = model.findById(state.id || ctx.params.id).where(filters);
 
-    if (model.defaultFilters) {
-      query.where(typeof model.defaultFilters === 'function' ? model.defaultFilters(ctx) : model.defaultFilters);
+    let { defaultFilters } = model;
+    if (defaultFilters) {
+      if (typeof defaultFilters === 'function') {
+        defaultFilters = defaultFilters(ctx);
+        if (defaultFilters && typeof defaultFilters.then === 'function') {
+          // async defaultFilters
+          defaultFilters = await defaultFilters;
+        }
+      }
+      query.where(defaultFilters);
     }
 
     const scopeKey = state.scope || ctx.query._scope || 'show';

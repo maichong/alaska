@@ -1,6 +1,6 @@
 {
   "name": "alaska",
-  "version": "0.12.8",
+  "version": "0.12.3",
   "description": "Componentized and pluggable web framework for Node.js",
   "keywords": [
     "alaska",
@@ -28,7 +28,7 @@
     "koa-router": "^7.3.0",
     "lodash": "^4.17.4",
     "mime-types": "^2.1.17",
-    "mongoose": "^4.13.7",
+    "mongoose": "^4.13.9",
     "statuses": "^1.4.0",
     "string-random": "^0.1.0"
   }

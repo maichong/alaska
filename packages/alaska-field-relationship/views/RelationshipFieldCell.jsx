@@ -15,10 +15,18 @@ type Props = {
   loadDetails: Function
 };
 
+function nameToKey(name: string): string {
+  return name.replace(/([a-z])([A-Z])/g, (a, b, c) => (b + '-' + c.toLowerCase())).toLowerCase();
+}
+
 class RelationshipFieldCell extends React.Component<Props> {
   shouldComponentUpdate(newProps: Props) {
-    let { details, model } = this.props;
-    let { key } = model;
+    let { details, field } = this.props;
+
+    // $Flow
+    let key = nameToKey(field.ref);
+    if (!key) return false;
+
     let { value } = newProps;
     if (!value) {
       return false;
@@ -31,25 +39,19 @@ class RelationshipFieldCell extends React.Component<Props> {
     }
     if (Array.isArray(value)) {
       for (let id of value) {
+        if (!details[key]) {
+          return !!(newProps.details[key]);
+        }
         if (newProps.details[key][id] !== details[key][id]) {
-          if (
-            details[key][id] &&
-            details[key][id][model.titleField] === newProps.details[key][id][model.titleField]
-          ) {
-            continue;
-          }
           return true;
         }
       }
     }
     if (typeof value === 'string') {
+      if (!details[key]) {
+        return !!(newProps.details[key] && newProps.details[key][value]);
+      }
       if (newProps.details[key][value] !== details[key][value]) {
-        if (
-          details[key][value] &&
-          details[key][value][model.titleField] === newProps.details[key][value][model.titleField]
-        ) {
-          return false;
-        }
         return true;
       }
     }

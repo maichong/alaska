@@ -37,7 +37,9 @@ Withdraw.api = {
   paginate: 3
 };
 Withdraw.actions = {
-  update: false,
+  update: {
+    hidden: true
+  },
   accept: {
     title: 'Accept',
     sled: 'WithdrawAccept',

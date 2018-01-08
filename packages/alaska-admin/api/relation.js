@@ -19,7 +19,7 @@ exports.default = async function (ctx) {
   let serviceId = ctx.state.service || ctx.query._service;
   let modelName = ctx.state.model || ctx.query._model;
   let keyword = ctx.state.search || ctx.query._search || '';
-  let value = ctx.state.value || ctx.query._value || '';
+  let value = ctx.state.value || ctx.request.body.value || '';
   let page = parseInt(ctx.state.page || ctx.query._page) || 1;
   let limit = parseInt(ctx.state.limit || ctx.query._limit) || 100;
   if (ctx.state.all || ctx.query._all) {

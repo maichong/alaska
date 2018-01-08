@@ -8,9 +8,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import akita from 'akita';
-import checkDepends from 'check-depends';
 import Node from './Node';
-import Action from './Action';
+import ActionList from './ActionList';
 
 type Props = {
   model: Alaska$view$Model,
@@ -25,19 +24,15 @@ type Props = {
 
 export default class EditorActions extends React.Component<Props> {
   static contextTypes = {
-    settings: PropTypes.object,
     t: PropTypes.func,
     confirm: PropTypes.func,
-    router: PropTypes.object,
     toast: PropTypes.func
   };
 
   context: {
-    settings: Alaska$view$Settings,
     t: Function,
     confirm: Function,
-    toast: Function,
-    router: Object,
+    toast: Function
   };
 
   async handleAction(action: string) {
@@ -86,126 +81,99 @@ export default class EditorActions extends React.Component<Props> {
     }
   }
 
-  handleCreate = () => {
-    const { model } = this.props;
-    let url = '/edit/' + model.serviceId + '/' + model.modelName + '/_new';
-    this.context.router.history.replace(url);
-  };
-
   render() {
     const {
       model, record, id, isNew, onSave, onRemove, loading
     } = this.props;
-    const { settings } = this.context;
 
-    let actionElements = [];
+    const { abilities, actions } = model;
 
-    // 创建时，显示保存按钮
-    if (
-      isNew
-      && model.abilities.create
-      && !model.nocreate
-      && !(model.actions.create && model.actions.create.depends && !checkDepends(model.actions.create.depends, record))
-    ) {
-      actionElements.push(<Action
-        key="create"
-        action={_.assign({
+    let actionList = [];
+
+    {
+      // create
+      let hidden = !isNew || model.nocreate; // 不判断 ability，ActionList 会判断
+
+      actionList.push({
+        key: 'create',
+        onClick: onSave,
+        action: _.assign({
           key: 'create',
           icon: 'save',
           style: 'primary',
           tooltip: 'Save'
-        }, model.actions.create)}
-        model={model}
-        disabled={loading}
-        onClick={onSave}
-      />);
-    } else if (
-      !isNew
-      && model.abilities.update
-      && !model.noupdate
-      && !(model.actions.update && model.actions.update.depends && !checkDepends(model.actions.update.depends, record))
-    ) {
-      actionElements.push(<Action
-        key="update"
-        action={_.assign({
+        }, actions.create, hidden ? { hidden: true } : null)
+      });
+    }
+
+    {
+      // update
+      let hidden = isNew || model.noupdate; // 不判断 ability，ActionList 会判断
+
+      actionList.push({
+        key: 'update',
+        onClick: onSave,
+        action: _.assign({
           key: 'update',
           icon: 'save',
           style: 'primary',
           tooltip: 'Save'
-        }, model.actions.update)}
-        model={model}
-        disabled={loading}
-        onClick={onSave}
-      />);
+        }, actions.create, hidden ? { hidden: true } : null)
+      });
     }
 
-    if (
-      !isNew
-      && !model.noremove
-      && model.abilities.remove
-      && model.actions.remove !== false
-      && !(model.actions.remove && model.actions.remove.depends && !checkDepends(model.actions.remove.depends, record))
-    ) {
-      actionElements.push(<Action
-        key="remove"
-        action={_.assign({
+    {
+      // remove
+      let hidden = isNew || model.noremove; // 不判断 ability，ActionList 会判断
+
+      actionList.push({
+        key: 'remove',
+        onClick: onRemove,
+        action: _.assign({
           key: 'remove',
           icon: 'close',
           style: 'danger',
           tooltip: 'Remove'
-        }, model.actions.remove)}
-        model={model}
-        disabled={loading}
-        onClick={onRemove}
-      />);
+        }, actions.remove, hidden ? { hidden: true } : null)
+      });
     }
 
-    if (
-      !isNew
-      && !model.nocreate
-      && model.abilities.create
-      && model.actions.create !== false
-      && model.actions.add !== false
-    ) {
-      // 创建另一个
-      actionElements.push(<Action
-        key="add"
-        action={_.assign({
+    {
+      // add
+      let hidden = isNew || model.nocreate; // 不判断 ability，ActionList 会判断
+
+      actionList.push({
+        key: 'add',
+        link: '/edit/' + model.serviceId + '/' + model.modelName + '/_new',
+        action: _.assign({
           key: 'create',
           icon: 'plus',
           style: 'success',
           tooltip: 'Create record'
-        }, model.actions.create, model.actions.add)}
-        model={model}
-        disabled={loading}
-        onClick={this.handleCreate}
-      />);
+        }, actions.create, actions.add, hidden ? { hidden: true } : null)
+      });
     }
 
     //扩展动作按钮
-    _.forEach(model.actions, (action, key) => {
+    _.forEach(actions, (action, key) => {
       if (['add', 'create', 'update', 'remove'].indexOf(key) > -1) return;
-      if (action.super && !settings.superMode) return;
-      if (action.depends && !checkDepends(action.depends, record)) return;
-      if (action.list && !action.editor) return;
-      let disabled = loading;
-      if (!disabled && action.disabled) {
-        disabled = checkDepends(action.disabled, record);
-      }
-      actionElements.push(<Action
-        onClick={() => this.handleAction(key)}
-        key={key}
-        disabled={disabled}
-        model={model}
-        action={action}
-        record={record}
-        id={id}
-      />);
+      actionList.push({
+        key,
+        onClick: () => this.handleAction(key),
+        action
+      });
     });
 
     return (
       <Node id="editorActions" className="navbar-form navbar-right">
-        {actionElements}
+        <ActionList
+          editor
+          items={actionList}
+          disabled={loading}
+          model={model}
+          record={record}
+          id={id}
+        />
       </Node>
     );
   }

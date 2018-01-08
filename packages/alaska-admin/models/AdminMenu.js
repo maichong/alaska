@@ -53,7 +53,7 @@ AdminMenu.fields = {
   },
   ability: {
     label: 'Ability',
-    ref: ['alaska-user.Ability']
+    ref: 'alaska-user.Ability'
   },
   link: {
     label: 'Link',

@@ -34,6 +34,7 @@ type Props = {
 type State = {
   serviceId: string,
   modelName: string,
+  isNew: boolean,
   id: string,
   errors: {},
   service: {},
@@ -71,10 +72,13 @@ class EditorPage extends React.Component<Props, State> {
 
     this._r = Math.random();
 
+    let { service: serviceId, model: modelName, id } = props.match.params;
+    id = decodeURIComponent(id);
     this.state = {
-      serviceId: props.match.params.service,
-      modelName: props.match.params.model,
-      id: props.match.params.id,
+      serviceId,
+      modelName,
+      id,
+      isNew: id === '_new',
       errors: {},
       service: {},
       model: {}
@@ -94,23 +98,24 @@ class EditorPage extends React.Component<Props, State> {
 
   componentWillReceiveProps(nextProps: Props) {
     const { toast, t } = this.context;
-    let newState = {};
-    if (nextProps.match.params) {
-      newState.serviceId = nextProps.match.params.service;
-      newState.modelName = nextProps.match.params.model;
-      newState.id = decodeURIComponent(nextProps.match.params.id);
-      if (newState.id === '_new' && this.state.id && this.state.id !== '_new') {
-        //新建时候清空表单
-        newState.record = Immutable({ _id: '' });
-      }
+    let { service: serviceId, model: modelName, id } = nextProps.match.params;
+    let newState: Indexed<any> = {
+      serviceId,
+      modelName,
+      id: decodeURIComponent(id),
+      isNew: id === '_new'
+    };
+    if (newState.isNew && this.state.id && !this.state.isNew) {
+      //新建时候清空表单
+      newState.record = Immutable({ _id: '' });
+    }
 
-      let service = this.context.settings.services[newState.serviceId];
-      if (service) {
-        newState.service = service;
-        let model = service.models[newState.modelName];
-        if (model) {
-          newState.model = model;
-        }
+    let service = this.context.settings.services[newState.serviceId];
+    if (service) {
+      newState.service = service;
+      let model = service.models[newState.modelName];
+      if (model) {
+        newState.model = model;
       }
     }
     let { save } = nextProps;
@@ -137,9 +142,11 @@ class EditorPage extends React.Component<Props, State> {
 
   init() {
     const { details } = this.props;
-    let { id, model, record } = this.state;
+    let {
+      id, isNew, model, record
+    } = this.state;
     if (!model) return;
-    if (id === '_new') {
+    if (isNew) {
       if (!record) {
         record = {};
       }
@@ -174,9 +181,9 @@ class EditorPage extends React.Component<Props, State> {
     });
   }
 
-  handleChange(key: any, value: any) {
+  handleFieldChange = (key: any, value: any) => {
     this.setState({ record: this.state.record.set(key, value) });
-  }
+  };
 
   handleRemove = async() => {
     const { serviceId, modelName, id } = this.state;
@@ -209,7 +216,8 @@ class EditorPage extends React.Component<Props, State> {
     let {
       record,
       model,
-      id
+      id,
+      isNew
     } = this.state;
     let { fields } = model;
     let errors = {};
@@ -229,7 +237,7 @@ class EditorPage extends React.Component<Props, State> {
     this.loading = true;
 
     let _id = record._id || undefined;
-    if (id !== '_new' && id !== '') {
+    if (!isNew && id !== '') {
       _id = id;
     } else {
       id = '';
@@ -250,25 +258,11 @@ class EditorPage extends React.Component<Props, State> {
     this.context.router.history.goBack();
   };
 
-  render() {
-    let {
-      id,
-      model,
-      record,
-      errors,
-      serviceId
+  renderToolbar() {
+    const {
+      isNew, id, model, record, serviceId
     } = this.state;
-    const { views, t, settings } = this.context;
-    if (!record) {
-      return <div className="loading">Loading...</div>;
-    }
-    if (record._error) {
-      return <div className="editor-error">{record._error}</div>;
-    }
-    //console.log('model.abilities', model.abilities);
-    const isNew = id === '_new';
-    let canSave = (isNew && model.abilities.create) || (!isNew && model.abilities.update && !model.noupdate);
-    // eslint-disable-next-line
+    const { t } = this.context;
     let title = <a onClick={this.handleBack} className="pointer">{t(model.label || model.modelName, serviceId)}</a>;
     let subTitle = '';
     if (isNew) {
@@ -279,7 +273,59 @@ class EditorPage extends React.Component<Props, State> {
       subTitle = id;
     }
     title = <div>{title} &gt; {subTitle}</div>;
+    return (
+      <TopToolbar actions={isNew ? null : <div className="top-toolbar-id hidden-xs">ID : {id}</div>}>
+        {title}
+      </TopToolbar>
+    );
+  }
 
+  renderBottomBar() {
+    const {
+      id, model, isNew, record
+    } = this.state;
+    return (
+      <nav className="navbar navbar-fixed-bottom bottom-toolbar">
+        <div className="container-fluid">
+          <EditorActions
+            model={model}
+            record={record}
+            id={id}
+            isNew={isNew}
+            refreshSettings={this.props.refreshSettings}
+            onSave={this.handleSave}
+            onRemove={this.handleRemove}
+            loading={this.loading}
+          />
+        </div>
+      </nav>
+    );
+  }
+
+  renderRelationships() {
+    const { isNew, id, model } = this.state;
+    let relationships = null;
+    if (!isNew && model.relationships) {
+      relationships = _.map(
+        model.relationships,
+        (r: Object, key: string) => (<Relationship
+          key={key}
+          from={id}
+          path={r.path}
+          service={r.service}
+          model={model}
+          filters={r.filters}
+          title={r.title}
+        />)
+      );
+    }
+    return relationships;
+  }
+
+  renderGroups() {
+    const {
+      model, record, id, isNew, errors
+    } = this.state;
     let map = _.reduce(model.fields, (res: Object, f: Alaska$Field$options, path: string) => {
       res[path] = {
         path,
@@ -289,13 +335,13 @@ class EditorPage extends React.Component<Props, State> {
       return res;
     }, {});
 
-    let fieldPaths = [];
+    let fieldPathsList = [];
 
     _.forEach(map, (f) => {
       if (f.after && map[f.after]) {
         map[f.after].afters.push(f);
       } else {
-        fieldPaths.push(f);
+        fieldPathsList.push(f);
       }
     });
 
@@ -306,7 +352,7 @@ class EditorPage extends React.Component<Props, State> {
       f.afters.forEach(flat);
     }
 
-    _.forEach(fieldPaths, flat);
+    _.forEach(fieldPathsList, flat);
 
     let groups = {
       default: {
@@ -317,110 +363,66 @@ class EditorPage extends React.Component<Props, State> {
 
     for (let groupKey of Object.keys(model.groups)) {
       let group = _.clone(model.groups[groupKey]);
-      group.title = t(group.title, serviceId);
       group.fields = [];
       groups[groupKey] = group;
     }
 
     for (let path of paths) {
-      let cfg = model.fields[path];
-      if (cfg.hidden) continue;
-      if (cfg.super && !settings.superMode) continue;
-      if (!cfg.view) continue;
-      if (cfg.depends && !checkDepends(cfg.depends, record)) continue;
-      let ViewClass = views[cfg.view];
-      if (!ViewClass) {
-        console.warn('Missing : ' + cfg.view);
-        ViewClass = views.TextFieldView;
-      }
-
-      let disabled = false;
-      if (model.noupdate || this.loading || !canSave) {
-        disabled = true;
-      } else if (cfg.disabled) {
-        if (cfg.disabled === true) {
-          disabled = true;
-        } else {
-          disabled = checkDepends(cfg.disabled, record);
-        }
-      }
-
-      let label = t(cfg.label, serviceId);
-      let help = t(cfg.help, serviceId);
-
-      let fieldProps = {
-        key: path,
-        value: record[path],
-        model,
-        record,
-        field: _.assign({}, cfg, { label, help }),
-        disabled,
-        errorText: errors[path],
-        onChange: this.handleChange.bind(this, path), // eslint-disable-line react/jsx-no-bind
-        className: 'form-group ' + model.id + '-' + path + '-view'
-      };
-
-      // $Flow
-      let view = React.createElement(ViewClass, fieldProps);
+      let field = model.fields[path];
       let group = groups.default;
-      if (cfg.group && groups[cfg.group]) {
-        group = groups[cfg.group];
+      if (field.group && groups[field.group]) {
+        group = groups[field.group];
       }
-      group.fields.push(view);
+      group.fields.push(field);
     }
-    let groupElements = [];
+
+    const groupElements = [];
     for (let groupKey of Object.keys(groups)) {
       let group = groups[groupKey];
       if (!group.fields.length) {
         continue;
       }
-      if (group.super && !settings.superMode) continue;
-      let className = model.id + '-group-' + groupKey + ' field-group-panel panel panel-' + (group.style || 'default');
-      let groupEl = <FieldGroup key={groupKey} className={className} {...group}>{group.fields}</FieldGroup>;
-      groupElements.push(groupEl);
+      const { fields, ...others } = group;
+      groupElements.push((
+        <FieldGroup
+          key={groupKey}
+          path={groupKey}
+          model={model}
+          fields={fields}
+          id={id}
+          isNew={isNew}
+          record={record}
+          errors={errors}
+          loading={this.loading}
+          onFieldChange={this.handleFieldChange}
+          {...others}
+        />
+      ));
     }
+    return groupElements;
+  }
 
-    let relationships = null;
-    if (!isNew && model.relationships) {
-      relationships = _.map(
-        model.relationships,
-        (r: Object, key: string) => {
-          if (r.super && !settings.superMode) return null;
-          return (<Relationship
-            key={key}
-            from={id}
-            path={r.path}
-            service={r.service}
-            model={model}
-            filters={r.filters}
-            title={r.title}
-          />);
-        }
-      );
+  render() {
+    let {
+      isNew,
+      id,
+      model,
+      record,
+      serviceId
+    } = this.state;
+    if (!record) {
+      return <div className="loading">Loading...</div>;
     }
-
+    if (record._error) {
+      return <div className="editor-error">{record._error}</div>;
+    }
     return (
       <Node id="editor" props={this.props} state={this.state} className={serviceId + '-' + model.id}>
-        <TopToolbar actions={isNew ? null : <div className="top-toolbar-id hidden-xs">ID : {id}</div>}>
-          {title}
-        </TopToolbar>
+        {this.renderToolbar()}
         {isNew ? null : <div className="top-toolbar-id visible-xs-block">ID : {id}</div>}
-        {groupElements}
-        {relationships}
-        <nav className="navbar navbar-fixed-bottom bottom-toolbar">
-          <div className="container-fluid">
-            <EditorActions
-              model={model}
-              record={record}
-              id={id}
-              isNew={isNew}
-              refreshSettings={this.props.refreshSettings}
-              onSave={this.handleSave}
-              onRemove={this.handleRemove}
-              loading={this.loading}
-            />
-          </div>
-        </nav>
+        {this.renderGroups()}
+        {this.renderRelationships()}
+        {this.renderBottomBar()}
       </Node>
     );
   }

@@ -86,13 +86,13 @@ function randomColorList(count, lighten) {
 
 function getCycleLabel(x, unit) {
   if (unit === 'week') {
-    return weekLabels[x] || String(x);
+    return weekLabels[Number(x)] || String(x);
   }
   if (unit === 'quarter') {
-    return quarterLabels[x] || String(x);
+    return quarterLabels[Number(x)] || String(x);
   }
   if (unit === 'month') {
-    return monthLabels[x] || String(x);
+    return monthLabels[Number(x)] || String(x);
   }
   return String(x);
 }

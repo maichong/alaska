@@ -26,7 +26,7 @@ exports.default = async function list(ctx) {
   let ability = `admin.${Model.key}.read`;
   await ctx.checkAbility(ability);
 
-  let filters = Model.createFiltersByContext(ctx);
+  let filters = await Model.createFiltersByContext(ctx);
 
   let query = Model.paginate(filters).page(parseInt(ctx.state.page || ctx.query._page, 10) || 1).limit(parseInt(ctx.state.limit || ctx.query._limit, 10) || Model.defaultLimit || 50);
 

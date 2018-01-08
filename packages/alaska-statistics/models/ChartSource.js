@@ -177,7 +177,9 @@ ChartSource.fields = {
       }
     }],
     depends: {
-      'type!=': 'enum'
+      type: {
+        $ne: 'enum'
+      }
     }
   },
   model: {
@@ -192,7 +194,9 @@ ChartSource.fields = {
     view: 'AxisSelector',
     filter: false,
     disabled: {
-      'reducer!=': ['count', 'sum', 'min', 'max', 'average']
+      reducer: {
+        $nin: ['count', 'sum', 'min', 'max', 'average']
+      }
     }
   },
   y: {
@@ -201,7 +205,9 @@ ChartSource.fields = {
     view: 'AxisSelector',
     filter: false,
     disabled: {
-      'reducer!=': ['sum', 'min', 'max', 'average']
+      reducer: {
+        $nin: ['sum', 'min', 'max', 'average']
+      }
     }
   },
   precision: {
@@ -209,7 +215,9 @@ ChartSource.fields = {
     type: Number,
     default: 0,
     depends: {
-      reducer: ['average', 'sum']
+      reducer: {
+        $in: ['average', 'sum']
+      }
     }
   },
   sort: {

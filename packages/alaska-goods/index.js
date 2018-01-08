@@ -6,9 +6,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _alaska = require('alaska');
 
+const GOODS_CATS_CACHE_KEY = 'alaska_goods_cats';
+
 /**
  * @class GoodsService
  */
+
+
 class GoodsService extends _alaska.Service {
   constructor(options) {
     options = options || { dir: '', id: '' };
@@ -22,7 +26,7 @@ class GoodsService extends _alaska.Service {
    */
   async cats() {
     let cache = this.cache;
-    let data = await cache.get('goods_cats');
+    let data = await cache.get(GOODS_CATS_CACHE_KEY);
     if (data) {
       return data;
     }
@@ -49,7 +53,7 @@ class GoodsService extends _alaska.Service {
       }
       return res;
     });
-    cache.set(cats);
+    cache.set(GOODS_CATS_CACHE_KEY, cats);
     return cats;
   }
 
@@ -57,8 +61,8 @@ class GoodsService extends _alaska.Service {
     if (!this._clearCacheTimer) {
       this._clearCacheTimer = setTimeout(() => {
         let cache = this.cache;
-        this._clearCacheTimer = 0;
-        cache.del('goods_cats');
+        this._clearCacheTimer = undefined;
+        cache.del(GOODS_CATS_CACHE_KEY);
       }, 5);
     }
   }

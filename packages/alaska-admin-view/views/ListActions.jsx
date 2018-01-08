@@ -6,9 +6,10 @@ import _ from 'lodash';
 import akita from 'akita';
 import shallowEqualWithout from 'shallow-equal-without';
 import Node from './Node';
-import Action from './Action';
+import ActionList from './ActionList';
 
 type Props = {
+  records: Alaska$view$Record[],
   selected?: Alaska$view$Record[],
   model: Alaska$view$Model,
   refresh: Function,
@@ -96,56 +97,80 @@ export default class ListActions extends React.Component<Props> {
   };
 
   render() {
-    const { model, selected, refresh } = this.props;
-    const { settings } = this.context;
-    const actions = _.reduce(model.actions, (res, action, key) => {
-      if (!action.list) return res;
-      if (action.super && !settings.superMode) return res;
-      res.push(<Action
-        key={key}
-        model={model}
-        selected={selected}
-        action={action}
-        refresh={refresh}
-        onClick={() => this.handleAction(key)}
-      />);
-      return res;
-    }, []);
+    const {
+      model, selected, records, refresh
+    } = this.props;
 
-    if (!model.noremove && model.abilities.remove && model.actions.remove !== false) {
-      actions.push(<Action
-        key="remove"
-        action={_.assign({
+    const { actions } = model;
+
+    let actionList = [];
+
+    // 站位action，列表中不显示，只为排序
+    actionList.push({
+      key: 'create',
+      action: {
+        hidden: true
+      }
+    });
+    actionList.push({
+      key: 'update',
+      action: {
+        hidden: true
+      }
+    });
+
+    {
+      // remove
+      let hidden = model.noremove; // 不判断 ability，ActionList 会判断
+
+      actionList.push({
+        key: 'remove',
+        onClick: this.handleRemove,
+        action: _.assign({
           key: 'remove',
-          icon: 'close',
+          list: true,
           needRecords: 1,
+          icon: 'close',
           style: 'danger',
           tooltip: 'Remove selected records'
-        }, model.actions.remove)}
-        selected={selected}
-        model={model}
-        onClick={this.handleRemove}
-        refresh={refresh}
-      />);
+        }, actions.remove, hidden ? { hidden: true } : {})
+      });
     }
 
-    if (!model.nocreate && model.abilities.create && model.actions.create !== false && model.actions.add !== false) {
-      actions.push(<Action
-        key="create"
-        action={_.assign({
+    {
+      // add
+      let hidden = model.nocreate; // 不判断 ability，ActionList 会判断
+      actionList.push({
+        key: 'add',
+        link: '/edit/' + model.serviceId + '/' + model.modelName + '/_new',
+        action: _.assign({
           key: 'create',
+          list: true,
           icon: 'plus',
           style: 'success',
           tooltip: 'Create record'
-        }, model.actions.create, model.actions.add)}
-        model={model}
-        link={'/edit/' + model.serviceId + '/' + model.modelName + '/_new'}
-      />);
+        }, model.actions.create, model.actions.add, hidden ? { hidden: true } : {})
+      });
     }
+
+    _.forEach(actions, (action, key) => {
+      if (['add', 'create', 'update', 'remove'].indexOf(key) > -1) return;
+      actionList.push({
+        key,
+        onClick: () => this.handleAction(key),
+        action
+      });
+    });
 
     return (
       <Node id="listActions" className="navbar-form navbar-right">
-        {actions}
+        <ActionList
+          items={actionList}
+          model={model}
+          selected={selected}
+          records={records}
+          refresh={refresh}
+        />
       </Node>
     );
   }

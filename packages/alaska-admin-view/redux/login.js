@@ -48,6 +48,7 @@ const INITIAL_STATE = exports.INITIAL_STATE = (0, _seamlessImmutable2.default)({
 });
 
 exports.default = (0, _reduxActions.handleActions)({
+  LOGIN: state => state.set('errorMsg', ''),
   LOGIN_FAILURE: (state, { payload }) => state.merge({ errorMsg: payload.message }),
   LOGOUT_SUCCESS: () => INITIAL_STATE,
   LOGIN_SUCCESS: state => state.merge({ user: false, errorMsg: '' }),

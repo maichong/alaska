@@ -46,6 +46,7 @@ type State = {
   filterViews: Array<React$Element<any>>,
   filterViewsMap: ElementMap,
   selected: Alaska$view$Record[],
+  activated?: Alaska$view$Record,
   query: {}
 };
 
@@ -391,7 +392,8 @@ class ListPage extends React.Component<Props, State> {
       columnsItems,
       columnsKeys,
       selected,
-      query
+      query,
+      activated
     } = this.state;
     if (!service || !model) {
       return <div className="loading">Loading...</div>;
@@ -457,7 +459,9 @@ class ListPage extends React.Component<Props, State> {
               onSort={this.handleSort}
               onSelect={handleSelect}
               onRemove={handleRemove}
+              onActive={(record) => this.setState({ activated: record })}
               selected={selected}
+              activated={activated}
               columns={columnsKeys}
             />
           </div>
@@ -477,6 +481,7 @@ class ListPage extends React.Component<Props, State> {
             </div>
             <ListActions
               model={model}
+              records={records || []}
               selected={selected}
               refresh={this.refresh}
               refreshSettings={this.props.refreshSettings}

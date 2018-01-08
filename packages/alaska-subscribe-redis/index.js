@@ -25,7 +25,7 @@ class RedisSubscribeDriver extends _alaska.Driver {
     this.options = options;
     this._driver = _redis2.default.createClient(options);
     this._subscribed = false;
-    this._timer = 0;
+    this._timer = undefined;
     this._messages = [];
     this._onMessage = null; //message callback
     this._listener = null;
@@ -174,7 +174,7 @@ class RedisSubscribeDriver extends _alaska.Driver {
   cancel() {
     if (this._timer) {
       clearTimeout(this._timer);
-      this._timer = 0;
+      this._timer = undefined;
     }
     if (!this._subscribed) {
       return Promise.resolve();

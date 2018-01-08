@@ -35,7 +35,7 @@ class EmailService extends _alaska.Service {
     super(options);
 
     this.nextTask = null;
-    this.timer = 0;
+    this.timer = undefined;
   }
 
   preLoadModels() {
@@ -92,7 +92,7 @@ class EmailService extends _alaska.Service {
   async updateTasks() {
     if (this.timer) {
       clearTimeout(this.timer);
-      this.timer = 0;
+      this.timer = undefined;
     }
     // $Flow
     this.nextTask = await _EmailTask2.default.findOne({ state: 1 }).sort('nextAt');
@@ -106,8 +106,10 @@ class EmailService extends _alaska.Service {
   }
 
   async processTask() {
-    clearTimeout(this.timer);
-    this.timer = 0;
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = undefined;
+    }
     let task = this.nextTask;
     if (!task) {
       return;

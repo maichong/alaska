@@ -36,7 +36,10 @@ exports.default = async function (ctx) {
 
   if (!Model.actions || !Model.actions[action] || !Model.actions[action].sled) _2.default.error('Invalid action');
 
-  let ability = `admin.${Model.key}.${action}`;
+  let actionInfo = Model.actions[action];
+
+  let ability = actionInfo.ability ? actionInfo.ability : `admin.${Model.key}.${action}`;
+
   await ctx.checkAbility(ability);
 
   let record;
@@ -48,7 +51,7 @@ exports.default = async function (ctx) {
   }
 
   // $Flow
-  const Sled = s.getSled(Model.actions[action].sled);
+  const Sled = s.getSled(actionInfo.sled);
 
   const recordModelName = Model.modelName.replace(/^\w/, w => w.toLowerCase());
 

@@ -101,19 +101,19 @@ class Field {
       label: field.label,
       path: field.path,
       default: field.default,
+      ability: field.ability,
+      super: field.super,
       hidden: field.hidden,
+      disabled: field.disabled,
       group: field.group,
       fixed: field.fixed,
-      disabled: field.disabled,
       help: field.help,
-      depends: field.depends,
       required: field.required,
       horizontal: field.horizontal,
       nolabel: field.nolabel,
       cell: field.cell,
       view: field.view,
       filter: field.filter,
-      super: field.super,
       after: field.after
     };
 
