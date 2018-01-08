@@ -101,7 +101,7 @@ export default class ListActions extends React.Component<Props> {
       model, selected, records, refresh
     } = this.props;
 
-    const { abilities, actions } = model;
+    const { actions } = model;
 
     let actionList = [];
 
@@ -121,7 +121,7 @@ export default class ListActions extends React.Component<Props> {
 
     {
       // remove
-      let hidden = model.noremove || !abilities.remove;
+      let hidden = model.noremove; // 不判断 ability，ActionList 会判断
 
       actionList.push({
         key: 'remove',
@@ -139,7 +139,7 @@ export default class ListActions extends React.Component<Props> {
 
     {
       // add
-      let hidden = model.nocreate || !abilities.create;
+      let hidden = model.nocreate; // 不判断 ability，ActionList 会判断
       actionList.push({
         key: 'add',
         link: '/edit/' + model.serviceId + '/' + model.modelName + '/_new',

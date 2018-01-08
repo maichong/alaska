@@ -92,7 +92,7 @@ export default class EditorActions extends React.Component<Props> {
 
     {
       // create
-      let hidden = !isNew || !abilities.create || model.nocreate;
+      let hidden = !isNew || model.nocreate; // 不判断 ability，ActionList 会判断
 
       actionList.push({
         key: 'create',
@@ -108,7 +108,7 @@ export default class EditorActions extends React.Component<Props> {
 
     {
       // update
-      let hidden = isNew || !abilities.update || model.noupdate;
+      let hidden = isNew || model.noupdate; // 不判断 ability，ActionList 会判断
 
       actionList.push({
         key: 'update',
@@ -124,7 +124,7 @@ export default class EditorActions extends React.Component<Props> {
 
     {
       // remove
-      let hidden = isNew || model.noremove || !abilities.remove;
+      let hidden = isNew || model.noremove; // 不判断 ability，ActionList 会判断
 
       actionList.push({
         key: 'remove',
@@ -140,7 +140,7 @@ export default class EditorActions extends React.Component<Props> {
 
     {
       // add
-      let hidden = isNew || model.nocreate || !abilities.create;
+      let hidden = isNew || model.nocreate; // 不判断 ability，ActionList 会判断
 
       actionList.push({
         key: 'add',

@@ -72,8 +72,18 @@ export default class ActionList extends React.Component<Props> {
     keys.forEach((key) => {
       let { item } = map[key];
       let { action, onClick, link } = item;
-      // $Flow action.key一定存在
-      if (!model.abilities[action.key]) return; // 权限认证
+      if (action.ability) {
+        // 自定义权限
+        if (!settings.abilities[action.ability]) return;
+      } else {
+        // 默认权限
+        // $Flow action.key 一定存在
+        let abilityKey = action.key;
+        if (abilityKey === 'add') {
+          abilityKey = 'create'; // add 使用 create 权限
+        }
+        if (!model.abilities[abilityKey]) return; // 权限认证
+      }
       if (editor) {
         // 编辑页面
         if (action.list && !action.editor) return; // 编辑页面不现实列表专有Action

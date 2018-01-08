@@ -21,8 +21,14 @@ export default async function (ctx: Alaska$Context) {
     let ability = `admin.${Model.key}.`;
     if (id) {
       ability += 'update';
+      if (Model.actions && Model.actions.update && Model.actions.update.ability) {
+        ability = Model.actions.update.ability;
+      }
     } else {
       ability += 'create';
+      if (Model.actions && Model.actions.create && Model.actions.create.ability) {
+        ability = Model.actions.create.ability;
+      }
     }
     await ctx.checkAbility(ability);
 

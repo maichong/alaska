@@ -25,7 +25,10 @@ export default async function (ctx: Alaska$Context) {
 
   if (!Model.actions || !Model.actions[action] || !Model.actions[action].sled) service.error('Invalid action');
 
-  let ability = `admin.${Model.key}.${action}`;
+  let actionInfo = Model.actions[action];
+
+  let ability = actionInfo.ability ? actionInfo.ability : `admin.${Model.key}.${action}`;
+
   await ctx.checkAbility(ability);
 
   let record;
@@ -37,7 +40,7 @@ export default async function (ctx: Alaska$Context) {
   }
 
   // $Flow
-  const Sled: Class<Alaska$Sled> = s.getSled(Model.actions[action].sled);
+  const Sled: Class<Alaska$Sled> = s.getSled(actionInfo.sled);
 
   const recordModelName = Model.modelName.replace(/^\w/, (w) => w.toLowerCase());
 

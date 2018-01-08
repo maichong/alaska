@@ -98,17 +98,19 @@ export default class RelationshipFieldView extends React.Component<Alaska$view$F
 
     const [serviceId, modelName] = ref.split('.');
 
-    api('/api/relation')
-      .param('service', serviceId)
-      .param('model', modelName)
-      .param('value', value)
-      .search(keyword)
-      .where(filters)
-      .then((res) => {
-        let options = immutable(res.results);
-        this.cache[cacheKey] = options;
-        this.setState({ options });
-      });
+    api.post('/api/relation', {
+      params: {
+        _service: serviceId,
+        _model: modelName,
+        _search: keyword,
+        ...filters
+      },
+      body: { value }
+    }).then((res) => {
+      let options = immutable(res.results);
+      this.cache[cacheKey] = options;
+      this.setState({ options });
+    });
   };
 
   render() {

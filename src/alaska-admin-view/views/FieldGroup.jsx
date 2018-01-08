@@ -22,6 +22,7 @@ type Props = {
   panel?: boolean,
   style?: Alaska$style,
   wrapper?: string, // 自定义Wrapper占位符
+  ability?: string,
   super?: DependsQueryExpression,
   hidden?: DependsQueryExpression,
   depends?: DependsQueryExpression,
@@ -51,6 +52,7 @@ export default class FieldGroup extends React.Component<Props> {
     const { serviceId } = model;
     _.forEach(props.fields, (field) => {
       if (!field.view) return;
+      if (field.ability && !settings.abilities[field.ability]) return;
       if (checkDepends(field.hidden, record)) return;
       if (field.depends && !checkDepends(field.depends, record)) return;
       if (!settings.superMode && checkDepends(field.super, record)) return;
@@ -93,6 +95,7 @@ export default class FieldGroup extends React.Component<Props> {
     const {
       path, title, panel, form, wrapper, style, loading, model, record, isNew
     } = props;
+    if (props.ability && !settings.abilities[props.ability]) return ''; // ability
     if (checkDepends(props.hidden, record)) return ''; // hidden
     if (props.depends && !checkDepends(props.depends, record)) return ''; // depends
     if (!settings.superMode && checkDepends(props.super, record)) return ''; // super

@@ -52,14 +52,17 @@ export default class CategoryFieldFilter extends React.Component<Alaska$view$Fie
     const ref: string = field.ref;
     if (!ref) return;
     let [refServiceId, refModelName] = ref.split('.');
-    api('/api/relation')
-      .param('service', refServiceId)
-      .param('model', refModelName)
-      .param('value', value)
-      .where(field.filters || {})
-      .then((res) => {
-        this.setState({ options: res.results });
-      });
+
+    api.post('/api/relation', {
+      params: {
+        _service: refServiceId,
+        _model: refModelName,
+        ...(field.filters || {})
+      },
+      body: { value }
+    }).then((res) => {
+      this.setState({ options: res.results });
+    });
   }
 
   handleInverse = () => {

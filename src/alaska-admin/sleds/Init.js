@@ -75,6 +75,7 @@ export default class Init extends Sled {
         let ability = `admin.${Model.key}.`.toLowerCase();
 
         function registerAbility(action) {
+          if (action === 'add') return; // add Action 使用 create权限
           let id = ability + action;
           USER.run('RegisterAbility', {
             id,

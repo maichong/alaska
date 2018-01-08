@@ -22,6 +22,9 @@ export default async function remove(ctx: Alaska$Context) {
   let Model: Class<Alaska$Model> = s.getModel(modelName);
 
   let ability = `admin.${Model.key}.remove`;
+  if (Model.actions && Model.actions.remove && Model.actions.remove.ability) {
+    ability = Model.actions.remove.ability;
+  }
   await ctx.checkAbility(ability);
 
   if (id) {

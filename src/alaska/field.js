@@ -154,6 +154,7 @@ export default class Field {
       label: field.label,
       path: field.path,
       default: field.default,
+      ability: field.ability,
       super: field.super,
       hidden: field.hidden,
       disabled: field.disabled,
