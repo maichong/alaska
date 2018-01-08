@@ -36,6 +36,7 @@ export const INITIAL_STATE = immutable({
 });
 
 export default handleActions({
+  LOGIN: (state) => state.set('errorMsg', ''),
   LOGIN_FAILURE: (state, { payload }) => state.merge({ errorMsg: payload.message }),
   LOGOUT_SUCCESS: () => INITIAL_STATE,
   LOGIN_SUCCESS: (state) => state.merge({ user: false, errorMsg: '' }),

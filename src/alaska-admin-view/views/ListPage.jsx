@@ -477,6 +477,7 @@ class ListPage extends React.Component<Props, State> {
             </div>
             <ListActions
               model={model}
+              records={records || []}
               selected={selected}
               refresh={this.refresh}
               refreshSettings={this.props.refreshSettings}

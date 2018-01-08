@@ -1,0 +1,107 @@
+/**
+ * @copyright Maichong Software Ltd. 2018 http://maichong.it
+ * @date 2018-01-08
+ * @author Liang <liang@maichong.it>
+ */
+
+import _ from 'lodash';
+import React from 'react';
+import PropTypes from 'prop-types';
+import checkDepends from 'check-depends';
+import Action from './Action';
+
+type Props = {
+  editor?: boolean,
+  disabled?: boolean,
+  model: Alaska$view$Model,
+  record?: Alaska$view$Record,
+  records?: Alaska$view$Record[],
+  selected?: Alaska$view$Record[],
+  refresh?: Function,
+  items: Array<{
+    key: string,
+    onClick?: Function,
+    link?: string,
+    action: Alaska$Model$action
+  }>,
+};
+
+export default class ActionList extends React.Component<Props> {
+  static contextTypes = {
+    settings: PropTypes.object
+  };
+
+  context: {
+    settings: Alaska$view$Settings
+  };
+
+  render() {
+    const { settings } = this.context;
+    const {
+      items, editor, model, record, records, selected, refresh, disabled
+    } = this.props;
+
+    // 排序
+    const map = _.reduce(items, (res, item) => {
+      res[item.key] = { item, afters: [] };
+      return res;
+    }, {});
+
+    let list = [];
+
+    _.forEach(map, (el) => {
+      let { after } = el.item.action;
+      if (after && map[after]) {
+        map[after].afters.push(el);
+      } else {
+        list.push(el);
+      }
+    });
+
+    let keys = [];
+
+    function flat(el) {
+      keys.push(el.item.key);
+      el.afters.forEach(flat);
+    }
+
+    _.forEach(list, flat);
+
+    let elements = [];
+
+    keys.forEach((key) => {
+      let { item } = map[key];
+      let { action, onClick, link } = item;
+      // $Flow action.key一定存在
+      if (!model.abilities[action.key]) return; // 权限认证
+      if (editor) {
+        // 编辑页面
+        if (action.list && !action.editor) return; // 编辑页面不现实列表专有Action
+        if (checkDepends(action.hidden, record)) return;
+        if (action.depends && !checkDepends(action.depends, record)) return;
+        if (!settings.superMode && checkDepends(action.super, record)) return;
+      } else {
+        // 列表页面
+        if (!action.list) return;// 列表页面不现实编辑页面专有Action
+        if (action.hidden) return;
+        if (action.depends) return;
+        if (!settings.superMode && action.super) return;
+      }
+
+      elements.push(<Action
+        key={key}
+        action={action}
+        disabled={disabled}
+        record={record}
+        records={records}
+        selected={selected}
+        model={model}
+        onClick={onClick}
+        link={link}
+        refresh={refresh}
+      />);
+    });
+
+    return elements;
+  }
+}

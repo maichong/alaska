@@ -12,7 +12,7 @@ class EmailService extends Service {
   driversMap: Object;
 
   nextTask: ?EmailTask;
-  timer: number;
+  timer: ?TimeoutID;
 
   constructor(options?: Alaska$Service$options) {
     options = options || { dir: '', id: '' };
@@ -21,7 +21,7 @@ class EmailService extends Service {
     super(options);
 
     this.nextTask = null;
-    this.timer = 0;
+    this.timer = undefined;
   }
 
   preLoadModels() {
@@ -78,7 +78,7 @@ class EmailService extends Service {
   async updateTasks() {
     if (this.timer) {
       clearTimeout(this.timer);
-      this.timer = 0;
+      this.timer = undefined;
     }
     // $Flow
     this.nextTask = await EmailTask.findOne({ state: 1 }).sort('nextAt');
@@ -92,8 +92,10 @@ class EmailService extends Service {
   }
 
   async processTask() {
-    clearTimeout(this.timer);
-    this.timer = 0;
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = undefined;
+    }
     let task = this.nextTask;
     if (!task) {
       return;

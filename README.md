@@ -6,25 +6,23 @@ Alaska is componentized and pluggable web framework for Node.js based on Koa , M
 
 npm install -g alaska-cli
 
-mkdir demo
+alaska create demo
 
 cd demo
 
-alaska init
+npm run build
 
-alaska build
-
-node index.js
+npm run start
 
 ```
 
 [中文入门指导 https://github.com/maichong/alaska-book-chinese](https://github.com/maichong/alaska-book-chinese)
 
-[Demo https://github.com/maichong/alaska-demo](https://github.com/maichong/alaska-demo)
+[Demo https://github.com/maichong/alaska-init](https://github.com/maichong/alaska-init)
 
 ## Contribute
 
-[Maichong Software](http://maichong.it)
+[脉冲云](https://maichong.io)
 
 [Liang Xingchen](https://github.com/liangxingchen)
 

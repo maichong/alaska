@@ -13,6 +13,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-balance": "^0.12.7"
+    "alaska-balance": "^0.12.8"
   }
 }

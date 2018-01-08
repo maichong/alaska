@@ -12,6 +12,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-goods": "^0.12.7"
+    "alaska-goods": "^0.12.8"
   }
 }

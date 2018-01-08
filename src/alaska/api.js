@@ -31,7 +31,7 @@ export async function count(ctx: Alaska$Context) {
     ctx.status = 401;
     return;
   }
-  let filters = Model.createFiltersByContext(ctx);
+  let filters = await Model.createFiltersByContext(ctx);
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
@@ -60,7 +60,7 @@ export async function paginate(ctx: Alaska$Context) {
 
   const scope = ctx.state.scope || ctx.query._scope || 'list';
 
-  let filters = Model.createFiltersByContext(ctx);
+  let filters = await Model.createFiltersByContext(ctx);
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
@@ -90,7 +90,7 @@ export async function list(ctx: Alaska$Context) {
 
   const scope = ctx.state.scope || ctx.query._scope || 'list';
 
-  let filters = Model.createFiltersByContext(ctx);
+  let filters = await Model.createFiltersByContext(ctx);
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
@@ -163,7 +163,7 @@ export async function update(ctx: Alaska$Context) {
     ctx.status = 401;
     return;
   }
-  let filters = Model.createFiltersByContext(ctx);
+  let filters = await Model.createFiltersByContext(ctx);
 
   let doc = await Model.findById(ctx.state.id || ctx.params.id).where(filters);
   if (!doc) {
@@ -208,7 +208,7 @@ export async function updateMulti(ctx: Alaska$Context) {
     ctx.status = 401;
     return;
   }
-  let filters = Model.createFiltersByContext(ctx);
+  let filters = await Model.createFiltersByContext(ctx);
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
@@ -247,7 +247,7 @@ export async function remove(ctx: Alaska$Context) {
   }
   ctx.body = {};
 
-  let filters = Model.createFiltersByContext(ctx);
+  let filters = await Model.createFiltersByContext(ctx);
 
   if (code === OWNER) {
     //只允许用户列出自己的资源
@@ -273,7 +273,7 @@ export async function removeMulti(ctx: Alaska$Context) {
     return;
   }
   ctx.body = {};
-  let filters = Model.createFiltersByContext(ctx);
+  let filters = await Model.createFiltersByContext(ctx);
 
   if (code === OWNER) {
     //只允许用户列出自己的资源

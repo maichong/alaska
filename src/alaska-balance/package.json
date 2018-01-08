@@ -12,10 +12,10 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "peerDependencies": {
-    "alaska": "^0.12.7",
-    "alaska-user": "^0.12.7"
+    "alaska": "^0.12.8",
+    "alaska-user": "^0.12.8"
   },
   "dependencies": {
-    "alaska-field-select": "^0.12.7"
+    "alaska-field-select": "^0.12.8"
   }
 }

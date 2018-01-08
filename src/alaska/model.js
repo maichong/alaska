@@ -819,7 +819,7 @@ export default class Model {
    * @param {Alaska$Context} ctx
    * @param {Object} [state]
    */
-  static createFiltersByContext(ctx: Alaska$Context, state?: Object): Alaska$filters {
+  static async createFiltersByContext(ctx: Alaska$Context, state?: Object): Promise<Alaska$filters> {
     // $Flow
     state = _.defaultsDeep({}, state, ctx.state);
 
@@ -829,11 +829,16 @@ export default class Model {
       (state.search || ctx.query._search || '').trim(),
       state.filters || ctx.query
     );
-    if (model.defaultFilters) {
-      Object.assign(
-        filters,
-        typeof model.defaultFilters === 'function' ? model.defaultFilters(ctx) : model.defaultFilters
-      );
+    let { defaultFilters } = model;
+    if (defaultFilters) {
+      if (typeof defaultFilters === 'function') {
+        defaultFilters = defaultFilters(ctx);
+        if (defaultFilters && typeof defaultFilters.then === 'function') {
+          // async defaultFilters
+          defaultFilters = await defaultFilters;
+        }
+      }
+      _.assign(filters, defaultFilters);
     }
     return filters;
   }
@@ -924,7 +929,7 @@ export default class Model {
     // $Flow
     let model: Class<Alaska$Model> = this;
 
-    let filters = model.createFiltersByContext(ctx, state);
+    let filters = await model.createFiltersByContext(ctx, state);
 
     state = Object.assign({}, ctx.state, state);
 
@@ -1011,7 +1016,7 @@ export default class Model {
     // $Flow
     let model: Class<Alaska$Model> = this;
 
-    let filters = model.createFiltersByContext(ctx, state);
+    let filters = await model.createFiltersByContext(ctx, state);
 
     state = Object.assign({}, ctx.state, state);
 
@@ -1106,8 +1111,16 @@ export default class Model {
     // $Flow
     let query: Alaska$Query = model.findById(state.id || ctx.params.id).where(filters);
 
-    if (model.defaultFilters) {
-      query.where(typeof model.defaultFilters === 'function' ? model.defaultFilters(ctx) : model.defaultFilters);
+    let { defaultFilters } = model;
+    if (defaultFilters) {
+      if (typeof defaultFilters === 'function') {
+        defaultFilters = defaultFilters(ctx);
+        if (defaultFilters && typeof defaultFilters.then === 'function') {
+          // async defaultFilters
+          defaultFilters = await defaultFilters;
+        }
+      }
+      query.where(defaultFilters);
     }
 
     const scopeKey = state.scope || ctx.query._scope || 'show';

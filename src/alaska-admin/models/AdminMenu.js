@@ -41,7 +41,7 @@ export default class AdminMenu extends Model {
     },
     ability: {
       label: 'Ability',
-      ref: ['alaska-user.Ability']
+      ref: 'alaska-user.Ability'
     },
     link: {
       label: 'Link',

@@ -18,7 +18,7 @@ export default async function list(ctx: Alaska$Context) {
   let ability = `admin.${Model.key}.read`;
   await ctx.checkAbility(ability);
 
-  let filters = Model.createFiltersByContext(ctx);
+  let filters = await Model.createFiltersByContext(ctx);
 
   let query: Alaska$PaginateQuery<Alaska$Model> = Model.paginate(filters)
     .page(parseInt(ctx.state.page || ctx.query._page, 10) || 1)

@@ -15,8 +15,8 @@
   "license": "MIT",
   "dependencies": {
     "akita": "^0.3.7",
-    "alaska-field-checkbox": "^0.12.7",
-    "check-depends": "^0.2.0",
+    "alaska-field-checkbox": "^0.12.8",
+    "check-depends": "^0.3.1",
     "intl-messageformat": "^2.2.0",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0",

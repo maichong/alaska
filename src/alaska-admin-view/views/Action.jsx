@@ -3,11 +3,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
+import checkDepends from 'check-depends';
 import TooltipWrapper from './TooltipWrapper';
 
 type Props = {
+  editor?: boolean,
   model: Alaska$view$Model,
   action: Alaska$Model$action,
+  records?: Alaska$view$Record[],
   selected?: Alaska$view$Record[],
   disabled?: boolean,
   record?: Object,
@@ -54,9 +57,16 @@ export default class Action extends React.Component<Props> {
 
   render() {
     let {
-      model, action, record, selected, disabled, refresh
+      editor, model, action, record, records, selected, disabled, refresh
     } = this.props;
     const { t } = this.context;
+    // needRecords
+    if (!disabled && !record && action.needRecords && (!selected || selected.length < action.needRecords)) {
+      disabled = true;
+    }
+    if (!disabled && record && action.disabled && checkDepends(action.disabled, record)) {
+      disabled = true;
+    }
     if (action.view) {
       let View = this.context.views[action.view];
       if (!View) {
@@ -65,13 +75,10 @@ export default class Action extends React.Component<Props> {
       }
       // $Flow
       return React.createElement(View, {
-        model, action, selected, record, refresh
+        editor, model, action, records, selected, record, refresh, disabled
       });
     }
-    // if (!model.abilities[action.key]) return null;
-    if (!disabled && !record && action.needRecords && (!selected || selected.length < action.needRecords)) {
-      disabled = true;
-    }
+
     let title;
     if (action.title) {
       title = t(action.title, model.serviceId);

@@ -9,7 +9,7 @@ export default class RedisSubscribeDriver extends Driver {
   channel: string;
   _driver: Object;
   _subscribed: boolean;
-  _timer: number;
+  _timer: ?TimeoutID;
   _messages: Object[];
   _onMessage: ?Function;
   _listener: ?Function;
@@ -24,7 +24,7 @@ export default class RedisSubscribeDriver extends Driver {
     this.options = options;
     this._driver = redis.createClient(options);
     this._subscribed = false;
-    this._timer = 0;
+    this._timer = undefined;
     this._messages = [];
     this._onMessage = null;//message callback
     this._listener = null;
@@ -173,7 +173,7 @@ export default class RedisSubscribeDriver extends Driver {
   cancel(): Promise<void> {
     if (this._timer) {
       clearTimeout(this._timer);
-      this._timer = 0;
+      this._timer = undefined;
     }
     if (!this._subscribed) {
       return Promise.resolve();

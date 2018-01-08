@@ -1,5 +1,7 @@
 // @flow
 
+import type { DependsQueryExpression } from 'check-depends';
+
 export default class Field {
   static classOfField = true;
   static plain = String;
@@ -23,18 +25,18 @@ export default class Field {
   label: string;
   path: string;
   group: string | void;
-  hidden: boolean | void;
-  fixed: boolean | void;
+  super: DependsQueryExpression | void;
+  hidden: DependsQueryExpression | void;
+  depends: DependsQueryExpression | void;
+  disabled: DependsQueryExpression | void;
+  fixed: DependsQueryExpression | void;
   horizontal: boolean | void;
   nolabel: boolean | void;
-  disabled: boolean | void;
-  super: boolean | void;
   help: string | void;
   cell: string | void;
   view: string | void;
   filter: string | void;
   after: string | void;
-  depends: Alaska$Field$depends | void;
   dataType: Function;
 
   _options: Alaska$Field$options;
@@ -152,19 +154,18 @@ export default class Field {
       label: field.label,
       path: field.path,
       default: field.default,
+      super: field.super,
       hidden: field.hidden,
+      disabled: field.disabled,
       group: field.group,
       fixed: field.fixed,
-      disabled: field.disabled,
       help: field.help,
-      depends: field.depends,
       required: field.required,
       horizontal: field.horizontal,
       nolabel: field.nolabel,
       cell: field.cell,
       view: field.view,
       filter: field.filter,
-      super: field.super,
       after: field.after,
     };
 

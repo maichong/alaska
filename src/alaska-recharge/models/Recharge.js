@@ -17,7 +17,9 @@ export default class Recharge extends Model {
       style: 'warning',
       confirm: 'COMPLETE_RECHARGE_WARING',
       depends: {
-        '_id>': '',
+        _id: {
+          $gt: ''
+        },
         type: 'manual',
         state: 0
       }
