@@ -54,5 +54,8 @@ exports.default = {
   contain: 'contain',
   inverse: 'inverse',
   yes: 'yes',
-  no: 'no'
+  no: 'no',
+  QUICK_EDIT: 'Edit ( {item} )',
+  QUICK_EDIT_MULTI: 'Edit ( {item} ) and so on {count} records, the nonblank field while apply to multiple records',
+  SAVE_MULTI_RECORDS: 'Save {count} records'
 };

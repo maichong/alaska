@@ -1,6 +1,6 @@
 {
   "name": "alaska-cart",
-  "version": "0.12.9",
+  "version": "0.12.3",
   "description": "Alaska cart service",
   "keywords": [
     "alaska",
@@ -12,6 +12,11 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-goods": "^0.12.8"
+    "alaska-goods": "^0.12.9",
+    "alaska-user": "^0.12.9"
+  },
+  "peerDependencies": {
+    "alaska-goods": "^0.12.9",
+    "alaska-user": "^0.12.9"
   }
 }

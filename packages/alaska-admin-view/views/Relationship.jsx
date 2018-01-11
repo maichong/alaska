@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import qs from 'qs';
+import type { ImmutableArray } from 'seamless-immutable';
 import DataTable from './DataTable';
 import Node from './Node';
 import * as listRedux from '../redux/lists';
@@ -12,7 +13,7 @@ import * as listRedux from '../redux/lists';
 type Props = {
   loadList: Function,
   filters: Object,
-  lists: Object,
+  lists: ImmutableObject<Alaska$view$lists>,
   service: string,
   model: Alaska$view$Model,
   path: string,
@@ -21,7 +22,7 @@ type Props = {
 };
 
 type State = {
-  records: Alaska$view$Record[] | null,
+  records: ImmutableArray<Alaska$view$Record> | null,
   filters: {}
 };
 

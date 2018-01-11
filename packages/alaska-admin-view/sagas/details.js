@@ -54,7 +54,7 @@ function* details({ payload }) {
       let cur = queue;
       queue = [];
       if (cur.length) {
-        _redux2.default.dispatch((0, _details.applyBatchDetails)(cur));
+        _redux2.default.dispatch((0, _details.batchApplyDetails)(cur));
       }
     }, 50);
   }

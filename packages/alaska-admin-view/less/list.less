@@ -52,3 +52,50 @@
     }
   }
 }
+
+.list-page-inner {
+  position: fixed;
+  overflow: auto;
+  top: @header-height + @top-toolbar-height;
+  left: @menu-width;
+  bottom: @header-height + @content-space;
+  right: 0;
+  padding: @content-space;
+
+  #app.icon & {
+    left: @menu-icon-width;
+  }
+
+  #app.hidden & {
+    left: 0;
+  }
+
+  .data-table {
+    background: #fff;
+  }
+  transition: right @animation-duration;
+
+  .top-toolbar,
+  .bottom-toolbar {
+    transition: right @animation-duration;
+  }
+  &.with-editor {
+    right: @quick-editor-with;
+    .top-toolbar,
+    .bottom-toolbar {
+      right: @quick-editor-with;
+    }
+  }
+}
+
+@media (min-width: @quick-editor-large-toggle) {
+  .list-page-inner {
+    &.with-editor {
+      right: @quick-editor-large-with;
+      .top-toolbar,
+      .bottom-toolbar {
+        right: @quick-editor-large-with;
+      }
+    }
+  }
+}

@@ -54,9 +54,8 @@ export default class SelectFieldView extends React.Component<Alaska$view$Field$V
     }
     let res = [];
     _.forEach(options, (opt) => {
-      if (checkDepends(opt.depends, record)) {
-        res.push(this.t(opt));
-      }
+      if (opt.depends && !checkDepends(opt.depends, record)) return;
+      res.push(this.t(opt));
     });
     return res;
   }

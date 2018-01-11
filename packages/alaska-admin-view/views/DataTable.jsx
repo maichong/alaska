@@ -5,16 +5,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
 import Checkbox from 'alaska-field-checkbox/views/Checkbox';
-import checkDepends from 'check-depends';
+import Immutable from 'seamless-immutable';
+import type { ImmutableObject, ImmutableArray } from 'seamless-immutable';
 import DataTableRow from './DataTableRow';
 import Node from './Node';
 
 type Props = {
   model: Alaska$view$Model,
   columns?: string[],
-  selected?: Alaska$view$Record[],
-  records: Alaska$view$Record[],
-  activated?: Alaska$view$Record,
+  selected?: ImmutableArray<Alaska$view$Record>,
+  records: ImmutableArray<Alaska$view$Record>,
+  activated?: ImmutableObject<Alaska$view$Record>,
   sort?: string,
   onSort?: Function,
   onActive?: Function,
@@ -96,12 +97,12 @@ export default class DataTable extends React.Component<Props, State> {
   }
 
   handleSelectAll = () => {
-    let records = [];
-    if (!this.isAllSelected()) {
-      records = _.clone(this.props.records);
-    }
-    if (this.props.onSelect) {
-      this.props.onSelect(records);
+    const { onSelect, records } = this.props;
+    if (!onSelect) return;
+    if (this.isAllSelected()) {
+      onSelect(Immutable([]));
+    } else {
+      onSelect(records);
     }
   };
 
@@ -113,7 +114,7 @@ export default class DataTable extends React.Component<Props, State> {
       delete selectedIdMap[record._id];
     }
     this.setState({ selectedIdMap });
-    let records = _.filter(this.props.records, (r) => selectedIdMap[r._id]);
+    let records = Immutable(_.filter(this.props.records, (r) => selectedIdMap[r._id]));
     if (this.props.onSelect) {
       this.props.onSelect(records);
     }
@@ -187,7 +188,7 @@ export default class DataTable extends React.Component<Props, State> {
           </Node>
         </thead>
         <tbody>
-          {_.map(records, (record, index) => (<DataTableRow
+          {_.map(records, (record: Alaska$view$Record, index: number) => (<DataTableRow
             key={record._id || index}
             record={record}
             active={activated === record}

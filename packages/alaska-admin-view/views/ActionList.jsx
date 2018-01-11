@@ -1,22 +1,19 @@
-/**
- * @copyright Maichong Software Ltd. 2018 http://maichong.it
- * @date 2018-01-08
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import checkDepends from 'check-depends';
+import type { ImmutableObject, ImmutableArray } from 'seamless-immutable';
 import Action from './Action';
 
 type Props = {
   editor?: boolean,
   disabled?: boolean,
   model: Alaska$view$Model,
-  record?: Alaska$view$Record,
-  records?: Alaska$view$Record[],
-  selected?: Alaska$view$Record[],
+  record?: ImmutableObject<Alaska$view$Record>,
+  records?: ImmutableArray<Alaska$view$Record>,
+  selected?: ImmutableArray<Alaska$view$Record>,
   refresh?: Function,
   items: Array<{
     key: string,

@@ -20,7 +20,7 @@ AdminMenu.icon = 'bars';
 AdminMenu.titleField = 'label';
 AdminMenu.defaultColumns = 'icon label type parent sort service link ability super activated';
 AdminMenu.defaultSort = '-sort';
-AdminMenu.searchFields = 'label link parent';
+AdminMenu.searchFields = '_id label link parent';
 
 AdminMenu.defaultFilters = ctx => ctx.state.superMode ? {} : { super: { $ne: true } };
 

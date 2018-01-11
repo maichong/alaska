@@ -20,7 +20,8 @@ type Props = {
 export default class DataTableRow extends React.Component<Props> {
   static contextTypes = { views: PropTypes.object };
 
-  handleChange = () => {
+  handleChange = (e: Object) => {
+    e.stopPropagation();
     if (this.props.onSelect) {
       this.props.onSelect(this.props.record, !this.props.selected);
     }

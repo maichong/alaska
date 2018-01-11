@@ -29,7 +29,13 @@ function* saveSaga({ payload }) {
       body: payload.data
     });
     yield (0, _effects.put)((0, _save.saveSuccess)(payload, res));
-    yield (0, _effects.put)((0, _details.applyDetails)(payload.key, res));
+    if (Array.isArray(res)) {
+      // 同时保存了多条记录
+      let list = res.map(data => ({ key: payload.key, data }));
+      yield (0, _effects.put)((0, _details.batchApplyDetails)(list));
+    } else {
+      yield (0, _effects.put)((0, _details.applyDetails)(payload.key, res));
+    }
     yield (0, _effects.put)((0, _lists.clearList)(payload.key));
   } catch (e) {
     yield (0, _effects.put)((0, _save.saveFailure)(payload, e));

@@ -28,7 +28,7 @@ export default class TextFieldView extends React.Component<Alaska$view$Field$Vie
       errorText,
       model
     } = this.props;
-    const { t } = this.context.t;
+    const { t } = this.context;
     let { help } = field;
     className += ' text-field';
     if (errorText) {

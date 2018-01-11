@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+/* eslint no-proto:0 no-unused-expressions:0 */
+
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -31,10 +35,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const { Schema } = _mongoose2.default;
 
 // $Flow
-
-
-/* eslint no-proto:0 no-unused-expressions:0 */
-
 _mongoose2.default.Promise = global.Promise;
 
 function panic() {
@@ -309,7 +309,8 @@ class Model {
         defaultColumns: '',
         label: modelName,
         actions: {},
-        groups: {}
+        groups: {},
+        schemaOptions: {}
       });
 
       //自动查询仅仅需要的字段
@@ -325,9 +326,11 @@ class Model {
         await this.preRegister();
       }
 
-      const schema = new Schema({}, {
+      const schema = new Schema({}, _extends({
+        usePushEach: true
+      }, model.schemaOptions, {
         collection: model.collection || (service.getConfig('dbPrefix') || '') + model.id.replace(/-/g, '_')
-      });
+      }));
 
       model.schema = schema;
 
@@ -339,9 +342,19 @@ class Model {
           throw new Error(modelName + ' model has no fields.');
         }
 
+        let keys = Object.keys(model.fields);
+
+        if (!model.fields._id) {
+          keys.unshift('_id');
+          model.fields._id = {
+            type: 'id',
+            view: ''
+          };
+        }
+
         model.defaultScope = {};
         //将Model字段注册到Mongoose.Schema中
-        Object.keys(model.fields).forEach(path => {
+        keys.forEach(path => {
           try {
             let options = _lodash2.default.clone(model.fields[path]);
 

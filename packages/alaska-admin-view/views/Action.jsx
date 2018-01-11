@@ -4,16 +4,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
 import checkDepends from 'check-depends';
+import type { ImmutableObject, ImmutableArray } from 'seamless-immutable';
 import TooltipWrapper from './TooltipWrapper';
 
 type Props = {
   editor?: boolean,
   model: Alaska$view$Model,
   action: Alaska$Model$action,
-  records?: Alaska$view$Record[],
-  selected?: Alaska$view$Record[],
+  records?: ImmutableArray<Alaska$view$Record>,
+  selected?: ImmutableArray<Alaska$view$Record>,
   disabled?: boolean,
-  record?: Object,
+  record?: ImmutableObject<Alaska$view$Record>,
   onClick?: Function,
   link?: string,
   refresh?: Function,
@@ -26,12 +27,6 @@ type Context = {
 };
 
 export default class Action extends React.Component<Props> {
-  static defaultProps = {
-    link: '',
-    disabled: false,
-    selected: []
-  };
-
   static contextTypes = {
     views: PropTypes.object,
     router: PropTypes.object,

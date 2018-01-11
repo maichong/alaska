@@ -10,5 +10,11 @@
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-order",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "alaska-user": "^0.12.9"
+  },
+  "peerDependencies": {
+    "alaska-user": "^0.12.9"
+  }
 }
