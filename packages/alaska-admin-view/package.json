@@ -1,6 +1,6 @@
 {
   "name": "alaska-admin-view",
-  "version": "0.12.3",
+  "version": "0.12.11",
   "description": "Alaska admin view",
   "keywords": [
     "alaska",
@@ -21,9 +21,9 @@
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
+    "react-bootstrap": "^0.32.0",
     "react-dnd": "^2.5.4",
     "react-dnd-html5-backend": "^2.5.4",
-    "react-bootstrap": "^0.32.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
