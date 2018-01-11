@@ -14,6 +14,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "peerDependencies": {
-    "alaska-payment": "^0.12.9"
+    "alaska-payment": "^0.12.10"
   }
 }

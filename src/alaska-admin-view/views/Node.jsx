@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 type Props = {
   children: React$Node,
-  tag?: string,
+  tag?: string | false,
   id?: string,
   wrapper?: string,
   props?: Object,
@@ -22,15 +22,18 @@ export default class Node extends React.Component<Props> {
     } = this.props;
     wrapper = wrapper || id;
 
-    tag = tag || 'div';
-    children = React.createElement(
-      tag,
-      {
-        id,
-        ...others
-      },
-      children
-    );
+    if (tag !== false) {
+      tag = tag || 'div';
+      children = React.createElement(
+        tag,
+        {
+          id,
+          ...others
+        },
+        children
+      );
+    }
+
     if (wrapper) {
       const wrappers = this.context.views.wrappers;
       if (wrappers[wrapper] && wrappers[wrapper].length) {

@@ -12,11 +12,11 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-goods": "^0.12.9",
-    "alaska-user": "^0.12.9"
+    "alaska-goods": "^0.12.10",
+    "alaska-user": "^0.12.10"
   },
   "peerDependencies": {
-    "alaska-goods": "^0.12.9",
-    "alaska-user": "^0.12.9"
+    "alaska-goods": "^0.12.10",
+    "alaska-user": "^0.12.10"
   }
 }

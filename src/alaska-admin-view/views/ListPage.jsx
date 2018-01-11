@@ -529,6 +529,7 @@ class ListPage extends React.Component<Props, State> {
           <div>{filterViews}</div>
           <div className="panel panel-default noborder list-panel">
             <DataTable
+              canDrag
               model={model}
               records={records || EMPTY_RECORD_LIST}
               sort={sort}
@@ -548,6 +549,7 @@ class ListPage extends React.Component<Props, State> {
           record={activated}
           records={selected}
           onCancel={() => this.setState({ activated: undefined, selected: EMPTY_RECORD_LIST })}
+          onRefresh={this.refresh}
         />
       </Node>
     );

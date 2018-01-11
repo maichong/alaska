@@ -7,8 +7,10 @@ import shallowEqualWithout from 'shallow-equal-without';
 import Checkbox from 'alaska-field-checkbox/views/Checkbox';
 import Immutable from 'seamless-immutable';
 import type { ImmutableObject, ImmutableArray } from 'seamless-immutable';
-import DataTableRow from './DataTableRow';
+import DataTableRow, { DataTableRowDragable } from './DataTableRow';
 import Node from './Node';
+import store from '../redux';
+import * as saveRedux from '../redux/save';
 
 type Props = {
   model: Alaska$view$Model,
@@ -20,12 +22,16 @@ type Props = {
   onSort?: Function,
   onActive?: Function,
   onSelect?: Function,
-  onRemove?: Function
+  onRemove?: Function,
+  canDrag?: boolean
 };
 
 type State = {
   columnList: Alaska$view$Field[],
-  selectedIdMap: {}
+  dragging: Alaska$view$Record | null,
+  list: ImmutableArray<Alaska$view$Record> | null,
+  selectedIdMap: {},
+  canDrag: boolean
 };
 
 export default class DataTable extends React.Component<Props, State> {
@@ -40,7 +46,10 @@ export default class DataTable extends React.Component<Props, State> {
     super(props);
     this.state = {
       selectedIdMap: {},
-      columnList: []
+      columnList: [],
+      list: null,
+      dragging: null,
+      canDrag: false
     };
   }
 
@@ -59,29 +68,52 @@ export default class DataTable extends React.Component<Props, State> {
     return !shallowEqualWithout(state, this.state) || nextProps.records !== this.props.records;
   }
 
-  init(props: Props) {
-    let model = props.model;
+  init(newProps: Props) {
+    let model = newProps.model;
     if (!model) return;
     const { settings } = this.context;
 
-    let state = {};
-    if (props.selected) {
-      state.selectedIdMap = _.reduce(props.selected, (res, record) => {
+    let newState = {};
+    if (newProps.selected) {
+      newState.selectedIdMap = _.reduce(newProps.selected, (res, record) => {
         res[record._id] = true;
         return res;
       }, {});
     }
 
     let columnList = [];
-    _.forEach(props.columns || model.defaultColumns, (key) => {
+    _.forEach(newProps.columns || model.defaultColumns, (key) => {
       let field = model.fields[key];
       if (field) {
         if (!settings.superMode && field.super) return;
         columnList.push(field);
       }
     });
-    state.columnList = columnList;
-    this.setState(state);
+    newState.columnList = columnList;
+    if (newProps.records !== this.props.records) {
+      newState.list = null;
+      newState.dragging = null;
+    }
+
+    function canDrag(): boolean {
+      if (!newProps.canDrag) return false;
+      if (!model.defaultSort || model.noupdate) return false;
+      let sort = model.defaultSort.split(' ')[0];
+      if (sort[0] === '-') {
+        sort = sort.substr(1);
+      }
+      let field = model.fields[sort];
+      if (!field || field.plain !== 'number') return false;
+      let ability = _.get(model, 'actions.update.ability');
+      if (ability) {
+        if (!settings.abilities[ability]) return false;
+      } else if (!model.abilities.update) return false;
+      if (field.ability && !settings.abilities[field.ability]) return false;
+      return true;
+    }
+
+    newState.canDrag = canDrag();
+    this.setState(newState);
   }
 
   isAllSelected() {
@@ -95,6 +127,116 @@ export default class DataTable extends React.Component<Props, State> {
     }
     return true;
   }
+
+  handleDrag = (record: Alaska$view$Record) => {
+    this.setState({ dragging: record });
+  };
+
+  handleHover = (current: Alaska$view$Record) => {
+    const { records } = this.props;
+    const { dragging } = this.state;
+    if (!dragging || records.length < 2) return;
+    if (dragging === current) return;
+    let list = this.state.list || records;
+    let draggingIndex = list.indexOf(dragging);
+    let hoverIndex = list.indexOf(current);
+    if (draggingIndex < 0 || hoverIndex < 0) return;
+    let newList = records.flatMap((record) => {
+      if (record === dragging) {
+        return [];
+      }
+      if (record === current) {
+        if (draggingIndex > hoverIndex) {
+          return [dragging, current];
+        }
+        return [current, dragging];
+      }
+      return [record];
+    });
+    this.setState({ list: newList });
+  };
+
+  handleDrop = () => {
+    const { dragging, list } = this.state;
+    if (!dragging || !list) return;
+    this.setState({ dragging: null, list: null });
+    const { model, records } = this.props;
+    let oldIndex = records.indexOf(dragging);
+    let newIndex = list.indexOf(dragging);
+    if (oldIndex === newIndex) return;
+    let asc = true;
+    let sortField = model.defaultSort.split(' ')[0];
+    if (sortField[0] === '-') {
+      asc = false;
+      sortField = sortField.substr(1);
+    }
+
+    function toFixed(value) {
+      return parseFloat(value.toFixed(8));
+    }
+
+    function getSmallerSortValue(v: number = 0, current: number = 0) {
+      v = Math.min(v, current);
+      if (v > 2) {
+        return toFixed(v / 2);
+      }
+      return v - 100000000;
+    }
+
+    function getBiggerSortValue(v: number = 0, current: number = 0) {
+      v = Math.max(v, current);
+      return v + 100000000;
+    }
+
+    let sort = dragging[sortField] || 0;
+
+    if (newIndex === records.length - 1) {
+      // 被拖到了最后
+      let last = records[newIndex];
+      let sortValue = last[sortField];
+      if (asc) {
+        sort = getBiggerSortValue(sortValue, sort);
+      } else {
+        sort = getSmallerSortValue(sortValue, sort);
+      }
+    } else if (newIndex === 0) {
+      let sortValue = records[0][sortField];
+      // 被拖到了第一位
+      if (asc) {
+        sort = getSmallerSortValue(sortValue, sort);
+      } else {
+        sort = getBiggerSortValue(sortValue, sort);
+      }
+    } else {
+      // 在中间
+      let before = list[newIndex - 1][sortField] || 0;
+      let after = list[newIndex + 1][sortField] || 0;
+      if (before === after) {
+        sort = before;
+      } else {
+        sort = toFixed((after - before) / 2) + before;
+        let intSort = parseInt(sort);
+        if (
+          (before < after && before < intSort && intSort < after)
+          || (before > intSort && intSort > after)
+        ) {
+          sort = intSort;
+        }
+      }
+    }
+
+    let data = {};
+    data.id = dragging._id;
+    data[sortField] = sort;
+
+    store.dispatch(saveRedux.save({
+      service: model.serviceId,
+      model: model.modelName,
+      key: model.key,
+      _: Math.random(),
+      sort: model.defaultSort
+    }, data));
+  };
 
   handleSelectAll = () => {
     const { onSelect, records } = this.props;
@@ -132,12 +274,24 @@ export default class DataTable extends React.Component<Props, State> {
       model, records, activated, selected, sort, onSort, onSelect, onRemove, onActive
     } = this.props;
     const { t } = this.context;
-    const { columnList, selectedIdMap } = this.state;
+    const {
+      columnList, selectedIdMap, dragging, canDrag
+    } = this.state;
     if (!model || !columnList) {
       return <div className="loading">Loading...</div>;
     }
 
+    let list = this.state.list || records;
+
     let className = 'data-table table table-hover ' + model.serviceId + '-' + model.id + '-record';
+    if (canDrag && dragging) {
+      className += ' dragging';
+    }
+
+    let Row = DataTableRow;
+    if (canDrag) {
+      Row = DataTableRowDragable;
+    }
 
     let selectEl = onSelect ?
       <Node
@@ -188,18 +342,24 @@ export default class DataTable extends React.Component<Props, State> {
           </Node>
         </thead>
         <tbody>
-          {_.map(records, (record: Alaska$view$Record, index: number) => (<DataTableRow
-            key={record._id || index}
-            record={record}
-            active={activated === record}
-            selected={selectedIdMap[record._id] || false}
-            columnList={columnList}
-            model={model}
-            onEdit={this.handleEdit}
-            onSelect={onSelect ? this.handleSelect : null}
-            onActive={onActive ? () => onActive(record) : undefined}
-            onRemove={onRemove}
-          />))}
+          {
+            // $Flow react-dnd 中 connectDragSource等参数可选
+            _.map(list, (record: Alaska$view$Record, index: number) => (<Row
+              key={record._id || index}
+              record={record}
+              active={activated === record}
+              selected={selectedIdMap[record._id] || false}
+              columnList={columnList}
+              model={model}
+              onEdit={this.handleEdit}
+              onSelect={onSelect ? this.handleSelect : null}
+              onActive={onActive ? () => onActive(record) : undefined}
+              onRemove={onRemove}
+              onDrag={this.handleDrag}
+              onHover={this.handleHover}
+              onDrop={this.handleDrop}
+            />))
+          }
         </tbody>
       </Node>
     );

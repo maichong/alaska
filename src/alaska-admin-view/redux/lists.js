@@ -9,7 +9,7 @@ export const LOAD_LIST_FAILURE = 'LOAD_LIST_FAILURE';
 
 /**
  * 清空列表 action
- * @params {string} key 要清空的列表key，空代表清空全部
+ * @params {string} [key] 要清空的列表key，空代表清空全部
  */
 export const clearList = createAction(CLEAR_LIST, (key) => ({ key }));
 
@@ -62,6 +62,70 @@ export default handleActions({
   LOAD_LIST_FAILURE: (state, { payload }) => {
     let list = state[payload.key] || immutable({});
     return state.set(payload.key, list.set('error', payload.error.message));
+  },
+  SAVE: (state, { payload }) => {
+    let { key, data, sort } = payload;
+    let asc = true;
+    if (sort) {
+      sort = sort.split(' ')[0];
+      if (sort[0] === '-') {
+        asc = false;
+        sort = sort.substr(1);
+      }
+    }
+
+    function forEach(raw) {
+      if (!raw.id) return; // 是新建记录，不用更新
+      let list = state[key];
+      if (!list) return;
+      let results = _.map(list.results, (record) => {
+        if (record._id === raw.id) {
+          return record.merge(_.omit(raw, 'id'));
+        }
+        return record;
+      });
+      if (sort) {
+        results = _.sortBy(results, [sort]);
+        if (!asc) {
+          _.reverse(results);
+        }
+      }
+      list = list.set('results', results);
+      state = state.set(key, list);
+    }
+
+    if (_.isArray(data)) {
+      _.forEach(data, forEach);
+    } else {
+      forEach(data);
+    }
+    return state;
+  },
+  APPLY_DETAILS: (state, { payload }) => {
+    let { key, data } = payload;
+
+    function forEach(raw) {
+      let list = state[key];
+      if (!list) return;
+      let found = false;
+      let results = _.map(list.results, (record) => {
+        if (record._id === raw._id) {
+          found = true;
+          return record.merge(raw);
+        }
+        return record;
+      });
+      if (!found) return;
+      list = list.set('results', results);
+      state = state.set(key, list);
+    }
+
+    if (_.isArray(data)) {
+      _.forEach(data, forEach);
+    } else {
+      forEach(data);
+    }
+    return state;
   },
   LOGOUT: () => INITIAL_STATE
 }, INITIAL_STATE);

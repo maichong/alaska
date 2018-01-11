@@ -19,9 +19,13 @@ export default function* saveSaga({ payload }) {
       let list = res.map((data) => ({ key: payload.key, data }));
       yield put(batchApplyDetails(list));
     } else {
+      // 只保存了一条记录
       yield put(applyDetails(payload.key, res));
+      if (!payload.data.id) {
+        // 新建，需要清空列表
+        yield put(clearList(payload.key));
+      }
     }
-    yield put(clearList(payload.key));
   } catch (e) {
     yield put(saveFailure(payload, e));
   }

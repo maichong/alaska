@@ -310,7 +310,7 @@ class EditorPage extends React.Component<Props, State> {
           from={id}
           path={r.path}
           service={r.service}
-          model={model}
+          model={r.model}
           filters={r.filters}
           title={r.title}
         />)

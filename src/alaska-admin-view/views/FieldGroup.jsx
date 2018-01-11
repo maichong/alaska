@@ -98,21 +98,30 @@ export default class FieldGroup extends React.Component<Props> {
     const {
       path, title, panel, form, wrapper, style, loading, model, record, isNew
     } = props;
-    if (props.ability && !settings.abilities[props.ability]) return 'ability'; // ability
-    if (checkDepends(props.hidden, record)) return 'hidden'; // hidden
-    if (props.depends && !checkDepends(props.depends, record)) return 'depends'; // depends
-    if (!settings.superMode && checkDepends(props.super, record)) return 'super'; // super
+    if (props.ability && !settings.abilities[props.ability]) return ''; // ability
+    if (checkDepends(props.hidden, record)) return ''; // hidden
+    if (props.depends && !checkDepends(props.depends, record)) return ''; // depends
+    if (!settings.superMode && checkDepends(props.super, record)) return ''; // super
 
-    let disabled = loading;
-    if (!disabled) {
-      disabled = checkDepends(props.disabled, record);
-      if (!disabled) {
-        let canSave = (isNew && model.abilities.create) || (!isNew && model.abilities.update && !model.noupdate);
-        disabled = !canSave;
+    function isDisabled(): boolean {
+      if (loading) return true;
+      let ability = '';
+      if (isNew) {
+        if (model.nocreate) return true;
+        ability = 'create';
+      } else {
+        if (model.noupdate) return true;
+        ability = 'update';
       }
+      let actionAbility = _.get(model, `actions.${ability}.ability`);
+      if (actionAbility) {
+        if (!settings.abilities[actionAbility]) return true;
+      } else if (!model.abilities[ability]) return true;
+      if (checkDepends(props.disabled, record)) return true;
+      return false;
     }
 
-    let el = this.renderFields(disabled);
+    let el = this.renderFields(isDisabled());
     if (!el) return null;
     if (form !== false) {
       el = <div className="field-group-form form-horizontal">

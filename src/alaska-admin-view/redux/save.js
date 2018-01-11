@@ -11,6 +11,7 @@ export const SAVE_FAILURE = 'SAVE_FAILURE';
  * @param {string} options.service
  * @param {string} options.model
  * @param {number} options._r
+ * @param {string} [options.sort] 用于列表排序
  * @param {Object} data
  */
 export const save = createAction(SAVE, (options, data) => Object.assign({ data }, options));
