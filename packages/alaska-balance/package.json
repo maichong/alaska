@@ -1,6 +1,6 @@
 {
   "name": "alaska-balance",
-  "version": "0.12.10",
+  "version": "0.12.3",
   "description": "Alaska balance service",
   "keywords": [
     "alaska",
@@ -12,10 +12,10 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "peerDependencies": {
-    "alaska": "^0.12.9",
-    "alaska-user": "^0.12.9"
+    "alaska": "^0.12.10",
+    "alaska-user": "^0.12.10"
   },
   "dependencies": {
-    "alaska-field-select": "^0.12.9"
+    "alaska-field-select": "^0.12.10"
   }
 }

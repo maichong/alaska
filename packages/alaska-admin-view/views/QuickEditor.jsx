@@ -10,6 +10,7 @@ import Immutable from 'seamless-immutable';
 import type { ImmutableObject, ImmutableArray } from 'seamless-immutable';
 import Node from './Node';
 import Editor from './Editor';
+import * as listsRedux from '../redux/lists';
 import * as saveRedux from '../redux/save';
 
 const MODE_ONE = 0; // 0 编辑单个
@@ -21,7 +22,8 @@ type Props = {
   records: ImmutableArray<Alaska$view$Record>,
   onCancel: Function,
   saveAction: Function,
-  save: Alaska$view$save
+  save: Alaska$view$save,
+  onRefresh: Function
 };
 
 type State = {
@@ -65,7 +67,7 @@ class QuickEditor extends React.Component<Props, State> {
         return;
       }
       toast('success', t('Saved successfully'));
-      props.onCancel();
+      props.onRefresh();
       return;
     }
     if (!records.length && !record) return;
@@ -154,7 +156,6 @@ class QuickEditor extends React.Component<Props, State> {
     let { el } = this;
 
     if ((records.length || record) && data && window.innerWidth > 600) {
-
       let canEdit = this.canEdit();
 
       if (canEdit) {
@@ -220,5 +221,6 @@ class QuickEditor extends React.Component<Props, State> {
 }
 
 export default connect(({ save }) => ({ save }), (dispatch) => bindActionCreators({
-  saveAction: saveRedux.save
+  saveAction: saveRedux.save,
+  refreshList: listsRedux.refreshList
 }, dispatch))(QuickEditor);

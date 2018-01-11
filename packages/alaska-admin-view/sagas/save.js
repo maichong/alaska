@@ -34,9 +34,13 @@ function* saveSaga({ payload }) {
       let list = res.map(data => ({ key: payload.key, data }));
       yield (0, _effects.put)((0, _details.batchApplyDetails)(list));
     } else {
+      // 只保存了一条记录
       yield (0, _effects.put)((0, _details.applyDetails)(payload.key, res));
+      if (!payload.data.id) {
+        // 新建，需要清空列表
+        yield (0, _effects.put)((0, _lists.clearList)(payload.key));
+      }
     }
-    yield (0, _effects.put)((0, _lists.clearList)(payload.key));
   } catch (e) {
     yield (0, _effects.put)((0, _save.saveFailure)(payload, e));
   }

@@ -15,7 +15,7 @@ type Props = {
   filters: Object,
   lists: ImmutableObject<Alaska$view$lists>,
   service: string,
-  model: Alaska$view$Model,
+  model: string,
   path: string,
   from: string,
   title: string,
@@ -23,7 +23,8 @@ type Props = {
 
 type State = {
   records: ImmutableArray<Alaska$view$Record> | null,
-  filters: {}
+  filters: {},
+  model: Alaska$view$Model | null
 };
 
 class Relationship extends React.Component<Props, State> {
@@ -36,7 +37,8 @@ class Relationship extends React.Component<Props, State> {
     super(props);
     this.state = {
       records: null,
-      filters: {}
+      filters: {},
+      model: null
     };
   }
 
@@ -45,12 +47,15 @@ class Relationship extends React.Component<Props, State> {
   }
 
   componentWillReceiveProps(props: Props) {
-    if (props.from !== this.props.from) {
+    let { service, model: modelName, lists } = props;
+    if (props.from !== this.props.from || service !== this.props.service || modelName !== this.props.model) {
       this.setState({ records: null }, () => {
         this.init();
       });
+      return;
     }
-    let { model, lists } = props;
+    let model = this.context.settings.services[service].models[props.model];
+    if (!model) return;
     if (lists[model.key] !== this.props.lists[model.key]) {
       let list = lists[model.key];
       this.setState({ records: list ? list.results : null }, () => {
@@ -69,7 +74,7 @@ class Relationship extends React.Component<Props, State> {
     let model = this.context.settings.services[serviceId].models[modelName];
     if (!model) return;
     let list = this.props.lists[model.key];
-    if (list && model === this.state.model && this.state.records) return;
+    if (list && this.state.records) return;
     // $Flow
     let filters = Object.assign({}, this.props.filters, { [this.props.path]: this.props.from });
     let args = {
@@ -78,7 +83,7 @@ class Relationship extends React.Component<Props, State> {
       key: model.key,
       filters
     };
-    this.setState({ filters }, () => {
+    this.setState({ filters, model }, () => {
       if (!this.state.records) {
         this.props.loadList(args);
       }
@@ -86,10 +91,9 @@ class Relationship extends React.Component<Props, State> {
   }
 
   render() {
-    const { model } = this.props;
-    let { records, filters } = this.state;
-    if (!records) {
-      return <div />;
+    let { records, filters, model } = this.state;
+    if (!model || !records) {
+      return null;
     }
     const { t } = this.context;
     let title = this.props.title ? t(this.props.title, model.serviceId)

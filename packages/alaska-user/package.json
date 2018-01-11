@@ -1,6 +1,6 @@
 {
   "name": "alaska-user",
-  "version": "0.12.10",
+  "version": "0.12.3",
   "description": "Alaska user service",
   "keywords": [
     "alaska",
@@ -12,27 +12,27 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska": "^0.12.9",
-    "alaska-field-datetime": "^0.12.9",
+    "alaska": "^0.12.10",
+    "alaska-field-datetime": "^0.12.10",
     "alaska-field-id": "^0.12.10",
-    "alaska-field-image": "^0.12.9",
+    "alaska-field-image": "^0.12.10",
     "alaska-field-number": "^0.12.3",
     "alaska-field-password": "^0.12.3",
-    "alaska-field-relationship": "^0.12.9",
+    "alaska-field-relationship": "^0.12.10",
     "alaska-field-text": "^0.12.10",
     "alaska-middleware-session": "^0.12.3",
-    "alaska-settings": "^0.12.9"
+    "alaska-settings": "^0.12.10"
   },
   "peerDependencies": {
-    "alaska": "^0.12.9",
-    "alaska-field-datetime": "^0.12.9",
+    "alaska": "^0.12.10",
+    "alaska-field-datetime": "^0.12.10",
     "alaska-field-id": "^0.12.10",
-    "alaska-field-image": "^0.12.9",
+    "alaska-field-image": "^0.12.10",
     "alaska-field-number": "^0.12.3",
     "alaska-field-password": "^0.12.3",
-    "alaska-field-relationship": "^0.12.9",
+    "alaska-field-relationship": "^0.12.10",
     "alaska-field-text": "^0.12.10",
     "alaska-middleware-session": "^0.12.3",
-    "alaska-settings": "^0.12.9"
+    "alaska-settings": "^0.12.10"
   }
 }

@@ -23,6 +23,7 @@ const SAVE_FAILURE = exports.SAVE_FAILURE = 'SAVE_FAILURE';
  * @param {string} options.service
  * @param {string} options.model
  * @param {number} options._r
+ * @param {string} [options.sort] 用于列表排序
  * @param {Object} data
  */
 const save = exports.save = (0, _reduxActions.createAction)(SAVE, (options, data) => Object.assign({ data }, options));

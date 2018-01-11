@@ -378,6 +378,7 @@ class Model {
             }
 
             options.path = path;
+            let orgType = options.type;
 
             let FieldClass = null;
             if (typeof options.type === 'object' && options.type.classOfField) {
@@ -413,7 +414,10 @@ class Model {
             options.label = options.label || path.toUpperCase();
             let field = new FieldClass(options, schema, model);
             model._fields[path] = field;
-            field.initSchema();
+            if (path !== '_id' || orgType !== 'id') {
+              // 默认 _id 不需要执行 initSchema，否则创建数据将失败
+              field.initSchema();
+            }
             if (!field.private) {
               model.defaultScope[path] = true;
             }

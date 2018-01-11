@@ -3,6 +3,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import IntlMessageFormat from 'intl-messageformat';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -279,8 +281,10 @@ class App extends React.Component<Props, State> {
   }
 }
 
-export default connect(({ user, settings, layout }) => ({
+const Connected = connect(({ user, settings, layout }) => ({
   user,
   settings,
   layout
 }), (dispatch) => bindActionCreators({ applyLayout: layoutRedux.applyLayout }, dispatch))(App);
+
+export default DragDropContext(HTML5Backend)(Connected);

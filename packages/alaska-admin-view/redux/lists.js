@@ -24,7 +24,7 @@ const LOAD_LIST_FAILURE = exports.LOAD_LIST_FAILURE = 'LOAD_LIST_FAILURE';
 
 /**
  * 清空列表 action
- * @params {string} key 要清空的列表key，空代表清空全部
+ * @params {string} [key] 要清空的列表key，空代表清空全部
  */
 const clearList = exports.clearList = (0, _reduxActions.createAction)(CLEAR_LIST, key => ({ key }));
 
@@ -77,6 +77,70 @@ exports.default = (0, _reduxActions.handleActions)({
   LOAD_LIST_FAILURE: (state, { payload }) => {
     let list = state[payload.key] || (0, _seamlessImmutable2.default)({});
     return state.set(payload.key, list.set('error', payload.error.message));
+  },
+  SAVE: (state, { payload }) => {
+    let { key, data, sort } = payload;
+    let asc = true;
+    if (sort) {
+      sort = sort.split(' ')[0];
+      if (sort[0] === '-') {
+        asc = false;
+        sort = sort.substr(1);
+      }
+    }
+
+    function forEach(raw) {
+      if (!raw.id) return; // 是新建记录，不用更新
+      let list = state[key];
+      if (!list) return;
+      let results = _lodash2.default.map(list.results, record => {
+        if (record._id === raw.id) {
+          return record.merge(_lodash2.default.omit(raw, 'id'));
+        }
+        return record;
+      });
+      if (sort) {
+        results = _lodash2.default.sortBy(results, [sort]);
+        if (!asc) {
+          _lodash2.default.reverse(results);
+        }
+      }
+      list = list.set('results', results);
+      state = state.set(key, list);
+    }
+
+    if (_lodash2.default.isArray(data)) {
+      _lodash2.default.forEach(data, forEach);
+    } else {
+      forEach(data);
+    }
+    return state;
+  },
+  APPLY_DETAILS: (state, { payload }) => {
+    let { key, data } = payload;
+
+    function forEach(raw) {
+      let list = state[key];
+      if (!list) return;
+      let found = false;
+      let results = _lodash2.default.map(list.results, record => {
+        if (record._id === raw._id) {
+          found = true;
+          return record.merge(raw);
+        }
+        return record;
+      });
+      if (!found) return;
+      list = list.set('results', results);
+      state = state.set(key, list);
+    }
+
+    if (_lodash2.default.isArray(data)) {
+      _lodash2.default.forEach(data, forEach);
+    } else {
+      forEach(data);
+    }
+    return state;
   },
   LOGOUT: () => INITIAL_STATE
 }, INITIAL_STATE);

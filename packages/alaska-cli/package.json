@@ -1,6 +1,6 @@
 {
   "name": "alaska-cli",
-  "version": "0.12.10",
+  "version": "0.12.3",
   "description": "Alaska command line interface",
   "keywords": [
     "alaska"
@@ -26,7 +26,7 @@
     "babel-register": "^6.26.0",
     "chalk": "^2.3.0",
     "co": "^4.6.0",
-    "commander": "^2.12.2",
+    "commander": "^2.13.0",
     "download-github-repo": "^0.1.4",
     "escodegen": "^1.9.0",
     "esprima": "^4.0.0",
