@@ -61,5 +61,12 @@ export default {
   Submit: '提交',
   'Select...': '请选择...',
   Unknown: '未知',
-  'Expired At': '到期时间'
+  'Expired At': '到期时间',
+  QUICK_EDIT: '编辑 ( {item} )',
+  QUICK_EDIT_MULTI: '同时编辑 ( {item} ) 等 {count} 条记录，非留空字段将应用到多条记录',
+  'Quick edit record': '快速编辑记录',
+  'Quick edit multi records': '快速编辑多条记录',
+  'Quick Viewer': '快速查看',
+  SAVE_MULTI_RECORDS: '保存 {count} 条记录',
+  'Save Record': '保存记录'
 };

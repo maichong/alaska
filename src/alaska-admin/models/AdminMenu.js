@@ -8,7 +8,7 @@ export default class AdminMenu extends Model {
   static titleField = 'label';
   static defaultColumns = 'icon label type parent sort service link ability super activated';
   static defaultSort = '-sort';
-  static searchFields = 'label link parent';
+  static searchFields = '_id label link parent';
 
   static defaultFilters = (ctx: Alaska$Context) => (ctx.state.superMode ? {} : { super: { $ne: true } });
 

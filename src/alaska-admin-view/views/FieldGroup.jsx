@@ -5,13 +5,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import checkDepends from 'check-depends';
 import type { DependsQueryExpression } from 'check-depends';
+import type { ImmutableObject } from 'seamless-immutable';
 import Node from './Node';
 
 type Props = {
   path: string,
   loading: boolean,
   model: Alaska$view$Model,
-  record: Alaska$view$Record,
+  record: ImmutableObject<Alaska$view$Record>,
   isNew: boolean,
   id: string,
   fields: Alaska$view$Field[],
@@ -47,11 +48,12 @@ export default class FieldGroup extends React.Component<Props> {
     let fields = [];
     const { props } = this;
     const {
-      record, errors, model, onFieldChange
+      record, errors, model, onFieldChange, isNew
     } = props;
     const { serviceId } = model;
     _.forEach(props.fields, (field) => {
       if (!field.view) return;
+      if (field.path === '_id' && !isNew) return;
       if (field.ability && !settings.abilities[field.ability]) return;
       if (checkDepends(field.hidden, record)) return;
       if (field.depends && !checkDepends(field.depends, record)) return;
@@ -84,6 +86,7 @@ export default class FieldGroup extends React.Component<Props> {
         className: 'form-group ' + model.id + '-' + field.path + '-view'
       }));
     });
+    if (!fields.length) return null;
     return (
       <Node wrapper="groupFieldList">{fields}</Node>
     );
@@ -110,6 +113,7 @@ export default class FieldGroup extends React.Component<Props> {
     }
 
     let el = this.renderFields(disabled);
+    if (!el) return null;
     if (form !== false) {
       el = <div className="field-group-form form-horizontal">
         {el}

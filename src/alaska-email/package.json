@@ -15,5 +15,10 @@
     "alaska-field-filter": "^0.12.3",
     "alaska-field-html": "^0.12.3",
     "alaska-field-mixed": "^0.12.3"
+  },
+  "peerDependencies": {
+    "alaska-field-filter": "^0.12.3",
+    "alaska-field-html": "^0.12.3",
+    "alaska-field-mixed": "^0.12.3"
   }
 }

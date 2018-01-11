@@ -12,5 +12,8 @@
   "main": "index.js",
   "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-payment-alipay",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
-  "license": "MIT"
+  "license": "MIT",
+  "peerDependencies": {
+    "alaska-payment": "^0.12.9"
+  }
 }

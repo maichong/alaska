@@ -119,14 +119,14 @@ class SettingsEditor extends React.Component<Props, State> {
     } else {
       content = [];
       _.forEach(groups, (group, index) => {
-        let items = _.map(group.items, (item, itemIndex) => {
+        let items = _.map(group.items, (item) => {
           let FieldView = views[item.type] || views.MixedFieldView;
           let value = values[item._id];
           if (value === undefined) {
             value = item.value;
           }
           return (<FieldView
-            key={itemIndex}
+            key={item._id}
             field={fields[item._id]}
             value={value}
             onChange={(v) => this.handleChange(item._id, v)}
@@ -146,7 +146,7 @@ class SettingsEditor extends React.Component<Props, State> {
         <div className="form-horizontal">
           {content}
         </div>
-        <nav className="navbar navbar-fixed-bottom bottom-bar">
+        <nav className="navbar navbar-fixed-bottom bottom-toolbar">
           <div className="container-fluid">
             <div className="navbar-form navbar-right">
               <button

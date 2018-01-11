@@ -1,15 +1,11 @@
-/**
- * @copyright Maichong Software Ltd. 2018 http://maichong.it
- * @date 2018-01-04
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 import Node from './Node';
 
 type Props = {
   children: React$Node,
-  actions?: React$Node[]
+  actions?: React$Node
 };
 
 export default class TopToolbar extends React.Component<Props> {

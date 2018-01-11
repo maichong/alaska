@@ -35,14 +35,16 @@ function getFiles(dir: string, withExt?: boolean) {
 /**
  * 读取Service信息
  * @param {string} serviceDir Service目录
+ * @param {string[]} enableLocales
  * @param {boolean} isMain 是主Service
  * @returns {{api, controllers, routes, models, sleds, updates}}
  */
-function readService(serviceDir: string, isMain?: boolean): Object {
+function readService(serviceDir: string, enableLocales: string[], isMain?: boolean): Object {
   let locales = {};
   let localesDir = Path.join(serviceDir, 'locales');
   if (isDirectory(localesDir)) {
     fs.readdirSync(localesDir).forEach((locale) => {
+      if (enableLocales.indexOf(locale) < 0) return;
       let file = Path.join(localesDir, locale, 'messages.js');
       if (isFile(file)) {
         locales[locale] = file;
@@ -77,8 +79,9 @@ function readService(serviceDir: string, isMain?: boolean): Object {
 /**
  * 读取插件详细信息
  * @param {string} pluginDir
+ * @param {string[]} enableLocales
  */
-function readPlugin(pluginDir: string) {
+function readPlugin(pluginDir: string, enableLocales: string[]) {
   if (pluginDir.endsWith('.js') && isFile(pluginDir)) {
     return {
       dir: pluginDir,
@@ -90,6 +93,7 @@ function readPlugin(pluginDir: string) {
   let localesDir = Path.join(pluginDir, 'locales');
   if (isDirectory(localesDir)) {
     fs.readdirSync(localesDir).forEach((locale) => {
+      if (enableLocales.indexOf(locale) < 0) return;
       let file = Path.join(localesDir, locale, 'messages.js');
       if (isFile(file)) {
         locales[locale] = file;
@@ -169,8 +173,14 @@ export default function createMetadata(id: string, dir: string, mainConfigFile: 
     main: true,
     dir,
     config: mainConfigFilePath,
-    ...readService(dir, true)
+    ...readService(dir, metadata.locales, true)
   };
+
+  metadata.locales = mainConfig.locales || defaultConfig.locales || ['en', 'zh-CN'];
+  let defaultLocale = mainConfig.defaultLocale || defaultConfig.defaultLocale;
+  if (defaultLocale && metadata.locales.indexOf(defaultLocale) < 0) {
+    metadata.locales.push(defaultLocale);
+  }
 
   // 递归遍历Service
   function readServices(services) {
@@ -187,7 +197,7 @@ export default function createMetadata(id: string, dir: string, mainConfigFile: 
         id: serviceId,
         dir: serviceDir,
         config: '',
-        ...readService(serviceDir)
+        ...readService(serviceDir, metadata.locales)
       };
       metadata.services[serviceId] = cfg;
 
@@ -278,15 +288,9 @@ export default function createMetadata(id: string, dir: string, mainConfigFile: 
       if (isDirectory(templatesDir)) {
         service.templatesDirs.push(templatesDir);
       }
-      return readPlugin(pluginDir);
+      return readPlugin(pluginDir, metadata.locales);
     });
   });
-
-  metadata.locales = configs[id].locales || defaultConfig.locales || [];
-  let defaultLocale = configs[id].defaultLocale || defaultConfig.defaultLocale;
-  if (metadata.locales.indexOf(defaultLocale) < 0) {
-    metadata.locales.push(defaultLocale);
-  }
 
   // 读取app中间件
   _.forEach(configs, (cfg) => {

@@ -1,8 +1,4 @@
-/**
- * @copyright Maichong Software Ltd. 2017 http://maichong.it
- * @date 2017-08-29
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -15,10 +11,11 @@ type Props = {
 
 export default class TooltipWrapper extends React.Component<Props> {
   static defaultProps = { placement: 'top' };
+  id: string;
 
   constructor(props: Props) {
     super(props);
-    this.id = Math.random();
+    this.id = Math.random().toString();
   }
 
   render() {

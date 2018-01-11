@@ -157,6 +157,7 @@ export default class Field {
       ability: field.ability,
       super: field.super,
       hidden: field.hidden,
+      depends: field.depends,
       disabled: field.disabled,
       group: field.group,
       fixed: field.fixed,

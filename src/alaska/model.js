@@ -319,7 +319,8 @@ export default class Model {
         defaultColumns: '',
         label: modelName,
         actions: {},
-        groups: {}
+        groups: {},
+        schemaOptions: {}
       });
 
       //自动查询仅仅需要的字段
@@ -336,6 +337,8 @@ export default class Model {
       }
 
       const schema = new Schema({}, {
+        usePushEach: true,
+        ...model.schemaOptions,
         collection: model.collection || ((service.getConfig('dbPrefix') || '') + model.id.replace(/-/g, '_'))
       });
 
@@ -349,9 +352,19 @@ export default class Model {
           throw new Error(modelName + ' model has no fields.');
         }
 
+        let keys = Object.keys(model.fields);
+
+        if (!model.fields._id) {
+          keys.unshift('_id');
+          model.fields._id = {
+            type: 'id',
+            view: ''
+          };
+        }
+
         model.defaultScope = {};
         //将Model字段注册到Mongoose.Schema中
-        Object.keys(model.fields).forEach((path) => {
+        keys.forEach((path) => {
           try {
             let options: Alaska$Field$options = _.clone(model.fields[path]);
 

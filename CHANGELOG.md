@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.12.10]
+
+### Added
+
+- 管理平台支持快速编辑
+- 管理平台支持批量编辑
+
+### Fixed
+
+- 加载多语言BUG
+- 模型字段 _id 非显示声明，Model.createFilters 无效BUG
+- SettingsEditor 上传图片BUG
+
 ## [0.12.9]
 
 ### Added

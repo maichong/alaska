@@ -12,7 +12,7 @@ import { bindActionCreators } from 'redux';
 import * as detailsRedux from '../redux/details';
 import * as saveRedux from '../redux/save';
 import Node from './Node';
-import FieldGroup from './FieldGroup';
+import Editor from './Editor';
 import Relationship from './Relationship';
 import TopToolbar from './TopToolbar';
 import EditorActions from './EditorActions';
@@ -126,7 +126,7 @@ class EditorPage extends React.Component<Props, State> {
         //保存失败
         // $Flow save.error一定存在
         toast('error', t('Save failed'), save.error.message);
-      } else {
+      } else if (save.res) {
         toast('success', t('Saved successfully'));
         const { state } = this;
         if (state.id === '_new') {
@@ -169,7 +169,7 @@ class EditorPage extends React.Component<Props, State> {
     }
   }
 
-  refresh() {
+  refresh = () => {
     const {
       id, serviceId, modelName, model
     } = this.state;
@@ -179,10 +179,6 @@ class EditorPage extends React.Component<Props, State> {
       key: model.key,
       id
     });
-  }
-
-  handleFieldChange = (key: any, value: any) => {
-    this.setState({ record: this.state.record.set(key, value) });
   };
 
   handleRemove = async() => {
@@ -292,6 +288,7 @@ class EditorPage extends React.Component<Props, State> {
             record={record}
             id={id}
             isNew={isNew}
+            refresh={this.refresh}
             refreshSettings={this.props.refreshSettings}
             onSave={this.handleSave}
             onRemove={this.handleRemove}
@@ -322,93 +319,13 @@ class EditorPage extends React.Component<Props, State> {
     return relationships;
   }
 
-  renderGroups() {
-    const {
-      model, record, id, isNew, errors
-    } = this.state;
-    let map = _.reduce(model.fields, (res: Object, f: Alaska$Field$options, path: string) => {
-      res[path] = {
-        path,
-        after: f.after,
-        afters: []
-      };
-      return res;
-    }, {});
-
-    let fieldPathsList = [];
-
-    _.forEach(map, (f) => {
-      if (f.after && map[f.after]) {
-        map[f.after].afters.push(f);
-      } else {
-        fieldPathsList.push(f);
-      }
-    });
-
-    let paths = [];
-
-    function flat(f) {
-      paths.push(f.path);
-      f.afters.forEach(flat);
-    }
-
-    _.forEach(fieldPathsList, flat);
-
-    let groups = {
-      default: {
-        title: '',
-        fields: []
-      }
-    };
-
-    for (let groupKey of Object.keys(model.groups)) {
-      let group = _.clone(model.groups[groupKey]);
-      group.fields = [];
-      groups[groupKey] = group;
-    }
-
-    for (let path of paths) {
-      let field = model.fields[path];
-      let group = groups.default;
-      if (field.group && groups[field.group]) {
-        group = groups[field.group];
-      }
-      group.fields.push(field);
-    }
-
-    const groupElements = [];
-    for (let groupKey of Object.keys(groups)) {
-      let group = groups[groupKey];
-      if (!group.fields.length) {
-        continue;
-      }
-      const { fields, ...others } = group;
-      groupElements.push((
-        <FieldGroup
-          key={groupKey}
-          path={groupKey}
-          model={model}
-          fields={fields}
-          id={id}
-          isNew={isNew}
-          record={record}
-          errors={errors}
-          loading={this.loading}
-          onFieldChange={this.handleFieldChange}
-          {...others}
-        />
-      ));
-    }
-    return groupElements;
-  }
-
   render() {
     let {
-      isNew,
       id,
       model,
       record,
-      serviceId
+      serviceId,
+      errors
     } = this.state;
     if (!record) {
       return <div className="loading">Loading...</div>;
@@ -417,10 +334,15 @@ class EditorPage extends React.Component<Props, State> {
       return <div className="editor-error">{record._error}</div>;
     }
     return (
-      <Node id="editor" props={this.props} state={this.state} className={serviceId + '-' + model.id}>
+      <Node id="editorPage" props={this.props} state={this.state} className={serviceId + '-' + model.id}>
         {this.renderToolbar()}
-        {isNew ? null : <div className="top-toolbar-id visible-xs-block">ID : {id}</div>}
-        {this.renderGroups()}
+        <Editor
+          model={model}
+          id={id}
+          record={record}
+          errors={errors}
+          onChange={(r) => this.setState({ record: r })}
+        />
         {this.renderRelationships()}
         {this.renderBottomBar()}
       </Node>

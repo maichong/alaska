@@ -13,6 +13,9 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-balance": "^0.12.8"
+    "alaska-balance": "^0.12.9"
+  },
+  "peerDependencies": {
+    "alaska-balance": "^0.12.9"
   }
 }

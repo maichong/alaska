@@ -8,15 +8,20 @@ import { DropdownButton, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
 import akita from 'akita';
 import qs from 'qs';
+import Immutable from 'seamless-immutable';
+import type { ImmutableObject, ImmutableArray } from 'seamless-immutable';
 import Node from './Node';
 import DataTable from './DataTable';
 import SearchField from './SearchField';
 import TopToolbar from './TopToolbar';
 import ListActions from './ListActions';
+import QuickEditor from './QuickEditor';
 import * as listRedux from '../redux/lists';
 import { refreshSettings } from '../redux/settings';
 
 const CHECK_ICON = <i className="fa fa-check" />;
+// $Flow
+const EMPTY_RECORD_LIST: ImmutableArray<Alaska$view$Record> = Immutable([]);
 
 type Props = {
   location: Object,
@@ -34,25 +39,24 @@ type ElementMap = { [key: string]: React$Element<any> };
 type State = {
   service: Alaska$view$Service | null,
   model: Alaska$view$Model | null,
-  records: null | Alaska$view$Record[],
+  records: null | ImmutableArray<Alaska$view$Record>,
   search: string,
   filters: Object,
   page: number,
   list: Alaska$view$RecordList,
   sort: string,
-  columnsItems: Array<React$Element<any>>,
+  columnsItems: React$Element<any>[],
   columnsKeys: string[],
-  filterItems: Array<React$Element<any>>,
-  filterViews: Array<React$Element<any>>,
+  filterItems: React$Element<any>[],
+  filterViews: React$Element<any>[],
   filterViewsMap: ElementMap,
-  selected: Alaska$view$Record[],
-  activated?: Alaska$view$Record,
+  selected: ImmutableArray<Alaska$view$Record>,
+  activated?: ImmutableObject<Alaska$view$Record>,
   query: {}
 };
 
 class ListPage extends React.Component<Props, State> {
   static contextTypes = {
-    actions: PropTypes.object,
     views: PropTypes.object,
     settings: PropTypes.object,
     t: PropTypes.func,
@@ -62,6 +66,7 @@ class ListPage extends React.Component<Props, State> {
   };
 
   _loading: boolean;
+  _ref: ?HTMLElement;
 
   constructor(props: Props) {
     super(props);
@@ -80,7 +85,7 @@ class ListPage extends React.Component<Props, State> {
       filterItems: [],
       filterViews: [],
       filterViewsMap: {},
-      selected: [],
+      selected: EMPTY_RECORD_LIST,
       model: null,
       service: null,
       query
@@ -88,7 +93,6 @@ class ListPage extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll, false);
     this.init(this.props);
   }
 
@@ -110,6 +114,8 @@ class ListPage extends React.Component<Props, State> {
         // $Flow
         newState.list = {};
         newState.records = null;
+        newState.activated = undefined;
+        newState.selected = EMPTY_RECORD_LIST;
       }
       this.setState(newState, () => {
         if (!newState.records) {
@@ -118,10 +124,6 @@ class ListPage extends React.Component<Props, State> {
       });
       this._loading = false;
     }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll, false);
   }
 
   init(props) {
@@ -134,51 +136,46 @@ class ListPage extends React.Component<Props, State> {
     let model = service.models[modelName];
     if (!model) return;
     let {
-      records, sort, search, filters, filterViews, filterViewsMap, columnsKeys
+      sort, filters, filterViewsMap, columnsKeys
     } = this.state;
+
+    let newState = {};
+    newState.service = service;
+    newState.model = model;
+    newState.filterViewsMap = filterViewsMap;
     if (this.state.model && this.state.model.modelName !== model.modelName) {
       //更新了model
-      records = null;
-      filters = {};
-      filterViews = [];
-      filterViewsMap = {};
-      columnsKeys = _.clone(model.defaultColumns);
-      sort = '';
-      search = '';
+      newState.records = null;
+      newState.filters = {};
+      newState.filterViews = [];
+      newState.filterViewsMap = {};
+      newState.columnsKeys = _.clone(model.defaultColumns);
+      newState.sort = '';
+      newState.search = '';
+      newState.activated = undefined;
+      newState.selected = EMPTY_RECORD_LIST;
     }
 
     if (!this.state.model && !columnsKeys.length) {
-      columnsKeys = _.clone(model.defaultColumns);
+      newState.columnsKeys = _.clone(model.defaultColumns);
     }
 
     //filters
-    let filterItems = this.getFilterItems(model, filterViewsMap);
+    newState.filterItems = this.getFilterItems(model, newState.filterViewsMap);
 
     //columns
-    let columnsItems = this.getColumnItems(model, columnsKeys);
+    newState.columnsItems = this.getColumnItems(model, columnsKeys);
 
     if (!sort) {
-      sort = model.defaultSort.split(' ')[0];
+      newState.sort = model.defaultSort.split(' ')[0];
     }
-    this.setState({
-      service,
-      model,
-      records: records || [],
-      search,
-      sort,
-      filterItems,
-      filters,
-      filterViews,
-      filterViewsMap,
-      columnsItems,
-      columnsKeys
-    }, () => {
+    this.setState(newState, () => {
       _.forEach(filters, (value, path) => {
-        if (!filterViewsMap[path]) {
+        if (!newState.filterViewsMap[path]) {
           this.handleFilter(path);
         }
       });
-      if (!records) {
+      if (!this.state.records) {
         this.refresh();
       }
     });
@@ -217,7 +214,8 @@ class ListPage extends React.Component<Props, State> {
   }
 
   refresh = () => {
-    this.setState({ page: 0 }, () => this.loadMore());
+    // $Flow
+    this.setState({ page: 0, selected: EMPTY_RECORD_LIST, activated: undefined }, () => this.loadMore());
   };
 
   loadMore() {
@@ -289,33 +287,43 @@ class ListPage extends React.Component<Props, State> {
     }
     if (!model) return;
     let field = model.fields[eventKey];
-    if (!field) return;
 
-    const { views } = this.context;
-    let FilterView = views[field.filter];
-    let view;
-    const onChange = (filter) => {
-      let cFilters = _.assign({}, this.state.filters, { [field.path]: filter });
-      this.setState({ filters: cFilters, records: null, page: 0 }, () => {
-        this.loadMore();
+    if (field && field.filter) {
+      const { views } = this.context;
+      let FilterView = views[field.filter];
+      let view;
+      const onChange = (filter) => {
+        let cFilters = _.assign({}, this.state.filters, { [field.path]: filter });
+        this.setState({ filters: cFilters, records: null, page: 0 }, () => {
+          this.loadMore();
+          this.updateQuery();
+        });
+      };
+      const onClose = () => {
+        this.removeFilter(field.path);
+      };
+      let className = model.id + '-' + field.path + '-filter row field-filter';
+      view = <FilterView
+        key={eventKey}
+        className={className}
+        field={field}
+        onChange={onChange}
+        onClose={onClose}
+        value={filters[eventKey]}
+      />;
+      filterViewsMap[eventKey] = view;
+      filterViews.push(view);
+
+      this.setState({
+        filterViews, filterViewsMap, filterItems: this.getFilterItems(model, filterViewsMap)
+      });
+    } else {
+      delete filterViewsMap[eventKey];
+      delete filters[eventKey];
+      this.setState({ filters, records: null, page: 0 }, () => {
         this.updateQuery();
       });
-    };
-    const onClose = () => {
-      this.removeFilter(field.path);
-    };
-    let className = model.id + '-' + field.path + '-filter row field-filter';
-    view = <FilterView
-      key={eventKey}
-      className={className}
-      field={field}
-      onChange={onChange}
-      onClose={onClose}
-      value={filters[eventKey]}
-    />;
-    filterViewsMap[eventKey] = view;
-    filterViews.push(view);
-    this.setState({ filterViews, filterViewsMap, filterItems: this.getFilterItems(model, filterViewsMap) });
+    }
   };
 
   handleSort = (sort) => {
@@ -326,16 +334,16 @@ class ListPage extends React.Component<Props, State> {
   };
 
   handleSearch = (search) => {
-    this.setState({ search, records: [] }, () => {
+    this.setState({ search, records: EMPTY_RECORD_LIST }, () => {
       this.refresh();
       this.updateQuery();
     });
   };
 
   handleScroll = () => {
-    // $Flow
-    if (window.scrollY + window.innerHeight >= document.body.scrollHeight) {
-      if (!this.state.list.next || this._loading) return;
+    const ref = this._ref;
+    if (!ref || this._loading || !this.state.list.next) return;
+    if ((ref.scrollHeight - (ref.offsetHeight + ref.scrollTop)) < 50) {
       this.loadMore();
     }
   };
@@ -356,7 +364,15 @@ class ListPage extends React.Component<Props, State> {
   };
 
   handleSelect = (selected) => {
-    this.setState({ selected });
+    let newState = { selected };
+    if (this.state.activated && !selected.length) {
+      // $Flow
+      newState.activated = undefined;
+    } else if (selected.length && !this.state.activated) {
+      // $Flow
+      newState.activated = selected[0];
+    }
+    this.setState(newState);
   };
 
   handleRemove = async(record: Alaska$view$Record) => {
@@ -379,26 +395,23 @@ class ListPage extends React.Component<Props, State> {
     }
   };
 
-  render() {
-    const {
-      search,
-      service,
-      model,
-      records,
-      list,
-      sort,
-      filterItems,
-      filterViews,
-      columnsItems,
-      columnsKeys,
-      selected,
-      query,
-      activated
-    } = this.state;
-    if (!service || !model) {
-      return <div className="loading">Loading...</div>;
+  handleActive = (record) => {
+    let { selected } = this.state;
+    let newState = { activated: record };
+    if (!selected.length || (selected.length === 1 && selected[0] !== record)) {
+      // $Flow
+      newState.selected = Immutable([record]);
     }
+    this.setState(newState);
+  };
+
+  renderToolbar() {
     const { t } = this.context;
+    const {
+      model, service, search, list, query, filterItems, columnsItems
+    } = this.state;
+    if (!model || !service) return null;
+
     let titleBtns = [];
 
     if (!query.nofilter && filterItems.length) {
@@ -429,65 +442,113 @@ class ListPage extends React.Component<Props, State> {
       ><i className="fa fa-refresh" />
       </button>);
     }
+    return (
+      <TopToolbar actions={titleBtns}>
+        {t(model.label || model.modelName, service.id)}
+        {search ? <i>  &nbsp; ( {t('Search')} : {search} ) </i> : null}
+        &nbsp; <i>{list.total !== undefined ? t('total records', { total: list.total }) : null}</i>
+      </TopToolbar>
+    );
+  }
 
-    let handleSelect;
-    if (!model.noremove || _.find(model.actions, (a) => (a.list && a.list))) {
-      // eslint-disable-next-line prefer-destructuring
-      handleSelect = this.handleSelect;
+  renderBottomBar() {
+    const { t } = this.context;
+    const {
+      model, search, records, selected
+    } = this.state;
+    if (!model) return null;
+    return (
+      <nav className="navbar navbar-fixed-bottom bottom-toolbar">
+        <div className="container-fluid">
+          <div className="navbar-form navbar-left">
+            <div className="form-group">
+              {model.searchFields.length ?
+                <SearchField
+                  placeholder={t('Press enter to search')}
+                  onChange={this.handleSearch}
+                  value={search}
+                /> : null
+              }
+            </div>
+          </div>
+          <ListActions
+            model={model}
+            records={records || EMPTY_RECORD_LIST}
+            selected={selected}
+            refresh={this.refresh}
+            refreshSettings={this.props.refreshSettings}
+          />
+        </div>
+      </nav>
+    );
+  }
+
+  render() {
+    const {
+      service,
+      model,
+      records,
+      sort,
+      filterViews,
+      columnsKeys,
+      selected,
+      activated
+    } = this.state;
+    if (!service || !model) {
+      return <div className="loading">Loading...</div>;
     }
 
-    let handleRemove;
-    if (!model.noremove && model.abilities.remove) {
-      // eslint-disable-next-line prefer-destructuring
-      handleRemove = this.handleRemove;
+    let handleRemove = this.handleRemove;
+    if (model.noremove) {
+      handleRemove = undefined;
+    } else {
+      // 判断权限
+      let ability = _.get(model, 'actions.remove.ability');
+      if (ability) {
+        // 存在自定义权限
+        if (!this.context.settings.abilities[ability]) {
+          handleRemove = undefined;
+        }
+      } else if (!model.abilities.remove) {
+        handleRemove = undefined;
+      }
     }
+
+    const quickEditor = (activated || selected.length) && window.innerWidth > 600;
 
     return (
-      <Node id="list" className={model.serviceId + '-' + model.id}>
-        <TopToolbar actions={titleBtns}>
-          {t(model.label || model.modelName, service.id)}
-          {search ? <i>  &nbsp; ( {t('Search')} : {search} ) </i> : null}
-          &nbsp; <i>{list.total !== undefined ? t('total records', { total: list.total }) : null}</i>
-        </TopToolbar>
-        <div>{filterViews}</div>
-        <div className="panel panel-default noborder">
-          <div className="scroll">
+      <Node id="listPage" className={model.serviceId + '-' + model.id}>
+        <div
+          className={'list-page-inner' + (quickEditor ? ' with-editor' : '')}
+          onScroll={this.handleScroll}
+          ref={(r) => {
+            this._ref = r;
+          }}
+        >
+          {this.renderToolbar()}
+          <div>{filterViews}</div>
+          <div className="panel panel-default noborder list-panel">
             <DataTable
               model={model}
-              records={records || []}
+              records={records || EMPTY_RECORD_LIST}
               sort={sort}
               onSort={this.handleSort}
-              onSelect={handleSelect}
+              onSelect={this.handleSelect}
               onRemove={handleRemove}
-              onActive={(record) => this.setState({ activated: record })}
+              onActive={this.handleActive}
               selected={selected}
               activated={activated}
               columns={columnsKeys}
             />
           </div>
+          {this.renderBottomBar()}
         </div>
-        <nav className="navbar navbar-fixed-bottom bottom-toolbar">
-          <div className="container-fluid">
-            <div className="navbar-form navbar-left">
-              <div className="form-group">
-                {model.searchFields.length ?
-                  <SearchField
-                    placeholder={t('Press enter to search')}
-                    onChange={this.handleSearch}
-                    value={search}
-                  /> : null
-                }
-              </div>
-            </div>
-            <ListActions
-              model={model}
-              records={records || []}
-              selected={selected}
-              refresh={this.refresh}
-              refreshSettings={this.props.refreshSettings}
-            />
-          </div>
-        </nav>
+        <QuickEditor
+          model={model}
+          record={activated}
+          records={selected}
+          onCancel={() => this.setState({ activated: undefined, selected: EMPTY_RECORD_LIST })}
+        />
       </Node>
     );
   }

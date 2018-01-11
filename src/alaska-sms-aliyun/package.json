@@ -16,5 +16,8 @@
     "ini": "^1.3.5",
     "akita-node": "^0.3.7",
     "moment": "^2.20.1"
+  },
+  "peerDependencies": {
+    "alaska-sms": "^0.12.9"
   }
 }

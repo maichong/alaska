@@ -15,8 +15,14 @@
   "dependencies": {
     "alaska-field-number": "^0.12.3",
     "alaska-field-text": "^0.12.3",
-    "alaska-field-select": "^0.12.8",
-    "alaska-field-relationship": "^0.12.8",
+    "alaska-field-select": "^0.12.9",
+    "alaska-field-relationship": "^0.12.9",
     "string-random": "^0.1.0"
+  },
+  "peerDependencies": {
+    "alaska-field-number": "^0.12.3",
+    "alaska-field-text": "^0.12.3",
+    "alaska-field-select": "^0.12.9",
+    "alaska-field-relationship": "^0.12.9"
   }
 }

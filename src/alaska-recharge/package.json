@@ -12,7 +12,13 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-balance": "^0.12.8",
-    "alaska-payment": "^0.12.3"
+    "alaska-balance": "^0.12.9",
+    "alaska-payment": "^0.12.3",
+    "alaska-user": "^0.12.9"
+  },
+  "peerDependencies": {
+    "alaska-balance": "^0.12.9",
+    "alaska-payment": "^0.12.3",
+    "alaska-user": "^0.12.9"
   }
 }

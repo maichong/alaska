@@ -1,5 +1,5 @@
 import akita from 'akita';
-import { applyBatchDetails } from '../redux/details';
+import { batchApplyDetails } from '../redux/details';
 import store from '../redux';
 
 const fetching = {};
@@ -39,7 +39,7 @@ export default function* details({ payload }) {
       let cur = queue;
       queue = [];
       if (cur.length) {
-        store.dispatch(applyBatchDetails(cur));
+        store.dispatch(batchApplyDetails(cur));
       }
     }, 50);
   }

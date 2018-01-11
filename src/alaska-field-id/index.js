@@ -4,14 +4,13 @@ import { Field } from 'alaska';
 import mongoose from 'mongoose';
 
 const TypeObjectId = mongoose.Schema.Types.ObjectId;
-const ObjectId = mongoose.Types.ObjectId;
 
 export default class IDField extends Field {
   static plain = TypeObjectId;
   static defaultOptions = {
     cell: 'TextFieldCell',
     view: 'TextFieldView',
-    filter: 'TextFieldFilter',
+    filter: false,
   };
 
   createFilter(filter: Object) {
@@ -25,9 +24,6 @@ export default class IDField extends Field {
       if (filter.inverse === true || filter.inverse === 'true') {
         inverse = true;
       }
-    }
-    if (value instanceof ObjectId) {
-      return value;
     }
     return inverse ? { $ne: value } : value;
   }

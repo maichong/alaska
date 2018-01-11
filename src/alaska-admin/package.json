@@ -13,13 +13,22 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-category": "^0.12.3",
-    "alaska-field-checkbox": "^0.12.8",
-    "alaska-field-icon": "^0.12.8",
-    "alaska-field-select": "^0.12.8",
+    "alaska-field-category": "^0.12.9",
+    "alaska-field-checkbox": "^0.12.9",
+    "alaska-field-icon": "^0.12.9",
+    "alaska-field-select": "^0.12.9",
     "alaska-middleware-upload": "^0.12.3",
-    "alaska-settings": "^0.12.8",
-    "alaska-user": "^0.12.8",
+    "alaska-settings": "^0.12.9",
+    "alaska-user": "^0.12.9",
     "koa-bodyparser": "^4.2.0"
+  },
+  "peerDependencies": {
+    "alaska-field-category": "^0.12.9",
+    "alaska-field-checkbox": "^0.12.9",
+    "alaska-field-icon": "^0.12.9",
+    "alaska-field-select": "^0.12.9",
+    "alaska-middleware-upload": "^0.12.3",
+    "alaska-settings": "^0.12.9",
+    "alaska-user": "^0.12.9"
   }
 }

@@ -1,25 +1,23 @@
-/**
- * @copyright Maichong Software Ltd. 2018 http://maichong.it
- * @date 2018-01-04
- * @author Liang <liang@maichong.it>
- */
+// @flow
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import akita from 'akita';
+import type { ImmutableObject } from 'seamless-immutable';
 import Node from './Node';
 import ActionList from './ActionList';
 
 type Props = {
   model: Alaska$view$Model,
-  record: Alaska$view$Record,
+  record: ImmutableObject<Alaska$view$Record>,
   id: string,
   isNew: boolean,
   loading: boolean,
   onSave: Function,
   onRemove: Function,
-  refreshSettings?: Function
+  refresh: Function,
+  refreshSettings: Function
 };
 
 export default class EditorActions extends React.Component<Props> {
@@ -67,10 +65,10 @@ export default class EditorActions extends React.Component<Props> {
         });
       }
       toast('success', t('Successfully'));
-      if (config.post === 'refresh') {
+      if (config.post === 'refreshSettings') {
         this.props.refreshSettings();
       } else {
-        this.refresh();
+        this.props.refresh();
       }
       if (config.post && config.post.substr(0, 3) === 'js:') {
         // eslint-disable-next-line
@@ -86,7 +84,7 @@ export default class EditorActions extends React.Component<Props> {
       model, record, id, isNew, onSave, onRemove, loading
     } = this.props;
 
-    const { abilities, actions } = model;
+    const { actions } = model;
 
     let actionList = [];
 
@@ -102,7 +100,7 @@ export default class EditorActions extends React.Component<Props> {
           icon: 'save',
           style: 'primary',
           tooltip: 'Save'
-        }, actions.create, hidden ? { hidden: true } : null)
+        }, actions.create, hidden ? { hidden: true } : {})
       });
     }
 
@@ -118,7 +116,7 @@ export default class EditorActions extends React.Component<Props> {
           icon: 'save',
           style: 'primary',
           tooltip: 'Save'
-        }, actions.create, hidden ? { hidden: true } : null)
+        }, actions.create, hidden ? { hidden: true } : {})
       });
     }
 
@@ -134,7 +132,7 @@ export default class EditorActions extends React.Component<Props> {
           icon: 'close',
           style: 'danger',
           tooltip: 'Remove'
-        }, actions.remove, hidden ? { hidden: true } : null)
+        }, actions.remove, hidden ? { hidden: true } : {})
       });
     }
 
@@ -150,7 +148,7 @@ export default class EditorActions extends React.Component<Props> {
           icon: 'plus',
           style: 'success',
           tooltip: 'Create record'
-        }, actions.create, actions.add, hidden ? { hidden: true } : null)
+        }, actions.create, actions.add, hidden ? { hidden: true } : {})
       });
     }
 

@@ -5,12 +5,13 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import akita from 'akita';
 import shallowEqualWithout from 'shallow-equal-without';
+import type { ImmutableArray } from 'seamless-immutable';
 import Node from './Node';
 import ActionList from './ActionList';
 
 type Props = {
-  records: Alaska$view$Record[],
-  selected?: Alaska$view$Record[],
+  records: ImmutableArray<Alaska$view$Record>,
+  selected: ImmutableArray<Alaska$view$Record>,
   model: Alaska$view$Model,
   refresh: Function,
   refreshSettings: Function,

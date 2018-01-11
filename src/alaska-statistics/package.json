@@ -12,10 +12,13 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "react-chartjs-2": "^2.6.4",
-    "alaska-field-select": "^0.12.8",
+    "alaska-field-select": "^0.12.9",
     "color": "^2.0.1",
-    "chart.js": "^2.7.1",
     "number-random": "^0.1.1"
+  },
+  "peerDependencies": {
+    "alaska-field-select": "^0.12.9",
+    "chart.js": "^2.7.1",
+    "react-chartjs-2": "^2.6.4"
   }
 }
