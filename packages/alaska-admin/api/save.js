@@ -14,6 +14,16 @@ var _alaska2 = _interopRequireDefault(_alaska);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function parseAbility(ability, data) {
+  if (typeof ability === 'function') {
+    ability = ability(data);
+  }
+  if (ability && ability[0] === '*') {
+    ability = ability.substr(1);
+  }
+  return ability || '';
+}
+
 exports.default = async function (ctx) {
   await ctx.checkAbility('admin');
   const user = ctx.user;
@@ -31,35 +41,30 @@ exports.default = async function (ctx) {
   let Model = s.getModel(modelName);
 
   // ability 检查缓存
-  let abilities = {};
+  let hasAbilities = {};
+
+  async function hasAbility(ability) {
+    if (!hasAbilities[ability]) {
+      hasAbilities[ability] = user.hasAbility(ability);
+    }
+    return await hasAbilities[ability];
+  }
+
+  async function checkAbility(ability) {
+    if (!(await hasAbility(ability))) {
+      ctx.error('Access Denied', 403);
+    }
+  }
 
   async function saveData(data) {
     let record = null;
-    let id = data.id;
-
-    let ability = `admin.${Model.key}.`;
-    if (id) {
-      ability += 'update';
-      if (Model.actions && Model.actions.update && Model.actions.update.ability) {
-        ability = Model.actions.update.ability;
-      }
-    } else {
-      ability += 'create';
-      if (Model.actions && Model.actions.create && Model.actions.create.ability) {
-        ability = Model.actions.create.ability;
-      }
-    }
-
-    if (!abilities[ability]) {
-      abilities[ability] = ctx.checkAbility(ability);
-    }
-    await abilities[ability];
+    let { id } = data;
 
     if (id) {
       // $Flow
       let doc = await Model.findById(id);
       if (!doc) {
-        _alaska2.default.error('Record not found');
+        throw new Error('Record not found');
       }
       record = doc;
     } else {
@@ -68,6 +73,14 @@ exports.default = async function (ctx) {
     if (data._id === '') {
       data = _lodash2.default.omit(data, '_id');
     }
+
+    let action = id ? 'update' : 'create';
+
+    let ability = _lodash2.default.get(Model, `actions.${action}.ability`, `admin.${Model.key}.${action}`);
+
+    ability = parseAbility(ability, id ? record : data);
+
+    await checkAbility(ability);
 
     // 字段 ability
     for (let key of Object.keys(Model._fields)) {
@@ -78,19 +91,17 @@ exports.default = async function (ctx) {
       // 验证Group权限
       if (field.group && Model.groups && Model.groups[field.group]) {
         let group = Model.groups[field.group];
-        if (group.ability) {
-          if (!(await user.hasAbility(group.ability))) {
-            delete data[key];
-            continue;
-          }
+        let groupAbility = parseAbility(group.ability, id ? record : data);
+        if (groupAbility && !(await hasAbility(groupAbility))) {
+          delete data[key];
+          continue;
         }
       }
 
       // 验证字段权限
-      if (field.ability) {
-        if (!(await user.hasAbility(field.ability))) {
-          delete data[key];
-        }
+      let fieldAbility = parseAbility(field.ability, id ? record : data);
+      if (fieldAbility && !(await hasAbility(fieldAbility))) {
+        delete data[key];
       }
     }
 

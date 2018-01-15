@@ -9,6 +9,9 @@ export default {
       sort: 1000
     }
   },
+  renderer: {
+    type: 'alaska-renderer-art'
+  },
   prefix: '/admin',
   statics: [{
     root: process.cwd() + '/runtime/alaska-admin-view/build',
@@ -26,5 +29,6 @@ export default {
    * run Init sled when every launch
    */
   autoInit: true,
-  dashboardTitle: 'Alaska admin dashboard'
+  dashboardTitle: 'Alaska admin dashboard',
+  defaultHorizontal: false
 };

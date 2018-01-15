@@ -116,7 +116,7 @@ export default class EditorActions extends React.Component<Props> {
           icon: 'save',
           style: 'primary',
           tooltip: 'Save'
-        }, actions.create, hidden ? { hidden: true } : {})
+        }, actions.update, hidden ? { hidden: true } : {})
       });
     }
 

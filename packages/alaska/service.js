@@ -279,8 +279,10 @@ class Service {
    */
   get cache() {
     if (!this._cache) {
+      let config = this.getConfig('cache');
+      if (!config || !config.type) this.panic(`Service '${this.id}' without cache driver!`);
       // $Flow
-      this._cache = this.createDriver(this.getConfig('cache'));
+      this._cache = this.createDriver(config);
     }
     return this._cache;
   }
@@ -292,6 +294,7 @@ class Service {
   get renderer() {
     if (!this._renderer) {
       let config = this.getConfig('renderer');
+      if (!config || !config.type) this.panic(`Service '${this.id}' without rendering engine!`);
       if (typeof config === 'string') {
         config = { type: config };
       }

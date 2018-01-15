@@ -313,6 +313,10 @@ class Model {
         schemaOptions: {}
       });
 
+      if (!model.groups.default) {
+        model.groups.default = {};
+      }
+
       //自动查询仅仅需要的字段
       if (model.autoSelect !== false) {
         model.autoSelect = true;

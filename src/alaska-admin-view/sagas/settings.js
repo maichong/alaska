@@ -6,11 +6,19 @@ import akita from 'akita';
 import { applySettings } from '../redux/settings';
 import { applyUser } from '../redux/user';
 
+function abilityFunction(list) {
+  _.forEach(list, (item) => {
+    if (item.ability && item.ability.startsWith('js:')) {
+      // eslint-disable-next-line no-eval
+      item.ability = eval(item.ability.substr(3));
+    }
+  });
+}
+
 // $Flow
 export default function* settingsSaga() {
   try {
-    let res = yield akita.get('/api/settings');
-    let settings = res.settings;
+    let { settings, user } = yield akita.get('/api/settings');
 
     let models = {};
     for (let i of _.keys(settings.services)) {
@@ -33,6 +41,10 @@ export default function* settingsSaga() {
               let name = key.substr(ability.length);
               model.abilities[name] = can;
             });
+
+            abilityFunction(model.actions);
+            abilityFunction(model.groups);
+            abilityFunction(model.fields);
           }
           service.models[modelName] = _.cloneDeep(model);
         }
@@ -51,7 +63,7 @@ export default function* settingsSaga() {
     settings.models = models;
 
     yield put(applySettings(settings));
-    yield put(applyUser(res.user));
+    yield put(applyUser(user));
   } catch (e) {
     console.error(e);
   }

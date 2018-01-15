@@ -7,7 +7,6 @@ export default async function (ctx: Alaska$Context) {
   await ctx.checkAbility('admin');
   let serviceId = ctx.state.service || ctx.query._service;
   let modelName = ctx.state.model || ctx.query._model;
-  let keyword = ctx.state.search || ctx.query._search || '';
   let value = ctx.state.value || ctx.request.body.value || '';
   let page = parseInt(ctx.state.page || ctx.query._page) || 1;
   let limit = parseInt(ctx.state.limit || ctx.query._limit) || 100;
@@ -29,7 +28,7 @@ export default async function (ctx: Alaska$Context) {
 
   let titleField = Model.titleField || 'titleField';
 
-  let filters = Model.createFilters(keyword, ctx.state.filters || ctx.query);
+  let filters = await Model.createFiltersByContext(ctx);
 
   let query = Model.paginate(filters)
     .page(page)

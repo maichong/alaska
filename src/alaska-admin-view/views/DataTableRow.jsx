@@ -1,17 +1,19 @@
 // @flow
 
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Checkbox from 'alaska-field-checkbox/views/Checkbox';
 import { DragSource, DropTarget } from 'react-dnd';
 import Node from './Node';
+import parseAbility from '../utils/parse-ability';
 
 type Props = {
   columnList: Alaska$view$Field[],
   record: Object,
   active: boolean,
   selected: boolean,
-  model: Object,
+  model: Alaska$view$Model,
   onEdit: Function,
   onActive?: Function,
   onSelect?: Function | null,
@@ -40,7 +42,34 @@ const target = {
 };
 
 export default class DataTableRow extends React.Component<Props> {
-  static contextTypes = { views: PropTypes.object };
+  static contextTypes = {
+    views: PropTypes.object,
+    settings: PropTypes.object
+  };
+
+  canUpdate = (): boolean => {
+    const { model, record } = this.props;
+    const { settings } = this.context;
+    if (!model || model.noupdate) return false;
+    let ability = _.get(model, 'actions.update.ability');
+    if (ability) {
+      ability = parseAbility(ability, record);
+      if (ability && !settings.abilities[ability]) return false;
+    } else if (!model.abilities.update) return false;
+    return true;
+  };
+
+  canRemove = (): boolean => {
+    const { model, record } = this.props;
+    const { settings } = this.context;
+    if (!model || model.noremove) return false;
+    let ability = _.get(model, 'actions.remove.ability');
+    if (ability) {
+      ability = parseAbility(ability, record);
+      if (ability && !settings.abilities[ability]) return false;
+    } else if (!model.abilities.remove) return false;
+    return true;
+  };
 
   handleChange = (e: Object) => {
     e.stopPropagation();
@@ -72,6 +101,21 @@ export default class DataTableRow extends React.Component<Props> {
     } else if (active) {
       rowClassName = 'active';
     }
+    if (connectDropTarget) {
+      rowClassName += ' can-drag';
+    } else {
+      rowClassName += ' no-drag';
+    }
+    if (this.canUpdate()) {
+      rowClassName += ' can-update';
+    } else {
+      rowClassName += ' no-update';
+    }
+    if (this.canRemove()) {
+      rowClassName += ' can-remove';
+    } else {
+      rowClassName += ' no-remove';
+    }
     let el = (
       <tr
         key={record._id}
@@ -101,9 +145,28 @@ export default class DataTableRow extends React.Component<Props> {
             </td>);
           })}
           <td key="_a" className="actions">
-            <i className="fa fa-edit text-primary icon-btn" onClick={() => onEdit(record)} />
+            <i
+              className="fa fa-eye text-primary icon-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(record);
+              }}
+            />
+            <i
+              className="fa fa-edit text-primary icon-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(record);
+              }}
+            />
             {onRemove ?
-              <span><i className="fa fa-close text-danger icon-btn" onClick={() => onRemove(record)} /></span> : null}
+              <span><i
+                className="fa fa-close text-danger icon-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemove(record);
+                }}
+              /></span> : null}
           </td>
         </Node>
       </tr>

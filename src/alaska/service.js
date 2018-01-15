@@ -257,8 +257,10 @@ export default class Service {
    */
   get cache(): Alaska$CacheDriver {
     if (!this._cache) {
+      let config = this.getConfig('cache');
+      if (!config || !config.type) this.panic(`Service '${this.id}' without cache driver!`);
       // $Flow
-      this._cache = (this.createDriver(this.getConfig('cache')): Alaska$CacheDriver);
+      this._cache = (this.createDriver(config): Alaska$CacheDriver);
     }
     return this._cache;
   }
@@ -270,6 +272,7 @@ export default class Service {
   get renderer(): Alaska$Renderer {
     if (!this._renderer) {
       let config = this.getConfig('renderer');
+      if (!config || !config.type) this.panic(`Service '${this.id}' without rendering engine!`);
       if (typeof config === 'string') {
         config = { type: config };
       }

@@ -60,7 +60,8 @@ function readService(serviceDir: string, enableLocales: string[], isMain?: boole
     sleds: getFiles(Path.join(serviceDir, 'sleds')),
     locales,
     updates: getFiles(Path.join(serviceDir, 'updates'), true),
-    templatesDirs: []
+    templatesDirs: [],
+    reactViews: {}
   };
 
   let templatesDir = Path.join(serviceDir, 'templates');
@@ -71,6 +72,15 @@ function readService(serviceDir: string, enableLocales: string[], isMain?: boole
     if (isDirectory(templatesDir)) {
       cfg.templatesDirs.push(templatesDir);
     }
+  }
+
+  let reactViewsFile = Path.join(serviceDir, 'views/react-views.js');
+  if (isFile(reactViewsFile)) {
+    let views = require(reactViewsFile).default || [];
+    cfg.reactViews = views.reduce((res, view) => {
+      res[view] = Path.join(serviceDir, 'views', view);
+      return res;
+    }, {});
   }
 
   return cfg;
@@ -132,15 +142,17 @@ function readPlugin(pluginDir: string, enableLocales: string[]) {
  */
 function resolvePluginPath(config, file) {
   if (_.size(config.plugins)) {
-    config.plugins = _.map(config.plugins, (p) => {
-      if (Path.isAbsolute(p)) return p;
-      if (p[0] === '.') {
-        p = Path.join(file, p);
-      } else {
-        p = Path.join(modulesDir, p);
+    config.plugins = _.reduce(config.plugins, (res, p, k) => {
+      if (!Path.isAbsolute(p)) {
+        if (p[0] === '.') {
+          p = Path.join(file, p);
+        } else {
+          p = Path.join(modulesDir, p);
+        }
       }
-      return p;
-    });
+      res[k] = p;
+      return res;
+    }, {});
   }
 }
 
@@ -254,9 +266,10 @@ export default function createMetadata(id: string, dir: string, mainConfigFile: 
       if (!serviceConfig) return; // 项目没有安装当前子Service
       if (!_.isPlainObject(serviceConfig.services[name])) return;
       if (!plugins[name]) {
-        plugins[name] = [];
+        plugins[name] = {};
       }
-      plugins[name].push(path);
+      let pluginRelative = Path.relative(dir, path);
+      plugins[name][pluginRelative] = path;
       let pluginConfigFile = path;
       if (!path.endsWith('.js')) {
         pluginConfigFile = Path.join(configDir, name, 'config.js');
@@ -272,24 +285,25 @@ export default function createMetadata(id: string, dir: string, mainConfigFile: 
   // 加载插件配置
   _.forEach(configs, (config, serviceId) => {
     if (!_.size(config.plugins)) return;
-    _.forEach(config.plugins, (path) => {
+    _.forEach(config.plugins, (path, key) => {
       if (!plugins[serviceId]) {
-        plugins[serviceId] = [];
+        plugins[serviceId] = {};
       }
-      if (plugins[serviceId].indexOf(path) === -1) {
-        plugins[serviceId].push(path);
+      if (!plugins[serviceId].hasOwnProperty(key)) {
+        plugins[serviceId][key] = path;
       }
     });
   });
 
   _.forEach(metadata.services, (service, serviceId) => {
-    service.plugins = _.map(plugins[serviceId], (pluginDir) => {
+    service.plugins = _.reduce(plugins[serviceId], (res, pluginDir, key) => {
       let templatesDir = Path.join(pluginDir, 'templates');
       if (isDirectory(templatesDir)) {
         service.templatesDirs.push(templatesDir);
       }
-      return readPlugin(pluginDir, metadata.locales);
-    });
+      res[key] = readPlugin(pluginDir, metadata.locales);
+      return res;
+    }, {});
   });
 
   // 读取app中间件

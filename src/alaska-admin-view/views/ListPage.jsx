@@ -4,6 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Link } from 'react-router-dom';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
 import akita from 'akita';
@@ -18,6 +19,7 @@ import ListActions from './ListActions';
 import QuickEditor from './QuickEditor';
 import * as listRedux from '../redux/lists';
 import { refreshSettings } from '../redux/settings';
+import parseAbility from '../utils/parse-ability';
 
 const CHECK_ICON = <i className="fa fa-check" />;
 // $Flow
@@ -277,6 +279,42 @@ class ListPage extends React.Component<Props, State> {
     this.context.router.history.replace({ pathname, search: '?' + qs.stringify(query) });
   }
 
+  canCreate = (): boolean => {
+    const { model } = this.state;
+    const { settings } = this.context;
+    if (!model || model.nocreate) return false;
+    let ability = _.get(model, 'actions.create.ability');
+    if (ability) {
+      ability = parseAbility(ability);
+      if (ability && !settings.abilities[ability]) return false;
+    } else if (!model.abilities.create) return false;
+    return true;
+  };
+
+  canUpdate = (): boolean => {
+    const { model } = this.state;
+    const { settings } = this.context;
+    if (!model || model.noupdate) return false;
+    let ability = _.get(model, 'actions.update.ability');
+    if (ability) {
+      ability = parseAbility(ability);
+      if (ability && !settings.abilities[ability]) return false;
+    } else if (!model.abilities.update) return false;
+    return true;
+  };
+
+  canRemove = (): boolean => {
+    const { model } = this.state;
+    const { settings } = this.context;
+    if (!model || model.noremove) return false;
+    let ability = _.get(model, 'actions.remove.ability');
+    if (ability) {
+      ability = parseAbility(ability);
+      if (ability && !settings.abilities[ability]) return false;
+    } else if (!model.abilities.remove) return false;
+    return true;
+  };
+
   handleFilter = (eventKey) => {
     const {
       filters, filterViews, filterViewsMap, model
@@ -408,13 +446,13 @@ class ListPage extends React.Component<Props, State> {
   renderToolbar() {
     const { t } = this.context;
     const {
-      model, service, search, list, query, filterItems, columnsItems
+      model, service, search, list, query, filterItems, columnsItems, records
     } = this.state;
     if (!model || !service) return null;
 
     let titleBtns = [];
 
-    if (!query.nofilter && filterItems.length) {
+    if (records && records.length && !query.nofilter && filterItems.length) {
       titleBtns.push(<DropdownButton
         id="listFilterDropdown"
         key="listFilterDropdown"
@@ -424,7 +462,7 @@ class ListPage extends React.Component<Props, State> {
       </DropdownButton>);
     }
 
-    if (!query.nocolumns) {
+    if (records && records.length && !query.nocolumns) {
       titleBtns.push(<DropdownButton
         id="columnsDropdown"
         key="columnsDropdown"
@@ -483,6 +521,26 @@ class ListPage extends React.Component<Props, State> {
     );
   }
 
+  renderEmpty() {
+    const { model } = this.state;
+    const { t } = this.context;
+    let link = null;
+
+    if (this._loading || !model) return null;
+
+    if (this.canCreate()) {
+      link = <Link to={`/edit/${model.serviceId}/${model.modelName}/_new`}>{t('Create')}</Link>;
+    }
+    return (
+      <div className="error-info">
+        <div className="error-info-title">{t('No data!')}</div>
+        <div className="error-info-desc">
+          {t('No records found.')} &nbsp; {link}
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const {
       service,
@@ -498,7 +556,7 @@ class ListPage extends React.Component<Props, State> {
       return <div className="loading">Loading...</div>;
     }
 
-    let handleRemove = this.handleRemove;
+    let { handleRemove } = this;
     if (model.noremove) {
       handleRemove = undefined;
     } else {
@@ -514,10 +572,27 @@ class ListPage extends React.Component<Props, State> {
       }
     }
 
-    const quickEditor = (activated || selected.length) && window.innerWidth > 600;
+    const quickEditor = model.quickEditorView !== false && (activated || selected.length) && window.innerWidth > 600;
+
+    let className = 'list-page ' + model.serviceId + '-' + model.id;
+    if (this.canCreate()) {
+      className += ' can-create';
+    } else {
+      className += ' no-create';
+    }
+    if (this.canUpdate()) {
+      className += ' can-update';
+    } else {
+      className += ' no-update';
+    }
+    if (this.canRemove()) {
+      className += ' can-remove';
+    } else {
+      className += ' no-remove';
+    }
 
     return (
-      <Node id="listPage" className={model.serviceId + '-' + model.id}>
+      <Node id="listPage" className={className}>
         <div
           className={'list-page-inner' + (quickEditor ? ' with-editor' : '')}
           onScroll={this.handleScroll}
@@ -527,30 +602,40 @@ class ListPage extends React.Component<Props, State> {
         >
           {this.renderToolbar()}
           <div>{filterViews}</div>
-          <div className="panel panel-default noborder list-panel">
-            <DataTable
-              canDrag
-              model={model}
-              records={records || EMPTY_RECORD_LIST}
-              sort={sort}
-              onSort={this.handleSort}
-              onSelect={this.handleSelect}
-              onRemove={handleRemove}
-              onActive={this.handleActive}
-              selected={selected}
-              activated={activated}
-              columns={columnsKeys}
-            />
-          </div>
+          {
+            records && records.length ?
+              <div className="panel panel-default noborder list-panel">
+                <DataTable
+                  canDrag
+                  model={model}
+                  records={records || EMPTY_RECORD_LIST}
+                  sort={sort}
+                  onSort={this.handleSort}
+                  onSelect={this.handleSelect}
+                  onRemove={handleRemove}
+                  onActive={this.handleActive}
+                  selected={selected}
+                  activated={activated}
+                  columns={columnsKeys}
+                />
+              </div>
+              : this.renderEmpty()
+          }
           {this.renderBottomBar()}
         </div>
-        <QuickEditor
-          model={model}
-          record={activated}
-          records={selected}
-          onCancel={() => this.setState({ activated: undefined, selected: EMPTY_RECORD_LIST })}
-          onRefresh={this.refresh}
-        />
+        {
+          model.quickEditorView === false
+            ? null
+            : (
+              <QuickEditor
+                model={model}
+                record={activated}
+                records={selected}
+                onCancel={() => this.setState({ activated: undefined, selected: EMPTY_RECORD_LIST })}
+                onRefresh={this.refresh}
+              />
+            )
+        }
       </Node>
     );
   }

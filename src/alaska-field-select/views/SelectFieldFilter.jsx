@@ -6,7 +6,6 @@ import _ from 'lodash';
 import Select from './Select';
 import SelectCheckbox from './SelectCheckbox';
 import Switch from './Switch';
-import { getOptionValue } from './utils';
 
 type State = {
   value: Alaska$SelectField$value,

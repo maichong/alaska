@@ -38,9 +38,13 @@ exports.default = async function (ctx) {
 
   let actionInfo = Model.actions[action];
 
-  let ability = actionInfo.ability ? actionInfo.ability : `admin.${Model.key}.${action}`;
+  let { ability } = actionInfo;
 
-  await ctx.checkAbility(ability);
+  if (typeof ability === 'function') {
+    if (!id) {
+      _alaska2.default.error('Can not invoke functional action ability without record!');
+    }
+  }
 
   let record;
   if (id) {
@@ -49,6 +53,21 @@ exports.default = async function (ctx) {
       _alaska2.default.error('Record not found');
     }
   }
+
+  if (typeof ability === 'function') {
+    // $Flow record 一定存在
+    ability = ability(record);
+  }
+
+  if (ability && ability[0] === '*') {
+    ability = ability.substr(1);
+  }
+
+  if (!ability) {
+    ability = `admin.${Model.key}.${action}`;
+  }
+
+  await ctx.checkAbility(ability);
 
   // $Flow
   const Sled = s.getSled(actionInfo.sled);

@@ -69,10 +69,22 @@ export default class ActionList extends React.Component<Props> {
     keys.forEach((key) => {
       let { item } = map[key];
       let { action, onClick, link } = item;
-      if (action.ability) {
-        // 自定义权限
-        if (!settings.abilities[action.ability]) return;
-      } else {
+      let { ability } = action;
+
+      let abilityDisabled = false;
+      if (typeof ability === 'function') {
+        ability = ability(record);
+      }
+      if (ability && ability[0] === '*') {
+        ability = ability.substr(1);
+        abilityDisabled = true;
+      }
+      let hasAbility = !ability || settings.abilities[ability] || false;
+
+      // 自定义权限未满足
+      if (!hasAbility && !abilityDisabled) return;
+
+      if (!ability) {
         // 默认权限
         // $Flow action.key 一定存在
         let abilityKey = action.key;
@@ -81,6 +93,9 @@ export default class ActionList extends React.Component<Props> {
         }
         if (!model.abilities[abilityKey]) return; // 权限认证
       }
+
+      let actionDisabled = disabled || abilityDisabled;
+
       if (editor) {
         // 编辑页面
         if (action.list && !action.editor) return; // 编辑页面不现实列表专有Action
@@ -98,7 +113,7 @@ export default class ActionList extends React.Component<Props> {
       elements.push(<Action
         key={key}
         action={action}
-        disabled={disabled}
+        disabled={actionDisabled}
         record={record}
         records={records}
         selected={selected}

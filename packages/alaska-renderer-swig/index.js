@@ -22,8 +22,6 @@ var _slash2 = _interopRequireDefault(_slash);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//const Swig = swig.Swig;
-
 // $Flow
 class SwigRenderer extends _alaska.Renderer {
 
@@ -92,7 +90,3 @@ class SwigRenderer extends _alaska.Renderer {
   }
 }
 exports.default = SwigRenderer;
-
-/* eslint import/no-extraneous-dependencies:0 */
-/* eslint import/no-unresolved:0 */
-/* eslint import/extensions:0 */

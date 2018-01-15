@@ -10,8 +10,6 @@ var _lodash2 = _interopRequireDefault(_lodash);
 
 var _alaska = require('alaska');
 
-var _alaska2 = _interopRequireDefault(_alaska);
-
 var _utils = require('alaska/utils');
 
 var utils = _interopRequireWildcard(_utils);

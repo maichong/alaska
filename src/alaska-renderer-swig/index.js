@@ -1,17 +1,11 @@
 // @flow
 
-/* eslint import/no-extraneous-dependencies:0 */
-/* eslint import/no-unresolved:0 */
-/* eslint import/extensions:0 */
-
 import { Renderer } from 'alaska';
 // $Flow
 import { Swig } from 'swig';
 import path from 'path';
 import fs from 'fs';
 import slash from 'slash';
-
-//const Swig = swig.Swig;
 
 export default class SwigRenderer extends Renderer {
   swig: Swig;

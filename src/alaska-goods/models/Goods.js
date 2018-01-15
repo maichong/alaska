@@ -1,7 +1,7 @@
 // @flow
 
 import _ from 'lodash';
-import alaska, { Model } from 'alaska';
+import { Model } from 'alaska';
 import * as utils from 'alaska/utils';
 import BALANCE from 'alaska-balance';
 import Sku from './Sku';

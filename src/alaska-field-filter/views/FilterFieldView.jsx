@@ -136,21 +136,20 @@ export default class FilterFieldView extends React.Component<Alaska$view$Field$V
 
     let label = field.nolabel ? '' : field.label;
 
-    if (field.horizontal === false) {
-      let labelElement = label ? (<label className="control-label">{label}</label>) : null;
+    if (field.horizontal) {
       return (
         <div className={className}>
-          {labelElement}
-          {inputElement}
+          <label className="col-sm-2 control-label">{label}</label>
+          <div className="col-sm-10">
+            {inputElement}
+          </div>
         </div>
       );
     }
     return (
       <div className={className}>
-        <label className="col-sm-2 control-label">{label}</label>
-        <div className="col-sm-10">
-          {inputElement}
-        </div>
+        {label ? (<label className="control-label">{label}</label>) : null}
+        {inputElement}
       </div>
     );
   }

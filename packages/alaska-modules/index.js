@@ -9,6 +9,10 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _debug = require('debug');
+
+var _debug2 = _interopRequireDefault(_debug);
+
 var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
@@ -19,21 +23,26 @@ var _metadata2 = _interopRequireDefault(_metadata);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * @copyright Maichong Software Ltd. 2017 http://maichong.it
+ * @date 2017-11-20
+ * @author Liang <liang@maichong.it>
+ */
+
+/* eslint global-require:0 */
+/* eslint import/no-dynamic-require:0 */
+
+const debug = (0, _debug2.default)('alaska-modules');
+
 function requireFiles(files, withDefault) {
   let res = {};
   _lodash2.default.forEach(files, (file, key) => {
+    debug('require ' + file);
     let m = require(file);
     res[key] = withDefault ? m.default : m;
   });
   return res;
-} /**
-   * @copyright Maichong Software Ltd. 2017 http://maichong.it
-   * @date 2017-11-20
-   * @author Liang <liang@maichong.it>
-   */
-
-/* eslint global-require:0 */
-/* eslint import/no-dynamic-require:0 */
+}
 
 function createModules(mainService) {
   let metadata = (0, _metadata2.default)(mainService.id, mainService.dir, mainService.configFile);
@@ -93,8 +102,24 @@ function createModules(mainService) {
     if (cfg.templatesDirs) {
       service.templatesDirs = cfg.templatesDirs.map(d => _path2.default.relative(mainService.dir, d));
     }
+    if (cfg.reactViews) {
+      if (process.env.NODE_ENV === 'development') {
+        service.reactViews = {};
+        _lodash2.default.forEach(cfg.reactViews, (file, name) => {
+          Object.defineProperty(service.reactViews, name, {
+            get() {
+              delete require.cache[require.resolve(file)];
+              debug('require ' + file);
+              return require(file).default;
+            }
+          });
+        });
+      } else {
+        service.reactViews = requireFiles(cfg.reactViews, true);
+      }
+    }
     if (cfg.plugins) {
-      service.plugins = _lodash2.default.map(cfg.plugins, plugin => {
+      service.plugins = _lodash2.default.reduce(cfg.plugins, (plugins, plugin, key) => {
         let res = {};
         if (plugin.pluginClass) {
           res.pluginClass = require(plugin.pluginClass).default;
@@ -120,8 +145,9 @@ function createModules(mainService) {
         if (plugin.sleds) {
           res.sleds = requireFiles(plugin.sleds);
         }
-        return res;
-      });
+        plugins[key] = res;
+        return plugins;
+      }, {});
     }
   });
 

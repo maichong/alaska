@@ -1,6 +1,6 @@
 {
   "name": "alaska-field-date",
-  "version": "0.12.3",
+  "version": "0.12.12",
   "description": "Alaska date field",
   "keywords": [
     "alaska",
@@ -14,6 +14,6 @@
   "dependencies": {
     "moment": "^2.20.1",
     "react-datetime": "^2.11.1",
-    "alaska-field-datetime": "^0.12.10"
+    "alaska-field-datetime": "^0.12.12"
   }
 }

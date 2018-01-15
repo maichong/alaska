@@ -19,6 +19,7 @@ import Manage from './Manage';
 import Dashboard from './Dashboard';
 import EditorPage from './EditorPage';
 import ListPage from './ListPage';
+import NotFoundPage from './NotFoundPage';
 
 type Props = {
   views: Object,
@@ -242,6 +243,7 @@ class App extends React.Component<Props, State> {
                   (views.routes || []).map((item) => (
                     <Route key={item.path} component={item.component} exact path={item.path} />))
                 }
+                <Route component={NotFoundPage} />
               </Switch>
             </Manage>
           )}

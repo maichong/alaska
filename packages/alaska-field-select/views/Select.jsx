@@ -11,7 +11,7 @@ import ReactSelect from 'react-select';
 type Props = Alaska$SelectField$Props;
 
 type State = {
-  options?: Alaska$SelectField$option[],
+  options: Alaska$SelectField$option[],
   optionsMap: {
     [value: string]: Alaska$SelectField$option,
   },
@@ -28,7 +28,7 @@ export default class Select extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      options: props.options,
+      options: this.processOptions(props.options),
       optionsMap: {},
     };
     if (props.options) {
@@ -50,7 +50,7 @@ export default class Select extends React.Component<Props, State> {
   componentWillReceiveProps(props: Props) {
     let state = {};
     if (props.options !== this.props.options) {
-      state.options = props.options;
+      state.options = this.processOptions(props.options);
       state.optionsMap = {};
       if (props.options) {
         for (let o of props.options) {
@@ -70,6 +70,15 @@ export default class Select extends React.Component<Props, State> {
 
   componentWillUnmount() {
     this._cache = {};
+  }
+
+  processOptions(options?: Alaska$SelectField$option[]): Alaska$SelectField$option[] {
+    return _.map(options || [], (opt) => {
+      if (typeof opt.style === 'string') {
+        opt = _.omit(opt, 'style');
+      }
+      return opt;
+    });
   }
 
   processValue = (value: any) => {
@@ -168,7 +177,7 @@ export default class Select extends React.Component<Props, State> {
         value={this.state.value}
         onInputChange={loadOptions ? this.handleSearchChange : undefined}
         // $Flow
-        options={this.state.options || []}
+        options={this.state.options}
         disabled={disabled}
         placeholder={t('Select...')}
         {...others}

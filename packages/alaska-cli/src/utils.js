@@ -111,7 +111,7 @@ function transformSrouceFile(from, to) {
   let relative = _path2.default.relative(process.cwd(), from);
 
   let needBabel = false;
-  if (to.endsWith('.js')) {
+  if (/\.jsx?$/.test(to)) {
     needBabel = true;
   }
   if (needBabel) {

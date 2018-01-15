@@ -168,24 +168,22 @@ export default class ImageLinkFieldView extends React.Component<Alaska$view$Fiel
 
     let label = field.nolabel ? '' : field.label;
 
-    if (field.horizontal === false) {
-      let labelElement = label ? (<label className="control-label">{label}</label>) : null;
+    if (field.horizontal) {
       return (
         <div className={className}>
-          {labelElement}
-          <div>{items}</div>
-          {helpElement}
+          <label className="col-sm-2 control-label">{label}</label>
+          <div className="col-sm-10">
+            {items}
+            {helpElement}
+          </div>
         </div>
       );
     }
-
     return (
       <div className={className}>
-        <label className="col-sm-2 control-label">{label}</label>
-        <div className="col-sm-10">
-          {items}
-          {helpElement}
-        </div>
+        {label ? (<label className="control-label">{label}</label>) : null}
+        <div>{items}</div>
+        {helpElement}
       </div>
     );
   }

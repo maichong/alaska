@@ -133,24 +133,22 @@ export default class HtmlFieldView extends React.Component<Alaska$view$Field$Vie
 
     let label = field.nolabel ? '' : field.label;
 
-    if (field.horizontal === false) {
-      let labelElement = label ? <label className="control-label">{label}</label> : null;
+    if (field.horizontal) {
       return (
         <div className={className}>
-          {labelElement}
-          {editor}
-          {helpElement}
+          <label className="control-label col-sm-2">{label}</label>
+          <div className="col-sm-10">
+            {editor}
+            {helpElement}
+          </div>
         </div>
       );
     }
-
     return (
       <div className={className}>
-        <label className="control-label col-sm-2">{label}</label>
-        <div className="col-sm-10">
-          {editor}
-          {helpElement}
-        </div>
+        {label ? <label className="control-label">{label}</label> : null}
+        {editor}
+        {helpElement}
       </div>
     );
   }

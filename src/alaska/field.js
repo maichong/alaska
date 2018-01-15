@@ -150,11 +150,16 @@ export default class Field {
     let field: Alaska$Field = this;
     let FieldClass = this.type;
 
+    let ability = field.ability;
+    if (typeof ability === 'function') {
+      ability = 'js:' + ability.toString();
+    }
+
     let options = {
       label: field.label,
       path: field.path,
       default: field.default,
-      ability: field.ability,
+      ability,
       super: field.super,
       hidden: field.hidden,
       depends: field.depends,

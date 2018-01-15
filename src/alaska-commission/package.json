@@ -1,6 +1,6 @@
 {
   "name": "alaska-commission",
-  "version": "0.12.3",
+  "version": "0.12.12",
   "description": "Alaska commission service",
   "keywords": [
     "alaska",
@@ -13,9 +13,9 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-balance": "^0.12.10"
+    "alaska-balance": "^0.12.12"
   },
   "peerDependencies": {
-    "alaska-balance": "^0.12.10"
+    "alaska-balance": "^0.12.12"
   }
 }

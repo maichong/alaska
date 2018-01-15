@@ -14,6 +14,10 @@ td, th {
   cursor: pointer;
   vertical-align: middle;
 
+  &.disabled {
+    opacity: 0.4;
+  }
+
   .fa {
     display: inline-block;
     width: 18px;
@@ -64,5 +68,16 @@ td, th {
     .fa {
       color: @gray-light;
     }
+  }
+}
+
+.form {
+  .form-group {
+    .checkbox, .radio {
+      margin-top: 0px;
+    }
+    //.checkbox + .checkbox, .radio + .radio {
+    //  margin-top: 0px;
+    //}
   }
 }

@@ -7,8 +7,14 @@ export default class TextFeild extends Field {
   static dbOptions = ['trim', 'match', 'lowercase', 'uppercase', 'maxlength', 'minlength'];
   static viewOptions = [
     'trim', 'match', 'lowercase', 'uppercase', 'maxlength', 'minlength',
-    'addonBefore', 'addonAfter', 'placeholder', 'multiLine', 'translate'
+    'addonBefore', 'addonAfter', 'placeholder', 'multiLine', 'translate',
+    function (options: Object, field: Alaska$Field) {
+      if (field.match) {
+        options.match = field.match.toString();
+      }
+    }
   ];
+
   static defaultOptions = {
     cell: 'TextFieldCell',
     view: 'TextFieldView',
@@ -21,7 +27,7 @@ export default class TextFeild extends Field {
     }
   }
 
-  createFilter(filter: Object): any|void {
+  createFilter(filter: Object): any | void {
     if (filter instanceof RegExp) {
       return filter;
     }

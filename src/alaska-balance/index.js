@@ -1,8 +1,6 @@
 // @flow
 
-import _ from 'lodash';
 import { Service } from 'alaska';
-import USER from 'alaska-user';
 
 /**
  * @class BalanceService

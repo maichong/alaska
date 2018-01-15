@@ -1,6 +1,6 @@
 {
   "name": "alaska-payment-balance",
-  "version": "0.12.11",
+  "version": "0.12.12",
   "description": "Alaska balance payment plugin",
   "keywords": [
     "alaska",
@@ -14,6 +14,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "peerDependencies": {
-    "alaska-payment": "^0.12.10"
+    "alaska-payment": "^0.12.12"
   }
 }

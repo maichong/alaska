@@ -113,26 +113,25 @@ export default function createScript(id: string, dir: string, configFile: string
 
     // plugins
     if (_.size(service.plugins)) {
-      script += `    plugins: [{\n`;
-      _.forEach(service.plugins, (plugin, index) => {
+      script += `    plugins: {\n`;
+      _.forEach(service.plugins, (plugin, key) => {
         console.log('    plugin :', slash(Path.relative(process.cwd(), plugin.dir)));
-        if (index > 0) {
-          script += `    }, {\n`;
-        }
+        script += `      ${wrapWord(key)}: {\n`;
         if (plugin.pluginClass) {
-          script += `      pluginClass: require('${relative(plugin.pluginClass)}').default,\n`;
+          script += `        pluginClass: require('${relative(plugin.pluginClass)}').default,\n`;
         }
         if (plugin.config) {
-          script += `      config: require('${relative(plugin.config)}').default,\n`;
+          script += `        config: require('${relative(plugin.config)}').default,\n`;
         }
-        renderList(6, plugin.api, 'api');
-        renderList(6, plugin.controllers, 'controllers');
-        renderList(6, plugin.routes, 'routes', true);
-        renderList(6, plugin.locales, 'locales', true);
-        renderList(6, plugin.models, 'models');
-        renderList(6, plugin.sleds, 'sleds');
+        renderList(8, plugin.api, 'api');
+        renderList(8, plugin.controllers, 'controllers');
+        renderList(8, plugin.routes, 'routes', true);
+        renderList(8, plugin.locales, 'locales', true);
+        renderList(8, plugin.models, 'models');
+        renderList(8, plugin.sleds, 'sleds');
+        script += `      },\n`;
       });
-      script += `    }],\n`;
+      script += `    },\n`;
     }
 
     // templatesDirs
@@ -143,6 +142,13 @@ export default function createScript(id: string, dir: string, configFile: string
       });
       script += `    ],\n`;
     }
+
+    // react views
+    script += `    reactViews: {\n`;
+    _.forEach(service.reactViews, (file, name) => {
+      script += `      '${slash(name)}': require('./${slash(Path.relative(dir, file))}').default,\n`;
+    });
+    script += `    },\n`;
 
     // end
     script += `  },\n`;

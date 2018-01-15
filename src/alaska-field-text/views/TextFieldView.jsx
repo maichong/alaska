@@ -13,6 +13,23 @@ export default class TextFieldView extends React.Component<Alaska$view$Field$Vie
     return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model', 'field');
   }
 
+  hasError() {
+    let {
+      field,
+      value
+    } = this.props;
+    if (value && field.match && typeof field.match === 'string') {
+      let matchs = field.match.match(/^\/(.+)\/([igm]*)$/);
+      if (matchs) {
+        let match = new RegExp(matchs[1], matchs[2]);
+        if (!match.test(value)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   handleChange = (event: SyntheticInputEvent<*>) => {
     if (this.props.onChange) {
       this.props.onChange(event.target.value);
@@ -31,6 +48,15 @@ export default class TextFieldView extends React.Component<Alaska$view$Field$Vie
     const { t } = this.context;
     let { help } = field;
     className += ' text-field';
+    if (!errorText && value && field.match && typeof field.match === 'string') {
+      let matchs = field.match.match(/^\/(.+)\/([igm]*)$/);
+      if (matchs) {
+        let match = new RegExp(matchs[1], matchs[2]);
+        if (!match.test(value)) {
+          errorText = t('Invalid format');
+        }
+      }
+    }
     if (errorText) {
       className += ' has-error';
       help = errorText;
@@ -74,24 +100,22 @@ export default class TextFieldView extends React.Component<Alaska$view$Field$Vie
 
     let label = field.nolabel ? '' : field.label;
 
-    if (field.horizontal === false) {
-      let labelElement = label ? <label className="control-label">{label}</label> : null;
+    if (field.horizontal) {
       return (
         <div className={className}>
-          {labelElement}
-          {inputElement}
-          {helpElement}
+          <label className="col-sm-2 control-label">{label}</label>
+          <div className="col-sm-10">
+            {inputElement}
+            {helpElement}
+          </div>
         </div>
       );
     }
-
     return (
       <div className={className}>
-        <label className="col-sm-2 control-label">{label}</label>
-        <div className="col-sm-10">
-          {inputElement}
-          {helpElement}
-        </div>
+        {label ? <label className="control-label">{label}</label> : null}
+        {inputElement}
+        {helpElement}
       </div>
     );
   }

@@ -52,7 +52,11 @@ class TextFeild extends _alaska.Field {
 exports.default = TextFeild;
 TextFeild.plain = String;
 TextFeild.dbOptions = ['trim', 'match', 'lowercase', 'uppercase', 'maxlength', 'minlength'];
-TextFeild.viewOptions = ['trim', 'match', 'lowercase', 'uppercase', 'maxlength', 'minlength', 'addonBefore', 'addonAfter', 'placeholder', 'multiLine', 'translate'];
+TextFeild.viewOptions = ['trim', 'match', 'lowercase', 'uppercase', 'maxlength', 'minlength', 'addonBefore', 'addonAfter', 'placeholder', 'multiLine', 'translate', function (options, field) {
+  if (field.match) {
+    options.match = field.match.toString();
+  }
+}];
 TextFeild.defaultOptions = {
   cell: 'TextFieldCell',
   view: 'TextFieldView',

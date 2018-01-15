@@ -7,6 +7,7 @@ import checkDepends from 'check-depends';
 import type { DependsQueryExpression } from 'check-depends';
 import type { ImmutableObject } from 'seamless-immutable';
 import Node from './Node';
+import parseAbility from '../utils/parse-ability';
 
 type Props = {
   path: string,
@@ -23,11 +24,16 @@ type Props = {
   panel?: boolean,
   style?: Alaska$style,
   wrapper?: string, // 自定义Wrapper占位符
-  ability?: string,
+  horizontal?: boolean,
+  ability?: string | Function,
   super?: DependsQueryExpression,
   hidden?: DependsQueryExpression,
   depends?: DependsQueryExpression,
   disabled?: DependsQueryExpression,
+};
+
+export type FieldRefMap = {
+  [key: string]: React$Element<any>
 };
 
 export default class FieldGroup extends React.Component<Props> {
@@ -43,21 +49,38 @@ export default class FieldGroup extends React.Component<Props> {
     t: Function
   };
 
+  fieldRefs: FieldRefMap = {};
+
   renderFields(disabled: boolean) {
     const { t, settings, views } = this.context;
     let fields = [];
     const { props } = this;
     const {
-      record, errors, model, onFieldChange, isNew
+      record, errors, model, onFieldChange, isNew, horizontal
     } = props;
     const { serviceId } = model;
     _.forEach(props.fields, (field) => {
-      if (!field.view) return;
-      if (field.path === '_id' && !isNew) return;
-      if (field.ability && !settings.abilities[field.ability]) return;
-      if (checkDepends(field.hidden, record)) return;
-      if (field.depends && !checkDepends(field.depends, record)) return;
-      if (!settings.superMode && checkDepends(field.super, record)) return;
+      let { ability } = field;
+      let abilityDisabled = false;
+      if (typeof ability === 'function') {
+        ability = ability(record);
+      }
+      if (ability && ability[0] === '*') {
+        ability = ability.substr(1);
+        abilityDisabled = true;
+      }
+      let hasAbility = !ability || settings.abilities[ability] || false;
+      if (
+        (!field.view)
+        || (field.path === '_id' && !isNew)
+        || (!hasAbility && !abilityDisabled)
+        || checkDepends(field.hidden, record)
+        || (field.depends && !checkDepends(field.depends, record))
+        || (!settings.superMode && checkDepends(field.super, record))
+      ) {
+        delete this.fieldRefs[field.path];
+        return;
+      }
 
       let ViewClass = views[field.view];
       if (!ViewClass) {
@@ -66,6 +89,9 @@ export default class FieldGroup extends React.Component<Props> {
       }
 
       let fieldDisabled = disabled;
+      if (!fieldDisabled && !hasAbility) {
+        fieldDisabled = abilityDisabled;
+      }
       if (!fieldDisabled) {
         fieldDisabled = checkDepends(field.disabled, record);
       }
@@ -77,9 +103,12 @@ export default class FieldGroup extends React.Component<Props> {
       fields.push(React.createElement(ViewClass, {
         key: field.path,
         value: record[field.path],
+        ref: (r) => {
+          this.fieldRefs[field.path] = r;
+        },
         model,
         record,
-        field: _.assign({}, field, { label, help }),
+        field: _.assign({ horizontal }, field, { help, label }),
         disabled: fieldDisabled,
         errorText: errors[field.path],
         onChange: (value) => onFieldChange(field.path, value),
@@ -96,27 +125,39 @@ export default class FieldGroup extends React.Component<Props> {
     const { t, settings } = this.context;
     const { props } = this;
     const {
-      path, title, panel, form, wrapper, style, loading, model, record, isNew
+      path, title, panel, form, wrapper, style, loading, model, record, isNew, horizontal
     } = props;
-    if (props.ability && !settings.abilities[props.ability]) return ''; // ability
+
+    let { ability } = props;
+    let abilityDisabled = false;
+    if (typeof ability === 'function') {
+      ability = ability(record);
+    }
+    if (ability && ability[0] === '*') {
+      ability = ability.substr(1);
+      abilityDisabled = true;
+    }
+    let hasAbility = !ability || settings.abilities[ability] || false;
+    if (!hasAbility && !abilityDisabled) return ''; // ability
     if (checkDepends(props.hidden, record)) return ''; // hidden
     if (props.depends && !checkDepends(props.depends, record)) return ''; // depends
     if (!settings.superMode && checkDepends(props.super, record)) return ''; // super
 
     function isDisabled(): boolean {
-      if (loading) return true;
-      let ability = '';
+      if (loading || abilityDisabled) return true;
+      let action = '';
       if (isNew) {
         if (model.nocreate) return true;
-        ability = 'create';
+        action = 'create';
       } else {
         if (model.noupdate) return true;
-        ability = 'update';
+        action = 'update';
       }
-      let actionAbility = _.get(model, `actions.${ability}.ability`);
+      let actionAbility = _.get(model, `actions.${action}.ability`);
+      actionAbility = parseAbility(actionAbility, record);
       if (actionAbility) {
         if (!settings.abilities[actionAbility]) return true;
-      } else if (!model.abilities[ability]) return true;
+      } else if (!model.abilities[action]) return true;
       if (checkDepends(props.disabled, record)) return true;
       return false;
     }
@@ -124,7 +165,11 @@ export default class FieldGroup extends React.Component<Props> {
     let el = this.renderFields(isDisabled());
     if (!el) return null;
     if (form !== false) {
-      el = <div className="field-group-form form-horizontal">
+      let className = 'field-group-form form';
+      if (horizontal) {
+        className += ' form-horizontal';
+      }
+      el = <div className={className}>
         {el}
       </div>;
     }

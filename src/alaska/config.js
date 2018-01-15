@@ -60,25 +60,25 @@ export default {
   },
 
   /**
-   * 当前App支持的语言列表
+   * [APP] 当前App支持的语言列表
    * @type {[]}
    */
   locales: ['en', 'zh-CN'],
 
   /**
-   * 当前App默认语言
+   * [APP] 当前App默认语言
    * @type {string}
    */
   defaultLocale: 'en',
 
   /**
-   * 修改Locale的GET请求查询键
+   * [APP] 修改Locale的GET请求查询键
    * @type string
    */
   localeQueryKey: 'locale',
 
   /**
-   * 保存Locale cookie
+   * [APP] 保存Locale cookie
    * @type string
    */
   localeCookieKey: 'alaska.locale',
@@ -148,7 +148,7 @@ export default {
    * @type {Object}
    */
   renderer: {
-    type: 'alaska-renderer-swig'
+    type: ''
   },
   /**
    * [Service] 该Service依赖的子Service列表
@@ -157,6 +157,7 @@ export default {
   services: {},
   /**
    * [Service] 插件列表
+   * @type {Object}
    */
   plugins: {},
   /**
@@ -176,9 +177,9 @@ export default {
    * @type {Object|string}
    */
   cache: {
-    id: 'default-of-service',
-    type: 'alaska-cache-lru',
-    prefix: false,
-    maxAge: 3600 * 1000
+    // id: 'default-of-service',
+    // type: 'alaska-cache-lru',
+    // prefix: false,
+    // maxAge: 3600 * 1000
   }
 };

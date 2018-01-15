@@ -8,12 +8,16 @@
 /* eslint import/no-dynamic-require:0 */
 
 import _ from 'lodash';
+import Debugger from 'debug';
 import Path from 'path';
 import createMetadata from './metadata';
+
+const debug = Debugger('alaska-modules');
 
 function requireFiles(files, withDefault) {
   let res = {};
   _.forEach(files, (file, key) => {
+    debug('require ' + file);
     let m = require(file);
     res[key] = withDefault ? m.default : m;
   });
@@ -78,8 +82,24 @@ export default function createModules(mainService: Alaska$Service) {
     if (cfg.templatesDirs) {
       service.templatesDirs = cfg.templatesDirs.map((d) => Path.relative(mainService.dir, d));
     }
+    if (cfg.reactViews) {
+      if (process.env.NODE_ENV === 'development') {
+        service.reactViews = {};
+        _.forEach(cfg.reactViews, (file, name) => {
+          Object.defineProperty(service.reactViews, name, {
+            get() {
+              delete require.cache[require.resolve(file)];
+              debug('require ' + file);
+              return require(file).default;
+            }
+          });
+        });
+      } else {
+        service.reactViews = requireFiles(cfg.reactViews, true);
+      }
+    }
     if (cfg.plugins) {
-      service.plugins = _.map(cfg.plugins, (plugin) => {
+      service.plugins = _.reduce(cfg.plugins, (plugins, plugin, key) => {
         let res = {};
         if (plugin.pluginClass) {
           res.pluginClass = require(plugin.pluginClass).default;
@@ -105,8 +125,9 @@ export default function createModules(mainService: Alaska$Service) {
         if (plugin.sleds) {
           res.sleds = requireFiles(plugin.sleds);
         }
-        return res;
-      });
+        plugins[key] = res;
+        return plugins;
+      }, {});
     }
   });
 

@@ -7,7 +7,6 @@ import Immutable from 'seamless-immutable';
 import type { ImmutableObject } from 'seamless-immutable';
 import _ from 'lodash';
 import akita from 'akita';
-import checkDepends from 'check-depends';
 import { bindActionCreators } from 'redux';
 import * as detailsRedux from '../redux/details';
 import * as saveRedux from '../redux/save';
@@ -17,6 +16,7 @@ import Relationship from './Relationship';
 import TopToolbar from './TopToolbar';
 import EditorActions from './EditorActions';
 import * as settingsRedux from '../redux/settings';
+import parseAbility from '../utils/parse-ability';
 
 type Props = {
   loadDetails: Function,
@@ -38,17 +38,8 @@ type State = {
   id: string,
   errors: {},
   service: {},
-  model: Alaska$view$Model,
+  model: Object,
   record?: ImmutableObject<Alaska$view$Record>
-};
-
-type Context = {
-  settings: Alaska$view$Settings,
-  views: Alaska$view$Views,
-  t: Function,
-  router: Object,
-  toast: Function,
-  confirm: Function
 };
 
 class EditorPage extends React.Component<Props, State> {
@@ -61,11 +52,18 @@ class EditorPage extends React.Component<Props, State> {
     confirm: PropTypes.func,
   };
 
-  state: Object;
+  context: {
+    settings: Alaska$view$Settings,
+    views: Alaska$view$Views,
+    t: Function,
+    router: Object,
+    toast: Function,
+    confirm: Function
+  };
+
   _r: number;
   loading: boolean;
-
-  context: Context;
+  editorRef: Editor;
 
   constructor(props: Props, context: Context) {
     super(props);
@@ -98,6 +96,27 @@ class EditorPage extends React.Component<Props, State> {
 
   componentWillReceiveProps(nextProps: Props) {
     const { toast, t } = this.context;
+    let { save } = nextProps;
+    if (save._r === this._r) {
+      if (!save.fetching) {
+        this._r = Math.random();
+        this.loading = false;
+        if (save.error) {
+          //保存失败
+          // $Flow save.error一定存在
+          toast('error', t('Save failed'), save.error.message);
+        } else if (save.res) {
+          toast('success', t('Saved successfully'));
+          const { state } = this;
+          if (state.id === '_new') {
+            let url = '/edit/' + state.serviceId + '/' + state.modelName + '/' + encodeURIComponent(save.res._id);
+            this.context.router.history.replace(url);
+          }
+        }
+      }
+      return;
+    }
+
     let { service: serviceId, model: modelName, id } = nextProps.match.params;
     let newState: Indexed<any> = {
       serviceId,
@@ -118,23 +137,6 @@ class EditorPage extends React.Component<Props, State> {
         newState.model = model;
       }
     }
-    let { save } = nextProps;
-    if (save._r === this._r && !save.fetching) {
-      this._r = Math.random();
-      this.loading = false;
-      if (save.error) {
-        //保存失败
-        // $Flow save.error一定存在
-        toast('error', t('Save failed'), save.error.message);
-      } else if (save.res) {
-        toast('success', t('Saved successfully'));
-        const { state } = this;
-        if (state.id === '_new') {
-          let url = '/edit/' + state.serviceId + '/' + state.modelName + '/' + encodeURIComponent(save.res._id);
-          this.context.router.history.replace(url);
-        }
-      }
-    }
     this.setState(newState, () => {
       this.init();
     });
@@ -152,6 +154,7 @@ class EditorPage extends React.Component<Props, State> {
       }
       let newData = { _id: '' };
       _.forEach(model.fields, (field) => {
+        // $Flow record
         if (record[field.path] !== undefined) {
           newData[field.path] = record[field.path];
         } else if (field.default !== undefined) {
@@ -179,6 +182,42 @@ class EditorPage extends React.Component<Props, State> {
       key: model.key,
       id
     });
+  };
+
+  canCreate = (): boolean => {
+    const { model, record } = this.state;
+    const { settings } = this.context;
+    if (!model || model.nocreate) return false;
+    let ability = _.get(model, 'actions.create.ability');
+    if (ability) {
+      ability = parseAbility(ability, record);
+      if (ability && !settings.abilities[ability]) return false;
+    } else if (!model.abilities.create) return false;
+    return true;
+  };
+
+  canUpdate = (): boolean => {
+    const { model, record } = this.state;
+    const { settings } = this.context;
+    if (!model || model.noupdate) return false;
+    let ability = _.get(model, 'actions.update.ability');
+    if (ability) {
+      ability = parseAbility(ability, record);
+      if (ability && !settings.abilities[ability]) return false;
+    } else if (!model.abilities.update) return false;
+    return true;
+  };
+
+  canRemove = (): boolean => {
+    const { model, record } = this.state;
+    const { settings } = this.context;
+    if (!model || model.noremove) return false;
+    let ability = _.get(model, 'actions.remove.ability');
+    if (ability) {
+      ability = parseAbility(ability, record);
+      if (ability && !settings.abilities[ability]) return false;
+    } else if (!model.abilities.remove) return false;
+    return true;
   };
 
   handleRemove = async() => {
@@ -215,20 +254,24 @@ class EditorPage extends React.Component<Props, State> {
       id,
       isNew
     } = this.state;
+    if (!record) return;
     let { fields } = model;
     let errors = {};
     let hasError = false;
     const { t } = this.context;
     _.forEach(fields, (field, key) => {
+      // $Flow record 一定存在
       if (field.required && !record[key]) {
-        if (field.required === true || checkDepends(field.required, record)) {
+        if (field.required) {
           errors[key] = t('This field is required!');
           hasError = true;
         }
       }
     });
+
     this.setState({ errors });
-    if (hasError) return;
+    // TODO 页面滚动到第一个错误Field
+    if (hasError || _.find(this.editorRef.fieldRefs, (f) => (f.hasError && f.hasError()))) return;
     this._r = Math.random();
     this.loading = true;
 
@@ -263,7 +306,7 @@ class EditorPage extends React.Component<Props, State> {
     let subTitle = '';
     if (isNew) {
       subTitle = t('Create');
-    } else if (model.titleField) {
+    } else if (model.titleField && record) {
       subTitle = t(record[model.titleField], serviceId);
     } else {
       subTitle = id;
@@ -280,6 +323,7 @@ class EditorPage extends React.Component<Props, State> {
     const {
       id, model, isNew, record
     } = this.state;
+    if (!record) return null;
     return (
       <nav className="navbar navbar-fixed-bottom bottom-toolbar">
         <div className="container-fluid">
@@ -333,12 +377,33 @@ class EditorPage extends React.Component<Props, State> {
     if (record._error) {
       return <div className="editor-error">{record._error}</div>;
     }
+    let className = 'editor-page ' + serviceId + '-' + model.id;
+    if (this.canCreate()) {
+      className += ' can-create';
+    } else {
+      className += ' no-create';
+    }
+    if (this.canUpdate()) {
+      className += ' can-update';
+    } else {
+      className += ' no-update';
+    }
+    if (this.canRemove()) {
+      className += ' can-remove';
+    } else {
+      className += ' no-remove';
+    }
+
     return (
-      <Node id="editorPage" props={this.props} state={this.state} className={serviceId + '-' + model.id}>
+      <Node id="editorPage" props={this.props} state={this.state} className={className}>
         {this.renderToolbar()}
         <Editor
           model={model}
           id={id}
+          ref={(r) => {
+            // $Flow
+            this.editorRef = r;
+          }}
           record={record}
           errors={errors}
           onChange={(r) => this.setState({ record: r })}

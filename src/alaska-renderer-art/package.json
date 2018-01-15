@@ -1,0 +1,18 @@
+{
+  "name": "alaska-renderer-art",
+  "version": "0.12.12",
+  "description": "Art template renderer engine for Alaska",
+  "keywords": [
+    "alaska",
+    "alaska-renderer"
+  ],
+  "alaska": "renderer",
+  "main": "index.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-renderer-art",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "slash": "^1.0.0",
+    "art-template": "^4.12.2"
+  }
+}

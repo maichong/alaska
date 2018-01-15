@@ -21,24 +21,40 @@ export default async function remove(ctx: Alaska$Context) {
   }
   let Model: Class<Alaska$Model> = s.getModel(modelName);
 
-  let ability = `admin.${Model.key}.remove`;
-  if (Model.actions && Model.actions.remove && Model.actions.remove.ability) {
-    ability = Model.actions.remove.ability;
+  let ability = _.get(Model, 'actions.remove.ability', `admin.${Model.key}.remove`);
+
+  if (typeof ability === 'function') {
+    if (!id) {
+      alaska.error('Can not invoke functional action ability without record!');
+    }
   }
-  await ctx.checkAbility(ability);
+
+  let record;
 
   if (id) {
-    let record = await Model.findById(id);
+    record = await Model.findById(id);
     if (!record) {
       alaska.error('Record not found');
     }
+  }
 
+  if (typeof ability === 'function') {
+    ability = ability(record);
+  }
+
+  if (ability && ability[0] === '*') {
+    ability = ability.substr(1);
+  }
+
+  await ctx.checkAbility(ability);
+
+  if (id && record) {
     await record.remove();
   } else if (records) {
     for (let value of _.values(records)) {
-      let record = await Model.findById(value);
-      if (record) {
-        await record.remove();
+      let r = await Model.findById(value);
+      if (r) {
+        await r.remove();
       }
     }
   } else {

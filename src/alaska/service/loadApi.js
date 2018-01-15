@@ -88,7 +88,7 @@ export default async function loadApi() {
       return;
     }
     //如果不是普通错误,则输出错误信息
-    console.error(`URL: ${ctx.path} ${service.id} API: ${error.message} \n${error.stack}`);
+    console.error(`${ctx.method} ${ctx.path} -> ${error.message} \n${error.stack}`);
     //如果是数据验证错误
     if (error.message.startsWith('Validation failed') && error.errors) {
       for (let key in error.errors) {

@@ -55,7 +55,7 @@ export default async function loadControllers() {
   const defaultAction = this.getConfig('defaultAction');
 
   const suffix = this.getConfig('suffix');
-  this.router.register('/:controller?/:action?', this.getConfig('methods'), (ctx, next) => {
+  this.router.register('/:controller?/:action?', this.getConfig('methods'), async(ctx, next) => {
     let controller = ctx.params.controller || defaultController;
     let action = ctx.params.action || defaultAction;
     if (suffix && controller && controller.endsWith(suffix) && action === defaultAction) {
@@ -67,9 +67,11 @@ export default async function loadControllers() {
       action = action.substr(0, action.length - suffix.length);
     }
     service.debug('route %s:%s', controller, action);
+
     if (service._controllers[controller] && service._controllers[controller][action] && action[0] !== '_') {
-      return service._controllers[controller][action](ctx, next);
+      await service._controllers[controller][action](ctx, next);
+    } else {
+      await next();
     }
-    return next();
   });
 }

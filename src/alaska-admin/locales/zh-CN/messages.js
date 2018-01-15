@@ -68,5 +68,10 @@ export default {
   'Quick edit multi records': '快速编辑多条记录',
   'Quick Viewer': '快速查看',
   SAVE_MULTI_RECORDS: '保存 {count} 条记录',
-  'Save Record': '保存记录'
+  'Save Record': '保存记录',
+  'Invalid format': '格式错误',
+  'No records found.': '没有找到数据。',
+  'No data!': '无数据！',
+  'Not Found!': '没找到！',
+  'Requested page not found.': '请求的页面没有找到。'
 };

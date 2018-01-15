@@ -21,11 +21,21 @@ var _user = require('../redux/user');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function abilityFunction(list) {
+  _lodash2.default.forEach(list, item => {
+    if (item.ability && item.ability.startsWith('js:')) {
+      // eslint-disable-next-line no-eval
+      item.ability = eval(item.ability.substr(3));
+    }
+  });
+}
+
 // $Flow
+
+
 function* settingsSaga() {
   try {
-    let res = yield _akita2.default.get('/api/settings');
-    let settings = res.settings;
+    let { settings, user } = yield _akita2.default.get('/api/settings');
 
     let models = {};
     for (let i of _lodash2.default.keys(settings.services)) {
@@ -48,6 +58,10 @@ function* settingsSaga() {
               let name = key.substr(ability.length);
               model.abilities[name] = can;
             });
+
+            abilityFunction(model.actions);
+            abilityFunction(model.groups);
+            abilityFunction(model.fields);
           }
           service.models[modelName] = _lodash2.default.cloneDeep(model);
         }
@@ -66,7 +80,7 @@ function* settingsSaga() {
     settings.models = models;
 
     yield (0, _effects.put)((0, _settings.applySettings)(settings));
-    yield (0, _effects.put)((0, _user.applyUser)(res.user));
+    yield (0, _effects.put)((0, _user.applyUser)(user));
   } catch (e) {
     console.error(e);
   }

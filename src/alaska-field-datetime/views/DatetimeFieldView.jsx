@@ -12,7 +12,7 @@ export default class DatetimeFieldView extends React.Component<Alaska$view$Field
   };
 
   componentWillMount() {
-    moment.locale(this.context.settings.locale);
+    // moment.locale(this.context.settings.locale);
   }
 
   shouldComponentUpdate(props: Alaska$view$Field$View$Props) {
@@ -41,6 +41,7 @@ export default class DatetimeFieldView extends React.Component<Alaska$view$Field
       inputElement = <input type="text" className="form-control" disabled value={valueString} />;
     } else {
       inputElement = <DateTime
+        locale={this.context.settings.locale.toLowerCase()}
         value={valueString || value}
         dateFormat={field.dateFormat}
         timeFormat={field.timeFormat}
@@ -55,24 +56,24 @@ export default class DatetimeFieldView extends React.Component<Alaska$view$Field
 
     let label = field.nolabel ? '' : field.label;
 
-    if (field.horizontal === false) {
-      let labelElement = label ? <label className="control-label">{label}</label> : null;
+    if (field.horizontal) {
       return (
         <div className={className}>
-          {labelElement}
-          {inputElement}
-          {helpElement}
+          <label className="col-sm-2 control-label">{label}</label>
+          <div className="col-sm-10">
+            {inputElement}
+            {helpElement}
+          </div>
         </div>
       );
     }
 
+    let labelElement = label ? <label className="control-label">{label}</label> : null;
     return (
       <div className={className}>
-        <label className="col-sm-2 control-label">{label}</label>
-        <div className="col-sm-10">
-          {inputElement}
-          {helpElement}
-        </div>
+        {labelElement}
+        {inputElement}
+        {helpElement}
       </div>
     );
   }

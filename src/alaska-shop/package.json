@@ -1,6 +1,6 @@
 {
   "name": "alaska-shop",
-  "version": "0.12.3",
+  "version": "0.12.12",
   "description": "Alaska shop service",
   "alaska": "service",
   "main": "index.js",
@@ -8,9 +8,9 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-html": "^0.12.3"
+    "alaska-field-html": "^0.12.12"
   },
   "peerDependencies": {
-    "alaska-field-html": "^0.12.3"
+    "alaska-field-html": "^0.12.12"
   }
 }

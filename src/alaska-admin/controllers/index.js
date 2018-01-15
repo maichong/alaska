@@ -3,7 +3,7 @@ export default async function (ctx: Alaska$Context) {
     ctx.redirect(ctx.path + '/');
     return;
   }
-  await ctx.show('index.swig', {
+  await ctx.show('index', {
     prefix: ctx.service.getConfig('prefix'),
     env: process.env.NODE_ENV || 'production'
   });

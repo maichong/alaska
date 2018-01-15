@@ -131,7 +131,7 @@ export default class SelectCheckbox extends React.Component<Props, State> {
             label={opt.label}
             value={valueMap[vid] === true}
             style={{ display: 'inline-block', marginRight: 16 }}
-            onCheck={() => this.handleCheck(vid)}
+            onChange={() => this.handleCheck(vid)}
           />);
         })
       }

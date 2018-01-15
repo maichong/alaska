@@ -249,7 +249,7 @@ class Alaska {
     const localeQueryKey = this.getConfig('localeQueryKey');
     const defaultLocale = MAIN.getConfig('defaultLocale');
     // $Flow
-    app.use((ctx: Alaska$Context, next) => {
+    app.use(async(ctx: Alaska$Context, next) => {
       ctx.set('X-Powered-By', 'Alaska');
       ctx.alaska = alaska;
       ctx.main = MAIN;
@@ -392,15 +392,12 @@ class Alaska {
        * @param {Object} [state]  模板变量
        * @returns {Promise<string>} 返回渲染结果
        */
-      ctx.show = function (template: string, state?: Object): Promise<string> {
-        return ctx.service.renderer.renderFile(template, Object.assign({}, ctx.state, state))
-          .then((html) => {
-            ctx.body = html;
-            return Promise.resolve(html);
-          });
+      ctx.show = async function (template: string, state?: Object): Promise<string> {
+        ctx.body = await ctx.service.renderer.renderFile(template, Object.assign({}, ctx.state, state));
+        return ctx.body;
       };
 
-      return next();
+      await next();
     });
 
     // $Flow

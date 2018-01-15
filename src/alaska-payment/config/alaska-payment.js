@@ -5,5 +5,7 @@ export default {
   services: {
     'alaska-user': {}
   },
-  //plugins: ['alaska-payment-alipay']
+  // plugins: {
+  //   alipay: 'alaska-payment-alipay'
+  // }
 };

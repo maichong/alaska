@@ -1,2 +1,2 @@
-# alaska-render-swig
-Alaska swig template render engine
+# alaska-renderer-swig
+Swig template renderer engine for Alaska

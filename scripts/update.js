@@ -20,15 +20,26 @@ async function getVersions(pkg) {
   return libVersions[pkg];
 }
 
-async function update(pkg) {
+async function update(pkg, newVersion) {
   let pkgFile = path.join(dir, pkg, 'package.json');
   if (!utils.isFile(pkgFile)) return;
+  let needSave = false;
   let info = require(pkgFile);
+  if (newVersion && info.version !== newVersion) {
+    info.version = newVersion;
+    needSave = true;
+  }
   console.log('update ' + info.name + '...');
   for (let p of ['dependencies', 'devDependencies', 'peerDependencies']) {
     let libs = info[p];
     if (!libs) continue;
     for (let name in libs) {
+      if (/^alaska/.test(name) && newVersion) {
+        // alaska
+        info[p][name] = '^' + newVersion;
+        needSave = true;
+        continue;
+      }
       try {
         if (libs[name] === '*' || libs[name][0] !== '^') continue;
         let v = await getVersions(name, libs[name]);
@@ -47,7 +58,7 @@ async function update(pkg) {
           });
           if (yes === 'yes') {
             info[p][name] = '^' + latest;
-            fs.writeFileSync(pkgFile, JSON.stringify(info, null, 2));
+            needSave = true;
           }
         } catch (err) {
           console.error(err);
@@ -59,12 +70,19 @@ async function update(pkg) {
       }
     }
   }
+  if (needSave) {
+    fs.writeFileSync(pkgFile, JSON.stringify(info, null, 2) + '\n');
+  }
 }
 
 async function start() {
+  let newVersion = '';
+  if (process.argv.length === 3) {
+    newVersion = process.argv[2];
+  }
   let pkgs = fs.readdirSync(dir);
   for (let pkg of pkgs) {
-    await update(pkg);
+    await update(pkg, newVersion);
   }
   console.log('done');
 }

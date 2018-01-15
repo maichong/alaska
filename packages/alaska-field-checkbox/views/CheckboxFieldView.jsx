@@ -40,21 +40,21 @@ export default class CheckboxFieldView extends React.Component<Alaska$view$Field
       disabled={disabled}
     />);
 
-    if (field.horizontal === false) {
+    if (field.horizontal) {
       return (
         <div className={className}>
-          {input}
-          {helpElement}
+          <div className="col-sm-offset-2 col-sm-10">
+            {input}
+            {helpElement}
+          </div>
         </div>
       );
     }
 
     return (
       <div className={className}>
-        <div className="col-sm-offset-2 col-sm-10">
-          {input}
-          {helpElement}
-        </div>
+        {input}
+        {helpElement}
       </div>
     );
   }

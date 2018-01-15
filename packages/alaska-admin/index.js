@@ -66,6 +66,7 @@ class AdminService extends _alaska.Service {
 
     let services = result.services;
     let locales = result.locales;
+    let horizontal = this.getConfig('defaultHorizontal');
 
     for (let serviceId of Object.keys(_alaska2.default.services)) {
       let service = _alaska2.default.services[serviceId];
@@ -88,13 +89,21 @@ class AdminService extends _alaska.Service {
           path: Model.path,
           key: Model.key,
           preview: Model.preview,
+          quickEditorView: Model.quickEditorView,
           titleField: Model.titleField,
           defaultSort: Model.defaultSort,
           defaultColumns: Model.defaultColumns,
           nocreate: Model.nocreate,
           noupdate: Model.noupdate,
           noremove: Model.noremove,
-          groups: Model.groups,
+          groups: _lodash2.default.reduce(Model.groups, (res, g, key) => {
+            let { ability } = g;
+            if (typeof ability === 'function') {
+              ability = 'js:' + ability;
+            }
+            res[key] = _lodash2.default.assign({}, g, { ability, horizontal });
+            return res;
+          }, {}),
           relationships: _lodash2.default.reduce(Model.relationships, (res, r, key) => {
             res[key] = {
               key,
@@ -106,7 +115,14 @@ class AdminService extends _alaska.Service {
             };
             return res;
           }, {}),
-          actions: Model.actions || {},
+          actions: _lodash2.default.reduce(Model.actions, (res, a, key) => {
+            let { ability } = a;
+            if (typeof ability === 'function') {
+              ability = 'js:' + ability;
+            }
+            res[key] = _lodash2.default.assign({}, a, { ability });
+            return res;
+          }, {}),
           fields: {},
           searchFields: Model.searchFields || []
         };

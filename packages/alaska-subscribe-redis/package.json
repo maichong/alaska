@@ -1,6 +1,6 @@
 {
   "name": "alaska-subscribe-redis",
-  "version": "0.12.11",
+  "version": "0.12.12",
   "description": "Alaska redis subscribe/publish driver",
   "keywords": [
     "alaska",
@@ -11,7 +11,7 @@
   "alaska": "driver",
   "alaska-driver": "subscribe",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-update",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-subscribe-redis",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {

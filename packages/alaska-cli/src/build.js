@@ -130,7 +130,7 @@ exports.default = async function build() {
 
   {
     // views 配置文件
-    let viewsFile = process.cwd() + '/views/views.js';
+    let viewsFile = process.cwd() + '/src/views/admin-views.js';
     if (uitls.isFile(viewsFile)) {
       // $Flow require()
       parse(require(viewsFile));

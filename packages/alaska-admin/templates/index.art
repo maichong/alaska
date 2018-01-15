@@ -31,10 +31,10 @@
   <div class="boot-loading">Loading...</div>
 </div>
 
-{% if env=='production' %}
-  <script type="application/javascript" src="{{ prefix }}/js/app.min.js"></script>
-{% else %}
-  <script type="application/javascript" src="{{ prefix }}/js/app.js"></script>
-{% endif %}
+{{ if env=='production' }}
+<script type="application/javascript" src="{{ prefix }}/js/app.min.js"></script>
+{{ else }}
+<script type="application/javascript" src="{{ prefix }}/js/app.js"></script>
+{{ /if }}
 </body>
 </html>

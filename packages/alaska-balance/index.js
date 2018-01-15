@@ -4,17 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
 var _alaska = require('alaska');
-
-var _alaskaUser = require('alaska-user');
-
-var _alaskaUser2 = _interopRequireDefault(_alaskaUser);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @class BalanceService

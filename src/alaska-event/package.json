@@ -1,6 +1,6 @@
 {
   "name": "alaska-event",
-  "version": "0.12.3",
+  "version": "0.12.12",
   "description": "Alaska event service",
   "keywords": [
     "alaska",
@@ -12,9 +12,9 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-user": "^0.12.10"
+    "alaska-user": "^0.12.12"
   },
   "peerDependencies": {
-    "alaska-user": "^0.12.10"
+    "alaska-user": "^0.12.12"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "alaska-captcha",
-  "version": "0.12.3",
+  "version": "0.12.12",
   "description": "Alaska captcha service",
   "keywords": [
     "alaska",
@@ -13,16 +13,16 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-number": "^0.12.3",
-    "alaska-field-text": "^0.12.10",
-    "alaska-field-select": "^0.12.10",
-    "alaska-field-relationship": "^0.12.10",
+    "alaska-field-number": "^0.12.12",
+    "alaska-field-text": "^0.12.12",
+    "alaska-field-select": "^0.12.12",
+    "alaska-field-relationship": "^0.12.12",
     "string-random": "^0.1.0"
   },
   "peerDependencies": {
-    "alaska-field-number": "^0.12.3",
-    "alaska-field-text": "^0.12.10",
-    "alaska-field-select": "^0.12.10",
-    "alaska-field-relationship": "^0.12.10"
+    "alaska-field-number": "^0.12.12",
+    "alaska-field-text": "^0.12.12",
+    "alaska-field-select": "^0.12.12",
+    "alaska-field-relationship": "^0.12.12"
   }
 }

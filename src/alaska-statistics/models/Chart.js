@@ -5,7 +5,7 @@ import moment from 'moment';
 import Color from 'color';
 import { Model } from 'alaska';
 import random from 'number-random';
-import type { ChartType, ChartColor, ChartData, ChartPoint, ChartDataSets, ChartOptions } from 'chart.js';
+import type { ChartType, ChartData, ChartPoint, ChartDataSets, ChartOptions } from 'chart.js';
 import service from '../';
 import ChartDataModel from './ChartData';
 import ChartSource from './ChartSource';

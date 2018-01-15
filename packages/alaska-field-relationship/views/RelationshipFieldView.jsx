@@ -178,24 +178,22 @@ export default class RelationshipFieldView extends React.Component<Alaska$view$F
 
     let label = field.nolabel ? '' : field.label;
 
-    if (field.horizontal === false) {
-      let labelElement = label ? <label className="control-label">{label}</label> : null;
+    if (field.horizontal) {
       return (
         <div className={className}>
-          {labelElement}
-          {inputElement}
-          {helpElement}
+          <label className="col-sm-2 control-label">{label}</label>
+          <div className="col-sm-10">
+            {inputElement}
+            {helpElement}
+          </div>
         </div>
       );
     }
-
     return (
       <div className={className}>
-        <label className="col-sm-2 control-label">{label}</label>
-        <div className="col-sm-10">
-          {inputElement}
-          {helpElement}
-        </div>
+        {label ? <label className="control-label">{label}</label> : null}
+        {inputElement}
+        {helpElement}
       </div>
     );
   }

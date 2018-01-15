@@ -11,6 +11,7 @@ import DataTableRow, { DataTableRowDragable } from './DataTableRow';
 import Node from './Node';
 import store from '../redux';
 import * as saveRedux from '../redux/save';
+import parseAbility from '../utils/parse-ability';
 
 type Props = {
   model: Alaska$view$Model,
@@ -127,6 +128,42 @@ export default class DataTable extends React.Component<Props, State> {
     }
     return true;
   }
+
+  canCreate = (): boolean => {
+    const { model } = this.props;
+    const { settings } = this.context;
+    if (!model || model.nocreate) return false;
+    let ability = _.get(model, 'actions.create.ability');
+    if (ability) {
+      ability = parseAbility(ability);
+      if (ability && !settings.abilities[ability]) return false;
+    } else if (!model.abilities.create) return false;
+    return true;
+  };
+
+  canUpdate = (): boolean => {
+    const { model } = this.props;
+    const { settings } = this.context;
+    if (!model || model.noupdate) return false;
+    let ability = _.get(model, 'actions.update.ability');
+    if (ability) {
+      ability = parseAbility(ability);
+      if (ability && !settings.abilities[ability]) return false;
+    } else if (!model.abilities.update) return false;
+    return true;
+  };
+
+  canRemove = (): boolean => {
+    const { model } = this.props;
+    const { settings } = this.context;
+    if (!model || model.noremove) return false;
+    let ability = _.get(model, 'actions.remove.ability');
+    if (ability) {
+      ability = parseAbility(ability);
+      if (ability && !settings.abilities[ability]) return false;
+    } else if (!model.abilities.remove) return false;
+    return true;
+  };
 
   handleDrag = (record: Alaska$view$Record) => {
     this.setState({ dragging: record });
@@ -284,8 +321,26 @@ export default class DataTable extends React.Component<Props, State> {
     let list = this.state.list || records;
 
     let className = 'data-table table table-hover ' + model.serviceId + '-' + model.id + '-record';
-    if (canDrag && dragging) {
-      className += ' dragging';
+    if (canDrag) {
+      className += ' can-drag';
+      if (dragging) {
+        className += ' dragging';
+      }
+    }
+    if (this.canCreate()) {
+      className += ' can-create';
+    } else {
+      className += ' no-create';
+    }
+    if (this.canUpdate()) {
+      className += ' can-update';
+    } else {
+      className += ' no-update';
+    }
+    if (this.canRemove()) {
+      className += ' can-remove';
+    } else {
+      className += ' no-remove';
     }
 
     let Row = DataTableRow;

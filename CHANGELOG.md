@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.12.12]
+
+### Added
+
+- alaska-middleware-error-page 中间件，支持自定义404、500等错误页面
+- alaska-plugin-react 支持React服务端渲染
+- 新增 src/views/react-views.js 默认导出 alaska-react 可以服务端渲染的组件路径（和views文件夹的相对路径）列表
+- 新增 alaska-renderer-art artTemplate 模板引擎
+- text field match 正则支持
+- field view 新增 hasError 方法
+- actions / groups / fields ability 属性支持"只禁用、不隐藏"，并支持自定义函数生成ability值
+- group horizontal 属性
+- alaska-admin 增加 defaultHorizontal 配置
+- admin view 增加 404 页面
+- admin view 数据列表如果为空，显示友好提示
+- Model.quickEditorView=false 可关闭列表页面快速编辑
+
+### Changed
+
+- 项目下 views 目录需要移到 src/views，并根据需要更新 .babelrc 和 webpack 配置  [参考](https://github.com/maichong/alaska-init/tree/goods/src/views)
+- views/views.js 需要更名为 src/views/admin-views.js
+- 必须指定模板引擎，不再使用默认的 alaska-renderer-swig
+- alaska-admin 模板引擎更改为 artTemplate
+- alaska 核心库去除默认cache设置，使用缓存驱动的service必须独自设置cache
+
+### Fixed
+
+- admin view 列表删除按钮事件冒泡
+
+
 ## [0.12.11]
 
 ### Added

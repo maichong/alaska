@@ -22,7 +22,7 @@ exports.default = function () {
     ctx.checkAbility = id => {
       if (!ctx.user) {
         ctx.status = 403;
-        _alaska2.default.error('Access Denied', 403);
+        ctx.error('Access Denied', 403);
       }
       // $Flow ctx.user 一定存在
       return ctx.user.hasAbility(id).then(has => {

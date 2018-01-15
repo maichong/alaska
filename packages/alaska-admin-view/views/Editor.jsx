@@ -5,6 +5,7 @@ import React from 'react';
 import type { ImmutableObject } from 'seamless-immutable';
 import Node from './Node';
 import FieldGroup from './FieldGroup';
+import type { FieldRefMap } from './FieldGroup';
 
 type Props = {
   model: Alaska$view$Model,
@@ -16,6 +17,16 @@ type Props = {
 };
 
 export default class Editor extends React.Component<Props> {
+  groupRefs = {};
+
+  get fieldRefs(): FieldRefMap {
+    let results = {};
+    _.forEach(this.groupRefs, (groupDom) => {
+      _.assign(results, groupDom.fieldRefs);
+    });
+    return results;
+  }
+
   handleFieldChange = (key: any, value: any) => {
     const { onChange, record } = this.props;
     onChange(record.set(key, value));
@@ -81,6 +92,7 @@ export default class Editor extends React.Component<Props> {
     for (let groupKey of Object.keys(groups)) {
       let group = groups[groupKey];
       if (!group.fields.length) {
+        delete this.groupRefs[groupKey];
         continue;
       }
       const { fields, ...others } = group;
@@ -88,6 +100,9 @@ export default class Editor extends React.Component<Props> {
         <FieldGroup
           key={groupKey}
           path={groupKey}
+          ref={(r) => {
+            this.groupRefs[groupKey] = r;
+          }}
           model={model}
           fields={fields}
           id={id}
