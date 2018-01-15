@@ -12,8 +12,8 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-image": "^0.12.12",
-    "akita-node": "^0.3.7"
+    "akita-node": "^0.3.7",
+    "alaska-field-image": "^0.12.12"
   },
   "peerDependencies": {
     "alaska-field-image": "^0.12.12"
