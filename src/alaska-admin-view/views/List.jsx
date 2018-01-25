@@ -81,6 +81,7 @@ class List extends React.Component<FinalProps, State> {
       filters, search, sort, model, loadList
     } = this.props;
     if (!model || (list && list.fetching)) return;
+    if (page && list && !list.next) return;
     page = (page || 0) + 1;
     loadList({
       service: model.serviceId, model: model.modelName, page, filters, search, key: model.key, sort

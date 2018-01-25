@@ -13,7 +13,7 @@ gulp.task('admin-less', () => {
 
 gulp.task('watch', ['admin-less'], () => {
   gulp.watch('less/*.less', ['admin-less']);
-  gulp.watch('node_modules/alaska-admin-view/less/*.less', ['admin-less']);
+  gulp.watch('modules/alaska-admin-view/less/*.less', ['admin-less']);
 });
 
 gulp.task('default', ['admin-less']);

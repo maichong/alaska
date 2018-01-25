@@ -43,3 +43,20 @@
     margin-right: ( @top-toolbar-height - @input-height-base ) / 2;
   }
 }
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-tool {
+  display: inline-block;
+  padding-right: 6px;
+  .fa {
+    animation: spin .6s linear infinite;
+  }
+}

@@ -54,6 +54,8 @@ module.exports = function (env) {
               'syntax-class-properties',
               'transform-class-properties',
               'transform-flow-strip-types',
+              'transform-object-rest-spread',
+              'transform-export-extensions',
               'transform-runtime'
             ],
             ignore: [

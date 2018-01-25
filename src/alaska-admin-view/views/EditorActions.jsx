@@ -24,13 +24,21 @@ export default class EditorActions extends React.Component<Props> {
   static contextTypes = {
     t: PropTypes.func,
     confirm: PropTypes.func,
-    toast: PropTypes.func
+    toast: PropTypes.func,
+    router: PropTypes.object
   };
 
   context: {
     t: Function,
     confirm: Function,
-    toast: Function
+    toast: Function,
+    router: Object,
+  };
+
+  handleAdd = () => {
+    const { model } = this.props;
+    let url = '/edit/' + model.serviceId + '/' + model.modelName + '/_new';
+    this.context.router.history.replace(url);
   };
 
   async handleAction(action: string) {
@@ -136,13 +144,21 @@ export default class EditorActions extends React.Component<Props> {
       });
     }
 
+    // export
+    actionList.push({
+      key: 'export',
+      action: {
+        hidden: true
+      }
+    });
+
     {
       // add
       let hidden = isNew || model.nocreate; // 不判断 ability，ActionList 会判断
 
       actionList.push({
         key: 'add',
-        link: '/edit/' + model.serviceId + '/' + model.modelName + '/_new',
+        onClick: this.handleAdd,
         action: _.assign({
           key: 'create',
           icon: 'plus',
@@ -163,7 +179,7 @@ export default class EditorActions extends React.Component<Props> {
     });
 
     return (
-      <Node id="editorActions" className="navbar-form navbar-right">
+      <Node id="editorActions" className="navbar-form navbar-right editor-actions">
         <ActionList
           editor
           items={actionList}

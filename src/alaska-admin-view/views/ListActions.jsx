@@ -4,12 +4,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import akita from 'akita';
+import qs from 'qs';
 import shallowEqualWithout from 'shallow-equal-without';
 import type { ImmutableArray } from 'seamless-immutable';
 import Node from './Node';
 import ActionList from './ActionList';
 
 type Props = {
+  sort?: string,
+  search?: string,
+  filters: Object,
   records: ImmutableArray<Alaska$view$Record>,
   selected: ImmutableArray<Alaska$view$Record>,
   model: Alaska$view$Model,
@@ -78,6 +82,21 @@ export default class ListActions extends React.Component<Props> {
     }
   };
 
+  handleExport = () => {
+    let {
+      search, sort, filters, model
+    } = this.props;
+    let query = {
+      _sort: sort,
+      _search: search,
+      _service: model.serviceId,
+      _model: model.modelName,
+      ...filters
+    };
+    let url = window.PREFIX + '/export?' + qs.stringify(query);
+    window.open(url);
+  };
+
   handleRemove = async() => {
     const { model, selected } = this.props;
     const { t, toast, confirm } = this.context;
@@ -139,6 +158,24 @@ export default class ListActions extends React.Component<Props> {
     }
 
     {
+      // export
+      let hidden = model.noexport; // 不判断 ability，ActionList 会判断
+
+      actionList.push({
+        key: 'export',
+        onClick: this.handleExport,
+        action: _.assign({
+          key: 'export',
+          list: true,
+          icon: 'download',
+          style: 'info',
+          disabled: !records.length,
+          tooltip: 'Export records'
+        }, actions.export, hidden ? { hidden: true } : {})
+      });
+    }
+
+    {
       // add
       let hidden = model.nocreate; // 不判断 ability，ActionList 会判断
       actionList.push({
@@ -155,7 +192,7 @@ export default class ListActions extends React.Component<Props> {
     }
 
     _.forEach(actions, (action, key) => {
-      if (['add', 'create', 'update', 'remove'].indexOf(key) > -1) return;
+      if (['add', 'create', 'update', 'remove', 'export'].indexOf(key) > -1) return;
       actionList.push({
         key,
         onClick: () => this.handleAction(key),

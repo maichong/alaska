@@ -3,9 +3,9 @@
 import _ from 'lodash';
 import alaska from 'alaska';
 
-function parseAbility(ability: any, data: Object): string {
+function parseAbility(ability: any, data: Object, user: Object): string {
   if (typeof ability === 'function') {
-    ability = ability(data);
+    ability = ability(data, user);
   }
   if (ability && ability[0] === '*') {
     ability = ability.substr(1);
@@ -67,7 +67,7 @@ export default async function (ctx: Alaska$Context) {
 
     let ability = _.get(Model, `actions.${action}.ability`, `admin.${Model.key}.${action}`);
 
-    ability = parseAbility(ability, id ? record : data);
+    ability = parseAbility(ability, id ? record : data, ctx.user);
 
     await checkAbility(ability);
 
@@ -80,7 +80,7 @@ export default async function (ctx: Alaska$Context) {
       // 验证Group权限
       if (field.group && Model.groups && Model.groups[field.group]) {
         let group = Model.groups[field.group];
-        let groupAbility = parseAbility(group.ability, id ? record : data);
+        let groupAbility = parseAbility(group.ability, id ? record : data, ctx.user);
         if (groupAbility && !await hasAbility(groupAbility)) {
           delete data[key];
           continue;
@@ -88,7 +88,7 @@ export default async function (ctx: Alaska$Context) {
       }
 
       // 验证字段权限
-      let fieldAbility = parseAbility(field.ability, id ? record : data);
+      let fieldAbility = parseAbility(field.ability, id ? record : data, ctx.user);
       if (fieldAbility && !await hasAbility(fieldAbility)) {
         delete data[key];
       }

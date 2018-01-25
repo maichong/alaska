@@ -19,7 +19,7 @@ function abilityFunction(list) {
 // $Flow
 export default function* settingsSaga() {
   try {
-    let { settings, user } = yield akita.get('/api/settings');
+    let settings = yield akita.get('/api/settings');
 
     let models = {};
     _.forEach(settings.services, (service) => {
@@ -48,7 +48,7 @@ export default function* settingsSaga() {
         function checkAbility(action) {
           let ability = _.get(model, `actions.${action}.ability`);
           if (ability) {
-            ability = parseAbility(ability);
+            ability = parseAbility(ability, null, settings.user);
             if (ability && !settings.abilities[ability]) return false;
           } else if (!model.abilities[action]) return false;
           return true;
@@ -62,7 +62,7 @@ export default function* settingsSaga() {
           if (model.noupdate) return false;
           let ability = _.get(model, 'actions.update.ability');
           if (ability) {
-            ability = parseAbility(ability, record);
+            ability = parseAbility(ability, record, settings.user);
             if (ability && !settings.abilities[ability]) return false;
           } else if (!model.abilities.update) return false;
           // TODO check action depends / hidden / super
@@ -73,7 +73,7 @@ export default function* settingsSaga() {
           if (model.noremove) return false;
           let ability = _.get(model, 'actions.remove.ability');
           if (ability) {
-            ability = parseAbility(ability, record);
+            ability = parseAbility(ability, record, settings.user);
             if (ability && !settings.abilities[ability]) return false;
           } else if (!model.abilities.remove) return false;
           // TODO check action depends / hidden / super
@@ -95,7 +95,7 @@ export default function* settingsSaga() {
     settings.models = models;
 
     yield put(applySettings(settings));
-    yield put(applyUser(user));
+    yield put(applyUser(settings.user));
   } catch (e) {
     console.error(e);
   }

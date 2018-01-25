@@ -9,8 +9,9 @@ export default class TextFieldView extends React.Component<Alaska$view$Field$Vie
     t: PropTypes.func,
   };
 
-  shouldComponentUpdate(props: Alaska$view$Field$View$Props): boolean {
-    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model', 'field');
+  shouldComponentUpdate(nextProps: Alaska$view$Field$View$Props): boolean {
+    return nextProps.record._id !== this.props.record._id ||
+      !shallowEqualWithout(nextProps, this.props, 'record', 'onChange', 'model');
   }
 
   getError(): string {

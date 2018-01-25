@@ -72,7 +72,8 @@ export default class AdminMenu extends Model {
     super: {
       label: 'Super',
       type: Boolean,
-      super: true
+      super: true,
+      noexport: true
     },
     activated: {
       label: 'Activated',

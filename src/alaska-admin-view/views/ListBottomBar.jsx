@@ -8,6 +8,8 @@ import ListActions from './ListActions';
 type Props = {
   model: Alaska$view$Model,
   search?: string,
+  filters: Object,
+  sort?: string,
   records: ImmutableArray<Alaska$view$Record>,
   selected: ImmutableArray<Alaska$view$Record>,
   onSearch: Function,
@@ -32,7 +34,7 @@ export default class ListBottomBar extends React.Component<Props, State> {
 
   render() {
     const {
-      model, onSearch, search, selected, records, onRefresh, onRefreshSettings
+      model, onSearch, search, filters, sort, selected, records, onRefresh, onRefreshSettings
     } = this.props;
     if (!model) return null;
     const { t } = this.context;
@@ -65,6 +67,9 @@ export default class ListBottomBar extends React.Component<Props, State> {
           </div>
           <ListActions
             model={model}
+            filters={filters}
+            search={search}
+            sort={sort}
             records={records}
             selected={selected}
             refresh={onRefresh}

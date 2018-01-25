@@ -3,7 +3,7 @@
 import SETTINGS from 'alaska-settings';
 import service from '../';
 
-async function getLogo(key: string): Promise < string > {
+async function getLogo(key: string): Promise<string> {
   let logo = '';
   let pic = await SETTINGS.get(key);
 
@@ -21,16 +21,14 @@ export default async function (ctx: Alaska$Context) {
 
   if (!user) {
     ctx.body = {
-      user: {},
-      settings: {
-        locales: {
-          'alaska-admin': service.locales,
-        },
-        locale: ctx.locale,
-        loginLogo,
-        logo,
-        icon
+      locales: {
+        'alaska-admin': service.locales,
       },
+      locale: ctx.locale,
+      loginLogo,
+      logo,
+      icon,
+      user: {}
     };
     return;
   }
@@ -50,9 +48,6 @@ export default async function (ctx: Alaska$Context) {
   settings.locale = ctx.locale;
   settings.logo = logo;
   settings.icon = icon;
-  ctx.body = {
-    // $Flow
-    user: Object.assign({ access }, user.data()),
-    settings
-  };
+  settings.user = Object.assign({ access }, user.data());
+  ctx.body = settings;
 }

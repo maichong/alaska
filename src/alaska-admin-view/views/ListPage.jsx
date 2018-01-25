@@ -245,6 +245,20 @@ class ListPage extends React.Component<Props, State> {
     if (!model || !list) return null;
     let tools = [];
 
+    if (list && list.fetching) {
+      tools.push((
+        <div key="loading" className="loading-tool"><i className="fa fa-spinner" /></div>
+      ));
+    }
+
+    tools.push(<button
+      key="refresh"
+      className="btn btn-primary"
+      onClick={this.refresh}
+    >
+      <i className="fa fa-refresh" />
+    </button>);
+
     if (!query._nofilters) {
       tools.push(<FilterTool
         key="filters"
@@ -261,13 +275,6 @@ class ListPage extends React.Component<Props, State> {
         onChange={this.handleColumns}
       />);
     }
-    tools.push(<button
-      key="refresh"
-      className="btn btn-primary"
-      onClick={this.refresh}
-    >
-      <i className="fa fa-refresh" />
-    </button>);
     return (
       <TopToolbar tools={tools}>
         {t(model.label || model.modelName, model.serviceId)}
@@ -348,7 +355,9 @@ class ListPage extends React.Component<Props, State> {
           />
           <ListBottomBar
             model={model}
+            filters={filters}
             search={search}
+            sort={sort}
             records={records}
             selected={selected}
             onSearch={this.handleSearch}

@@ -20,7 +20,8 @@
     "alaska-middleware-upload": "^0.12.12",
     "alaska-settings": "^0.12.12",
     "alaska-user": "^0.12.12",
-    "koa-bodyparser": "^4.2.0"
+    "koa-bodyparser": "^4.2.0",
+    "through": "2.3.8"
   },
   "peerDependencies": {
     "alaska-field-category": "^0.12.12",

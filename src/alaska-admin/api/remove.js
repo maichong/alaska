@@ -39,7 +39,7 @@ export default async function remove(ctx: Alaska$Context) {
   }
 
   if (typeof ability === 'function') {
-    ability = ability(record);
+    ability = ability(record, ctx.user);
   }
 
   if (ability && ability[0] === '*') {

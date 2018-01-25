@@ -35,7 +35,7 @@ export default class FieldGroup extends React.Component<Props> {
       let { ability } = field;
       let abilityDisabled = false;
       if (typeof ability === 'function') {
-        ability = ability(record);
+        ability = ability(record, settings.user);
       }
       if (ability && ability[0] === '*') {
         ability = ability.substr(1);
@@ -103,7 +103,7 @@ export default class FieldGroup extends React.Component<Props> {
     let { ability } = props;
     let abilityDisabled = false;
     if (typeof ability === 'function') {
-      ability = ability(record);
+      ability = ability(record, settings.user);
     }
     if (ability && ability[0] === '*') {
       ability = ability.substr(1);
@@ -126,7 +126,7 @@ export default class FieldGroup extends React.Component<Props> {
         action = 'update';
       }
       let actionAbility = _.get(model, `actions.${action}.ability`);
-      actionAbility = parseAbility(actionAbility, record);
+      actionAbility = parseAbility(actionAbility, record, settings.user);
       if (actionAbility) {
         if (!settings.abilities[actionAbility]) return true;
       } else if (!model.abilities[action]) return true;

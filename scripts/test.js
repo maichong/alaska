@@ -54,7 +54,7 @@ function copySrcFile(file) {
   console.log(chalk.blue('copy'), file);
   let srcFile = path.join(srcDir, file);
   let distFile = path.join(testModulesDir, file);
-  if (srcFile.endsWith('.js')) {
+  if (/\.jsx?$/.test(srcFile)) {
     let content = fs.readFileSync(srcFile, 'utf8');
     content = content.replace(/from\s+'alaska/g, (match) => {
       return 'from \'' + path.relative(file, 'alaska').substr(3);

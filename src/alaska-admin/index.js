@@ -76,6 +76,7 @@ class AdminService extends Service {
           nocreate: Model.nocreate,
           noupdate: Model.noupdate,
           noremove: Model.noremove,
+          noexport: Model.noexport,
           groups: _.reduce(Model.groups, (res, g, key) => {
             let { ability } = g;
             if (typeof ability === 'function') {

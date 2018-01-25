@@ -6,6 +6,7 @@ import _ from 'lodash';
 import alaska, { Sled } from 'alaska';
 import SETTINGS from 'alaska-settings';
 import USER from 'alaska-user';
+import Ability from 'alaska-user/models/Ability';
 import RegisterMenu from './RegisterMenu';
 import AdminMenu from '../models/AdminMenu';
 
@@ -62,10 +63,17 @@ export default class Init extends Sled {
       abilities: ['admin']
     });
 
+    const rootAbilities = _.clone(root.abilities);
+
     // $Flow
     let menus = _.reduce(await AdminMenu.find(), (res: Indexed, menu: AdminMenu) => {
       res[menu.id] = menu;
       return res;
+    }, {});
+
+    let abilities = (await Ability.find()).reduce((map, record) => {
+      map[record._id] = record;
+      return map;
     }, {});
 
     for (let serviceId of Object.keys(alaska.services)) {
@@ -77,17 +85,18 @@ export default class Init extends Sled {
         function registerAbility(action) {
           if (action === 'add') return; // add Action 使用 create权限
           let id = ability + action;
+          if (abilities[id]) return;
           USER.run('RegisterAbility', {
             id,
             title: `${action} ${Model.modelName}`,
             service: 'alaska-admin'
           });
-          if (root.abilities.indexOf(id) < 0) {
-            root.abilities.push(id);
+          if (rootAbilities.indexOf(id) < 0) {
+            rootAbilities.push(id);
           }
         }
 
-        ['read', 'create', 'remove', 'update'].forEach(registerAbility);
+        ['read', 'create', 'remove', 'update', 'export'].forEach(registerAbility);
         _.keys(Model.actions).forEach(registerAbility);
         if (Model.hidden) {
           continue;
@@ -108,6 +117,9 @@ export default class Init extends Sled {
         }).catch((e) => console.error(e.stack));
       }
     }
-    root.save();
+    if (!_.isEqual(root.abilities, rootAbilities)) {
+      root.abilities = rootAbilities;
+      await root.save();
+    }
   }
 }

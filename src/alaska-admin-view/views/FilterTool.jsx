@@ -20,7 +20,7 @@ export default class FilterTool extends React.Component<Props> {
     if (filters.hasOwnProperty(key)) {
       filters = _.omit(filters, key);
     } else {
-      filters = _.assign({ key: null }, filters);
+      filters = _.assign({ [key]: null }, filters);
     }
     onChange(filters);
   };

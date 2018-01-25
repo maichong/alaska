@@ -9,16 +9,21 @@
 - admin view settings 增加 canCreate / canUpdate / canRemove / canUpdateRecord() / canRemoveRecord()
 - admin view 搜索框响应式
 - driver type 允许直接传入Driver类
+- ability 函数增加user参数
+- 数据导出CSV
+- 增加 export 系统级Action 和对应权限
 
 ### Changed
 
 - 重构 admin view 列表页面
+- admin settings api 数据结构
 
 ### Fixed
 
 - 加载子Service指定目录
 - number field format bug
 - Main service locales 加载bug
+- Password field bug
 
 ### Removed
 

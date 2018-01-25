@@ -57,7 +57,7 @@ export default class ActionList extends React.Component<Props> {
 
       let abilityDisabled = false;
       if (typeof ability === 'function') {
-        ability = ability(record);
+        ability = ability(record, settings.user);
       }
       if (ability && ability[0] === '*') {
         ability = ability.substr(1);
@@ -78,7 +78,7 @@ export default class ActionList extends React.Component<Props> {
         if (!model.abilities[abilityKey]) return; // 权限认证
       }
 
-      let actionDisabled = disabled || abilityDisabled;
+      let actionDisabled = disabled || action.disabled || abilityDisabled;
 
       if (editor) {
         // 编辑页面
