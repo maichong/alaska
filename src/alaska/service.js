@@ -378,7 +378,7 @@ export default class Service {
    * @param {Object} options
    * @returns {Driver}
    */
-  createDriver(options: Object): Alaska$Driver {
+  createDriver(options: Alaska$Driver$config): Alaska$Driver {
     let idleId = '';
     if (options.idle) {
       //允许空闲
@@ -392,8 +392,14 @@ export default class Service {
     }
 
     //当前无空闲驱动,创建新驱动
-    const Driver = alaska.modules.drivers[options.type];
+    let Driver = options.type;
+    if (typeof Driver === 'string') {
+      Driver = alaska.modules.drivers[options.type];
+    }
+
+    // $Flow options.type可以输出
     if (!Driver) throw new PanicError(`Driver '${options.type}' not found!`);
+    // $Flow
     let driver = new Driver(this, options);
     driver.idleId = idleId;
     driver.idle = 0;

@@ -42,14 +42,18 @@ export const loadListFailure = createAction(LOAD_LIST_FAILURE, (key, error) => (
 export const INITIAL_STATE = immutable({});
 
 export default handleActions({
+  LOAD_LIST: (state, { payload }) => {
+    let list = state[payload.key] || immutable({ results: [] });
+    list = list.merge(_.assign({}, payload, { fetching: true }));
+    return state.set(payload.key, list);
+  },
   CLEAR_LIST: (state, { payload }) => (payload.key ? state.without(payload.key) : INITIAL_STATE),
   APPLY_LIST: (state, { payload }) => {
     let key = payload.key;
     let info = _.omit(payload, 'results');
     let list = state[payload.key] || immutable({});
 
-    list = list.merge(info);
-    list = list.set('error', '');
+    list = list.merge(_.assign({}, info, { error: '', fetching: false }));
 
     if (payload.page === 1) {
       list = list.set('results', payload.results);
@@ -61,7 +65,7 @@ export default handleActions({
   },
   LOAD_LIST_FAILURE: (state, { payload }) => {
     let list = state[payload.key] || immutable({});
-    return state.set(payload.key, list.set('error', payload.error.message));
+    return state.set(payload.key, list.merge({ error: payload.error.message, fetching: false }));
   },
   SAVE: (state, { payload }) => {
     let { key, data, sort } = payload;

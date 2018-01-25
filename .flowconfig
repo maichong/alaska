@@ -2,12 +2,11 @@
 .*/build/.*
 .*/dist/.*
 .*/node_modules/.*
-node_modules/.*
 alaska-init/.*
-example/.*
 scripts/.*
 temp/.*
 .*/packages/.*
+.*/test/.*
 
 [libs]
 node_modules/flow-declarations/flow/

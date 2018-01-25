@@ -27,32 +27,36 @@ export default async function create(name: string) {
     process.exit();
   }
   let tips = `
-  1: Basic project without any services.
-  2: With User service and RBAC system.
-  3: With Admin service for auto generate admin dashboard.
-  4: With Post service for blog site.
-  5: With Goods and Order service for shopping site.
+  1: Alaska core project without any services & plugins.
+  2: Basic project with React server side rendering.
+  3: With User service and RBAC system.
+  4: With Admin service for generate admin dashboard automatically.
+  5: With Post service for blog site.
+  6: With Goods and Order service for shopping site.
 `;
   console.log(tips);
   let type = await utils.readValue({
     prompt: 'Please select project template?',
-    default: 5
+    default: 6
   }, (p) => (p >= 1 && p <= 5));
   let branch = '';
   switch (type) {
     case '1':
-      branch = 'base';
+      branch = 'core';
       break;
     case '2':
-      branch = 'user';
+      branch = 'base';
       break;
     case '3':
-      branch = 'admin';
+      branch = 'user';
       break;
     case '4':
-      branch = 'post';
+      branch = 'admin';
       break;
     case '5':
+      branch = 'post';
+      break;
+    case '6':
     default:
       branch = 'goods';
       break;

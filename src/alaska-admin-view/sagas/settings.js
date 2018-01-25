@@ -5,6 +5,7 @@ import _ from 'lodash';
 import akita from 'akita';
 import { applySettings } from '../redux/settings';
 import { applyUser } from '../redux/user';
+import parseAbility from '../utils/parse-ability';
 
 function abilityFunction(list) {
   _.forEach(list, (item) => {
@@ -21,35 +22,66 @@ export default function* settingsSaga() {
     let { settings, user } = yield akita.get('/api/settings');
 
     let models = {};
-    for (let i of _.keys(settings.services)) {
-      let service = settings.services[i];
-      if (service && service.models) {
-        for (let modelName of Object.keys(service.models)) {
-          let model = service.models[modelName];
-          models[model.path] = model;
-          for (let key of Object.keys(model.actions)) {
-            if (model.actions[key]) {
-              model.actions[key].key = key;
-            }
+    _.forEach(settings.services, (service) => {
+      _.forEach(service.models, (model, modelName) => {
+        models[model.path] = model;
+        for (let key of Object.keys(model.actions)) {
+          if (model.actions[key]) {
+            model.actions[key].key = key;
           }
-          if (model && model.fields) {
-            model.serviceId = service.id;
-            model.abilities = {};
-            let ability = `admin.${model.key}.`.toLowerCase();
-            _.forEach(settings.abilities, (can, key) => {
-              if (key.indexOf(ability) !== 0) return;
-              let name = key.substr(ability.length);
-              model.abilities[name] = can;
-            });
-
-            abilityFunction(model.actions);
-            abilityFunction(model.groups);
-            abilityFunction(model.fields);
-          }
-          service.models[modelName] = _.cloneDeep(model);
         }
-      }
-    }
+        if (model && model.fields) {
+          model.serviceId = service.id;
+          model.abilities = {};
+          let ability = `admin.${model.key}.`.toLowerCase();
+          _.forEach(settings.abilities, (can, key) => {
+            if (key.indexOf(ability) !== 0) return;
+            let name = key.substr(ability.length);
+            model.abilities[name] = can;
+          });
+
+          abilityFunction(model.actions);
+          abilityFunction(model.groups);
+          abilityFunction(model.fields);
+        }
+
+        function checkAbility(action) {
+          let ability = _.get(model, `actions.${action}.ability`);
+          if (ability) {
+            ability = parseAbility(ability);
+            if (ability && !settings.abilities[ability]) return false;
+          } else if (!model.abilities[action]) return false;
+          return true;
+        }
+
+        model.canCreate = !model.nocreate && checkAbility('create');
+        model.canUpdate = !model.noupdate && checkAbility('update');
+        model.canRemove = !model.noremove && checkAbility('remove');
+        model.canUpdateRecord = function (record: Object) {
+          if (model.canUpdate) return true;
+          if (model.noupdate) return false;
+          let ability = _.get(model, 'actions.update.ability');
+          if (ability) {
+            ability = parseAbility(ability, record);
+            if (ability && !settings.abilities[ability]) return false;
+          } else if (!model.abilities.update) return false;
+          // TODO check action depends / hidden / super
+          return true;
+        };
+        model.canRemoveRecord = function (record: Object) {
+          if (model.canRemove) return true;
+          if (model.noremove) return false;
+          let ability = _.get(model, 'actions.remove.ability');
+          if (ability) {
+            ability = parseAbility(ability, record);
+            if (ability && !settings.abilities[ability]) return false;
+          } else if (!model.abilities.remove) return false;
+          // TODO check action depends / hidden / super
+          return true;
+        };
+        service.models[modelName] = _.cloneDeep(model);
+      });
+    });
     let all = {};
     _.forEach(settings.locales, (service) => {
       _.forEach(service, (locale, key) => {

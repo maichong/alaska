@@ -1,10 +1,6 @@
-/**
- * @copyright Maichong Software Ltd. 2017 http://maichong.it
- * @date 2017-11-21
- * @author Liang <liang@maichong.it>
- */
-
 /* eslint quotes:0 */
+
+//@flow
 
 import fs from 'fs';
 import Path from 'path';
@@ -23,17 +19,17 @@ for (let i = 0; i <= 16; i += 1) {
   indents[i] = str;
 }
 
-function wrapWord(word) {
+function wrapWord(word: string): string {
   if (/^[a-z]/i.test(word) && /^[a-z_0-9]+$/i.test(word)) {
     return word;
   }
   return `'${word}'`;
 }
 
-export default function createScript(id: string, dir: string, configFile: string) {
-  let metadata = createMetadata(id, dir, configFile);
+export default function createScript(id: string, serviceDir: string, configFile: string, modulesDirs?: string[]) {
+  let metadata = createMetadata(id, serviceDir, configFile, modulesDirs);
 
-  const moduleFilePath = Path.join(dir, 'modules.js');
+  const moduleFilePath = Path.join(serviceDir, 'modules.js');
 
   function relative(file) {
     let modulesDir = Path.join(process.cwd(), 'node_modules');
@@ -52,33 +48,33 @@ export default function createScript(id: string, dir: string, configFile: string
 
   // fields
   script += 'exports.fields = {\n';
-  _.forEach(metadata.fields, (lib) => {
-    console.log('field :', lib);
-    script += `  '${lib}': require('${lib}').default,\n`;
+  _.forEach(metadata.fields, (dir, name) => {
+    console.log('field :', name);
+    script += `  '${name}': require('${relative(dir)}').default,\n`;
   });
   script += '};\n\n';
 
   // drivers
   script += 'exports.drivers = {\n';
-  _.forEach(metadata.drivers, (lib) => {
-    console.log('driver :', lib);
-    script += `  '${lib}': require('${lib}').default,\n`;
+  _.forEach(metadata.drivers, (dir, name) => {
+    console.log('driver :', name);
+    script += `  '${name}': require('${relative(dir)}').default,\n`;
   });
   script += '};\n\n';
 
   // renderers
   script += 'exports.renderers = {\n';
-  _.forEach(metadata.renderers, (lib) => {
-    console.log('renderer :', lib);
-    script += `  '${lib}': require('${lib}').default,\n`;
+  _.forEach(metadata.renderers, (dir, name) => {
+    console.log('renderer :', name);
+    script += `  '${name}': require('${relative(dir)}').default,\n`;
   });
   script += '};\n\n';
 
   // middlewares
   script += 'exports.middlewares = {\n';
-  _.forEach(metadata.middlewares, (lib) => {
-    console.log('middleware :', lib);
-    script += `  '${lib}': require('${lib}'),\n`;
+  _.forEach(metadata.middlewares, (dir, name) => {
+    console.log('middleware :', name);
+    script += `  '${name}': require('${relative(dir)}'),\n`;
   });
   script += '};\n\n';
 
@@ -138,7 +134,7 @@ export default function createScript(id: string, dir: string, configFile: string
     if (_.size(service.templatesDirs)) {
       script += `    templatesDirs: [\n`;
       _.forEach(service.templatesDirs, (d) => {
-        script += `      '${slash(Path.relative(dir, d))}',\n`;
+        script += `      '${slash(Path.relative(serviceDir, d))}',\n`;
       });
       script += `    ],\n`;
     }
@@ -146,7 +142,7 @@ export default function createScript(id: string, dir: string, configFile: string
     // react views
     script += `    reactViews: {\n`;
     _.forEach(service.reactViews, (file, name) => {
-      script += `      '${slash(name)}': require('./${slash(Path.relative(dir, file))}').default,\n`;
+      script += `      '${slash(name)}': require('./${slash(Path.relative(serviceDir, file))}').default,\n`;
     });
     script += `    },\n`;
 

@@ -8,7 +8,7 @@ export default class EmailSmtpDriver extends Driver {
   instanceOfEmailDriver = true;
   transporter: null | Object;
 
-  constructor(service: Alaska$Service, options: Object) {
+  constructor(service: Alaska$Service, options: Alaska$Driver$config) {
     super(service, options);
     this.transporter = null;
   }

@@ -9,8 +9,11 @@ node_modules
 .idea
 temp/
 runtime
-example/public/admin/
-example/public/uploads
+test/public/admin/
+test/public/uploads
+test/modules
+test/coverage
+test/.nyc_output
 package-lock.json
 server.min
 flow-declarations

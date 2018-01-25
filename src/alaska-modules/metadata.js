@@ -1,19 +1,14 @@
-/**
- * @copyright Maichong Software Ltd. 2017 http://maichong.it
- * @date 2017-11-21
- * @author Liang <liang@maichong.it>
- */
-
 /* eslint global-require:0 */
 /* eslint import/no-dynamic-require:0 */
+
+//@flow
 
 import fs from 'fs';
 import Path from 'path';
 import _ from 'lodash';
 import { isFile, isDirectory, readJson, merge } from 'alaska/utils';
+// $Flow
 import defaultConfig from 'alaska/config';
-
-const modulesDir = Path.join(process.cwd(), 'node_modules');
 
 function getFiles(dir: string, withExt?: boolean) {
   let result = {};
@@ -76,6 +71,7 @@ function readService(serviceDir: string, enableLocales: string[], isMain?: boole
 
   let reactViewsFile = Path.join(serviceDir, 'views/react-views.js');
   if (isFile(reactViewsFile)) {
+    // $Flow
     let views = require(reactViewsFile).default || [];
     cfg.reactViews = views.reduce((res, view) => {
       res[view] = Path.join(serviceDir, 'views', view);
@@ -118,6 +114,7 @@ function readPlugin(pluginDir: string, enableLocales: string[]) {
 
   let res = {
     dir: pluginDir,
+    config: '',
     pluginClass: classFile,
     api: getFiles(Path.join(pluginDir, 'api')),
     controllers: getFiles(Path.join(pluginDir, 'controllers')),
@@ -139,15 +136,21 @@ function readPlugin(pluginDir: string, enableLocales: string[]) {
  * 确定插件的绝对路径
  * @param {Object} config 配置
  * @param {string} file 配置文件路径
+ * @param {string[]} mdirs 模块目录列表
  */
-function resolvePluginPath(config, file) {
+function resolvePluginPath(config: Object, file: string, mdirs: string[]) {
   if (_.size(config.plugins)) {
-    config.plugins = _.reduce(config.plugins, (res, p, k) => {
+    config.plugins = _.reduce(config.plugins, (res: Object, p: string, k: string) => {
       if (!Path.isAbsolute(p)) {
         if (p[0] === '.') {
           p = Path.join(file, p);
         } else {
-          p = Path.join(modulesDir, p);
+          for (let dir of mdirs) {
+            p = Path.join(dir, p);
+            if (isDirectory(p)) {
+              break;
+            }
+          }
         }
       }
       res[k] = p;
@@ -156,7 +159,19 @@ function resolvePluginPath(config, file) {
   }
 }
 
-export default function createMetadata(id: string, dir: string, mainConfigFile: string) {
+export default function createMetadata(id: string, dir: string, mainConfigFileName: string, modulesDirs?: string[]) {
+  let mdirs: string[] = modulesDirs || ['node_modules'];
+  if (mdirs.indexOf('node_modules') < 0) {
+    mdirs.push('node_modules');
+  }
+
+  mdirs = mdirs.map((d) => {
+    if (Path.isAbsolute(d)) {
+      return d;
+    }
+    return Path.join(process.cwd(), d);
+  });
+
   let metadata = {
     fields: {},
     drivers: {},
@@ -167,10 +182,11 @@ export default function createMetadata(id: string, dir: string, mainConfigFile: 
   };
 
   let mainConfigDir = Path.join(dir, 'config');
-  let mainConfigFilePath = Path.join(mainConfigDir, mainConfigFile);
+  let mainConfigFilePath = Path.join(mainConfigDir, mainConfigFileName);
+  // $Flow
   let mainConfig = require(mainConfigFilePath).default;
 
-  resolvePluginPath(mainConfig, mainConfigFilePath);
+  resolvePluginPath(mainConfig, mainConfigFilePath, mdirs);
 
   // 各个Service的配置信息
   let configs = {
@@ -180,6 +196,12 @@ export default function createMetadata(id: string, dir: string, mainConfigFile: 
   // 各个Service插件列表
   let plugins = {};
 
+  metadata.locales = mainConfig.locales || defaultConfig.locales || ['en', 'zh-CN'];
+  let defaultLocale = mainConfig.defaultLocale || defaultConfig.defaultLocale;
+  if (defaultLocale && metadata.locales.indexOf(defaultLocale) < 0) {
+    metadata.locales.push(defaultLocale);
+  }
+
   // 读取主Service信息
   metadata.services[id] = {
     main: true,
@@ -188,17 +210,22 @@ export default function createMetadata(id: string, dir: string, mainConfigFile: 
     ...readService(dir, metadata.locales, true)
   };
 
-  metadata.locales = mainConfig.locales || defaultConfig.locales || ['en', 'zh-CN'];
-  let defaultLocale = mainConfig.defaultLocale || defaultConfig.defaultLocale;
-  if (defaultLocale && metadata.locales.indexOf(defaultLocale) < 0) {
-    metadata.locales.push(defaultLocale);
-  }
-
   // 递归遍历Service
-  function readServices(services) {
+  function readServices(services, configFilePath) {
     _.forEach(services, (init, serviceId) => {
       if (_.isPlainObject(metadata.services[serviceId])) return;
-      let serviceDir = init.dir || Path.join(modulesDir, serviceId);
+      // $Flow
+      let serviceDir = init.dir;
+      if (!serviceDir) {
+        for (let d of mdirs) {
+          serviceDir = Path.join(d, serviceId);
+          if (isDirectory(serviceDir)) {
+            break;
+          }
+        }
+      } else if (!Path.isAbsolute(serviceDir)) {
+        serviceDir = Path.join(Path.dirname(configFilePath), serviceDir);
+      }
       if (!isDirectory(serviceDir)) {
         if (init.optional) {
           return;
@@ -216,37 +243,43 @@ export default function createMetadata(id: string, dir: string, mainConfigFile: 
       let serviceConfigFile = Path.join(serviceDir, 'config', serviceId + '.js');
       if (isFile(serviceConfigFile)) {
         cfg.config = serviceConfigFile;
+        // $Flow
         let serviceConfig = require(serviceConfigFile).default;
-        resolvePluginPath(serviceConfig, serviceConfigFile);
+        resolvePluginPath(serviceConfig, serviceConfigFile, mdirs);
         configs[serviceId] = serviceConfig;
-        readServices(serviceConfig.services || {});
+        readServices(serviceConfig.services || {}, serviceConfigFile);
       } else {
         configs[serviceId] = {};
       }
     });
   }
 
-  readServices(mainConfig.services);
+  readServices(mainConfig.services, mainConfigFilePath);
 
   // 读取node_modules目录，解析所有package.json
-  fs.readdirSync(modulesDir).forEach((lib) => {
-    if (lib[0] === '.') return;
-    let pkgPath = Path.join(modulesDir, lib, 'package.json');
-    if (isFile(pkgPath)) {
-      let json = readJson(pkgPath);
-      switch (json.alaska) {
-        case 'driver':
-          metadata.drivers[json.name] = json.name;
-          break;
-        case 'field':
-          metadata.fields[json.name] = json.name;
-          break;
-        case 'renderer':
-          metadata.renderers[json.name] = json.name;
-          break;
-        default:
+  mdirs.forEach((mdir) => {
+    fs.readdirSync(mdir).forEach((lib) => {
+      if (lib[0] === '.') return;
+      // $Flow
+      let pkgPath = Path.join(mdir, lib, 'package.json');
+      if (isFile(pkgPath)) {
+        let json = readJson(pkgPath);
+        // $Flow
+        let requirePath = Path.join(mdir, lib);
+        switch (json.alaska) {
+          case 'driver':
+            metadata.drivers[json.name] = requirePath;
+            break;
+          case 'field':
+            metadata.fields[json.name] = requirePath;
+            break;
+          case 'renderer':
+            metadata.renderers[json.name] = requirePath;
+            break;
+          default:
+        }
       }
-    }
+    });
   });
 
   // 加载子Service配置
@@ -275,8 +308,9 @@ export default function createMetadata(id: string, dir: string, mainConfigFile: 
         pluginConfigFile = Path.join(configDir, name, 'config.js');
       }
       if (isFile(pluginConfigFile)) {
+        // $Flow
         let pluginConfig = require(pluginConfigFile).default;
-        resolvePluginPath(pluginConfig, pluginConfigFile);
+        resolvePluginPath(pluginConfig, pluginConfigFile, mdirs);
         configs[name] = merge(configs[name], pluginConfig);
       }
     });
@@ -311,7 +345,17 @@ export default function createMetadata(id: string, dir: string, mainConfigFile: 
     _.forEach(cfg.middlewares, (item, middlewareId) => {
       if (!item || item.fn) return;
       middlewareId = item.id || middlewareId;
-      metadata.middlewares[middlewareId] = middlewareId;
+      // $Flow
+      let middlewarePath = middlewareId;
+      if (!Path.isAbsolute(middlewarePath)) {
+        for (let d of mdirs) {
+          middlewarePath = Path.join(d, middlewareId);
+          if (isDirectory(middlewarePath)) {
+            break;
+          }
+        }
+      }
+      metadata.middlewares[middlewareId] = middlewarePath;
     });
   });
 

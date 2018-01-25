@@ -15,8 +15,8 @@ import Editor from './Editor';
 import Relationship from './Relationship';
 import TopToolbar from './TopToolbar';
 import EditorActions from './EditorActions';
+import Loading from './Loading';
 import * as settingsRedux from '../redux/settings';
-import parseAbility from '../utils/parse-ability';
 
 type Props = {
   loadDetails: Function,
@@ -36,7 +36,6 @@ type State = {
   modelName: string,
   isNew: boolean,
   id: string,
-  errors: {},
   service: {},
   model: Object,
   record?: ImmutableObject<Alaska$view$Record>
@@ -77,7 +76,6 @@ class EditorPage extends React.Component<Props, State> {
       modelName,
       id,
       isNew: id === '_new',
-      errors: {},
       service: {},
       model: {}
     };
@@ -184,42 +182,6 @@ class EditorPage extends React.Component<Props, State> {
     });
   };
 
-  canCreate = (): boolean => {
-    const { model, record } = this.state;
-    const { settings } = this.context;
-    if (!model || model.nocreate) return false;
-    let ability = _.get(model, 'actions.create.ability');
-    if (ability) {
-      ability = parseAbility(ability, record);
-      if (ability && !settings.abilities[ability]) return false;
-    } else if (!model.abilities.create) return false;
-    return true;
-  };
-
-  canUpdate = (): boolean => {
-    const { model, record } = this.state;
-    const { settings } = this.context;
-    if (!model || model.noupdate) return false;
-    let ability = _.get(model, 'actions.update.ability');
-    if (ability) {
-      ability = parseAbility(ability, record);
-      if (ability && !settings.abilities[ability]) return false;
-    } else if (!model.abilities.update) return false;
-    return true;
-  };
-
-  canRemove = (): boolean => {
-    const { model, record } = this.state;
-    const { settings } = this.context;
-    if (!model || model.noremove) return false;
-    let ability = _.get(model, 'actions.remove.ability');
-    if (ability) {
-      ability = parseAbility(ability, record);
-      if (ability && !settings.abilities[ability]) return false;
-    } else if (!model.abilities.remove) return false;
-    return true;
-  };
-
   handleRemove = async() => {
     const { serviceId, modelName, id } = this.state;
     const { t, toast, confirm } = this.context;
@@ -254,24 +216,11 @@ class EditorPage extends React.Component<Props, State> {
       id,
       isNew
     } = this.state;
-    if (!record) return;
-    let { fields } = model;
-    let errors = {};
-    let hasError = false;
-    const { t } = this.context;
-    _.forEach(fields, (field, key) => {
-      // $Flow record 一定存在
-      if (field.required && !record[key]) {
-        if (field.required) {
-          errors[key] = t('This field is required!');
-          hasError = true;
-        }
-      }
-    });
-
-    this.setState({ errors });
+    if (!record || !this.editorRef) return;
+    let errors = this.editorRef.checkErrors();
     // TODO 页面滚动到第一个错误Field
-    if (hasError || _.find(this.editorRef.fieldRefs, (f) => (f.hasError && f.hasError()))) return;
+    if (_.size(errors)) return;
+
     this._r = Math.random();
     this.loading = true;
 
@@ -368,44 +317,34 @@ class EditorPage extends React.Component<Props, State> {
       id,
       model,
       record,
-      serviceId,
-      errors
+      serviceId
     } = this.state;
     if (!record) {
-      return <div className="loading">Loading...</div>;
+      return <Loading />;
     }
     if (record._error) {
       return <div className="editor-error">{record._error}</div>;
     }
-    let className = 'editor-page ' + serviceId + '-' + model.id;
-    if (this.canCreate()) {
-      className += ' can-create';
-    } else {
-      className += ' no-create';
-    }
-    if (this.canUpdate()) {
-      className += ' can-update';
-    } else {
-      className += ' no-update';
-    }
-    if (this.canRemove()) {
-      className += ' can-remove';
-    } else {
-      className += ' no-remove';
-    }
+
+    let className = [
+      'editor-page',
+      serviceId + '-' + model.id,
+      model.canCreate ? 'can-create' : 'no-create',
+      model.canUpdate ? 'can-update' : 'no-update',
+      model.canRemove ? 'can-remove' : 'no-remove',
+    ].join(' ');
 
     return (
       <Node id="editorPage" props={this.props} state={this.state} className={className}>
         {this.renderToolbar()}
         <Editor
           model={model}
-          id={id}
+          recordId={id}
           ref={(r) => {
             // $Flow
             this.editorRef = r;
           }}
           record={record}
-          errors={errors}
           onChange={(r) => this.setState({ record: r })}
         />
         {this.renderRelationships()}

@@ -32,7 +32,6 @@ export default class User extends Model {
     password: {
       label: 'Password',
       type: 'password',
-      default: 1,
       private: true
     },
     avatar: {

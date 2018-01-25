@@ -164,7 +164,7 @@ export default class ListActions extends React.Component<Props> {
     });
 
     return (
-      <Node id="listActions" className="navbar-form navbar-right">
+      <Node id="listActions" className="navbar-form navbar-right list-actions">
         <ActionList
           items={actionList}
           model={model}

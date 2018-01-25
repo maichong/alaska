@@ -4,24 +4,8 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import checkDepends from 'check-depends';
-import type { ImmutableObject, ImmutableArray } from 'seamless-immutable';
+import type { Props } from 'alaska-admin-view/views/ActionList';
 import Action from './Action';
-
-type Props = {
-  editor?: boolean,
-  disabled?: boolean,
-  model: Alaska$view$Model,
-  record?: ImmutableObject<Alaska$view$Record>,
-  records?: ImmutableArray<Alaska$view$Record>,
-  selected?: ImmutableArray<Alaska$view$Record>,
-  refresh?: Function,
-  items: Array<{
-    key: string,
-    onClick?: Function,
-    link?: string,
-    action: Alaska$Model$action
-  }>,
-};
 
 export default class ActionList extends React.Component<Props> {
   static contextTypes = {

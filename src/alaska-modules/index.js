@@ -1,9 +1,3 @@
-/**
- * @copyright Maichong Software Ltd. 2017 http://maichong.it
- * @date 2017-11-20
- * @author Liang <liang@maichong.it>
- */
-
 /* eslint global-require:0 */
 /* eslint import/no-dynamic-require:0 */
 
@@ -24,8 +18,8 @@ function requireFiles(files, withDefault) {
   return res;
 }
 
-export default function createModules(mainService: Alaska$Service) {
-  let metadata = createMetadata(mainService.id, mainService.dir, mainService.configFile);
+export default function createModules(mainService: Alaska$Service, modulesDirs?: string[]) {
+  let metadata = createMetadata(mainService.id, mainService.dir, mainService.configFile, modulesDirs);
 
   let modules = {
     fields: {},
@@ -35,20 +29,20 @@ export default function createModules(mainService: Alaska$Service) {
     services: {}
   };
 
-  _.forEach(metadata.fields, (lib) => {
-    modules.fields[lib] = require(lib).default;
+  _.forEach(metadata.fields, (dir, name) => {
+    modules.fields[name] = require(dir).default;
   });
 
-  _.forEach(metadata.drivers, (lib) => {
-    modules.drivers[lib] = require(lib).default;
+  _.forEach(metadata.drivers, (dir, name) => {
+    modules.drivers[name] = require(dir).default;
   });
 
-  _.forEach(metadata.renderers, (lib) => {
-    modules.renderers[lib] = require(lib).default;
+  _.forEach(metadata.renderers, (dir, name) => {
+    modules.renderers[name] = require(dir).default;
   });
 
-  _.forEach(metadata.middlewares, (lib) => {
-    modules.middlewares[lib] = require(lib);
+  _.forEach(metadata.middlewares, (dir, name) => {
+    modules.middlewares[name] = require(dir);
   });
 
   _.forEach(metadata.services, (cfg, serviceId) => {

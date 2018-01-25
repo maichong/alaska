@@ -1,0 +1,13 @@
+{
+  "presets": [
+    "react",
+    [
+      "env", {
+      "targets": {
+        "node": "8.9"
+      }
+    }
+    ]
+  ],
+  "plugins": ["transform-export-extensions", "syntax-export-extensions", "transform-runtime"]
+}

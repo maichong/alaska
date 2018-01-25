@@ -285,6 +285,6 @@ export async function removeMulti(ctx: Alaska$Context) {
   let res = await Model.deleteMany(filters);
 
   ctx.body = {
-    removed: res.result.n
+    removed: res.n
   };
 }

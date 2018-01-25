@@ -30,7 +30,6 @@
     "no-return-await": 0,
     "no-restricted-syntax": [
       "error",
-      "ForInStatement",
       "LabeledStatement",
       "WithStatement"
     ],

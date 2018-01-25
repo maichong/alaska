@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "ini": "^1.3.5",
-    "akita-node": "^0.3.7",
+    "akita": "^0.4.0",
     "moment": "^2.20.1"
   },
   "peerDependencies": {

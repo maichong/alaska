@@ -1119,17 +1119,22 @@ export default class Model {
    * @param {Object} [state]
    * @returns {mongoose.Query}
    */
-  static async showByContext(ctx: Alaska$Context, state?: Object): Promise<Alaska$Model> {
+  static async showByContext(ctx: Alaska$Context, state?: Object): Promise<Alaska$Model | null> {
     // $Flow
     let model: Class<Alaska$Model> = this;
 
     // $Flow
     state = _.defaultsDeep({}, state, ctx.state);
 
+    let id = state.id || ctx.params.id;
+    if ((id === 'count' || id === 'paginate') && model._fields._id.type.plain !== String) {
+      return null;
+    }
+
     let filters = model.createFilters('', ctx.state.filters || ctx.query);
 
     // $Flow
-    let query: Alaska$Query = model.findById(state.id || ctx.params.id).where(filters);
+    let query: Alaska$Query = model.findById(id).where(filters);
 
     let { defaultFilters } = model;
     if (defaultFilters) {

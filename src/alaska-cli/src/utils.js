@@ -4,32 +4,7 @@ import mkdirp from 'mkdirp';
 import chalk from 'chalk';
 import * as babel from 'babel-core';
 import read from 'read-promise';
-
-/**
- * 判断指定路径是否是文件
- * @param path
- * @returns {boolean}
- */
-export function isFile(path) {
-  try {
-    return fs.statSync(path).isFile();
-  } catch (e) {
-    return false;
-  }
-}
-
-/**
- * 判断指定路径是否是文件夹
- * @param path
- * @returns {boolean}
- */
-export function isDirectory(path) {
-  try {
-    return fs.statSync(path).isDirectory();
-  } catch (e) {
-    return false;
-  }
-}
+import isFile from 'is-file';
 
 export function readJSON(file) {
   let data = fs.readFileSync(file, 'utf8');
@@ -51,25 +26,6 @@ export async function readValue(options, checker) {
     return value;
   }
   return await readValue(options, checker);
-}
-
-export async function readBool(options, def) {
-  if (typeof options === 'string') {
-    options = {
-      prompt: options
-    };
-  }
-  if (def !== undefined) {
-    options.default = (def === true || def === 'yes' || def === 'y') ? 'yes' : 'no';
-  }
-  let value = await read(options);
-  if (['yes', 'y'].indexOf(value) > -1) {
-    return true;
-  }
-  if (['no', 'n'].indexOf(value) > -1) {
-    return false;
-  }
-  return await readBool(options);
 }
 
 function transformSrouceFile(from, to) {
@@ -99,7 +55,7 @@ export function transformSrouceDir(from, to) {
     if (file === '.DS_Store') continue;
     let fromPath = Path.join(from, file);
     let toPath = Path.join(to, file);
-    if (isFile(fromPath)) {
+    if (isFile.sync(fromPath)) {
       transformSrouceFile(fromPath, toPath);
     } else {
       transformSrouceDir(fromPath, toPath);

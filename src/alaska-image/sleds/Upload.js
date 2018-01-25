@@ -1,7 +1,7 @@
 // @flow
 
 import alaska, { Sled } from 'alaska';
-import akita from 'akita-node';
+import akita from 'akita';
 import mime from 'mime-types';
 import path from 'path';
 import Image from '../models/Image';

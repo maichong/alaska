@@ -9,56 +9,83 @@ import mkdirp from 'mkdirp';
 import Path from 'path';
 import chalk from 'chalk';
 import slash from 'slash';
+import isFile from 'is-file';
+import isDirectory from 'is-directory';
 import * as uitls from './utils';
 
-export default async function build() {
+export default async function build(options: Object) {
   console.log(chalk.green('Alaska build...'));
-  const dir = process.cwd() + '/';
-  if (!uitls.isFile(dir + '.alaska')) {
+  const cwd = process.cwd();
+  let rcFile = Path.join(cwd, '.alaska');
+  if (!isFile.sync(rcFile)) {
     throw new Error('Current folder is not an alaska project!');
   }
 
-  let rc = uitls.readJSON(dir + '.alaska');
+  let rc = uitls.readJSON(rcFile);
   if (!rc || !rc.id) {
     throw new Error('.alaska file error!');
   }
 
-  const modulesDir = dir + 'node_modules/';
+  let mdirs = options.modulesDirs || [];
+  if (mdirs.indexOf('node_modules') < 0) {
+    mdirs.push('node_modules');
+  }
+
+  mdirs = mdirs.map((d) => Path.join(cwd, d));
 
   // build modules
   console.log(chalk.green('Build modules...'));
-  let alaskaModulesPath = Path.join(modulesDir, 'alaska-modules');
-  if (!uitls.isDirectory(alaskaModulesPath)) {
+  let alaskaModulesPath = '';
+  for (let d of mdirs) {
+    let tmp = Path.join(d, 'alaska-modules');
+    if (isDirectory.sync(tmp)) {
+      alaskaModulesPath = tmp;
+      break;
+    }
+  }
+  if (!alaskaModulesPath) {
     console.log(chalk.red('alaska-modules is not installed!'));
   } else {
     // $Flow
     const createScript = require(Path.join(alaskaModulesPath, 'script')).default;
-    createScript(rc.id, process.cwd() + '/src', rc.id + '.js');
+    createScript(rc.id, process.cwd() + '/src', rc.id + '.js', options.modulesDirs);
   }
 
   // babel transform
   console.log(chalk.green('Babel transform...'));
-  uitls.transformSrouceDir(Path.join(dir, 'src'), Path.join(dir, 'dist'));
+  uitls.transformSrouceDir(Path.join(cwd, 'src'), Path.join(cwd, 'dist'));
 
   // build admin
   console.log(chalk.green('Build admin dashboard...'));
-  if (!uitls.isDirectory(Path.join(modulesDir, 'alaska-admin-view'))) {
+  let adminViewInstalled = false;
+  for (let d of mdirs) {
+    if (isDirectory.sync(Path.join(d, 'alaska-admin-view'))) {
+      adminViewInstalled = true;
+      break;
+    }
+  }
+  if (!adminViewInstalled) {
     console.log(chalk.grey('alaska-admin-view is not installed!'));
     return;
   }
 
-  if (!uitls.isDirectory(dir + 'runtime/alaska-admin-view')) {
-    mkdirp.sync('runtime/alaska-admin-view');
+  let adminViewRuntime = Path.join(cwd, 'runtime/alaska-admin-view');
+  if (!isDirectory.sync(adminViewRuntime)) {
+    mkdirp.sync(adminViewRuntime);
   }
 
-  const modulesList = fs.readdirSync(modulesDir)
-    .filter((file) => file[0] !== '.' && file.startsWith('alaska-') && file !== 'alaska-admin-view');
+  const viewModulesList = [];
+  for (let d of mdirs) {
+    fs.readdirSync(d)
+      .filter((file) => file[0] !== '.' && file.startsWith('alaska-') && file !== 'alaska-admin-view')
+      .forEach((file) => viewModulesList.push(Path.join(d, file)));
+  }
 
-  let runtimeStyleFile = dir + 'runtime/alaska-admin-view/style.less';
+  let runtimeStyleFile = Path.join(adminViewRuntime, 'style.less');
 
-  let styles = modulesList.map((name) => {
-    let styleFile = Path.join(modulesDir, name, 'style.less');
-    if (uitls.isFile(styleFile)) {
+  let styles = viewModulesList.map((dir) => {
+    let styleFile = Path.join(dir, 'style.less');
+    if (isFile.sync(styleFile)) {
       let p = slash(Path.relative(Path.dirname(runtimeStyleFile), styleFile));
       return `@import "${p}";`;
     }
@@ -107,21 +134,21 @@ export default async function build() {
   {
     // views 配置文件
     let viewsFile = process.cwd() + '/src/views/admin-views.js';
-    if (uitls.isFile(viewsFile)) {
+    if (isFile.sync(viewsFile)) {
       // $Flow require()
       parse(require(viewsFile));
     }
   }
 
-  modulesList.forEach((name) => {
+  viewModulesList.forEach((dir) => {
     try {
-      let viewsDir = Path.join(modulesDir, name, 'views');
+      let viewsDir = Path.join(dir, 'views');
       let viewsFile = Path.join(viewsDir, 'index.js');
-      if (uitls.isFile(viewsFile)) {
+      if (isFile.sync(viewsFile)) {
         // 如果views配置文件存在
         // $Flow require()
         parse(require(viewsFile));
-      } else if (uitls.isDirectory(viewsDir)) {
+      } else if (isDirectory.sync(viewsDir)) {
         let config = {
           views: {}
         };
@@ -137,12 +164,12 @@ export default async function build() {
     }
   });
 
-  let runtimeViewsFile = dir + 'runtime/alaska-admin-view/views.js';
+  let runtimeViewsFile = Path.join(adminViewRuntime, 'views.js');
   let content = '/* This file is created by alaska build command, please do NOT modify this file manually. */\n\n';
 
   // 输出views
   for (let name of Object.keys(views)) {
-    let r = slash(Path.relative(dir, views[name]));
+    let r = slash(Path.relative(cwd, views[name]));
     content += `export ${name} from '../../${r}';\n`;
     console.log(`view : ${name} -> ${r}`);
   }
@@ -154,7 +181,7 @@ export default async function build() {
     console.log(`wrapper : ${name}`);
     contentTmp += `  '${name}':[`;
     wrappers[name].forEach((file, i) => {
-      let r = slash(Path.relative(dir, file));
+      let r = slash(Path.relative(cwd, file));
       let com = 'Wrapper$' + index + '$' + i;
       content += `import ${com} from '../../${r}';\n`;
       contentTmp += ` ${com},`;
@@ -168,7 +195,7 @@ export default async function build() {
   content += '\n\n';
   contentTmp = '\nexport const routes = [\n';
   routes.forEach((route, index) => {
-    let r = slash(Path.relative(dir, route.component));
+    let r = slash(Path.relative(cwd, route.component));
     let com = 'Route' + index;
     content += `import ${com} from '../../${r}';\n`;
     contentTmp += `  {\n    component: ${com},\n    path: '${route.path}'\n  },\n`;
@@ -181,7 +208,7 @@ export default async function build() {
   contentTmp = '\nexport const navs = [\n';
 
   navs.forEach((nav, index) => {
-    let r = slash(Path.relative(dir, nav));
+    let r = slash(Path.relative(cwd, nav));
     let com = 'Nav' + index;
     content += `import ${com} from '../../${r}';\n`;
     contentTmp += `  ${com},\n`;

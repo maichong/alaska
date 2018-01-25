@@ -3,7 +3,7 @@
 import { Driver } from 'alaska';
 import ini from 'ini';
 import moment from 'moment';
-import akita from 'akita-node';
+import akita from 'akita';
 import crypto from 'crypto';
 
 const api = akita.resolve('aliyun-sms-driver');

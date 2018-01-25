@@ -3,7 +3,8 @@
 import alaska from 'alaska';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { Provider } from 'react-redux';
+// $Flow
+import Provider from 'react-redux/lib/components/Provider';
 
 export default class ReactPlugin {
   service: Alaska$Service;

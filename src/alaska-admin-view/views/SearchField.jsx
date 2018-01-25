@@ -4,7 +4,7 @@ import React from 'react';
 import Node from './Node';
 
 type Props = {
-  value: string,
+  value?: string,
   onChange: Function;
   placeholder?: string
 };

@@ -30,5 +30,5 @@ export default {
    */
   autoInit: true,
   dashboardTitle: 'Alaska admin dashboard',
-  defaultHorizontal: false
+  defaultHorizontal: true
 };

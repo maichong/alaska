@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.13.0]
+
+### Added
+
+- 新增 ctx.state.locale
+- admin view Loading 页面
+- admin view settings 增加 canCreate / canUpdate / canRemove / canUpdateRecord() / canRemoveRecord()
+- admin view 搜索框响应式
+- driver type 允许直接传入Driver类
+
+### Changed
+
+- 重构 admin view 列表页面
+
+### Fixed
+
+- 加载子Service指定目录
+- number field format bug
+- Main service locales 加载bug
+
+### Removed
+
+- 移除 alaska install 命令
+
+
 ## [0.12.12]
 
 ### Added

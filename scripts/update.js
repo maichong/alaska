@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const semver = require('semver');
-const akita = require('akita-node');
+const akita = require('akita');
 const read = require('read-promise');
 const utils = require('./utils');
 const dir = process.cwd() + '/src';

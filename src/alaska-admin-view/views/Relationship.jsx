@@ -6,19 +6,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import qs from 'qs';
 import type { ImmutableArray } from 'seamless-immutable';
+import type { Props } from 'alaska-admin-view/views/Relationship';
 import DataTable from './DataTable';
 import Node from './Node';
 import * as listRedux from '../redux/lists';
 
-type Props = {
-  loadList: Function,
-  filters: Object,
+type FinalProps = Props & {
   lists: ImmutableObject<Alaska$view$lists>,
-  service: string,
-  model: string,
-  path: string,
-  from: string,
-  title: string,
+  loadList: Function,
 };
 
 type State = {
@@ -27,13 +22,13 @@ type State = {
   model: Alaska$view$Model | null
 };
 
-class Relationship extends React.Component<Props, State> {
+class Relationship extends React.Component<FinalProps, State> {
   static contextTypes = {
     settings: PropTypes.object,
     t: PropTypes.func
   };
 
-  constructor(props: Props) {
+  constructor(props: FinalProps) {
     super(props);
     this.state = {
       records: null,
@@ -46,7 +41,7 @@ class Relationship extends React.Component<Props, State> {
     this.init();
   }
 
-  componentWillReceiveProps(props: Props) {
+  componentWillReceiveProps(props: FinalProps) {
     let { service, model: modelName, lists } = props;
     if (props.from !== this.props.from || service !== this.props.service || modelName !== this.props.model) {
       this.setState({ records: null }, () => {
@@ -64,7 +59,7 @@ class Relationship extends React.Component<Props, State> {
     }
   }
 
-  shouldComponentUpdate(props: Props, state: State) {
+  shouldComponentUpdate(props: FinalProps, state: State) {
     return state.records !== this.state.records;
   }
 
@@ -96,7 +91,8 @@ class Relationship extends React.Component<Props, State> {
       return null;
     }
     const { t } = this.context;
-    let title = this.props.title ? t(this.props.title, model.serviceId)
+    let { title } = this.props;
+    title = title ? t(title, model.serviceId)
       : t('Relationship') + `: ${t(model.label, model.serviceId)}`;
     let filtersString = qs.stringify({ filters });
     return (

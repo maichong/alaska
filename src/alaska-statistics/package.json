@@ -14,7 +14,7 @@
   "dependencies": {
     "alaska-field-select": "^0.12.12",
     "color": "^2.0.1",
-    "number-random": "^0.1.1"
+    "number-random": "^1.0.0"
   },
   "peerDependencies": {
     "alaska-field-select": "^0.12.12",

@@ -2,6 +2,7 @@
 
 /* eslint new-cap:0 */
 
+import url from 'url';
 import mongodb from 'mongodb';
 import Debugger from 'debug';
 import { Driver } from 'alaska';
@@ -22,11 +23,16 @@ export default class MongoCacheDriver extends Driver {
   constructor(service: Alaska$Service, options: Object) {
     super(service, options);
     this._maxAge = options.maxAge || 0;
+    let info = url.parse(options.url);
+    if (!info.path) {
+      throw new Error('mongodb url error');
+    }
     this._connecting = MongoClient.connect(options.url, _.omit(options, 'id', 'url', 'type', 'collection', 'maxAge'));
-    this._connecting.then((db) => {
-      this._db = db;
+    this._connecting.then((client) => {
+      // $Flow
+      this._db = client.db(info.path.substr(1));
       this._connecting = null;
-      this._driver = db.collection(options.collection || 'mongo_cache');
+      this._driver = this._db.collection(options.collection || 'mongo_cache');
       this._driver.createIndex('expiredAt', {
         background: true
       });

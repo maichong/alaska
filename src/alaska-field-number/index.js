@@ -12,6 +12,7 @@ export default class NumberField extends Field {
     cell: 'NumberFieldCell',
     view: 'NumberFieldView',
     filter: 'NumberFieldFilter',
+    format: '0,0'
   };
 
   init() {
