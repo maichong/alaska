@@ -14,15 +14,15 @@
   "license": "MIT",
   "dependencies": {
     "alaska-field-number": "^0.13.0",
-    "alaska-field-text": "^0.13.0",
-    "alaska-field-select": "^0.13.0",
     "alaska-field-relationship": "^0.13.0",
+    "alaska-field-select": "^0.13.0",
+    "alaska-field-text": "^0.13.0",
     "string-random": "^0.1.0"
   },
   "peerDependencies": {
     "alaska-field-number": "^0.13.0",
-    "alaska-field-text": "^0.13.0",
+    "alaska-field-relationship": "^0.13.0",
     "alaska-field-select": "^0.13.0",
-    "alaska-field-relationship": "^0.13.0"
+    "alaska-field-text": "^0.13.0"
   }
 }
