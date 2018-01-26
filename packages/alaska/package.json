@@ -1,6 +1,6 @@
 {
   "name": "alaska",
-  "version": "0.12.12",
+  "version": "0.13.0",
   "description": "Componentized and pluggable web framework for Node.js",
   "keywords": [
     "alaska",
@@ -16,7 +16,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-id": "^0.12.12",
+    "alaska-field-id": "^0.13.0",
     "collie": "^0.2.1",
     "debug": "^3.1.0",
     "depd": "^1.1.2",
@@ -27,7 +27,7 @@
     "koa-router": "^7.3.0",
     "lodash": "^4.17.4",
     "mime-types": "^2.1.17",
-    "mongoose": "^4.13.9",
+    "mongoose": "^5.0.1",
     "statuses": "^1.4.0",
     "string-random": "^0.1.0"
   }

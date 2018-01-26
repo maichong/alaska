@@ -14,9 +14,9 @@ var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _akitaNode = require('akita-node');
+var _akita = require('akita');
 
-var _akitaNode2 = _interopRequireDefault(_akitaNode);
+var _akita2 = _interopRequireDefault(_akita);
 
 var _crypto = require('crypto');
 
@@ -24,7 +24,7 @@ var _crypto2 = _interopRequireDefault(_crypto);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const api = _akitaNode2.default.resolve('aliyun-sms-driver');
+const api = _akita2.default.resolve('aliyun-sms-driver');
 
 class SmsAliyunDriver extends _alaska.Driver {
 

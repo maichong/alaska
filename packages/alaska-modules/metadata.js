@@ -4,14 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /**
-                                                                                                                                                                                                                                                                   * @copyright Maichong Software Ltd. 2017 http://maichong.it
-                                                                                                                                                                                                                                                                   * @date 2017-11-21
-                                                                                                                                                                                                                                                                   * @author Liang <liang@maichong.it>
-                                                                                                                                                                                                                                                                   */
-
-/* eslint global-require:0 */
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /* eslint global-require:0 */
 /* eslint import/no-dynamic-require:0 */
+
+// $Flow
+
 
 exports.default = createMetadata;
 
@@ -34,8 +31,6 @@ var _config = require('alaska/config');
 var _config2 = _interopRequireDefault(_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const modulesDir = _path2.default.join(process.cwd(), 'node_modules');
 
 function getFiles(dir, withExt) {
   let result = {};
@@ -98,6 +93,7 @@ function readService(serviceDir, enableLocales, isMain) {
 
   let reactViewsFile = _path2.default.join(serviceDir, 'views/react-views.js');
   if ((0, _utils.isFile)(reactViewsFile)) {
+    // $Flow
     let views = require(reactViewsFile).default || [];
     cfg.reactViews = views.reduce((res, view) => {
       res[view] = _path2.default.join(serviceDir, 'views', view);
@@ -140,6 +136,7 @@ function readPlugin(pluginDir, enableLocales) {
 
   let res = {
     dir: pluginDir,
+    config: '',
     pluginClass: classFile,
     api: getFiles(_path2.default.join(pluginDir, 'api')),
     controllers: getFiles(_path2.default.join(pluginDir, 'controllers')),
@@ -161,15 +158,21 @@ function readPlugin(pluginDir, enableLocales) {
  * 确定插件的绝对路径
  * @param {Object} config 配置
  * @param {string} file 配置文件路径
+ * @param {string[]} mdirs 模块目录列表
  */
-function resolvePluginPath(config, file) {
+function resolvePluginPath(config, file, mdirs) {
   if (_lodash2.default.size(config.plugins)) {
     config.plugins = _lodash2.default.reduce(config.plugins, (res, p, k) => {
       if (!_path2.default.isAbsolute(p)) {
         if (p[0] === '.') {
           p = _path2.default.join(file, p);
         } else {
-          p = _path2.default.join(modulesDir, p);
+          for (let dir of mdirs) {
+            p = _path2.default.join(dir, p);
+            if ((0, _utils.isDirectory)(p)) {
+              break;
+            }
+          }
         }
       }
       res[k] = p;
@@ -178,7 +181,19 @@ function resolvePluginPath(config, file) {
   }
 }
 
-function createMetadata(id, dir, mainConfigFile) {
+function createMetadata(id, dir, mainConfigFileName, modulesDirs) {
+  let mdirs = modulesDirs || ['node_modules'];
+  if (mdirs.indexOf('node_modules') < 0) {
+    mdirs.push('node_modules');
+  }
+
+  mdirs = mdirs.map(d => {
+    if (_path2.default.isAbsolute(d)) {
+      return d;
+    }
+    return _path2.default.join(process.cwd(), d);
+  });
+
   let metadata = {
     fields: {},
     drivers: {},
@@ -189,10 +204,11 @@ function createMetadata(id, dir, mainConfigFile) {
   };
 
   let mainConfigDir = _path2.default.join(dir, 'config');
-  let mainConfigFilePath = _path2.default.join(mainConfigDir, mainConfigFile);
+  let mainConfigFilePath = _path2.default.join(mainConfigDir, mainConfigFileName);
+  // $Flow
   let mainConfig = require(mainConfigFilePath).default;
 
-  resolvePluginPath(mainConfig, mainConfigFilePath);
+  resolvePluginPath(mainConfig, mainConfigFilePath, mdirs);
 
   // 各个Service的配置信息
   let configs = {
@@ -202,6 +218,12 @@ function createMetadata(id, dir, mainConfigFile) {
   // 各个Service插件列表
   let plugins = {};
 
+  metadata.locales = mainConfig.locales || _config2.default.locales || ['en', 'zh-CN'];
+  let defaultLocale = mainConfig.defaultLocale || _config2.default.defaultLocale;
+  if (defaultLocale && metadata.locales.indexOf(defaultLocale) < 0) {
+    metadata.locales.push(defaultLocale);
+  }
+
   // 读取主Service信息
   metadata.services[id] = _extends({
     main: true,
@@ -209,17 +231,22 @@ function createMetadata(id, dir, mainConfigFile) {
     config: mainConfigFilePath
   }, readService(dir, metadata.locales, true));
 
-  metadata.locales = mainConfig.locales || _config2.default.locales || ['en', 'zh-CN'];
-  let defaultLocale = mainConfig.defaultLocale || _config2.default.defaultLocale;
-  if (defaultLocale && metadata.locales.indexOf(defaultLocale) < 0) {
-    metadata.locales.push(defaultLocale);
-  }
-
   // 递归遍历Service
-  function readServices(services) {
+  function readServices(services, configFilePath) {
     _lodash2.default.forEach(services, (init, serviceId) => {
       if (_lodash2.default.isPlainObject(metadata.services[serviceId])) return;
-      let serviceDir = init.dir || _path2.default.join(modulesDir, serviceId);
+      // $Flow
+      let serviceDir = init.dir;
+      if (!serviceDir) {
+        for (let d of mdirs) {
+          serviceDir = _path2.default.join(d, serviceId);
+          if ((0, _utils.isDirectory)(serviceDir)) {
+            break;
+          }
+        }
+      } else if (!_path2.default.isAbsolute(serviceDir)) {
+        serviceDir = _path2.default.join(_path2.default.dirname(configFilePath), serviceDir);
+      }
       if (!(0, _utils.isDirectory)(serviceDir)) {
         if (init.optional) {
           return;
@@ -236,37 +263,43 @@ function createMetadata(id, dir, mainConfigFile) {
       let serviceConfigFile = _path2.default.join(serviceDir, 'config', serviceId + '.js');
       if ((0, _utils.isFile)(serviceConfigFile)) {
         cfg.config = serviceConfigFile;
+        // $Flow
         let serviceConfig = require(serviceConfigFile).default;
-        resolvePluginPath(serviceConfig, serviceConfigFile);
+        resolvePluginPath(serviceConfig, serviceConfigFile, mdirs);
         configs[serviceId] = serviceConfig;
-        readServices(serviceConfig.services || {});
+        readServices(serviceConfig.services || {}, serviceConfigFile);
       } else {
         configs[serviceId] = {};
       }
     });
   }
 
-  readServices(mainConfig.services);
+  readServices(mainConfig.services, mainConfigFilePath);
 
   // 读取node_modules目录，解析所有package.json
-  _fs2.default.readdirSync(modulesDir).forEach(lib => {
-    if (lib[0] === '.') return;
-    let pkgPath = _path2.default.join(modulesDir, lib, 'package.json');
-    if ((0, _utils.isFile)(pkgPath)) {
-      let json = (0, _utils.readJson)(pkgPath);
-      switch (json.alaska) {
-        case 'driver':
-          metadata.drivers[json.name] = json.name;
-          break;
-        case 'field':
-          metadata.fields[json.name] = json.name;
-          break;
-        case 'renderer':
-          metadata.renderers[json.name] = json.name;
-          break;
-        default:
+  mdirs.forEach(mdir => {
+    _fs2.default.readdirSync(mdir).forEach(lib => {
+      if (lib[0] === '.') return;
+      // $Flow
+      let pkgPath = _path2.default.join(mdir, lib, 'package.json');
+      if ((0, _utils.isFile)(pkgPath)) {
+        let json = (0, _utils.readJson)(pkgPath);
+        // $Flow
+        let requirePath = _path2.default.join(mdir, lib);
+        switch (json.alaska) {
+          case 'driver':
+            metadata.drivers[json.name] = requirePath;
+            break;
+          case 'field':
+            metadata.fields[json.name] = requirePath;
+            break;
+          case 'renderer':
+            metadata.renderers[json.name] = requirePath;
+            break;
+          default:
+        }
       }
-    }
+    });
   });
 
   // 加载子Service配置
@@ -295,8 +328,9 @@ function createMetadata(id, dir, mainConfigFile) {
         pluginConfigFile = _path2.default.join(configDir, name, 'config.js');
       }
       if ((0, _utils.isFile)(pluginConfigFile)) {
+        // $Flow
         let pluginConfig = require(pluginConfigFile).default;
-        resolvePluginPath(pluginConfig, pluginConfigFile);
+        resolvePluginPath(pluginConfig, pluginConfigFile, mdirs);
         configs[name] = (0, _utils.merge)(configs[name], pluginConfig);
       }
     });
@@ -331,7 +365,17 @@ function createMetadata(id, dir, mainConfigFile) {
     _lodash2.default.forEach(cfg.middlewares, (item, middlewareId) => {
       if (!item || item.fn) return;
       middlewareId = item.id || middlewareId;
-      metadata.middlewares[middlewareId] = middlewareId;
+      // $Flow
+      let middlewarePath = middlewareId;
+      if (!_path2.default.isAbsolute(middlewarePath)) {
+        for (let d of mdirs) {
+          middlewarePath = _path2.default.join(d, middlewareId);
+          if ((0, _utils.isDirectory)(middlewarePath)) {
+            break;
+          }
+        }
+      }
+      metadata.middlewares[middlewareId] = middlewarePath;
     });
   });
 

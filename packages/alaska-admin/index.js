@@ -96,6 +96,7 @@ class AdminService extends _alaska.Service {
           nocreate: Model.nocreate,
           noupdate: Model.noupdate,
           noremove: Model.noremove,
+          noexport: Model.noexport,
           groups: _lodash2.default.reduce(Model.groups, (res, g, key) => {
             let { ability } = g;
             if (typeof ability === 'function') {

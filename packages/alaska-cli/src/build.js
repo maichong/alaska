@@ -24,6 +24,14 @@ var _slash = require('slash');
 
 var _slash2 = _interopRequireDefault(_slash);
 
+var _isFile = require('is-file');
+
+var _isFile2 = _interopRequireDefault(_isFile);
+
+var _isDirectory = require('is-directory');
+
+var _isDirectory2 = _interopRequireDefault(_isDirectory);
+
 var _utils = require('./utils');
 
 var uitls = _interopRequireWildcard(_utils);
@@ -36,53 +44,77 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* eslint global-require:0 */
 /* eslint import/no-dynamic-require:0 */
 
-exports.default = async function build() {
+exports.default = async function build(options) {
   console.log(_chalk2.default.green('Alaska build...'));
-  const dir = process.cwd() + '/';
-  if (!uitls.isFile(dir + '.alaska')) {
+  const cwd = process.cwd();
+  let rcFile = _path2.default.join(cwd, '.alaska');
+  if (!_isFile2.default.sync(rcFile)) {
     throw new Error('Current folder is not an alaska project!');
   }
 
-  let rc = uitls.readJSON(dir + '.alaska');
+  let rc = uitls.readJSON(rcFile);
   if (!rc || !rc.id) {
     throw new Error('.alaska file error!');
   }
 
-  const modulesDir = dir + 'node_modules/';
+  let mdirs = options.modulesDirs || [];
+  if (mdirs.indexOf('node_modules') < 0) {
+    mdirs.push('node_modules');
+  }
+
+  mdirs = mdirs.map(d => _path2.default.join(cwd, d));
 
   // build modules
   console.log(_chalk2.default.green('Build modules...'));
-  let alaskaModulesPath = _path2.default.join(modulesDir, 'alaska-modules');
-  if (!uitls.isDirectory(alaskaModulesPath)) {
+  let alaskaModulesPath = '';
+  for (let d of mdirs) {
+    let tmp = _path2.default.join(d, 'alaska-modules');
+    if (_isDirectory2.default.sync(tmp)) {
+      alaskaModulesPath = tmp;
+      break;
+    }
+  }
+  if (!alaskaModulesPath) {
     console.log(_chalk2.default.red('alaska-modules is not installed!'));
   } else {
     // $Flow
     const createScript = require(_path2.default.join(alaskaModulesPath, 'script')).default;
-    createScript(rc.id, process.cwd() + '/src', rc.id + '.js');
+    createScript(rc.id, process.cwd() + '/src', rc.id + '.js', options.modulesDirs);
   }
 
   // babel transform
   console.log(_chalk2.default.green('Babel transform...'));
-  uitls.transformSrouceDir(_path2.default.join(dir, 'src'), _path2.default.join(dir, 'dist'));
+  uitls.transformSrouceDir(_path2.default.join(cwd, 'src'), _path2.default.join(cwd, 'dist'));
 
   // build admin
   console.log(_chalk2.default.green('Build admin dashboard...'));
-  if (!uitls.isDirectory(_path2.default.join(modulesDir, 'alaska-admin-view'))) {
+  let adminViewInstalled = false;
+  for (let d of mdirs) {
+    if (_isDirectory2.default.sync(_path2.default.join(d, 'alaska-admin-view'))) {
+      adminViewInstalled = true;
+      break;
+    }
+  }
+  if (!adminViewInstalled) {
     console.log(_chalk2.default.grey('alaska-admin-view is not installed!'));
     return;
   }
 
-  if (!uitls.isDirectory(dir + 'runtime/alaska-admin-view')) {
-    _mkdirp2.default.sync('runtime/alaska-admin-view');
+  let adminViewRuntime = _path2.default.join(cwd, 'runtime/alaska-admin-view');
+  if (!_isDirectory2.default.sync(adminViewRuntime)) {
+    _mkdirp2.default.sync(adminViewRuntime);
   }
 
-  const modulesList = _fs2.default.readdirSync(modulesDir).filter(file => file[0] !== '.' && file.startsWith('alaska-') && file !== 'alaska-admin-view');
+  const viewModulesList = [];
+  for (let d of mdirs) {
+    _fs2.default.readdirSync(d).filter(file => file[0] !== '.' && file.startsWith('alaska-') && file !== 'alaska-admin-view').forEach(file => viewModulesList.push(_path2.default.join(d, file)));
+  }
 
-  let runtimeStyleFile = dir + 'runtime/alaska-admin-view/style.less';
+  let runtimeStyleFile = _path2.default.join(adminViewRuntime, 'style.less');
 
-  let styles = modulesList.map(name => {
-    let styleFile = _path2.default.join(modulesDir, name, 'style.less');
-    if (uitls.isFile(styleFile)) {
+  let styles = viewModulesList.map(dir => {
+    let styleFile = _path2.default.join(dir, 'style.less');
+    if (_isFile2.default.sync(styleFile)) {
       let p = (0, _slash2.default)(_path2.default.relative(_path2.default.dirname(runtimeStyleFile), styleFile));
       return `@import "${p}";`;
     }
@@ -131,21 +163,21 @@ exports.default = async function build() {
   {
     // views 配置文件
     let viewsFile = process.cwd() + '/src/views/admin-views.js';
-    if (uitls.isFile(viewsFile)) {
+    if (_isFile2.default.sync(viewsFile)) {
       // $Flow require()
       parse(require(viewsFile));
     }
   }
 
-  modulesList.forEach(name => {
+  viewModulesList.forEach(dir => {
     try {
-      let viewsDir = _path2.default.join(modulesDir, name, 'views');
+      let viewsDir = _path2.default.join(dir, 'views');
       let viewsFile = _path2.default.join(viewsDir, 'index.js');
-      if (uitls.isFile(viewsFile)) {
+      if (_isFile2.default.sync(viewsFile)) {
         // 如果views配置文件存在
         // $Flow require()
         parse(require(viewsFile));
-      } else if (uitls.isDirectory(viewsDir)) {
+      } else if (_isDirectory2.default.sync(viewsDir)) {
         let config = {
           views: {}
         };
@@ -159,12 +191,12 @@ exports.default = async function build() {
     }
   });
 
-  let runtimeViewsFile = dir + 'runtime/alaska-admin-view/views.js';
+  let runtimeViewsFile = _path2.default.join(adminViewRuntime, 'views.js');
   let content = '/* This file is created by alaska build command, please do NOT modify this file manually. */\n\n';
 
   // 输出views
   for (let name of Object.keys(views)) {
-    let r = (0, _slash2.default)(_path2.default.relative(dir, views[name]));
+    let r = (0, _slash2.default)(_path2.default.relative(cwd, views[name]));
     content += `export ${name} from '../../${r}';\n`;
     console.log(`view : ${name} -> ${r}`);
   }
@@ -176,7 +208,7 @@ exports.default = async function build() {
     console.log(`wrapper : ${name}`);
     contentTmp += `  '${name}':[`;
     wrappers[name].forEach((file, i) => {
-      let r = (0, _slash2.default)(_path2.default.relative(dir, file));
+      let r = (0, _slash2.default)(_path2.default.relative(cwd, file));
       let com = 'Wrapper$' + index + '$' + i;
       content += `import ${com} from '../../${r}';\n`;
       contentTmp += ` ${com},`;
@@ -190,7 +222,7 @@ exports.default = async function build() {
   content += '\n\n';
   contentTmp = '\nexport const routes = [\n';
   routes.forEach((route, index) => {
-    let r = (0, _slash2.default)(_path2.default.relative(dir, route.component));
+    let r = (0, _slash2.default)(_path2.default.relative(cwd, route.component));
     let com = 'Route' + index;
     content += `import ${com} from '../../${r}';\n`;
     contentTmp += `  {\n    component: ${com},\n    path: '${route.path}'\n  },\n`;
@@ -203,7 +235,7 @@ exports.default = async function build() {
   contentTmp = '\nexport const navs = [\n';
 
   navs.forEach((nav, index) => {
-    let r = (0, _slash2.default)(_path2.default.relative(dir, nav));
+    let r = (0, _slash2.default)(_path2.default.relative(cwd, nav));
     let com = 'Nav' + index;
     content += `import ${com} from '../../${r}';\n`;
     contentTmp += `  ${com},\n`;

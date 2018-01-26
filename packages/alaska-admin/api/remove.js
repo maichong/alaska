@@ -50,7 +50,7 @@ exports.default = async function remove(ctx) {
   }
 
   if (typeof ability === 'function') {
-    ability = ability(record);
+    ability = ability(record, ctx.user);
   }
 
   if (ability && ability[0] === '*') {

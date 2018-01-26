@@ -1,6 +1,6 @@
 {
   "name": "alaska-admin-view",
-  "version": "0.12.12",
+  "version": "0.13.0",
   "description": "Alaska admin view",
   "keywords": [
     "alaska",
@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "akita": "^0.4.0",
-    "alaska-field-checkbox": "^0.12.12",
+    "alaska-field-checkbox": "^0.13.0",
     "check-depends": "^0.3.1",
     "intl-messageformat": "^2.2.0",
     "lodash": "^4.17.4",
@@ -39,7 +39,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "peerDependencies": {
-    "alaska-admin": "^0.12.12",
-    "alaska-field-checkbox": "^0.12.12"
+    "alaska-admin": "^0.13.0",
+    "alaska-field-checkbox": "^0.13.0"
   }
 }

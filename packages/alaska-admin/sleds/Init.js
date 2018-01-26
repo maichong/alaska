@@ -20,6 +20,10 @@ var _alaskaUser = require('alaska-user');
 
 var _alaskaUser2 = _interopRequireDefault(_alaskaUser);
 
+var _Ability = require('alaska-user/models/Ability');
+
+var _Ability2 = _interopRequireDefault(_Ability);
+
 var _RegisterMenu = require('./RegisterMenu');
 
 var _RegisterMenu2 = _interopRequireDefault(_RegisterMenu);
@@ -33,10 +37,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * 自动已经系统中所有的模型,注册管理员后台菜单
  */
-
-
-/* eslint no-inner-declarations:0 */
-
 class Init extends _alaska.Sled {
   async exec() {
     _RegisterMenu2.default.run({
@@ -87,10 +87,17 @@ class Init extends _alaska.Sled {
       abilities: ['admin']
     });
 
+    const rootAbilities = _lodash2.default.clone(root.abilities);
+
     // $Flow
     let menus = _lodash2.default.reduce((await _AdminMenu2.default.find()), (res, menu) => {
       res[menu.id] = menu;
       return res;
+    }, {});
+
+    let abilities = (await _Ability2.default.find()).reduce((map, record) => {
+      map[record._id] = record;
+      return map;
     }, {});
 
     for (let serviceId of Object.keys(_alaska2.default.services)) {
@@ -102,17 +109,18 @@ class Init extends _alaska.Sled {
         function registerAbility(action) {
           if (action === 'add') return; // add Action 使用 create权限
           let id = ability + action;
+          if (abilities[id]) return;
           _alaskaUser2.default.run('RegisterAbility', {
             id,
             title: `${action} ${Model.modelName}`,
             service: 'alaska-admin'
           });
-          if (root.abilities.indexOf(id) < 0) {
-            root.abilities.push(id);
+          if (rootAbilities.indexOf(id) < 0) {
+            rootAbilities.push(id);
           }
         }
 
-        ['read', 'create', 'remove', 'update'].forEach(registerAbility);
+        ['read', 'create', 'remove', 'update', 'export'].forEach(registerAbility);
         _lodash2.default.keys(Model.actions).forEach(registerAbility);
         if (Model.hidden) {
           continue;
@@ -133,7 +141,12 @@ class Init extends _alaska.Sled {
         }).catch(e => console.error(e.stack));
       }
     }
-    root.save();
+    if (!_lodash2.default.isEqual(root.abilities, rootAbilities)) {
+      root.abilities = rootAbilities;
+      await root.save();
+    }
   }
 }
 exports.default = Init;
+
+/* eslint no-inner-declarations:0 */

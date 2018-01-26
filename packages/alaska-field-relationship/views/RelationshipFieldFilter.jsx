@@ -107,7 +107,7 @@ export default class RelationshipFieldFilter extends React.Component<Alaska$view
     className += ' relationship-field-filter' + (error ? ' error' : '');
     return (
       <div className={className}>
-        <label className="col-xs-2 control-label text-right">{t(field.label)}</label>
+        <label className="col-xs-2 control-label text-right">{field.label}</label>
         <div className="form-inline col-xs-10">
           <div className="form-group" style={{ minWidth: 230 }}>
             <Select

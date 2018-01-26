@@ -4,27 +4,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import shallowEqualWithout from 'shallow-equal-without';
 import checkDepends from 'check-depends';
-import type { ImmutableObject, ImmutableArray } from 'seamless-immutable';
+import type { Props } from 'alaska-admin-view/views/Action';
 import TooltipWrapper from './TooltipWrapper';
-
-type Props = {
-  editor?: boolean,
-  model: Alaska$view$Model,
-  action: Alaska$Model$action,
-  records?: ImmutableArray<Alaska$view$Record>,
-  selected?: ImmutableArray<Alaska$view$Record>,
-  disabled?: boolean,
-  record?: ImmutableObject<Alaska$view$Record>,
-  onClick?: Function,
-  link?: string,
-  refresh?: Function,
-};
-
-type Context = {
-  views: Alaska$view$Views,
-  router: Object,
-  t: Function
-};
 
 export default class Action extends React.Component<Props> {
   static contextTypes = {
@@ -33,7 +14,11 @@ export default class Action extends React.Component<Props> {
     t: PropTypes.func
   };
 
-  context: Context;
+  context: {
+    views: Alaska$view$Views,
+    router: Object,
+    t: Function
+  };
 
   shouldComponentUpdate(props: Props) {
     return !shallowEqualWithout(props, this.props);

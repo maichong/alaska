@@ -12,11 +12,13 @@
 - ability 函数增加user参数
 - 数据导出CSV
 - 增加 export 系统级Action 和对应权限
+- 增加自动化测试
 
 ### Changed
 
 - 重构 admin view 列表页面
 - admin settings api 数据结构
+- 升级Mongoose到5.x
 
 ### Fixed
 

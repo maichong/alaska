@@ -27,13 +27,7 @@ var _metadata2 = _interopRequireDefault(_metadata);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const indents = {}; /**
-                     * @copyright Maichong Software Ltd. 2017 http://maichong.it
-                     * @date 2017-11-21
-                     * @author Liang <liang@maichong.it>
-                     */
-
-/* eslint quotes:0 */
+const indents = {}; /* eslint quotes:0 */
 
 for (let i = 0; i <= 16; i += 1) {
   let str = '';
@@ -52,10 +46,10 @@ function wrapWord(word) {
   return `'${word}'`;
 }
 
-function createScript(id, dir, configFile) {
-  let metadata = (0, _metadata2.default)(id, dir, configFile);
+function createScript(id, serviceDir, configFile, modulesDirs) {
+  let metadata = (0, _metadata2.default)(id, serviceDir, configFile, modulesDirs);
 
-  const moduleFilePath = _path2.default.join(dir, 'modules.js');
+  const moduleFilePath = _path2.default.join(serviceDir, 'modules.js');
 
   function relative(file) {
     let modulesDir = _path2.default.join(process.cwd(), 'node_modules');
@@ -74,33 +68,33 @@ function createScript(id, dir, configFile) {
 
   // fields
   script += 'exports.fields = {\n';
-  _lodash2.default.forEach(metadata.fields, lib => {
-    console.log('field :', lib);
-    script += `  '${lib}': require('${lib}').default,\n`;
+  _lodash2.default.forEach(metadata.fields, (dir, name) => {
+    console.log('field :', name);
+    script += `  '${name}': require('${relative(dir)}').default,\n`;
   });
   script += '};\n\n';
 
   // drivers
   script += 'exports.drivers = {\n';
-  _lodash2.default.forEach(metadata.drivers, lib => {
-    console.log('driver :', lib);
-    script += `  '${lib}': require('${lib}').default,\n`;
+  _lodash2.default.forEach(metadata.drivers, (dir, name) => {
+    console.log('driver :', name);
+    script += `  '${name}': require('${relative(dir)}').default,\n`;
   });
   script += '};\n\n';
 
   // renderers
   script += 'exports.renderers = {\n';
-  _lodash2.default.forEach(metadata.renderers, lib => {
-    console.log('renderer :', lib);
-    script += `  '${lib}': require('${lib}').default,\n`;
+  _lodash2.default.forEach(metadata.renderers, (dir, name) => {
+    console.log('renderer :', name);
+    script += `  '${name}': require('${relative(dir)}').default,\n`;
   });
   script += '};\n\n';
 
   // middlewares
   script += 'exports.middlewares = {\n';
-  _lodash2.default.forEach(metadata.middlewares, lib => {
-    console.log('middleware :', lib);
-    script += `  '${lib}': require('${lib}'),\n`;
+  _lodash2.default.forEach(metadata.middlewares, (dir, name) => {
+    console.log('middleware :', name);
+    script += `  '${name}': require('${relative(dir)}'),\n`;
   });
   script += '};\n\n';
 
@@ -160,7 +154,7 @@ function createScript(id, dir, configFile) {
     if (_lodash2.default.size(service.templatesDirs)) {
       script += `    templatesDirs: [\n`;
       _lodash2.default.forEach(service.templatesDirs, d => {
-        script += `      '${(0, _slash2.default)(_path2.default.relative(dir, d))}',\n`;
+        script += `      '${(0, _slash2.default)(_path2.default.relative(serviceDir, d))}',\n`;
       });
       script += `    ],\n`;
     }
@@ -168,7 +162,7 @@ function createScript(id, dir, configFile) {
     // react views
     script += `    reactViews: {\n`;
     _lodash2.default.forEach(service.reactViews, (file, name) => {
-      script += `      '${(0, _slash2.default)(name)}': require('./${(0, _slash2.default)(_path2.default.relative(dir, file))}').default,\n`;
+      script += `      '${(0, _slash2.default)(name)}': require('./${(0, _slash2.default)(_path2.default.relative(serviceDir, file))}').default,\n`;
     });
     script += `    },\n`;
 

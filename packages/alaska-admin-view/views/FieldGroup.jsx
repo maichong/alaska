@@ -4,37 +4,9 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import checkDepends from 'check-depends';
-import type { DependsQueryExpression } from 'check-depends';
-import type { ImmutableObject } from 'seamless-immutable';
+import type { Props } from 'alaska-admin-view/views/FieldGroup';
 import Node from './Node';
 import parseAbility from '../utils/parse-ability';
-
-type Props = {
-  path: string,
-  loading: boolean,
-  model: Alaska$view$Model,
-  record: ImmutableObject<Alaska$view$Record>,
-  isNew: boolean,
-  id: string,
-  fields: Alaska$view$Field[],
-  title: string,
-  errors: {},
-  onFieldChange: Function,
-  form?: boolean,
-  panel?: boolean,
-  style?: Alaska$style,
-  wrapper?: string, // 自定义Wrapper占位符
-  horizontal?: boolean,
-  ability?: string | Function,
-  super?: DependsQueryExpression,
-  hidden?: DependsQueryExpression,
-  depends?: DependsQueryExpression,
-  disabled?: DependsQueryExpression,
-};
-
-export type FieldRefMap = {
-  [key: string]: React$Element<any>
-};
 
 export default class FieldGroup extends React.Component<Props> {
   static contextTypes = {
@@ -49,7 +21,7 @@ export default class FieldGroup extends React.Component<Props> {
     t: Function
   };
 
-  fieldRefs: FieldRefMap = {};
+  fieldRefs = {};
 
   renderFields(disabled: boolean) {
     const { t, settings, views } = this.context;
@@ -63,7 +35,7 @@ export default class FieldGroup extends React.Component<Props> {
       let { ability } = field;
       let abilityDisabled = false;
       if (typeof ability === 'function') {
-        ability = ability(record);
+        ability = ability(record, settings.user);
       }
       if (ability && ability[0] === '*') {
         ability = ability.substr(1);
@@ -125,13 +97,13 @@ export default class FieldGroup extends React.Component<Props> {
     const { t, settings } = this.context;
     const { props } = this;
     const {
-      path, title, panel, form, wrapper, style, loading, model, record, isNew, horizontal
+      path, title, panel, form, wrapper, style, disabled, model, record, isNew, horizontal
     } = props;
 
     let { ability } = props;
     let abilityDisabled = false;
     if (typeof ability === 'function') {
-      ability = ability(record);
+      ability = ability(record, settings.user);
     }
     if (ability && ability[0] === '*') {
       ability = ability.substr(1);
@@ -144,7 +116,7 @@ export default class FieldGroup extends React.Component<Props> {
     if (!settings.superMode && checkDepends(props.super, record)) return ''; // super
 
     function isDisabled(): boolean {
-      if (loading || abilityDisabled) return true;
+      if (disabled || abilityDisabled) return true;
       let action = '';
       if (isNew) {
         if (model.nocreate) return true;
@@ -154,7 +126,7 @@ export default class FieldGroup extends React.Component<Props> {
         action = 'update';
       }
       let actionAbility = _.get(model, `actions.${action}.ability`);
-      actionAbility = parseAbility(actionAbility, record);
+      actionAbility = parseAbility(actionAbility, record, settings.user);
       if (actionAbility) {
         if (!settings.abilities[actionAbility]) return true;
       } else if (!model.abilities[action]) return true;

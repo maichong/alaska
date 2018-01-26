@@ -7,23 +7,18 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import checkDepends from 'check-depends';
 import Immutable from 'seamless-immutable';
-import type { ImmutableObject, ImmutableArray } from 'seamless-immutable';
+import type { ImmutableObject } from 'seamless-immutable';
+import type { Props } from 'alaska-admin-view/views/QuickEditor';
 import Node from './Node';
 import Editor from './Editor';
-import * as listsRedux from '../redux/lists';
 import * as saveRedux from '../redux/save';
 
 const MODE_ONE = 0; // 0 编辑单个
 const MODE_MULTI = 1; // 1 编辑多个
 
-type Props = {
-  model: Alaska$view$Model,
-  record?: ImmutableObject<Alaska$view$Record>,
-  records: ImmutableArray<Alaska$view$Record>,
-  onCancel: Function,
+type FinalProps = Props & {
   saveAction: Function,
-  save: Alaska$view$save,
-  onRefresh: Function
+  save: Alaska$view$save
 };
 
 type State = {
@@ -31,7 +26,7 @@ type State = {
   data?: ImmutableObject<Alaska$view$Record>
 };
 
-class QuickEditor extends React.Component<Props, State> {
+class QuickEditor extends React.Component<FinalProps, State> {
   static contextTypes = {
     settings: PropTypes.object,
     t: PropTypes.func,
@@ -40,8 +35,9 @@ class QuickEditor extends React.Component<Props, State> {
 
   _r: ?number;
   el: ?React$Node;
+  editorRef: Object;
 
-  constructor(props: Props) {
+  constructor(props: FinalProps) {
     super(props);
     this.state = {
       mode: MODE_ONE,
@@ -52,11 +48,11 @@ class QuickEditor extends React.Component<Props, State> {
     this.init(this.props);
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: FinalProps) {
     this.init(nextProps);
   }
 
-  init(props: Props) {
+  init(props: FinalProps) {
     const { save, record, records } = props;
     if (save._r && save._r === this._r) {
       this._r = 0;
@@ -120,6 +116,9 @@ class QuickEditor extends React.Component<Props, State> {
     if (!data) return;
     let dataForSave;
     if (mode === MODE_ONE) {
+      if (!this.editorRef) return;
+      let errors = this.editorRef.checkErrors();
+      if (_.size(errors)) return;
       dataForSave = {
         id: data._id,
         ...data
@@ -193,9 +192,13 @@ class QuickEditor extends React.Component<Props, State> {
               className={'quick-editor-desc alert alert-' + (mode === MODE_ONE ? 'info' : 'warning')}
             >{desc}</div>) : null}
             <Editor
+              ref={(r) => {
+                // $Flow
+                this.editorRef = r;
+              }}
               model={model}
               record={data}
-              id={data._id}
+              recordId={data._id}
               onChange={this.handleChange}
             />
           </div>
@@ -221,6 +224,5 @@ class QuickEditor extends React.Component<Props, State> {
 }
 
 export default connect(({ save }) => ({ save }), (dispatch) => bindActionCreators({
-  saveAction: saveRedux.save,
-  refreshList: listsRedux.refreshList
+  saveAction: saveRedux.save
 }, dispatch))(QuickEditor);

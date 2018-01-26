@@ -70,6 +70,7 @@ class SelectField extends _alaska.Field {
 }
 exports.default = SelectField;
 SelectField.plain = String;
+SelectField.typeName = 'select';
 SelectField.viewOptions = ['options', 'translate', 'checkbox', 'switch', 'multi'];
 SelectField.defaultOptions = {
   cell: 'SelectFieldCell',

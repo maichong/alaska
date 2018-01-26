@@ -8,9 +8,9 @@ var _alaska = require('alaska');
 
 var _alaska2 = _interopRequireDefault(_alaska);
 
-var _akitaNode = require('akita-node');
+var _akita = require('akita');
 
-var _akitaNode2 = _interopRequireDefault(_akitaNode);
+var _akita2 = _interopRequireDefault(_akita);
 
 var _mimeTypes = require('mime-types');
 
@@ -26,7 +26,7 @@ var _Image2 = _interopRequireDefault(_Image);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const client = _akitaNode2.default.resolve('alaska-image');
+const client = _akita2.default.resolve('alaska-image');
 
 class Upload extends _alaska.Sled {
   async exec(params) {

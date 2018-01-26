@@ -1102,10 +1102,15 @@ class Model {
     // $Flow
     state = _lodash2.default.defaultsDeep({}, state, ctx.state);
 
+    let id = state.id || ctx.params.id;
+    if ((id === 'count' || id === 'paginate') && model._fields._id.type.plain !== String) {
+      return null;
+    }
+
     let filters = model.createFilters('', ctx.state.filters || ctx.query);
 
     // $Flow
-    let query = model.findById(state.id || ctx.params.id).where(filters);
+    let query = model.findById(id).where(filters);
 
     let { defaultFilters } = model;
     if (defaultFilters) {

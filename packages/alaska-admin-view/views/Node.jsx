@@ -3,15 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-
-type Props = {
-  children: React$Node,
-  tag?: string | false,
-  id?: string,
-  wrapper?: string,
-  props?: Object,
-  state?: Object,
-};
+import type { Props } from 'alaska-admin-view/views/Node';
 
 export default class Node extends React.Component<Props> {
   static contextTypes = { views: PropTypes.object };

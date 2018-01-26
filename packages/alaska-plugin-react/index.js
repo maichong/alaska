@@ -16,7 +16,9 @@ var _server = require('react-dom/server');
 
 var _server2 = _interopRequireDefault(_server);
 
-var _reactRedux = require('react-redux');
+var _Provider = require('react-redux/lib/components/Provider');
+
+var _Provider2 = _interopRequireDefault(_Provider);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -38,12 +40,17 @@ class ReactPlugin {
           if (!mod || !mod.reactViews || !mod.reactViews[view]) {
             service.panic(`React view "${view}" not found!`);
           }
-          let View = mod.reactViews[view];
-          let element = _react2.default.createElement(View, Object.assign({ isSSR: true }, props));
-          if (props.store) {
-            element = _react2.default.createElement(_reactRedux.Provider, { store: props.store }, element);
+          try {
+            let View = mod.reactViews[view];
+            let element = _react2.default.createElement(View, Object.assign({ isSSR: true }, props));
+            if (props.store) {
+              element = _react2.default.createElement(_Provider2.default, { store: props.store }, element);
+            }
+            return _server2.default.renderToStaticMarkup(element);
+          } catch (error) {
+            console.error(error.stack);
+            throw error;
           }
-          return _server2.default.renderToStaticMarkup(element);
         }
 
         ctx.react = react;
@@ -54,3 +61,4 @@ class ReactPlugin {
   }
 }
 exports.default = ReactPlugin;
+// $Flow

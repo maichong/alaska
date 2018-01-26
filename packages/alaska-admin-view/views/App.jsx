@@ -20,6 +20,7 @@ import Dashboard from './Dashboard';
 import EditorPage from './EditorPage';
 import ListPage from './ListPage';
 import NotFoundPage from './NotFoundPage';
+import Loading from './Loading';
 
 type Props = {
   views: Object,
@@ -254,7 +255,7 @@ class App extends React.Component<Props, State> {
     } else if (settings.locale) { //未登录,已加载设置
       el = <Login />;
     } else {
-      el = <div className="boot-loading">Loading...</div>;
+      el = <Loading />;
     }
 
     this._page = el;

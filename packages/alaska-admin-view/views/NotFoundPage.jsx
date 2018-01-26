@@ -1,9 +1,3 @@
-/**
- * @copyright Maichong Software Ltd. 2018 http://maichong.it
- * @date 2018-01-14
- * @author Liang <liang@maichong.it>
- */
-
 //@flow
 
 import React from 'react';

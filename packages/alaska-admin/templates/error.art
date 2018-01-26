@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="{{ locale }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="initial-scale=0.8, maximum-scale=0.8, user-scalable=no">
+  <title>{{ t(c('dashboardTitle')) }}</title>
+  <meta name="renderer" content="webkit">
+</head>
+<body>
+<script>
+  alert('{{ message }}');
+  window.close();
+</script>
+</body>
+</html>

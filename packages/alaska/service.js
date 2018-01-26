@@ -414,8 +414,14 @@ class Service {
     }
 
     //当前无空闲驱动,创建新驱动
-    const Driver = _alaska2.default.modules.drivers[options.type];
+    let Driver = options.type;
+    if (typeof Driver === 'string') {
+      Driver = _alaska2.default.modules.drivers[options.type];
+    }
+
+    // $Flow options.type可以输出
     if (!Driver) throw new _alaska.PanicError(`Driver '${options.type}' not found!`);
+    // $Flow
     let driver = new Driver(this, options);
     driver.idleId = idleId;
     driver.idle = 0;

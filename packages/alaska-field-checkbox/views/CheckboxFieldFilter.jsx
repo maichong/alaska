@@ -40,7 +40,7 @@ export default class CheckboxFieldFilter extends React.Component<Alaska$view$Fie
     const buttonClassName = 'btn btn-default';
     const buttonClassNameActive = 'btn btn-success';
     return (
-      <div className={className + 'checkbox-field-filter'}>
+      <div className={className + ' checkbox-field-filter'}>
         <label className="col-xs-2 control-label text-right">{field.label}</label>
         <div className="col-xs-10">
           <div className="btn-group">

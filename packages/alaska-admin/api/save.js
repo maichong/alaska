@@ -14,9 +14,9 @@ var _alaska2 = _interopRequireDefault(_alaska);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function parseAbility(ability, data) {
+function parseAbility(ability, data, user) {
   if (typeof ability === 'function') {
-    ability = ability(data);
+    ability = ability(data, user);
   }
   if (ability && ability[0] === '*') {
     ability = ability.substr(1);
@@ -78,7 +78,7 @@ exports.default = async function (ctx) {
 
     let ability = _lodash2.default.get(Model, `actions.${action}.ability`, `admin.${Model.key}.${action}`);
 
-    ability = parseAbility(ability, id ? record : data);
+    ability = parseAbility(ability, id ? record : data, ctx.user);
 
     await checkAbility(ability);
 
@@ -91,7 +91,7 @@ exports.default = async function (ctx) {
       // 验证Group权限
       if (field.group && Model.groups && Model.groups[field.group]) {
         let group = Model.groups[field.group];
-        let groupAbility = parseAbility(group.ability, id ? record : data);
+        let groupAbility = parseAbility(group.ability, id ? record : data, ctx.user);
         if (groupAbility && !(await hasAbility(groupAbility))) {
           delete data[key];
           continue;
@@ -99,7 +99,7 @@ exports.default = async function (ctx) {
       }
 
       // 验证字段权限
-      let fieldAbility = parseAbility(field.ability, id ? record : data);
+      let fieldAbility = parseAbility(field.ability, id ? record : data, ctx.user);
       if (fieldAbility && !(await hasAbility(fieldAbility))) {
         delete data[key];
       }

@@ -2,6 +2,7 @@ export default {
   Update: '更新',
   Save: '保存',
   Create: '新建',
+  Export: '导出',
   Remove: '删除',
   Delete: '删除',
   Refresh: '刷新',

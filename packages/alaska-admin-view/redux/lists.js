@@ -57,14 +57,18 @@ const loadListFailure = exports.loadListFailure = (0, _reduxActions.createAction
 const INITIAL_STATE = exports.INITIAL_STATE = (0, _seamlessImmutable2.default)({});
 
 exports.default = (0, _reduxActions.handleActions)({
+  LOAD_LIST: (state, { payload }) => {
+    let list = state[payload.key] || (0, _seamlessImmutable2.default)({ results: [] });
+    list = list.merge(_lodash2.default.assign({}, payload, { fetching: true }));
+    return state.set(payload.key, list);
+  },
   CLEAR_LIST: (state, { payload }) => payload.key ? state.without(payload.key) : INITIAL_STATE,
   APPLY_LIST: (state, { payload }) => {
     let key = payload.key;
     let info = _lodash2.default.omit(payload, 'results');
     let list = state[payload.key] || (0, _seamlessImmutable2.default)({});
 
-    list = list.merge(info);
-    list = list.set('error', '');
+    list = list.merge(_lodash2.default.assign({}, info, { error: '', fetching: false }));
 
     if (payload.page === 1) {
       list = list.set('results', payload.results);
@@ -76,7 +80,7 @@ exports.default = (0, _reduxActions.handleActions)({
   },
   LOAD_LIST_FAILURE: (state, { payload }) => {
     let list = state[payload.key] || (0, _seamlessImmutable2.default)({});
-    return state.set(payload.key, list.set('error', payload.error.message));
+    return state.set(payload.key, list.merge({ error: payload.error.message, fetching: false }));
   },
   SAVE: (state, { payload }) => {
     let { key, data, sort } = payload;

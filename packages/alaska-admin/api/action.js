@@ -56,7 +56,7 @@ exports.default = async function (ctx) {
 
   if (typeof ability === 'function') {
     // $Flow record 一定存在
-    ability = ability(record);
+    ability = ability(record, ctx.user);
   }
 
   if (ability && ability[0] === '*') {

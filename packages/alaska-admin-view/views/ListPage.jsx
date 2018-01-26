@@ -1,29 +1,23 @@
-// @flow
+//@flow
 
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { Link } from 'react-router-dom';
-import { DropdownButton, MenuItem } from 'react-bootstrap';
-import _ from 'lodash';
 import akita from 'akita';
 import qs from 'qs';
+import random from 'string-random';
 import Immutable from 'seamless-immutable';
 import type { ImmutableObject, ImmutableArray } from 'seamless-immutable';
 import Node from './Node';
-import DataTable from './DataTable';
-import SearchField from './SearchField';
 import TopToolbar from './TopToolbar';
-import ListActions from './ListActions';
 import QuickEditor from './QuickEditor';
-import * as listRedux from '../redux/lists';
-import { refreshSettings } from '../redux/settings';
-import parseAbility from '../utils/parse-ability';
-
-const CHECK_ICON = <i className="fa fa-check" />;
-// $Flow
-const EMPTY_RECORD_LIST: ImmutableArray<Alaska$view$Record> = Immutable([]);
+import FilterEditor from './FilterEditor';
+import FilterTool from './FilterTool';
+import ColumnTool from './ColumnTool';
+import List from './List';
+import ListBottomBar from './ListBottomBar';
+import Loading from './Loading';
 
 type Props = {
   location: Object,
@@ -36,26 +30,21 @@ type Props = {
   lists: Alaska$view$lists
 };
 
-type ElementMap = { [key: string]: React$Element<any> };
-
 type State = {
-  service: Alaska$view$Service | null,
   model: Alaska$view$Model | null,
-  records: null | ImmutableArray<Alaska$view$Record>,
+  list: ?Alaska$view$RecordList,
+  records: ImmutableArray<Alaska$view$Record>,
+  selected: ImmutableArray<Alaska$view$Record>,
+  activated: ImmutableObject<Alaska$view$Record> | null,
+  query: Object,
+  sort: string,
   search: string,
   filters: Object,
-  page: number,
-  list: Alaska$view$RecordList,
-  sort: string,
-  columnsItems: React$Element<any>[],
-  columnsKeys: string[],
-  filterItems: React$Element<any>[],
-  filterViews: React$Element<any>[],
-  filterViewsMap: ElementMap,
-  selected: ImmutableArray<Alaska$view$Record>,
-  activated?: ImmutableObject<Alaska$view$Record>,
-  query: {}
+  columns: string[]
 };
+
+// $Flow
+const EMPTY_RECORD_LIST: ImmutableArray<Alaska$view$Record> = Immutable([]);
 
 class ListPage extends React.Component<Props, State> {
   static contextTypes = {
@@ -67,312 +56,130 @@ class ListPage extends React.Component<Props, State> {
     router: PropTypes.object,
   };
 
-  _loading: boolean;
-  _ref: ?HTMLElement;
+  _listRef: ?Object;
+  _ref: ?Object;
 
   constructor(props: Props) {
     super(props);
-    let search = (props.location.search || '').substr(1);
-    let query: Object = qs.parse(search) || {};
+    // $Flow init() 负责初始化state
     this.state = {
-      records: null,
-      search: query.search || '',
-      filters: query.filters || {},
-      page: 0,
-      // $Flow
-      list: {},
-      sort: query.sort || '',
-      columnsItems: [],
-      columnsKeys: (query.columns || '').split('-').filter((a) => a),
-      filterItems: [],
-      filterViews: [],
-      filterViewsMap: {},
       selected: EMPTY_RECORD_LIST,
-      model: null,
-      service: null,
-      query
+      activated: null
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.init(this.props);
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    let search = (nextProps.location.search || '').substr(1);
-    let query = qs.parse(search) || {};
-    // $Flow
-    let newState: State = { query };
-    if (nextProps.match.params.model !== this.props.match.params.model) {
-      this.init(nextProps);
-    }
-    let { lists } = nextProps;
-    if (lists !== this.props.lists) {
-      let { model } = this.state;
-      if (model && lists[model.key]) {
-        newState.list = lists[model.key];
-        newState.records = lists[model.key].results;
-      } else {
-        // $Flow
-        newState.list = {};
-        newState.records = null;
-        newState.activated = undefined;
-        newState.selected = EMPTY_RECORD_LIST;
-      }
-      this.setState(newState, () => {
-        if (!newState.records) {
-          this.refresh();
-        }
-      });
-      this._loading = false;
-    }
+    this.init(nextProps);
   }
 
-  init(props) {
+  init(props: Props) {
     const { settings } = this.context;
-    let serviceId = props.match.params.service;
-    let modelName = props.match.params.model;
-    if (!serviceId || !modelName || !settings || !settings.services) return;
-    let service = settings.services[serviceId];
-    if (!service) return;
-    let model = service.models[modelName];
-    if (!model) return;
-    let {
-      sort, filters, filterViewsMap, columnsKeys
-    } = this.state;
-
-    let newState = {};
-    newState.service = service;
-    newState.model = model;
-    newState.filterViewsMap = filterViewsMap;
-    if (this.state.model && this.state.model.modelName !== model.modelName) {
-      //更新了model
-      newState.records = null;
-      newState.filters = {};
-      newState.filterViews = [];
-      newState.filterViewsMap = {};
-      newState.columnsKeys = _.clone(model.defaultColumns);
-      newState.sort = '';
-      newState.search = '';
-      newState.activated = undefined;
-      newState.selected = EMPTY_RECORD_LIST;
+    const { match, lists } = props;
+    const { params } = match;
+    let nextState = {};
+    let modelId = params.service + '.' + params.model;
+    nextState.records = EMPTY_RECORD_LIST;
+    let model = settings.models[modelId] || null;
+    let list;
+    if (model) {
+      list = lists[model.key];
+      if (list) {
+        nextState.records = list.results;
+      }
     }
 
-    if (!this.state.model && !columnsKeys.length) {
-      newState.columnsKeys = _.clone(model.defaultColumns);
+    if (!model || !nextState.records.length) {
+      nextState.selected = EMPTY_RECORD_LIST;
+      nextState.activated = null;
     }
-
-    //filters
-    newState.filterItems = this.getFilterItems(model, newState.filterViewsMap);
-
-    //columns
-    newState.columnsItems = this.getColumnItems(model, columnsKeys);
-
-    if (!sort) {
-      newState.sort = model.defaultSort.split(' ')[0];
-    }
-    this.setState(newState, () => {
-      _.forEach(filters, (value, path) => {
-        if (!newState.filterViewsMap[path]) {
-          this.handleFilter(path);
-        }
-      });
-      if (!this.state.records) {
-        this.refresh();
+    let searchString = (props.location.search || '').substr(1);
+    let query: Object = qs.parse(searchString) || {};
+    nextState.sort = query._sort || '';
+    nextState.search = query._search || '';
+    nextState.filters = _.reduce(query, (res, v, k) => {
+      if (k[0] !== '_' || k === '_id') {
+        res[k] = v;
+      }
+      return res;
+    }, {});
+    nextState.columns = (query._columns || '').split('-').filter((a) => a);
+    nextState.query = query;
+    nextState.list = list;
+    nextState.model = model;
+    ['filters', 'columns'].forEach((key) => {
+      if (_.isEqual(nextState[key], this.state[key])) {
+        delete nextState[key];
       }
     });
-  }
-
-  getFilterItems(model: Alaska$view$Model, filterViewsMap: ElementMap): React$Element<any>[] {
-    const { t, settings } = this.context;
-    return _.reduce(model.fields, (res: Array<any>, field: Object) => {
-      if (field.hidden || !field.filter) return res;
-      if (field.super && !settings.superMode) return res;
-      let icon = filterViewsMap[field.path] ? CHECK_ICON : null;
-      res.push(<MenuItem
-        key={field.path}
-        eventKey={field.path}
-        className="with-icon"
-      >{icon} {t(field.label, model.serviceId)}
-      </MenuItem>);
-      return res;
-    }, []);
-  }
-
-  getColumnItems(model: Alaska$view$Model, columnsKeys: string[]): React$Element<any>[] {
-    const { settings, t } = this.context;
-    return _.reduce(model.fields, (res: Array<any>, field: Object) => {
-      let icon = columnsKeys.indexOf(field.path) > -1 ? CHECK_ICON : null;
-      if (field.hidden || !field.cell) return res;
-      if (field.super && !settings.superMode) return res;
-      res.push(<MenuItem
-        key={field.path}
-        eventKey={field.path}
-        className="with-icon"
-      >{icon} {t(field.label, model.serviceId)}
-      </MenuItem>);
-      return res;
-    }, []);
+    this.setState(nextState);
   }
 
   refresh = () => {
-    // $Flow
-    this.setState({ page: 0, selected: EMPTY_RECORD_LIST, activated: undefined }, () => this.loadMore());
+    if (this._listRef) {
+      let ref = this._listRef.getWrappedInstance();
+      if (ref) {
+        ref.refresh();
+      }
+    }
   };
 
   loadMore() {
-    this._loading = true;
-    let { state } = this;
-    let {
-      filters, search, sort, model
-    } = state;
-    if (!model) return;
-    let page = (state.page || 0) + 1;
-    this.props.loadList({
-      service: model.serviceId, model: model.modelName, page, filters, search, key: model.key, sort
-    });
-    this.setState({ page });
-  }
-
-  removeFilter(path) {
-    let { model } = this.state;
-    if (!model) return;
-    let filters = _.omit(this.state.filters, path);
-    let filterViews = _.reduce(this.state.filterViews, (res, view) => {
-      if (view.key !== path) {
-        res.push(view);
+    if (this._listRef) {
+      let ref = this._listRef.getWrappedInstance();
+      if (ref) {
+        ref.loadMore();
       }
-      return res;
-    }, []);
-    let filterViewsMap = _.omit(this.state.filterViewsMap, path);
-    this.setState({
-      filters,
-      filterViews,
-      filterViewsMap,
-      filterItems: this.getFilterItems(model, filterViewsMap),
-      records: null,
-      page: 0
-    }, () => {
-      this.loadMore();
-      this.updateQuery();
-    });
+    }
   }
 
   updateQuery() {
-    let query = {
-      t: Date.now(), search: '', sort: '', filters: {}, columns: ''
-    };
+    let query = {};
     const {
-      filters, sort, search, columnsKeys
+      model, filters, sort, search, columns
     } = this.state;
+    if (!model) return;
     if (search) {
-      query.search = search;
+      query._search = search;
     }
-    if (sort) {
-      query.sort = sort;
+    if (sort && sort !== model.defaultSort) {
+      query._sort = sort;
     }
-    if (_.size(filters)) {
-      query.filters = filters;
+    if (columns.length && !_.isEqual(columns, model.defaultColumns)) {
+      query._columns = columns.join('-');
     }
-    query.columns = columnsKeys.join('-');
+    query._r = random(3);
+    _.assign(query, filters, _.pick(this.state.query, '_nofilters', '_nocolumns'));
     let { pathname } = this.props.location;
-    this.context.router.history.replace({ pathname, search: '?' + qs.stringify(query) });
+    this.context.router.history.replace({ pathname, search: '?' + qs.stringify(query, { encode: false }) });
   }
 
-  canCreate = (): boolean => {
-    const { model } = this.state;
-    const { settings } = this.context;
-    if (!model || model.nocreate) return false;
-    let ability = _.get(model, 'actions.create.ability');
-    if (ability) {
-      ability = parseAbility(ability);
-      if (ability && !settings.abilities[ability]) return false;
-    } else if (!model.abilities.create) return false;
-    return true;
-  };
-
-  canUpdate = (): boolean => {
-    const { model } = this.state;
-    const { settings } = this.context;
-    if (!model || model.noupdate) return false;
-    let ability = _.get(model, 'actions.update.ability');
-    if (ability) {
-      ability = parseAbility(ability);
-      if (ability && !settings.abilities[ability]) return false;
-    } else if (!model.abilities.update) return false;
-    return true;
-  };
-
-  canRemove = (): boolean => {
-    const { model } = this.state;
-    const { settings } = this.context;
-    if (!model || model.noremove) return false;
-    let ability = _.get(model, 'actions.remove.ability');
-    if (ability) {
-      ability = parseAbility(ability);
-      if (ability && !settings.abilities[ability]) return false;
-    } else if (!model.abilities.remove) return false;
-    return true;
-  };
-
-  handleFilter = (eventKey) => {
-    const {
-      filters, filterViews, filterViewsMap, model
-    } = this.state;
-    if (filterViewsMap[eventKey]) {
-      this.removeFilter(eventKey);
-      return;
-    }
-    if (!model) return;
-    let field = model.fields[eventKey];
-
-    if (field && field.filter) {
-      const { views } = this.context;
-      let FilterView = views[field.filter];
-      let view;
-      const onChange = (filter) => {
-        let cFilters = _.assign({}, this.state.filters, { [field.path]: filter });
-        this.setState({ filters: cFilters, records: null, page: 0 }, () => {
-          this.loadMore();
-          this.updateQuery();
-        });
-      };
-      const onClose = () => {
-        this.removeFilter(field.path);
-      };
-      let className = model.id + '-' + field.path + '-filter row field-filter';
-      view = <FilterView
-        key={eventKey}
-        className={className}
-        field={field}
-        onChange={onChange}
-        onClose={onClose}
-        value={filters[eventKey]}
-      />;
-      filterViewsMap[eventKey] = view;
-      filterViews.push(view);
-
-      this.setState({
-        filterViews, filterViewsMap, filterItems: this.getFilterItems(model, filterViewsMap)
-      });
-    } else {
-      delete filterViewsMap[eventKey];
-      delete filters[eventKey];
-      this.setState({ filters, records: null, page: 0 }, () => {
-        this.updateQuery();
-      });
-    }
-  };
-
-  handleSort = (sort) => {
-    this.setState({ sort, records: null }, () => {
+  handleSort = (sort: string) => {
+    this.setState({ sort }, () => {
       this.refresh();
       this.updateQuery();
     });
   };
 
-  handleSearch = (search) => {
-    this.setState({ search, records: EMPTY_RECORD_LIST }, () => {
+  handleSearch = (search: string) => {
+    this.setState({ search }, () => {
+      this.refresh();
+      this.updateQuery();
+    });
+  };
+
+  handleFilters = (filters: Object) => {
+    this.setState({ filters }, () => {
+      this.refresh();
+      this.updateQuery();
+    });
+  };
+
+  handleColumns = (columns: string[]) => {
+    this.setState({ columns }, () => {
       this.refresh();
       this.updateQuery();
     });
@@ -380,37 +187,22 @@ class ListPage extends React.Component<Props, State> {
 
   handleScroll = () => {
     const ref = this._ref;
-    if (!ref || this._loading || !this.state.list.next) return;
+    if (!ref) return;
     if ((ref.scrollHeight - (ref.offsetHeight + ref.scrollTop)) < 50) {
       this.loadMore();
     }
   };
 
-  handleColumn = (eventKey: string) => {
-    let { model } = this.state;
-    if (!model) return;
-    let columnsKeys = this.state.columnsKeys.slice();
-    if (columnsKeys.indexOf(eventKey) > -1) {
-      _.pull(columnsKeys, eventKey);
-    } else {
-      columnsKeys.push(eventKey);
-    }
-    this.setState({
-      columnsKeys,
-      columnsItems: this.getColumnItems(model, columnsKeys)
-    }, () => this.updateQuery());
-  };
-
   handleSelect = (selected) => {
-    let newState = { selected };
+    let nextState = { selected };
     if (this.state.activated && !selected.length) {
       // $Flow
-      newState.activated = undefined;
+      nextState.activated = null;
     } else if (selected.length && !this.state.activated) {
       // $Flow
-      newState.activated = selected[0];
+      nextState.activated = selected[0];
     }
-    this.setState(newState);
+    this.setState(nextState);
   };
 
   handleRemove = async(record: Alaska$view$Record) => {
@@ -435,125 +227,75 @@ class ListPage extends React.Component<Props, State> {
 
   handleActive = (record) => {
     let { selected } = this.state;
-    let newState = { activated: record };
+    let nextState = { activated: record };
     if (!selected.length || (selected.length === 1 && selected[0] !== record)) {
       // $Flow
-      newState.selected = Immutable([record]);
+      nextState.selected = Immutable([record]);
     }
-    this.setState(newState);
+    this.setState(nextState);
   };
 
   renderToolbar() {
     const { t } = this.context;
     const {
-      model, service, search, list, query, filterItems, columnsItems, records
+      model, filters, columns, search, list, query
     } = this.state;
-    if (!model || !service) return null;
+    if (!model || !list) return null;
+    let tools = [];
 
-    let titleBtns = [];
-
-    if (records && records.length && !query.nofilter && filterItems.length) {
-      titleBtns.push(<DropdownButton
-        id="listFilterDropdown"
-        key="listFilterDropdown"
-        title={<i className="fa fa-filter" />}
-        onSelect={this.handleFilter}
-      >{filterItems}
-      </DropdownButton>);
+    if (list && list.fetching) {
+      tools.push((
+        <div key="loading" className="loading-tool"><i className="fa fa-spinner" /></div>
+      ));
     }
 
-    if (records && records.length && !query.nocolumns) {
-      titleBtns.push(<DropdownButton
-        id="columnsDropdown"
-        key="columnsDropdown"
-        title={<i className="fa fa-columns" />}
-        onSelect={this.handleColumn}
-      >{columnsItems}
-      </DropdownButton>);
-    }
+    tools.push(<button
+      key="refresh"
+      className="btn btn-primary"
+      onClick={this.refresh}
+    >
+      <i className="fa fa-refresh" />
+    </button>);
 
-    if (!query.norefresh) {
-      titleBtns.push(<button
-        key="refresh"
-        className="btn btn-primary"
-        onClick={this.refresh}
-      ><i className="fa fa-refresh" />
-      </button>);
+    if (!query._nofilters) {
+      tools.push(<FilterTool
+        key="filters"
+        model={model}
+        filters={filters}
+        onChange={this.handleFilters}
+      />);
+    }
+    if (!query._nocolumns) {
+      tools.push(<ColumnTool
+        key="columns"
+        model={model}
+        columns={columns}
+        onChange={this.handleColumns}
+      />);
     }
     return (
-      <TopToolbar actions={titleBtns}>
-        {t(model.label || model.modelName, service.id)}
+      <TopToolbar tools={tools}>
+        {t(model.label || model.modelName, model.serviceId)}
         {search ? <i>  &nbsp; ( {t('Search')} : {search} ) </i> : null}
         &nbsp; <i>{list.total !== undefined ? t('total records', { total: list.total }) : null}</i>
       </TopToolbar>
     );
   }
 
-  renderBottomBar() {
-    const { t } = this.context;
-    const {
-      model, search, records, selected
-    } = this.state;
-    if (!model) return null;
-    return (
-      <nav className="navbar navbar-fixed-bottom bottom-toolbar">
-        <div className="container-fluid">
-          <div className="navbar-form navbar-left">
-            <div className="form-group">
-              {model.searchFields.length ?
-                <SearchField
-                  placeholder={t('Press enter to search')}
-                  onChange={this.handleSearch}
-                  value={search}
-                /> : null
-              }
-            </div>
-          </div>
-          <ListActions
-            model={model}
-            records={records || EMPTY_RECORD_LIST}
-            selected={selected}
-            refresh={this.refresh}
-            refreshSettings={this.props.refreshSettings}
-          />
-        </div>
-      </nav>
-    );
-  }
-
-  renderEmpty() {
-    const { model } = this.state;
-    const { t } = this.context;
-    let link = null;
-
-    if (this._loading || !model) return null;
-
-    if (this.canCreate()) {
-      link = <Link to={`/edit/${model.serviceId}/${model.modelName}/_new`}>{t('Create')}</Link>;
-    }
-    return (
-      <div className="error-info">
-        <div className="error-info-title">{t('No data!')}</div>
-        <div className="error-info-desc">
-          {t('No records found.')} &nbsp; {link}
-        </div>
-      </div>
-    );
-  }
-
   render() {
+    const { refreshSettings } = this.props;
     const {
-      service,
       model,
-      records,
       sort,
-      filterViews,
-      columnsKeys,
+      search,
+      filters,
+      columns,
+      records,
       selected,
       activated
     } = this.state;
-    if (!service || !model) {
-      return <div className="loading">Loading...</div>;
+    if (!model) {
+      return <Loading />;
     }
 
     let { handleRemove } = this;
@@ -574,22 +316,13 @@ class ListPage extends React.Component<Props, State> {
 
     const quickEditor = model.quickEditorView !== false && (activated || selected.length) && window.innerWidth > 600;
 
-    let className = 'list-page ' + model.serviceId + '-' + model.id;
-    if (this.canCreate()) {
-      className += ' can-create';
-    } else {
-      className += ' no-create';
-    }
-    if (this.canUpdate()) {
-      className += ' can-update';
-    } else {
-      className += ' no-update';
-    }
-    if (this.canRemove()) {
-      className += ' can-remove';
-    } else {
-      className += ' no-remove';
-    }
+    let className = [
+      'list-page',
+      model.serviceId + '-' + model.id,
+      model.canCreate ? 'can-create' : 'no-create',
+      model.canUpdate ? 'can-update' : 'no-update',
+      model.canRemove ? 'can-remove' : 'no-remove',
+    ].join(' ');
 
     return (
       <Node id="listPage" className={className}>
@@ -601,27 +334,34 @@ class ListPage extends React.Component<Props, State> {
           }}
         >
           {this.renderToolbar()}
-          <div>{filterViews}</div>
-          {
-            records && records.length ?
-              <div className="panel panel-default noborder list-panel">
-                <DataTable
-                  canDrag
-                  model={model}
-                  records={records || EMPTY_RECORD_LIST}
-                  sort={sort}
-                  onSort={this.handleSort}
-                  onSelect={this.handleSelect}
-                  onRemove={handleRemove}
-                  onActive={this.handleActive}
-                  selected={selected}
-                  activated={activated}
-                  columns={columnsKeys}
-                />
-              </div>
-              : this.renderEmpty()
-          }
-          {this.renderBottomBar()}
+          <FilterEditor model={model} value={filters} onChange={this.handleFilters} />
+          <List
+            ref={(r) => {
+              this._listRef = r;
+            }}
+            model={model}
+            sort={sort}
+            search={search}
+            filters={filters}
+            onSort={this.handleSort}
+            onSelect={this.handleSelect}
+            onRemove={handleRemove}
+            onActive={this.handleActive}
+            selected={selected}
+            activated={activated}
+            columns={columns}
+          />
+          <ListBottomBar
+            model={model}
+            filters={filters}
+            search={search}
+            sort={sort}
+            records={records}
+            selected={selected}
+            onSearch={this.handleSearch}
+            onRefresh={this.refresh}
+            onRefreshSettings={refreshSettings}
+          />
         </div>
         {
           model.quickEditorView === false
@@ -641,7 +381,4 @@ class ListPage extends React.Component<Props, State> {
   }
 }
 
-export default connect(({ lists }) => ({ lists }), (dispatch) => bindActionCreators({
-  loadList: listRedux.loadList,
-  refreshSettings
-}, dispatch))(ListPage);
+export default connect(({ lists }) => ({ lists }), () => ({}))(ListPage);

@@ -1,6 +1,6 @@
 {
   "name": "alaska-plugin-react",
-  "version": "0.12.12",
+  "version": "0.13.0",
   "description": "React server side rendering for alaska",
   "keywords": [
     "alaska",
@@ -12,7 +12,12 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "peerDependencies": {
-    "alaska": "^0.12.12",
+    "alaska": "^0.13.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-redux": "^5.0.6"
+  },
+  "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6"

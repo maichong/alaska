@@ -2,12 +2,7 @@
 
 import React from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-
-type Props = {
-  children: React$Node,
-  tooltip: string,
-  placement?: string
-};
+import type { Props } from 'alaska-admin-view/views/TooltipWrapper';
 
 export default class TooltipWrapper extends React.Component<Props> {
   static defaultProps = { placement: 'top' };

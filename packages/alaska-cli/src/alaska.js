@@ -26,22 +26,21 @@ const notifier = (0, _updateNotifier2.default)({
   }
 });
 
+let command = '';
+
+_commander2.default.version(pkg.version);
+
 _commander2.default.command('create <name>').alias('c').description('Create new project').action(name => {
+  command = 'create';
   require('./create').default(name).catch(error => {
     console.error(error);
     process.exit(1);
   });
 });
 
-_commander2.default.command('build').alias('b').description('Build source code and admin dashboard').option('-w, --watch', 'watch mode').option('-d, --dev', 'build dev lib').action(() => {
-  require('./build').default().catch(error => {
-    console.error(error);
-    process.exit(1);
-  });
-});
-
-_commander2.default.command('install <name>').alias('i').description('Install service').option('-w, --watch', 'watch mode').option('-d, --dev', 'build dev lib').action(name => {
-  require('./install').default(name).catch(error => {
+_commander2.default.command('build').alias('b').description('Build source code and admin dashboard').option('--modules-dirs <modulesDirs>', 'modules paths', dirs => dirs.split(',')).action(options => {
+  command = 'build';
+  require('./build').default(options).catch(error => {
     console.error(error);
     process.exit(1);
   });
@@ -50,4 +49,4 @@ _commander2.default.command('install <name>').alias('i').description('Install se
 _commander2.default.parse(process.argv);
 
 // $Flow
-if (!_commander2.default.args.length) _commander2.default.help();
+if (!_commander2.default.args.length || !command) _commander2.default.help();

@@ -23,12 +23,6 @@ var _metadata2 = _interopRequireDefault(_metadata);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * @copyright Maichong Software Ltd. 2017 http://maichong.it
- * @date 2017-11-20
- * @author Liang <liang@maichong.it>
- */
-
 /* eslint global-require:0 */
 /* eslint import/no-dynamic-require:0 */
 
@@ -44,8 +38,8 @@ function requireFiles(files, withDefault) {
   return res;
 }
 
-function createModules(mainService) {
-  let metadata = (0, _metadata2.default)(mainService.id, mainService.dir, mainService.configFile);
+function createModules(mainService, modulesDirs) {
+  let metadata = (0, _metadata2.default)(mainService.id, mainService.dir, mainService.configFile, modulesDirs);
 
   let modules = {
     fields: {},
@@ -55,20 +49,20 @@ function createModules(mainService) {
     services: {}
   };
 
-  _lodash2.default.forEach(metadata.fields, lib => {
-    modules.fields[lib] = require(lib).default;
+  _lodash2.default.forEach(metadata.fields, (dir, name) => {
+    modules.fields[name] = require(dir).default;
   });
 
-  _lodash2.default.forEach(metadata.drivers, lib => {
-    modules.drivers[lib] = require(lib).default;
+  _lodash2.default.forEach(metadata.drivers, (dir, name) => {
+    modules.drivers[name] = require(dir).default;
   });
 
-  _lodash2.default.forEach(metadata.renderers, lib => {
-    modules.renderers[lib] = require(lib).default;
+  _lodash2.default.forEach(metadata.renderers, (dir, name) => {
+    modules.renderers[name] = require(dir).default;
   });
 
-  _lodash2.default.forEach(metadata.middlewares, lib => {
-    modules.middlewares[lib] = require(lib);
+  _lodash2.default.forEach(metadata.middlewares, (dir, name) => {
+    modules.middlewares[name] = require(dir);
   });
 
   _lodash2.default.forEach(metadata.services, (cfg, serviceId) => {

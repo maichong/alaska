@@ -1,6 +1,6 @@
 {
   "name": "alaska-settings",
-  "version": "0.12.12",
+  "version": "0.13.0",
   "description": "Alaska settings service",
   "keywords": [
     "alaska",
@@ -12,14 +12,14 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-mixed": "^0.12.12",
-    "alaska-field-select": "^0.12.12",
-    "alaska-field-text": "^0.12.12",
+    "alaska-field-mixed": "^0.13.0",
+    "alaska-field-select": "^0.13.0",
+    "alaska-field-text": "^0.13.0",
     "debug": "^3.1.0"
   },
   "peerDependencies": {
-    "alaska-field-mixed": "^0.12.12",
-    "alaska-field-select": "^0.12.12",
-    "alaska-field-text": "^0.12.12"
+    "alaska-field-mixed": "^0.13.0",
+    "alaska-field-select": "^0.13.0",
+    "alaska-field-text": "^0.13.0"
   }
 }

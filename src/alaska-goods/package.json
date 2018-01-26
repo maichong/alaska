@@ -1,6 +1,6 @@
 {
   "name": "alaska-goods",
-  "version": "0.12.12",
+  "version": "0.13.0",
   "description": "Alaska goods service",
   "keywords": [
     "alaska",
@@ -12,17 +12,17 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-balance": "^0.12.12",
-    "alaska-field-category": "^0.12.12",
-    "alaska-field-html": "^0.12.12",
-    "alaska-field-mixed": "^0.12.12",
-    "alaska-field-select": "^0.12.12"
+    "alaska-balance": "^0.13.0",
+    "alaska-field-category": "^0.13.0",
+    "alaska-field-html": "^0.13.0",
+    "alaska-field-mixed": "^0.13.0",
+    "alaska-field-select": "^0.13.0"
   },
   "peerDependencies": {
-    "alaska-balance": "^0.12.12",
-    "alaska-field-category": "^0.12.12",
-    "alaska-field-html": "^0.12.12",
-    "alaska-field-mixed": "^0.12.12",
-    "alaska-field-select": "^0.12.12"
+    "alaska-balance": "^0.13.0",
+    "alaska-field-category": "^0.13.0",
+    "alaska-field-html": "^0.13.0",
+    "alaska-field-mixed": "^0.13.0",
+    "alaska-field-select": "^0.13.0"
   }
 }

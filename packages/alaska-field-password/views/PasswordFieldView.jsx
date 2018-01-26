@@ -29,8 +29,29 @@ export default class PasswordFieldView extends React.Component<Alaska$view$Field
     this.handleChange2 = this.handleChange.bind(this, 2);
   }
 
-  shouldComponentUpdate(props: Alaska$view$Field$View$Props, state: State) {
-    return props.disabled !== this.props.disabled || !shallowEqualWithout(state, this.state);
+  componentWillReceiveProps(nextProps: Alaska$view$Field$View$Props) {
+    if (nextProps.record._id !== this.props.record._id) {
+      this.setState({
+        value1: '',
+        value2: ''
+      });
+    }
+  }
+
+  shouldComponentUpdate(nextProps: Alaska$view$Field$View$Props, state: State) {
+    return nextProps.disabled !== this.props.disabled
+      || nextProps.record._id !== this.props.record._id
+      || nextProps.value !== this.props.value
+      || !shallowEqualWithout(state, this.state);
+  }
+
+  getError(): string {
+    const { t } = this.context;
+    const { value1, value2 } = this.state;
+    if (value1 !== value2) {
+      return t('The passwords are not match');
+    }
+    return '';
   }
 
   handleChange(index: number, e: SyntheticInputEvent<*>) {

@@ -47,7 +47,7 @@ class RelationshipFieldCell extends React.Component<Props> {
         }
       }
     }
-    if (typeof value === 'string') {
+    if (typeof value === 'string' || typeof value === 'number') {
       if (!details[key]) {
         return !!(newProps.details[key] && newProps.details[key][value]);
       }

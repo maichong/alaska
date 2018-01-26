@@ -19,6 +19,10 @@ var _settings = require('../redux/settings');
 
 var _user = require('../redux/user');
 
+var _parseAbility = require('../utils/parse-ability');
+
+var _parseAbility2 = _interopRequireDefault(_parseAbility);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function abilityFunction(list) {
@@ -31,42 +35,71 @@ function abilityFunction(list) {
 }
 
 // $Flow
-
-
 function* settingsSaga() {
   try {
-    let { settings, user } = yield _akita2.default.get('/api/settings');
+    let settings = yield _akita2.default.get('/api/settings');
 
     let models = {};
-    for (let i of _lodash2.default.keys(settings.services)) {
-      let service = settings.services[i];
-      if (service && service.models) {
-        for (let modelName of Object.keys(service.models)) {
-          let model = service.models[modelName];
-          models[model.path] = model;
-          for (let key of Object.keys(model.actions)) {
-            if (model.actions[key]) {
-              model.actions[key].key = key;
-            }
+    _lodash2.default.forEach(settings.services, service => {
+      _lodash2.default.forEach(service.models, (model, modelName) => {
+        models[model.path] = model;
+        for (let key of Object.keys(model.actions)) {
+          if (model.actions[key]) {
+            model.actions[key].key = key;
           }
-          if (model && model.fields) {
-            model.serviceId = service.id;
-            model.abilities = {};
-            let ability = `admin.${model.key}.`.toLowerCase();
-            _lodash2.default.forEach(settings.abilities, (can, key) => {
-              if (key.indexOf(ability) !== 0) return;
-              let name = key.substr(ability.length);
-              model.abilities[name] = can;
-            });
-
-            abilityFunction(model.actions);
-            abilityFunction(model.groups);
-            abilityFunction(model.fields);
-          }
-          service.models[modelName] = _lodash2.default.cloneDeep(model);
         }
-      }
-    }
+        if (model && model.fields) {
+          model.serviceId = service.id;
+          model.abilities = {};
+          let ability = `admin.${model.key}.`.toLowerCase();
+          _lodash2.default.forEach(settings.abilities, (can, key) => {
+            if (key.indexOf(ability) !== 0) return;
+            let name = key.substr(ability.length);
+            model.abilities[name] = can;
+          });
+
+          abilityFunction(model.actions);
+          abilityFunction(model.groups);
+          abilityFunction(model.fields);
+        }
+
+        function checkAbility(action) {
+          let ability = _lodash2.default.get(model, `actions.${action}.ability`);
+          if (ability) {
+            ability = (0, _parseAbility2.default)(ability, null, settings.user);
+            if (ability && !settings.abilities[ability]) return false;
+          } else if (!model.abilities[action]) return false;
+          return true;
+        }
+
+        model.canCreate = !model.nocreate && checkAbility('create');
+        model.canUpdate = !model.noupdate && checkAbility('update');
+        model.canRemove = !model.noremove && checkAbility('remove');
+        model.canUpdateRecord = function (record) {
+          if (model.canUpdate) return true;
+          if (model.noupdate) return false;
+          let ability = _lodash2.default.get(model, 'actions.update.ability');
+          if (ability) {
+            ability = (0, _parseAbility2.default)(ability, record, settings.user);
+            if (ability && !settings.abilities[ability]) return false;
+          } else if (!model.abilities.update) return false;
+          // TODO check action depends / hidden / super
+          return true;
+        };
+        model.canRemoveRecord = function (record) {
+          if (model.canRemove) return true;
+          if (model.noremove) return false;
+          let ability = _lodash2.default.get(model, 'actions.remove.ability');
+          if (ability) {
+            ability = (0, _parseAbility2.default)(ability, record, settings.user);
+            if (ability && !settings.abilities[ability]) return false;
+          } else if (!model.abilities.remove) return false;
+          // TODO check action depends / hidden / super
+          return true;
+        };
+        service.models[modelName] = _lodash2.default.cloneDeep(model);
+      });
+    });
     let all = {};
     _lodash2.default.forEach(settings.locales, service => {
       _lodash2.default.forEach(service, (locale, key) => {
@@ -80,7 +113,7 @@ function* settingsSaga() {
     settings.models = models;
 
     yield (0, _effects.put)((0, _settings.applySettings)(settings));
-    yield (0, _effects.put)((0, _user.applyUser)(user));
+    yield (0, _effects.put)((0, _user.applyUser)(settings.user));
   } catch (e) {
     console.error(e);
   }

@@ -32,7 +32,7 @@ export default class NumberFieldView extends React.Component<Alaska$view$Field$V
   componentWillReceiveProps(nextProps: Alaska$view$Field$View$Props) {
     let newState = {};
     if (typeof nextProps.value !== 'undefined' || typeof nextProps.field.default === 'undefined') {
-      if (this.focused) {
+      if (this.focused || !nextProps.field.format) {
         //正在输入
         newState.display = nextProps.value;
       } else {
@@ -61,18 +61,14 @@ export default class NumberFieldView extends React.Component<Alaska$view$Field$V
     this.focused = false;
     const { field } = this.props;
     let value = this.state.display;
-    let unfomarted;
+    let unfomarted = numeral(value).value();
+    if (_.isNaN(unfomarted)) {
+      unfomarted = 0;
+    }
     if (field.format) {
-      unfomarted = numeral(value).value();
-      if (_.isNaN(unfomarted)) {
-        unfomarted = 0;
-      }
       this.setState({ display: numeral(unfomarted).format(field.format) });
     } else {
-      unfomarted = parseFloat(value) || '';
-      if (unfomarted !== value) {
-        this.setState({ display: String(unfomarted) });
-      }
+      this.setState({ display: String(unfomarted) });
     }
     if (unfomarted !== this.props.value) {
       if (this.props.onChange) {

@@ -303,6 +303,6 @@ async function removeMulti(ctx) {
   let res = await Model.deleteMany(filters);
 
   ctx.body = {
-    removed: res.result.n
+    removed: res.n
   };
 }

@@ -5,22 +5,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Checkbox from 'alaska-field-checkbox/views/Checkbox';
 import { DragSource, DropTarget } from 'react-dnd';
+import type { Props } from 'alaska-admin-view/views/DataTableRow';
 import Node from './Node';
-import parseAbility from '../utils/parse-ability';
 
-type Props = {
-  columnList: Alaska$view$Field[],
-  record: Object,
-  active: boolean,
-  selected: boolean,
-  model: Alaska$view$Model,
-  onEdit: Function,
-  onActive?: Function,
-  onSelect?: Function | null,
-  onRemove?: Function,
+type FinalProps = Props & {
   connectDragSource?: Function,
   connectDropTarget?: Function,
-  isDragging?: boolean,
+  isDragging?: boolean
 };
 
 const source = {
@@ -41,34 +32,10 @@ const target = {
   }
 };
 
-export default class DataTableRow extends React.Component<Props> {
+export default class DataTableRow extends React.Component<FinalProps> {
   static contextTypes = {
     views: PropTypes.object,
     settings: PropTypes.object
-  };
-
-  canUpdate = (): boolean => {
-    const { model, record } = this.props;
-    const { settings } = this.context;
-    if (!model || model.noupdate) return false;
-    let ability = _.get(model, 'actions.update.ability');
-    if (ability) {
-      ability = parseAbility(ability, record);
-      if (ability && !settings.abilities[ability]) return false;
-    } else if (!model.abilities.update) return false;
-    return true;
-  };
-
-  canRemove = (): boolean => {
-    const { model, record } = this.props;
-    const { settings } = this.context;
-    if (!model || model.noremove) return false;
-    let ability = _.get(model, 'actions.remove.ability');
-    if (ability) {
-      ability = parseAbility(ability, record);
-      if (ability && !settings.abilities[ability]) return false;
-    } else if (!model.abilities.remove) return false;
-    return true;
   };
 
   handleChange = (e: Object) => {
@@ -95,27 +62,15 @@ export default class DataTableRow extends React.Component<Props> {
       >
         <Checkbox value={!!selected} />
       </Node> : null;
-    let rowClassName = '';
-    if (isDragging) {
-      rowClassName = 'dragging';
-    } else if (active) {
-      rowClassName = 'active';
-    }
-    if (connectDropTarget) {
-      rowClassName += ' can-drag';
-    } else {
-      rowClassName += ' no-drag';
-    }
-    if (this.canUpdate()) {
-      rowClassName += ' can-update';
-    } else {
-      rowClassName += ' no-update';
-    }
-    if (this.canRemove()) {
-      rowClassName += ' can-remove';
-    } else {
-      rowClassName += ' no-remove';
-    }
+
+    let rowClassName = _.filter([
+      isDragging ? 'dragging' : '',
+      active ? 'active' : '',
+      connectDropTarget ? 'can-drag' : 'no-drag',
+      model.canUpdateRecord(record) ? 'can-update' : 'no-update',
+      model.canRemoveRecord(record) ? 'can-remove' : 'no-remove',
+    ]).join(' ');
+
     let el = (
       <tr
         key={record._id}

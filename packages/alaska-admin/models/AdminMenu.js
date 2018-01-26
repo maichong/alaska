@@ -84,7 +84,8 @@ AdminMenu.fields = {
   super: {
     label: 'Super',
     type: Boolean,
-    super: true
+    super: true,
+    noexport: true
   },
   activated: {
     label: 'Activated',

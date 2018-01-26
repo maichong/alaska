@@ -57,9 +57,10 @@ class RelationshipField extends _alaska.Field {
           type = type.type;
         }
         if (typeof type === 'string') {
-          type = _alaska2.default.modules.fields['alaska-field-' + type];
+          let fieldLib = 'alaska-field-' + type;
+          type = _alaska2.default.modules.fields[fieldLib];
           if (!type) {
-            _alaska2.default.panic(`Field type 'alaska-field-${type}' not found!`);
+            _alaska2.default.panic(`Field type '${fieldLib}' not found!`);
           }
         }
         if (type.plain) {

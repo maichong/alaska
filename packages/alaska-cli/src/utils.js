@@ -3,12 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.isFile = isFile;
-exports.isDirectory = isDirectory;
 exports.readJSON = readJSON;
 exports.writeJson = writeJson;
 exports.readValue = readValue;
-exports.readBool = readBool;
 exports.transformSrouceDir = transformSrouceDir;
 
 var _fs = require('fs');
@@ -35,35 +32,13 @@ var _readPromise = require('read-promise');
 
 var _readPromise2 = _interopRequireDefault(_readPromise);
 
+var _isFile = require('is-file');
+
+var _isFile2 = _interopRequireDefault(_isFile);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * 判断指定路径是否是文件
- * @param path
- * @returns {boolean}
- */
-function isFile(path) {
-  try {
-    return _fs2.default.statSync(path).isFile();
-  } catch (e) {
-    return false;
-  }
-}
-
-/**
- * 判断指定路径是否是文件夹
- * @param path
- * @returns {boolean}
- */
-function isDirectory(path) {
-  try {
-    return _fs2.default.statSync(path).isDirectory();
-  } catch (e) {
-    return false;
-  }
-}
 
 function readJSON(file) {
   let data = _fs2.default.readFileSync(file, 'utf8');
@@ -85,25 +60,6 @@ async function readValue(options, checker) {
     return value;
   }
   return await readValue(options, checker);
-}
-
-async function readBool(options, def) {
-  if (typeof options === 'string') {
-    options = {
-      prompt: options
-    };
-  }
-  if (def !== undefined) {
-    options.default = def === true || def === 'yes' || def === 'y' ? 'yes' : 'no';
-  }
-  let value = await (0, _readPromise2.default)(options);
-  if (['yes', 'y'].indexOf(value) > -1) {
-    return true;
-  }
-  if (['no', 'n'].indexOf(value) > -1) {
-    return false;
-  }
-  return await readBool(options);
 }
 
 function transformSrouceFile(from, to) {
@@ -133,7 +89,7 @@ function transformSrouceDir(from, to) {
     if (file === '.DS_Store') continue;
     let fromPath = _path2.default.join(from, file);
     let toPath = _path2.default.join(to, file);
-    if (isFile(fromPath)) {
+    if (_isFile2.default.sync(fromPath)) {
       transformSrouceFile(fromPath, toPath);
     } else {
       transformSrouceDir(fromPath, toPath);

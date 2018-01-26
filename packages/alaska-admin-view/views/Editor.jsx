@@ -2,29 +2,62 @@
 
 import _ from 'lodash';
 import React from 'react';
-import type { ImmutableObject } from 'seamless-immutable';
+import PropTypes from 'prop-types';
+import type { Props } from 'alaska-admin-view/views/Editor';
 import Node from './Node';
 import FieldGroup from './FieldGroup';
-import type { FieldRefMap } from './FieldGroup';
+import Loading from './Loading';
 
-type Props = {
-  model: Alaska$view$Model,
-  id: string,
-  record: ImmutableObject<Alaska$view$Record>,
-  loading?: boolean,
-  errors?: {},
-  onChange: Function
+type State = {
+  errors: Object
 };
 
-export default class Editor extends React.Component<Props> {
+export default class Editor extends React.Component<Props, State> {
+  static contextTypes = {
+    t: PropTypes.func
+  };
+
+  state = { errors: {} };
+
+  componentWillReceiveProps(nextProps: Props) {
+    const { errors } = this.state;
+    const { record } = nextProps;
+    for (let key in errors) {
+      if (record[key]) {
+        setTimeout(() => this.checkErrors());
+        return;
+      }
+    }
+  }
+
   groupRefs = {};
 
-  get fieldRefs(): FieldRefMap {
+  get fieldRefs(): Object {
     let results = {};
     _.forEach(this.groupRefs, (groupDom) => {
       _.assign(results, groupDom.fieldRefs);
     });
     return results;
+  }
+
+  checkErrors(): Object {
+    const { model, record } = this.props;
+    let errors = {};
+    const { t } = this.context;
+    const fieldRefs = this.fieldRefs || {};
+    _.forEach(model.fields, (field, key) => {
+      // $Flow record 一定存在
+      if (field.required && !record[key]) {
+        errors[key] = t('This field is required!');
+      } else if (fieldRefs[key] && fieldRefs[key].getError) {
+        let error = fieldRefs[key].getError();
+        if (error) {
+          errors[key] = error;
+        }
+      }
+    });
+    this.setState({ errors });
+    return errors;
   }
 
   handleFieldChange = (key: any, value: any) => {
@@ -34,9 +67,10 @@ export default class Editor extends React.Component<Props> {
 
   renderGroups() {
     const {
-      model, record, id, errors, loading
+      model, record, recordId, disabled
     } = this.props;
-    const isNew = id === '_new';
+    const { errors } = this.state;
+    const isNew = recordId === '_new';
     let map = _.reduce(model.fields, (res: Object, f: Alaska$Field$options, path: string) => {
       res[path] = {
         path,
@@ -105,11 +139,10 @@ export default class Editor extends React.Component<Props> {
           }}
           model={model}
           fields={fields}
-          id={id}
           isNew={isNew}
           record={record}
-          errors={errors || {}}
-          loading={loading || false}
+          errors={errors}
+          disabled={disabled || false}
           onFieldChange={this.handleFieldChange}
           {...others}
         />
@@ -120,20 +153,20 @@ export default class Editor extends React.Component<Props> {
 
   render() {
     const {
-      id,
+      recordId,
       model,
       record
     } = this.props;
-    const isNew = id === '_new';
+    const isNew = recordId === '_new';
     if (!record) {
-      return <div className="loading">Loading...</div>;
+      return <Loading />;
     }
     if (record._error) {
       return <div className="editor-error">{record._error}</div>;
     }
     return (
       <Node id="editor" props={this.props} state={this.state} className={model.serviceId + '-' + model.id}>
-        {isNew ? null : <div className="top-toolbar-id visible-xs-block">ID : {id}</div>}
+        {isNew ? null : <div className="top-toolbar-id visible-xs-block">ID : {recordId}</div>}
         {this.renderGroups()}
       </Node>
     );

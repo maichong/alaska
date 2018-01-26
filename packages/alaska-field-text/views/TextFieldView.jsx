@@ -9,25 +9,24 @@ export default class TextFieldView extends React.Component<Alaska$view$Field$Vie
     t: PropTypes.func,
   };
 
-  shouldComponentUpdate(props: Alaska$view$Field$View$Props): boolean {
-    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model', 'field');
+  shouldComponentUpdate(nextProps: Alaska$view$Field$View$Props): boolean {
+    return nextProps.record._id !== this.props.record._id ||
+      !shallowEqualWithout(nextProps, this.props, 'record', 'onChange', 'model');
   }
 
-  hasError() {
-    let {
-      field,
-      value
-    } = this.props;
+  getError(): string {
+    const { t } = this.context;
+    const { field, value } = this.props;
     if (value && field.match && typeof field.match === 'string') {
       let matchs = field.match.match(/^\/(.+)\/([igm]*)$/);
       if (matchs) {
         let match = new RegExp(matchs[1], matchs[2]);
         if (!match.test(value)) {
-          return true;
+          return t('Invalid format');
         }
       }
     }
-    return false;
+    return '';
   }
 
   handleChange = (event: SyntheticInputEvent<*>) => {
@@ -48,15 +47,7 @@ export default class TextFieldView extends React.Component<Alaska$view$Field$Vie
     const { t } = this.context;
     let { help } = field;
     className += ' text-field';
-    if (!errorText && value && field.match && typeof field.match === 'string') {
-      let matchs = field.match.match(/^\/(.+)\/([igm]*)$/);
-      if (matchs) {
-        let match = new RegExp(matchs[1], matchs[2]);
-        if (!match.test(value)) {
-          errorText = t('Invalid format');
-        }
-      }
-    }
+    errorText = errorText || this.getError();
     if (errorText) {
       className += ' has-error';
       help = errorText;

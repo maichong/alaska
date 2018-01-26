@@ -82,5 +82,6 @@ NumberField.viewOptions = ['min', 'max', 'format', 'addonBefore', 'addonAfter', 
 NumberField.defaultOptions = {
   cell: 'NumberFieldCell',
   view: 'NumberFieldView',
-  filter: 'NumberFieldFilter'
+  filter: 'NumberFieldFilter',
+  format: '0,0'
 };

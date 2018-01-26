@@ -26,12 +26,17 @@ export default class ReactPlugin {
           if (!mod || !mod.reactViews || !mod.reactViews[view]) {
             service.panic(`React view "${view}" not found!`);
           }
-          let View = mod.reactViews[view];
-          let element = React.createElement(View, Object.assign({ isSSR: true }, props));
-          if (props.store) {
-            element = React.createElement(Provider, { store: props.store }, element);
+          try {
+            let View = mod.reactViews[view];
+            let element = React.createElement(View, Object.assign({ isSSR: true }, props));
+            if (props.store) {
+              element = React.createElement(Provider, { store: props.store }, element);
+            }
+            return ReactDOMServer.renderToStaticMarkup(element);
+          } catch (error) {
+            console.error(error.stack);
+            throw error;
           }
-          return ReactDOMServer.renderToStaticMarkup(element);
         }
 
         ctx.react = react;

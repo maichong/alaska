@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _url = require('url');
+
+var _url2 = _interopRequireDefault(_url);
+
 var _mongodb = require('mongodb');
 
 var _mongodb2 = _interopRequireDefault(_mongodb);
@@ -20,9 +24,10 @@ var _lodash2 = _interopRequireDefault(_lodash);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+const MongoClient = _mongodb2.default.MongoClient;
+
 /* eslint new-cap:0 */
 
-const MongoClient = _mongodb2.default.MongoClient;
 const debug = (0, _debug2.default)('alaska-cache-mongo');
 
 class MongoCacheDriver extends _alaska.Driver {
@@ -31,11 +36,16 @@ class MongoCacheDriver extends _alaska.Driver {
     super(service, options);
     this.instanceOfCacheDriver = true;
     this._maxAge = options.maxAge || 0;
+    let info = _url2.default.parse(options.url);
+    if (!info.path) {
+      throw new Error('mongodb url error');
+    }
     this._connecting = MongoClient.connect(options.url, _lodash2.default.omit(options, 'id', 'url', 'type', 'collection', 'maxAge'));
-    this._connecting.then(db => {
-      this._db = db;
+    this._connecting.then(client => {
+      // $Flow
+      this._db = client.db(info.path.substr(1));
       this._connecting = null;
-      this._driver = db.collection(options.collection || 'mongo_cache');
+      this._driver = this._db.collection(options.collection || 'mongo_cache');
       this._driver.createIndex('expiredAt', {
         background: true
       });

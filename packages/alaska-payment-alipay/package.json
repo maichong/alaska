@@ -1,6 +1,6 @@
 {
   "name": "alaska-payment-alipay",
-  "version": "0.12.12",
+  "version": "0.13.0",
   "description": "Alipay plugin for alaska.",
   "keywords": [
     "alaska",
@@ -14,6 +14,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "peerDependencies": {
-    "alaska-payment": "^0.12.12"
+    "alaska-payment": "^0.13.0"
   }
 }

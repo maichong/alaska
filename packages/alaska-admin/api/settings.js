@@ -32,16 +32,14 @@ exports.default = async function (ctx) {
 
   if (!user) {
     ctx.body = {
-      user: {},
-      settings: {
-        locales: {
-          'alaska-admin': _2.default.locales
-        },
-        locale: ctx.locale,
-        loginLogo,
-        logo,
-        icon
-      }
+      locales: {
+        'alaska-admin': _2.default.locales
+      },
+      locale: ctx.locale,
+      loginLogo,
+      logo,
+      icon,
+      user: {}
     };
     return;
   }
@@ -61,9 +59,6 @@ exports.default = async function (ctx) {
   settings.locale = ctx.locale;
   settings.logo = logo;
   settings.icon = icon;
-  ctx.body = {
-    // $Flow
-    user: Object.assign({ access }, user.data()),
-    settings
-  };
+  settings.user = Object.assign({ access }, user.data());
+  ctx.body = settings;
 };
