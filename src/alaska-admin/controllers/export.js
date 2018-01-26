@@ -1,3 +1,5 @@
+/* eslint no-inner-declarations:0 */
+
 // @flow
 
 import _ from 'lodash';

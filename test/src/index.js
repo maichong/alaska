@@ -1,3 +1,5 @@
+/* eslint import/first:0 */
+
 process.title = 'alaska-test';
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 

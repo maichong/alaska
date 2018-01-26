@@ -73,6 +73,7 @@ if (argv.copy) {
   console.log(chalk.green('Copy packages...'));
   glob('**/*', {
     cwd: 'src',
+    ignore: '**/node_modules/**',
     nodir: true
   }, (error, files) => {
     for (let file of files) {

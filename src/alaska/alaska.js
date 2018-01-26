@@ -321,39 +321,41 @@ class Alaska {
       }
 
       //切换语言
-      let locale = '';
-      if (localeQueryKey) {
-        if (ctx.query[localeQueryKey]) {
-          locale = ctx.query[localeQueryKey];
-          if (locales.indexOf(locale) > -1) {
-            ctx.cookies.set(localeCookieKey, locale, {
-              maxAge: 365 * 86400 * 1000
-            });
-          } else {
-            locale = '';
+      {
+        let locale = '';
+        if (localeQueryKey) {
+          if (ctx.query[localeQueryKey]) {
+            locale = ctx.query[localeQueryKey];
+            if (locales.indexOf(locale) > -1) {
+              ctx.cookies.set(localeCookieKey, locale, {
+                maxAge: 365 * 86400 * 1000
+              });
+            } else {
+              locale = '';
+            }
           }
         }
-      }
 
-      if (!locale) {
-        locale = ctx.cookies.get(localeCookieKey) || '';
-      }
+        if (!locale) {
+          locale = ctx.cookies.get(localeCookieKey) || '';
+        }
 
-      if (!locale || locales.indexOf(locale) < 0) {
-        //没有cookie设置
-        //自动判断
-        locale = defaultLocale;
-        let languages = utils.parseAcceptLanguage(ctx.get('accept-language'));
-        for (let lang of languages) {
-          if (locales.indexOf(lang) > -1) {
-            locale = lang;
-            break;
+        if (!locale || locales.indexOf(locale) < 0) {
+          //没有cookie设置
+          //自动判断
+          locale = defaultLocale;
+          let languages = utils.parseAcceptLanguage(ctx.get('accept-language'));
+          for (let lang of languages) {
+            if (locales.indexOf(lang) > -1) {
+              locale = lang;
+              break;
+            }
           }
         }
-      }
-      if (locale) {
-        ctx.locale = locale;
-        ctx.state.locale = locale;
+        if (locale) {
+          ctx.locale = locale;
+          ctx.state.locale = locale;
+        }
       }
 
       //translate
