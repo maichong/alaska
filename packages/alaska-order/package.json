@@ -1,6 +1,6 @@
 {
   "name": "alaska-order",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "Alaska order service",
   "keywords": [
     "alaska",
@@ -12,9 +12,9 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-user": "^0.13.0"
+    "alaska-user": "^0.13.1"
   },
   "peerDependencies": {
-    "alaska-user": "^0.13.0"
+    "alaska-user": "^0.13.1"
   }
 }

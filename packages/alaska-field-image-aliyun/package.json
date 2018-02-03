@@ -1,6 +1,6 @@
 {
   "name": "alaska-field-image-aliyun",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "Alaska aliyun image field",
   "keywords": [
     "alaska",
@@ -13,8 +13,8 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-image": "^0.13.0",
-    "ali-oss": "^4.11.4",
+    "alaska-field-image": "^0.13.1",
+    "ali-oss": "^4.12.2",
     "co": "^4.6.0",
     "mime-types": "^2.1.17",
     "moment": "^2.20.1",

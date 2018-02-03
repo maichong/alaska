@@ -1,6 +1,6 @@
 {
   "name": "alaska-field-icon",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "alaska icon field",
   "keywords": [
     "alaska",
@@ -12,6 +12,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-text": "^0.13.0"
+    "alaska-field-text": "^0.13.1"
   }
 }

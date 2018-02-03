@@ -1,6 +1,6 @@
 {
   "name": "alaska-admin-view",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "Alaska admin view",
   "keywords": [
     "alaska",
@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "akita": "^0.4.0",
-    "alaska-field-checkbox": "^0.13.0",
+    "alaska-field-checkbox": "^0.13.1",
     "check-depends": "^0.3.1",
     "intl-messageformat": "^2.2.0",
     "lodash": "^4.17.4",
@@ -33,13 +33,13 @@
     "redux-actions": "^2.2.1",
     "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.0",
-    "seamless-immutable": "^7.1.2",
+    "seamless-immutable": "^7.1.3",
     "shallow-equal-without": "^0.1.0",
     "string-random": "^0.1.0",
     "whatwg-fetch": "^2.0.3"
   },
   "peerDependencies": {
-    "alaska-admin": "^0.13.0",
-    "alaska-field-checkbox": "^0.13.0"
+    "alaska-admin": "^0.13.1",
+    "alaska-field-checkbox": "^0.13.1"
   }
 }
