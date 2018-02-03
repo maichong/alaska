@@ -6,7 +6,7 @@ import Goods from 'alaska-goods/models/Goods';
 import Sku from 'alaska-goods/models/Sku';
 import Order from '../models/Order';
 
-export default class OrderItem extends Model {
+export default class OrderItem extends Model<OrderItem> {
   static label = 'Order Item';
   static icon = 'list-ol';
   static defaultColumns = 'title order goods skuDesc price discount total quantity createdAt';

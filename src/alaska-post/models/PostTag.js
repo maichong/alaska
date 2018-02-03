@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class PostTag extends Model {
+export default class PostTag extends Model<PostTag> {
   static label = 'Post Tag';
   static icon = 'tags';
   static defaultColumns = 'title createdAt';

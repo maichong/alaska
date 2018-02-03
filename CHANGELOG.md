@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.13.1]
+
+### Added
+
+- 默认 paginate 接口执行成功后增加 ctx.state.paginateResults
+- 默认 list 接口执行成功后增加 ctx.state.listResults
+- 默认 create 接口执行成功后增加 ctx.state.record
+- 默认 show 接口执行成功后增加 ctx.state.record
+- 默认 update 接口执行成功后增加 ctx.state.record
+- 默认 remove 接口执行成功后增加 ctx.state.record
+
+### Changed
+
+- 修改Flow定义
+
+### Fixed
+
+- 导出CSV数据bug
+- alaska build 命令解析 views.js bug
+
 ## [0.13.0]
 
 ### Added

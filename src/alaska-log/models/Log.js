@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class Log extends Model {
+export default class Log extends Model<Log> {
   static label = 'Log';
   static icon = 'file-text-o';
   static titleField = 'title';

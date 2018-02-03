@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class Image extends Model {
+export default class Image extends Model<Image> {
   static label = 'Image';
   static icon = 'picture-o';
   static defaultColumns = 'pic user createdAt';

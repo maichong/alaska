@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { Model } from 'alaska';
 import service from '../';
 
-export default class PostCat extends Model {
+export default class PostCat extends Model<PostCat> {
   static label = 'Post Category';
   static icon = 'paperclip';
   static defaultColumns = '_id title parent sort createdAt';

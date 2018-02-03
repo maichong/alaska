@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class PostTopic extends Model {
+export default class PostTopic extends Model<PostTopic> {
   static label = 'Post Topic';
   static icon = 'hashtag';
   static defaultColumns = 'pic title summary commentCount hots createdAt';

@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class Help extends Model {
+export default class Help extends Model<Help> {
   static label = 'Help';
   static icon = 'info-circle';
   static defaultColumns = 'title parent sort activated createdAt';

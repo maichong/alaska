@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class Menu extends Model {
+export default class Menu extends Model<Menu> {
   static label = 'Menu';
   static icon = 'list';
   static titleField = 'title';

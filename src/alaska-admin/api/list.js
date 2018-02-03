@@ -13,14 +13,14 @@ export default async function list(ctx: Alaska$Context) {
   if (!s) {
     alaska.error('Invalid parameters');
   }
-  let Model: Class<Alaska$Model> = s.getModel(modelName);
+  let Model: Class<Alaska$Model<*>> = s.getModel(modelName);
 
   let ability = `admin.${Model.key}.read`;
   await ctx.checkAbility(ability);
 
   let filters = await Model.createFiltersByContext(ctx);
 
-  let query: Alaska$PaginateQuery<Alaska$Model> = Model.paginate(filters)
+  let query: Alaska$PaginateQuery<Alaska$Model<*>> = Model.paginate(filters)
     .page(parseInt(ctx.state.page || ctx.query._page, 10) || 1)
     .limit(parseInt(ctx.state.limit || ctx.query._limit, 10) || Model.defaultLimit || 50);
 

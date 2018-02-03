@@ -5,7 +5,7 @@ import User from 'alaska-user/models/User';
 import service from '../';
 import Email from '../models/Email';
 
-export default class EmailTask extends Model {
+export default class EmailTask extends Model<EmailTask> {
   static label = 'Email Task';
   static icon = 'paper-plane';
   static titleField = 'title';

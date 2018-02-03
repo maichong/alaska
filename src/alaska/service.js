@@ -63,7 +63,7 @@ export default class Service {
    * 本Service数据模型列表
    * @type {Object}
    */
-  models: { [modelName: string]: Class<Alaska$Model> };
+  models: { [modelName: string]: Class<Alaska$Model<*>> };
   /**
    * 本Service本地化配置
    * @type {Object}
@@ -208,7 +208,7 @@ export default class Service {
    * 获取Model列表数组
    * @returns {[Model]}
    */
-  get modelList(): Class<Alaska$Model>[] {
+  get modelList(): Class<Alaska$Model<*>>[] {
     return _.values(this.models);
   }
 
@@ -456,7 +456,7 @@ export default class Service {
    * @param {Model} Model
    * @returns {Model}
    */
-  async registerModel(Model: Class<Alaska$Model>): Promise<Class<Alaska$Model>> {
+  async registerModel(Model: Class<Alaska$Model<*>>): Promise<Class<Alaska$Model<*>>> {
     await Model.register();
     return Model;
   }
@@ -467,7 +467,7 @@ export default class Service {
    * @param {string} modelName 模型名称,例如User或blog.User
    * @returns {Model|null}
    */
-  model(modelName: string): Class<Alaska$Model> {
+  model(modelName: string): Class<Alaska$Model<*>> {
     deprecate('model()');
     return this.getModel(modelName);
   }
@@ -478,7 +478,7 @@ export default class Service {
    * @param {string} modelName 模型名称,例如User或blog.User
    * @returns {Model}
    */
-  getModel(modelName: string): Class<Alaska$Model> {
+  getModel(modelName: string): Class<Alaska$Model<*>> {
     if (_.isObject(this.models[modelName])) {
       return this.models[modelName];
     }

@@ -5,6 +5,7 @@
 import path from 'path';
 import download from 'download-github-repo';
 import chalk from 'chalk';
+import isDirectory from 'is-directory';
 import { execSync } from 'child_process';
 import * as utils from './utils';
 
@@ -22,7 +23,7 @@ function github(url, destination) {
 
 export default async function create(name: string) {
   let rootDir = path.join(process.cwd(), name);
-  if (utils.isDirectory(rootDir)) {
+  if (isDirectory.sync(rootDir)) {
     console.error(chalk.red(`项目创建失败："${rootDir}" 已经存在`));
     process.exit();
   }

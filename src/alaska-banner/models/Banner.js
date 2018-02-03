@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class Banner extends Model {
+export default class Banner extends Model<Banner> {
   static label = 'Banner';
   static icon = 'picture-o';
   static defaultSort = '-sort';

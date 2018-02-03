@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class Favorite extends Model {
+export default class Favorite extends Model<Favorite> {
   static label = 'Favorite';
   static icon = 'heart';
   static defaultColumns = 'pic title user sort createdAt';

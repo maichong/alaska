@@ -82,9 +82,9 @@ async function buildTimeData(source, Model, filters) {
   if (!filters || !filters[x]) {
     query.where(x).gt(new Date(0));
   }
-  let first: Alaska$Model = await query.sort(x);
+  let first: Alaska$Model<*> = await query.sort(x);
   // $Flow findOne
-  let lastRecord: Alaska$Model = await Model.findOne(filters).sort('-' + x);
+  let lastRecord: Alaska$Model<*> = await Model.findOne(filters).sort('-' + x);
   let firstDate = getFirstDate(first[x], unit);
   let lastDate = getLastDate(lastRecord[x], unit);
 

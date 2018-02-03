@@ -3,7 +3,7 @@
 import alaska, { Model } from 'alaska';
 import service from '../';
 
-export default class Sms extends Model {
+export default class Sms extends Model<Sms> {
   static label = 'SMS';
   static icon = 'comment';
   static titleField = 'title';
@@ -41,7 +41,7 @@ export default class Sms extends Model {
     let locales = alaska.main.getConfig('locales');
 
     if (locales && locales.length > 1) {
-      let SmsModel: Class<Alaska$Model> = Sms;
+      let SmsModel: Class<Alaska$Model<*>> = Sms;
       SmsModel.fields.content.help = 'Default';
       locales.forEach((locale) => {
         SmsModel.fields['content_' + locale.replace('-', '_')] = {

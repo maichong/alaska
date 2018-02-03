@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class Page extends Model {
+export default class Page extends Model<Page> {
   static label = 'Page';
   static icon = 'file-text';
   static defaultColumns = '_id title createdAt';

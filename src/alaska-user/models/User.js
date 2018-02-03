@@ -3,7 +3,7 @@
 import { Model } from 'alaska';
 import Role from './Role';
 
-export default class User extends Model {
+export default class User extends Model<User> {
   static label = 'User';
   static icon = 'user';
   static titleField = 'username';

@@ -41,7 +41,7 @@ export default class Field {
 
   _options: Alaska$Field$options;
   _schema: Mongoose$Schema<*>;
-  _model: Class<Alaska$Model>;
+  _model: Class<Alaska$Model<*>>;
   type: Class<Alaska$Field>;
 
   /**
@@ -49,7 +49,7 @@ export default class Field {
    * @param {mongoose.Schema} schema
    * @param {Model} model
    */
-  constructor(options: Alaska$Field$options, schema: Object, model: Class<Alaska$Model>) {
+  constructor(options: Alaska$Field$options, schema: Object, model: Class<Alaska$Model<*>>) {
     this._options = options;
     this._schema = schema;
     this._model = model;

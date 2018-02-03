@@ -4,7 +4,7 @@ import { Model } from 'alaska';
 import service from '../';
 import Order from '../models/Order';
 
-export default class OrderLog extends Model {
+export default class OrderLog extends Model<OrderLog> {
   static label = 'Order Log';
   static icon = 'hourglass-2';
   static defaultColumns = 'title order createdAt';

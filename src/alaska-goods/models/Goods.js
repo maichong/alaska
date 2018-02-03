@@ -7,7 +7,7 @@ import BALANCE from 'alaska-balance';
 import Sku from './Sku';
 import GoodsCat from './GoodsCat';
 
-export default class Goods extends Model {
+export default class Goods extends Model<Goods> {
   static label = 'Goods';
   static icon = 'gift';
   static defaultColumns = 'pic title cat cats price inventory activated sort createdAt';

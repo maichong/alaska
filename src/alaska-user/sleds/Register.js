@@ -20,10 +20,11 @@ export default class Register extends Sled {
    * @returns {User}
    */
   async exec(params: {
-    ctx?:Alaska$Context;
-    user?:User;
-    username?:string;
-    password?:string;
+    ctx?: Alaska$Context;
+    user?: User;
+    email?: string;
+    username?: string;
+    password?: string;
   }): Promise<User> {
     let closeRegister = await SETTINGS.get('user.closeRegister');
     if (closeRegister) {
@@ -32,11 +33,13 @@ export default class Register extends Sled {
     }
     let user = params.user;
     if (!user) {
-      let count = await User.count({
-        username: new RegExp('^' + utils.escapeRegExp(params.username) + '$', 'i')
-      });
-      if (count) {
-        service.error('Username is exists');
+      if (params.username) {
+        let count = await User.count({
+          username: new RegExp('^' + utils.escapeRegExp(params.username) + '$', 'i')
+        });
+        if (count) {
+          service.error('Username is exists');
+        }
       }
       if (params.email) {
         let emailCount = await User.count({

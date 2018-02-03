@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class AppUpdate extends Model {
+export default class AppUpdate extends Model<AppUpdate> {
   static titleField = 'key';
   static icon = 'upload';
 

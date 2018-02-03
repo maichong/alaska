@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class AdminMenu extends Model {
+export default class AdminMenu extends Model<AdminMenu> {
   static label = 'Admin Menu';
   static icon = 'bars';
   static titleField = 'label';

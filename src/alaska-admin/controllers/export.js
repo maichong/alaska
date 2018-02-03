@@ -8,8 +8,8 @@ import through from 'through';
 
 function escape(text) {
   text = String(text);
-  if (text.indexOf(',') > -1 || text.indexOf('"') > -1) {
-    return '"' + text.replace(/"/g, '""') + '"';
+  if (text.indexOf(',') > -1 || text.indexOf('"') > -1 || text.indexOf('\n') > -1) {
+    return '"' + text.replace(/"/g, '""').replace(/\n/g, '\r') + '"';
   }
   return text;
 }
@@ -26,7 +26,7 @@ export default async function list(ctx: Alaska$Context) {
     if (!s) {
       alaska.error('Invalid parameters');
     }
-    let Model: Class<Alaska$Model> = s.getModel(modelName);
+    let Model: Class<Alaska$Model<*>> = s.getModel(modelName);
 
     let ability = _.get(Model, 'actions.export.ability', `admin.${Model.key}.export`);
 

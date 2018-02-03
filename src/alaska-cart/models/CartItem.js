@@ -5,7 +5,7 @@ import BALANCE from 'alaska-balance';
 import Goods from 'alaska-goods/models/Goods';
 import Sku from 'alaska-goods/models/Sku';
 
-export default class CartItem extends Model {
+export default class CartItem extends Model<CartItem> {
   static label = 'Cart Item';
   static icon = 'shopping-cart';
   static defaultColumns = 'pic title user goods price sku createdAt';

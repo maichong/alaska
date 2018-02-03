@@ -3,7 +3,7 @@
 import alaska, { Model } from 'alaska';
 import service from '../';
 
-export default class Captcha extends Model {
+export default class Captcha extends Model<Captcha> {
   static label = 'Captcha';
   static icon = 'lock';
   static titleField = 'title';

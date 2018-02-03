@@ -27,7 +27,7 @@ export default async function (ctx: Alaska$Context) {
   if (!s) {
     alaska.error('Invalid parameters');
   }
-  let Model: Class<Alaska$Model> = s.getModel(modelName);
+  let Model: Class<Alaska$Model<*>> = s.getModel(modelName);
 
   // ability 检查缓存
   let hasAbilities: Indexed<Promise<void>> = {};
@@ -46,12 +46,12 @@ export default async function (ctx: Alaska$Context) {
   }
 
   async function saveData(data) {
-    let record: ?Alaska$Model = null;
+    let record: ?Alaska$Model<*> = null;
     let { id } = data;
 
     if (id) {
       // $Flow
-      let doc: Alaska$Model = await Model.findById(id);
+      let doc: Alaska$Model<*> = await Model.findById(id);
       if (!doc) {
         throw new Error('Record not found');
       }

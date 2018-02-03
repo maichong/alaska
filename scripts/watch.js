@@ -24,7 +24,7 @@ chokidar.watch(srcPath, {
     mkdirp.sync(path.dirname(dist));
     let transformd = false;
     let code = '';
-    if (file.endsWith('.js') && !/\/(flow|views)\//.test(file)) {
+    if (file.endsWith('.js')) {
       transformd = true;
       try {
         code = babel.transformFileSync(file, {

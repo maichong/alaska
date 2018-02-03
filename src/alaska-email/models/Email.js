@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class Email extends Model {
+export default class Email extends Model<Email> {
   static label = 'Email';
   static icon = 'envelope';
   static titleField = 'title';

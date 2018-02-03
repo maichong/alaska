@@ -49,7 +49,7 @@ export default class TextFeild extends Field {
       if (exact) {
         result = value;
       } else {
-        result = new RegExp(utils.escapeRegExp(value), 'i');
+        result = new RegExp(utils.escapeRegExp(String(value)), 'i');
       }
       if (inverse) {
         result = { $not: result };

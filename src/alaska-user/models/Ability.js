@@ -3,7 +3,7 @@
 import { Model } from 'alaska';
 import service from '../';
 
-export default class Ability extends Model {
+export default class Ability extends Model<Ability> {
   static label = 'Ability';
   static icon = 'unlock-alt';
   static defaultColumns = '_id title service createdAt';

@@ -3,7 +3,7 @@
 import { Model } from 'alaska';
 import service from '../';
 
-export default class Role extends Model {
+export default class Role extends Model<Role> {
   static label = 'Role';
   static icon = 'users';
   static defaultSort = '-sort';

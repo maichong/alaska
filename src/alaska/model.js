@@ -17,7 +17,7 @@ function panic() {
   throw new Error('Can not call the function when Model has been registered.');
 }
 
-function processScope(fields: string | Object, Model: Class<Alaska$Model>): Object {
+function processScope(fields: string | Object, Model: Class<Alaska$Model<*>>): Object {
   if (typeof fields === 'object') return fields;
   let keys = {};
   fields.split(' ').map((s) => s.trim()).filter((s) => s).forEach((s) => {
@@ -74,7 +74,7 @@ function processSelect(obj, Model) {
   }
 }
 
-function processPopulation(query, pop, Model: Class<Alaska$Model>, scopeKey: string) {
+function processPopulation(query, pop, Model: Class<Alaska$Model<*>>, scopeKey: string) {
   //判断scope是否不需要返回此path
   if (Model.scopes[scopeKey] && !Model.scopes[scopeKey][pop.path]) return null;
   let config = pop;
@@ -273,7 +273,7 @@ export default class Model {
   static async register() {
     const { service } = this;
     // $Flow
-    const model: Class<Alaska$Model> = this;
+    const model: Class<Alaska$Model<*>> = this;
     const modelName = model.modelName;
     model._fields = {};
 
@@ -528,7 +528,7 @@ export default class Model {
       if (needRef) {
         service.pre('loadSleds', () => {
           _.forEach(model.populations, (p) => {
-            let Ref: Class<Alaska$Model> = model._fields[p.path].ref;
+            let Ref: Class<Alaska$Model<*>> = model._fields[p.path].ref;
             p.ref = Ref;
             p.autoSelect = Ref.autoSelect;
             processSelect(p, Ref);
@@ -794,7 +794,7 @@ export default class Model {
     }
     let result: Alaska$filters = {};
     // $Flow
-    let model: Class<Alaska$Model> = this;
+    let model: Class<Alaska$Model<*>> = this;
     if (search && model.searchFields.length) {
       let searchFilters = [];
       let rx;
@@ -844,7 +844,7 @@ export default class Model {
     state = _.defaultsDeep({}, state, ctx.state);
 
     // $Flow
-    let model: Class<Alaska$Model> = this;
+    let model: Class<Alaska$Model<*>> = this;
     let filters = model.createFilters(
       (state.search || ctx.query._search || '').trim(),
       state.filters || ctx.query
@@ -870,7 +870,7 @@ export default class Model {
    */
   static paginate(conditions?: Object): Alaska$PaginateQuery<this> {
     // $Flow
-    let model: Class<Alaska$Model> = this;
+    let model: Class<Alaska$Model<*>> = this;
     let query = model.find(conditions);
 
     let results = {
@@ -945,15 +945,15 @@ export default class Model {
    * @param {Object} [state]
    * @returns {mongoose.Query}
    */
-  static async paginateByContext(ctx: Alaska$Context, state?: Object): Promise<Alaska$PaginateResult> {
+  static async paginateByContext(ctx: Alaska$Context, state?: Object): Promise<Alaska$PaginateResult<Alaska$Model<*>>> {
     // $Flow
-    let model: Class<Alaska$Model> = this;
+    let model: Class<Alaska$Model<*>> = this;
 
     let filters = await model.createFiltersByContext(ctx, state);
 
     state = Object.assign({}, ctx.state, state);
 
-    let query: Alaska$PaginateQuery<Alaska$Model> = model.paginate(filters)
+    let query: Alaska$PaginateQuery<Alaska$Model<*>> = model.paginate(filters)
       .page(parseInt(state.page || ctx.query._page, 10) || 1)
       .limit(parseInt(state.limit || ctx.query._limit, 10) || model.defaultLimit || 10);
 
@@ -1032,9 +1032,9 @@ export default class Model {
    * @param {Object} [state]
    * @returns {mongoose.Query}
    */
-  static async listByContext(ctx: Alaska$Context, state?: Object): Promise<Alaska$Model[]> {
+  static async listByContext(ctx: Alaska$Context, state?: Object): Promise<Alaska$Model<*>[]> {
     // $Flow
-    let model: Class<Alaska$Model> = this;
+    let model: Class<Alaska$Model<*>> = this;
 
     let filters = await model.createFiltersByContext(ctx, state);
 
@@ -1119,9 +1119,9 @@ export default class Model {
    * @param {Object} [state]
    * @returns {mongoose.Query}
    */
-  static async showByContext(ctx: Alaska$Context, state?: Object): Promise<Alaska$Model | null> {
+  static async showByContext(ctx: Alaska$Context, state?: Object): Promise<Alaska$Model<*> | null> {
     // $Flow
-    let model: Class<Alaska$Model> = this;
+    let model: Class<Alaska$Model<*>> = this;
 
     // $Flow
     state = _.defaultsDeep({}, state, ctx.state);
@@ -1170,7 +1170,7 @@ export default class Model {
     }, []);
 
     // $Flow
-    let doc: Alaska$Model = await query;
+    let doc: Alaska$Model<*> = await query;
 
     if (!doc || (!relationships.length && !populations.length)) {
       return doc;
@@ -1211,7 +1211,7 @@ export default class Model {
    * @param {Object} data
    * @returns {Model}
    */
-  static fromObject(data: Object): Alaska$Model {
+  static fromObject(data: Object): Alaska$Model<*> {
     if (data && data.instanceOfModel) {
       return data;
     }
@@ -1225,7 +1225,7 @@ export default class Model {
    * @param {Array} array
    * @returns {Model[]}
    */
-  static fromObjectArray(array: Object[]): Alaska$Model[] {
+  static fromObjectArray(array: Object[]): Alaska$Model<*>[] {
     return array.map((data) => this.fromObject(data));
   }
 
@@ -1234,7 +1234,7 @@ export default class Model {
    * @param {[Model]} array
    * @returns {[Object]}
    */
-  static toObjectArray(array: Alaska$Model[]): Object[] {
+  static toObjectArray(array: Alaska$Model<*>[]): Object[] {
     return _.map(array, (record) => record.toObject());
   }
 }

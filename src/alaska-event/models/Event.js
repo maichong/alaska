@@ -1,6 +1,6 @@
 import { Model } from 'alaska';
 
-export default class Event extends Model {
+export default class Event extends Model<Event> {
   static label = 'Event';
   static icon = 'bell';
   static titleField = 'title';

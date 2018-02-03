@@ -21,7 +21,7 @@ export default async function (ctx: Alaska$Context) {
   if (!s) {
     alaska.error('Invalid parameters');
   }
-  let Model: Class<Alaska$Model> = s.getModel(modelName);
+  let Model: Class<Alaska$Model<*>> = s.getModel(modelName);
 
   let ability = `admin.${Model.key}.read`;
   await ctx.checkAbility(ability);
@@ -69,7 +69,7 @@ export default async function (ctx: Alaska$Context) {
     for (let id of value) {
       if (recordsMap[id]) continue;
       // $Flow
-      let record: Alaska$Model = await Model.findById(id);
+      let record: Alaska$Model<*> = await Model.findById(id);
       if (record) {
         let tmp: { value: any, label: string, parent?: any } = {
           value: record.id,

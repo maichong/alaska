@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class Address extends Model {
+export default class Address extends Model<Address> {
   static label = 'Address';
   static icon = 'map-marker';
   static titleField = 'name';

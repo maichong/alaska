@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class Settings extends Model {
+export default class Settings extends Model<Settings> {
   static label = 'Settings';
   static icon = 'cogs';
   static defaultSort = 'group service';

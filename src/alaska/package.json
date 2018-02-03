@@ -24,10 +24,10 @@
     "koa": "^2.4.1",
     "koa-compose": "^4.0.0",
     "koa-qs": "^2.0.0",
-    "koa-router": "^7.3.0",
+    "koa-router": "^7.4.0",
     "lodash": "^4.17.4",
     "mime-types": "^2.1.17",
-    "mongoose": "^5.0.1",
+    "mongoose": "^5.0.3",
     "statuses": "^1.4.0",
     "string-random": "^0.1.0"
   }

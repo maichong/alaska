@@ -71,8 +71,11 @@ export async function paginate(ctx: Alaska$Context) {
 
   let results = await Model.paginateByContext(ctx, { scope, filters });
 
-  results.results = results.results.map((doc) => doc.data(scope));
-  ctx.body = results;
+  ctx.state.paginateResults = results;
+
+  ctx.body = _.assign({}, results, {
+    results: results.results.map((doc) => doc.data(scope))
+  });
 }
 
 /**
@@ -101,6 +104,8 @@ export async function list(ctx: Alaska$Context) {
 
   let results = await Model.listByContext(ctx, { scope, filters });
 
+  ctx.state.listResults = results;
+
   ctx.body = results.map((doc) => doc.data(scope));
 }
 
@@ -128,6 +133,7 @@ export async function show(ctx: Alaska$Context) {
     //404
     return;
   }
+  ctx.state.record = doc;
   ctx.body = doc.data(ctx.state.scope || ctx.query._scope || scope);
 }
 
@@ -149,6 +155,7 @@ export async function create(ctx: Alaska$Context) {
     doc.set(userField, ctx.user._id);
   }
   await doc.save();
+  ctx.state.record = doc;
   ctx.body = doc.data('create');
 }
 
@@ -189,6 +196,7 @@ export async function update(ctx: Alaska$Context) {
     doc.__modifiedPaths = [];
   }
   await doc.save();
+  ctx.state.record = doc;
   if (scope) {
     ctx.body = doc.data(scope);
   } else {
@@ -258,6 +266,7 @@ export async function remove(ctx: Alaska$Context) {
 
   let doc = await Model.findById(ctx.state.id || ctx.params.id).where(filters);
   if (!doc) return;
+  ctx.state.record = doc;
   await doc.remove();
 }
 

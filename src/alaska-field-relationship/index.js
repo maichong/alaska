@@ -28,7 +28,7 @@ export default class RelationshipField extends Field {
 
   service: string;
   model: string;
-  ref: void | Class<Alaska$Model>;
+  ref: void | Class<Alaska$Model<*>>;
   optional: boolean;
 
   /**

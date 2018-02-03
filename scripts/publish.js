@@ -17,14 +17,7 @@ async function copyFile(file) {
   let dist = Path.join(distPath, file);
   await utils.mkdirpAsync(Path.dirname(dist));
 
-  let needBabel = false;
   if (file.endsWith('.js')) {
-    needBabel = true;
-    if (/flow|views/.test(file)) {
-      needBabel = false;
-    }
-  }
-  if (needBabel) {
     console.log(chalk.green('compile'), file);
     let srcFull = Path.join(srcPath, file);
     let code = babel.transformFileSync(srcFull, {

@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "alaska-field-image": "^0.13.0",
-    "ali-oss": "^4.11.4",
+    "ali-oss": "^4.12.2",
     "co": "^4.6.0",
     "mime-types": "^2.1.17",
     "moment": "^2.20.1",

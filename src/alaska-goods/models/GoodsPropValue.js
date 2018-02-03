@@ -5,7 +5,7 @@ import { Model } from 'alaska';
 import GoodsCat from './GoodsCat';
 import GoodsProp from './GoodsProp';
 
-export default class GoodsPropValue extends Model {
+export default class GoodsPropValue extends Model<GoodsPropValue> {
   static label = 'Property Values';
   static icon = 'square';
   static defaultColumns = 'title prop common sort createdAt';

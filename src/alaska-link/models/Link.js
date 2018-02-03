@@ -1,6 +1,6 @@
 import { Model } from 'alaska';
 
-export default class Link extends Model {
+export default class Link extends Model<Link> {
   static defaultSort = '-sort';
   static icon = 'link';
   static defaultColumns = 'pic title url sort activated createdAt';

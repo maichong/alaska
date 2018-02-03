@@ -4,7 +4,7 @@ import { Model } from 'alaska';
 import Post from './Post';
 import PostTopic from './PostTopic';
 
-export default class PostComment extends Model {
+export default class PostComment extends Model<PostComment> {
   static label = 'Post Comment';
   static icon = 'comments';
   static defaultColumns = 'post topic user content createdAt';

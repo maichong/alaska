@@ -4,7 +4,7 @@ import { Model } from 'alaska';
 import service from '../';
 import Income from './Income';
 
-export default class Deposit extends Model {
+export default class Deposit extends Model<Deposit> {
   static label = 'Deposit';
   static icon = 'credit-card';
   static titleField = 'title';

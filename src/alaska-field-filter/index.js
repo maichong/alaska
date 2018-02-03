@@ -13,7 +13,7 @@ export default class FilterField extends Field {
 
   init() {
     // $Flow this.ref有可能为空
-    let mRef: Class<Alaska$Model> = this.ref || alaska.error(`${this._model.path}.fields.${this.path}.ref not found`);
+    let mRef: Class<Alaska$Model<*>> = this.ref || alaska.error(`${this._model.path}.fields.${this.path}.ref not found`);
     let ref: string = '';
     if (mRef.isModel) {
       ref = mRef.path;

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { Model } from 'alaska';
 import service from '../';
 
-export default class GoodsCat extends Model {
+export default class GoodsCat extends Model<GoodsCat> {
   static label = 'Goods Category';
   static icon = 'th-list';
   static defaultColumns = '_id icon pic title parent sort createdAt';

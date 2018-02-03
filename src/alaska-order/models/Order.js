@@ -6,7 +6,7 @@ import service from '../';
 import OrderLog from './OrderLog';
 import OrderItem from './OrderItem';
 
-export default class Order extends Model {
+export default class Order extends Model<Order> {
   static label = 'Order';
   static icon = 'file-text-o';
   static defaultColumns = 'pic title user total state createdAt';

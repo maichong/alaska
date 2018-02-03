@@ -3,7 +3,7 @@
 import { Model } from 'alaska';
 import PostCat from './PostCat';
 
-export default class Post extends Model {
+export default class Post extends Model<Post> {
   static label = 'Post';
   static icon = 'file-text-o';
   static defaultColumns = 'pic title cat user createdAt';

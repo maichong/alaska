@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class Feedback extends Model {
+export default class Feedback extends Model<Feedback> {
   static label = 'Feedback';
   static icon = 'comment';
   static titleField = 'title';

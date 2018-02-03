@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class ChartData extends Model {
+export default class ChartData extends Model<ChartData> {
   static label = 'Chart Data';
   static hidden = true;
   static defaultColumns = 'source x y';

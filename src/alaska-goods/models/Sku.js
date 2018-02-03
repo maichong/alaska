@@ -2,7 +2,7 @@
 
 import { Model } from 'alaska';
 
-export default class Sku extends Model {
+export default class Sku extends Model<Sku> {
   static label = 'Sku';
   static icon = 'cubes';
   static defaultColumns = 'pic goods desc inventory price valid';

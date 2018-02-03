@@ -19,7 +19,7 @@ export default async function remove(ctx: Alaska$Context) {
   if (!s) {
     alaska.error('Invalid parameters');
   }
-  let Model: Class<Alaska$Model> = s.getModel(modelName);
+  let Model: Class<Alaska$Model<*>> = s.getModel(modelName);
 
   let ability = _.get(Model, 'actions.remove.ability', `admin.${Model.key}.remove`);
 

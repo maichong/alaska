@@ -3,7 +3,7 @@
 import { Model } from 'alaska';
 import service from '../';
 
-export default class Withdraw extends Model {
+export default class Withdraw extends Model<Withdraw> {
   static label = 'Withdraw';
   static icon = 'share-square';
   static titleField = 'title';

@@ -3,7 +3,7 @@
 import { Model } from 'alaska';
 import service from '../';
 
-export default class Income extends Model {
+export default class Income extends Model<Income> {
   static label = 'Income Record';
   static icon = 'usd';
   static defaultColumns = 'title user type target deposit currency amount balance createdAt';
