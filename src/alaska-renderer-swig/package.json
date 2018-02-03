@@ -1,6 +1,6 @@
 {
   "name": "alaska-renderer-swig",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "Swig template renderer engine for Alaska",
   "keywords": [
     "alaska",

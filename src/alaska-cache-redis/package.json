@@ -1,6 +1,6 @@
 {
   "name": "alaska-cache-redis",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "Alaska redis cache driver",
   "keywords": [
     "alaska",

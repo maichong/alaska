@@ -1,6 +1,6 @@
 {
   "name": "alaska-sms-aliyun",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "Alaska sms aliyun driver",
   "keywords": [
     "alaska",
@@ -18,6 +18,6 @@
     "moment": "^2.20.1"
   },
   "peerDependencies": {
-    "alaska-sms": "^0.13.0"
+    "alaska-sms": "^0.13.1"
   }
 }
