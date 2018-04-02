@@ -12,15 +12,15 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-relationship": "^0.13.2",
-    "alaska-field-text": "^0.13.2",
+    "alaska-field-datetime": "^0.13.2",
     "alaska-field-html": "^0.13.2",
-    "alaska-field-datetime": "^0.13.2"
+    "alaska-field-relationship": "^0.13.2",
+    "alaska-field-text": "^0.13.2"
   },
   "peerDependencies": {
-    "alaska-field-relationship": "^0.13.2",
-    "alaska-field-text": "^0.13.2",
+    "alaska-field-datetime": "^0.13.2",
     "alaska-field-html": "^0.13.2",
-    "alaska-field-datetime": "^0.13.2"
+    "alaska-field-relationship": "^0.13.2",
+    "alaska-field-text": "^0.13.2"
   }
 }

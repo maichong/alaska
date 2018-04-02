@@ -12,7 +12,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "slash": "^2.0.0",
-    "art-template": "^4.12.2"
+    "art-template": "^4.12.2",
+    "slash": "^2.0.0"
   }
 }
