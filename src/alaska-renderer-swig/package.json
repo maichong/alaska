@@ -1,6 +1,6 @@
 {
   "name": "alaska-renderer-swig",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Swig template renderer engine for Alaska",
   "keywords": [
     "alaska",
@@ -12,7 +12,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "slash": "^1.0.0",
+    "slash": "^2.0.0",
     "swig": "^1.4.2"
   }
 }

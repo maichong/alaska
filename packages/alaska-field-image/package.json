@@ -1,6 +1,6 @@
 {
   "name": "alaska-field-image",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Alaska image field",
   "keywords": [
     "alaska",
@@ -12,9 +12,9 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "mime-types": "^2.1.17",
+    "mime-types": "^2.1.18",
     "mkdirp": "^0.5.1",
-    "moment": "^2.20.1",
+    "moment": "^2.22.0",
     "qs": "*"
   }
 }

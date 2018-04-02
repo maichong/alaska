@@ -1,6 +1,6 @@
 {
   "name": "alaska-cache-mongo",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Alaska MongoDB cache driver",
   "keywords": [
     "alaska",

@@ -8,7 +8,7 @@ import path from 'path';
 import fs from 'fs';
 import slash from 'slash';
 
-export default class SwigRenderer extends Renderer {
+export default class ArtRenderer extends Renderer {
   constructor(service: Alaska$Service, options: Options) {
     options = _.assign({
       loader: (filename) => {

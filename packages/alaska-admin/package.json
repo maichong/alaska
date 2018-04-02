@@ -1,6 +1,6 @@
 {
   "name": "alaska-admin",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Alaska admin service",
   "keywords": [
     "alaska",
@@ -13,24 +13,24 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-category": "^0.13.1",
-    "alaska-field-checkbox": "^0.13.1",
-    "alaska-field-icon": "^0.13.1",
-    "alaska-field-select": "^0.13.1",
-    "alaska-middleware-upload": "^0.13.1",
-    "alaska-settings": "^0.13.1",
-    "alaska-user": "^0.13.1",
+    "alaska-field-category": "^0.13.2",
+    "alaska-field-checkbox": "^0.13.2",
+    "alaska-field-icon": "^0.13.2",
+    "alaska-field-select": "^0.13.2",
+    "alaska-middleware-upload": "^0.13.2",
+    "alaska-settings": "^0.13.2",
+    "alaska-user": "^0.13.2",
     "koa-bodyparser": "^4.2.0",
     "through": "2.3.8"
   },
   "peerDependencies": {
-    "alaska-field-category": "^0.13.1",
-    "alaska-field-checkbox": "^0.13.1",
-    "alaska-field-icon": "^0.13.1",
-    "alaska-field-select": "^0.13.1",
-    "alaska-middleware-upload": "^0.13.1",
-    "alaska-renderer-art": "^0.13.1",
-    "alaska-settings": "^0.13.1",
-    "alaska-user": "^0.13.1"
+    "alaska-field-category": "^0.13.2",
+    "alaska-field-checkbox": "^0.13.2",
+    "alaska-field-icon": "^0.13.2",
+    "alaska-field-select": "^0.13.2",
+    "alaska-renderer-art": "^0.13.2",
+    "alaska-middleware-upload": "^0.13.2",
+    "alaska-settings": "^0.13.2",
+    "alaska-user": "^0.13.2"
   }
 }

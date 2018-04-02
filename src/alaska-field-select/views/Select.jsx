@@ -18,6 +18,42 @@ type State = {
   value?: Alaska$SelectField$value
 };
 
+function processOptions(
+  options?: Alaska$SelectField$option[],
+  optionsMap: {
+    [value: string]: Alaska$SelectField$option,
+  },
+  value: Alaska$SelectField$value
+): Alaska$SelectField$option[] {
+  let valueMap = {};
+  if (Array.isArray(value)) {
+    _.forEach(value, (v) => {
+      valueMap[String(v)] = true;
+    });
+  } else {
+    valueMap[String(value)] = true;
+  }
+  let res = _.map(options || [], (opt) => {
+    if (typeof opt.style === 'string') {
+      opt = _.omit(opt, 'style');
+    }
+    let vKey = String(opt.value);
+    optionsMap[vKey] = opt;
+    if (valueMap[vKey]) {
+      delete valueMap[vKey];
+    }
+    return opt;
+  });
+  if (_.size(valueMap)) {
+    _.keys(valueMap).forEach((v) => {
+      if (optionsMap[v]) {
+        res.push(optionsMap[v]);
+      }
+    });
+  }
+  return res;
+}
+
 export default class Select extends React.Component<Props, State> {
   static contextTypes = {
     t: PropTypes.func
@@ -27,15 +63,12 @@ export default class Select extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
+    let optionsMap = {};
+    let options = processOptions(props.options, optionsMap, props.value);
     this.state = {
-      options: this.processOptions(props.options),
-      optionsMap: {},
+      options,
+      optionsMap
     };
-    if (props.options) {
-      for (let o of props.options) {
-        this.state.optionsMap[String(o.value)] = o;
-      }
-    }
     this.state.value = this.processValue(props.value);
     this._cache = {};
   }
@@ -49,36 +82,20 @@ export default class Select extends React.Component<Props, State> {
 
   componentWillReceiveProps(props: Props) {
     let state = {};
-    if (props.options !== this.props.options) {
-      state.options = this.processOptions(props.options);
-      state.optionsMap = {};
-      if (props.options) {
-        for (let o of props.options) {
-          state.optionsMap[String(o.value)] = o;
-        }
+    if (props.options !== this.props.options || props.value !== this.props.value) {
+      state.optionsMap = this.state.optionsMap;
+      let options = props.options;
+      if (props.multi && props.loadOptions) {
+        options = this.state.options;
       }
-    }
-    if (props.value !== undefined) {
+      state.options = processOptions(options, state.optionsMap, props.value);
       state.value = this.processValue(props.value);
     }
-    this.setState(state, () => {
-      if (state.optionsMap) {
-        this.setState({ value: this.processValue(props.value) });
-      }
-    });
+    this.setState(state);
   }
 
   componentWillUnmount() {
     this._cache = {};
-  }
-
-  processOptions(options?: Alaska$SelectField$option[]): Alaska$SelectField$option[] {
-    return _.map(options || [], (opt) => {
-      if (typeof opt.style === 'string') {
-        opt = _.omit(opt, 'style');
-      }
-      return opt;
-    });
   }
 
   processValue = (value: any) => {
@@ -132,20 +149,24 @@ export default class Select extends React.Component<Props, State> {
   };
 
   handleSearchChange = (search: string) => {
-    if (this._cache[search]) {
-      this.setState({ options: this._cache[search] });
+    const { value } = this.props;
+    let { optionsMap } = this.state;
+    let cacheKey = 'c_' + (search || JSON.stringify(value));
+    if (this._cache[cacheKey]) {
+      this.setState({
+        options: processOptions(this._cache[cacheKey], optionsMap, value),
+        optionsMap
+      });
       return;
     }
     // $Flow 我们知道此处 loadOptions 一定存在
     this.props.loadOptions(search, (error, res) => {
       if (!error && res.options) {
-        this._cache[search] = res.options;
-        let options = this._cache[search];
-        let optionsMap = {};
-        options.forEach((o) => {
-          optionsMap[o.value] = o;
+        this._cache[cacheKey] = res.options;
+        this.setState({
+          options: processOptions(this._cache[cacheKey], optionsMap, value),
+          optionsMap
         });
-        this.setState({ options, optionsMap });
       }
     });
   };

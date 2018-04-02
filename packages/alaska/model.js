@@ -330,9 +330,7 @@ class Model {
         await this.preRegister();
       }
 
-      const schema = new Schema({}, _extends({
-        usePushEach: true
-      }, model.schemaOptions, {
+      const schema = new Schema({}, _extends({}, model.schemaOptions, {
         collection: model.collection || (service.getConfig('dbPrefix') || '') + model.id.replace(/-/g, '_')
       }));
 

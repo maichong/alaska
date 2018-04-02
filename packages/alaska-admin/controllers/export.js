@@ -20,8 +20,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function escape(text) {
   text = String(text);
-  if (text.indexOf(',') > -1 || text.indexOf('"') > -1) {
-    return '"' + text.replace(/"/g, '""') + '"';
+  if (text.indexOf(',') > -1 || text.indexOf('"') > -1 || text.indexOf('\n') > -1) {
+    return '"' + text.replace(/"/g, '""').replace(/\n/g, '\r') + '"';
   }
   return text;
 } /* eslint no-inner-declarations:0 */

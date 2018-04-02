@@ -37,11 +37,9 @@ class ReactPlugin {
       router.use((ctx, next) => {
         function react(view, props = {}) {
           let mod = _alaska2.default.modules.services[service.id];
-          if (!mod || !mod.reactViews || !mod.reactViews[view]) {
-            service.panic(`React view "${view}" not found!`);
-          }
+          let View = mod && mod.reactViews && (mod.reactViews[view] || mod.reactViews[view + '.jsx'] || service.panic(`React view "${view}" not found!`));
           try {
-            let View = mod.reactViews[view];
+            // $Flow
             let element = _react2.default.createElement(View, Object.assign({ isSSR: true }, props));
             if (props.store) {
               element = _react2.default.createElement(_Provider2.default, { store: props.store }, element);

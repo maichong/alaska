@@ -36,7 +36,7 @@ class TextFeild extends _alaska.Field {
       if (exact) {
         result = value;
       } else {
-        result = new RegExp(_alaska.utils.escapeRegExp(value), 'i');
+        result = new RegExp(_alaska.utils.escapeRegExp(String(value)), 'i');
       }
       if (inverse) {
         result = { $not: result };

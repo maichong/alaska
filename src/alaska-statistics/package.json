@@ -1,6 +1,6 @@
 {
   "name": "alaska-statistics",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Alaska statistics service",
   "keywords": [
     "alaska",
@@ -12,13 +12,13 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-select": "^0.13.1",
+    "alaska-field-select": "^0.13.2",
     "color": "^3.0.0",
     "number-random": "^1.0.0"
   },
   "peerDependencies": {
-    "alaska-field-select": "^0.13.1",
-    "chart.js": "^2.7.1",
+    "alaska-field-select": "^0.13.2",
+    "chart.js": "^2.7.2",
     "react-chartjs-2": "^2.7.0"
   }
 }

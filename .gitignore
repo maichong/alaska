@@ -17,3 +17,4 @@ test/.nyc_output
 package-lock.json
 server.min
 flow-declarations
+.history

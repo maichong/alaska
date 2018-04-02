@@ -1,6 +1,6 @@
 {
   "name": "alaska-recharge",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Alaska recharge service",
   "keywords": [
     "alaska",
@@ -12,13 +12,13 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-balance": "^0.13.1",
-    "alaska-payment": "^0.13.1",
-    "alaska-user": "^0.13.1"
+    "alaska-balance": "^0.13.2",
+    "alaska-payment": "^0.13.2",
+    "alaska-user": "^0.13.2"
   },
   "peerDependencies": {
-    "alaska-balance": "^0.13.1",
-    "alaska-payment": "^0.13.1",
-    "alaska-user": "^0.13.1"
+    "alaska-balance": "^0.13.2",
+    "alaska-payment": "^0.13.2",
+    "alaska-user": "^0.13.2"
   }
 }

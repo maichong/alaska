@@ -1,6 +1,6 @@
 {
   "name": "alaska-sms-aliyun",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Alaska sms aliyun driver",
   "keywords": [
     "alaska",
@@ -13,11 +13,11 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "akita": "^0.4.0",
     "ini": "^1.3.5",
-    "moment": "^2.20.1"
+    "akita": "^0.4.0",
+    "moment": "^2.22.0"
   },
   "peerDependencies": {
-    "alaska-sms": "^0.13.1"
+    "alaska-sms": "^0.13.2"
   }
 }

@@ -16,6 +16,10 @@ var _chalk = require('chalk');
 
 var _chalk2 = _interopRequireDefault(_chalk);
 
+var _isDirectory = require('is-directory');
+
+var _isDirectory2 = _interopRequireDefault(_isDirectory);
+
 var _child_process = require('child_process');
 
 var _utils = require('./utils');
@@ -25,6 +29,8 @@ var utils = _interopRequireWildcard(_utils);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/* eslint no-console:0 */
 
 function github(url, destination) {
   return new Promise((resolve, reject) => {
@@ -38,11 +44,9 @@ function github(url, destination) {
   });
 }
 
-/* eslint no-console:0 */
-
 exports.default = async function create(name) {
   let rootDir = _path2.default.join(process.cwd(), name);
-  if (utils.isDirectory(rootDir)) {
+  if (_isDirectory2.default.sync(rootDir)) {
     console.error(_chalk2.default.red(`项目创建失败："${rootDir}" 已经存在`));
     process.exit();
   }

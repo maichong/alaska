@@ -1,6 +1,6 @@
 {
   "name": "alaska-queue-redis",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Alaska redis queue driver",
   "keywords": [
     "alaska",

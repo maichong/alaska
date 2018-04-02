@@ -16,30 +16,27 @@ function getOptionValue(opt) {
 }
 
 type State = {
-  value?: string | number | Array<any>;
   options?: Alaska$SelectField$option[]
 };
 
 export default class RelationshipFieldView extends React.Component<Alaska$view$Field$View$Props, State> {
-  cache: Object;
-
-  constructor(props: Alaska$view$Field$View$Props) {
-    super(props);
-    this.cache = {};
-    this.state = {
-      options: undefined
-    };
-  }
+  state = {
+    options: undefined
+  };
 
   componentWillReceiveProps(props: Alaska$view$Field$View$Props) {
-    if (props.value !== this.props.value) {
+    // 只有 fixed 字段需要在此组件中加载options
+    if (props.value !== this.props.value && props.field.fixed) {
       if (_.find(this.state.options, (o) => o.value === props.value)) return;
       this.setState({ options: [] }, this.handleSearch);
+    }
+    if (!props.field.fixed && this.state.options) {
+      this.setState({ options: undefined });
     }
   }
 
   shouldComponentUpdate(props: Alaska$view$Field$View$Props, state: State) {
-    if (props.record !== this.props.record) {
+    if (props.record !== this.props.record && props.field.fixed) {
       if (
         _.find(
           props.field.filters,
@@ -52,10 +49,6 @@ export default class RelationshipFieldView extends React.Component<Alaska$view$F
     }
     return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'search')
       || this.state.options !== state.options;
-  }
-
-  componentWillUnmount() {
-    this.cache = {};
   }
 
   handleChange = (value: Alaska$SelectField$value) => {
@@ -73,7 +66,7 @@ export default class RelationshipFieldView extends React.Component<Alaska$view$F
     }
   };
 
-  handleSearch = (keyword?: string) => {
+  handleSearch = (keyword?: string, callback?: Function) => {
     keyword = keyword || '';
     const { field, record, value } = this.props;
     // $Flow 下方做了判断，保证ref一定存在
@@ -87,15 +80,6 @@ export default class RelationshipFieldView extends React.Component<Alaska$view$F
       return res;
     }, {});
 
-    let cacheKey = JSON.stringify(filters) + keyword;
-    if (this.cache[cacheKey]) {
-      if (this.cache[cacheKey] === this.state.options) return;
-      setTimeout(() => {
-        this.setState({ options: this.cache[cacheKey] });
-      });
-      return;
-    }
-
     const [serviceId, modelName] = ref.split('.');
 
     api.post('/api/relation', {
@@ -107,9 +91,18 @@ export default class RelationshipFieldView extends React.Component<Alaska$view$F
       },
       body: { value }
     }).then((res) => {
-      let options = immutable(res.results);
-      this.cache[cacheKey] = options;
-      this.setState({ options });
+      if (callback) {
+        callback(null, {
+          options: res.results
+        });
+      } else {
+        let options = immutable(res.results);
+        this.setState({ options });
+      }
+    }, (error) => {
+      if (callback) {
+        callback(error);
+      }
     });
   };
 

@@ -1,6 +1,6 @@
 {
   "name": "alaska-renderer-art",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Art template renderer engine for Alaska",
   "keywords": [
     "alaska",
@@ -12,7 +12,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "art-template": "^4.12.2",
-    "slash": "^1.0.0"
+    "slash": "^2.0.0",
+    "art-template": "^4.12.2"
   }
 }

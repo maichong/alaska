@@ -341,7 +341,6 @@ export default class Model {
       }
 
       const schema = new Schema({}, {
-        usePushEach: true,
         ...model.schemaOptions,
         collection: model.collection || ((service.getConfig('dbPrefix') || '') + model.id.replace(/-/g, '_'))
       });

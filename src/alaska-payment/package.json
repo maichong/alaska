@@ -1,6 +1,6 @@
 {
   "name": "alaska-payment",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Alaska payment service",
   "keywords": [
     "alaska",
@@ -12,9 +12,9 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-user": "^0.13.1"
+    "alaska-user": "^0.13.2"
   },
   "peerDependencies": {
-    "alaska-user": "^0.13.1"
+    "alaska-user": "^0.13.2"
   }
 }

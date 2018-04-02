@@ -1,6 +1,10 @@
-// @flow
+'use strict';
 
-export function getOptionValue(opt: Alaska$SelectField$option | Alaska$SelectField$value): string {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getOptionValue = getOptionValue;
+function getOptionValue(opt) {
   if (Array.isArray(opt)) {
     return ''; //ERROR
   }

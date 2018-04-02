@@ -28,7 +28,7 @@ var _slash2 = _interopRequireDefault(_slash);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-class SwigRenderer extends _alaska.Renderer {
+class ArtRenderer extends _alaska.Renderer {
   constructor(service, options) {
     options = _lodash2.default.assign({
       loader: filename => {
@@ -77,4 +77,4 @@ class SwigRenderer extends _alaska.Renderer {
     return _artTemplate2.default.render(template, { locals }, _lodash2.default.assign({}, this.options));
   }
 }
-exports.default = SwigRenderer;
+exports.default = ArtRenderer;

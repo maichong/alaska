@@ -45,11 +45,13 @@ class Register extends _alaska.Sled {
     }
     let user = params.user;
     if (!user) {
-      let count = await _User2.default.count({
-        username: new RegExp('^' + _alaska.utils.escapeRegExp(params.username) + '$', 'i')
-      });
-      if (count) {
-        _3.default.error('Username is exists');
+      if (params.username) {
+        let count = await _User2.default.count({
+          username: new RegExp('^' + _alaska.utils.escapeRegExp(params.username) + '$', 'i')
+        });
+        if (count) {
+          _3.default.error('Username is exists');
+        }
       }
       if (params.email) {
         let emailCount = await _User2.default.count({
