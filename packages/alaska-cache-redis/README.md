@@ -1,4 +1,4 @@
-# [alaska-cache-redis](https://github.com/maichong/alaska-cache-redis)
+# alaska-cache-redis
 Alaska redis cache driver
 
 ## configure
@@ -17,7 +17,7 @@ cache: {
 ```
 
 ## Contribute
-[Maichong Software](http://maichong.it)
+[Maichong Software](http://maichong.io)
 
 [Liang Xingchen](https://github.com/liangxingchen)
 

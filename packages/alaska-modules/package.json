@@ -6,10 +6,12 @@
     "alaska"
   ],
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-modules",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-modules",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "slash": "^2.0.0"
+    "slash": "^2.0.0",
+    "is-directory": "^0.3.1"
   }
 }

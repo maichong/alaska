@@ -8,7 +8,11 @@
   ],
   "alaska": "field",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-field-image-link",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-image-link",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
-  "license": "MIT"
+  "license": "MIT",
+  "peerDependencies": {
+    "alaska-field-image": "^0.13.2"
+  }
 }

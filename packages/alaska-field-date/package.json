@@ -8,12 +8,13 @@
   ],
   "alaska": "field",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-field-date",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-date",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-datetime": "^0.13.2",
-    "moment": "^2.22.0",
-    "react-datetime": "^2.14.0"
+    "moment": "^2.22.2",
+    "react-datetime": "^2.16.2",
+    "alaska-field-datetime": "^0.13.2"
   }
 }

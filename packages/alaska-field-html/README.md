@@ -1,6 +1,5 @@
 # alaska-field-html
-Alaska html WYSIWYG editor field
-
+alaska html field
 ```javascript
 //alaska config
 

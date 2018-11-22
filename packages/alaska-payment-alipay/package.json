@@ -10,7 +10,8 @@
   "alaska": "plugin",
   "alaska-plugin": "alaska-payment",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-payment-alipay",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-payment-alipay",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "peerDependencies": {

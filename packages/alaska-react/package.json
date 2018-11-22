@@ -1,0 +1,24 @@
+{
+  "name": "alaska-react",
+  "version": "0.13.2",
+  "description": "Alaska react server side rendering extension",
+  "keywords": [
+    "alaska",
+    "alaska-extension",
+    "react",
+    "ssr"
+  ],
+  "main": "index.js",
+  "types": "index.d.ts",
+  "alaska": "extension",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-react",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "prop-types": "^15.6.2"
+  },
+  "peerDependencies": {
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3"
+  }
+}

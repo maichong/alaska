@@ -1,6 +1,6 @@
 {
   "name": "alaska-sms-test",
-  "version": "0.13.2",
+  "version": "0.14.0",
   "description": "Alaska sms test driver",
   "keywords": [
     "alaska",
@@ -9,7 +9,8 @@
   "alaska": "driver",
   "alaska-driver": "sms",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-sms-test",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-sms-test",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT"
 }

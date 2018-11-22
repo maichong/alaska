@@ -1,0 +1,24 @@
+.error-page {
+  padding: 0 $content-space;
+}
+
+.error-info {
+  background: $white-color;
+}
+
+.error-title {
+  font-size: 2.25rem; // 36px;
+  background: url("img/sad.jpg") left bottom no-repeat;
+  width: 16.875rem; // 270px;
+  height: 12.5rem; // 200px;
+  margin: 0 auto;
+  padding-left: 6.25rem; // 100px;
+  padding-top: 8.125rem; // 130px;
+  font-weight: 300;
+}
+
+.error-desc {
+  background: $page-bg;
+  text-align: center;
+  padding: 1.25rem // 20px;
+}

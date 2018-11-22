@@ -1,0 +1,20 @@
+{
+  "name": "alaska-lock-memory",
+  "version": "0.13.2",
+  "description": "Alaska lock driver implemented by memory variables",
+  "keywords": [
+    "alaska",
+    "alaska-lock"
+  ],
+  "alaska": "driver",
+  "alaska-driver": "lock",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-lock-memory",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "delay": "^4.1.0",
+    "string-random": "^0.1.3"
+  }
+}

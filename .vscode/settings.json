@@ -1,0 +1,12 @@
+{
+  "search.exclude": {
+    "**/node_modules": true,
+    "packages/**/*.js": true,
+    "dist/**": true,
+    "runtime/**": true,
+  },
+  "files.exclude": {
+    "packages/**/*.js": true
+  },
+  "easysass.compileAfterSave": false
+}

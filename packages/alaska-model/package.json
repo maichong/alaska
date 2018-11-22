@@ -1,0 +1,19 @@
+{
+  "name": "alaska-model",
+  "version": "0.13.2",
+  "description": "Alaska model extension",
+  "keywords": [
+    "alaska",
+    "alaska-extension"
+  ],
+  "main": "index.js",
+  "types": "index.d.ts",
+  "alaska": "extension",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-model",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "is-promise": "^2.1.0",
+    "mongoose": "^5.3.13"
+  }
+}

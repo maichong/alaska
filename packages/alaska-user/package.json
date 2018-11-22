@@ -8,33 +8,20 @@
   ],
   "alaska": "service",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-user",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-user",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
     "alaska": "^0.13.2",
-    "alaska-cache-lru": "^0.13.2",
     "alaska-field-datetime": "^0.13.2",
-    "alaska-field-id": "^0.13.2",
+    "alaska-field-objectid": "^0.13.2",
     "alaska-field-image": "^0.13.2",
     "alaska-field-number": "^0.13.2",
     "alaska-field-password": "^0.13.2",
     "alaska-field-relationship": "^0.13.2",
     "alaska-field-text": "^0.13.2",
-    "alaska-middleware-session": "^0.13.2",
-    "alaska-settings": "^0.13.2"
-  },
-  "peerDependencies": {
-    "alaska": "^0.13.2",
-    "alaska-cache-lru": "^0.13.2",
-    "alaska-field-datetime": "^0.13.2",
-    "alaska-field-id": "^0.13.2",
-    "alaska-field-image": "^0.13.2",
-    "alaska-field-number": "^0.13.2",
-    "alaska-field-password": "^0.13.2",
-    "alaska-field-relationship": "^0.13.2",
-    "alaska-field-text": "^0.13.2",
-    "alaska-middleware-session": "^0.13.2",
-    "alaska-settings": "^0.13.2"
+    "alaska-settings": "^0.13.2",
+    "escape-string-regexp": "^1.0.5"
   }
 }

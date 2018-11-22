@@ -4,17 +4,18 @@
   "description": "Alaska redis queue driver",
   "keywords": [
     "alaska",
-    "alaska-queue",
-    "alaska-redis",
-    "redis"
+    "alaska-queue"
   ],
   "alaska": "driver",
-  "alaksa-driver": "queue",
+  "alaska-driver": "queue",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-queue-redis",
+  "types": "index.d.ts",
+  "scripts": {},
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-queue-redis",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
+    "alaska-queue": "^0.13.2",
     "redis": "^2.8.0"
   }
 }

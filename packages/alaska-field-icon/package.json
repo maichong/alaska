@@ -8,7 +8,8 @@
   ],
   "alaska": "field",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-field-icon",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-icon",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {

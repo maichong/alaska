@@ -1,4 +1,4 @@
-# [alaska-cache-lru](https://github.com/maichong/alaska-cache-lru)
+# alaska-cache-lru
 Alaska LRU cache driver based on [lru-cache](https://github.com/isaacs/node-lru-cache)
 
 ## configure
@@ -17,7 +17,7 @@ cache: {
 ```
 
 ## Contribute
-[Maichong Software](http://maichong.it)
+[Maichong Software](http://maichong.io)
 
 [Liang Xingchen](https://github.com/liangxingchen)
 

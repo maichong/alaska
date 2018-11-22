@@ -1,13 +1,5 @@
 #!/usr/bin/env node
 
-'use strict';
-
 process.title = 'alaska';
 
-require('babel-register')({
-  ignore: [
-    /node_modules\/(?!alaska-cli)/
-  ]
-});
-
-require('../src/alaska');
+require('../alaska');

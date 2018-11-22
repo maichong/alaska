@@ -1,2 +1,2 @@
 # alaska-sms
-Alaska sms service
+alaska sms service

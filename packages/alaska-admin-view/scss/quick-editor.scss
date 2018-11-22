@@ -1,0 +1,105 @@
+.quick-editor {
+  width: $quick-editor-with;
+  float: right;
+  position: fixed;
+  top: $header-height;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  transition: right $animation-duration;
+  &.quick-editor-hidden {
+    right: -$quick-editor-with - 1.429rem;
+  }
+}
+
+.quick-editor-title-bar {
+  height: $top-toolbar-height;
+  line-height: $top-toolbar-height;
+  text-align: center;
+  border-bottom: solid $border-color $border-width;
+  font-size: 1rem; //16px
+  .fa {
+    float: right;
+    margin-top: ($top-toolbar-height - 1.286rem) /2;
+    margin-right: ($top-toolbar-height - 1.286rem) /2;
+    background: $red;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.75rem; // 12px
+  }
+  .icon-btn {
+    width: 1.125rem; // 18px
+    height: 1.125rem; // 18px
+    line-height: 1.125rem; // 18px
+    text-align: center;
+    cursor: pointer;
+  }
+}
+
+.quick-editor-content {
+  position: absolute;
+  top: $top-toolbar-height;
+  left: 0;
+  right: 0;
+  bottom: 1.875rem; // 30px
+  overflow-y: auto;
+  padding: $content-space;
+  background: $page-bg;
+  .alert {
+    margin-bottom: $content-space-large;
+    line-height: 1.429rem;
+    padding: $content-space-medium;
+    &.alert-info {
+      background-color: $quick-editor-alert-info-bg;
+      border-color: $quick-editor-alert-info-border;
+      color: $quick-editor-alert-info-color;
+    }
+  }
+  .col-sm-2,
+  .col-sm-10 {
+    width: 100%;
+    float: none;
+  }
+  .col-sm-offset-2 {
+    margin-left: 0;
+  }
+  .form-horizontal .checkbox {
+    padding-top: 0;
+  }
+  .col-sm-4 {
+    width: 50%;
+  }
+}
+
+.quick-editor-action-bar {
+  height: $bottom-toolbar-height; // 50px + 1
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top: solid $border-color $border-width;
+  z-index: 100;
+  background: #fff;
+  .inner {
+    padding: 0.563rem 0.938rem; // 9px 15px
+    text-align: center;
+    .btn {
+      margin: 0 $content-space-small;
+      &.btn-default {
+        color: $btn-default-color;
+        border: $border-width solid $border-color;
+      }
+    }
+  }
+}
+
+@media (min-width: $quick-editor-large-toggle) {
+  .quick-editor {
+    width: $quick-editor-large-with;
+    right: 0;
+    &.quick-editor-hidden {
+      right: -$quick-editor-large-with - 1.429rem;
+    }
+  }
+}

@@ -23,7 +23,7 @@ export default {
 ```
 
 ## Contribute
-[Maichong Software](http://maichong.it)
+[Maichong Software](http://maichong.io)
 
 [Liang Xingchen](https://github.com/liangxingchen)
 

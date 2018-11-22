@@ -8,14 +8,15 @@
   ],
   "alaska": "service",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-settings",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-settings",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
     "alaska-field-mixed": "^0.13.2",
     "alaska-field-select": "^0.13.2",
     "alaska-field-text": "^0.13.2",
-    "debug": "^3.1.0"
+    "debug": "^4.1.0"
   },
   "peerDependencies": {
     "alaska-field-mixed": "^0.13.2",

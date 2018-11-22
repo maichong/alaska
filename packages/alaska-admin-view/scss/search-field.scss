@@ -1,0 +1,25 @@
+.search-field {
+  position: relative;
+  max-width: 11.625rem; // 186px;
+  input {
+    border-radius: 1.063rem !important; // 17px
+    padding-right: 1.625rem; // 26px;
+  }
+  .search-clear {
+    position: absolute;
+    top: 0.563rem; // 9px;
+    right: 0.5rem; // 8px;
+    width: 1.125rem; // 18px;
+    height: 1.125rem; // 18px;
+    text-align: center;
+    background: #aaa;
+    border-radius: 0.563rem; //9px;
+    cursor: pointer;
+    .fa {
+      line-height: 1.125rem; // 18px;
+      display: block;
+      font-size: 0.75rem; //12px;
+      color: #fff;
+    }
+  }
+}

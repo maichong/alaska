@@ -1,0 +1,20 @@
+{
+  "name": "alaska-subscribe",
+  "version": "0.13.2",
+  "description": "Alaska subscribe/publish driver",
+  "keywords": [
+    "alaska",
+    "alaska-subscribe",
+    "mq",
+    "subscribe",
+    "publish"
+  ],
+  "alaska": "driver",
+  "alaska-driver": "subscribe",
+  "main": "index.js",
+  "types": "index.d.js",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-subscribe",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {}
+}

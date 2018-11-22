@@ -1,0 +1,15 @@
+{
+  "name": "alaska-queue",
+  "version": "0.1.0",
+  "description": "Base class for Alaska queue drivers",
+  "keywords": [
+    "alaska",
+    "alaska-driver"
+  ],
+  "alaska": "driver",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-queue",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT"
+}

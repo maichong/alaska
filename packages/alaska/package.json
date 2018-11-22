@@ -12,23 +12,14 @@
   ],
   "alaska": "core",
   "main": "alaska.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-id": "^0.13.2",
-    "collie": "^0.2.1",
-    "debug": "^3.1.0",
-    "depd": "^1.1.2",
-    "intl-messageformat": "^2.2.0",
-    "koa": "^2.5.0",
-    "koa-compose": "^4.0.0",
-    "koa-qs": "^2.0.0",
-    "koa-router": "^7.4.0",
-    "lodash": "^4.17.5",
-    "mime-types": "^2.1.18",
-    "mongoose": "^5.0.12",
-    "statuses": "^1.5.0",
-    "string-random": "^0.1.0"
+    "collie": "^0.3.0",
+    "debug": "^4.1.0",
+    "lodash": "^4.17.11",
+    "statuses": "^1.5.0"
   }
 }

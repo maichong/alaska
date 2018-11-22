@@ -1,0 +1,19 @@
+{
+  "name": "alaska-statics",
+  "version": "0.13.2",
+  "description": "Alaska statics extension",
+  "keywords": [
+    "alaska",
+    "alaska-extension",
+    "static"
+  ],
+  "main": "index.js",
+  "types": "index.d.ts",
+  "alaska": "extension",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-statics",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "koa-static-cache": "^5.1.2"
+  }
+}

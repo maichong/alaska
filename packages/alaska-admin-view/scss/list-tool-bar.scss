@@ -1,0 +1,65 @@
+.toolbar {
+  height: $top-toolbar-height;
+  position: fixed;
+  top: $header-height;
+  left: $menu-width;
+  right: 0;
+  background: $white-color;
+  border-bottom: solid $border-width $border-color;
+  z-index: 100;
+  .toolbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .toolbar-title {
+    flex: 1;
+    height: $top-toolbar-height;
+    overflow: hidden;
+    line-height: $top-toolbar-height;
+    font-size: 1rem; // 16px;
+    padding-left: $content-space;
+    i {
+      font-size: 0.75rem; // 12px;
+      color: $gray-light;
+    }
+  }
+  .tool-group {
+    &>* {
+      display: inline-block;
+      margin-right: $content-space-xsmall;
+      .btn-default {
+        line-height: 1.25rem; // 20px;
+        border: $border-width solid $border-color;
+        &:hover {
+          background-color: $bg-light;
+        }
+        &:focus {
+          box-shadow: inset 3px $border-width 5px rgba(0, 0, 0, 0.1);
+          background-color: #ddd;
+        }
+      }
+      .dropdown-item {
+        position: relative;
+        height: 2.875rem; // 46px;
+        padding: $content-space-medium;
+        padding-left: $content-space-large + $content-space-medium;
+        color: $font-dark;
+        i {
+          position: absolute;
+          top: $content-space-medium;
+          left: $padding-base-horizontal;
+        }
+        &:focus {
+          background: $bg-light;
+        }
+      }
+    }
+  }
+}
+
+.list-mode-tool {
+  i {
+    margin-right: $content-space-small;
+  }
+}

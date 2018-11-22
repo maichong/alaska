@@ -1,0 +1,10 @@
+.has-error {
+  &.select-field,
+  &.relationship-field {
+    .Select {
+      .Select__control {
+        border-color: $red;
+      }
+    }
+  }
+}

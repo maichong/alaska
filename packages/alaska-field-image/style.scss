@@ -1,0 +1,40 @@
+.image-field {
+  .image-field-item {
+    display: inline-block;
+    min-width: 80px;
+    margin-right: 10px;
+    vertical-align: top;
+  }
+  img,
+  input,
+  i,
+  .image-field-add {
+    display: inline-block;
+    height: 80px;
+    min-width: 80px;
+    max-width: 200px;
+  }
+  i {
+    font-size: 80px;
+    line-height: 80px;
+    text-align: center;
+    color: #bdc3c7;
+    position: absolute;
+    z-index: 0;
+  }
+  input {
+    opacity: 0;
+    position: absolute;
+    z-index: 1;
+  }
+  &::after {
+    clear: both;
+  }
+}
+
+.image-field-cell {
+  img {
+    height: 36px;
+    max-width: 80px;
+  }
+}

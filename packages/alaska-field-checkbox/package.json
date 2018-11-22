@@ -8,8 +8,9 @@
   ],
   "alaska": "field",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {},
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-field-checkbox",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-checkbox",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT"
 }

@@ -1,0 +1,201 @@
+@import "./variables.scss";
+body,
+html {
+  background-color: $page-bg !important;
+  box-sizing: border-box;
+}
+
+body {
+  position: relative;
+}
+
+.content {
+  margin-top: $header-height + 1;
+  margin-left: $menu-width;
+}
+
+.icon {
+  .content {
+    margin-left: $menu-icon-width;
+  }
+  .header,
+  .list-page-inner,
+  .list-toolbar,
+  .list-action-bar,
+  .editor-toolbar,
+  .editor-page {
+    left: $menu-icon-width;
+  }
+  .copyright {
+    font-size: 10px;
+  }
+}
+
+.hidden {
+  .content {
+    margin-left: 0;
+  }
+  .header,
+  .list-page-inner,
+  .list-toolbar,
+  .list-action-bar,
+  .editor-toolbar,
+  .editor-page {
+    left: 0;
+  }
+}
+
+.btn-default {
+  background-color: #fff;
+}
+
+.loading,
+.denied {
+  margin-top: 100px;
+  .loading-text,
+  .denied-text {
+    width: $login-logo-width;
+    height: $loading-height;
+    line-height: 70px;
+    background: url("img/loading.gif") left center no-repeat;
+    padding-left: 120px;
+    color: $font-dark;
+    font-size: 26px;
+    font-weight: 100;
+    margin: 0 auto;
+    letter-spacing: 4px;
+  }
+}
+
+//form-group
+.form-control {
+  border: $border-width solid $border-color;
+  color: $gray;
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+.input-group {
+  .input-group-text {
+    color: $gray;
+    border-color: $border-color;
+    background-color: $grag-color;
+  }
+}
+
+//card boot3的panel类
+.card {
+  border-color: $border-color;
+  box-shadow: 0 $border-width $border-width rgba(0, 0, 0, .05);
+  .card-title {
+    padding: $content-space $content-space-medium;
+    margin-bottom: 0;
+    border-bottom: $border-width solid $border-color;
+  }
+  .card-body {
+    padding: $content-space-medium;
+ 
+  }
+}
+
+@media(min-width: 576px) {
+  .card {
+    .card-body {
+      .row{
+        .col-sm-2{
+          text-align: right;
+        }
+      }
+    }
+  }
+}
+
+//input 错误提示
+.is-invalid {
+  &:focus {
+    box-shadow: none !important;
+  }
+}
+
+.list-page-inner {
+  position: fixed;
+  overflow: auto;
+  top: $header-height + $top-toolbar-height;
+  left: $menu-width;
+  bottom: $header-height + $content-space;
+  right: 0;
+  padding: $content-space;
+  &.with-editor {
+    right: $quick-editor-with;
+    .list-toolbar,
+    .list-action-bar {
+      right: $quick-editor-with;
+    }
+  }
+}
+
+@media (min-width: $quick-editor-large-toggle) {
+  .list-page-inner {
+    &.with-editor {
+      right: $quick-editor-large-with;
+      .list-toolbar,
+      .list-action-bar {
+        right: $quick-editor-large-with;
+      }
+    }
+  }
+}
+
+.dropdown-menu {
+  line-height: $font-size-base;
+}
+
+.relationship-field-filter,
+.select-field-filter {
+  .Select {
+    width: 100%;
+  }
+}
+
+.Select__control {
+  &.css-vj8t7z,
+  &.css-2o5izw {
+    min-height: 0;
+    border-color: $border-color;
+    border-radius: 0;
+    &:hover {
+      border-color: $border-color;
+    }
+  }
+  &.css-2o5izw {
+    box-shadow: none;
+    &:hover {
+      border: $border-width solid $blue;
+    }
+    &:focus {
+      border: $border-width solid $blue;
+    }
+  }
+  &.Select__control--is-focused {
+    border: $border-width solid $border-focus-color;
+  }
+}
+
+@import "./select.scss";
+@import "./scrollbar.scss";
+@import "./login.scss";
+@import "./menu.scss";
+@import "./header.scss";
+//listPage
+@import "./list-tool-bar.scss";
+@import "./filter-editor.scss";
+@import "./list.scss";
+@import "./list-action-bar.scss";
+@import "./search-field.scss";
+@import "./field-view.scss";
+//errorPage
+@import "./error-page.scss";
+@import "./editor.scss";
+@import "./quick-editor.scss";
+@import "./toastr.scss";

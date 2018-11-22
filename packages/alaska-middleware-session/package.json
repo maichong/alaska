@@ -8,11 +8,12 @@
   ],
   "alaska": "middleware",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-meddleware-session",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-meddleware-session",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
     "path-to-regexp": "*",
-    "string-random": "^0.1.0"
+    "string-random": "^0.1.3"
   }
 }

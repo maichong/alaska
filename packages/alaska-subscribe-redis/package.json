@@ -5,16 +5,20 @@
   "keywords": [
     "alaska",
     "alaska-subscribe",
-    "alaska-redis",
+    "mq",
+    "subscribe",
+    "publish",
     "redis"
   ],
   "alaska": "driver",
   "alaska-driver": "subscribe",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-subscribe-redis",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-subscribe-redis",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
+    "alaska-subscribe": "^0.13.2",
     "redis": "^2.8.0"
   }
 }

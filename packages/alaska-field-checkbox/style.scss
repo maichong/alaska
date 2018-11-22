@@ -1,0 +1,75 @@
+td,
+th {
+  &>.checkbox {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.data-table thead th .checkbox .fa {
+  padding-left: 0;
+}
+
+.checkbox {
+  display: inline-block;
+  cursor: pointer;
+  vertical-align: middle;
+  &.disabled {
+    opacity: 0.4;
+  }
+  .fa {
+    display: inline-block;
+    width: 18px;
+    text-align: center;
+    font-size: 18px;
+    vertical-align: middle;
+    color: $gray;
+    margin-right: 4px;
+  }
+  &.text-danger.checked {
+    .fa {
+      color: $red;
+    }
+  }
+  &.text-warning.checked {
+    .fa {
+      color: $yellow;
+    }
+  }
+  &.text-info.checked {
+    .fa {
+      color: $cyan;
+    }
+  }
+  &.text-danger.checked {
+    .fa {
+      color: $red;
+    }
+  }
+  &.text-primary.checked {
+    .fa {
+      color: $blue;
+    }
+  }
+  &.checked {
+    .fa {
+      color: $green;
+    }
+  }
+  &.disabled {
+    .fa {
+      color: $gray-light;
+    }
+  }
+}
+
+.form {
+  .form-group {
+    .checkbox,
+    .radio {
+      margin-top: 0px;
+    } //.checkbox + .checkbox, .radio + .radio {
+    //  margin-top: 0px;
+    //}
+  }
+}

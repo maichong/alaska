@@ -1,17 +1,18 @@
 {
   "name": "alaska-field-html",
   "version": "0.13.2",
-  "description": "Alaska html WYSIWYG editor field",
+  "description": "alaska html field",
   "keywords": [
     "alaska",
     "alaska-field"
   ],
   "alaska": "field",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-field-html",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-html",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "simditor": "^2.3.6"
+    "simditor": "^2.3.23"
   }
 }

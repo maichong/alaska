@@ -1,16 +1,22 @@
-'use strict';
-
 const fs = require('fs');
 const path = require('path');
 const semver = require('semver');
-const akita = require('akita');
+const akita = require('akita').default;
 const read = require('read-promise');
-const utils = require('./utils');
-const dir = process.cwd() + '/src';
+const dir = process.cwd() + '/packages';
 
 const libVersions = {};
 
+function isFile(path) {
+  try {
+    return fs.statSync(path).isFile();
+  } catch (e) {
+    return false;
+  }
+};
+
 async function getVersions(pkg) {
+  console.log('>', pkg);
   if (!libVersions[pkg]) {
     let json = await akita.get('http://registry.npm.taobao.org/' + pkg);
     if (json['dist-tags']) {
@@ -22,7 +28,7 @@ async function getVersions(pkg) {
 
 async function update(pkg, newVersion) {
   let pkgFile = path.join(dir, pkg, 'package.json');
-  if (!utils.isFile(pkgFile)) return;
+  if (!isFile(pkgFile)) return;
   let needSave = false;
   let info = require(pkgFile);
   if (newVersion && info.version !== newVersion) {

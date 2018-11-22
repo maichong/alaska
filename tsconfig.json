@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "outDir": "packages",
+    "sourceMap": false,
+    "moduleResolution": "node",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "baseUrl": "./packages",
+    "paths": {
+      "*": [
+        "../typings/*"
+      ]
+    },
+    "target": "ES2017",
+    "lib": [
+      "es7",
+      "dom"
+    ],
+    "jsx": "react"
+  },
+  "include": [
+    "packages/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

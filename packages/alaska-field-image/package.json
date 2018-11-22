@@ -8,13 +8,13 @@
   ],
   "alaska": "field",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-field-image",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-image",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "mime-types": "^2.1.18",
-    "mkdirp": "^0.5.1",
-    "moment": "^2.22.0",
-    "qs": "*"
+    "mime-types": "^2.1.21",
+    "moment": "^2.22.2",
+    "fsd": "^0.4.1"
   }
 }

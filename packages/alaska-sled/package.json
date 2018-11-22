@@ -1,0 +1,18 @@
+{
+  "name": "alaska-sled",
+  "version": "0.13.2",
+  "description": "Alaska sled extension",
+  "keywords": [
+    "alaska",
+    "alaska-extension"
+  ],
+  "main": "index.js",
+  "types": "index.d.ts",
+  "alaska": "extension",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-sled",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "is-promise": "^2.1.0"
+  }
+}

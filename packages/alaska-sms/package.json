@@ -8,10 +8,13 @@
   ],
   "alaska": "service",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-sms",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-sms",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-sms-test": "^0.13.2"
+    "alaska-field-text": "^0.13.2",
+    "alaska-field-select": "^0.13.2",
+    "alaska-field-datetime": "^0.13.2"
   }
 }

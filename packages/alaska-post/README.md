@@ -1,9 +1,9 @@
-#[alaska-post](https://github.com/maichong/alaska-post)
+# alaska-post
 
 Alaska post service
 
 ## Contribute
-[Maichong Software](http://maichong.it)
+[Maichong Software](http://maichong.io)
 
 [Chao Rong](https://github.com/chaorong2015)
 

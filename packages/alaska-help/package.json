@@ -8,19 +8,23 @@
   ],
   "alaska": "service",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-help",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-help",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-datetime": "^0.13.2",
-    "alaska-field-html": "^0.13.2",
     "alaska-field-relationship": "^0.13.2",
-    "alaska-field-text": "^0.13.2"
+    "alaska-field-text": "^0.13.2",
+    "alaska-field-html": "^0.13.2",
+    "alaska-field-datetime": "^0.13.2",
+    "alaska-http": "^0.13.2",
+    "debug": "^4.1.0"
   },
   "peerDependencies": {
-    "alaska-field-datetime": "^0.13.2",
-    "alaska-field-html": "^0.13.2",
     "alaska-field-relationship": "^0.13.2",
-    "alaska-field-text": "^0.13.2"
+    "alaska-field-text": "^0.13.2",
+    "alaska-field-html": "^0.13.2",
+    "alaska-field-datetime": "^0.13.2",
+    "alaska-http": "^0.13.2"
   }
 }

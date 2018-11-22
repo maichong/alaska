@@ -1,0 +1,38 @@
+.login-page {
+  width: $login-page-width;
+  background: $white-color;
+  border-radius: $border-radius-base;
+  box-shadow: 0 $border-width $border-width rgba(0, 0, 0, .05);
+  margin: 100px auto 0;
+  padding: $content-space-large 0;
+  .login-form {
+    width: $login-form-width;
+    margin: $content-space-large auto;
+    .input-group {
+      .input-group-text {
+        width: 2.625rem;
+        i {
+          margin: 0 auto;
+        }
+      }
+    }
+  }
+  .login-error {
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: $red
+  }
+}
+
+.login-logo img {
+  display: block;
+  width: $login-logo-width;
+  margin: $content-space-large auto 0;
+}
+
+@media (max-width: 767px) {
+  .login-page {
+    width: 90%;
+  }
+}

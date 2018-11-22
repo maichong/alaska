@@ -1,4 +1,4 @@
-# [alaska-cache-mongo](https://github.com/maichong/alaska-cache-mongo)
+# alaska-cache-mongo
 Alaska MongoDB cache driver
 
 ## configure
@@ -22,7 +22,7 @@ export default {
 ```
 
 ## Contribute
-[Maichong Software](http://maichong.it)
+[Maichong Software](http://maichong.io)
 
 [Liang Xingchen](https://github.com/liangxingchen)
 

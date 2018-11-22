@@ -8,10 +8,11 @@
   ],
   "alaska": "middleware",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-middleware-upload",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-middleware-upload",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "async-busboy": "0.0.4"
+    "async-busboy": "^0.7.0"
   }
 }

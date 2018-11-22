@@ -8,12 +8,12 @@
   ],
   "alaska": "service",
   "main": "index.js",
-  "scripts": {},
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-address",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-address",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "alaska-field-geo": "^0.13.2",
-    "alaska-user": "^0.13.2"
+    "alaska-user": "^0.13.2",
+    "alaska-field-geo": "^0.13.2"
   }
 }

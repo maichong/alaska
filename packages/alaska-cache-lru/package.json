@@ -9,11 +9,13 @@
   "alaska": "driver",
   "alaska-driver": "cache",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-cache-lru",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-cache-lru",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "debug": "^3.1.0",
-    "lru-cache": "^4.1.2"
+    "alaska-cache": "^0.13.2",
+    "debug": "^4.1.0",
+    "lru-cache": "^5.1.1"
   }
 }

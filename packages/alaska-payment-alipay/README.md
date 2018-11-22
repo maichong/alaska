@@ -7,7 +7,7 @@ Alipay plugin for alaska.
 ```js
 
 // config/alaska-payment.js
-import path from 'path';
+import * as Path from 'path';
 
 export defualt {
   plugins: ['alaska-payment-alipay'],

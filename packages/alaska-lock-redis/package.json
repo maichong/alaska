@@ -1,0 +1,22 @@
+{
+  "name": "alaska-lock-redis",
+  "version": "0.13.2",
+  "description": "Alaska lock driver implemented by redis variables",
+  "keywords": [
+    "alaska",
+    "alaska-lock",
+    "lock",
+    "redis"
+  ],
+  "alaska": "driver",
+  "alaska-driver": "lock",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-lock-redis",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "redis": "^2.8.0",
+    "redlock": "^3.1.2"
+  }
+}

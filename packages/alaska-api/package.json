@@ -1,0 +1,19 @@
+{
+  "name": "alaska-api",
+  "version": "0.13.2",
+  "description": "Alaska api extension",
+  "keywords": [
+    "alaska",
+    "alaska-extension"
+  ],
+  "main": "index.js",
+  "types": "index.d.ts",
+  "alaska": "extension",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-api",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "alaska-http": "^0.13.2",
+    "koa-compose": "^4.1.0"
+  }
+}

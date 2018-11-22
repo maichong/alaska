@@ -8,21 +8,16 @@
   ],
   "alaska": "service",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {},
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-captcha",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-captcha",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
     "alaska-field-number": "^0.13.2",
-    "alaska-field-relationship": "^0.13.2",
-    "alaska-field-select": "^0.13.2",
     "alaska-field-text": "^0.13.2",
-    "string-random": "^0.1.0"
-  },
-  "peerDependencies": {
-    "alaska-field-number": "^0.13.2",
-    "alaska-field-relationship": "^0.13.2",
     "alaska-field-select": "^0.13.2",
-    "alaska-field-text": "^0.13.2"
+    "alaska-field-relationship": "^0.13.2",
+    "string-random": "^0.1.3"
   }
 }

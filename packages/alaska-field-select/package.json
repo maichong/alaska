@@ -8,11 +8,13 @@
   ],
   "alaska": "field",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-field-select",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-select",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
+    "@samoyed/switch": "^0.1.2",
     "alaska-field-checkbox": "^0.13.2",
-    "react-select": "^1.2.1"
+    "react-select": "^2.1.2"
   }
 }

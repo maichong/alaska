@@ -1,2 +1,2 @@
 # alaska-page
-Alaska page service
+alaska page service

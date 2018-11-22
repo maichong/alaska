@@ -8,7 +8,8 @@
   ],
   "alaska": "field",
   "main": "index.js",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-field-text",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-text",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT"
 }
