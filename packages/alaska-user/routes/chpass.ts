@@ -3,15 +3,11 @@ import { Context } from 'alaska-http';
 import service from '..';
 
 export default function (router: Router) {
-  router.get('/chpass', async (ctx: Context) => {
-    if (ctx.method !== 'POST') {
-      service.error(400);
-    }
-
+  router.post('/chpass', async (ctx: Context) => {
     if (!ctx.user) {
       service.error(403);
     } else {
-      // 已登录
+      // @ts-ignore 已登录
       let body = ctx.request.body as { password: string};
 
       if (!body || !body.password) {
