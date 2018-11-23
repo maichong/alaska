@@ -22,6 +22,21 @@ export default function createMetadata(id: string, dir: string, configFileName: 
   return metadata;
 }
 
+function getRelativePath(path: string): string {
+  let cwd = process.cwd();
+  let srcDir = Path.join(cwd, 'src');
+  let nodeModulesDir = Path.join(cwd, 'node_modules');
+  let p = Path.relative(nodeModulesDir, path);
+  if (p[0] !== '.') {
+    return p;
+  }
+  p = Path.relative(srcDir, path);
+  if (p[0] !== '.') {
+    p = './' + p;
+  }
+  return p;
+}
+
 class ModulesMetadata {
   id: string;
   dir: string;
@@ -249,14 +264,16 @@ class ModulesMetadata {
       // load
       let pluginDir = Path.join(service.path, 'plugins', sub.id);
       if (!isDirectory.sync(pluginDir)) continue;
-      if (sub.plugins[pluginDir]) continue;
+      let id = getRelativePath(pluginDir);
+      if (sub.plugins[id]) continue;
       let meta: PluginMetadata = {
+        id,
         path: pluginDir,
         dismiss: false
       };
       await this.loadServicePlugin(sub, meta);
       if (!meta.dismiss) {
-        sub.plugins[pluginDir] = meta;
+        sub.plugins[id] = meta;
       }
     }
   }
@@ -279,8 +296,8 @@ class ModulesMetadata {
     }
 
     // 加载当前Service Plugins
-    for (let id of _.keys(service.config.plugins)) {
-      let pluginConfig: PluginConfig = service.config.plugins[id];
+    for (let key of _.keys(service.config.plugins)) {
+      let pluginConfig: PluginConfig = service.config.plugins[key];
       let dir = pluginConfig.dir;
       if (dir) {
         dir = Path.join(service.path, 'config', dir);
@@ -295,10 +312,12 @@ class ModulesMetadata {
         });
       }
       if (!dir) {
-        throw new Error(`Can not find plugin "${id}" for service “${service.id}”`);
+        throw new Error(`Can not find plugin "${key}" for service “${service.id}”`);
       }
+      let id = getRelativePath(dir);
       if (service.plugins[dir]) continue;
       let meta: PluginMetadata = {
+        id,
         path: dir,
         dismiss: false
       };
@@ -446,6 +465,7 @@ class ModulesMetadata {
   }
 
   async buildPlugin(service: ServiceMetadata, tree: ModuleTree, pluginMeta: PluginMetadata, plugin: ModuleTree) {
+    plugin.id = pluginMeta.id;
     if (!plugin.plugin && pluginMeta.plugin) {
       plugin.plugin = new Module(pluginMeta.plugin, 'ESModule');
     }
@@ -495,18 +515,8 @@ class ModulesMetadata {
   async toScript(): Promise<string> {
     await this.load();
 
-    const srcDir = this.dir;
-    const modulesDir = Path.join(this.dir, '../node_modules');
-
     function requirePath(path: string, type: ModuleType): string {
-      let p = Path.relative(srcDir, path);
-      if (p[0] !== '.') {
-        p = './' + p;
-      }
-      if (path.indexOf(modulesDir) === 0) {
-        p = path.substr(modulesDir.length + 1);
-      }
-      let str = `require('${p}')`;
+      let str = `require('${getRelativePath(path)}')`;
       if (type !== 'CommonJs') {
         str = `importDefault(${str})`;
       }
@@ -526,7 +536,7 @@ class ModulesMetadata {
         let result = '{\n';
         for (let key of _.keys(value)) {
           let k = key;
-          if (k.indexOf('-') > -1) {
+          if (/[-\.\/\\]/.test(k)) {
             k = `'${k}'`;
           }
           result += `  ${k}: ` + convent(value[key]) + ',\n';

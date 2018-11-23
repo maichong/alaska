@@ -74,6 +74,7 @@ export interface ServiceMetadata {
 }
 
 export interface PluginMetadata {
+  id: string;
   path: string;
   plugin?: string;
   configFile?: string;
