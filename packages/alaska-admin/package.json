@@ -17,6 +17,9 @@
     "alaska-field-category": "^0.13.2",
     "alaska-field-icon": "^0.13.2",
     "alaska-middleware-upload": "^0.13.2",
-    "alaska-user": "^0.13.2"
+    "alaska-user": "^0.13.2",
+    "collie": "^0.3.0",
+    "grackle": "^0.2.0",
+    "through": "^2.3.8"
   }
 }
