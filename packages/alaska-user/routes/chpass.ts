@@ -8,7 +8,7 @@ export default function (router: Router) {
       service.error(403);
     } else {
       // @ts-ignore 已登录
-      let body = ctx.request.body as { password: string};
+      let body = ctx.request.body as { password: string };
 
       if (!body || !body.password) {
         service.error('New password is required');
