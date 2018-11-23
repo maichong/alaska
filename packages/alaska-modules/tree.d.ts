@@ -1,5 +1,8 @@
 export type ModuleType = 'ESModule' | 'CommonJs' | 'Auto';
 
+/**
+ * JS Module
+ */
 export class Module {
   path: string;
   type: ModuleType;
@@ -7,6 +10,9 @@ export class Module {
   constructor(path: string, type: ModuleType);
 }
 
+/**
+ * 项目内相对路径
+ */
 export class ModulePath {
   path: string;
 

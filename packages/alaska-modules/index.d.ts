@@ -82,6 +82,10 @@ export interface PluginMetadata {
 }
 
 export interface Modules {
+  /**
+   * Main Service ID
+   */
+  id: string;
   libraries: {
     [id: string]: any;
   };

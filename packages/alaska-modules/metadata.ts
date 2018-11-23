@@ -5,7 +5,7 @@ import * as Path from 'path';
 import * as isDirectory from 'is-directory';
 import { ConfigData, Loader as LoaderClass, Config, ServiceConfig, PluginConfig } from 'alaska';
 import { Modules, LibraryMetadata, ExtensionMetadata, ServiceMetadata, PluginMetadata } from 'alaska-modules';
-import { ModuleTree, ModulePath, Module } from './tree';
+import { ModuleTree, ModulePath, Module, ModuleType } from './tree';
 import debug from './debug';
 
 /**
@@ -384,6 +384,7 @@ class ModulesMetadata {
   async build(): Promise<ModuleTree> {
     debug('build');
     let tree = new ModuleTree();
+    tree.id = this.id;
     tree.libraries = new ModuleTree();
     tree.extensions = new ModuleTree();
     tree.services = new ModuleTree();
@@ -417,7 +418,7 @@ class ModulesMetadata {
     if (meta.dismiss) return;
     // @ts-ignore libraries 一定存在
     let libraries: ModuleTree = tree.libraries;
-    libraries[meta.id] = new Module(meta.path, meta.type ? 'ESModule' : 'Auto');
+    libraries[meta.id] = new Module(meta.path, 'ESModule');
   }
 
   async buildExtension(meta: ExtensionMetadata, tree: ModuleTree) {
@@ -494,6 +495,52 @@ class ModulesMetadata {
   async toScript(): Promise<string> {
     await this.load();
 
-    return '// todo:';
+    const srcDir = this.dir;
+    const modulesDir = Path.join(this.dir, '../node_modules');
+
+    function requirePath(path: string, type: ModuleType): string {
+      let p = Path.relative(srcDir, path);
+      if (p[0] !== '.') {
+        p = './' + p;
+      }
+      if (path.indexOf(modulesDir) === 0) {
+        p = path.substr(modulesDir.length + 1);
+      }
+      let str = `require('${p}')`;
+      if (type !== 'CommonJs') {
+        str = `importDefault(${str})`;
+      }
+      return str;
+    }
+
+    function convent(value: any): string {
+      if (value instanceof Module) {
+        return requirePath(value.path, value.type);
+      } else if (value instanceof ModulePath) {
+        // module path
+        return Path.resolve(this.dir, value.path);
+      } else if (Array.isArray(value)) {
+        return '[\n' + value.map(convent).join(',\n') + ']';
+      } else if (value && typeof value === 'object') {
+        // ModuleTree
+        let result = '{\n';
+        for (let key of _.keys(value)) {
+          let k = key;
+          if (k.indexOf('-') > -1) {
+            k = `'${k}'`;
+          }
+          result += `  ${k}: ` + convent(value[key]) + ',\n';
+        }
+        return result + '}';
+      }
+      return JSON.stringify(value);
+    }
+
+    let script = [
+      'Object.defineProperty(exports, "__esModule", { value: true });',
+      'function importDefault(lib){return lib && typeof lib==="object" && lib.default!==undefined?lib.default:lib}',
+      'module.exports.default = '
+    ].join('\n');
+    return script + convent(await this.build());
   }
 }

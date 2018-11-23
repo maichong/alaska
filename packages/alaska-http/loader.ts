@@ -54,7 +54,7 @@ export default class HttpLoader extends Loader {
       for (let id of Object.keys(metadata.middlewares)) {
         let meta: MiddlewareMetadata = metadata.middlewares[id];
         if (meta.dismiss) continue;
-        middlewares[id] = new Module(meta.path, 'Auto');
+        middlewares[id] = new Module(meta.path, 'ESModule');
       }
     });
   }

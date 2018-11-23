@@ -15,9 +15,10 @@
     "tsc": "tsc",
     "tsc-watch": "tsc -w",
     "build": "rimraf packages/**/*.js && tsc",
-    "alaska-build": "ts-node packages/alaska-cli/alaska.ts build --ts test.tsconfig.json --config test.ts",
+    "alaska-build": "ts-node packages/alaska-cli/alaska.ts build --ts test.tsconfig.json",
     "clean": "rimraf dist",
-    "start": "cross-env DEBUG=* ts-node src/server.ts",
+    "start": "node dist/server.js",
+    "start-dev": "cross-env DEBUG=* NODE_ENV=development ts-node src/server-dev.ts",
     "webpack": "webpack --config webpack/webpack.config.js --env.production",
     "webpack-dev": "webpack --config webpack/webpack.config.js",
     "webpack-watch": "webpack --config webpack/webpack.config.js -w"

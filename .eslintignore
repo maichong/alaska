@@ -9,3 +9,4 @@ backup/
 public/
 samoyed/packages/*/lib
 typings
+src/modules.js

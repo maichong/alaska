@@ -19,5 +19,5 @@ class MainService extends Service {
 }
 
 export default new MainService({
-  id: 'test'
+  id: 'alaska-14'
 });

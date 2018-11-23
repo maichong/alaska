@@ -124,6 +124,7 @@ export default class Service {
     if (modules instanceof Promise) {
       modules = await modules;
     }
+    if (this.id !== modules.id) throw new Error('MainService#id should equal package.json#name');
     // console.log('modules', modules);
 
     this.modules = modules;

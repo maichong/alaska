@@ -69,9 +69,17 @@ export default async function build(options: BuildOptions) {
     console.log(chalk.red('alaska-modules is not installed!'));
   } else {
     const create: createMetadata = require(Path.join(alaskaModulesPath)).createMetadata;
-    let script = await create(pkg.name, process.cwd() + '/src', options.config || (pkg.name + '.js'), options.modulesDirs).toScript();
+    let configFile = options.config;
+    if (!configFile) {
+      if (fs.existsSync('src/config/' + pkg.name + '.js') || fs.existsSync('src/config/' + pkg.name + '.ts')) {
+        configFile = pkg.name;
+      } else {
+        throw new Error('Can not resolve config file!');
+      }
+    }
+    let script = await create(pkg.name, process.cwd() + '/src', configFile, options.modulesDirs).toScript();
     fs.writeFileSync(process.cwd() + '/src/modules.js', script);
-    fs.writeFileSync(process.cwd() + '/src/modules.d.ts', `import { Modules } from 'alaska-modules';\nexport = Modules;`);
+    fs.writeFileSync(process.cwd() + '/src/modules.d.ts', `import { Modules } from 'alaska-modules';\ndeclare const modules: Modules;\nexport default modules;`);
   }
 
   if (options.ts) {
