@@ -18,8 +18,8 @@ export default class Client extends Model {
       index: true,
       private: true
     },
-    uuid: {
-      label: 'Device UUID',
+    deviceId: {
+      label: 'Device ID',
       type: String,
       default: '',
       private: true
@@ -37,7 +37,7 @@ export default class Client extends Model {
   };
 
   _id: string | number | Object | any;
-  uuid: string;
+  deviceId: string;
   platform: string;
   token: string;
   user: string;
