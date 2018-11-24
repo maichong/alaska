@@ -280,7 +280,7 @@ export default class Model {
               }
               options.type = FieldClass;
             }
-            options.label = options.label || path.toUpperCase();
+            options.label = options.label || (path === '_id' ? 'ID' : path.toUpperCase());
             let field = new FieldClass(options, schema, model);
             model._fields[path] = field;
             if (path !== '_id' || orgType !== 'objectid') { // 默认 _id 不需要执行 initSchema，否则创建数据将失败
