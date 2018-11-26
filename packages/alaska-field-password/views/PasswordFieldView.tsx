@@ -87,7 +87,7 @@ export default class PasswordFieldView extends React.Component<FieldViewProps, S
     let { help } = field;
     let errorText = state.errorText || props.errorText;
     if (errorText) {
-      className += ' has-error';
+      className += ' is-invalid';
       help = tr(errorText);
       inputClassName += ' is-invalid';
     }

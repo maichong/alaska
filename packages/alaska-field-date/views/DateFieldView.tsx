@@ -26,7 +26,7 @@ export default class DateFieldView extends React.Component<FieldViewProps> {
     let { help } = field;
     className += ' date-field';
     if (errorText) {
-      className += ' has-error';
+      className += ' is-invalid';
       help = errorText;
     }
     if (field.format && value) {

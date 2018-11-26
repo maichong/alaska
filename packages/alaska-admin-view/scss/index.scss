@@ -158,31 +158,6 @@ body {
   }
 }
 
-.Select__control {
-  &.css-vj8t7z,
-  &.css-2o5izw {
-    min-height: 0;
-    border-color: $border-color;
-    border-radius: 0;
-    &:hover {
-      border-color: $border-color;
-    }
-  }
-  &.css-2o5izw {
-    box-shadow: none;
-    &:hover {
-      border: $border-width solid $blue;
-    }
-    &:focus {
-      border: $border-width solid $blue;
-    }
-  }
-  &.Select__control--is-focused {
-    border: $border-width solid $border-focus-color;
-  }
-}
-
-@import "./select.scss";
 @import "./scrollbar.scss";
 @import "./login.scss";
 @import "./menu.scss";

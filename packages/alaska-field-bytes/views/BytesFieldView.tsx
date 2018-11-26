@@ -75,7 +75,7 @@ export default class BytesFieldView extends React.Component<FilterViewProps, Sta
     } = field;
     className += ' bytes-field';
     if (errorText) {
-      className += ' has-error';
+      className += ' is-invalid';
       help = errorText;
     }
     let value: number = numeral(this.state.display).value() || 0;

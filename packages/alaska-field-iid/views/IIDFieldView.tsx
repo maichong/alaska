@@ -65,7 +65,7 @@ export default class IIDFieldView extends React.Component<FieldViewProps, State>
     let inputClassName = '';
     className += ' number-field';
     if (errorText) {
-      className += ' has-error';
+      className += ' is-invalid';
       help = errorText;
       inputClassName = ' is-invalid';
     }

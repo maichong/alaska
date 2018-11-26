@@ -93,7 +93,7 @@ export default class CategoryFieldView extends React.Component<FieldViewProps, S
     let { help } = field;
     className += ' category-field';
     if (errorText) {
-      className += ' has-error';
+      className += ' is-invalid';
       help = errorText;
     }
     let helpElement = help ? <small className={errorText ? 'invalid-feedback' : 'text-muted'}>{help}</small> : null;

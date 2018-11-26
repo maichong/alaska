@@ -56,10 +56,10 @@ class LoginForm extends React.Component<Props, LoginFormState> {
       passwordError: ''
     };
     if (!username) {
-      state.usernameError = ' has-error';
+      state.usernameError = ' is-invalid';
     }
     if (!password) {
-      state.passwordError = ' has-error';
+      state.passwordError = ' is-invalid';
     }
     this.setState(state);
     if (username && password) {

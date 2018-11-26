@@ -21,10 +21,11 @@
       }
       text-align: center;
       color: $gray;
-      border-radius: 0;
-      border: $border-width $border-color solid;
+      border-radius: $input-border-radius;
+      border: $input-border-width $input-border-color solid;
       &:focus {
-        border: $border-width $border-focus-color solid;
+        border: 1px $input-focus-border-color solid;
+        box-shadow: $input-focus-box-shadow;
       }
     }
     .btn {

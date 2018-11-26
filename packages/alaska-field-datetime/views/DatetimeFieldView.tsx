@@ -31,7 +31,7 @@ export default class DatetimeFieldView extends React.Component<FieldViewProps> {
     let { help } = field;
     className += ' date-field';
     if (errorText) {
-      className += ' has-error';
+      className += ' is-invalid';
       help = errorText;
     }
     let helpElement = help ? <small className={errorText ? 'invalid-feedback' : 'text-muted'}>{help}</small> : null;
