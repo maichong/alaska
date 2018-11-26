@@ -52,7 +52,7 @@ export default class MongoCacheDriver<T> extends CacheDriver<T, MongoCacheDriver
    * @param {number} [lifetime] 超时时间，为0则永不过期，默认按驱动初始化参数maxAge而定，单位毫秒
    * @returns {Promise<void>}
    */
-  set(key: string, value: T, lifetime?: number): Promise<any> {
+  set(key: string, value: T, lifetime?: number): Promise<void> {
     if (this._connecting) {
       return this._connecting.then(() => this.set(key, value, lifetime));
     }
@@ -75,7 +75,7 @@ export default class MongoCacheDriver<T> extends CacheDriver<T, MongoCacheDriver
       }, {
         upsert: true,
         returnOriginal: false
-      });
+      }).then(() => Promise.resolve());
   }
 
   /**
@@ -83,7 +83,7 @@ export default class MongoCacheDriver<T> extends CacheDriver<T, MongoCacheDriver
    * @param {string} key
    * @returns {Promise<any>}
    */
-  get(key: string): Promise<T> {
+  get(key: string): Promise<T | null> {
     if (this._connecting) {
       return this._connecting.then(() => this.get(key));
     }
@@ -110,14 +110,14 @@ export default class MongoCacheDriver<T> extends CacheDriver<T, MongoCacheDriver
    * @param {string} key
    * @returns {Promise<void>}
    */
-  del(key: string): any {
+  del(key: string): Promise<void> {
     if (this._connecting) {
       return this._connecting.then(() => this.del(key));
     }
     debug('del', key);
     return this._driver.deleteOne({
       _id: key
-    });
+    }).then(() => Promise.resolve());
   }
 
   /**
@@ -138,7 +138,7 @@ export default class MongoCacheDriver<T> extends CacheDriver<T, MongoCacheDriver
       }
       if (doc.expiredAt !== 0 && (!doc.expiredAt || doc.expiredAt < new Date())) {
         //已过期
-        return this.del(key);
+        return this.del(key).then(() => Promise.resolve(false));
       }
       debug('has', key, '=>', true);
       return Promise.resolve(true);
@@ -165,8 +165,8 @@ export default class MongoCacheDriver<T> extends CacheDriver<T, MongoCacheDriver
       },
       { upsert: true, returnOriginal: false }
     ).then((doc) => {
-      debug('inc', key, '=>', doc.value);
-      return doc.value;
+      debug('inc', key, '=>', doc.value.value);
+      return Promise.resolve(doc.value.value);
     });
   }
 
@@ -190,8 +190,8 @@ export default class MongoCacheDriver<T> extends CacheDriver<T, MongoCacheDriver
       },
       { upsert: true, returnOriginal: false }
     ).then((doc) => {
-      debug('dec', key, '=>', doc.value);
-      return doc.value;
+      debug('dec', key, '=>', doc.value.value);
+      return Promise.resolve(doc.value.value);
     });
   }
 

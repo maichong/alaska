@@ -12,7 +12,7 @@ export default function* list({ payload }: Action<LoadListPayload>) {
         query: _.assign({
           _model: payload.model,
           _search: payload.search,
-          _limit: payload.limit || 30,
+          _limit: payload.limit || 50,
           _page: payload.page || 1,
           _sort: payload.sort || ''
         }, payload.filters)
