@@ -5,6 +5,7 @@ import { App, store } from 'alaska-admin-view';
 // import 'moment/locale/zh-cn';
 import * as views from '../../runtime/alaska-admin-view/views';
 import '../../scss/admin.scss';
+require('codemirror/mode/javascript/javascript');
 
 ReactDOM.render(
   <Provider store={store}>

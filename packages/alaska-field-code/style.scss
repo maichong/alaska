@@ -1,0 +1,6 @@
+@import "~codemirror/lib/codemirror.css";
+.code-field {
+  .react-codemirror2 {
+    border: solid 1px $input-border-color;
+  }
+}

@@ -141,7 +141,8 @@ export interface LoadListFailurePayload {
   error: Error;
 }
 
-export type RecordList < T > = immutable.Immutable<PaginateResult<T> & { error?: Error; fetching: boolean }>;
+// eslint-disable-next-line space-infix-ops
+export type RecordList<T> = immutable.Immutable<PaginateResult<T> & { error?: Error; fetching: boolean }>;
 
 export interface AnyRecordList extends RecordList<any> {
 }
@@ -282,7 +283,7 @@ export interface Field {
   model?: string;
   modelTitleField?: string;
   // select
-  options?: SelectOption[];
+  options?: any | SelectOption[];
   checkbox?: boolean;
   switch?: boolean;
   multi?: boolean;
