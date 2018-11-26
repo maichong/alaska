@@ -54,6 +54,14 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
         toast(tr(error), tr(`${_.upperFirst(title)} Failure`), { type: 'error' });
       } else {
         toast(tr(`${title} success!`), tr(`${title}`), { type: 'success' });
+        //创建成功跳转
+        // @ts-ignore action里面会包含修改的信息ID
+        let id = nextProps.action ? nextProps.action._id : '';
+        if (nextProps.isNew && nextProps.action && id) {
+          const { model } = this.props;
+          let url = '/edit/' + model.serviceId + '/' + model.modelName + '/' + id;
+          this.context.router.history.replace(url);
+        }
       }
       this.setState({ updateError: false });
     }
