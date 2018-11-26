@@ -27,7 +27,7 @@ export default class CodeFieldView extends React.Component<FieldViewProps> {
     let { help } = field;
     className += ' code-field';
     if (errorText) {
-      className += ' has-error';
+      className += ' is-invalid';
       help = errorText;
     }
     let helpElement = help ? <small className={errorText ? 'invalid-feedback' : 'text-muted'}>{help}</small> : null;
@@ -38,7 +38,7 @@ export default class CodeFieldView extends React.Component<FieldViewProps> {
       inputElement = <CodeMirror
         onBeforeChange={this.handleChange}
         value={value || ''}
-        options={_.defaults({}, field.options, {
+        options={_.defaults({}, field.codeMirrorOptions, {
           lineNumbers: true,
           readOnly: disabled
         })}

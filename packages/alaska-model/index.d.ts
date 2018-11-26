@@ -604,6 +604,7 @@ interface FieldBase {
   filter?: string;
   after?: string;
   match?: RegExp;
+  codeMirrorOptions?: any;
   options?: any;
   checkbox?: boolean;
   switch?: boolean;

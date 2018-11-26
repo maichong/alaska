@@ -1,17 +1,21 @@
 import * as React from 'react';
 import * as shallowEqualWithout from 'shallow-equal-without';
 import { FieldViewProps } from 'alaska-admin-view';
+import { Controlled as CodeMirror, IInstance } from 'react-codemirror2';
+import * as _ from 'lodash';
+import 'codemirror/mode/javascript/javascript';
 
 interface State {
   text: string;
-  style?: string;
+  hasError: boolean;
 }
 
 export default class MixedFieldView extends React.Component<FieldViewProps, State> {
   constructor(props: FieldViewProps) {
     super(props);
     this.state = {
-      text: JSON.stringify(props.value, null, 4)
+      text: JSON.stringify(props.value, null, 4),
+      hasError: false
     };
   }
 
@@ -28,38 +32,39 @@ export default class MixedFieldView extends React.Component<FieldViewProps, Stat
       || !shallowEqualWithout(state, this.state);
   }
 
-  handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
-    let { value } = e.target;
-    let state = {
-      text: value
-    } as State;
+  handleChange = (editor: any, data: any, value: string): void => {
+    let state: State = {
+      text: value,
+      hasError: false
+    };
     try {
       JSON.parse(value);
     } catch (error) {
       try {
         // eslint-disable-next-line
-        eval('json=' + value);
+        eval(value);
       } catch (err) {
-        state.style = 'has-error';
+        state.hasError = true;
       }
     }
     this.setState(state);
   };
 
-  handleBlur = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
-    let { value } = e.target;
+  handleBlur = (editor: IInstance, event: Event): void => {
+    let value = editor.getValue();
     let json;
-    let state = {
-      text: value
-    } as State;
+    let state: State = {
+      text: value,
+      hasError: false
+    };
     try {
       json = JSON.parse(value);
     } catch (error) {
       try {
         // eslint-disable-next-line
-        json = eval('json=' + value);
+        eval('json=' + value);
       } catch (err) {
-        state.style = 'has-error';
+        state.hasError = true;
       }
     }
     this.setState(state);
@@ -77,8 +82,7 @@ export default class MixedFieldView extends React.Component<FieldViewProps, Stat
     let inputError = '';
 
     className += ' mixed-field ';
-    if (errorText) {
-      className += this.state.style;
+    if (errorText || this.state.hasError) {
       help = errorText;
       inputError = 'is-invalid';
     }
@@ -91,11 +95,19 @@ export default class MixedFieldView extends React.Component<FieldViewProps, Stat
     if (disabled || field.fixed) {
       inputElement = <pre>{this.state.text}</pre>;
     } else {
-      inputElement = <textarea
-        className={'form-control ' + inputError}
-        onChange={this.handleChange}
+      inputElement = <CodeMirror
+        className={inputError}
+        onBeforeChange={this.handleChange}
         onBlur={this.handleBlur}
         value={this.state.text}
+        options={_.defaults({}, field.codeMirrorOptions, {
+          mode: {
+            name: 'javascript',
+            json: true
+          },
+          lineNumbers: true,
+          readOnly: disabled
+        })}
       />;
     }
 

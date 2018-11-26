@@ -11,5 +11,9 @@
   "types": "index.d.ts",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-mixed",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "codemirror": "^5.42.0",
+    "react-codemirror2": "^5.1.0"
+  }
 }

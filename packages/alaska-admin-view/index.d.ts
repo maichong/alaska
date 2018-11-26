@@ -282,8 +282,10 @@ export interface Field {
   filters?: Filters;
   model?: string;
   modelTitleField?: string;
+  // code & mixed
+  codeMirrorOptions?: any[];
   // select
-  options?: any | SelectOption[];
+  options?: SelectOption[];
   checkbox?: boolean;
   switch?: boolean;
   multi?: boolean;

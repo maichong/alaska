@@ -2,7 +2,7 @@ import TextField from 'alaska-field-text';
 
 export default class CodeField extends TextField {
   static fieldName = 'Code';
-  static viewOptions = ['options'];
+  static viewOptions = ['codeMirrorOptions'];
   static defaultOptions = {
     cell: 'TextFieldCell',
     view: 'CodeFieldView',
