@@ -62,7 +62,7 @@ class FieldGroup extends React.Component<Props, FieldGroupState> {
       let hasAbility = !ability || settings.abilities[ability] || false;
       if (
         (!field.view)
-        || (field.path === '_id' && !isNew)
+        // || (field.path === '_id' && !isNew)
         || (!hasAbility && !abilityDisabled)
         || checkDepends(field.hidden, record)
         || (!settings.superMode && checkDepends(field.super, record))

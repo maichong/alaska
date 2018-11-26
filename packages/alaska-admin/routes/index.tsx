@@ -19,7 +19,7 @@ export default function (router: Router) {
       name: 'viewport',
       content: 'initial-scale=0.8,maximum-scale=0.8,user-scalable=no'
     });
-    ctx.state.headElements.push(<style>{`
+    ctx.state.headElements.push(<style key="admin-loading">{`
 body{background:#eaf0f5}
 .loading{margin-top: 100px;}
 .loading .loading-text{

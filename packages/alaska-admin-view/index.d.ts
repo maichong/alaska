@@ -325,7 +325,6 @@ export interface Service {
 
 export interface Record {
   [path: string]: any;
-  _id: any;
 }
 
 export interface Settings {

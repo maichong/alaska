@@ -7,6 +7,7 @@ export default class AppUpdate extends Model {
   static fields = {
     key: {
       type: String,
+      required: true,
       index: true
     },
     createdAt: {

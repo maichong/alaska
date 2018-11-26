@@ -46,7 +46,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     this.state = {
       id,
       model: null,
-      record: immutable({ _id: '' }),
+      record: immutable({}),
       isNew: id === '_new'
     };
   }
@@ -58,7 +58,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
   componentWillReceiveProps(nextProps: Props) {
     let { match } = this.props;
     if (match.params.id !== nextProps.match.params.id) {
-      this.setState({ record: immutable({ _id: '' }) }, () => {
+      this.setState({ record: immutable({}) }, () => {
         this.init(nextProps);
       });
     } else {
@@ -79,7 +79,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
       if (nextState.isNew) {
         if (!record) {
           record = {} as Record;
-          nextState.record = immutable({ _id: '' });
+          nextState.record = immutable({});
         }
         _.forEach(nextState.model.fields, (filed) => {
           if (typeof record[filed.path] !== 'undefined') {
@@ -173,7 +173,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
       el = this.renderError();
       error = true;
     }
-    let editorTitle = tr(record[model.titleField]) || String(record._id);
+    let editorTitle = record[model.titleField] || String(record._id);
     if (isNew) {
       editorTitle = tr('Create', model.serviceId);
     }
@@ -195,7 +195,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
         <EditorToolBar>
           <Link
             to={`/list/${model.serviceId}/${model.modelName}`}
-          >{tr(model.modelName, model.serviceId)}
+          >{tr(model.label, model.serviceId)}
           </Link>&nbsp;{'>'}&nbsp;
           {editorTitle}
         </EditorToolBar>

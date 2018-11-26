@@ -82,6 +82,20 @@ class AdminService extends Service {
 
           model.fields[path] = field;
         });
+        if (!model.fields._id) {
+          // @ts-ignore
+          model.fields._id = {
+            label: 'ID',
+            path: '_id',
+            plainName: 'string',
+            cell: 'TextFieldCell',
+            view: 'TextFieldView',
+            hidden: '!_id',
+          };
+        }
+        _.defaults(model.fields._id, {
+          fixed: true
+        });
         service.models[modelName] = model;
       });
     });

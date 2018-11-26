@@ -49,9 +49,9 @@ export class Head extends React.Component<{}> {
         <title>{state.documentTitle}</title>
         {state.documentDescription && <meta name="Description" content={state.documentDescription} />}
         {state.headElements}
-        {_.map(state.headMetas, (meta, i) => <meta key={i} {...meta} />)}
-        {_.map(state.headLinks, (link, i) => <link key={i} {...link} />)}
-        {_.map(state.headScripts, (script, i) => <Script key={i} {...script} />)}
+        {_.map(state.headMetas, (meta) => <meta key={Math.random()} {...meta} />)}
+        {_.map(state.headLinks, (link) => <link key={Math.random()} {...link} />)}
+        {_.map(state.headScripts, (script) => <Script key={Math.random()} {...script} />)}
       </head>
     );
   }
@@ -79,7 +79,7 @@ export class BodyScripts extends React.Component<{}> {
   context: any;
   render() {
     const state: ContextState = this.context._documentProps.ctx.state;
-    return _.map(state.bodyScripts, (script, i) => <Script key={i} {...script} />);
+    return _.map(state.bodyScripts, (script) => <Script key={Math.random()} {...script} />);
   }
 }
 
