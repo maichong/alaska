@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import * as checkDepends from 'check-depends';
 import * as Router from 'koa-router';
 import { Context } from 'alaska-http';
 import { Model, Filter } from 'alaska-model';
@@ -43,6 +44,18 @@ export default function (router: Router) {
       query.sort(sort);
     }
 
-    ctx.body = await query;
+    let result = await query;
+
+    result.results = _.map(result.results, (record: Model) => {
+      let json = record.toJSON();
+      _.forEach(model._fields, (field, path) => {
+        if (checkDepends(field.protected, record)) {
+          delete json[path];
+        }
+      });
+      return json;
+    });
+
+    ctx.body = result;
   });
 }

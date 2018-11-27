@@ -1,5 +1,6 @@
 import { createAction, handleActions } from 'redux-actions';
 import * as immutable from 'seamless-immutable';
+import * as _ from 'lodash';
 import {
   AnyRecordMap,
   DetailsState,
@@ -86,7 +87,7 @@ export default handleActions({
     const payload: ApplyDetailsPayload = action.payload;
     let { model, data } = payload;
     let map: AnyRecordMap = state[model] || immutable({});
-    map = map.set(data._id, data);
+    map = map.set(data._id, _.assign({}, data, { id: data._id }));
     return state.set(model, map);
   },
   BATCH_APPLY_DETAILS: (state: DetailsState, action) => {
@@ -94,7 +95,7 @@ export default handleActions({
     const payload: ApplyDetailsPayload[] = action.payload;
     for (let { model, data } of payload) {
       let map: AnyRecordMap = state[model] || immutable({});
-      map = map.set(data._id, data);
+      map = map.set(data._id, _.assign({}, data, { id: data._id }));
       state = state.set(model, map);
     }
     return state;

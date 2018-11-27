@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import * as checkDepends from 'check-depends';
 import { ObjectMap } from 'alaska';
 import { Sled } from 'alaska-sled';
 import { Model } from 'alaska-model';
@@ -54,7 +55,7 @@ export default class Export extends Sled<ActionSledParams, any> {
         }
         continue;
       }
-      if (field.noexport || field.hidden === true) continue;
+      if (field.noexport || field.hidden === true || field.protected === true) continue;
       fields.push(key);
       if (field.label) {
         titles.push(tr.locale(ctx.locale)(field.label, model.service.id));
@@ -83,11 +84,15 @@ export default class Export extends Sled<ActionSledParams, any> {
         .eachAsync(async (record: Model) => {
           let data = [];
           for (let key of fields) {
+            let field = model._fields[key];
             let value = record.get(key);
             if (typeof value === 'undefined' || value === null) {
               value = '';
             }
-            let field = model._fields[key];
+            if (checkDepends(field.protected, record)) {
+              // 字段保护
+              value = '';
+            }
             if (value && field.ref && field.ref.classOfModel) {
               if (Array.isArray(value)) {
                 let labels = [];

@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+import * as checkDepends from 'check-depends';
 import { Sled } from 'alaska-sled';
 import USER from 'alaska-user';
 import service, { ActionSledParams } from '..';
@@ -14,6 +16,14 @@ export default class Create extends Sled<ActionSledParams, any> {
     let ability = model.id + '.create';
     if (!await USER.hasAbility(params.ctx.user, ability, record)) service.error('Access Denied', 403);
     await record.save();
-    return record;
+
+    let json = record.toJSON();
+    _.forEach(model._fields, (field, path) => {
+      if (checkDepends(field.protected, record)) {
+        delete json[path];
+      }
+    });
+
+    return json;
   }
 }

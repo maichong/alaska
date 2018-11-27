@@ -97,7 +97,11 @@ class FieldGroup extends React.Component<Props, FieldGroupState> {
         },
         model,
         record,
-        field: _.assign({ horizontal }, field, { help, label }),
+        field: _.assign({ horizontal }, field, {
+          help,
+          label,
+          fixed: checkDepends(field.fixed, record)
+        }),
         disabled: fieldDisabled,
         locale: settings.locale,
         errorText: errors[field.path],

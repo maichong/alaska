@@ -90,11 +90,11 @@ class AdminService extends Service {
             plainName: 'string',
             cell: 'TextFieldCell',
             view: 'TextFieldView',
-            hidden: '!_id',
+            hidden: '!id'
           };
         }
         _.defaults(model.fields._id, {
-          fixed: true
+          fixed: 'id'
         });
         service.models[modelName] = model;
       });

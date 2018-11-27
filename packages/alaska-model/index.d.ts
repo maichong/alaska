@@ -590,14 +590,20 @@ interface FieldBase {
   defaultValue?: any;
   group?: string;
   ability?: string | AbilityGenerator;
+  // 禁用条件
   disabled?: DependsQueryExpression;
+  // 前端视图隐藏条件
   hidden?: DependsQueryExpression;
+  // admin接口数据保护条件，数据接口不返回指定字段的值，但是前端组件正常显示，可配合 hidden 条件来隐藏前端
   protected?: DependsQueryExpression;
+  // 超级管理员模式
   super?: DependsQueryExpression;
+  // 静态视图条件
   fixed?: DependsQueryExpression;
   horizontal?: boolean;
   nolabel?: boolean;
   noexport?: boolean;
+  // API 接口数据保护
   private?: boolean;
   help?: string;
   cell?: string;
@@ -884,7 +890,8 @@ export class PaginateQuery<M> extends DocumentQuery<PaginateResult<M>, M> {
   page(page: number): this;
 }
 
-export type PaginateResult < M > = {
+// eslint-disable-next-line space-infix-ops
+export type PaginateResult<M> = {
   page: number;
   limit: number;
   total: number;

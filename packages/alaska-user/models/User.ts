@@ -33,7 +33,8 @@ export default class User extends Model {
     password: {
       label: 'Password',
       type: 'password',
-      private: true
+      private: true, // 前端API接口不返回
+      protected: true // admin后台接口不返回
     },
     // TODO: 暂时取消 avatar 字段，等待 alaska-field-image
     // avatar: {

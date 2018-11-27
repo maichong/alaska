@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 import { put } from 'redux-saga/effects';
 import { Action } from 'redux-actions';
-import { LoadListPayload } from 'alaska-admin-view';
 import { actionSuccess, actionFailure } from '../redux/action';
 import api from '../utils/api';
 import { applyDetails, batchApplyDetails } from '../redux/details';

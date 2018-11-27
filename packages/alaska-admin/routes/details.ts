@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import * as checkDepends from 'check-depends';
 import * as Router from 'koa-router';
 import { Context } from 'alaska-http';
 import { Model } from 'alaska-model';
@@ -20,12 +21,19 @@ export default function (router: Router) {
     const model = Model.lookup(modelId) || service.error('Model not found!');
 
     let record = await model.findById(id);
-    if (!record) service.error('Record not found');
+    if (!record) service.error('Record not found', 404);
 
     // 验证资源权限
     const ability = model.id + '.read';
     if (!await USER.hasAbility(ctx.user, ability, record)) service.error('Access Denied', 403);
 
-    ctx.body = await record;
+    let json = record.toJSON();
+    _.forEach(model._fields, (field, path) => {
+      if (checkDepends(field.protected, record)) {
+        delete json[path];
+      }
+    });
+
+    ctx.body = json;
   });
 }
