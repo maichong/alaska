@@ -59,7 +59,7 @@ class LocaleWidget extends React.Component<Props, LocaleWidgetState> {
           toggle={() => this.setState({ localeOpen: !localeOpen })}
         >
           <DropdownToggle color="default">
-            <img src={`/admin/img/locales/${locale}.png`} alt="" />
+            <img src={`img/locales/${locale}.png`} alt="" />
           </DropdownToggle>
           <DropdownMenu>
             {
@@ -68,7 +68,7 @@ class LocaleWidget extends React.Component<Props, LocaleWidgetState> {
                   key={key}
                   onClick={(() => this.handleChange(key))}
                 >
-                  <img src={`/admin/img/locales/${key}.png`} alt="" />
+                  <img src={`img/locales/${key}.png`} alt="" />
                   {tr(key)}
                 </DropdownItem>
               ))

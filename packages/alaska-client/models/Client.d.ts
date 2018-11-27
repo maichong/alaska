@@ -6,6 +6,8 @@ declare class Client extends Model {
   deviceId: string;
   platform: string;
   user: string;
+  expiredAt: Date | null;
+  createdAt: Date;
 }
 
 export default Client;

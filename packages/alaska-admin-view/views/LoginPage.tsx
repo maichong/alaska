@@ -20,7 +20,7 @@ class LoginPage extends React.Component<Props> {
         props={this.props}
       >
         <div className="login-logo">
-          <img alt="" src={loginLogo || '/admin/img/logo_reverse.png'} />
+          <img alt="" src={loginLogo || 'img/logo_reverse.png'} />
         </div>
         <LoginForm />
       </Node>

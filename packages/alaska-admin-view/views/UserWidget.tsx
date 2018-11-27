@@ -49,13 +49,13 @@ class UserWidget extends React.Component<Props, UserWidgetState> {
         tooltip={user.displayName || user.username}
       >
         <li className="user-widget">
-          <img className="user-avatar" src={user.avatar || '/admin/img/avatar.png'} alt="" />
+          <img className="user-avatar" src={user.avatar || 'img/avatar.png'} alt="" />
           <ButtonDropdown
             isOpen={this.state.userOpen}
             toggle={() => this.setState({ userOpen: !userOpen })}
           >
             <DropdownToggle color="default">
-              <img src={user.avatar || '/admin/img/avatar.png'} alt="" />
+              <img src={user.avatar || 'img/avatar.png'} alt="" />
             </DropdownToggle>
             <DropdownMenu>
               <DropdownItem onClick={() => this.handleRefresh()}>

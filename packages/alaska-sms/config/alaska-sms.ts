@@ -1,5 +1,4 @@
 export default {
-  prefix: false,
   /**
      * 短信发送驱动
      */

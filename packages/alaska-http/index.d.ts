@@ -48,6 +48,9 @@ declare module 'koa' {
   export interface Context {
     state: any | ContextState;
   }
+  export interface Request {
+    body: any;
+  }
 }
 
 declare module 'koa-router' {

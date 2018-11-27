@@ -1,5 +1,5 @@
 export default {
-  prefix: '/post',
+  prefix: '',
   services: {
     'alaska-user': {},
     'alaska-admin': {

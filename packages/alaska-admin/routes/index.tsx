@@ -10,8 +10,12 @@ export default function (router: Router) {
       ctx.redirect(ctx.path + '/');
       return;
     }
-    const prefix = ADMIN.config.get('prefix', '/');
     const min = ctx.state.env === 'production' ? '.min' : '';
+    let prefix = ADMIN.config.get('prefix', '');
+
+    if (prefix === '/') {
+      prefix = '';
+    }
 
     ctx.state.documentTitle = 'Alaska admin dashboard';
 

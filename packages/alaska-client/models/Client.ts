@@ -1,7 +1,6 @@
 import { Model } from 'alaska-model';
 import User from 'alaska-user/models/User';
 import * as random from 'string-random';
-import service from '..';
 
 export default class Client extends Model {
   static label = 'Client';
@@ -33,6 +32,15 @@ export default class Client extends Model {
     token: {
       label: 'Token',
       type: String
+    },
+    expiredAt: {
+      label: 'Expired At',
+      type: Date,
+      private: true
+    },
+    createdAt: {
+      label: 'Created At',
+      type: Date
     }
   };
 
@@ -41,10 +49,15 @@ export default class Client extends Model {
   platform: string;
   token: string;
   user: string;
+  expiredAt: Date | null;
+  createdAt: Date;
 
   preSave() {
     if (!this.token) {
-      this.token = random(6, 'ABCDEFGHJKLMNPQRSTUVWXYZ123456789');
+      this.token = random(32);
+    }
+    if (!this.createdAt) {
+      this.createdAt = new Date();
     }
   }
 }

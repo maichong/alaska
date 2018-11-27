@@ -16,6 +16,9 @@ export default class HttpExtension extends Extension {
     let routers: Map<string, Router> = new Map();
 
     main.getRouter = (prefix: string) => {
+      if (prefix === '/') {
+        prefix = '';
+      }
       let router = routers.get(prefix);
       if (!router) {
         router = new Router({

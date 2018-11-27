@@ -1,4 +1,4 @@
 
 export default {
-  prefix: '/client'
+  prefix: ''
 };

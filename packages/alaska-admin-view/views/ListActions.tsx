@@ -124,7 +124,11 @@ class ListActions extends React.Component<Props, ListActionsState> {
       _sort: sort || ''
     }, filters);
     let queryStr = qs.stringify(query);
-    let url = `${location.origin}/admin/action?${queryStr}`;
+    let path = location.pathname;
+    if (path === '/') {
+      path = '';
+    }
+    let url = `${location.origin + path}action?${queryStr}`;
     this.openPostWindow(url);
   };
 

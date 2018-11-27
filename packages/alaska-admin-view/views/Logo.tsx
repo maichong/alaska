@@ -12,8 +12,8 @@ interface Props extends LogoProps {
 class Logo extends React.Component<Props> {
   render() {
     const { logo: propLogo, icon: propIcon } = this.props;
-    let logo = propLogo || '/admin/img/logo.png';
-    let icon = propIcon || '/admin/img/icon.png';
+    let logo = propLogo || 'img/logo.png';
+    let icon = propIcon || 'img/icon.png';
     return (
       <Node
         className="logo"
