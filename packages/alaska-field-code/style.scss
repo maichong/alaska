@@ -1,7 +1,10 @@
 @import "~codemirror/lib/codemirror.css";
-.mixed-field {
-  .react-codemirror2 {
+.code-field {
+  .CodeMirror {
     border: solid 1px $input-border-color;
+    &.CodeMirror-focused {
+      border-color: $input-focus-border-color;
+    }
     &.is-invalid {
       border-color: $form-feedback-invalid-color;
     }
