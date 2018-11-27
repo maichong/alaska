@@ -531,7 +531,7 @@ export default class Model {
        */
       schema.methods.data = function (scope: string | ModelFieldList) {
         let doc: { [key: string]: any } = {
-          id: this.id
+          id: typeof this._id === 'number' ? this._id : this.id
         };
         let fields: ModelFieldList = model.defaultScope;
         if (scope) {
@@ -1048,6 +1048,6 @@ export default class Model {
 
   // eslint-disable-next-line
   constructor(doc?: Object | null, fields?: Object | null, skipId?: boolean) {
-    throw new Error('Can not initialize a Model before init.');
+    throw new Error('Can not new a Model before register.');
   }
 }

@@ -58,8 +58,11 @@ export default class RelationshipField extends Field {
       if (plain) {
         type = plain;
       } else if (ref.fields._id) {
-        let idType: string | FieldDataType | typeof Field = ref.fields._id.type;
-        if (idType) {
+        let idField = ref.fields._id;
+        let idType: string | FieldDataType | typeof Field = idField.type;
+        if (idField.plain) {
+          type = idField.plain;
+        } else if (idType) {
           // eslint-disable-next-line
 
           if (typeof idType === 'string') {
