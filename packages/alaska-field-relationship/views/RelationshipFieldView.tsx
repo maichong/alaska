@@ -37,7 +37,7 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
   }
 
   shouldComponentUpdate(nextProps: FieldViewProps, state: State) {
-    if (nextProps.record !== this.props.record && nextProps.field.fixed) {
+    if (nextProps.record !== this.props.record) {
       if (
         _.find(
           nextProps.field.filters,
@@ -77,23 +77,8 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
       }
       return res;
     }, {});
-    relationQuery({
-      model: field.model,
-      search: keyword,
-      filters
-    }).then((res: any) => {
-      let { results } = res;
-      callback(null, {
-        options: _.map(results || [], (val) => ({
-          label: val[field.modelTitleField] || val.title || val._id,
-          value: val._id
-        }))
-      }, callback);
-    });
-    let relation: any = [];
-    let options: SelectOption[] = [];
     try {
-      relation = await relationQuery({
+      let relation = await relationQuery({
         model: field.model,
         search: keyword,
         filters
@@ -105,12 +90,17 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
         };
         return temp;
       });
-      callback(null, { options });
+      if (callback) {
+        callback(null, { options });
+      } else {
+        this.setState({ options });
+      }
     } catch (error) {
-      callback(error, null);
+      if (callback) {
+        callback(error, null);
+      }
     }
 
-    this.setState({ options });
   };
 
   render() {

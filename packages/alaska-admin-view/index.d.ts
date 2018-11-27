@@ -156,6 +156,7 @@ export type ListsState = immutable.Immutable<{
 export interface CacheData extends PaginateResult<any> {
   filters: Filters | null;
   model: string;
+  time: number;
 }
 
 export type Cache = immutable.Immutable<CacheData>;

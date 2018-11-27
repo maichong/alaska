@@ -806,11 +806,13 @@ export default class Model {
       totalPage: 0,
       previous: 0,
       next: 0,
+      search: '',
       results: []
     };
 
     query.search = function (keyword: string) {
       let filters = model.createFilters(keyword);
+      results.search = keyword;
       return query.where(filters);
     };
 

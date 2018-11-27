@@ -898,6 +898,7 @@ export type PaginateResult<M> = {
   totalPage: number;
   next: number;
   previous: number;
+  search: string;
   results: M[];
 };
 

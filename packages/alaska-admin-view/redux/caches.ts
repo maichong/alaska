@@ -21,7 +21,7 @@ export default handleActions({
     let caches: Cache[] = state[payload.model] || immutable([]);
     let found = false;
     caches = caches.map((cache: Cache) => {
-      if (cache.search === payload.search || _.isEqual(cache.filters, payload.filters)) {
+      if (cache.search === payload.search && _.isEqual(cache.filters, payload.filters)) {
         found = true;
         return payload;
       }
@@ -31,6 +31,10 @@ export default handleActions({
     if (!found) {
       caches = caches.concat([payload]);
     }
+
+    let time = Date.now() - 2 * 60 * 1000;
+
+    caches = caches.filter((cache) => cache.time > time);
 
     return state.set(payload.model, caches);
   }

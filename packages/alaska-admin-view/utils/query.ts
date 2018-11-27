@@ -12,7 +12,7 @@ export default function (options: QueryOptions): Promise<Cache> {
   if (state[options.model]) {
     let caches = state[options.model];
     for (let cache of caches) {
-      if (cache.search === search || _.isEqual(cache.filters, filters)) {
+      if (cache.search === search && _.isEqual(cache.filters, filters)) {
         return Promise.resolve(cache);
       }
     }
@@ -28,6 +28,7 @@ export default function (options: QueryOptions): Promise<Cache> {
   }).then((result) => {
     result.model = options.model;
     result.filters = filters;
+    result.time = Date.now();
     result = immutable(result);
     store.dispatch(applyCache(result));
     return result;
