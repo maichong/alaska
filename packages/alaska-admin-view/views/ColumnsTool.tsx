@@ -52,7 +52,7 @@ class ColumnsTool extends React.Component<Props, ColumnsToolState> {
       columns = model.defaultColumns;
     }
     let items = _.map(model.fields, (field) => {
-      if (field.hidden || !field.cell) return false;
+      if (field.hidden === true || !field.cell) return false;
       if (field.super && !superMode) return false;
       let icon = columns.indexOf(field.path) > -1 ? iconEle : null;
       return (

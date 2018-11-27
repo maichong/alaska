@@ -47,7 +47,7 @@ class DataTableHeader extends React.Component<Props, DataTableHeaderState> {
               let sortIcon = null;
               let handleClick;
               let field: Field = model.fields[key];
-              if (!field || field.hidden || !field.cell) return null;
+              if (!field || field.hidden === true || !field.cell) return null;
               if (field.super && !superMode) return null;
               if (field && !field.nosort && onSort) {
                 if (field.path === sort) {
