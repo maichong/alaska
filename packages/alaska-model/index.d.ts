@@ -460,6 +460,8 @@ export class Model {
   errors: any;
   /** This documents _id. */
   _id: any;
+  id: string;
+
   /** Boolean flag specifying if the document is new. */
   isNew: boolean;
 

@@ -3,11 +3,10 @@ import { UploadMiddlewareOptions, UploadFile } from '.';
 const asyncBusboy = require('async-busboy');
 
 export default function (options: UploadMiddlewareOptions): Function {
-  return function (ctx: Context, next: Function) {
-    if (ctx.method !== 'POST' || typeof ctx.files !== 'undefined') return next();
-    if (!ctx.request.is('multipart/*')) return next();
-    ctx.files = {};
-    return asyncBusboy(ctx.req, options).then((res: any) => {
+  return async function (ctx: Context, next: Function) {
+    if (typeof ctx.files === 'undefined' && ctx.request.is('multipart/*')) {
+      ctx.files = {};
+      const res: any = await asyncBusboy(ctx.req, options);
       const files = res.files;
       const fields = res.fields;
       ctx.files = {};
@@ -24,7 +23,7 @@ export default function (options: UploadMiddlewareOptions): Function {
         }
       });
       ctx.request.body = fields;
-      return next();
-    });
+    }
+    await next();
   };
 }
