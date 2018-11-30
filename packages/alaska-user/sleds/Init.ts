@@ -43,7 +43,13 @@ export default class Init extends Sled<{}, void> {
       RegisterAbility.run({
         id: 'admin',
         title: 'Admin login',
-        service: 'alaska-admin'
+        service: 'alaska-user'
+      }),
+
+      RegisterAbility.run({
+        id: 'root',
+        title: 'Root',
+        service: 'alaska-user'
       }),
 
       SETTINGS.register({
