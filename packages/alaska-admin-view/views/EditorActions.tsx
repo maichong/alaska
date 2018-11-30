@@ -61,6 +61,11 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
           const { model } = this.props;
           let url = '/edit/' + model.serviceId + '/' + model.modelName + '/' + id;
           this.context.router.history.replace(url);
+        } else if (nextProps.action.action === 'remove') {
+          //删除成功跳转
+          const { model } = this.props;
+          let url = '/list/' + model.serviceId + '/' + model.modelName;
+          this.context.router.history.replace(url);
         }
       }
       this.setState({ updateError: false });
