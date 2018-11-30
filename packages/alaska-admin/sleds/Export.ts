@@ -99,7 +99,7 @@ export default class Export extends Sled<ActionSledParams, any> {
                 for (let v of value) {
                   labels.push(await getRefLabel(field.ref, v));
                 }
-                value = value.join(',');
+                value = labels.join(',');
               } else {
                 value = await getRefLabel(field.ref, value);
               }
