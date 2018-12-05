@@ -5,7 +5,7 @@ export class PaymentPlugin extends Plugin {
   static readonly classOfPaymentPlugin: true;
   readonly instanceOfPaymentPlugin: true;
 
-  createParams(payment: Payment): Promise<string>;
+  createParams(payment: Payment): Promise<any>;
 }
 
 export interface CreateParams {

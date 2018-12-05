@@ -1,0 +1,24 @@
+{
+  "name": "alaska-payment-tenpay",
+  "version": "0.13.2",
+  "description": "Tenpay plugin for alaska.",
+  "keywords": [
+    "alaska",
+    "alaska-payment",
+    "alaska-payment-plugin"
+  ],
+  "alaska": "plugin",
+  "alaska-plugin": "alaska-payment",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-payment-tenpay",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "urllib": "^2.31.3",
+    "xml2js": "^0.4.19"
+  },
+  "peerDependencies": {
+    "alaska-payment": "^0.13.2"
+  }
+}
