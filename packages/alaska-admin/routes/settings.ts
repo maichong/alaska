@@ -8,9 +8,12 @@ import { Settings } from 'alaska-admin-view';
 async function getLogo(key: string): Promise<string> {
   let logo = '';
   let pic = await SETTINGS.get(key);
-
-  if (pic && pic.url) {
-    logo = pic.url;
+  if (pic) {
+    if (typeof pic === 'string') {
+      logo = pic;
+    } else if (pic.url) {
+      logo = pic.url;
+    }
   }
   return logo;
 }
