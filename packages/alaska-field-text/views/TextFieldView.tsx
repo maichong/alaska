@@ -6,6 +6,7 @@ import { FieldViewProps } from 'alaska-admin-view';
 export default class TextFieldView extends React.Component<FieldViewProps> {
 
   shouldComponentUpdate(nextProps: FieldViewProps): boolean {
+    if (!nextProps.record || !this.props.record) return true;
     return nextProps.record._id !== this.props.record._id ||
       !shallowEqualWithout(nextProps, this.props, 'record', 'onChange', 'model');
   }

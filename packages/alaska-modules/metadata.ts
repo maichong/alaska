@@ -303,7 +303,7 @@ class ModulesMetadata {
         dir = Path.join(service.path, 'config', dir);
       } else {
         _.find(this.modulesDirs, (mDir) => {
-          let path = Path.join(process.cwd(), mDir, id);
+          let path = Path.join(process.cwd(), mDir, key);
           if (isDirectory.sync(path)) {
             dir = path;
             return true;
