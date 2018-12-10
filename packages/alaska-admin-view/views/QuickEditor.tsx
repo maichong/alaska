@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import * as React from 'react';
 import * as checkDepends from 'check-depends';
 import * as tr from 'grackle';
+import * as immutable from 'seamless-immutable';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import toast from '@samoyed/toast';
@@ -14,7 +15,7 @@ import QuickEditorTitleBar from './QuickEditorTitleBar';
 
 interface QuickEditorState {
   mode: Mode;
-  data?: Record;
+  data: immutable.Immutable<Record>;
   updateError: boolean;
 }
 
@@ -33,12 +34,13 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      data: immutable({}),
       mode: Mode.ONE,
       updateError: false
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.init(this.props);
   }
 
@@ -54,7 +56,7 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
 
     if (mode === Mode.ONE && selected.length > 1) {
       nextState.mode = Mode.MULTI;
-      nextState.data = { _id: '' };
+      nextState.data = immutable({ _id: '' });
     } else if (selected.length === 1 && (!data || selected[0]._id !== data._id)) {
       nextState.data = selected[0];
       nextState.mode = Mode.ONE;
@@ -92,9 +94,8 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
 
   handleChange = (label: string, value: any) => {
     let { data } = this.state;
-    let tmpRecord: Record = _.cloneDeep(data);
-    tmpRecord[label] = value;
-    this.setState({ data: tmpRecord });
+    data = data.set(label, value);
+    this.setState({ data });
   }
 
   handleSave = () => {

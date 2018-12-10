@@ -20,8 +20,7 @@ interface FieldProps extends FieldViewProps {
 }
 
 export default class SelectFieldView extends React.Component<FieldProps, State> {
-
-  componentWillMount() {
+  componentDidMount() {
     this.setState({
       options: this.filter(this.props.record, this.props.field.options)
     });

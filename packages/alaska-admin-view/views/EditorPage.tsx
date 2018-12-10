@@ -24,7 +24,7 @@ import {
 
 interface EditorPageState {
   model: Model | null;
-  record: Record | null;
+  record: immutable.Immutable<Record> | null;
   isNew: boolean;
   id: string;
 }
@@ -78,7 +78,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     if (nextState.model) {
       if (nextState.isNew) {
         if (!record) {
-          record = {} as Record;
+          record = immutable({});
           nextState.record = immutable({});
         }
         _.forEach(nextState.model.fields, (filed) => {
@@ -91,8 +91,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
       } else {
         let serviceRecords = details[nextState.model.id];
         if (serviceRecords) {
-          let recordDetail: Record | null = serviceRecords[id];
-          nextState.record = recordDetail;
+          nextState.record = serviceRecords[id];
         } else {
           nextState.record = null;
         }

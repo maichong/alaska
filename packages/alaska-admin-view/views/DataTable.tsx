@@ -7,6 +7,8 @@ import DataTableRow from './DataTableRow';
 import { DataTableProps, Record } from '..';
 
 interface DataTableState {
+  _selected: immutable.Immutable<Record[]>;
+  _records: immutable.Immutable<Record[]>;
   selectAll: boolean;
   selectList: string[];
 }
@@ -14,21 +16,25 @@ interface DataTableState {
 export default class DataTable extends React.Component<DataTableProps, DataTableState> {
   constructor(props: DataTableProps) {
     super(props);
-    this.state = immutable({
+    this.state = {
+      _selected: props.selected,
+      _records: props.records,
       selectAll: false,
       selectList: []
-    });
+    };
   }
 
-  componentWillReceiveProps(nextProps: DataTableProps) {
+  static getDerivedStateFromProps(nextProps: DataTableProps, prevState: DataTableState) {
     let { selected, records } = nextProps;
-    if (_.isEqual(this.props.selected, selected) || _.isEqual(this.props.records, records)) {
+    if (_.isEqual(prevState._selected, selected) || _.isEqual(prevState._records, records)) {
       let selectList = [];
       selectList = _.map(selected, (item) => String(item._id));
-      this.setState(immutable({
-        selectList,
+      return {
+        _selected: nextProps.selected,
+        _records: nextProps.records,
+        selectList: immutable(selectList),
         selectAll: selectList.length > 0 && selectList.length === records.length
-      }));
+      };
     }
   }
 
@@ -46,7 +52,7 @@ export default class DataTable extends React.Component<DataTableProps, DataTable
   handleSelect = (record: Record, select: boolean) => {
     let { selected, onSelect } = this.props;
     if (!onSelect) return;
-    selected = selected || [];
+    selected = selected || immutable([]);
     let tmpSelect: Record[] = [];
     let lookup = false;
     _.forEach(selected, (item: Record) => {

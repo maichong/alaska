@@ -11,7 +11,8 @@ export default class DateFieldView extends React.Component<FieldViewProps> {
   };
 
   context: any;
-  componentWillMount() {
+
+  componentDidMount() {
     moment.locale(this.context.settings.locale);
   }
 

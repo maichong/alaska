@@ -20,7 +20,7 @@ class Menu extends React.Component<Props, MenuState> {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let { menus } = this.props;
     let hash = window.location.hash;
     let path = hash.split('#').length > 1 ? hash.split('#')[1] : '';

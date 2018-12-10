@@ -231,7 +231,7 @@ export interface ModelRelationship {
 export interface FieldGroup {
   path: string;
   model: Model;
-  record: Record;
+  record: immutable.Immutable<Record>;
   isNew: boolean;
   fields: Field[];
   title?: string;
@@ -475,7 +475,7 @@ export interface FieldViewProps {
   className: string;
   model: Model;
   field: Field;
-  record: Record;
+  record: immutable.Immutable<Record>;
   value: any;
   disabled: boolean;
   errorText: string;
@@ -493,7 +493,7 @@ export interface ListViewProps {
   filters?: Filters;
   sort?: string;
   columns?: string[];
-  selected?: Record[];
+  selected?: immutable.Immutable<Record[]>;
   onSort?: Function;
   onSelect?: Function;
   onActive?: Function;
@@ -506,7 +506,7 @@ export interface ListView extends React.Component<ListViewProps> { }
 export interface EditorViewProps {
   model: Model;
   id: any;
-  record: Record;
+  record: immutable.Immutable<Record>;
   disabled?: boolean;
   onChange: (v: any) => void;
 }
@@ -517,13 +517,13 @@ export interface EditorView extends React.Component<EditorViewProps> { }
 export interface CardViewProps {
   model: Model;
   field: Field;
-  record: Record;
+  record: immutable.Immutable<Record>;
   value: any;
 }
 
 export interface CardView extends React.Component<CardViewProps> {
   model: Model;
-  record: Record;
+  record: immutable.Immutable<Record>;
   selected?: boolean;
   onSelect?: Function | null;
 }
@@ -531,7 +531,7 @@ export interface CardView extends React.Component<CardViewProps> {
 // PreView interface
 export interface PreViewProps {
   model: Model;
-  record: Record;
+  record: immutable.Immutable<Record>;
   columns?: string[];
 }
 
@@ -557,9 +557,9 @@ export interface ActionGroupProps {
   items: ActionMap[];
   model: Model;
   editor?: boolean;
-  selected?: Record[];
-  records?: Record[];
-  record?: Record;
+  selected?: immutable.Immutable<Record[]>;
+  records?: immutable.Immutable<Record[]>;
+  record?: immutable.Immutable<Record>;
   disabled?: boolean;
 }
 
@@ -570,9 +570,9 @@ export interface ActionViewProps {
   link: string;
   disabled?: boolean;
   editor?: boolean;
-  record?: Record;
-  records?: Record[];
-  selected: Record[];
+  record?: immutable.Immutable<Record>;
+  records?: immutable.Immutable<Record[]>;
+  selected: immutable.Immutable<Record[]>;
 }
 
 export interface BodyProps {
@@ -596,8 +596,8 @@ export interface DashboardProps {
 export interface DataTableProps {
   model: Model;
   columns?: string[];
-  selected?: Record[];
-  records: Record[];
+  selected?: immutable.Immutable<Record[]>;
+  records: immutable.Immutable<Record[]>;
   sort?: string;
   onSort?: Function;
   onSelect?: Function;
@@ -615,7 +615,7 @@ export interface DataTableHeaderProps {
 
 export interface DataTableRowProps {
   model: Model;
-  record: Record;
+  record: immutable.Immutable<Record>;
   columns?: string[];
   onActive?: Function;
   selected?: boolean;
@@ -628,19 +628,19 @@ export interface DeniedPageProps {
 export interface EditorProps {
   isNew?: boolean; //是否新建
   model: Model;
-  record: Record;
+  record: immutable.Immutable<Record>;
   onChange: Function;
 }
 
 export interface EditorActionBarProps {
   model: Model;
-  record: Record;
+  record: immutable.Immutable<Record>;
   isNew: boolean;
 }
 
 export interface EditorActionsProps {
   model: Model;
-  record: Record;
+  record: immutable.Immutable<Record>;
   isNew: boolean;
 }
 
@@ -680,12 +680,12 @@ export interface ListProps {
     [key: string]: any;
     search?: string;
   };
-  activated?: Record | null;
+  activated?: immutable.Immutable<Record> | null;
   model: Model;
   filters?: Filters;
   sort?: string;
   columns?: string[];
-  selected?: Record[];
+  selected?: immutable.Immutable<Record[]>;
   onSort?: Function;
   onSelect?: Function;
   onActive?: Function;
@@ -694,8 +694,8 @@ export interface ListProps {
 export interface ListActionBarProps {
   model: Model;
   filters: Filters;
-  records: Array<Record>;
-  selected: Record[];
+  records: immutable.Immutable<Record[]>;
+  selected: immutable.Immutable<Record[]>;
   search: string;
   onSearch: Function;
   sort?: string;
@@ -704,8 +704,8 @@ export interface ListActionBarProps {
 export interface ListActionsProps {
   model: Model;
   filters: Filters;
-  records: Array<Record>;
-  selected: Record[];
+  records: immutable.Immutable<Record[]>;
+  selected: immutable.Immutable<Record[]>;
   sort?: string;
   search?: string;
 }
@@ -781,7 +781,7 @@ export interface NodeProps extends React.HTMLAttributes<any> {
 export interface QuickEditorProps {
   model: Model;
   hidden: boolean;
-  selected: Record[];
+  selected: immutable.Immutable<Record[]>;
   onCannel: (v: any) => void;
 }
 

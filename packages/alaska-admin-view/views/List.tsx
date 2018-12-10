@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import * as immutable from 'seamless-immutable';
 import * as React from 'react';
 import * as tr from 'grackle';
 import { connect } from 'react-redux';
@@ -11,7 +12,7 @@ import { ListProps, Record, State, RecordList } from '..';
 import * as listsRedux from '../redux/lists';
 
 interface ListState {
-  records?: null | Record[];
+  records?: null | immutable.Immutable<Record[]>;
   list?: RecordList<any>;
 }
 
@@ -37,7 +38,7 @@ class List extends React.Component<Props, ListState> {
 
   init = (props: Props, oldProps?: Props) => {
     const { model, lists } = props;
-    let nextState: { records?: null | Record[]; list?: RecordList<any> } = {};
+    let nextState: ListState = {};
     let list = lists[model.id];
     if (list) {
       nextState.records = list.results;

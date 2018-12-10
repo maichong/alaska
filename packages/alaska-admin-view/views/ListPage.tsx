@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
+import * as immutable from 'seamless-immutable';
 import * as tr from 'grackle';
 import * as qs from 'qs';
 import * as _ from 'lodash';
@@ -38,10 +39,10 @@ interface ListPageOptions {
 }
 
 interface ListPageState {
-  records: Record[];
+  records: immutable.Immutable<Record[]>;
   recordTotal: number;
   model: Model | null;
-  selected: Record[];
+  selected: immutable.Immutable<Record[]>;
   activated: Record | null;
   options: ListPageOptions;
   sort: string;
@@ -66,10 +67,10 @@ class ListPage extends React.Component<Props, ListPageState> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      records: [],
+      records: immutable([]),
       recordTotal: 0,
       model: null,
-      selected: [],
+      selected: immutable([]),
       activated: null,
       options: {},
       sort: '',
@@ -79,7 +80,7 @@ class ListPage extends React.Component<Props, ListPageState> {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.init(this.props);
   }
 
@@ -93,7 +94,7 @@ class ListPage extends React.Component<Props, ListPageState> {
     let nextState = {} as ListPageState;
 
     let serviceModels: Service = settings.services[params.service];
-    nextState.records = [];
+    nextState.records = immutable([]);
     nextState.recordTotal = 0;
     if (serviceModels && serviceModels.models) {
       let model = serviceModels.models[params.model] || null;
@@ -107,7 +108,7 @@ class ListPage extends React.Component<Props, ListPageState> {
       }
       nextState.model = model;
       if (!model || !nextState.records.length) {
-        nextState.selected = [];
+        nextState.selected = immutable([]);
         nextState.activated = null;
       }
     }
@@ -222,7 +223,7 @@ class ListPage extends React.Component<Props, ListPageState> {
     });
   };
 
-  handleSelect = (selected: Record[]) => {
+  handleSelect = (selected: immutable.Immutable<Record[]>) => {
     let nextState = {} as ListPageState;
     nextState.selected = selected;
     if (this.state.activated && !selected.length) {
@@ -237,7 +238,7 @@ class ListPage extends React.Component<Props, ListPageState> {
     let { selected } = this.state;
     let nextState = {} as ListPageState;
     if (!selected.length || (selected.length === 1 && selected[0] !== record)) {
-      nextState.selected = [record];
+      nextState.selected = immutable([record]);
     }
     this.setState(nextState);
   };

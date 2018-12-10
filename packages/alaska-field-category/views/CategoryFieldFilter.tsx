@@ -27,7 +27,7 @@ export default class CategoryFieldFilter extends React.Component<FilterViewProps
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.init();
   }
 

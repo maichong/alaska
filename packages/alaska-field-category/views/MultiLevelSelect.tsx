@@ -16,7 +16,7 @@ type State = {
 };
 
 export default class MultiLevelSelect extends React.Component<Props, State> {
-  componentWillMount() {
+  componentDidMount() {
     this.setState({
       levels: [],
       options: [],

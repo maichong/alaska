@@ -9,9 +9,6 @@ export default class DatetimeFieldView extends React.Component<FieldViewProps> {
   static defaultProps = {
     locale: 'zh-CN'
   };
-  componentWillMount() {
-    // moment.locale(this.props.locale);
-  }
 
   shouldComponentUpdate(props: FieldViewProps) {
     return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model');

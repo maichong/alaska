@@ -62,7 +62,9 @@ export default <ConfigData>{
   locales: ['zh-CN', 'en'],
   'alaska-model': {
     mongodb: {
-      uri: 'mongodb://10.10.10.10:27017/alaska-14'
+      uri: 'mongodb://10.10.10.10:27017/alaska-14',
+      options: {
+      }
     }
   },
   'alaska-http': {

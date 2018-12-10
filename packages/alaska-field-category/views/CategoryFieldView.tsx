@@ -23,7 +23,7 @@ export default class CategoryFieldView extends React.Component<FieldViewProps, S
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.init();
   }
 

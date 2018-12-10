@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as tr from 'grackle';
+import * as immutable from 'seamless-immutable';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Node from './Node';
@@ -8,7 +9,7 @@ import * as listsRedux from '../redux/lists';
 import { RelationshipProps, State, RecordList, Record } from '..';
 
 interface RelationshipState {
-  records: Record[];
+  records: immutable.Immutable<Record[]>;
 }
 
 interface Props extends RelationshipProps {
@@ -21,7 +22,7 @@ class Relationship extends React.Component<Props, RelationshipState> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      records: []
+      records: immutable([])
     };
   }
 
@@ -33,14 +34,14 @@ class Relationship extends React.Component<Props, RelationshipState> {
     let { model, from, lists } = nextProps;
     if (!model) return;
     if (from !== this.props.from || model.modelName !== (this.props.model ? this.props.model.modelName : '')) {
-      this.setState({ records: [] }, () => {
+      this.setState({ records: immutable([]) }, () => {
         this.init();
       });
       return;
     }
     let list = lists[model.id];
     if (this.state.records !== list.results) {
-      this.setState({ records: list ? list.results : [] }, () => {
+      this.setState({ records: list ? list.results : immutable([]) }, () => {
         this.init();
       });
     }

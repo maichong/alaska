@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import { HashRouter as Router } from 'react-router-dom';
 import { AppProps, State, Settings, Layout } from 'alaska-admin-view';
-import ModalBus, { alert, confirm } from '@samoyed/modal';
+import ModalContainer from '@samoyed/modal';
 import { ToastContainer } from '@samoyed/toast';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -13,26 +13,16 @@ import Dashboard from './Dashboard';
 import DeniedPage from './DeniedPage';
 import Node from './Node';
 
-interface AppState {
-
-}
-
 interface Props extends AppProps {
   settings: Settings;
   layout: Layout;
   applyLayout: Function;
 }
 
-class App extends React.Component<Props, AppState> {
-
+class App extends React.Component<Props> {
   static childContextTypes = {
     views: PropTypes.object
   };
-
-  constructor(props: Props) {
-    super(props);
-    this.state = {};
-  }
 
   componentDidMount() {
     window.addEventListener('resize', this.handleResize);
@@ -95,7 +85,7 @@ class App extends React.Component<Props, AppState> {
         <ToastContainer
           className="toast-top-right"
         />
-        <ModalBus />
+        <ModalContainer />
       </Node>
     );
   }
