@@ -29,8 +29,6 @@ interface FilterState {
 enum Modes { 'eq' = 1, 'ne' }
 
 export default class RelationshipFieldFilter extends React.Component<FilterViewProps, FilterState> {
-
-  context: any;
   constructor(props: FilterViewProps) {
     super(props);
     let propsValue: Filter = props.value || {};
@@ -91,23 +89,20 @@ export default class RelationshipFieldFilter extends React.Component<FilterViewP
     this.setState({ inverse: !this.state.inverse }, () => this.handleBlur());
   };
 
-  handleSearch = (keyword: string, callback: Function) => {
-    let { field, value } = this.props;
+  handleSearch = (keyword: string) => {
+    let { field } = this.props;
     const ref: string = field.model;
     if (!ref) return;
-    let [refServiceId, refModelName] = ref.split('.');
     relationQuery({
       model: field.model,
       search: keyword,
       ...getFilters(field.filters)
-    }).then((res: any) => {
-      let { results } = res;
-      callback(null, {
-        options: _.map(results || [], (val) => ({
-          label: val[field.modelTitleField] || val.title || val._id,
-          value: val._id
-        }))
-      }, callback);
+    }).then((res) => {
+      let options = _.map(res.results || [], (val) => ({
+        label: val[field.modelTitleField] || val.title || val._id,
+        value: val._id
+      }));
+      this.setState({ options });
     });
   };
 
@@ -130,7 +125,6 @@ export default class RelationshipFieldFilter extends React.Component<FilterViewP
   };
 
   render() {
-    const { t } = this.context;
     let { className, field, onClose } = this.props;
     const {
       value, inverse, error, options
@@ -146,7 +140,7 @@ export default class RelationshipFieldFilter extends React.Component<FilterViewP
             <Select
               className="Select"
               options={options}
-              loadOptions={this.handleSearch}
+              onInputChange={this.handleSearch}
               value={value}
               onChange={this.handleChange}
             />

@@ -21,35 +21,17 @@ interface State {
 export default class RelationshipFieldView extends React.Component<FieldViewProps, State> {
   constructor(props: FieldViewProps) {
     super(props);
-    this.state = {};
-  }
-
-  componentWillReceiveProps(nextProps: FieldViewProps) {
-    // 只有 fixed 字段需要在此组件中加载options
-    if (nextProps.value !== this.props.value && nextProps.field.fixed) {
-      if (_.find(this.state.options, (o) => o.value === nextProps.value)) return;
-      this.setState({ options: [] }, this.handleSearch);
-    }
-    if (!nextProps.field.fixed && this.state.options) {
-      // eslint-disable-next-line
-      this.setState({ options: undefined });
-    }
+    this.state = {
+    };
   }
 
   shouldComponentUpdate(nextProps: FieldViewProps, state: State) {
-    if (nextProps.record !== this.props.record) {
-      if (
-        _.find(
-          nextProps.field.filters,
-          (v) => (_.isString(v) && v[0] === ':' && nextProps.record[v.substr(1)] !== this.props.record[v.substr(1)])
-        )
-      ) {
-        setTimeout(this.handleSearch);
-        return true;
-      }
-    }
     return !shallowEqualWithout(nextProps, this.props, 'record', 'onChange', 'search')
       || this.state.options !== state.options;
+  }
+
+  componentDidMount() {
+    this.handleInput('');
   }
 
   handleChange = (value: any) => {
@@ -66,8 +48,7 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
     }
   };
 
-  handleSearch = async (keyword?: string, callback?: Function) => {
-    keyword = keyword || '';
+  handleInput = (keyword: string) => {
     const { field, record } = this.props;
     if (!field || !field.model) return;
     let filters = _.reduce(field.filters || {}, (res: any, v: any, key: string) => {
@@ -77,12 +58,11 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
       }
       return res;
     }, {});
-    try {
-      let relation = await relationQuery({
-        model: field.model,
-        search: keyword,
-        filters
-      });
+    relationQuery({
+      model: field.model,
+      search: keyword,
+      filters
+    }).then((relation) => {
       let options = _.map(relation.results, (val) => {
         let temp = {
           label: val[field.modelTitleField] || val.title || val._id,
@@ -90,17 +70,8 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
         };
         return temp;
       });
-      if (callback) {
-        callback(null, { options });
-      } else {
-        this.setState({ options });
-      }
-    } catch (error) {
-      if (callback) {
-        callback(error, null);
-      }
-    }
-
+      this.setState({ options });
+    });
   };
 
   render() {
@@ -143,8 +114,6 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
           let opt: any = _.find(options, (o) => o.value === v);
           opts.push(opt || { value: v, label: v });
         });
-      } else {
-        this.handleSearch();
       }
 
       inputElement = <p className="form-control-plaintext">{
@@ -165,7 +134,7 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
           disabled={disabled}
           onChange={this.handleChange}
           options={options}
-          loadOptions={this.handleSearch}
+          onInputChange={this.handleInput}
         />
       );
     }

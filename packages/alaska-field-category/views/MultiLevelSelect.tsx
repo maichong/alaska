@@ -16,21 +16,14 @@ type State = {
 };
 
 export default class MultiLevelSelect extends React.Component<Props, State> {
-  componentDidMount() {
-    this.setState({
-      levels: [],
-      options: [],
-      optionsMap: {}
-    });
-    this.init(this.props);
+  constructor(props: Props) {
+    super(props);
+    // @ts-ignore
+    this.state = {};
   }
 
-  componentWillReceiveProps(props: Props) {
-    this.init(props);
-  }
-
-  init(props: Props) {
-    let options = _.cloneDeep(props.options);
+  static getDerivedStateFromProps(nextProps: Props) {
+    let options = _.cloneDeep(nextProps.options);
     let levels = [];
     let optionsMap: any = {};
     if (!options || !options.length) {
@@ -53,8 +46,8 @@ export default class MultiLevelSelect extends React.Component<Props, State> {
       });
       options = _.filter(options, (o: any) => !o.parent);
 
-      if (props.value) {
-        let value = props.value;
+      if (nextProps.value) {
+        let value = nextProps.value;
         while (value) {
           let option = optionsMap[value];
           if (!option) {
@@ -70,10 +63,10 @@ export default class MultiLevelSelect extends React.Component<Props, State> {
       if (!levels.length) {
         levels.unshift({
           options: _.filter(optionsMap, (o) => !o.parent),
-          value: props.value
+          value: nextProps.value
         });
-      } else if (props.value) {
-        let option = optionsMap[props.value];
+      } else if (nextProps.value) {
+        let option = optionsMap[nextProps.value];
         if (option && option.subs && option.subs.length) {
           levels.push({
             options: option.subs
@@ -81,7 +74,7 @@ export default class MultiLevelSelect extends React.Component<Props, State> {
         }
       }
     }
-    this.setState({ levels, options, optionsMap });
+    return { levels, options, optionsMap };
   }
 
   handleChange = (level: number, value: any) => {

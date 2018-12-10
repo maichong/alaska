@@ -12,6 +12,7 @@ import { FieldViewProps, Field } from 'alaska-admin-view';
 type TypeView = Select | Checkbox | Switch | any;
 
 interface State {
+  _field: Field & { checkbox: boolean; switch: boolean };
   options: SelectOption[];
 }
 
@@ -19,19 +20,36 @@ interface FieldProps extends FieldViewProps {
   field: Field & { checkbox: boolean; switch: boolean };
 }
 
+function filter(record: any, options?: SelectOption[]): SelectOption[] {
+  if (!options || !record || !options.length) {
+    return [];
+  }
+  let res: SelectOption[] = [];
+  _.forEach(options, (opt: SelectOption) => {
+    // if (opt.depends && !checkDepends(opt.depends, record)) return;
+    opt.label = tr(opt.label);
+    res.push(opt);
+  });
+  return res;
+}
+
 export default class SelectFieldView extends React.Component<FieldProps, State> {
-  componentDidMount() {
-    this.setState({
-      options: this.filter(this.props.record, this.props.field.options)
-    });
+  constructor(props: FieldProps) {
+    super(props);
+    this.state = {
+      _field: props.field,
+      options: filter(props.record, props.field.options)
+    };
   }
 
-  componentWillReceiveProps(nextProps: FieldProps) {
-    if (nextProps.field !== this.props.field || nextProps.record !== this.props.record) {
-      this.setState({
-        options: this.filter(nextProps.record, nextProps.field.options)
-      });
+  static getDerivedStateFromProps(nextProps: FieldProps, prevState: State) {
+    let state: Partial<State> = {
+      _field: nextProps.field
+    };
+    if (nextProps.field !== prevState._field) {
+      state.options = filter(nextProps.record, nextProps.field.options);
     }
+    return state;
   }
 
   shouldComponentUpdate(props: FieldViewProps, state: State) {
@@ -45,19 +63,6 @@ export default class SelectFieldView extends React.Component<FieldProps, State> 
     return Object.assign({}, opt, {
       label: tr(opt.label)
     });
-  }
-
-  filter(record: Object, options?: SelectOption[]): SelectOption[] {
-    if (!options || !record || !options.length) {
-      return [];
-    }
-    let res: SelectOption[] = [];
-    _.forEach(options, (opt: SelectOption) => {
-      // if (opt.depends && !checkDepends(opt.depends, record)) return;
-      opt.label = tr(opt.label);
-      res.push(opt);
-    });
-    return res;
   }
 
   render() {
