@@ -1,6 +1,7 @@
 import { createAction, handleActions } from 'redux-actions';
 import * as immutable from 'seamless-immutable';
-import { ActionState } from 'alaska-admin-view';
+import * as _ from 'lodash';
+import { ActionState, ActionRequestPayload } from '..';
 
 export const ACTION_REQUEST = 'ACTION_REQUEST';
 export const ACTION_SUCCESS = 'ACTION_SUCCESS';
@@ -10,27 +11,33 @@ export const ACTION_FAILURE = 'ACTION_FAILURE';
 export const INITIAL_STATE: ActionState = immutable({
   action: '',
   model: '',
-  service: '',
   fetching: false,
-  errorMsg: ''
+  request: '',
+  error: null,
+  records: [],
+  search: '',
+  sort: '',
+  filters: null,
+  body: {},
+  reault: {}
 });
 
-export const actionRequest = createAction(ACTION_REQUEST);
+export const actionRequest = createAction<ActionRequestPayload>(ACTION_REQUEST);
 export const actionSuccess = createAction(ACTION_SUCCESS);
 export const actionFailure = createAction(ACTION_FAILURE);
 
 export default handleActions({
   ACTION_REQUEST: (state, action) => {
-    const payload: {} = action.payload;
-    return state.merge({ fetching: true, errorMsg: '', ...payload });
+    const payload: ActionRequestPayload = action.payload;
+    return INITIAL_STATE.merge(payload).set('fetching', true);
   },
   ACTION_SUCCESS: (state, action) => {
-    const payload: {} = action.payload;
-    return state.merge({ fetching: false, errorMsg: '', ...payload });
+    const payload: any = action.payload;
+    return state.merge({ fetching: false, error: null, reault: payload });
   },
   ACTION_FAILURE: (state, action) => {
     // @ts-ignore
     const payload: Error = action.payload;
-    return state.merge({ errorMsg: payload.message });
+    return state.merge({ error: payload });
   }
 }, INITIAL_STATE);

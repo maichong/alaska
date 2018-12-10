@@ -32,12 +32,12 @@ class LoginForm extends React.Component<Props, LoginFormState> {
     };
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  static getDerivedStateFromProps(nextProps: Props) {
     let newState = { errorMsg: '' };
-    if (nextProps.login.errorMsg) {
-      newState.errorMsg = nextProps.login.errorMsg;
+    if (nextProps.login.error) {
+      newState.errorMsg = nextProps.login.error.message;
     }
-    this.setState(newState);
+    return newState;
   }
 
   handleUsername = (e: any) => {

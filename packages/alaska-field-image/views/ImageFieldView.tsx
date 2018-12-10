@@ -23,12 +23,13 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
     };
   }
 
-  componentWillReceiveProps(nextProps: FieldViewProps) {
+  static getDerivedStateFromProps(nextProps: FieldViewProps, prevState: State) {
     if (typeof nextProps.errorText !== 'undefined') {
-      this.setState({
+      return {
         errorText: nextProps.errorText
-      });
+      };
     }
+    return null;
   }
 
   shouldComponentUpdate(props: FieldViewProps, state: State) {

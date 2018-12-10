@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import { confirm } from '@samoyed/modal';
 import toast from '@samoyed/toast';
 import { ObjectMap } from 'alaska';
-import { EditorActionsProps, State, Settings } from '..';
+import { EditorActionsProps, State, Settings, ActionState, ActionRequestPayload } from '..';
 import ActionGroup from './ActionGroup';
 import * as ActionRedux from '../redux/action';
 
@@ -22,14 +22,15 @@ interface ActionMap {
 }
 
 interface EditorActionsState {
-  updateError: boolean;
+  request?: string;
+  redirect?: string;
 }
 
 interface Props extends EditorActionsProps {
   superMode: boolean;
   settings?: Settings;
-  actionRequest: Function;
-  action: { errorMsg: string; action: string; };
+  actionRequest: (req: ActionRequestPayload) => any;
+  action: ActionState;
 }
 
 class EditorActions extends React.Component<Props, EditorActionsState> {
@@ -41,34 +42,38 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      updateError: false
     };
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    if (this.state.updateError) {
+  static getDerivedStateFromProps(nextProps: Props, prevState: EditorActionsState) {
+    const { action, model } = nextProps;
+    if (prevState.request && prevState.request === action.request && !action.fetching) {
       let title = nextProps.action.action || 'action';
-      if (nextProps.action && nextProps.action.errorMsg) {
-        //不定义any，ts会报错
-        let error: any = nextProps.action.errorMsg;
-        toast(tr(error), tr(`${_.upperFirst(title)} Failure`), { type: 'error' });
+      if (action.error) {
+        toast(tr(action.error.message), tr(`${_.upperFirst(title)} Failure`), { type: 'error' });
+        return { request: '' };
       } else {
         toast(tr(`${title} success!`), tr(`${title}`), { type: 'success' });
         //创建成功跳转
         // @ts-ignore action里面会包含修改的信息ID
-        let id = nextProps.action ? nextProps.action._id : '';
+        let id = _.get(action, 'result._id');
+        let redirect;
         if (nextProps.isNew && nextProps.action && id) {
-          const { model } = this.props;
-          let url = '/edit/' + model.serviceId + '/' + model.modelName + '/' + id;
-          this.context.router.history.replace(url);
+          redirect = '/edit/' + model.serviceId + '/' + model.modelName + '/' + id;
         } else if (nextProps.action.action === 'remove') {
           //删除成功跳转
-          const { model } = this.props;
-          let url = '/list/' + model.serviceId + '/' + model.modelName;
-          this.context.router.history.replace(url);
+          redirect = '/list/' + model.serviceId + '/' + model.modelName;
         }
+        return { request: '', redirect };
       }
-      this.setState({ updateError: false });
+    }
+    return null;
+  }
+
+  componentDidUpdate() {
+    let redirect = this.state.redirect;
+    if (redirect) {
+      this.context.router.history.replace(redirect);
     }
   }
 
@@ -98,13 +103,15 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
         // eslint-disable-next-line
         eval(config.script.substr(3));
       } else {
+        let request = String(Math.random());
         actionRequest({
           model: model.serviceId + '.' + model.modelName,
           action,
+          request,
           records: !isNew && record._id ? [record._id] : [],
           body: record
         });
-        this.setState({ updateError: true });
+        this.setState({ request });
       }
 
       if (config.post && config.post.substr(0, 3) === 'js:') {

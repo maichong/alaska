@@ -204,7 +204,10 @@ export class Driver<O extends DriverOptions, D> {
   destroy(): void;
 }
 
-export interface ObjectMap<T>{
+// eslint-disable-next-line space-infix-ops
+export type Omit<T, U> = Pick<T, Exclude<keyof T, keyof U>>;
+
+export interface ObjectMap<T> {
   [key: string]: T;
 }
 

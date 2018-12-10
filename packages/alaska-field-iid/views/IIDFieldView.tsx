@@ -5,6 +5,7 @@ import * as shallowEqualWithout from 'shallow-equal-without';
 import { FieldViewProps } from 'alaska-admin-view';
 
 interface State {
+  _value?: any;
   display: number;
 }
 
@@ -15,16 +16,19 @@ export default class IIDFieldView extends React.Component<FieldViewProps, State>
     super(props);
     let { value } = props;
     this.state = {
+      _value: value,
       display: parseInt(value)
     };
   }
 
-  componentWillReceiveProps(nextProps: FieldViewProps) {
-    let newState = {} as State;
-    if (typeof nextProps.value !== 'undefined' || typeof nextProps.field.default === 'undefined') {
-      newState.display = parseInt(nextProps.value);
+  static getDerivedStateFromProps(nextProps: FieldViewProps, prevState: State) {
+    if (nextProps.value !== prevState._value) {
+      return {
+        _value: nextProps.value,
+        display: parseInt(nextProps.value)
+      };
     }
-    this.setState(newState);
+    return null;
   }
 
   shouldComponentUpdate(props: FieldViewProps, state: State) {

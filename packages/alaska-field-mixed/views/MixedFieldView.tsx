@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import 'codemirror/mode/javascript/javascript';
 
 interface State {
+  _value?: any;
   text: string;
   hasError: boolean;
 }
@@ -14,17 +15,21 @@ export default class MixedFieldView extends React.Component<FieldViewProps, Stat
   constructor(props: FieldViewProps) {
     super(props);
     this.state = {
+      _value: props.value,
       text: JSON.stringify(props.value, null, 4),
       hasError: false
     };
   }
 
-  componentWillReceiveProps(props: FieldViewProps) {
-    if (typeof props.value !== 'undefined') {
-      this.setState({
-        text: JSON.stringify(props.value, null, 4)
-      });
+  static getDerivedStateFromProps(nextProps: FieldViewProps, prevState: State) {
+    console.log('getDerivedStateFromProps', nextProps);
+    if (!_.isEqual(nextProps.value, prevState._value)) {
+      return {
+        _value: nextProps.value,
+        text: JSON.stringify(nextProps.value, null, 4)
+      };
     }
+    return null;
   }
 
   shouldComponentUpdate(props: FieldViewProps, state: State) {
@@ -47,6 +52,7 @@ export default class MixedFieldView extends React.Component<FieldViewProps, Stat
         state.hasError = true;
       }
     }
+    console.log('setState', state);
     this.setState(state);
   };
 

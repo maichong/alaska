@@ -32,17 +32,17 @@ export const logout = createAction(LOGOUT);
 
 // 初始state
 export const INITIAL_STATE: LoginState = immutable({
-  errorMsg: ''
+  error: null
 });
 
 export default handleActions({
-  LOGIN: (state) => state.set('errorMsg', ''),
+  LOGIN: (state) => state.set('error', null),
   LOGIN_FAILURE: (state, action) => {
     // @ts-ignore
     const payload: Error = action.payload;
-    return state.merge({ errorMsg: payload.message });
+    return state.merge({ error: payload });
   },
   LOGOUT_SUCCESS: () => INITIAL_STATE,
-  LOGIN_SUCCESS: (state) => state.merge({ errorMsg: '' }),
+  LOGIN_SUCCESS: (state) => state.set('error', null),
   LOGOUT: () => INITIAL_STATE
 }, INITIAL_STATE);

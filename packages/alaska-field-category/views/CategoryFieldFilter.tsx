@@ -6,6 +6,7 @@ import { FilterViewProps } from 'alaska-admin-view';
 import relationQuery from 'alaska-admin-view/utils/query';
 
 interface State {
+  _value?: any;
   value: any;
   inverse: boolean;
   error: string | boolean;
@@ -15,30 +16,32 @@ interface State {
 export default class CategoryFieldFilter extends React.Component<FilterViewProps, State> {
   constructor(props: FilterViewProps) {
     super(props);
-    let value: any = props.value || {};
-    if (typeof value !== 'object') {
-      value = { value };
-    }
     this.state = {
-      value: value.value,
-      inverse: value.inverse === true || value.inverse === 'true',
-      error: typeof value.value === 'undefined',
+      value: '',
+      inverse: false,
+      error: false,
       options: []
     };
   }
 
-  componentDidMount() {
-    this.init();
-  }
-
-  componentWillReceiveProps(nextProps: FilterViewProps) {
-    let value: any = nextProps.value || {};
-    if (nextProps.value !== this.props.value) {
+  static getDerivedStateFromProps(nextProps: FilterViewProps, prevState: State) {
+    if (nextProps.value !== prevState._value) {
+      let value: any = nextProps.value || {};
       if (typeof value !== 'object') {
         value = { value };
       }
-      this.setState(value);
+      return {
+        _value: nextProps.value,
+        value: value.value,
+        inverse: value.inverse === true || value.inverse === 'true',
+        error: typeof value.value === 'undefined'
+      };
     }
+    return null;
+  }
+
+  componentDidMount() {
+    this.init();
   }
 
   async init() {

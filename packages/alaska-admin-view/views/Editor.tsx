@@ -3,52 +3,50 @@ import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
 import * as React from 'react';
 import Node from './Node';
-import { EditorProps, Field, FieldGroup as FieldGroupType } from '..';
+import { EditorProps, FieldGroup as FieldGroupType } from '..';
 import FieldGroup from './FieldGroup';
 
 type Errors = immutable.Immutable<{
   [key: string]: string;
-}
-  >;
+}>;
+
 interface EditorState {
+  _record?: any;
   errors: Errors;
+}
+
+function checkErrors(props?: EditorProps, errors?: Errors | null): Errors {
+  const { model, record } = props;
+  errors = errors || immutable({});
+  _.forEach(model.fields, (field, key) => {
+    if (field.required && !record[key]) {
+      let value = tr('This field is required!');
+      errors = errors.set(key, value);
+    } else if (field.required && typeof record[key] === 'object' && !_.size(record[key])) {
+      let value = tr('This field is required!');
+      errors = errors.set(key, value);
+    } else if (errors[key]) {
+      errors = errors.without(key);
+    }
+  });
+  return errors;
 }
 
 export default class Editor extends React.Component<EditorProps, EditorState> {
   constructor(props: EditorProps) {
     super(props);
-    let errors = this.checkErrors(props, null);
     this.state = {
-      errors
+      errors: immutable({})
     };
   }
 
-  componentWillReceiveProps(nextProps: EditorProps) {
-    const { errors: stateError } = this.state;
-    if (!_.isEqual(nextProps.record, this.props.record) || nextProps.isNew) {
-      let errors = this.checkErrors(nextProps, stateError);
-      this.setState({ errors });
+  static getDerivedStateFromProps(nextProps: EditorProps, prevState: EditorState) {
+    const { errors: stateError } = prevState;
+    if (nextProps.record !== prevState._record) {
+      let errors = checkErrors(nextProps, stateError);
+      return { errors };
     }
-  }
-
-  checkErrors(props?: EditorProps, errors?: Errors | null) {
-    if (typeof (props) === 'undefined') {
-      props = this.props;
-    }
-    const { model, record } = props;
-    errors = errors || immutable({});
-    _.forEach(model.fields, (field, key) => {
-      if (field.required && !record[key]) {
-        let value = tr('This field is required!');
-        errors = errors.set(key, value);
-      } else if (field.required && typeof record[key] === 'object' && !_.size(record[key])) {
-        let value = tr('This field is required!');
-        errors = errors.set(key, value);
-      } else if (errors[key]) {
-        errors = errors.without(key);
-      }
-    });
-    return errors;
+    return null;
   }
 
   reduceGroups() {

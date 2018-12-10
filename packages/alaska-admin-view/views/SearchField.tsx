@@ -3,30 +3,36 @@ import Node from './Node';
 import { SearchFieldProps } from '..';
 
 interface SearchFieldState {
-  search: string;
+  _value: string;
+  input: string;
 }
 
 export default class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
   constructor(props: SearchFieldProps) {
     super(props);
     this.state = {
-      search: props.value || ''
+      _value: props.value,
+      input: props.value || ''
     };
   }
 
-  componentWillReceiveProps(props: SearchFieldProps) {
-    if (props.value !== this.state.search) {
-      this.setState({ search: props.value });
+  static getDerivedStateFromProps(nextProps: SearchFieldProps, prevState: SearchFieldState) {
+    if (nextProps.value !== prevState._value && nextProps.value !== prevState.input) {
+      return {
+        _value: nextProps.value,
+        search: nextProps.value
+      };
     }
+    return null;
   }
 
   handleChange = (event: any) => {
-    let search = event.target.value;
-    this.setState({ search });
+    let input = event.target.value;
+    this.setState({ input });
   };
 
   handleBlur = () => {
-    let search = this.state.search.trim();
+    let search = this.state.input.trim();
     this.props.onChange(search);
   };
 
@@ -37,7 +43,7 @@ export default class SearchField extends React.Component<SearchFieldProps, Searc
   };
 
   handleClear = () => {
-    this.setState({ search: '' });
+    this.setState({ input: '' });
     if (this.props.value) {
       this.props.onChange('');
     }
@@ -49,13 +55,13 @@ export default class SearchField extends React.Component<SearchFieldProps, Searc
         <input
           className="form-control"
           type="search"
-          value={this.state.search}
+          value={this.state.input}
           onChange={this.handleChange}
           onBlur={this.handleBlur}
           onKeyPress={this.handleKeyPress}
           placeholder={this.props.placeholder}
         />
-        {this.state.search ?
+        {this.state.input ?
           <div className="search-clear" onClick={this.handleClear}>
             <i className="fa fa-close" />
           </div> : null

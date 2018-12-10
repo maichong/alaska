@@ -6,6 +6,8 @@ import * as shallowEqualWithout from 'shallow-equal-without';
 import { FieldViewProps } from 'alaska-admin-view';
 
 interface State {
+  _value?: any;
+  focused?: boolean;
   display: string;
 }
 
@@ -14,24 +16,28 @@ export default class NumberFieldView extends React.Component<FieldViewProps, Sta
 
   constructor(props: FieldViewProps) {
     super(props);
-    let { value, field } = props;
+    let { value } = props;
     this.state = {
-      display: field.format ? numeral(value).format(field.format) : value
+      display: value
     };
   }
 
-  componentWillReceiveProps(nextProps: FieldViewProps) {
-    let newState = {} as State;
-    if (typeof nextProps.value !== 'undefined' || typeof nextProps.field.default === 'undefined') {
-      if (this.focused || !nextProps.field.format) {
+  static getDerivedStateFromProps(nextProps: FieldViewProps, prevState: State) {
+    if (nextProps.value !== prevState._value) {
+      if (prevState.focused || !nextProps.field.format) {
         //正在输入
-        newState.display = nextProps.value;
-      } else {
-        //不在输入状态
-        newState.display = numeral(nextProps.value).format(this.props.field.format);
+        return {
+          _value: nextProps.value,
+          display: nextProps.value
+        };
       }
+      //不在输入状态
+      return {
+        _value: nextProps.value,
+        display: numeral(nextProps.value).format(nextProps.field.format)
+      };
     }
-    this.setState(newState);
+    return null;
   }
 
   shouldComponentUpdate(props: FieldViewProps, state: State) {

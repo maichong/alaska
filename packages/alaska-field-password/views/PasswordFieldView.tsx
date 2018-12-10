@@ -4,6 +4,7 @@ import * as shallowEqualWithout from 'shallow-equal-without';
 import { FieldViewProps } from 'alaska-admin-view';
 
 interface State {
+  _record: any;
   value1: string;
   value2: string;
   errorText: string;
@@ -16,6 +17,7 @@ export default class PasswordFieldView extends React.Component<FieldViewProps, S
   constructor(props: FieldViewProps) {
     super(props);
     this.state = {
+      _record: props.record,
       value1: '',
       value2: '',
       errorText: ''
@@ -24,13 +26,15 @@ export default class PasswordFieldView extends React.Component<FieldViewProps, S
     this.handleChange2 = this.handleChange.bind(this, 2);
   }
 
-  componentWillReceiveProps(nextProps: FieldViewProps) {
-    if (this.props.record && nextProps.record && nextProps.record._id !== this.props.record._id) {
-      this.setState({
-        value1: '',
-        value2: ''
-      });
+  static getDerivedStateFromProps(nextProps: FieldViewProps, prevState: State) {
+    let state: Partial<State> = {
+      _record: nextProps.record
+    };
+    if (nextProps.record && nextProps.record && nextProps.record._id !== prevState._record._id) {
+      state.value1 = '';
+      state.value2 = '';
     }
+    return state;
   }
 
   shouldComponentUpdate(nextProps: FieldViewProps, state: State) {
@@ -43,7 +47,7 @@ export default class PasswordFieldView extends React.Component<FieldViewProps, S
       || !this.state.value1
       || !this.state.value2
       || this.state.value1 !== this.state.value2
-      || !shallowEqualWithout(state, this.state);
+      || !shallowEqualWithout(state, this.state, '_record');
   }
 
   getError(): string {

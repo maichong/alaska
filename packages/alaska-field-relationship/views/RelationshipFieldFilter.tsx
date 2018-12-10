@@ -19,70 +19,53 @@ function getFilters(filters?: Object) {
 }
 
 interface FilterState {
+  _value: any;
   value: SelectValue;
   inverse: boolean;
   error: boolean;
   options: SelectOption[];
 }
 
-// 1 等于
-enum Modes { 'eq' = 1, 'ne' }
-
 export default class RelationshipFieldFilter extends React.Component<FilterViewProps, FilterState> {
   constructor(props: FilterViewProps) {
     super(props);
-    let propsValue: Filter = props.value || {};
-    let mode: Modes = Modes.eq;
-    let value: FilterValue = '';
-    let inverse: boolean = false;
-    if (propsValue && typeof propsValue === 'object') {
-      let condition: FilterObject = propsValue as FilterObject;
-      if (condition.$eq) {
-        value = condition.$eq.toString();
-      } else if (condition.$ne) {
-        value = condition.$ne.toString();
-        inverse = true;
-      }
-    }
-    let error = false;
-    if (!value) {
-      error = true;
-    }
     this.state = {
-      value: value || '',
-      inverse,
-      error: error,
+      _value: '',
+      value: '',
+      inverse: false,
+      error: false,
       options: []
     };
   }
 
-  componentWillReceiveProps(nextProps: FilterViewProps) {
-    let { value } = nextProps;
-    if (value !== this.props.value) {
-      let propsValue: Filter = nextProps.value || {};
-      let mode: Modes = Modes.eq;
-      let value: FilterValue = '';
-      let inverse: boolean = false;
-      if (propsValue && typeof propsValue === 'object') {
-        let condition: FilterObject = propsValue as FilterObject;
+  static getDerivedStateFromProps(nextProps: FilterViewProps, prevState: FilterState) {
+    if (nextProps.value !== prevState._value) {
+      let value: SelectValue;
+      let inverse = false;
+      let error = false;
+      if (nextProps.value && typeof nextProps.value === 'object') {
+        let condition: FilterObject = nextProps.value as FilterObject;
         if (condition.$eq) {
           value = condition.$eq.toString();
         } else if (condition.$ne) {
           value = condition.$ne.toString();
           inverse = true;
         }
+      } else {
+        // @ts-ignore
+        value = nextProps.value;
       }
-      let error = false;
       if (!value) {
         error = true;
       }
-      // console.log('=======value', value);
-      this.setState({
-        value: value,
+      return {
+        _value: nextProps.value,
+        value,
         inverse,
-        error: error
-      });
+        error
+      };
     }
+    return null;
   }
 
   handleInverse = () => {

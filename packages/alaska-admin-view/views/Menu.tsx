@@ -20,29 +20,25 @@ class Menu extends React.Component<Props, MenuState> {
     };
   }
 
-  componentDidMount() {
-    let { menus } = this.props;
-    let hash = window.location.hash;
-    let path = hash.split('#').length > 1 ? hash.split('#')[1] : '';
-    if (path) {
-      _.forEach(menus, (menu) => {
-        if (path === menu.link) {
-          this.setState({ opendId: menu.id });
-        }
-      });
+  static getDerivedStateFromProps(nextProps: Props, prevState: MenuState) {
+    if (!nextProps.opened && prevState.opendId) {
+      return { opendId: '' };
     }
-  }
 
-  componentWillReceiveProps(nextProps: Props) {
-    const { opened } = nextProps;
-    if (!opened) {
-      this.setState({ opendId: '' });
+    let { menus } = nextProps;
+    let path = window.location.hash.substr(1);
+    if (path) {
+      let menu = _.find(menus, (menu) => path === menu.link);
+      if (menu) {
+        return { openId: menu.id };
+      }
     }
+    return null;
   }
 
   handleClick = (menuId: string, opened: boolean) => {
     const { layout, onChange, opened: propOpened } = this.props;
-    const { opendId } = this.state;
+    // const { opendId } = this.state;
     // if (layout === 'full' && opendId === menuId) {
     //   menuId = '';
     // }

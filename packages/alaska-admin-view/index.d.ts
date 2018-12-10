@@ -80,10 +80,27 @@ export type UserState = immutable.Immutable<{
 export type ActionState = immutable.Immutable<{
   action: string;
   model: string;
-  service: string;
   fetching: boolean;
-  errorMsg: string;
+  request: string;
+  error: Error | null;
+  records: Record[];
+  search: string;
+  sort: string;
+  filters: any;
+  body: any;
+  reault: any;
 }>;
+
+export interface ActionRequestPayload {
+  action: string;
+  model: string;
+  request: string;
+  records?: Record[];
+  search?: string;
+  sort?: string;
+  filters?: any;
+  body?: any;
+}
 
 // details
 
@@ -176,7 +193,7 @@ export interface LoginPayload {
 }
 
 export type LoginState = immutable.Immutable<{
-  errorMsg: string;
+  error: Error | null;
 }>;
 
 // admin前端定义，和alaska-model后端不同

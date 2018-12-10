@@ -36,6 +36,7 @@ export default class DataTable extends React.Component<DataTableProps, DataTable
         selectAll: selectList.length > 0 && selectList.length === records.length
       };
     }
+    return null;
   }
 
   handleSelectAll = () => {

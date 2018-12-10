@@ -8,12 +8,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import toast from '@samoyed/toast';
 import { confirm } from '@samoyed/modal';
-import { ListActionsProps, State, Settings } from '..';
+import { ListActionsProps, State, Settings, ActionState, ActionRequestPayload } from '..';
 import ActionGroup from './ActionGroup';
 import * as ActionRedux from '../redux/action';
 
 interface ListActionsState {
-  updateError: boolean;
+  request?: string;
 }
 
 interface ActionMap {
@@ -28,30 +28,28 @@ interface Props extends ListActionsProps {
   settings?: Settings;
   superMode: boolean;
   locale: string;
-  actionRequest: Function;
-  action: { errorMsg: string; action: string; };
+  actionRequest: (req: ActionRequestPayload) => any;
+  action: ActionState;
 }
 
 class ListActions extends React.Component<Props, ListActionsState> {
   constructor(props: Props) {
     super(props);
-    this.state = {
-      updateError: false
-    };
+    this.state = {};
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    if (this.state.updateError) {
-      let title = nextProps.action.action || 'action';
-      if (nextProps.action && nextProps.action.errorMsg) {
-        //不定义any，ts会报错
-        let error: any = nextProps.action.errorMsg;
-        toast(tr(error), tr(`${_.upperFirst(title)} Failure`), { type: 'error' });
+  static getDerivedStateFromProps(nextProps: Props, prevState: ListActionsState) {
+    let { action } = nextProps;
+    if (prevState.request && action.request === prevState.request && !action.fetching) {
+      let title = nextProps.action.action;
+      if (nextProps.action.error) {
+        toast(tr(nextProps.action.error.message), tr(`${_.upperFirst(title)} Failure`), { type: 'error' });
       } else {
         toast(tr(`${title} success!`), tr(`${title}`), { type: 'success' });
       }
-      this.setState({ updateError: false });
+      return { request: '' };
     }
+    return null;
   }
 
   handleAction = async (action: string) => {
@@ -74,9 +72,11 @@ class ListActions extends React.Component<Props, ListActionsState> {
         // eslint-disable-next-line
         eval(config.script.substr(3));
       } else {
+        let request = String(Math.random());
         let selecteds = _.map(selected, (item) => item._id);
         actionRequest({
-          model: model.serviceId + '.' + model.modelName,
+          request,
+          model: model.id,
           records: selecteds,
           action,
           search: search || '',
@@ -84,7 +84,7 @@ class ListActions extends React.Component<Props, ListActionsState> {
           filters,
           body: {}
         });
-        this.setState({ updateError: true });
+        this.setState({ request });
       }
       if (config.post && config.post.substr(0, 3) === 'js:') {
         // eslint-disable-next-line

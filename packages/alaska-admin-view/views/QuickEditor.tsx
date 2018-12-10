@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import toast from '@samoyed/toast';
 import Node from './Node';
 import Editor from './Editor';
-import { QuickEditorProps, Record, State } from '..';
+import { QuickEditorProps, Record, State, ActionState } from '..';
 import * as ActionRedux from '../redux/action';
 import QuickEditorActionBar from './QuickEditorActionBar';
 import QuickEditorTitleBar from './QuickEditorTitleBar';
@@ -23,7 +23,7 @@ enum Mode { 'ONE', 'MULTI' }
 
 interface Props extends QuickEditorProps {
   actionRequest: Function;
-  action: { errorMsg: string; action: string; };
+  action: ActionState;
 }
 
 class QuickEditor extends React.Component<Props, QuickEditorState> {
@@ -40,41 +40,28 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
     };
   }
 
-  componentDidMount() {
-    this.init(this.props);
-  }
+  static getDerivedStateFromProps(nextProps: Props, prevState: QuickEditorState) {
+    const { selected, action } = nextProps;
 
-  componentWillReceiveProps(nextProps: Props) {
-    this.init(nextProps);
-  }
+    let nextState: Partial<QuickEditorState> = {};
 
-  init(props: Props) {
-    const { selected, action } = props;
-
-    const { data, mode } = this.state;
-    let nextState: QuickEditorState = {} as QuickEditorState;
-
-    if (mode === Mode.ONE && selected.length > 1) {
+    if (prevState.mode === Mode.ONE && selected.length > 1) {
       nextState.mode = Mode.MULTI;
       nextState.data = immutable({ _id: '' });
-    } else if (selected.length === 1 && (!data || selected[0]._id !== data._id)) {
+    } else if (selected.length === 1 && (!prevState.data || selected[0]._id !== prevState.data._id)) {
       nextState.data = selected[0];
       nextState.mode = Mode.ONE;
     }
-    if (this.state.updateError) {
+    if (prevState.updateError) {
       let title = action.action || 'action';
-      if (action && action.errorMsg) {
-        //不定义any，ts会报错
-        let error: any = action.errorMsg;
-        toast(tr(error), tr(`${_.upperFirst(title)} Failure`), { type: 'error' });
+      if (action && action.error) {
+        toast(tr(action.error.message), tr(`${_.upperFirst(title)} Failure`), { type: 'error' });
       } else {
         toast(tr(`${title} success!`), tr(`${title}`), { type: 'success' });
       }
       nextState.updateError = false;
     }
-    if (_.size(nextState)) {
-      this.setState(nextState);
-    }
+    return nextState;
   }
 
   canEdit = () => {
