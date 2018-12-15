@@ -4,7 +4,7 @@ declare class Banner extends Model {
   _id: string;
   title: string;
   pic: Object;
-  position: string;
+  place: string;
   action: string;
   url: string;
   sort: number;

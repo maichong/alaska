@@ -1,30 +1,29 @@
 import * as _ from 'lodash';
 import * as minimatch from 'minimatch';
-import { MainService, NormalError } from 'alaska';
-import {
-  CaptchaMiddlewareOptions,
-} from 'alaska-middleware-captcha';
+import { MainService } from 'alaska';
 import Captcha from 'alaska-captcha';
 import { Context } from 'alaska-http';
 import { Middleware } from 'koa';
+import { CaptchaMiddlewareOptions } from '.';
 
 export default function (options: CaptchaMiddlewareOptions, main: MainService): Middleware {
+  if (!options || !options.paths || !_.isObject(options.paths)) {
+    throw new Error('CaptchaService middleware \'paths\' error');
+  }
+  // 获取keys为paths
+  let paths = _.keys(options.paths);
+  if (!paths.length) throw new Error('CaptchaService middleware \'paths\' can not empty');
   return async function (ctx: Context, next: Function): Promise<void> {
     if (!main.services || !main.services['alaska-captcha']) {
       await next();
       return;
     }
-    if (!options || !options.paths || !_.isObject(options.paths)) {
-      throw new Error('CaptchaService middleware \'paths\' error');
-    }
-    let paths = _.keys(options.paths);//获取keys为paths
-    if (!paths.length) throw new Error('CaptchaService middleware \'paths\' can not empty');
-    let path = _.find(paths, (item) => minimatch(ctx.url, item));
+    let path = _.find(paths, (item) => minimatch(ctx.path, item));
     if (!path) {
       await next();
       return;
     }
-    let params = options.paths[path]; //配置参数
+    let params = options.paths[path]; // 配置参数
     if (!params || !params.to || typeof params.to !== 'string') {
       throw new Error('CaptchaService middleware \'to\' of paths error');
     }

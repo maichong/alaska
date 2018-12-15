@@ -60,6 +60,10 @@ export default class Address extends Model {
       label: 'Detail',
       type: String
     },
+    isDefault: {
+      label: 'Default',
+      type: Boolean
+    },
     createdAt: {
       label: 'Created At',
       type: Date
@@ -78,6 +82,7 @@ export default class Address extends Model {
   street: string;
   building: string;
   detail: string;
+  isDefault: boolean;
   createdAt: Date;
 
   preSave() {

@@ -30,8 +30,8 @@ export default class Banner extends Model {
       label: 'Picture',
       type: 'image'
     },
-    position: {
-      label: 'Position',
+    place: {
+      label: 'Place',
       type: 'select',
       default: 'default',
       options: [{

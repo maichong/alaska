@@ -21,6 +21,7 @@ export default class Client extends Model {
       label: 'Device ID',
       type: String,
       default: '',
+      index: true,
       private: true
     },
     platform: {

@@ -59,7 +59,7 @@ export default class Order extends Model {
       type: 'image-link'
     },
     state: {
-      label: 'Order status',
+      label: 'Order state',
       type: 'select',
       number: true,
       default: 0,

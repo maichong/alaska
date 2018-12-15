@@ -1,5 +1,4 @@
 import { Model } from 'alaska-model';
-import service from '../';
 
 export default class Income extends Model {
   static label = 'Income Record';
