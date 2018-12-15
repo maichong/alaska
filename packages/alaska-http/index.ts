@@ -68,7 +68,7 @@ export default class HttpExtension extends Extension {
           sort: options.sort || 0,
           options
         }))
-        .orderBy(['sort', 'desc'])
+        .orderBy(['sort'], ['desc'])
         .forEach(({ id, options }) => {
           let fn = main.modules.middlewares[id];
           if (!fn) return;
