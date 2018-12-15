@@ -4,7 +4,7 @@ import SubscribeDriver, { SubscribeDriverOptions } from 'alaska-subscribe';
 
 declare module 'alaska' {
   export interface Service {
-    sleds: ObjectMap<typeof Sled>;
+    sleds: ObjectMap<any>;
   }
 
   export interface ConfigData {

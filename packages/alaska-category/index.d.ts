@@ -1,0 +1,21 @@
+import { Service } from 'alaska';
+import UpdateCatRef from './sleds/UpdateCatRef';
+import Category from './models/Category';
+
+declare class CategoryService extends Service {
+  models: {
+  };
+  sleds: {
+    UpdateCatRef: typeof UpdateCatRef;
+  }
+}
+
+declare const categoryService: CategoryService;
+
+export default categoryService;
+
+
+export interface UpdateCatRefParams {
+  category: Category;
+  removed?: boolean;
+}

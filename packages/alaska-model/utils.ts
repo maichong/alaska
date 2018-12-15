@@ -117,3 +117,22 @@ export function deepClone<T extends any>(target: T, src: T): T {
   });
   return target;
 }
+
+/**
+ * 获取记录的字符串ID
+ * @param {Model|string|any} record
+ * @return {string}
+ */
+export function getId(record: Model | any): string {
+  return String(record && typeof record === 'object' ? (record._id || record) : record);
+}
+
+/**
+ * 判断两个记录的ID是否相同
+ * @param {Model|string|any} a 记录A
+ * @param {Model|string|any} b 记录B
+ * @return {boolean}
+ */
+export function isIdEqual(a: any, b: any): boolean {
+  return getId(a) === getId(b);
+}
