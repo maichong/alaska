@@ -204,7 +204,7 @@ export class Model {
   static aggregate(aggregations?: any[]): mongoose.Aggregate<any[]>;
   static aggregate(aggregations: any[], cb: Function): Promise<any[]>;
 
-  static count(conditions: any): Query<number>;
+  // static count(conditions: any): Query<number>;
 
   static countDocuments(): Query<number>;
   static countDocuments(criteria: any): Query<number>;

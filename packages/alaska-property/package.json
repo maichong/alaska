@@ -1,7 +1,7 @@
 {
-  "name": "alaska-category",
+  "name": "alaska-property",
   "version": "0.13.2",
-  "description": "Alaska category service",
+  "description": "Alaska property service",
   "keywords": [
     "alaska",
     "alaska-service"
@@ -9,7 +9,7 @@
   "alaska": "service",
   "main": "index.js",
   "types": "index.d.ts",
-  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-category",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-property",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {}

@@ -4,6 +4,7 @@ import Category from './models/Category';
 
 declare class CategoryService extends Service {
   models: {
+    Category: typeof Category;
   };
   sleds: {
     UpdateCatRef: typeof UpdateCatRef;
@@ -13,7 +14,6 @@ declare class CategoryService extends Service {
 declare const categoryService: CategoryService;
 
 export default categoryService;
-
 
 export interface UpdateCatRefParams {
   category: Category;
