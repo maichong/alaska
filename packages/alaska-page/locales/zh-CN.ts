@@ -1,6 +1,6 @@
 export default {
   Page: '单页面',
-  Title: '主标题',
+  Title: '标题',
   Summary: '摘要',
   Content: '内容',
   'SEO Title': 'SEO标题',

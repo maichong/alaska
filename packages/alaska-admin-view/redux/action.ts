@@ -19,7 +19,7 @@ export const INITIAL_STATE: ActionState = immutable({
   sort: '',
   filters: null,
   body: {},
-  reault: {}
+  result: {}
 });
 
 export const actionRequest = createAction<ActionRequestPayload>(ACTION_REQUEST);
@@ -33,11 +33,11 @@ export default handleActions({
   },
   ACTION_SUCCESS: (state, action) => {
     const payload: any = action.payload;
-    return state.merge({ fetching: false, error: null, reault: payload });
+    return state.merge({ fetching: false, error: null, result: payload });
   },
   ACTION_FAILURE: (state, action) => {
     // @ts-ignore
     const payload: Error = action.payload;
-    return state.merge({ error: payload });
+    return state.merge({ fetching: false, error: payload });
   }
 }, INITIAL_STATE);

@@ -48,6 +48,9 @@ class Relationship extends React.Component<Props, RelationshipState> {
   }
 
   init() {
+    console.log(this.props);
+    // TODO:
+    return;
     let { model, filters: propFilters, loadList } = this.props;
     let list = this.props.lists[model.id];
     if (list && this.state.records && list.results === this.state.records) return;
@@ -62,6 +65,7 @@ class Relationship extends React.Component<Props, RelationshipState> {
   render() {
     let { title, model } = this.props;
     let { records } = this.state;
+    if (!model) return <div>Relationship ERROR</div>;
     return (
       <Node
         wrapper="Relationship"

@@ -50,6 +50,12 @@ export default class Category extends Model {
       options: [{
         label: 'Default',
         value: 'default'
+      }, {
+        label: 'Goods',
+        value: 'goods'
+      }, {
+        label: 'Post',
+        value: 'post'
       }]
     },
     parent: {
@@ -106,11 +112,15 @@ export default class Category extends Model {
   createdAt: Date;
   __parentChanged?: boolean;
 
-  preSave() {
+  async preSave() {
     if (!this.createdAt) {
       this.createdAt = new Date();
     }
-    this.__parentChanged = this.isModified('parent');
+    if (this.isNew) {
+      let old = await Category.findOne({ parent: this.parent, title: this.title });
+      if (old) service.error('Category title has already exists!');
+    }
+    this.__parentChanged = this.isNew || this.isModified('parent');
   }
 
   postSave() {

@@ -28,7 +28,7 @@ export default class UpdateCatRef extends Sled<UpdateCatRefParams, void> {
 
     // update parents
     if (parent) {
-      if (isIdEqual(_.last(category.parents), category.parent)) {
+      if (!isIdEqual(_.last(category.parents), category.parent)) {
         // update parents
         category.parents = _.concat(parent.parents, [parent._id]);
         await category.save();

@@ -54,27 +54,19 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
         return { request: '' };
       } else {
         toast(tr(`${title} success!`), tr(`${title}`), { type: 'success' });
-        //创建成功跳转
-        // @ts-ignore action里面会包含修改的信息ID
         let id = _.get(action, 'result._id');
         let redirect;
-        if (nextProps.isNew && nextProps.action && id) {
+        if (nextProps.isNew && id) {
+          // 创建成功跳转
           redirect = '/edit/' + model.serviceId + '/' + model.modelName + '/' + id;
-        } else if (nextProps.action.action === 'remove') {
-          //删除成功跳转
+        } else if (action.action === 'remove') {
+          // 删除成功跳转
           redirect = '/list/' + model.serviceId + '/' + model.modelName;
         }
         return { request: '', redirect };
       }
     }
     return null;
-  }
-
-  componentDidUpdate() {
-    let redirect = this.state.redirect;
-    if (redirect) {
-      this.context.router.history.replace(redirect);
-    }
   }
 
   handleAdd = () => {
@@ -134,6 +126,11 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
     const {
       model, record, isNew, superMode, settings
     } = this.props;
+
+    let redirect = this.state.redirect;
+    if (redirect) {
+      this.context.router.history.replace(redirect);
+    }
 
     const { actions } = model;
 

@@ -88,7 +88,7 @@ export type ActionState = immutable.Immutable<{
   sort: string;
   filters: any;
   body: any;
-  reault: any;
+  result: any;
 }>;
 
 export interface ActionRequestPayload {
