@@ -5,7 +5,7 @@ import * as collie from 'collie';
 import USER from 'alaska-user';
 import User from 'alaska-user/models/User';
 import * as AdminView from 'alaska-admin-view';
-import { Model } from 'alaska-model';
+import { Model, ModelRelationship } from 'alaska-model';
 import AdminNav from './models/AdminNav';
 import AdminMenu from './models/AdminMenu';
 
@@ -50,17 +50,11 @@ class AdminService extends Service {
           defaultColumns: m.defaultColumns as string[],
           searchFields: m.searchFields as string[],
           // @ts-ignore 初始数据可能不完善
-          groups: _.reduce(m.groups, (groups: Model.groups, group, key) => {
-            groups[key] = _.assign({}, group, { horizontal });
-            return groups;
-          }, {}),
+          groups: _.mapValues(m.groups, (group) => _.assign({ horizontal }, group)),
           // @ts-ignore 前后端类型定义不太一致
-          relationships: _.reduce(m.relationships, (res: any, rel, key) => {
-            res[key] = _.assign({}, rel, {
-              ref: typeof rel.ref === 'string' ? rel.ref : rel.ref.id
-            })
-            return res;
-          }, {}),
+          relationships: _.mapValues(m.relationships, (rel: ModelRelationship) => _.assign({}, rel, {
+            ref: typeof rel.ref === 'string' ? rel.ref : rel.ref.id
+          })),
           actions: m.actions,
           nocreate: m.nocreate,
           noupdate: m.noupdate,

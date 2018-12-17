@@ -695,10 +695,10 @@ export interface HomePageProps {
 export interface ListProps {
   options: {
     [key: string]: any;
-    search?: string;
   };
   activated?: immutable.Immutable<Record> | null;
   model: Model;
+  search?: string;
   filters?: Filters;
   sort?: string;
   columns?: string[];

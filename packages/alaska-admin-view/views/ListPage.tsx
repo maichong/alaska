@@ -16,7 +16,7 @@ import QuickEditor from './QuickEditor';
 import LoadingPage from './LoadingPage';
 import * as listsRedux from '../redux/lists';
 import {
-  ListPageProps, ListsState, State, Record, Model, RecordList, Settings,
+  ListPageProps, ListsState, State, Record, Model, Settings,
   Service
 } from '..';
 
@@ -35,7 +35,6 @@ interface Props extends ListPageProps {
 
 interface ListPageOptions {
   [key: string]: any;
-  search?: string;
 }
 
 interface ListPageState {
@@ -43,9 +42,9 @@ interface ListPageState {
   recordTotal: number;
   model: Model | null;
   selected: immutable.Immutable<Record[]>;
-  activated: Record | null;
   options: ListPageOptions;
   sort: string;
+  search: string;
   filters: Filters;
   columns: string[];
   split: boolean;
@@ -71,9 +70,9 @@ class ListPage extends React.Component<Props, ListPageState> {
       recordTotal: 0,
       model: null,
       selected: immutable([]),
-      activated: null,
       options: {},
       sort: '',
+      search: '',
       filters: {},
       columns: [],
       split: false
@@ -109,7 +108,6 @@ class ListPage extends React.Component<Props, ListPageState> {
       nextState.model = model;
       if (!model || !nextState.records.length) {
         nextState.selected = immutable([]);
-        nextState.activated = null;
       }
     }
 
@@ -138,6 +136,8 @@ class ListPage extends React.Component<Props, ListPageState> {
       }
       filters[k] = v;
     });
+    nextState.search = options.search || '';
+    delete options.search;
     if (!_.isEqual(options, this.state.options)) {
       nextState.options = options;
     }
@@ -150,7 +150,7 @@ class ListPage extends React.Component<Props, ListPageState> {
   updateQuery() {
     let query: { [key: string]: any } = {};
     const {
-      model, filters, sort, options, columns
+      model, filters, sort, options, columns, search
     } = this.state;
     if (!model) return;
     if (sort && sort !== model.defaultSort) {
@@ -170,6 +170,9 @@ class ListPage extends React.Component<Props, ListPageState> {
       });
     }
     _.assign(query, filters, optionsTemp);
+    if (search) {
+      query._search = search;
+    }
     let { pathname } = this.props.location;
     this.context.router.history.replace({ pathname, search: '?' + qs.stringify(query, { encode: false }) });
   }
@@ -201,8 +204,7 @@ class ListPage extends React.Component<Props, ListPageState> {
   };
 
   handleSearch = (search: string) => {
-    let options = Object.assign({}, this.state.options, { search });
-    this.setState({ options }, () => {
+    this.setState({ search }, () => {
       this.updateQuery();
     });
   };
@@ -224,14 +226,7 @@ class ListPage extends React.Component<Props, ListPageState> {
   };
 
   handleSelect = (selected: immutable.Immutable<Record[]>) => {
-    let nextState = {} as ListPageState;
-    nextState.selected = selected;
-    if (this.state.activated && !selected.length) {
-      nextState.activated = null;
-    } else if (selected.length && !this.state.activated) {
-      nextState.activated = selected[0];
-    }
-    this.setState(nextState);
+    this.setState({ selected });
   };
 
   handleActive = (record: Record) => {
@@ -251,10 +246,10 @@ class ListPage extends React.Component<Props, ListPageState> {
       options,
       columns,
       selected,
-      activated,
       split,
       recordTotal,
       records,
+      search
     } = this.state;
     if (!model) {
       return <LoadingPage />;
@@ -296,6 +291,7 @@ class ListPage extends React.Component<Props, ListPageState> {
             options={options}
             model={model}
             filters={filters}
+            search={search}
             sort={sort}
             columns={columns}
             selected={selected}
@@ -306,10 +302,10 @@ class ListPage extends React.Component<Props, ListPageState> {
           <ListActionBar
             model={model}
             filters={filters}
+            search={search}
+            sort={sort}
             records={records}
             selected={selected}
-            sort={sort}
-            search={options.search || ''}
             onSearch={this.handleSearch}
           />
         </div>

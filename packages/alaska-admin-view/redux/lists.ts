@@ -35,6 +35,11 @@ export const clearList = createAction<ClearListPayload>(CLEAR_LIST);
  */
 export const loadList = createAction<LoadListPayload>(LOAD_LIST);
 
+/**
+ * 加载更多
+ * @param {Object} options
+ * @param {string} options.model
+ */
 export const loadMore = createAction<LoadMorePayload>(LOAD_MORE);
 
 /**
@@ -67,8 +72,6 @@ const EMPTY_LIST: AnyRecordList = immutable({
   error: null,
   fetching: false
 });
-
-let ListModel = null;
 
 export default handleActions({
   LOAD_LIST: (state, action) => {

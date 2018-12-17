@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import * as immutable from 'seamless-immutable';
 import * as React from 'react';
 import * as tr from 'grackle';
 import { connect } from 'react-redux';
@@ -8,74 +7,48 @@ import { Link } from 'react-router-dom';
 import Node from './Node';
 import DataTable from './DataTable';
 import LoadingPage from './LoadingPage';
-import { ListProps, Record, State, RecordList } from '..';
+import { Filters } from 'alaska-model';
+import { ListProps, State, RecordList } from '..';
 import * as listsRedux from '../redux/lists';
-
-interface ListState {
-  records?: null | immutable.Immutable<Record[]>;
-  list?: RecordList<any>;
-}
 
 interface Props extends ListProps {
   loadList: Function;
-  lists: { [model: string]: RecordList<any> };
+  list?: RecordList<any>;
 }
 
-class List extends React.Component<Props, ListState> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-    };
-  }
+class List extends React.Component<Props> {
+  filters?: Filters;
+  search?: string;
+  sort?: string;
 
   componentDidMount() {
-    this.init(this.props, null);
+    this.loadRecords();
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    this.init(nextProps, this.props);
-  }
-
-  init = (props: Props, oldProps?: Props) => {
-    const { model, lists } = props;
-    let nextState: ListState = {};
-    let list = lists[model.id];
-    if (list) {
-      nextState.records = list.results;
-    } else {
-      nextState.records = null;
+  componentDidUpdate() {
+    let { filters, search, sort, list } = this.props;
+    if (!list || sort !== this.sort || search !== this.search || !_.isEqual(filters, this.filters)) {
+      this.loadRecords();
     }
-    nextState.list = list;
-    this.setState(nextState, () => {
-      let { filters, options, sort } = oldProps ? oldProps : props;
-      if (
-        !nextState.records ||
-        !_.isEqual(props.filters, filters) ||
-        !_.isEqual(props.options.search, options.search) ||
-        !_.isEqual(props.sort, sort)
-      ) {
-        this.loadRecords();
-      }
-    });
   }
 
   loadRecords = () => {
-    let { list } = this.state;
-    let { filters, options, sort, model, loadList } = this.props;
+    let { filters, search, sort, model, loadList, list } = this.props;
     if (!model || (list && list.fetching)) return;
-    // if (list && (list.page > 1 || !list.next)) return;
+    this.filters = filters;
+    this.search = search;
+    this.sort = sort;
     loadList({
       model: model.id,
       page: 1,
       sort: sort,
       filters,
-      search: options ? options.search : ''
+      search
     });
   };
 
   renderEmpty() {
-    const { model } = this.props;
-    let { list } = this.state;
+    const { model, list } = this.props;
     if (!list || list.fetching) return null;
     return (
       <div className="error-info">
@@ -93,13 +66,12 @@ class List extends React.Component<Props, ListState> {
   }
 
   render() {
-    let { records } = this.state;
     const {
       model, sort, columns, selected,
-      onSort, onSelect, onActive
+      onSort, onSelect, onActive, list
     } = this.props;
-    if (!records) return <LoadingPage />;
-    if (!records.length) return this.renderEmpty();
+    if (!list || (list.fetching && !list.results.length)) return <LoadingPage />;
+    if (!list.results.length) return this.renderEmpty();
     return (
       <Node
         className="list"
@@ -110,7 +82,7 @@ class List extends React.Component<Props, ListState> {
           model={model}
           sort={sort}
           columns={columns}
-          records={records}
+          records={list.results}
           selected={selected}
           onActive={onActive}
           onSort={onSort}
@@ -122,7 +94,7 @@ class List extends React.Component<Props, ListState> {
 }
 
 export default connect(
-  ({ lists }: State) => ({ lists }),
+  ({ lists }: State, props: ListProps) => ({ list: lists[props.model.id] }),
   (dispatch) => bindActionCreators({
     loadList: listsRedux.loadList
   }, dispatch)
