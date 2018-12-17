@@ -63,13 +63,18 @@ class Relationship extends React.Component<Props, RelationshipState> {
     let { title, model } = this.props;
     let { records } = this.state;
     if (!model) return <div>Relationship ERROR</div>;
+    if (!title) {
+      title = `${tr('Relationship')}: ${tr(model.label || model.modelName, model.serviceId)}`;
+    } else {
+      title = tr(title, model.serviceId);
+    }
     return (
       <Node
         wrapper="Relationship"
         props={this.props}
         className="relationship card mt-2"
       >
-        <div className="card-title">{tr('Relationship') + `: ${tr(title || model.modelName, model.serviceId)}`}</div>
+        <div className="card-title">{title}</div>
         <DataTable
           model={model}
           records={records}

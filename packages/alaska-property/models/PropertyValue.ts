@@ -10,16 +10,17 @@ export default class PropertyValue extends Model {
   static defaultSort = '-sort -createdAt';
 
   static fields = {
-    title: {
-      label: 'Title',
-      type: String,
-      required: true
-    },
     prop: {
-      label: 'Goods Property',
+      label: 'Property',
       type: 'relationship',
       ref: Property,
       index: true,
+      required: true,
+      fixed: 'id'
+    },
+    title: {
+      label: 'Title',
+      type: String,
       required: true
     },
     cats: {

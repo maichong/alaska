@@ -57,7 +57,7 @@ export const applyList = createAction<ApplyListPayload, string, PaginateResult<a
 export const loadListFailure = createAction(LOAD_LIST_FAILURE, (model: string, error: Error) => ({ model, error }));
 
 // 初始state
-export const INITIAL_STATE: ListsState = immutable({});
+const INITIAL_STATE: ListsState = immutable({});
 
 const EMPTY_LIST: AnyRecordList = immutable({
   total: 0,

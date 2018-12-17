@@ -109,6 +109,7 @@ class FieldGroup extends React.Component<Props, FieldGroupState> {
         className: fieldCls + model.id + '-' + field.path + '-view'
       }));
     });
+    if (!fields.length) return null;
     return <Node
       className="field-group-list"
       wrapper="FieldGroup"

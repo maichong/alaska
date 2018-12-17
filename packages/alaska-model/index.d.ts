@@ -551,6 +551,7 @@ export interface ModelRelationship {
   title?: string;
   private?: boolean;
   populations?: ObjectMap<ModelPopulation>;
+  hidden?: DependsQueryExpression;
 }
 
 export interface ModelPopulation {
@@ -620,7 +621,7 @@ interface FieldBase {
 
 export interface FieldOption extends FieldBase {
   type: string | typeof Field | typeof String | typeof Number | typeof Date | typeof Boolean | typeof Object;
-  ref?: string | string[] | typeof Model | typeof Model[];
+  ref?: string | typeof Model;
 }
 
 export type FieldDataType = typeof String | typeof Boolean | typeof Number | typeof Object | typeof Date | typeof Array

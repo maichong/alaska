@@ -24,7 +24,10 @@ export default function* action({ payload }: Action<any>) {
   } catch (e) {
     yield put(actionFailure(e));
   }
-  if (payload.action === 'update' || payload.action === 'create') {
+  if (payload.action === 'create' || payload.action === 'remove') {
+    // 新建，需要清空列表
+    yield put(clearList({ model: payload.model }));
+  } else if (payload.action === 'update') {
     if (Array.isArray(result)) {
       // 同时保存了多条记录
       let list: any = result.map((data) => ({ model: payload.model, data }));
@@ -32,12 +35,6 @@ export default function* action({ payload }: Action<any>) {
     } else {
       // 只保存了一条记录
       yield put(applyDetails(payload.model, result));
-      if (payload.body && !payload.body.id) {
-        // 新建，需要清空列表
-        yield put(clearList(payload));
-      }
     }
-  } else if (payload.action === 'remove') {
-    yield put(clearList({ model: payload.model }));
   }
 }

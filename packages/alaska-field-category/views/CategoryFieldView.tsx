@@ -5,6 +5,7 @@ import * as shallowEqualWithout from 'shallow-equal-without';
 import MultiLevelSelect from './MultiLevelSelect';
 import { FieldViewProps } from 'alaska-admin-view';
 import relationQuery from 'alaska-admin-view/utils/query';
+import * as tr from 'grackle';
 
 interface Option {
   label: string;
@@ -88,7 +89,7 @@ export default class CategoryFieldView extends React.Component<FieldViewProps, S
 
   render() {
     let {
-      className, field, value, disabled, errorText
+      className, field, value, disabled, errorText, model
     } = this.props;
     let { help } = field;
     className += ' category-field';
@@ -112,7 +113,7 @@ export default class CategoryFieldView extends React.Component<FieldViewProps, S
       />));
       if (!disabled) {
         inputElement.push(<div className={`btn btn-success ${value.length > 0 ? 'mt-2' : ''}`} key="add" onClick={this.handleAdd}>
-          <i className="fa fa-plus" />
+          <i className="fa fa-plus" /> {tr('Add categories', model.serviceId)}
         </div>);
       }
     } else {

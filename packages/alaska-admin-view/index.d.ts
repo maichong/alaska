@@ -243,6 +243,7 @@ export interface ModelRelationship {
   title?: string;
   private?: boolean;
   populations?: any;
+  hidden?: DependsQueryExpression;
 }
 
 export interface FieldGroup {

@@ -23,15 +23,17 @@ export default class Property extends Model {
 
   static relationships = {
     values: {
-      ref: 'GoodsPropValue',
+      ref: 'PropertyValue',
       path: 'prop',
-      private: true
+      private: true,
+      hidden: 'input'
     }
   };
 
   static groups = {
     editor: {
-      title: 'Create Property Values'
+      title: 'Create Property Values',
+      hidden: '!id'
     }
   };
 
@@ -39,7 +41,8 @@ export default class Property extends Model {
     title: {
       label: 'Title',
       type: String,
-      required: true
+      required: true,
+      placeholder: 'eg. Size'
     },
     cats: {
       label: 'Categories',
@@ -50,28 +53,31 @@ export default class Property extends Model {
       hidden: 'common'
     },
     common: {
-      label: 'Common',
+      label: 'Common property',
       default: false,
+      type: Boolean,
+      help: 'Available for all categories'
+    },
+    sku: {
+      label: 'SKU property',
       type: Boolean
     },
     required: {
       label: 'Required',
-      type: Boolean
+      type: Boolean,
+      disabled: 'sku'
     },
     multi: {
-      label: 'Multi',
-      type: Boolean
-    },
-    sku: {
-      label: 'SKU',
-      type: Boolean
+      label: 'Multipe',
+      type: Boolean,
+      disabled: 'sku'
     },
     filter: {
-      label: 'Filter',
+      label: 'Allow filter',
       type: Boolean
     },
     input: {
-      label: 'Input',
+      label: 'Allow input',
       type: Boolean
     },
     checkbox: {
@@ -93,17 +99,19 @@ export default class Property extends Model {
     help: {
       label: 'Help',
       type: String,
-      help: 'This message will display in the goods editor.'
+      help: 'This message will display in the property field.'
     },
     values: {
       label: 'Values',
       type: 'relationship',
-      ref: ['GoodsPropValue'],
+      ref: 'PropertyValue',
+      multi: true,
       hidden: true
     },
     activated: {
       label: 'Activated',
       type: Boolean,
+      default: true,
       private: true
     },
     createdAt: {
@@ -113,12 +121,12 @@ export default class Property extends Model {
     },
     valueEditor: {
       type: String,
-      view: 'GoodsPropsValueEditor',
+      view: 'PropertyValueEditor',
       private: true,
       group: 'editor',
-      depends: '_id',
       filter: '',
-      cell: ''
+      cell: '',
+      hidden: 'input'
     }
   };
 
@@ -142,6 +150,14 @@ export default class Property extends Model {
   async preSave() {
     if (!this.createdAt) {
       this.createdAt = new Date();
+    }
+    if (this.sku) {
+      this.required = true;
+      this.multi = false;
+    }
+    if (this.input) {
+      this.checkbox = false;
+      this.switch = false;
     }
   }
 

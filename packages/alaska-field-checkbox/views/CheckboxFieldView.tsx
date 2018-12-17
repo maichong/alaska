@@ -44,7 +44,7 @@ export default class CheckboxFieldView extends React.Component<FieldViewProps> {
       return (
         <div className={className}>
           <div className="offset-sm-2 col-sm-10">
-            {input}
+            <div>{input}</div>
             {helpElement}
           </div>
         </div>
@@ -53,7 +53,7 @@ export default class CheckboxFieldView extends React.Component<FieldViewProps> {
 
     return (
       <div className={className}>
-        {input}
+        <div>{input}</div>
         {helpElement}
       </div>
     );

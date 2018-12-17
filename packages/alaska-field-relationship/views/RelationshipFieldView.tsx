@@ -95,16 +95,10 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
       help = errorText;
     }
     let helpElement = help ? <small className={errorText ? 'invalid-feedback' : 'text-muted'}>{help}</small> : null;
-    let refServiceId = '';
-    let refModelName = '';
-    // @ts-ignore 下方做了判断，保证ref一定存在
-    const ref: string = field.ref;
-    if (ref) {
-      [refServiceId, refModelName] = ref.split('.');
-    }
 
     let inputElement;
     if (field.fixed) {
+      let [refServiceId, refModelName] = field.model.split('.');
       let opts: any = [];
       if (options) {
         if (typeof value === 'string') {

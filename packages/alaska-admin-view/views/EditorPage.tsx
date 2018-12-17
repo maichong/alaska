@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
 import * as React from 'react';
+import * as checkDepends from 'check-depends';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -139,21 +140,18 @@ class EditorPage extends React.Component<Props, EditorPageState> {
   }
 
   renderRelationships() {
-    const { isNew, id, model } = this.state;
-    let relationships = null;
-    if (!isNew && model.relationships) {
-      relationships = _.map(
-        model.relationships,
-        (r: ModelRelationship, key: string) => (<Relationship
-          key={key}
-          from={id}
-          path={r.path}
-          model={this.lookupModel(r.ref)}
-          title={r.title}
-        />)
-      );
-    }
-    return relationships;
+    const { isNew, id, model, record } = this.state;
+    if (isNew) return null;
+    return _(model.relationships)
+      .filter((rel) => !checkDepends(rel.hidden, record))
+      .map((r: ModelRelationship, key: string) => (<Relationship
+        key={key}
+        from={id}
+        path={r.path}
+        model={this.lookupModel(r.ref)}
+        title={r.title}
+      />))
+      .value();
   }
 
   render() {

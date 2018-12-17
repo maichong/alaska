@@ -50,7 +50,8 @@ export default class Special extends Model {
     goods: {
       label: 'Goods List',
       type: 'relationship',
-      ref: ['Goods']
+      ref: 'Goods',
+      multi: true
     },
     createdAt: {
       label: 'Created At',

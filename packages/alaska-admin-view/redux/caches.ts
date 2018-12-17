@@ -11,7 +11,7 @@ export const APPLY_CACHE = 'APPLY_CACHE';
 export const applyCache = createAction<Cache>(APPLY_CACHE);
 
 // 初始state
-export const INITIAL_STATE: CachesState = immutable({
+const INITIAL_STATE: CachesState = immutable({
 });
 
 export default handleActions({

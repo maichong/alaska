@@ -90,7 +90,8 @@ export default class Goods extends Model {
     cats: {
       label: 'Categories',
       type: 'relationship',
-      ref: [Category],
+      ref: Category,
+      multi: true,
       private: true,
       hidden: true
     },
@@ -193,14 +194,16 @@ export default class Goods extends Model {
     propValues: {
       label: 'Properties Values',
       type: 'relationship',
-      ref: ['GoodsPropValue'],
+      ref: 'GoodsPropValue',
+      multi: true,
       hidden: true,
       private: true
     },
     skus: {
       label: 'SKU',
       type: 'relationship',
-      ref: ['Sku'],
+      ref: 'Sku',
+      multi: true,
       hidden: true
     },
     sku: {

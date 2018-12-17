@@ -31,7 +31,7 @@ export const loginFailure = createAction<Error>(LOGIN_FAILURE);
 export const logout = createAction(LOGOUT);
 
 // 初始state
-export const INITIAL_STATE: LoginState = immutable({
+const INITIAL_STATE: LoginState = immutable({
   error: null
 });
 

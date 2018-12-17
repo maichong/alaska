@@ -8,7 +8,7 @@ export const ACTION_SUCCESS = 'ACTION_SUCCESS';
 export const ACTION_FAILURE = 'ACTION_FAILURE';
 
 // 初始state
-export const INITIAL_STATE: ActionState = immutable({
+const INITIAL_STATE: ActionState = immutable({
   action: '',
   model: '',
   fetching: false,
@@ -23,8 +23,8 @@ export const INITIAL_STATE: ActionState = immutable({
 });
 
 export const actionRequest = createAction<ActionRequestPayload>(ACTION_REQUEST);
-export const actionSuccess = createAction(ACTION_SUCCESS);
-export const actionFailure = createAction(ACTION_FAILURE);
+export const actionSuccess = createAction<any>(ACTION_SUCCESS);
+export const actionFailure = createAction<Error>(ACTION_FAILURE);
 
 export default handleActions({
   ACTION_REQUEST: (state, action) => {

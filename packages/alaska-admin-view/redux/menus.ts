@@ -15,7 +15,7 @@ export const APPLY_MENUS_NAV = 'APPLY_MENUS_NAV';
 export const applyMenusNav = createAction(APPLY_MENUS_NAV, (id: string) => ({ id }));
 
 // 初始state
-export const INITIAL_STATE: Menus = immutable({ navId: 'default', menusMap: {}});
+const INITIAL_STATE: Menus = immutable({ navId: 'default', menusMap: {}});
 
 //生成最终menu数据
 function recursion(menuItems: MenuItem[], parentList?: Menu[]) {

@@ -51,7 +51,7 @@ export const applyDetails = createAction(APPLY_DETAILS, (model: string, data: an
 export const batchApplyDetails = createAction<ApplyDetailsPayload[]>(BATCH_APPLY_DETAILS);
 
 // 初始state
-export const INITIAL_STATE: DetailsState = immutable({});
+const INITIAL_STATE: DetailsState = immutable({});
 
 export default handleActions({
   CLEAR_DETAILS: (state, action) => {

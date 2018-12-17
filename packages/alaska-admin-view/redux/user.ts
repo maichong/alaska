@@ -5,7 +5,7 @@ import { UserState } from '..';
 export const APPLY_USER = 'APPLY_USER';
 
 // 初始state
-export const INITIAL_STATE: UserState = immutable({
+const INITIAL_STATE: UserState = immutable({
   id: '',
   displayName: '',
   avatar: ''

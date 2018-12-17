@@ -11,7 +11,7 @@ export const REFRESH_SETTINGS = 'REFRESH_SETTINGS';
 export const LOCALE_SETTING = 'LOCALE_SETTING';
 
 // 初始state
-export const INITIAL_STATE: Settings = {
+const INITIAL_STATE: Settings = {
   authorized: false,
   user: null,
   icon: '',
