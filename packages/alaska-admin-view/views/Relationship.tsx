@@ -40,7 +40,7 @@ class Relationship extends React.Component<Props, RelationshipState> {
       return;
     }
     let list = lists[model.id];
-    if (this.state.records !== list.results) {
+    if (!list || this.state.records !== list.results) {
       this.setState({ records: list ? list.results : immutable([]) }, () => {
         this.init();
       });
@@ -48,9 +48,6 @@ class Relationship extends React.Component<Props, RelationshipState> {
   }
 
   init() {
-    console.log(this.props);
-    // TODO:
-    return;
     let { model, filters: propFilters, loadList } = this.props;
     let list = this.props.lists[model.id];
     if (list && this.state.records && list.results === this.state.records) return;

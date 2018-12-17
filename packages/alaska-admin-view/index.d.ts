@@ -238,7 +238,7 @@ export interface Model {
 
 export interface ModelRelationship {
   key?: string;
-  ref: Model | string;
+  ref: string;
   path: string;
   title?: string;
   private?: boolean;

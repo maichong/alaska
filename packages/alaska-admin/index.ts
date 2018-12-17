@@ -31,6 +31,7 @@ class AdminService extends Service {
 
       _.forEach(s.models, (m: typeof Model, modelName) => {
         // @ts-ignore 某些属性需要在前端生成，eg. canUpdate
+        console.log('m.relationships', m.relationships);
         let model: AdminView.Model = {
           label: m.label,
           modelName,
@@ -54,7 +55,12 @@ class AdminService extends Service {
             return groups;
           }, {}),
           // @ts-ignore 前后端类型定义不太一致
-          relationships: m.relationships,
+          relationships: _.reduce(m.relationships, (res: any, rel, key) => {
+            res[key] = _.assign({}, rel, {
+              ref: typeof rel.ref === 'string' ? rel.ref : rel.ref.id
+            })
+            return res;
+          }, {}),
           actions: m.actions,
           nocreate: m.nocreate,
           noupdate: m.noupdate,

@@ -109,14 +109,13 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     this.setState({ record: newRecord });
   }
 
-  modeLookup(modelName: string): Model | null {
-    modelName = modelName[0].toUpperCase() + modelName.substr(1);
+  lookupModel(modelRef: string): Model | null {
     let { services } = this.props;
     let model = null;
     _.forEach(services, (service) => {
-      _.forEach(service.models, (s, key) => {
-        if (key === modelName) {
-          model = s;
+      _.forEach(service.models, (m) => {
+        if (m.modelName === modelRef || m.id === modelRef) {
+          model = m;
         }
       });
     });
@@ -149,7 +148,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
           key={key}
           from={id}
           path={r.path}
-          model={this.modeLookup(r.ref ? ((r.ref as Model).modelName || (r.ref as string)) : key)}
+          model={this.lookupModel(r.ref)}
           title={r.title}
         />)
       );
