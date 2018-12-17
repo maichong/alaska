@@ -102,7 +102,7 @@ export default {
   'Save Record': '保存记录',
   'Invalid format': '格式错误',
   'No records found.': '没有找到数据。',
-  'No data!': '无数据！',
+  'No records': '没有数据',
   'Not Found!': '没找到！',
   'Requested page not found.': '请求的页面没有找到。',
   OK: '确定'

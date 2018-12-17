@@ -19,7 +19,7 @@ export default class Sku extends Model {
     goods: {
       label: 'Goods',
       type: 'relationship',
-      ref: 'Goods',
+      ref: 'alaska-goods.Goods',
       index: true
     },
     key: {
@@ -66,7 +66,6 @@ export default class Sku extends Model {
     }
   };
 
-  _id: Object | string | number | any;
   pic: Object;
   goods: Object;
   key: string;
@@ -78,7 +77,6 @@ export default class Sku extends Model {
   valid: boolean;
   props: Object;
   createdAt: Date;
-  __exist: boolean;
 
   preSave() {
     if (!this.createdAt) {

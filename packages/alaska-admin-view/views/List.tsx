@@ -52,7 +52,7 @@ class List extends React.Component<Props> {
     if (!list || list.fetching) return null;
     return (
       <div className="error-info">
-        <div className="error-title">{tr('No data!', model.serviceId)}</div>
+        <div className="error-title">{tr('No records', model.serviceId)}</div>
         <div className="error-desc">
           {tr('No records found.', model.serviceId)}&nbsp;&nbsp;
           {
