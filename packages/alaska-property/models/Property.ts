@@ -153,7 +153,7 @@ export default class Property extends Model {
     }
     if (this.sku) {
       this.required = true;
-      this.multi = false;
+      this.multi = true;
     }
     if (this.input) {
       this.checkbox = false;

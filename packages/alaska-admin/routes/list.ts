@@ -44,6 +44,11 @@ export default function (router: Router) {
       query.sort(sort);
     }
 
+    let populations = ctx.state.populations || ctx.query._populations;
+    _.forEach(populations, (field) => {
+      query.populate(field);
+    });
+
     let result = await query;
 
     result.results = _.map(result.results, (record: Model) => {

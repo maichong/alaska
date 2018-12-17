@@ -17,5 +17,6 @@ export default {
   'Switch View': '选择器视图',
   'This message will display in the property field.': '这个信息将会显示在属性字段中',
   'Create Property Values': '创建属性值',
-  'Please input property value': '请输入属性值'
+  'Please input property value': '请输入属性值',
+  'Select category first!': '请首先选择分类！',
 };

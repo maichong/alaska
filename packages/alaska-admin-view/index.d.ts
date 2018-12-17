@@ -41,6 +41,7 @@ export interface QueryOptions {
   model: string;
   filters?: Filters;
   search?: string;
+  populations?: string[];
 }
 
 export function query(options: QueryOptions): Promise<Cache>;
@@ -172,6 +173,7 @@ export type ListsState = immutable.Immutable<{
 
 export interface CacheData extends PaginateResult<any> {
   filters: Filters | null;
+  populations?: string[];
   model: string;
   time: number;
 }

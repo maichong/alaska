@@ -12,5 +12,8 @@
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-property",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "@samoyed/checkbox-group": "^0.2.0",
+    "@samoyed/switch": "^0.2.0"
+  }
 }
