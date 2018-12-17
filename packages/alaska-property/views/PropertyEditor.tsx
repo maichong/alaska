@@ -2,32 +2,41 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import * as tr from 'grackle';
+import * as immutable from 'seamless-immutable';
 import { ObjectMap } from 'alaska';
-import { Record, query, FieldViewProps } from 'alaska-admin-view';
+import { query, FieldViewProps } from 'alaska-admin-view';
 import Select from '@samoyed/select';
 import CheckboxGroup from '@samoyed/checkbox-group';
 import Switch from '@samoyed/switch';
+import { PropData } from '..';
 
 interface Props extends FieldViewProps {
-  value: Prop[];
-};
-
-type State = {
-  props: Record[],
-  valueMap: ObjectMap<Prop>
-};
-
-interface Prop {
-  id: string;
-  title: string;
-  sku: boolean;
-  filter: boolean;
-  values: PropValue[];
+  value: immutable.Immutable<PropData[]>;
 }
 
-interface PropValue {
-  id: string;
+interface State {
+  props: immutable.Immutable<PropertyRecord[]>;
+  valueMap: ObjectMap<immutable.Immutable<PropData>>;
+}
+
+interface PropertyRecord {
+  _id: string;
   title: string;
+  icon: string;
+  pic: string;
+  desc: string;
+  parent: string;
+  multi: boolean;
+  sku: boolean;
+  filter: boolean;
+  required: boolean;
+  input: boolean;
+  switch: boolean;
+  checkbox: boolean;
+  help: string;
+  values: Array<{ _id: string; title: string; }>;
+  options: Array<{ value: string; label: string }>;
+  valueMap: ObjectMap<{ _id: string; title: string; }>;
 }
 
 export default class PropertyEditor extends React.Component<Props, State> {
@@ -40,7 +49,7 @@ export default class PropertyEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      props: [],
+      props: immutable([]),
       valueMap: _.keyBy(props.value, 'id')
     };
   }
@@ -58,21 +67,21 @@ export default class PropertyEditor extends React.Component<Props, State> {
       newState.valueMap = _.keyBy(props.value, 'id');
       this.setState(newState);
     }
-    if (props.record.cat !== this._cat) {
+    if (props.record.cat && props.record.cat !== this._cat) {
       this.fetchProps(props.record.cat);
     }
   }
 
   handleChange = () => {
     let { props, valueMap } = this.state;
-    let values: Prop[] = [];
+    let value: PropData[] = [];
     _.forEach(props, (p) => {
-      let prop = valueMap[p.id];
+      let prop = valueMap[p._id];
       if (prop && prop.values.length) {
-        values.push(prop);
+        value.push(prop);
       }
     });
-    this.props.onChange(values);
+    this.props.onChange(immutable(value));
   };
 
   fetchProps = (cat: any) => {
@@ -86,11 +95,18 @@ export default class PropertyEditor extends React.Component<Props, State> {
       },
       populations: ['values']
     }).then((res) => {
-      let props = res.results.map((prop) => {
-        return prop.set('options', _.map(prop.values, (v) => ({ label: v.title, value: v._id })));
+      let props = res.results.map((prop: immutable.Immutable<PropertyRecord>) => {
+        let options: any[] = [];
+        let valueMap: any = {};
+        _.forEach(prop.values, (v) => {
+          let value = immutable({ label: v.title, value: v._id });
+          options.push(value);
+          valueMap[v._id] = v;
+        });
+        return prop.merge({ options, valueMap });
       });
       this.setState({
-        props,
+        props: immutable(props)
       });
     });
   };
@@ -100,39 +116,43 @@ export default class PropertyEditor extends React.Component<Props, State> {
     if (!record.cat) {
       return <p className="text-center">{tr('Select category first!', model.serviceId)}</p>;
     }
-    let props = this.state.props;
+    const { props, valueMap } = this.state;
     if (!props || !props.length) {
       return <p className="text-center">Loading...</p>;
     }
 
-    let valueMap = this.state.valueMap;
     let me = this;
 
     let list = _.map(props, (p) => {
-      if (!valueMap[p.id]) {
-        valueMap[p.id] = {
-          id: p.id,
+      if (!valueMap[p._id]) {
+        valueMap[p._id] = immutable({
+          id: p._id,
           title: p.title,
           sku: p.sku,
           filter: p.filter,
           values: []
-        };
+        });
       }
 
       function handleChange(v: any) {
-        if (p.multi) {
-          valueMap[p.id].values = v;
-        } else {
-          valueMap[p.id].values = v ? [v] : [];
+        if (!p.multi) {
+          v = v ? [v] : [];
         }
+        let values = _.map(v, (id: string) => {
+          let value = p.valueMap[id];
+          return value ? { id, title: value.title } : { title: id };
+        });
+        valueMap[p._id] = valueMap[p._id].set('values', values);
         me.setState({ valueMap }, me.handleChange);
       }
 
-      let value = valueMap[p.id].values;
+      let value: string | string[] = '';
 
-      if (!p.multi && Array.isArray(value)) {
-        // @ts-ignore
-        value = value.length ? value[0] : '';
+      let values = valueMap[p._id].values;
+      if (!p.multi) {
+        value = values && values.length ? values[0].id || values[0].title : '';
+      } else {
+        value = _.map(values, (v) => v.id || v.title);
       }
 
       let helps = [];
@@ -174,7 +194,7 @@ export default class PropertyEditor extends React.Component<Props, State> {
             allowCreate={p.input}
             onChange={handleChange}
           />
-          <p className="help-block">{helpElement}</p>
+          <div><small className="text-muted">{helpElement}</small></div>
         </div>
       </div>);
     });

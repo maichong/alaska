@@ -1,25 +1,13 @@
 import { Plugin } from 'alaska';
 import { RecordID } from 'alaska-model';
+import { PropData } from 'alaska-property';
 
 declare module 'alaska-goods/models/Goods' {
   interface Goods {
-    props: Prop[];
+    props: PropData[];
     propValues: RecordID[];
   }
 }
 
 export default class GoodsPropertyPlugin extends Plugin {
-}
-
-export interface PropValue {
-  id: RecordID;
-  title: string;
-}
-
-export interface Prop {
-  id: RecordID;
-  title: string;
-  sku: boolean;
-  filter: boolean;
-  values: PropValue[];
 }

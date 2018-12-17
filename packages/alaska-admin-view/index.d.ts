@@ -171,6 +171,10 @@ export type ListsState = immutable.Immutable<{
 
 // caches
 
+export interface ClearCachePayload {
+  model: string;
+}
+
 export interface CacheData extends PaginateResult<any> {
   filters: Filters | null;
   populations?: string[];

@@ -5,6 +5,7 @@ import { actionSuccess, actionFailure } from '../redux/action';
 import api from '../utils/api';
 import { applyDetails, batchApplyDetails } from '../redux/details';
 import { clearList } from '../redux/lists';
+import { clearCache } from '../redux/caches';
 
 export default function* action({ payload }: Action<any>) {
   let result = [];
@@ -27,7 +28,9 @@ export default function* action({ payload }: Action<any>) {
   if (payload.action === 'create' || payload.action === 'remove') {
     // 新建，需要清空列表
     yield put(clearList({ model: payload.model }));
+    yield put(clearCache({ model: payload.model }));
   } else if (payload.action === 'update') {
+    yield put(clearCache({ model: payload.model }));
     if (Array.isArray(result)) {
       // 同时保存了多条记录
       let list: any = result.map((data) => ({ model: payload.model, data }));
