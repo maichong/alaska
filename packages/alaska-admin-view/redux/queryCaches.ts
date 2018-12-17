@@ -1,31 +1,32 @@
 import * as _ from 'lodash';
 import { createAction, handleActions } from 'redux-actions';
 import * as immutable from 'seamless-immutable';
-import { CachesState, Cache, ClearCachePayload } from '..';
+import { QueryCachesState, QueryCache, ClearQueryCachePayload } from '..';
 
-export const APPLY_CACHE = 'APPLY_CACHE';
-export const CLEAR_CACHE = 'CLEAR_CACHE';
+export const APPLY_QUERY_CACHE = 'APPLY_QUERY_CACHE';
+export const CLEAR_QUERY_CACHE = 'CLEAR_QUERY_CACHE';
 
 /**
  * 设置缓存
  */
-export const applyCache = createAction<Cache>(APPLY_CACHE);
+export const applyQueryCache = createAction<Cache>(APPLY_QUERY_CACHE);
 /**
  * 清除缓存
  */
-export const clearCache = createAction<ClearCachePayload>(CLEAR_CACHE);
+export const clearQueryCache = createAction<ClearQueryCachePayload>(CLEAR_QUERY_CACHE);
 
 // 初始state
-const INITIAL_STATE: CachesState = immutable({
+const INITIAL_STATE: QueryCachesState = immutable({
 });
 
 export default handleActions({
-  APPLY_CACHE: (state, action) => {
+  REFRESH: () => INITIAL_STATE,
+  APPLY_QUERY_CACHE: (state, action) => {
     // @ts-ignore
-    const payload: Cache = action.payload;
-    let caches: Cache[] = state[payload.model] || immutable([]);
+    const payload: QueryCache = action.payload;
+    let caches: QueryCache[] = state[payload.model] || immutable([]);
     let found = false;
-    caches = caches.map((cache: Cache) => {
+    caches = caches.map((cache: QueryCache) => {
       if (cache.search === payload.search && _.isEqual(cache.filters, payload.filters)) {
         found = true;
         return payload;
@@ -43,9 +44,9 @@ export default handleActions({
 
     return state.set(payload.model, caches);
   },
-  CLEAR_CACHE: (state, action) => {
+  CLEAR_QUERY_CACHE: (state, action) => {
     // @ts-ignore
-    const payload: ClearCachePayload = action.payload;
+    const payload: ClearQueryCachePayload = action.payload;
     return state.without(payload.model);
   }
 }, INITIAL_STATE);

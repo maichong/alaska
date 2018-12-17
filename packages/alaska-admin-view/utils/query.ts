@@ -1,14 +1,14 @@
 import * as _ from 'lodash';
-import { Cache, CachesState, QueryOptions } from '..';
+import { QueryCache, QueryCachesState, QueryOptions } from '..';
 import api from './api';
 import store from '../redux';
-import { applyCache } from '../redux/caches';
+import { applyQueryCache } from '../redux/queryCaches';
 import * as immutable from 'seamless-immutable';
 
-export default function (options: QueryOptions): Promise<Cache> {
+export default function (options: QueryOptions): Promise<QueryCache> {
   let search = options.search || '';
   let filters = options.filters || null;
-  let state: CachesState = store.getState().caches;
+  let state: QueryCachesState = store.getState().queryCaches;
   if (state[options.model]) {
     let caches = state[options.model];
     for (let cache of caches) {
@@ -32,7 +32,7 @@ export default function (options: QueryOptions): Promise<Cache> {
     result.populations = options.populations;
     result.time = Date.now();
     result = immutable(result);
-    store.dispatch(applyCache(result));
+    store.dispatch(applyQueryCache(result));
     return result;
   });
 }

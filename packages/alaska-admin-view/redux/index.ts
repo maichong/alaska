@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import configureStore from './configureStore';
 import rootSaga from '../sagas';
 
-import cachesReducer from './caches';
+import queryCachesReducer from './queryCaches';
 import detailsReducer from './details';
 import layoutReducer from './layout';
 import listsReducer from './lists';
@@ -14,7 +14,7 @@ import actionReducer from './action';
 
 function createStore() {
   const rootReducer = combineReducers({
-    caches: cachesReducer,
+    queryCaches: queryCachesReducer,
     login: loginReducer,
     user: userReducer,
     settings: settingsReducer,

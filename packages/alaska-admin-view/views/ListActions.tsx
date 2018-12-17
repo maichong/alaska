@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import toast from '@samoyed/toast';
 import { confirm } from '@samoyed/modal';
-import { ListActionsProps, State, Settings, ActionState, ActionRequestPayload } from '..';
+import { ListActionsProps, StoreState, Settings, ActionState, ActionRequestPayload } from '..';
 import ActionGroup from './ActionGroup';
 import * as ActionRedux from '../redux/action';
 
@@ -245,7 +245,7 @@ class ListActions extends React.Component<Props, ListActionsState> {
 }
 
 export default connect(
-  ({ settings, action }: State) =>
+  ({ settings, action }: StoreState) =>
     ({ superMode: settings.superMode, locale: settings.locale, action, settings }),
   (dispatch) => bindActionCreators({ actionRequest: ActionRedux.actionRequest }, dispatch)
 )(ListActions);

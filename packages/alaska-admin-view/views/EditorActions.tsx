@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import { confirm } from '@samoyed/modal';
 import toast from '@samoyed/toast';
 import { ObjectMap } from 'alaska';
-import { EditorActionsProps, State, Settings, ActionState, ActionRequestPayload } from '..';
+import { EditorActionsProps, StoreState, Settings, ActionState, ActionRequestPayload } from '..';
 import ActionGroup from './ActionGroup';
 import * as ActionRedux from '../redux/action';
 
@@ -249,6 +249,6 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
 
 
 export default connect(
-  ({ settings, action }: State) => ({ superMode: settings.superMode, action, settings }),
+  ({ settings, action }: StoreState) => ({ superMode: settings.superMode, action, settings }),
   (dispatch) => bindActionCreators({ actionRequest: ActionRedux.actionRequest }, dispatch)
 )(EditorActions);

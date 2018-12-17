@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { HashRouter as Router } from 'react-router-dom';
-import { AppProps, State, Settings, Layout } from 'alaska-admin-view';
+import { AppProps, StoreState, Settings, Layout } from 'alaska-admin-view';
 import ModalContainer from '@samoyed/modal';
 import { ToastContainer } from '@samoyed/toast';
 import { connect } from 'react-redux';
@@ -93,6 +93,6 @@ class App extends React.Component<Props> {
 
 // Selects which state properties are merged into the component's props
 export default connect(
-  (state: State) => ({ settings: state.settings, layout: state.layout }),
+  (state: StoreState) => ({ settings: state.settings, layout: state.layout }),
   (dispatch) => bindActionCreators({ applyLayout: layoutRedux.applyLayout }, dispatch)
 )(App);

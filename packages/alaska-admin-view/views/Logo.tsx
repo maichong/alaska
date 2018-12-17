@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Node from './Node';
-import { LogoProps, State } from '..';
+import { LogoProps, StoreState } from '..';
 
 interface Props extends LogoProps {
   logo: string;
@@ -30,5 +30,5 @@ class Logo extends React.Component<Props> {
 }
 
 export default connect(
-  ({ settings }: State) => ({ logo: settings.logo, icon: settings.icon })
+  ({ settings }: StoreState) => ({ logo: settings.logo, icon: settings.icon })
 )(Logo);

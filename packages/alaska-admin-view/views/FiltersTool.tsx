@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as React from 'react';
 import * as tr from 'grackle';
 import { connect } from 'react-redux';
-import { FiltersToolProps, State } from '..';
+import { FiltersToolProps, StoreState } from '..';
 import Node from './Node';
 import ButtonDropdown from 'reactstrap/lib/ButtonDropdown';
 import DropdownToggle from 'reactstrap/lib/DropdownToggle';
@@ -77,5 +77,5 @@ class FiltersTool extends React.Component<Props, FiltersToolState> {
   }
 }
 export default connect(
-  ({ settings }: State) => ({ superMode: settings.superMode })
+  ({ settings }: StoreState) => ({ superMode: settings.superMode })
 )(FiltersTool);

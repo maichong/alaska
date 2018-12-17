@@ -3,7 +3,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Node from './Node';
-import { NavProps, State, Menus, Settings } from '..';
+import { NavProps, StoreState, Menus, Settings } from '..';
 import NavItem from './NavItem';
 import * as menusRedux from '../redux/menus';
 import * as tr from 'grackle';
@@ -86,6 +86,6 @@ class Nav extends React.Component<Props, NavState> {
   }
 }
 export default connect(
-  ({ menus, settings }: State) => ({ menus, settings }),
+  ({ menus, settings }: StoreState) => ({ menus, settings }),
   (dispatch) => bindActionCreators({ applyMenusNav: menusRedux.applyMenusNav }, dispatch)
 )(Nav);

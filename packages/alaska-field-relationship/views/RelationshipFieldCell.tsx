@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import * as detailsRedux from 'alaska-admin-view/redux/details';
-import { CellViewProps, Settings, DetailsState, State, Service } from 'alaska-admin-view';
+import { CellViewProps, Settings, DetailsState, StoreState, Service } from 'alaska-admin-view';
 
 function nameToKey(name: string): string {
   if (!name) return '';
@@ -110,7 +110,7 @@ class RelationshipFieldCell extends React.Component<Props> {
 }
 
 export default connect((
-  { details, settings }: State) => ({ details, settings }),
+  { details, settings }: StoreState) => ({ details, settings }),
 (dispatch) => ({
   loadDetails: bindActionCreators(detailsRedux.loadDetails, dispatch)
 })

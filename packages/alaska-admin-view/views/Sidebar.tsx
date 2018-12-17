@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Logo from './Logo';
 import Copyright from './Copyright';
 import Menu from './Menu';
-import { SidebarProps, Menus, State } from '..';
+import { SidebarProps, Menus, StoreState } from '..';
 
 interface SidebarState {
   opened: boolean;
@@ -55,5 +55,5 @@ class Sidebar extends React.Component<Props, SidebarState> {
   }
 }
 export default connect(
-  ({ menus, layout }: State) => ({ menus, layout })
+  ({ menus, layout }: StoreState) => ({ menus, layout })
 )(Sidebar);

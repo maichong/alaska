@@ -8,7 +8,7 @@ import Node from './Node';
 import DataTable from './DataTable';
 import LoadingPage from './LoadingPage';
 import { Filters } from 'alaska-model';
-import { ListProps, State, RecordList } from '..';
+import { ListProps, StoreState, RecordList } from '..';
 import * as listsRedux from '../redux/lists';
 
 interface Props extends ListProps {
@@ -94,7 +94,7 @@ class List extends React.Component<Props> {
 }
 
 export default connect(
-  ({ lists }: State, props: ListProps) => ({ list: lists[props.model.id] }),
+  ({ lists }: StoreState, props: ListProps) => ({ list: lists[props.model.id] }),
   (dispatch) => bindActionCreators({
     loadList: listsRedux.loadList
   }, dispatch)

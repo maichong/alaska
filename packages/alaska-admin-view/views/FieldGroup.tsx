@@ -6,7 +6,7 @@ import * as checkDepends from 'check-depends';
 import Node from './Node';
 import { connect } from 'react-redux';
 import parseAbility from '../utils/parse-ability';
-import { FieldGroupProps, Settings, State } from '..';
+import { FieldGroupProps, Settings, StoreState } from '..';
 
 interface FieldGroupState {
 }
@@ -51,7 +51,8 @@ class FieldGroup extends React.Component<Props, FieldGroupState> {
     _.forEach(propFields, (field) => {
       let { ability } = field;
       let abilityDisabled = false;
-      let fieldCls = horizontal ? 'form-group row ' : 'form-group ';
+      let fieldClasses: string[] = ['form-group', model.id + '-' + field.path + '-view'];
+      if (horizontal) fieldClasses.push('row');
       // if (typeof ability === 'function') {
       //   ability = ability(record, settings.user);
       // }
@@ -73,7 +74,7 @@ class FieldGroup extends React.Component<Props, FieldGroupState> {
 
       let ViewClass = views.components[field.view];
       if (!ViewClass) {
-        console.warn('Missing : ' + field.view);
+        console.error('Missing : ' + field.view);
         ViewClass = views.components.TextFieldView;
       }
 
@@ -88,6 +89,16 @@ class FieldGroup extends React.Component<Props, FieldGroupState> {
       let label = tr(field.label, serviceId);
       let help = tr(field.help, serviceId);
       let value: any = record[field.path];
+      let fixed = checkDepends(field.fixed, record);
+      if (fixed) {
+        fieldClasses.push('fixed');
+      }
+      if (!hasAbility) {
+        fieldClasses.push('no-ability');
+      }
+      if (fieldDisabled) {
+        fieldClasses.push('disabled');
+      }
       // @ts-ignore
       fields.push(React.createElement(ViewClass, {
         key: field.path,
@@ -100,13 +111,13 @@ class FieldGroup extends React.Component<Props, FieldGroupState> {
         field: _.assign({ horizontal }, field, {
           help,
           label,
-          fixed: checkDepends(field.fixed, record)
+          fixed
         }),
         disabled: fieldDisabled,
         locale: settings.locale,
         errorText: errors[field.path],
         onChange: (value: any) => onFieldChange(field.path, value),
-        className: fieldCls + model.id + '-' + field.path + '-view'
+        className: fieldClasses.join(' ')
       }));
     });
     if (!fields.length) return null;
@@ -199,4 +210,4 @@ class FieldGroup extends React.Component<Props, FieldGroupState> {
     return el;
   }
 }
-export default connect(({ settings }: State) => ({ settings }))(FieldGroup);
+export default connect(({ settings }: StoreState) => ({ settings }))(FieldGroup);

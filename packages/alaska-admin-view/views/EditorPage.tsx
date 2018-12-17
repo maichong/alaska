@@ -16,7 +16,7 @@ import * as detailsRedux from '../redux/details';
 import {
   EditorPageProps,
   Model,
-  State,
+  StoreState,
   DetailsState,
   Service,
   Record,
@@ -210,7 +210,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
 }
 
 export default connect(
-  ({ details, settings }: State) => ({ details, services: settings.services }),
+  ({ details, settings }: StoreState) => ({ details, services: settings.services }),
   (dispatch) => bindActionCreators({
     loadDetails: detailsRedux.loadDetails
   }, dispatch)

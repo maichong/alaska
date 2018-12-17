@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import toast from '@samoyed/toast';
 import Node from './Node';
 import Editor from './Editor';
-import { QuickEditorProps, Record, State, ActionState } from '..';
+import { QuickEditorProps, Record, StoreState, ActionState } from '..';
 import * as ActionRedux from '../redux/action';
 import QuickEditorActionBar from './QuickEditorActionBar';
 import QuickEditorTitleBar from './QuickEditorTitleBar';
@@ -199,6 +199,6 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
 }
 
 export default connect(
-  (state: State) => ({ action: state.action }),
+  (state: StoreState) => ({ action: state.action }),
   (dispatch) => bindActionCreators({ actionRequest: ActionRedux.actionRequest }, dispatch)
 )(QuickEditor);

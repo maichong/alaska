@@ -54,6 +54,7 @@ export const batchApplyDetails = createAction<ApplyDetailsPayload[]>(BATCH_APPLY
 const INITIAL_STATE: DetailsState = immutable({});
 
 export default handleActions({
+  REFRESH: () => INITIAL_STATE,
   CLEAR_DETAILS: (state, action) => {
     // @ts-ignore
     const payload: ClearDetailsPayload = action.payload;

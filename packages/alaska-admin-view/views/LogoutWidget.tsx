@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { WidgetProps, State, User } from '..';
+import { WidgetProps, StoreState, User } from '..';
 import * as loginRedux from '../redux/login';
 
 interface LogoutWidgetState {
@@ -38,7 +38,7 @@ class LogoutWidget extends React.Component<Props, LogoutWidgetState> {
 }
 
 export default connect(
-  ({ settings }: State) => ({ user: settings.user }),
+  ({ settings }: StoreState) => ({ user: settings.user }),
   (dispatch) => bindActionCreators({
     logout: loginRedux.logout
   }, dispatch)

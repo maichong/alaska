@@ -8,7 +8,7 @@ import ButtonDropdown from 'reactstrap/lib/ButtonDropdown';
 import DropdownToggle from 'reactstrap/lib/DropdownToggle';
 import DropdownMenu from 'reactstrap/lib/DropdownMenu';
 import DropdownItem from 'reactstrap/lib/DropdownItem';
-import { WidgetProps, State } from '..';
+import { WidgetProps, StoreState } from '..';
 import * as settingsRedux from '../redux/settings';
 
 interface LocaleWidgetState {
@@ -69,7 +69,7 @@ class LocaleWidget extends React.Component<Props, LocaleWidgetState> {
                   onClick={(() => this.handleChange(key))}
                 >
                   <img src={`img/locales/${key}.png`} alt="" />
-                  {tr(key)}
+                  {tr.locale(key)('lang')}
                 </DropdownItem>
               ))
             }
@@ -81,7 +81,7 @@ class LocaleWidget extends React.Component<Props, LocaleWidgetState> {
 }
 
 export default connect(
-  ({ settings }: State) => ({ locale: settings.locale, locales: settings.locales }),
+  ({ settings }: StoreState) => ({ locale: settings.locale, locales: settings.locales }),
   (dispatch) => bindActionCreators({
     localeSetting: settingsRedux.localeSetting
   }, dispatch)

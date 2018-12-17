@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as tr from 'grackle';
-import { WidgetProps, State, User } from '..';
+import { WidgetProps, StoreState, User } from '..';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import TooltipWrapper from '@samoyed/tooltip-wrapper';
@@ -75,7 +75,7 @@ class UserWidget extends React.Component<Props, UserWidgetState> {
 }
 
 export default connect(
-  ({ settings }: State) => ({ user: settings.user }),
+  ({ settings }: StoreState) => ({ user: settings.user }),
   (dispatch) => bindActionCreators({
     logout: loginRedux.logout,
     refresh: refreshRedux.refresh

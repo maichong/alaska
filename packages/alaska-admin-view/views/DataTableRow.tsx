@@ -3,7 +3,7 @@ import * as PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Checkbox from '@samoyed/checkbox';
 import Node from './Node';
-import { DataTableRowProps, Field, State } from '..';
+import { DataTableRowProps, Field, StoreState } from '..';
 
 interface Props extends DataTableRowProps {
   superMode: boolean;
@@ -90,5 +90,5 @@ class DataTableRow extends React.Component<Props, DataTableRowState> {
   }
 }
 export default connect(
-  ({ settings }: State) => ({ superMode: settings.superMode })
+  ({ settings }: StoreState) => ({ superMode: settings.superMode })
 )(DataTableRow);

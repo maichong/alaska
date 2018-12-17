@@ -1,8 +1,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import * as shallowEqualWithout from 'shallow-equal-without';
-import upload from 'alaska-admin-view/utils/upload';
-import { FieldViewProps } from 'alaska-admin-view';
+import { FieldViewProps, upload } from 'alaska-admin-view';
 import * as tr from 'grackle';
 
 type State = {

@@ -59,9 +59,8 @@ export default class Goods extends Model {
       hidden: true
     },
     pics: {
-      label: 'Other Pictures',
+      label: 'Pictures',
       type: 'image',
-      required: true,
       multi: true,
       cell: ''
     },
@@ -220,7 +219,7 @@ export default class Goods extends Model {
       this.createdAt = new Date();
     }
 
-    if (this.isNew || this.isModified('pics')) {
+    if ((this.isNew || this.isModified('pics')) && this.pics.length) {
       this.pic = this.pics[0];
     }
 

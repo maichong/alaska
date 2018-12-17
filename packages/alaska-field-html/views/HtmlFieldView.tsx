@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { connect } from 'react-redux';
-import { FieldViewProps, State, Settings } from 'alaska-admin-view';
+import { FieldViewProps, StoreState, Settings } from 'alaska-admin-view';
 
 export interface Props extends FieldViewProps {
   settings?: Settings;
@@ -102,4 +102,4 @@ class HtmlFieldView extends React.Component<Props, HtmlState> {
   }
 }
 
-export default connect((state: State) => ({ settings: state.settings }))(HtmlFieldView);
+export default connect((state: StoreState) => ({ settings: state.settings }))(HtmlFieldView);

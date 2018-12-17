@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Node from './Node';
-import { MenuToggleProps, State } from '..';
+import { MenuToggleProps, StoreState } from '..';
 import * as layoutRedux from '../redux/layout';
 
 interface Props extends MenuToggleProps {
@@ -44,6 +44,6 @@ class MenuToggle extends React.Component<Props> {
 }
 
 export default connect(
-  ({ layout }: State) => ({ layout }),
+  ({ layout }: StoreState) => ({ layout }),
   (dispatch) => bindActionCreators({ applyLayout: layoutRedux.applyLayout }, dispatch)
 )(MenuToggle);

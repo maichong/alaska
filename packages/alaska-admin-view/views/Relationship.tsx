@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import Node from './Node';
 import DataTable from './DataTable';
 import * as listsRedux from '../redux/lists';
-import { RelationshipProps, State, RecordList, Record } from '..';
+import { RelationshipProps, StoreState, RecordList, Record } from '..';
 
 interface RelationshipState {
   records: immutable.Immutable<Record[]>;
@@ -85,7 +85,7 @@ class Relationship extends React.Component<Props, RelationshipState> {
 }
 
 export default connect(
-  ({ lists, settings }: State) => ({ lists, locale: settings.locale }),
+  ({ lists, settings }: StoreState) => ({ lists, locale: settings.locale }),
   (dispatch) => bindActionCreators({
     loadList: listsRedux.loadList
   }, dispatch)

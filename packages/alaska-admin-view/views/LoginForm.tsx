@@ -4,7 +4,7 @@ import * as loginRedux from '../redux/login';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Node from './Node';
-import { LoginFormProps, State, LoginState } from '..';
+import { LoginFormProps, StoreState, LoginState } from '..';
 
 interface LoginFormState {
   username: string;
@@ -123,6 +123,6 @@ class LoginForm extends React.Component<Props, LoginFormState> {
 }
 
 export default connect(
-  ({ login }: State) => ({ login }),
+  ({ login }: StoreState) => ({ login }),
   (dispatch) => bindActionCreators({ loginAction: loginRedux.login }, dispatch)
 )(LoginForm);

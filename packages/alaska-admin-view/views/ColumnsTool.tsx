@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as React from 'react';
 import * as tr from 'grackle';
 import { connect } from 'react-redux';
-import { ColumnsToolProps, State } from '..';
+import { ColumnsToolProps, StoreState } from '..';
 import Node from './Node';
 import ButtonDropdown from 'reactstrap/lib/ButtonDropdown';
 import DropdownToggle from 'reactstrap/lib/DropdownToggle';
@@ -86,5 +86,5 @@ class ColumnsTool extends React.Component<Props, ColumnsToolState> {
   }
 }
 export default connect(
-  ({ settings }: State) => ({ superMode: settings.superMode })
+  ({ settings }: StoreState) => ({ superMode: settings.superMode })
 )(ColumnsTool);

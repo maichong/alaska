@@ -1,8 +1,8 @@
 /*
  * @Author: Chao
  * @Date: 2018-11-01 12:44:21
- * @Last Modified by: Zhao
- * @Last Modified time: 2018-11-17 13:45:36
+ * @Last Modified by: Liang
+ * @Last Modified time: 2018-12-18 06:55:17
  */
 
 import * as _ from 'lodash';
@@ -11,16 +11,13 @@ import { Action } from 'redux-actions';
 import { LoadMorePayload } from 'alaska-admin-view';
 import { applyList, loadListFailure } from '../redux/lists';
 import api from '../utils/api';
-import { getStore } from '../utils/store';
-import { State, RecordList } from '..';
+import store from '../redux';
+import { ListsState, AnyRecordList } from '..';
 
 export default function* more({ payload }: Action<LoadMorePayload>) {
   let model = payload.model;
-  let state: State = getStore() || {} as State;
-  let list: RecordList<any> & { sort?: string; filters?: Object; } = null;
-  if (state.lists && state.lists[model]) {
-    list = state.lists[model];
-  }
+  let lists: ListsState = store.getState().lists;
+  let list: AnyRecordList = lists[model];
   if (!list) return;
   try {
     let res = yield api.get('/list',

@@ -3,7 +3,7 @@ import * as tr from 'grackle';
 import { connect } from 'react-redux';
 import Checkbox from '@samoyed/checkbox';
 import Node from './Node';
-import { DataTableHeaderProps, Field, State } from '..';
+import { DataTableHeaderProps, Field, StoreState } from '..';
 
 interface Props extends DataTableHeaderProps {
   superMode: boolean;
@@ -78,5 +78,5 @@ class DataTableHeader extends React.Component<Props, DataTableHeaderState> {
   }
 }
 export default connect(
-  ({ settings }: State) => ({ superMode: settings.superMode, locale: settings.locale })
+  ({ settings }: StoreState) => ({ superMode: settings.superMode, locale: settings.locale })
 )(DataTableHeader);

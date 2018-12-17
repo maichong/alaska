@@ -16,7 +16,7 @@ import QuickEditor from './QuickEditor';
 import LoadingPage from './LoadingPage';
 import * as listsRedux from '../redux/lists';
 import {
-  ListPageProps, ListsState, State, Record, Model, Settings,
+  ListPageProps, ListsState, StoreState, Record, Model, Settings,
   Service
 } from '..';
 
@@ -321,7 +321,7 @@ class ListPage extends React.Component<Props, ListPageState> {
 }
 
 export default connect(
-  (state: State) => ({
+  (state: StoreState) => ({
     lists: state.lists, settings: state.settings
   }),
   (dispatch) => bindActionCreators({

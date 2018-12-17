@@ -12,7 +12,7 @@ import { LangGroup } from 'alaska-locale';
 
 export const api: Client;
 
-export const store: Store<State, any>;
+export const store: Store<StoreState, any>;
 
 export interface UploadOptions {
   /**
@@ -44,7 +44,9 @@ export interface QueryOptions {
   populations?: string[];
 }
 
-export function query(options: QueryOptions): Promise<Cache>;
+export function query(options: QueryOptions): Promise<QueryCache>;
+
+export function upload(options: UploadOptions): Promise<UploadResult>;
 
 export class App extends React.Component<AppProps> {
 }
@@ -55,8 +57,8 @@ export interface AppProps {
 
 // state
 
-export interface State {
-  caches: CachesState;
+export interface StoreState {
+  queryCaches: QueryCachesState;
   details: DetailsState;
   layout: Layout;
   lists: ListsState;
@@ -152,6 +154,7 @@ export interface LoadMorePayload {
 
 export interface ApplyListPayload extends PaginateResult<any> {
   model: string;
+  sort?: string;
 }
 
 export interface LoadListFailurePayload {
@@ -160,7 +163,7 @@ export interface LoadListFailurePayload {
 }
 
 // eslint-disable-next-line space-infix-ops
-export type RecordList<T> = immutable.Immutable<PaginateResult<T> & { error?: Error; fetching: boolean }>;
+export type RecordList<T> = immutable.Immutable<PaginateResult<T> & { error?: Error; fetching: boolean; sort?: string; }>;
 
 export interface AnyRecordList extends RecordList<any> {
 }
@@ -171,21 +174,22 @@ export type ListsState = immutable.Immutable<{
 
 // caches
 
-export interface ClearCachePayload {
+export interface ClearQueryCachePayload {
   model: string;
 }
 
-export interface CacheData extends PaginateResult<any> {
+export interface QueryCacheData extends PaginateResult<any> {
   filters: Filters | null;
   populations?: string[];
   model: string;
+  sort?: string;
   time: number;
 }
 
-export type Cache = immutable.Immutable<CacheData>;
+export type QueryCache = immutable.Immutable<QueryCacheData>;
 
-export type CachesState = immutable.Immutable<{
-  [model: string]: Cache[];
+export type QueryCachesState = immutable.Immutable<{
+  [model: string]: QueryCache[];
 }>;
 
 // layout
@@ -507,7 +511,7 @@ export interface FieldView extends React.Component<FieldViewProps> { }
 // ListView interface
 export interface ListViewProps {
   model: Model;
-  list: PaginateResult<any>;
+  list: AnyRecordList;
   search?: string;
   filters?: Filters;
   sort?: string;

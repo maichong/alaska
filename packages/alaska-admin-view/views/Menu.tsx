@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as React from 'react';
 import Node from './Node';
-import { MenuProps, Settings, State } from '..';
+import { MenuProps, Settings, StoreState } from '..';
 import MenuItem from './MenuItem';
 import { connect } from 'react-redux';
 
@@ -75,4 +75,4 @@ class Menu extends React.Component<Props, MenuState> {
   }
 }
 
-export default connect(({ settings }: State) => ({ locale: settings.locale }))(Menu);
+export default connect(({ settings }: StoreState) => ({ locale: settings.locale }))(Menu);

@@ -74,6 +74,7 @@ const EMPTY_LIST: AnyRecordList = immutable({
 });
 
 export default handleActions({
+  REFRESH: () => INITIAL_STATE,
   LOAD_LIST: (state, action) => {
     // @ts-ignore
     const payload: LoadListPayload = action.payload;

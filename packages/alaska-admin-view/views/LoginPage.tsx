@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import Node from './Node';
 import LoginForm from './LoginForm';
-import { LoginPageProps, State } from '..';
+import { LoginPageProps, StoreState } from '..';
 
 interface Props extends LoginPageProps {
   loginLogo: string;
@@ -29,5 +29,5 @@ class LoginPage extends React.Component<Props> {
 }
 
 export default connect(
-  ({ settings }: State) => ({ loginLogo: settings.loginLogo })
+  ({ settings }: StoreState) => ({ loginLogo: settings.loginLogo })
 )(LoginPage);
