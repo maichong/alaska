@@ -54,6 +54,8 @@ declare module 'alaska-modules' {
 
 //// alaska-model
 
+export type RecordID = mongodb.ObjectID | string | number;
+
 export default class ModelExtension extends Extension {
 }
 
@@ -459,7 +461,7 @@ export class Model {
   /** Hash containing current validation errors. */
   errors: any;
   /** This documents _id. */
-  _id: any;
+  _id: RecordID;
   id: string;
 
   /** Boolean flag specifying if the document is new. */
@@ -499,6 +501,7 @@ export interface ModelGroup {
   form?: boolean;
   color?: Colors;
   wrapper?: string; // 自定义Wrapper占位符
+  after?: string;
   ability?: string | AbilityGenerator;
   disabled?: DependsQueryExpression;
   hidden?: DependsQueryExpression;

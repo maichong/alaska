@@ -1,7 +1,6 @@
 import { Model } from 'alaska-model';
 
 declare class Banner extends Model {
-  _id: string;
   title: string;
   pic: Object;
   place: string;

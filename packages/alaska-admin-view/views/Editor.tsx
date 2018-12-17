@@ -1,9 +1,10 @@
+import { ObjectMap } from 'alaska';
 import * as _ from 'lodash';
 import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
 import * as React from 'react';
 import Node from './Node';
-import { EditorProps, FieldGroup as FieldGroupType } from '..';
+import { EditorProps, FieldGroupProps, Field } from '..';
 import FieldGroup from './FieldGroup';
 
 type Errors = immutable.Immutable<{
@@ -32,6 +33,28 @@ function checkErrors(props?: EditorProps, errors?: Errors | null): Errors {
   return errors;
 }
 
+function sortByAfter<T extends { path: string; after?: string }>(items: T[]): T[] {
+  let paths: string[] = _.map(items, (item) => item.path);
+  let map: ObjectMap<T> = {};
+  for (let item of items) {
+    map[item.path] = item;
+    if (item.after && paths.indexOf(item.after) > -1) {
+      let selfIndex = paths.indexOf(item.path);
+      let afterIndex = paths.indexOf(item.after);
+      paths.splice(
+        afterIndex < selfIndex ? afterIndex + 1 : afterIndex,
+        0,
+        paths.splice(selfIndex, 1)[0]
+      );
+    }
+  }
+  let list = [];
+  for (let path of paths) {
+    list.push(map[path]);
+  }
+  return list;
+}
+
 export default class Editor extends React.Component<EditorProps, EditorState> {
   constructor(props: EditorProps) {
     super(props);
@@ -52,7 +75,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
   reduceGroups() {
     let { model, record, isNew, onChange } = this.props;
     let { errors } = this.state;
-    let groups: { [key: string]: FieldGroupType } = {
+    let groups: ObjectMap<FieldGroupProps> = {
       default: {
         title: '',
         fields: [],
@@ -66,19 +89,16 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
       }
     };
     _.forEach(model.groups, (group, key: string) => {
-      group.title = group.title || key;
-      group.fields = [];
-      group.path = group.path || key;
-      group.model = model;
-      group.record = record;
-      group.isNew = isNew;
-      group.errors = errors;
-      group.onFieldChange = onChange;
-      if (key === 'default') {
-        group = Object.assign(group, groups.default);
-      }
-      groups[key] = group;
+      groups[key] = _.assign({ title: key, path: key, panel: true }, group, {
+        fields: [],
+        model,
+        record,
+        isNew,
+        errors,
+        onFieldChange: onChange
+      });
     });
+
     _.forEach(model.fields, (field) => {
       if (!field.group || !groups[field.group]) {
         groups.default.fields.push(field);
@@ -86,62 +106,22 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
         groups[field.group].fields.push(field);
       }
     });
-    for (let groupKey of Object.keys(groups)) {
-      let group = this.fieldSort(groups[groupKey]);
-      if (!group) {
-        delete groups[groupKey];
-      } else {
-        groups[groupKey] = group;
-      }
-    }
-    return groups;
-  }
 
-  fieldSort(group: FieldGroupType) {
-    if (!group.fields.length) {
-      return null;
-    }
-    let fieldTitleList: string[] = _.map(group.fields, (field) => field.path);
-    for (let field of group.fields) {
-      if (field.after && fieldTitleList.indexOf(field.after) > -1) {
-        let selfIndex = fieldTitleList.indexOf(field.path);
-        let afterIndex = fieldTitleList.indexOf(field.after);
-        fieldTitleList.splice(
-          afterIndex < selfIndex ? afterIndex + 1 : afterIndex,
-          0,
-          fieldTitleList.splice(selfIndex, 1)[0]
-        );
-      }
-    }
-    let list = [];
-    for (let i = 0; i < fieldTitleList.length; i += 1) {
-      for (let field of group.fields) {
-        if (field.path === fieldTitleList[i]) {
-          list.push(field);
-        }
-      }
-    }
-    group.fields = list;
-    return group;
+    _.forEach(groups, (group: FieldGroupProps) => {
+      group.fields = sortByAfter(group.fields);
+    });
+
+    return sortByAfter(_.values(groups)).map((group) => <FieldGroup key={group.path} {...group} />);
   }
 
   render() {
-    const { errors } = this.state;
-    let groups = this.reduceGroups();
     return (
       <Node
         wrapper="Editor"
         props={this.props}
         className="editor"
       >
-        {
-          _.map(groups, (group, groupKey: string) => <FieldGroup
-            errors={errors}
-            key={groupKey}
-            panel={group.panel === false ? false : group.panel}
-            {...group}
-          />)
-        }
+        {this.reduceGroups()}
       </Node>
     );
   }

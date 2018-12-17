@@ -31,7 +31,6 @@ class AdminService extends Service {
 
       _.forEach(s.models, (m: typeof Model, modelName) => {
         // @ts-ignore 某些属性需要在前端生成，eg. canUpdate
-        console.log('m.relationships', m.relationships);
         let model: AdminView.Model = {
           label: m.label,
           modelName,

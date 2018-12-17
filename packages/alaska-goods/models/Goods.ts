@@ -1,9 +1,7 @@
 import { Model } from 'alaska-model';
 import * as _ from 'lodash';
-import * as utils from 'alaska/utils';
 import { Context } from 'alaska-http';
 import BALANCE from 'alaska-balance';
-import Sku from './Sku';
 import Category from 'alaska-category/models/Category';
 
 function defaultFilters(ctx: Context): null {
@@ -29,17 +27,8 @@ export default class Goods extends Model {
 
   static defaultFilters = defaultFilters;
 
-  static populations = {
-    skus: {
-      match: {
-        inventory: { $gt: 0 },
-        valid: true
-      }
-    }
-  };
-
   static scopes = {
-    list: 'title pic price discount inventory hasSku _skus'
+    list: 'title pic price discount inventory'
   };
 
   static groups = {
@@ -48,13 +37,6 @@ export default class Goods extends Model {
     },
     inventory: {
       title: 'Inventory'
-    },
-    props: {
-      title: 'Goods Properties'
-    },
-    sku: {
-      title: 'SKU',
-      panel: false
     },
     desc: {
       title: 'Description'
@@ -74,12 +56,14 @@ export default class Goods extends Model {
     pic: {
       label: 'Main Picture',
       type: 'image',
-      required: true
+      hidden: true
     },
     pics: {
       label: 'Other Pictures',
       type: 'image',
-      multi: true
+      required: true,
+      multi: true,
+      cell: ''
     },
     cat: {
       label: 'Category',
@@ -108,6 +92,11 @@ export default class Goods extends Model {
     hotGoods: {
       label: 'Is Hot Goods',
       type: Boolean
+    },
+    activated: {
+      label: 'Activated',
+      type: Boolean,
+      private: true
     },
     seoTitle: {
       label: 'SEO Title',
@@ -147,12 +136,12 @@ export default class Goods extends Model {
       group: 'price'
     },
     discountStartAt: {
-      label: 'Discount Start At',
+      label: 'Discount Start',
       type: Date,
       group: 'price'
     },
     discountEndAt: {
-      label: 'Discount End At',
+      label: 'Discount End',
       type: Date,
       group: 'price'
     },
@@ -180,38 +169,6 @@ export default class Goods extends Model {
       default: 0,
       private: true
     },
-    activated: {
-      label: 'Activated',
-      type: Boolean,
-      private: true
-    },
-    props: {
-      label: 'Goods Properties',
-      type: Object,
-      view: 'GoodsPropsEditor',
-      group: 'props'
-    },
-    propValues: {
-      label: 'Properties Values',
-      type: 'relationship',
-      ref: 'GoodsPropValue',
-      multi: true,
-      hidden: true,
-      private: true
-    },
-    skus: {
-      label: 'SKU',
-      type: 'relationship',
-      ref: 'Sku',
-      multi: true,
-      hidden: true
-    },
-    sku: {
-      type: Object,
-      view: 'GoodsSkuEditor',
-      group: 'sku',
-      private: true
-    },
     createdAt: {
       label: 'Created At',
       type: Date
@@ -230,9 +187,6 @@ export default class Goods extends Model {
     get discountValid() {
       let now = new Date();
       return this.discount > 0 && this.discountStartAt < now && this.discountEndAt > now;
-    },
-    get hasSku() {
-      return this.skus && this.skus.length > 0;
     }
   };
 
@@ -258,88 +212,21 @@ export default class Goods extends Model {
   volume: number;
   sort: number;
   activated: boolean;
-  props: Object;
-  propValues: Object[];
-  skus: Object[];
-  sku: Object;
   createdAt: Date;
   desc: string;
-
 
   async preSave() {
     if (!this.createdAt) {
       this.createdAt = new Date();
     }
 
+    if (this.isNew || this.isModified('pics')) {
+      this.pic = this.pics[0];
+    }
+
     if (this.isModified('cat')) {
       let cat: Category = await Category.findById(this.cat);
       this.cats = cat ? cat.parents : [];
-    }
-
-    //如果商品属性发生更改,重建属性值索引,供前端检索
-    if (this.isModified('props')) {
-      let propValues = [];
-      _.each(this.props, (prop) => {
-        if (prop.filter) {
-          _.each(prop.values, (value) => {
-            if (utils.isObjectId(value.value)) {
-              propValues.push(value.value);
-            }
-          });
-        }
-      });
-      this.propValues = propValues;
-    }
-
-    //如果在后台修改了SKU,更新SKU记录
-    if (this.isModified('sku')) {
-      let skuIds: any[] = [];
-      // $Flow
-      let skus: Sku[] = await Sku.find({
-        goods: this.id
-      });
-      let skusMap = {};
-      let skusMapByKey = {};
-      skus.forEach((s: Sku) => {
-        skusMap[s.id] = s;
-        skusMapByKey[s.key] = s;
-      });
-      for (let s of this.sku) {
-        let sku: ?Sku;
-        if (s.id) {
-          sku = skusMap[s.id];
-        }
-        if (!sku) {
-          sku = skusMapByKey[s.key];
-        }
-        if (!s.valid && !sku) {
-          //没有找到,并且提交的是无效记录
-          //跳过此条
-          return;
-        }
-        if (s.valid && !sku) {
-          sku = new Sku({
-            goods: this.id
-          });
-        }
-        sku.pic = s.pic;
-        sku.valid = s.valid;
-        sku.price = s.price;
-        sku.discount = s.discount;
-        sku.inventory = s.inventory;
-        sku.desc = s.desc;
-        sku.key = s.key;
-        sku.props = s.props;
-        sku.save();
-        sku.__exist = true;
-        skuIds.push(sku._id);
-      }
-      for (let sku of skus) {
-        if (!sku.__exist) {
-          sku.remove();
-        }
-      }
-      this.skus = skuIds;
     }
   }
 }

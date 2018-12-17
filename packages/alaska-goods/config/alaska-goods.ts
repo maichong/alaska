@@ -1,3 +1,8 @@
 export default {
-  prefix: ''
+  prefix: '',
+  services: {
+    'alaska-balance': {},
+    'alaska-category': {},
+    'alaska-property': {},
+  }
 };

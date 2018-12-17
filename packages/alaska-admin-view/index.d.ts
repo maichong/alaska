@@ -248,17 +248,12 @@ export interface ModelRelationship {
 
 export interface FieldGroup {
   path: string;
-  model: Model;
-  record: immutable.Immutable<Record>;
-  isNew: boolean;
-  fields: Field[];
   title?: string;
-  errors: {};
-  onFieldChange: Function;
   form?: boolean;
   panel?: boolean;
   color?: Colors;
   wrapper?: string; // 自定义Wrapper占位符
+  after?: string;
   horizontal?: boolean;
   ability?: string;
   super?: DependsQueryExpression;
@@ -679,6 +674,12 @@ export interface ErrorPageProps {
 }
 
 export interface FieldGroupProps extends FieldGroup {
+  model: Model;
+  record: immutable.Immutable<Record>;
+  errors: ObjectMap<any>;
+  isNew: boolean;
+  fields: Field[];
+  onFieldChange: Function;
 }
 
 export interface FilterEditorProps {
