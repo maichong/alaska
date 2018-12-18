@@ -36,19 +36,14 @@ export default handleActions({
     let settings: Settings = action.payload;
     tr.setLocale(settings.locale);
     _.forEach(settings.locales, (langGroup, serviceId) => {
-      tr.learn(langGroup, serviceId);
+      tr.learn(langGroup, serviceId === 'alaska-admin' ? '' : serviceId);
     });
     return settings;
   },
   LOCALE_SETTING: (state: Settings, action) => {
     let locale: string = action.payload.locale;
-    let newState = Object.assign({}, state, { locale });
-    // state.locale = locale;
     tr.setLocale(locale);
-    _.forEach(state.locales, (langGroup, serviceId) => {
-      tr.learn(langGroup, serviceId);
-    });
-    return newState;
+    return Object.assign({}, state, { locale });
   },
   LOGOUT: () => INITIAL_STATE
 }, INITIAL_STATE);

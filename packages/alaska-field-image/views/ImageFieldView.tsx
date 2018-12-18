@@ -62,8 +62,12 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
     _.forEach(this.imageInput.files, (file) => {
       if (value.length >= this.state.max || !file) return;
       let matchs = file.name.match(/\.(\w+)$/);
-      let temp: boolean = (field.allowed || ['jpg', 'png']).indexOf(matchs[1].replace('jpeg', 'jpg').toLowerCase()) < 0;
-      if (!matchs || !matchs[1] || temp) {
+      if (!matchs) {
+        nextState.errorText = 'Invalid image format';
+        return;
+      }
+      let ext = matchs[1].replace('jpeg', 'jpg').toLowerCase();
+      if ((field.allowed || ['jpg', 'png']).indexOf(ext) < 0) {
         nextState.errorText = 'Invalid image format';
         return;
       }

@@ -13,7 +13,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "@samoyed/checkbox-group": "^0.2.0",
+    "@samoyed/checkbox-group": "^0.2.1",
     "@samoyed/switch": "^0.2.0"
   }
 }

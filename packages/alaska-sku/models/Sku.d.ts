@@ -3,6 +3,11 @@ import { PropData } from 'alaska-property';
 import { Image } from 'alaska-field-image';
 
 declare class Property extends Model {
+}
+
+export interface PropertyFields {
+  _id: RecordID;
+  id: string;
   key: string;
   pic: Image;
   goods: RecordID;
@@ -15,5 +20,7 @@ declare class Property extends Model {
   props: PropData[];
   createdAt: Date;
 }
+
+interface Property extends PropertyFields { }
 
 export default Property;

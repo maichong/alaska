@@ -30,8 +30,8 @@ export default propertyService;
 export interface PropData {
   id: string;
   title: string;
-  sku: boolean;
-  filter: boolean;
+  sku?: boolean;
+  filter?: boolean;
   values: PropValueData[];
 }
 

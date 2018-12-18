@@ -196,7 +196,7 @@ class FieldGroup extends React.Component<Props, FieldGroupState> {
         </div>
       );
     } else {
-      el = <div className="card"><div className="card-body">{el}</div></div>;
+      // el = <div className="card"><div className="card-body">{el}</div></div>;
     }
     el = <Node wrapper="FieldGroup" className="field-group" props={this.props}>{el}</Node>;
     if (wrapper) {

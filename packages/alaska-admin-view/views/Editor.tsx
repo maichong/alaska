@@ -84,12 +84,11 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
         record,
         isNew,
         errors,
-        onFieldChange: onChange,
-        panel: false
+        onFieldChange: onChange
       }
     };
     _.forEach(model.groups, (group, key: string) => {
-      groups[key] = _.assign({ title: key, path: key, panel: true }, group, groups[key], {
+      groups[key] = _.assign({ path: key }, group, {
         fields: [],
         model,
         record,

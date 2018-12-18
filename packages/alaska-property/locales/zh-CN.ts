@@ -14,7 +14,7 @@ export default {
   'Allow filter': '允许过滤',
   'Allow input': '允许输入',
   'Checkbox View': '选择框视图',
-  'Switch View': '选择器视图',
+  'Switch View': '按钮组视图',
   'This message will display in the property field.': '这个信息将会显示在属性字段中',
   'Create Property Values': '创建属性值',
   'Please input property value': '请输入属性值',

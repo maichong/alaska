@@ -1,0 +1,47 @@
+.sku-editor .table {
+  margin-bottom: 0;
+  tr th {
+    text-align: center;
+  }
+  tr td {
+    padding: 0;
+  }
+  td.sku-desc {
+    font-size: 12px;
+    line-height: 12px;
+    vertical-align: middle;
+  }
+  td.text-center {
+    line-height: 48px;
+  }
+  td .fa-close {
+    display: none;
+    cursor: pointer;
+  }
+  tr.danger td .fa-close {
+    display: inline;
+  }
+  .sku-pic {
+    img {
+      display: block;
+      height: 32px;
+      margin: 8px auto;
+    }
+  }
+  input {
+    display: block;
+    width: 100%;
+    outline: 0;
+    border: none;
+    height: 48px;
+    line-height: 48px;
+    text-align: center;
+    background: transparent;
+    &:focus {
+      background: #e8f9f6;
+    }
+    &.is-invalid {
+      background: #f9e7e9;
+    }
+  }
+}

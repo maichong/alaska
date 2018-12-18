@@ -1,5 +1,4 @@
 import { Model } from 'alaska-model';
-import * as _ from 'lodash';
 import Category from 'alaska-category/models/Category';
 import service from '../';
 
@@ -99,6 +98,7 @@ export default class Property extends Model {
     help: {
       label: 'Help',
       type: String,
+      private: true,
       help: 'This message will display in the property field.'
     },
     values: {

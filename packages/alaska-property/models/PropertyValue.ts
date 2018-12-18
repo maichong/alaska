@@ -1,5 +1,4 @@
 import { Model } from 'alaska-model';
-import * as _ from 'lodash';
 import Category from 'alaska-category/models/Category';
 import Property from './Property';
 
@@ -8,6 +7,11 @@ export default class PropertyValue extends Model {
   static icon = 'square';
   static defaultColumns = 'title prop common sort createdAt';
   static defaultSort = '-sort -createdAt';
+
+  static api = {
+    paginate: 1,
+    list: 1,
+  };
 
   static fields = {
     prop: {

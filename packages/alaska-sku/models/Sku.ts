@@ -25,13 +25,13 @@ export default class Sku extends Model {
       index: true
     },
     key: {
-      // pid1:vid1|pid2:vid2
+      // pid1:vid1;pid2:vid2
       label: 'KEY',
       type: String,
       index: true
     },
     desc: {
-      // 颜色:白色|尺码:XL
+      // 颜色:白色;尺码:XL
       label: 'Description',
       type: String
     },

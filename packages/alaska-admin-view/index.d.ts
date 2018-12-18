@@ -351,6 +351,16 @@ export interface Record {
   [path: string]: any;
 }
 
+export interface ImageData {
+  _id: string;
+  ext: string;
+  path: string;
+  url: string;
+  thumbUrl: string;
+  name: string;
+  size: number;
+}
+
 export interface Settings {
   authorized: boolean;
   user: null | User;
@@ -501,7 +511,7 @@ export interface FieldViewProps {
   record: immutable.Immutable<Record>;
   value: any;
   disabled: boolean;
-  errorText: string;
+  errorText?: string;
   locale?: string;
   onChange: (v: any) => void;
 }

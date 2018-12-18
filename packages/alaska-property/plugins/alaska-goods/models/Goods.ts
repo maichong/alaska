@@ -14,7 +14,10 @@ export default {
       type: Object,
       default: [] as PropData[],
       view: 'PropertyEditor',
-      group: 'props'
+      group: 'props',
+      spec: {
+        // TODO:
+      }
     },
     propValues: {
       label: 'Properties Values',

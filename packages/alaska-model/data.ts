@@ -34,7 +34,7 @@ export function objectToData(value: any, fields: string | ModelFieldList): any {
   } else if (value instanceof Array) {
     // 数组数据
     return value.map((val) => {
-      if (val === 'object') {
+      if (typeof val === 'object') {
         return objectToData(val, fields);
       }
       return val;

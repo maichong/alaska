@@ -33,7 +33,7 @@ export default class LocaleExtension extends Extension {
           });
         });
 
-        tr.learn(service.locales, service.id);
+        tr.learn(service.locales, service.id === 'alaska-admin' ? '' : service.id);
       });
 
       service.pre('init', async () => {
