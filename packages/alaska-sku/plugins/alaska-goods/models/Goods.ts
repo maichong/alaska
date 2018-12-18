@@ -1,3 +1,5 @@
+import Sku from '../../../models/Sku';
+
 export default {
   groups: {
     sku: {
@@ -15,10 +17,14 @@ export default {
       hidden: true
     },
     sku: {
-      type: Object,
+      type: Sku,
+      multi: true,
+      private: true,
       view: 'SkuEditor',
-      group: 'sku',
-      private: true
+      group: 'sku'
     },
   },
+  preSave() {
+    // TODO:
+  }
 }

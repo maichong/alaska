@@ -1,7 +1,6 @@
 import { ObjectMap } from 'alaska';
 import { Model, Field, FieldDataType } from 'alaska-model';
 import * as mongoose from 'mongoose';
-import * as _ from 'lodash';
 
 const TypeObjectId = mongoose.Schema.Types.ObjectId;
 const { ObjectId } = mongoose.Types;
@@ -59,7 +58,7 @@ export default class RelationshipField extends Field {
         type = plain;
       } else if (ref.fields._id) {
         let idField = ref.fields._id;
-        let idType: string | FieldDataType | typeof Field = idField.type;
+        let idType: string | FieldDataType | typeof Field | typeof Model = idField.type;
         if (idField.plain) {
           type = idField.plain;
         } else if (idType) {
@@ -145,23 +144,6 @@ export default class RelationshipField extends Field {
     this.ref = ref;
     this.plain = type;
     schema.path(this.path, this.multi ? [options] : options);
-
-    if (ref === model) {
-      let field = this;
-      schema.pre('save', function (next) {
-        let record = this;
-        if (!record.isModified(field.path)) {
-          next();
-          return;
-        }
-        let { id } = record;
-        if (id && String(id) === String(record.get(field.path))) {
-          next(new Error(`Can not relate to record self, ${model.id}.${field.path}`));
-          return;
-        }
-        next();
-      });
-    }
   }
 
   parse(value: any): any {

@@ -266,6 +266,11 @@ export default class Model {
                 fieldTypeName = 'alaska-field-number';
               } else if (typeof options.type === 'string') {
                 fieldTypeName = `alaska-field-${options.type}`;
+                // @ts-ignore Model.classOfModel
+              } else if (typeof options.type === 'function' && options.type.classOfModel) {
+                fieldTypeName = `alaska-field-subdoc`;
+                // @ts-ignore 省略 ref 时，type 就为ref model
+                options.ref = options.type;
               } else {
                 throw new Error(`Unsupported field type for ${modelName}.${path}`);
               }
@@ -587,26 +592,6 @@ export default class Model {
         delete model.prototype[key];
       });
 
-
-      {
-        let keys = Object.keys(this._pre);
-        if (keys.length) {
-          console.warn(`Unknown pre hooks ${keys.toString()} of ${modelName}`);
-        }
-      }
-
-      {
-        let keys = Object.keys(this._post);
-        if (keys.length) {
-          console.warn(`Unknown post hooks ${keys.toString()} of ${modelName}`);
-        }
-      }
-
-      model.pre = panic;
-      model.post = panic;
-      delete this._pre;
-      delete this._post;
-
       [
         'paginateByContext',
         'listByContext',
@@ -662,8 +647,25 @@ export default class Model {
         await collie.compose(this._post.register, [], this);
         delete this._post.register;
       }
-      delete this._post;
 
+      {
+        let keys = Object.keys(this._pre);
+        if (keys.length) {
+          console.warn(`Unknown pre hooks ${keys.toString()} of ${modelName}`);
+        }
+      }
+
+      {
+        let keys = Object.keys(this._post);
+        if (keys.length) {
+          console.warn(`Unknown post hooks ${keys.toString()} of ${modelName}`);
+        }
+      }
+
+      model.pre = panic;
+      model.post = panic;
+      delete this._pre;
+      delete this._post;
 
     } catch (e) {
       console.error(`${model.id}.init failed!`);

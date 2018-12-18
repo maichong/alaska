@@ -1,0 +1,16 @@
+{
+  "name": "alaska-field-subdoc",
+  "version": "0.13.2",
+  "description": "Alaska subdoc field",
+  "keywords": [
+    "alaska",
+    "alaska-field"
+  ],
+  "alaska": "field",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-subdoc",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {}
+}
