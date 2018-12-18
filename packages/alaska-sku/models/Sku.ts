@@ -1,4 +1,6 @@
-import { Model } from 'alaska-model';
+import { RecordID, Model } from 'alaska-model';
+import { PropData } from 'alaska-property';
+import { Image } from 'alaska-field-image';
 
 export default class Sku extends Model {
   static label = 'Sku';
@@ -23,10 +25,13 @@ export default class Sku extends Model {
       index: true
     },
     key: {
+      // pid1:vid1|pid2:vid2
       label: 'KEY',
-      type: String
+      type: String,
+      index: true
     },
     desc: {
+      // 颜色:白色|尺码:XL
       label: 'Description',
       type: String
     },
@@ -66,16 +71,16 @@ export default class Sku extends Model {
     }
   };
 
-  pic: Object;
-  goods: Object;
   key: string;
+  pic: Image;
+  goods: RecordID;
   desc: string;
   price: number;
   discount: number;
   inventory: number;
   volume: number;
   valid: boolean;
-  props: Object;
+  props: PropData[];
   createdAt: Date;
 
   preSave() {

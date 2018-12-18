@@ -32,11 +32,11 @@ export default class Goods extends Model {
   };
 
   static groups = {
-    price: {
-      title: 'Price'
-    },
     inventory: {
       title: 'Inventory'
+    },
+    price: {
+      title: 'Price'
     },
     desc: {
       title: 'Description'
@@ -147,6 +147,7 @@ export default class Goods extends Model {
     shipping: {
       label: 'Shipping',
       type: Number,
+      format: '0.00',
       group: 'price',
       default: 0
     },

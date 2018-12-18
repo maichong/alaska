@@ -1,6 +1,7 @@
 export default {
   prefix: '',
   services: {
-    'alaska-goods': {}
+    'alaska-goods': {},
+    'alaska-property': {},
   }
 };

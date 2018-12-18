@@ -1,10 +1,10 @@
-import { Field } from 'alaska-model';
+import { RecordID, Field } from 'alaska-model';
 import { UploadFile } from 'alaska-middleware-upload';
 import * as FSD from 'fsd';
 import * as mongoose from 'mongoose';
 
 export interface Image {
-  _id: string | mongoose.Types.ObjectId;
+  _id: RecordID;
   ext: string;
   path: string;
   url: string;

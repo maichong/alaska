@@ -5,7 +5,7 @@ export default {
   groups: {
     props: {
       title: 'Goods Properties',
-      after: 'inventory'
+      after: 'default'
     }
   },
   fields: {
