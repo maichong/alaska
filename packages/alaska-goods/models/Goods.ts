@@ -1,5 +1,4 @@
 import { Model } from 'alaska-model';
-import * as _ from 'lodash';
 import { Context } from 'alaska-http';
 import BALANCE from 'alaska-balance';
 import Category from 'alaska-category/models/Category';

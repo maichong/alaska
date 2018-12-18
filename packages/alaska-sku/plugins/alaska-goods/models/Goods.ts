@@ -5,7 +5,7 @@ export default {
     sku: {
       title: 'SKU',
       panel: false,
-      after: 'default'
+      after: 'props'
     }
   },
   fields: {

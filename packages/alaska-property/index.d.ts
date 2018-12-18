@@ -1,6 +1,14 @@
 import { Service } from 'alaska';
+import { RecordID } from 'alaska-model';
 import Property from './models/Property';
 import PropertyValue from './models/PropertyValue';
+
+declare module 'alaska-goods/models/Goods' {
+  interface Goods {
+    props: PropData[];
+    propValues: RecordID[];
+  }
+}
 
 declare class PropertyService extends Service {
   models: {

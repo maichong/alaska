@@ -1,3 +1,8 @@
 export default {
-  prefix: ''
+  prefix: '',
+  services: {
+    'alaska-goods': {
+      optional: true
+    }
+  }
 };
