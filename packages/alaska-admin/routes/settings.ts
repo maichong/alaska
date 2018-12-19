@@ -33,6 +33,7 @@ export default function (router: Router) {
       locales: {},
       abilities: {},
       services: {},
+      models: {},
       navItems: [],
       menuItems: []
     };

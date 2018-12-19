@@ -13,12 +13,12 @@ import EditorActionBar from './EditorActionBar';
 import Editor from './Editor';
 import LoadingPage from './LoadingPage';
 import * as detailsRedux from '../redux/details';
+import { ObjectMap } from 'alaska';
 import {
   EditorPageProps,
   Model,
   StoreState,
   DetailsState,
-  Service,
   Record,
   ModelRelationship
 } from '..';
@@ -32,9 +32,7 @@ interface EditorPageState {
 
 interface Props extends EditorPageProps {
   details: DetailsState;
-  services: {
-    [serviceId: string]: Service;
-  };
+  models: ObjectMap<Model>;
   loadDetails: Function;
 }
 
@@ -43,65 +41,60 @@ class EditorPage extends React.Component<Props, EditorPageState> {
 
   constructor(props: Props) {
     super(props);
-    let { id } = props.match.params;
     this.state = {
-      id,
+      id: '_new',
       model: null,
-      record: immutable({}),
-      isNew: id === '_new'
+      record: null,
+      isNew: true
     };
   }
 
-  componentDidMount() {
-    this.init(this.props);
-  }
+  static getDerivedStateFromProps(nextProps: Props, prevState: EditorPageState) {
+    const { params } = nextProps.match;
+    const modelId = `${params.service}.${params.model}`;
+    const model = nextProps.models[modelId] || prevState.model;
+    if (!model) return null;
 
-  componentWillReceiveProps(nextProps: Props) {
-    let { match } = this.props;
-    if (match.params.id !== nextProps.match.params.id) {
-      this.setState({ record: immutable({}) }, () => {
-        this.init(nextProps);
-      });
+    const nextState: Partial<EditorPageState> = {
+      id: params.id,
+      isNew: params.id === '_new'
+    };
+    if (model && (!prevState.model || prevState.model !== model)) {
+      nextState.model = model;
+    }
+
+    if (nextState.isNew) {
+      // 新建
+      if (prevState.record && prevState.record._id) {
+        // 从编辑页面跳转到了新建页面
+        prevState.record = immutable({});
+      }
     } else {
-      this.init(nextProps);
-    }
-  }
-
-  init(props: Props) {
-    const { services, match, details, loadDetails } = props;
-    let { service: serviceId, model: modelName, id } = match.params;
-    let { record, model } = this.state;
-    let nextState = { record, id, model, isNew: id === '_new' } as EditorPageState;
-    let serviceModels: Service = services[serviceId];
-    if (serviceModels && serviceModels.models) {
-      nextState.model = serviceModels.models[modelName] || null;
-    }
-    if (nextState.model) {
-      if (nextState.isNew) {
-        if (!record) {
-          record = immutable({});
-          nextState.record = immutable({});
-        }
-        _.forEach(nextState.model.fields, (filed) => {
-          if (typeof record[filed.path] !== 'undefined') {
-            nextState.record = nextState.record.set(filed.path, record[filed.path]);
-          } else if (typeof filed.default !== 'undefined') {
-            nextState.record = nextState.record.set(filed.path, filed.default);
-          }
-        });
-      } else {
-        let serviceRecords = details[nextState.model.id];
-        if (serviceRecords) {
-          nextState.record = serviceRecords[id];
-        } else {
-          nextState.record = null;
-        }
-        if (!nextState.record) {
-          loadDetails({ model: nextState.model.id, id });
-        }
+      // 编辑
+      let details = nextProps.details[modelId];
+      let record = details ? (details[params.id] || null) : null;
+      if (!prevState.isNew && prevState.id !== nextState.id) {
+        // 直接从一个一条记录跳转到另一条记录，强制加载一次
+        nextState.record = null;
+      } else if (!record || !prevState.record) {
+        nextState.record = record;
       }
     }
-    this.setState(nextState);
+    return nextState;
+  }
+
+  componentDidMount() {
+    const { model, id, isNew } = this.state;
+    if (!isNew) {
+      this.props.loadDetails({ model: model.id, id });
+    }
+  }
+
+  componentDidUpdate() {
+    const { model, id, isNew, record } = this.state;
+    if (!isNew && record === null) {
+      this.props.loadDetails({ model: model.id, id });
+    }
   }
 
   handleChange = (label: string, value: any) => {
@@ -111,16 +104,9 @@ class EditorPage extends React.Component<Props, EditorPageState> {
   }
 
   lookupModel(modelRef: string): Model | null {
-    let { services } = this.props;
-    let model = null;
-    _.forEach(services, (service) => {
-      _.forEach(service.models, (m) => {
-        if (m.modelName === modelRef || m.id === modelRef) {
-          model = m;
-        }
-      });
-    });
-    return model;
+    let { models, match } = this.props;
+    let modelId = modelRef.indexOf('.') > -1 ? modelRef : match.params.service + '.' + modelRef;
+    return models[modelId] || null;
   }
 
   renderError() {
@@ -156,10 +142,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
 
   render() {
     const { model, record, isNew } = this.state;
-    if (!model) {
-      return null;
-    }
-    if (!record) {
+    if (!model || !record) {
       return <LoadingPage />;
     }
 
@@ -210,7 +193,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
 }
 
 export default connect(
-  ({ details, settings }: StoreState) => ({ details, services: settings.services }),
+  ({ details, settings }: StoreState) => ({ details, models: settings.models }),
   (dispatch) => bindActionCreators({
     loadDetails: detailsRedux.loadDetails
   }, dispatch)

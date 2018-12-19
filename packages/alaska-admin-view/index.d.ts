@@ -240,7 +240,7 @@ export interface Model {
     [path: string]: Field;
   };
   abilities: {
-    [ability: string]: true;
+    [ability: string]: boolean;
   };
   canCreate: boolean;
   canUpdate: boolean;
@@ -378,6 +378,9 @@ export interface Settings {
   };
   services: {
     [serviceId: string]: Service;
+  };
+  models: {
+    [modelId: string]: Model;
   };
   abilities: {
     [name: string]: boolean;

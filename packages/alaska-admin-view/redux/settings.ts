@@ -22,6 +22,7 @@ const INITIAL_STATE: Settings = {
   locale: '',
   locales: {},
   services: {},
+  models: {},
   abilities: {},
   navItems: [],
   menuItems: []

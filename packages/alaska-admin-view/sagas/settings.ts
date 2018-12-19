@@ -23,13 +23,10 @@ function abilityFunction(list: ObjectMap<WithAbility>) {
 export default function* settingsSaga() {
   try {
     let settings: Settings = yield akita.get('/settings');
-
-    console.log('settings', settings);
-    /*
-    let models = {};
+    settings.models = {};
     _.forEach(settings.services, (service) => {
       _.forEach(service.models, (model, modelName) => {
-        models[model.id] = model;
+        settings.models[model.id] = model;
         for (let key of Object.keys(model.actions)) {
           if (model.actions[key]) {
             model.actions[key].key = key;
@@ -45,12 +42,13 @@ export default function* settingsSaga() {
             model.abilities[name] = can;
           });
 
+          // @ts-ignore 在前端接受数据时 action.ability AbilityGenerator 也是 string
           abilityFunction(model.actions);
           abilityFunction(model.groups);
           abilityFunction(model.fields);
         }
 
-        function checkAbility(action) {
+        function checkAbility(action: string): boolean {
           let ability = _.get(model, `actions.${action}.ability`);
           if (ability) {
             ability = parseAbility(ability, null, settings.user);
@@ -70,7 +68,7 @@ export default function* settingsSaga() {
             ability = parseAbility(ability, record, settings.user);
             if (ability && !settings.abilities[ability]) return false;
           } else if (!model.abilities.update) return false;
-          // TODO check action depends / hidden / super
+          // TODO: check action depends / hidden / super
           return true;
         };
         model.canRemoveRecord = function (record: Object) {
@@ -81,14 +79,11 @@ export default function* settingsSaga() {
             ability = parseAbility(ability, record, settings.user);
             if (ability && !settings.abilities[ability]) return false;
           } else if (!model.abilities.remove) return false;
-          // TODO check action depends / hidden / super
+          // TODO: check action depends / hidden / super
           return true;
         };
-        service.models[modelName] = _.cloneDeep(model);
       });
     });
-
-    */
 
     yield put(applySettings(settings));
     yield put(applyUser(settings.user));
