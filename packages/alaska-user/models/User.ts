@@ -13,8 +13,7 @@ export default class User extends Model {
   static noremove = true;
 
   static scopes = {
-    // TODO: tiny: 'displayName avatar _username',
-    tiny: '_username',
+    tiny: 'displayName avatar _username',
     info: '*'
   };
 
@@ -30,17 +29,25 @@ export default class User extends Model {
       type: String,
       index: true
     },
+    tel: {
+      label: 'Tel',
+      type: String,
+      index: true
+    },
+    displayName: {
+      label: 'Display Name',
+      type: String
+    },
     password: {
       label: 'Password',
       type: 'password',
       private: true, // 前端API接口不返回
       protected: true // admin后台接口不返回
     },
-    // TODO: 暂时取消 avatar 字段，等待 alaska-field-image
-    // avatar: {
-    //   label: 'Avatar',
-    //   type: 'image'
-    // },
+    avatar: {
+      label: 'Avatar',
+      type: 'image'
+    },
     roles: {
       label: 'Roles',
       type: 'relationship',
@@ -61,13 +68,6 @@ export default class User extends Model {
     }
   };
 
-  // TODO: virtuals 字段支持
-  // static virtuals = {
-  //   get displayName() {
-  //     return this.username;
-  //   }
-  // };
-
   _id: ObjectId;
   id: string;
   username: string;
@@ -82,6 +82,9 @@ export default class User extends Model {
   async preSave() {
     if (!this.createdAt) {
       this.createdAt = new Date();
+    }
+    if (!this.displayName) {
+      this.displayName = this.username;
     }
   }
 

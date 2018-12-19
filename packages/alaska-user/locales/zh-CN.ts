@@ -6,6 +6,7 @@ export default {
   User: '用户',
   Avatar: '头像',
   Username: '用户名',
+  'Display Name': '显示名',
   Password: '密码',
   'Incorrect username or password': '账号或密码错误',
   'Registered At': '注册时间',

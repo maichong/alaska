@@ -5,7 +5,7 @@ import USER from 'alaska-user';
 import service, { ActionSledParams } from '..';
 
 /**
- * 注册管理员后台菜单
+ * 创建数据
  */
 export default class Create extends Sled<ActionSledParams, any> {
   async exec(params: ActionSledParams): Promise<any> {

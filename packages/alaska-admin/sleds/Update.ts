@@ -4,9 +4,9 @@ import { Sled } from 'alaska-sled';
 import { ActionSledParams } from '..';
 
 /**
- * 注册管理员后台菜单
+ * 更新数据
  */
-export default class Create extends Sled<ActionSledParams, any> {
+export default class Update extends Sled<ActionSledParams, any> {
   async exec(params: ActionSledParams): Promise<any> {
     let results = [];
     for (let record of params.records) {
