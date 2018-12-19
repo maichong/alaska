@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
-import * as checkDepends from 'check-depends';
 import * as Router from 'koa-router';
 import { Context } from 'alaska-http';
 import { Model, Filter } from 'alaska-model';
 import { mergeFilters } from 'alaska-model/utils';
 import USER from 'alaska-user';
 import service from '..';
+import { trimPrivateField } from '../utils/utils';
 
 interface ListQuery {
   // 模型id，必须
@@ -51,16 +51,13 @@ export default function (router: Router) {
 
     let result = await query;
 
-    result.results = _.map(result.results, (record: Model) => {
+    let list = [];
+    for (let record of result.results) {
       let json = record.toJSON();
-      _.forEach(model._fields, (field, path) => {
-        if (checkDepends(field.protected, record)) {
-          delete json[path];
-        }
-      });
-      return json;
-    });
+      list.push(json);
+      await trimPrivateField(json, ctx.user, model, record);
+    }
 
-    ctx.body = result;
+    ctx.body = _.assign({}, result, { results: list });
   });
 }

@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import * as checkDepends from 'check-depends';
 import { ObjectMap } from 'alaska';
 import { Sled } from 'alaska-sled';
 import { Model } from 'alaska-model';
@@ -89,7 +88,7 @@ export default class Export extends Sled<ActionSledParams, any> {
             if (typeof value === 'undefined' || value === null) {
               value = '';
             }
-            if (checkDepends(field.protected, record)) {
+            if (field.private && await USER.checkAbility(ctx.user, field.private, record)) {
               // 字段保护
               value = '';
             }

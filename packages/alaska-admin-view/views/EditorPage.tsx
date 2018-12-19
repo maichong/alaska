@@ -25,6 +25,7 @@ import {
 
 interface EditorPageState {
   model: Model | null;
+  _record?: immutable.Immutable<Record> | null;
   record: immutable.Immutable<Record> | null;
   isNew: boolean;
   id: string;
@@ -67,13 +68,17 @@ class EditorPage extends React.Component<Props, EditorPageState> {
       // 新建
       if (prevState.record && prevState.record._id) {
         // 从编辑页面跳转到了新建页面
-        prevState.record = immutable({});
+        nextState.record = immutable({});
       }
     } else {
       // 编辑
       let details = nextProps.details[modelId];
       let record = details ? (details[params.id] || null) : null;
-      if (!prevState.isNew && prevState.id !== nextState.id) {
+      nextState._record = record;
+      if (prevState.record && prevState.record._id && record && record != prevState._record) {
+        // redux中数据更新了
+        nextState.record = record;
+      } else if (!prevState.isNew && prevState.id !== nextState.id) {
         // 直接从一个一条记录跳转到另一条记录，强制加载一次
         nextState.record = null;
       } else if (!record || !prevState.record) {

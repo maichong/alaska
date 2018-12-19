@@ -33,8 +33,10 @@ async function trimDisabledField(data: any, user: any, model: typeof Model, reco
   for (let key in data) {
     if (key === 'id') continue;
     let field = model._fields[key];
-    if (!field) continue;
-    if (field.disabled && await USER.checkAbility(user, field.disabled, record)) {
+    if (
+      !field
+      || (field.disabled && await USER.checkAbility(user, field.disabled, record))
+    ) {
       delete data[key];
     }
   }

@@ -23,15 +23,6 @@ export default class Category extends Model {
     }
   };
 
-  static actions = {
-    update: {
-      after: 'add',
-      disabled: [{
-        ability: 'test'
-      }]
-    }
-  };
-
   static fields = {
     title: {
       label: 'Title',
