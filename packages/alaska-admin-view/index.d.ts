@@ -347,7 +347,7 @@ export interface Service {
   models: {
     [modelName: string]: Model;
   };
-  prefix?: string;
+  prefix?: string | boolean;
 }
 
 export interface Record {

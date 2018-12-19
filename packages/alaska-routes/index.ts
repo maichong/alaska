@@ -16,13 +16,15 @@ export default class RoutesExtension extends Extension {
 
       collie(service, 'initRoutes', async () => {
         service.debug('initRoutes');
+        let prefix = service.config.get('prefix');
+        if (prefix === false) return; // 强制关闭了 routes 路由
         _.forEach(s.plugins, (plugin) => {
           _.forEach(plugin.routes, (route: RouteConfigurator) => {
-            route(main.getRouter(service.config.get('prefix')));
+            route(main.getRouter(prefix));
           });
         });
         _.forEach(s.routes, (route: RouteConfigurator) => {
-          route(main.getRouter(service.config.get('prefix')));
+          route(main.getRouter(prefix));
         });
       });
 

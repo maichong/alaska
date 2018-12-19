@@ -35,10 +35,37 @@ const REST_ACTIONS = [
 ];
 
 function onError(ctx: Context, error: Error) {
+  let status = ctx.status;
+  // @ts-ignore
+  let code: number = error.code;
   ctx.body = {
+    code: code,
     error: error.message
   };
+  if (code && code > 100 && code < 600) {
+    ctx.status = code;
+  } else if (status === 200) {
+    ctx.status = 500;
+  }
 }
+
+function createDecorator(method: string) {
+  return function (middleware: ApiMiddleware, allow?: boolean) {
+    if (!middleware._methods) {
+      middleware._methods = {};
+    }
+    // @ts-ignore index
+    middleware._methods[method] = allow !== false;
+  }
+}
+
+export const GET = createDecorator('GET');
+export const POST = createDecorator('POST');
+export const HEAD = createDecorator('HEAD');
+export const PATCH = createDecorator('PATCH');
+export const PUT = createDecorator('PUT');
+export const DELETE = createDecorator('DELETE');
+export const OPTIONS = createDecorator('OPTIONS');
 
 export default class ApiExtension extends Extension {
   static after = ['alaska-model', 'alaska-http', 'alaska-routes'];
@@ -82,16 +109,19 @@ export default class ApiExtension extends Extension {
           && !_.find(service.models, (model) => model.api && !!_.find(model.api, level => level > 0)) // Model
         ) return;
 
-        let info: ApiInfo = this.apiInfos[service.config.get('apiPrefix')];
+        let apiPrefix = service.config.get('apiPrefix');
+        if (apiPrefix === false) return; // 该Service 强制关闭了API
+
+        let info: ApiInfo = this.apiInfos[apiPrefix];
         if (!info) {
           info = {
             models: {},
             apis: {}
           };
-          this.apiInfos[service.config.get('apiPrefix')] = info;
+          this.apiInfos[apiPrefix] = info;
         }
 
-        function apply(api: CustomApi, group: string) {
+        function applyPlugin(api: CustomApi, group: string) {
           if (!info.apis[group]) {
             info.apis[group] = {};
           }
@@ -110,9 +140,9 @@ export default class ApiExtension extends Extension {
           });
         }
         _.forEach(s.plugins, (plugin) => {
-          _.forEach(plugin.api, apply);
+          _.forEach(plugin.api, applyPlugin);
         });
-        _.forEach(s.api, apply);
+        _.forEach(s.api, applyPlugin);
 
         _.forEach(service.models, (model) => {
           if (model.api && _.find(model.api, (level) => level > 0)) {
@@ -133,7 +163,14 @@ export default class ApiExtension extends Extension {
         _.forEach(info.apis, (apiGroup) => {
           for (let action in apiGroup) {
             if (Array.isArray(apiGroup[action])) {
-              apiGroup[action] = compose(<ApiMiddleware[]>apiGroup[action]);
+              let array = apiGroup[action] as ApiMiddleware[];
+              apiGroup[action] = compose(array);
+              for (let fn of array) {
+                if (fn._methods) {
+                  (apiGroup[action] as ApiMiddleware)._methods = fn._methods;
+                  break;
+                }
+              }
             }
           }
         });
@@ -146,7 +183,7 @@ export default class ApiExtension extends Extension {
         // 判断是否存在扩展接口
         let hasExtApi = !!_.find(info.apis, (api) => !!_.find(api, (fn, key) => !REST_ACTIONS.includes(key)));
         if (hasExtApi) {
-          router.use('/:group/:action?', (ctx, next) => {
+          router.use('/:group/:action?', async (ctx, next) => {
             let { group, action } = ctx.params;
             if (!action) {
               action = 'default';
@@ -157,22 +194,23 @@ export default class ApiExtension extends Extension {
             if (apiGroup && apiGroup[action] && action[0] !== '_') {
               try {
                 if (REST_ACTIONS.indexOf(action) > -1) {
-                  return next();
+                  await next();
+                  return;
                 }
-                let promise = (<ApiMiddleware>apiGroup[action])(ctx, next);
-                //异步函数
-                if (promise && promise.then) {
-                  return promise.catch((error: Error) => {
-                    onError(ctx, error);
-                  });
-                }
-                //同步函数,直接返回
+                let middleware = apiGroup[action] as ApiMiddleware;
+                // check motheds
+                let methods = middleware._methods || { POST: true };
+                // console.log(ctx.method, methods);
+                // @ts-ignore index
+                if (methods[ctx.method] !== true) service.error(405);
+                await middleware(ctx, next);
               } catch (error) {
                 onError(ctx, error);
+                return;
               }
-              return null;
+              return;
             }
-            return next();
+            await next();
           });
         }
 

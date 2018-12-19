@@ -25,7 +25,28 @@ declare module 'alaska-modules' {
   }
 }
 
+export interface MethodDecorator {
+  (fn: ApiMiddleware, allow?: boolean): void;
+}
+
+export const GET: MethodDecorator;
+export const POST: MethodDecorator;
+export const PATCH: MethodDecorator;
+export const PUT: MethodDecorator;
+export const DELETE: MethodDecorator;
+export const OPTIONS: MethodDecorator;
+export const HEAD: MethodDecorator;
+
 export interface ApiMiddleware extends Router.IMiddleware {
+  _methods?: {
+    GET?: boolean;
+    POST?: boolean;
+    PATCH?: boolean;
+    PUT?: boolean;
+    DELETE?: boolean;
+    OPTIONS?: boolean;
+    HEAD?: boolean;
+  };
 }
 
 export interface RestApi {

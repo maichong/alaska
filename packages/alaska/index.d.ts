@@ -22,8 +22,18 @@ export interface ConfigData {
     [id: string]: ExtensionConfig;
   };
   // Service 级别
-  prefix?: string;
-  apiPrefix?: string;
+
+  /**
+   * routes 路由前缀，默认为 /
+   * 如果为 false，则代表该Service不开放routes路由
+   */
+  prefix?: string | boolean;
+  /**
+   * api 路由前缀，默认为 /api
+   * 如果为 false，则代表该Service不开放API
+   */
+  apiPrefix?: string | boolean;
+
   plugins?: {
     [id: string]: PluginConfig;
   };
