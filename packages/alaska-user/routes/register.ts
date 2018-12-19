@@ -1,6 +1,7 @@
 import * as Router from 'koa-router';
 import { Context } from 'alaska-http';
 import service from '..';
+import Register from '../sleds/Register';
 
 interface RegisterBody {
   username: string;
@@ -16,7 +17,7 @@ export default function (router: Router) {
 
     if (!password) service.error('Password is required');
 
-    let user = await service.run('Register', { username, password, ctx });
+    let user = await Register.run({ username, password, ctx });
     ctx.body = user.data('info');
   });
 }

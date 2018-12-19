@@ -1,8 +1,9 @@
 
 import * as _ from 'lodash';
+import * as checkDepends from 'check-depends';
 import { Service, ServiceOptions } from 'alaska';
-import { Model, Filters } from 'alaska-model';
-import { Sled } from 'alaska-sled';
+import { Model, Filters, AbilityCheckGate } from 'alaska-model';
+import CacheDriver from 'alaska-cache';
 import Ability from './models/Ability';
 import Role from './models/Role';
 import User from './models/User';
@@ -15,6 +16,7 @@ import SelfURRC from './urrc/self';
  */
 class UserService extends Service {
   urrc: Map<string, URRC>;
+  cache?: CacheDriver<string[], any, any>;
 
   constructor(options: ServiceOptions) {
     super(options);
@@ -23,9 +25,15 @@ class UserService extends Service {
     this.urrc.set('self', SelfURRC());
   }
 
+  postStart() {
+    let cacheConfig = this.config.get('cache');
+    if (cacheConfig && cacheConfig.type) {
+      this.cache = this.createDriver(cacheConfig) as CacheDriver<string[], any, any>;
+    }
+  }
+
   /**
    * 获取所有权限列表
-   * TODO: cache
    * @returns {Ability[]}
    */
   async abilities(): Promise<Ability[]> {
@@ -44,7 +52,6 @@ class UserService extends Service {
 
   /**
    * 获取角色列表
-   * TODO: cache
    * @returns {Role[]}
    */
   async roles(): Promise<Role[]> {
@@ -66,6 +73,12 @@ class UserService extends Service {
    * @param {User|null} user 如果为null，则代表未登录
    */
   async getUserAbilities(user: User | null): Promise<string[]> {
+    let result: string[];
+    let cacheKey = 'cache:user-abilities:' + (user ? user.id : '_guest')
+    if (this.cache) {
+      result = await this.cache.get(cacheKey);
+      if (result) return result;
+    }
     let roles: Set<string> = new Set();
     let abilities: Set<string> = new Set();
     if (!user || !user.id) {
@@ -83,7 +96,38 @@ class UserService extends Service {
         _.forEach(r.abilities, (a) => abilities.add(a));
       }
     }
-    return Array.from(abilities);
+    result = Array.from(abilities);
+    if (this.cache) {
+      this.cache.set(cacheKey, result);
+    }
+    return result;
+  }
+
+  /**
+   * 判断权限
+   * @param {User|null} user 如果为null，则代表未登录
+   * @param {any} conditions checkDepends条件 或高级的权限查询或非门条件
+   * @param {Model} [record] 要检查的数据记录
+   */
+  async checkAbility(
+    user: User | null,
+    conditions: checkDepends.DependsQueryExpression | AbilityCheckGate[],
+    record?: Model
+  ): Promise<boolean> {
+    if (!conditions) return false;
+    if (!Array.isArray(conditions)) return checkDepends(conditions, record);
+    if (!conditions.length) return true;
+    // 寻找开着的门
+    for (let gate of conditions) {
+      if (gate.check) {
+        if (!checkDepends(gate.check, record)) continue; // 此门不开
+      }
+      if (gate.ability) {
+        if (!await this.hasAbility(user, gate.ability, record)) continue; // 此门不开
+      }
+      return true; // 此门开着，放水
+    }
+    return false;
   }
 
   /**
@@ -94,20 +138,32 @@ class UserService extends Service {
    */
   async hasAbility(user: User | null, ability: string, record?: Model): Promise<boolean> {
     let abilities = await this.getUserAbilities(user);
-    let relationships = [];
-    for (let a of abilities) {
-      if (ability === a) return true;
-      let [prefix, relationship] = a.split(':');
-      if (prefix === ability && relationship) {
-        if (!record) return true; // 不检查数据关系
-        relationships.push(relationship);
+    let [prefix, checker] = ability.split(':');
+
+    if (!record) {
+      // 不检查数据记录，只检查数据类型
+      if (abilities.includes(ability)) return true;
+      if (checker) return false;
+      for (let str of abilities) {
+        str = str.split(':')[0];
+        if (str === ability) return true;
       }
+      return false;
     }
-    // TODO: 检查指定关系
-    for (let r of relationships) {
-      let checker = this.urrc.get(r);
-      if (!checker) continue;
-      if (await checker.check(user || {}, record)) return true;
+
+    // 需要检查数据记录
+    if (checker && !this.urrc.has(checker)) {
+      // checker 函数不存在
+      return false;
+    }
+
+    for (let str of abilities) {
+      let [p, c] = str.split(':');
+      if (prefix !== p) continue;
+      if (checker && c !== checker) continue;
+      if (!c) return true; // 拥有全类管理权限
+      if (!this.urrc.has(c)) continue;
+      if (await this.urrc.get(c).check(user, record)) return true;
     }
     return false;
   }
@@ -142,26 +198,6 @@ class UserService extends Service {
       $or: filters
     };
   }
-
-  /**
-   * 运行一个Sled
-   * @param {string} sledName
-   * @param {Object} [data]
-   * @returns {Promise<*>}
-   */
-  run(sledName: string, data?: Object): Promise<any> {
-    if (!this.sleds || !this.sleds[sledName]) {
-      throw new Error(`"${sledName}" sled not found`);
-    }
-    try {
-      let SledClass: typeof Sled = this.sleds[sledName];
-      let sled = new SledClass(data);
-      return sled.run();
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  }
-
 }
 
 export default new UserService({

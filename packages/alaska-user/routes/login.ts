@@ -1,6 +1,7 @@
 import * as Router from 'koa-router';
 import { Context } from 'alaska-http';
 import service from '..';
+import Login from '../sleds/Login';
 
 interface LoginBody {
   username: string;
@@ -16,7 +17,7 @@ export default function (router: Router) {
 
     if (!password) service.error('Password is required');
 
-    let user = await service.run('Login', { ctx, username, password });
+    let user = await Login.run({ ctx, username, password });
 
     ctx.body = user.data('info');
   });

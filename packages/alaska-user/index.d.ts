@@ -1,5 +1,6 @@
 import { Service } from 'alaska';
-import { Model, Filters } from 'alaska-model';
+import { Model, Filters, AbilityCheckGate } from 'alaska-model';
+import { DependsQueryExpression } from 'check-depends';
 import { Context } from 'alaska-http';
 import Ability from './models/Ability';
 import Role from './models/Role';
@@ -94,6 +95,19 @@ export class UserService extends Service {
    * @param {User|null} user 如果为null，则代表未登录
    */
   getUserAbilities(user: User | null): Promise<string[]>;
+
+  /**
+   * 判断权限
+   * @param {User|null} user 如果为null，则代表未登录
+   * @param {any} conditions checkDepends条件 或高级的权限查询或非门条件
+   * @param {Model} [record] 要检查的数据记录
+   */
+  checkAbility(
+    user: User | null,
+    conditions: DependsQueryExpression | AbilityCheckGate[],
+    record?: Model
+  ): Promise<boolean>;
+
   /**
    * 检查用户权限
    * @param {User|null} user 如果为null，则代表未登录
@@ -107,14 +121,6 @@ export class UserService extends Service {
    * @param {string} ability 权限
    */
   createFilters(user: User, ability: string): Promise<Filters | null>;
-
-  /**
-   * 运行一个Sled
-   * @param {string} sledName
-   * @param {Object} [data]
-   * @returns {Promise<*>}
-   */
-  run(sledName: string, data?: Object): Promise<any>;
 }
 
 declare const userService: UserService;
