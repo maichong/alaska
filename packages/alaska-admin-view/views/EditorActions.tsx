@@ -172,17 +172,19 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
       if (action.list && !action.editor) return;
       if (!superMode && checkDepends(action.super, record)) return;
       if (checkDepends(action.hidden, record)) return;
-      let { ability } = action;
-      let abilityDisabled = false;
-      if (typeof ability === 'function') {
-        ability = ability(record, settings.user);
-      }
-      if (ability && ability[0] === '*') {
-        ability = ability.substr(1);
-        abilityDisabled = true;
-      }
-      let hasAbility = !ability || (settings && settings.abilities && settings.abilities[ability]) || false;
-      if (!hasAbility && !abilityDisabled) return;
+
+      // TODO: ability 支持
+      // let { ability } = action;
+      // let abilityDisabled = false;
+      // if (typeof ability === 'function') {
+      //   ability = ability(record, settings.user);
+      // }
+      // if (ability && ability[0] === '*') {
+      //   ability = ability.substr(1);
+      //   abilityDisabled = true;
+      // }
+      // let hasAbility = !ability || (settings && settings.abilities && settings.abilities[ability]) || false;
+      // if (!hasAbility && !abilityDisabled) return;
 
       let disabled = action.disabled && checkDepends(action.disabled, record);
       let obj = {} as ActionMap;

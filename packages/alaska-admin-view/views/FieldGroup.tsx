@@ -34,22 +34,23 @@ class FieldGroup extends React.Component<Props> {
     let fields: any = [];
     let errors: any = propsErrors;
     _.forEach(propFields, (field) => {
-      let { ability } = field;
-      let abilityDisabled = false;
       let fieldClasses: string[] = ['form-group', model.id + '-' + field.path + '-view'];
       if (horizontal) fieldClasses.push('row');
+
+      // TODO: ability 支持
+      // let { ability } = field;
+      // let abilityDisabled = false;
       // if (typeof ability === 'function') {
       //   ability = ability(record, settings.user);
       // }
-      if (ability && ability[0] === '*') {
-        ability = ability.substr(1);
-        abilityDisabled = true;
-      }
-      let hasAbility = !ability || settings.abilities[ability] || false;
+      // if (ability && ability[0] === '*') {
+      //   ability = ability.substr(1);
+      //   abilityDisabled = true;
+      // }
+      // let hasAbility = !ability || settings.abilities[ability] || false;
       if (
         (!field.view)
-        // || (field.path === '_id' && !isNew)
-        || (!hasAbility && !abilityDisabled)
+        // || (!hasAbility && !abilityDisabled)
         || checkDepends(field.hidden, record)
         || (!settings.superMode && checkDepends(field.super, record))
       ) {
@@ -64,9 +65,9 @@ class FieldGroup extends React.Component<Props> {
       }
 
       let fieldDisabled = disabled;
-      if (!fieldDisabled && !hasAbility) {
-        fieldDisabled = abilityDisabled;
-      }
+      // if (!fieldDisabled && !hasAbility) {
+      //   fieldDisabled = abilityDisabled;
+      // }
       if (!fieldDisabled) {
         fieldDisabled = checkDepends(field.disabled, record);
       }
@@ -78,9 +79,9 @@ class FieldGroup extends React.Component<Props> {
       if (fixed) {
         fieldClasses.push('fixed');
       }
-      if (!hasAbility) {
-        fieldClasses.push('no-ability');
-      }
+      // if (!hasAbility) {
+      //   fieldClasses.push('no-ability');
+      // }
       if (fieldDisabled) {
         fieldClasses.push('disabled');
       }
@@ -130,21 +131,23 @@ class FieldGroup extends React.Component<Props> {
       disabled,
       wrapper
     } = props;
-    let { ability } = props;
-    let abilityDisabled = false;
+
+    // TODO: ability 支持
+    // let { ability } = props;
+    // let abilityDisabled = false;
     // if (typeof ability === 'function') {
     //   ability = ability(record, settings.user);
     // }
-    if (ability && ability[0] === '*') {
-      ability = ability.substr(1);
-      abilityDisabled = true;
-    }
-    let hasAbility = !ability || settings.abilities[ability] || false;
-    if (!hasAbility && !abilityDisabled) return ''; // ability
+    // if (ability && ability[0] === '*') {
+    //   ability = ability.substr(1);
+    //   abilityDisabled = true;
+    // }
+    // let hasAbility = !ability || settings.abilities[ability] || false;
+    // if (!hasAbility && !abilityDisabled) return ''; // ability
     if (checkDepends(props.hidden, record)) return ''; // hidden
     if (!settings.superMode && checkDepends(props.super, record)) return ''; // super
     function isDisabled(): boolean {
-      if (disabled || abilityDisabled) return true;
+      // if (disabled || abilityDisabled) return true;
       let action = '';
       if (isNew) {
         if (model.nocreate) return true;

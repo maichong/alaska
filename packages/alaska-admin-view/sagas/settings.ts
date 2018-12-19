@@ -11,14 +11,14 @@ interface WithAbility {
   ability?: string;
 }
 
-function abilityFunction(list: ObjectMap<WithAbility>) {
-  _.forEach(list, (item) => {
-    if (item.ability && item.ability.startsWith('js:')) {
-      // eslint-disable-next-line no-eval
-      item.ability = eval(item.ability.substr(3));
-    }
-  });
-}
+// function abilityFunction(list: ObjectMap<WithAbility>) {
+//   _.forEach(list, (item) => {
+//     if (item.ability && item.ability.startsWith('js:')) {
+//       // eslint-disable-next-line no-eval
+//       item.ability = eval(item.ability.substr(3));
+//     }
+//   });
+// }
 
 export default function* settingsSaga() {
   try {
@@ -41,11 +41,6 @@ export default function* settingsSaga() {
             let name = key.substr(ability.length);
             model.abilities[name] = can;
           });
-
-          // @ts-ignore 在前端接受数据时 action.ability AbilityGenerator 也是 string
-          abilityFunction(model.actions);
-          abilityFunction(model.groups);
-          abilityFunction(model.fields);
         }
 
         function checkAbility(action: string): boolean {

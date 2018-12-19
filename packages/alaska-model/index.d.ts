@@ -93,7 +93,7 @@ export interface ModelSettings {
   api?: ModelApi;
   relationships?: ObjectMap<ModelRelationship>;
   populations?: ObjectMap<ModelPopulation>;
-  groups?: ObjectMap<ModelGroup>;
+  groups?: ObjectMap<FieldGroup>;
   fields?: ObjectMap<FieldOption>;
   virtuals?: ObjectMap<any>;
 
@@ -166,7 +166,7 @@ export class Model {
   static api: ModelApi;
   static relationships: ObjectMap<ModelRelationship>;
   static populations: ObjectMap<ModelPopulation>;
-  static groups: ObjectMap<ModelGroup>;
+  static groups: ObjectMap<FieldGroup>;
   static fields: ObjectMap<FieldOption>;
   static _fields: ObjectMap<Field>;
   static virtuals: ObjectMap<any>;
@@ -495,17 +495,29 @@ export class Model {
 
 export type ModelFieldList = ObjectMap<1>;
 
-export interface ModelGroup {
+export interface FieldGroup {
   title?: string;
   panel?: boolean;
   form?: boolean;
   color?: Colors;
   wrapper?: string; // 自定义Wrapper占位符
   after?: string;
-  ability?: string | AbilityGenerator;
+
+  /**
+   * 禁用条件，管理端组件禁用，注意：和Field.disabled 不同， Group.disabled 不影响API接口字段权限
+   */
   disabled?: DependsQueryExpression;
+  /**
+   * 数据接口数据保护条件，数据接口不返回指定字段的值，只影响数据接口，不影响Admin接口
+   */
   hidden?: DependsQueryExpression;
-  protected?: DependsQueryExpression;
+  /**
+   * 静态视图条件，只控制管理端组件是否禁用，和 disabled 的区别是：fixed不影响API接口
+   */
+  fixed?: DependsQueryExpression;
+  /**
+   * 超级管理员模式，只控制管理端组件是否显示
+   */
   super?: DependsQueryExpression;
 }
 
@@ -536,10 +548,18 @@ export interface ModelAction {
   list?: boolean;
   needRecords?: number;
   link?: string;
-  ability?: string | AbilityGenerator;
+
+  /**
+   * 禁用条件，管理端组件禁用，并且接口不允调用Action
+   */
   disabled?: DependsQueryExpression;
+  /**
+   * 前端视图隐藏条件，只控制管理端组件隐藏，不控制API接口
+   */
   hidden?: DependsQueryExpression;
-  protected?: DependsQueryExpression;
+  /**
+   * 超级管理员模式，只控制管理端组件是否显示
+   */
   super?: DependsQueryExpression;
   confirm?: string;
   pre?: string;
@@ -595,22 +615,33 @@ interface FieldBase {
   view?: string;
   defaultValue?: any;
   group?: string;
-  ability?: string | AbilityGenerator;
-  // 禁用条件
+  /**
+   * 禁用条件，管理端组件禁用，并且接口不允许写
+   */
   disabled?: DependsQueryExpression;
-  // 前端视图隐藏条件
-  hidden?: DependsQueryExpression;
-  // admin接口数据保护条件，数据接口不返回指定字段的值，但是前端组件正常显示，可配合 hidden 条件来隐藏前端
+  /**
+   * 数据接口数据保护条件，数据接口不返回指定字段的值，只影响数据接口，不影响Admin接口
+   */
   protected?: DependsQueryExpression;
-  // 超级管理员模式
-  super?: DependsQueryExpression;
-  // 静态视图条件
+  /**
+   * 接口数据保护条件，数据接口、Admin接口都不返回字段的值，但是管理端组件正常显示，可配合 hidden 条件来隐藏前端
+   */
+  private?: DependsQueryExpression;
+  /**
+   * 前端视图隐藏条件，只控制管理端组件隐藏，不控制API接口
+   */
+  hidden?: DependsQueryExpression;
+  /**
+   * 静态视图条件，只控制管理端组件是否禁用，和 disabled 的区别是：fixed不影响API接口
+   */
   fixed?: DependsQueryExpression;
+  /**
+   * 超级管理员模式，只控制管理端组件是否显示
+   */
+  super?: DependsQueryExpression;
   horizontal?: boolean;
   nolabel?: boolean;
   noexport?: boolean;
-  // API 接口数据保护
-  private?: boolean;
   help?: string;
   cell?: string;
   filter?: string;

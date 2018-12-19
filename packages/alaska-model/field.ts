@@ -152,10 +152,12 @@ export default class Field {
     let field: FieldType = this;
     let FieldClass = this.type;
 
-    let ability = field.ability;
-    if (typeof ability === 'function') {
-      ability = `js:${ability.toString()}`;
-    }
+
+    // TODO: ability 支持
+    // let ability = field.ability;
+    // if (typeof ability === 'function') {
+    //   ability = `js:${ability.toString()}`;
+    // }
 
     let plainName = field.plainName || FieldClass.plainName;
     if (!plainName) {
@@ -177,7 +179,7 @@ export default class Field {
       path: field.path,
       plainName,
       default: field.default,
-      ability,
+      // ability,
       super: field.super,
       hidden: field.hidden,
       protected: field.protected,
