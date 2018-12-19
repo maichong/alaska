@@ -3,15 +3,7 @@ import * as React from 'react';
 import { ActionGroupProps } from '..';
 import ActionView from './ActionView';
 
-interface ActionGroupState {
-}
-
-export default class ActionGroup extends React.Component<ActionGroupProps, ActionGroupState> {
-  constructor(props: ActionGroupProps) {
-    super(props);
-    this.state = {};
-  }
-
+export default class ActionGroup extends React.Component<ActionGroupProps> {
   render() {
     const {
       items, editor, model, record, records, selected

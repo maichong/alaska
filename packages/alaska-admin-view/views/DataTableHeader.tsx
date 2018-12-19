@@ -10,15 +10,7 @@ interface Props extends DataTableHeaderProps {
   locale: string;
 }
 
-interface DataTableHeaderState {
-}
-
-class DataTableHeader extends React.Component<Props, DataTableHeaderState> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {};
-  }
-
+class DataTableHeader extends React.Component<Props> {
   handleCheck = () => {
     if (this.props.onSelect) {
       this.props.onSelect();

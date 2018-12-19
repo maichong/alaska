@@ -1,14 +1,8 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import * as PropTypes from 'prop-types';
-import { NodeProps } from '..';
+import { NodeProps, views } from '..';
 
 export default class Node extends React.Component<NodeProps> {
-  static contextTypes = {
-    views: PropTypes.object
-  };
-  context: any;
-
   render() {
     let { tag, children, wrapper, props, ...others } = this.props;
     if (tag !== false) {
@@ -17,7 +11,7 @@ export default class Node extends React.Component<NodeProps> {
     }
 
     if (wrapper) {
-      const wrappers = this.context.views.wrapper;
+      const wrappers = views.wrappers;
       if (wrappers[wrapper] && wrappers[wrapper].length) {
         children = _.reduce(
           wrappers[wrapper],

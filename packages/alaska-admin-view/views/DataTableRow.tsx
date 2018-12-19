@@ -3,26 +3,18 @@ import * as PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Checkbox from '@samoyed/checkbox';
 import Node from './Node';
-import { DataTableRowProps, Field, StoreState } from '..';
+import { DataTableRowProps, Field, StoreState, views } from '..';
 
 interface Props extends DataTableRowProps {
   superMode: boolean;
 }
 
-interface DataTableRowState {
-}
-
-class DataTableRow extends React.Component<Props, DataTableRowState> {
+class DataTableRow extends React.Component<Props> {
   static contextTypes = {
-    views: PropTypes.object,
     router: PropTypes.object,
   };
 
   context: any;
-  constructor(props: Props) {
-    super(props);
-    this.state = {};
-  }
 
   handleChange = () => {
     let { record, onSelect, selected } = this.props;
@@ -41,7 +33,6 @@ class DataTableRow extends React.Component<Props, DataTableRowState> {
       model, columns, record, selected,
       onActive, onSelect, superMode
     } = this.props;
-    let { views } = this.context;
     return (
       <tr
         className="data-table-row"

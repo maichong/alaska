@@ -2,15 +2,7 @@ import * as React from 'react';
 import * as tr from 'grackle';
 import { QuickEditorActionBarProps } from '..';
 
-interface QuickEditorActionBarState {
-}
-
-export default class QuickEditorActionBar extends React.Component<QuickEditorActionBarProps, QuickEditorActionBarState> {
-  constructor(props: QuickEditorActionBarProps) {
-    super(props);
-    this.state = {};
-  }
-
+export default class QuickEditorActionBar extends React.Component<QuickEditorActionBarProps> {
   render() {
     const { canEdit, saveText, onCannel, onSave } = this.props;
     return (

@@ -10,7 +10,15 @@ import { LangGroup } from 'alaska-locale';
 
 // exports
 
+export function query(options: QueryOptions): Promise<QueryCache>;
+
+export function upload(options: UploadOptions): Promise<UploadResult>;
+
+export function setViews(views: Partial<Views>): void;
+
 export const api: Client;
+
+export const views: Views;
 
 export const store: Store<StoreState, any>;
 
@@ -44,15 +52,10 @@ export interface QueryOptions {
   populations?: string[];
 }
 
-export function query(options: QueryOptions): Promise<QueryCache>;
-
-export function upload(options: UploadOptions): Promise<UploadResult>;
-
 export class App extends React.Component<AppProps> {
 }
 
 export interface AppProps {
-  views: Views;
 }
 
 // state

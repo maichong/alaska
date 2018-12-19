@@ -1,26 +1,12 @@
 import * as _ from 'lodash';
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import ToolGroup from './ToolGroup';
 import Node from './Node';
-import { EditorToolbarProps } from '..';
+import { EditorToolbarProps, views } from '..';
 
-interface EditorToolbarState {
-}
-
-export default class EditorToolbar extends React.Component<EditorToolbarProps, EditorToolbarState> {
-  static contextTypes = {
-    views: PropTypes.object
-  };
-
-  context: any;
-  constructor(props: EditorToolbarProps) {
-    super(props);
-    this.state = {};
-  }
-
+export default class EditorToolbar extends React.Component<EditorToolbarProps> {
   render() {
-    const { editorTools } = this.context.views;
+    const { editorTools } = views;
     let editorToolsViews = _.map(editorTools, (Item, index) => <Item key={index} />);
     return (
       <Node

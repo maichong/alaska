@@ -1,15 +1,7 @@
 import * as React from 'react';
 import { QuickEditorTitleBarProps } from '..';
 
-interface QuickEditorTitleBarState {
-}
-
-export default class QuickEditorTitleBar extends React.Component<QuickEditorTitleBarProps, QuickEditorTitleBarState> {
-  constructor(props: QuickEditorTitleBarProps) {
-    super(props);
-    this.state = {};
-  }
-
+export default class QuickEditorTitleBar extends React.Component<QuickEditorTitleBarProps> {
   render() {
     const { title, onCannel } = this.props;
     return (

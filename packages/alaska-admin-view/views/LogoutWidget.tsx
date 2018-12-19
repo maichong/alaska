@@ -4,20 +4,12 @@ import { bindActionCreators } from 'redux';
 import { WidgetProps, StoreState, User } from '..';
 import * as loginRedux from '../redux/login';
 
-interface LogoutWidgetState {
-}
-
 interface Props extends WidgetProps {
   logout: Function;
   user: null | User;
 }
 
-class LogoutWidget extends React.Component<Props, LogoutWidgetState> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {};
-  }
-
+class LogoutWidget extends React.Component<Props> {
   handleLogout = () => {
     this.props.logout();
   }

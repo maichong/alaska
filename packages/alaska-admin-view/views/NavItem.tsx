@@ -3,15 +3,7 @@ import * as tr from 'grackle';
 import Node from './Node';
 import { NavItemProps } from '..';
 
-interface NavItemState {
-}
-
-export default class NavItem extends React.Component<NavItemProps, NavItemState> {
-  constructor(props: NavItemProps) {
-    super(props);
-    this.state = {};
-  }
-
+export default class NavItem extends React.Component<NavItemProps> {
   render() {
     const { nav, navId, onClick } = this.props;
     return (

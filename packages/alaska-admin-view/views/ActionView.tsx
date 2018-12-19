@@ -2,22 +2,12 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import * as tr from 'grackle';
 import TooltipWrapper from '@samoyed/tooltip-wrapper';
-import { ActionViewProps } from '..';
+import { ActionViewProps, views } from '..';
 
-interface ActionViewState {
-}
-
-export default class ActionView extends React.Component<ActionViewProps, ActionViewState> {
+export default class ActionView extends React.Component<ActionViewProps> {
   static contextTypes = {
-    views: PropTypes.object,
     router: PropTypes.object
   };
-
-  context: any;
-  constructor(props: ActionViewProps) {
-    super(props);
-    this.state = {};
-  }
 
   handleClick = () => {
     const { onClick, link } = this.props;
@@ -36,13 +26,14 @@ export default class ActionView extends React.Component<ActionViewProps, ActionV
     } = this.props;
 
     if (action.view) {
-      let View = this.context.views[action.view];
+      let View = views.components[action.view];
       if (!View) {
         console.error(`Action view ${action.view} missing`);
         return null;
       }
 
       return React.createElement(View, {
+        // @ts-ignore 自定义Props
         editor, model, action, records, selected, record, disabled: !!action.disabled
       });
     }

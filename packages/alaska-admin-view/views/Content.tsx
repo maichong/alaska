@@ -4,15 +4,7 @@ import Header from './Header';
 import Body from './Body';
 import { ContentProps } from '..';
 
-interface ContentState {
-}
-
-export default class Content extends React.Component<ContentProps, ContentState> {
-  constructor(props: ContentProps) {
-    super(props);
-    this.state = {};
-  }
-
+export default class Content extends React.Component<ContentProps> {
   render() {
     return (
       <Node

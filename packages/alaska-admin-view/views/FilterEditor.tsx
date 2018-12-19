@@ -1,24 +1,10 @@
 import * as tr from 'grackle';
 import * as _ from 'lodash';
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import Node from './Node';
-import { FilterEditorProps } from '..';
+import { FilterEditorProps, views } from '..';
 
-interface FilterEditorState {
-}
-
-export default class FilterEditor extends React.Component<FilterEditorProps, FilterEditorState> {
-  static contextTypes = {
-    views: PropTypes.object
-  };
-
-  context: any;
-  constructor(props: FilterEditorProps) {
-    super(props);
-    this.state = {};
-  }
-
+export default class FilterEditor extends React.Component<FilterEditorProps> {
   handleChange = (path: string, v: any) => {
     this.props.onChange(_.assign({}, this.props.value, { [path]: v }));
   };
@@ -29,7 +15,6 @@ export default class FilterEditor extends React.Component<FilterEditorProps, Fil
 
   render() {
     const { model, value } = this.props;
-    const { views } = this.context;
     return (
       <Node
         className="filter-editor form-horizontal"

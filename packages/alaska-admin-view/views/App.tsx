@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import { HashRouter as Router } from 'react-router-dom';
 import { AppProps, StoreState, Settings, Layout } from 'alaska-admin-view';
 import ModalContainer from '@samoyed/modal';
@@ -20,22 +19,12 @@ interface Props extends AppProps {
 }
 
 class App extends React.Component<Props> {
-  static childContextTypes = {
-    views: PropTypes.object
-  };
-
   componentDidMount() {
     window.addEventListener('resize', this.handleResize);
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize);
-  }
-
-  getChildContext() {
-    return {
-      views: this.props.views
-    };
   }
 
   handleResize = () => {

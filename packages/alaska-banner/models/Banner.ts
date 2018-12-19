@@ -1,5 +1,6 @@
 import { Model } from 'alaska-model';
 import { Context } from 'alaska-http';
+import * as moment from 'moment';
 
 function defaultFilters(ctx: Context) {
   if (ctx.request.url.startsWith('/admin/')) return null;
@@ -28,7 +29,8 @@ export default class Banner extends Model {
     },
     pic: {
       label: 'Picture',
-      type: 'image'
+      type: 'image',
+      required: true
     },
     place: {
       label: 'Place',
@@ -50,7 +52,12 @@ export default class Banner extends Model {
     },
     url: {
       label: 'URL',
-      type: String
+      type: String,
+      hidden: {
+        action: {
+          $ne: 'url'
+        }
+      }
     },
     sort: {
       label: 'Sort',
@@ -62,11 +69,13 @@ export default class Banner extends Model {
       label: 'Clicks',
       type: Number,
       default: 0,
+      disabled: true,
       private: true
     },
     activated: {
       label: 'Activated',
       type: Boolean,
+      default: true,
       private: true
     },
     startAt: {
@@ -83,6 +92,7 @@ export default class Banner extends Model {
     createdAt: {
       label: 'Created At',
       type: Date,
+      hidden: '!createdAt',
       private: true
     }
   };
@@ -96,7 +106,7 @@ export default class Banner extends Model {
   clicks: number;
   activated: boolean;
   startAt: Date;
-  endAt: Date;
+  endAt: Date | moment.Moment;
   createdAt: Date;
 
   preSave() {
@@ -104,7 +114,7 @@ export default class Banner extends Model {
       this.startAt = new Date();
     }
     if (!this.endAt) {
-      this.endAt = new Date();
+      this.endAt = moment(this.startAt).add(1, 'month');
     }
     if (!this.createdAt) {
       this.createdAt = new Date();

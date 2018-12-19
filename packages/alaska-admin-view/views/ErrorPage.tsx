@@ -3,15 +3,7 @@ import * as tr from 'grackle';
 import Node from './Node';
 import { ErrorPageProps } from '..';
 
-interface ErrorPageState {
-}
-
-export default class ErrorPage extends React.Component<ErrorPageProps, ErrorPageState> {
-  constructor(props: ErrorPageProps) {
-    super(props);
-    this.state = {};
-  }
-
+export default class ErrorPage extends React.Component<ErrorPageProps> {
   render() {
     return (
       <Node

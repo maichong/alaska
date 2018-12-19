@@ -1,39 +1,24 @@
 import * as _ from 'lodash';
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import * as tr from 'grackle';
 import * as checkDepends from 'check-depends';
 import Node from './Node';
 import { connect } from 'react-redux';
 import parseAbility from '../utils/parse-ability';
-import { FieldGroupProps, Settings, StoreState } from '..';
-
-interface FieldGroupState {
-}
+import { FieldGroupProps, Settings, StoreState, views } from '..';
 
 interface Props extends FieldGroupProps {
   settings: Settings;
 }
 
-class FieldGroup extends React.Component<Props, FieldGroupState> {
+class FieldGroup extends React.Component<Props> {
   static defaultProps = {
     horizontal: true
   };
 
-  static contextTypes = {
-    views: PropTypes.object
-  };
-
   fieldRefs: any = {};
 
-  context: any;
-  constructor(props: Props) {
-    super(props);
-    this.state = {};
-  }
-
   renderFields(disabled: boolean) {
-    const { views } = this.context;
     const { props } = this;
     const {
       fields: propFields,
@@ -99,9 +84,9 @@ class FieldGroup extends React.Component<Props, FieldGroupState> {
       if (fieldDisabled) {
         fieldClasses.push('disabled');
       }
-      // @ts-ignore
       fields.push(React.createElement(ViewClass, {
         key: field.path,
+        // @ts-ignore 自定义Props
         value,
         ref: (r) => {
           this.fieldRefs[field.path] = r;

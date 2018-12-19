@@ -4,15 +4,7 @@ import Sidebar from './Sidebar';
 import Node from './Node';
 import { DashboardProps } from '..';
 
-interface DashboardState {
-}
-
-export default class Dashboard extends React.Component<DashboardProps, DashboardState> {
-  constructor(props: DashboardProps) {
-    super(props);
-    this.state = {};
-  }
-
+export default class Dashboard extends React.Component<DashboardProps> {
   render() {
     return (
       <Node

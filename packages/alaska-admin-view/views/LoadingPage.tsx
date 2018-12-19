@@ -3,15 +3,7 @@ import * as tr from 'grackle';
 import { LoadingPageProps } from '..';
 import Node from './Node';
 
-interface LoadingPageState {
-}
-
-export default class LoadingPage extends React.Component<LoadingPageProps, LoadingPageState> {
-  constructor(props: LoadingPageProps) {
-    super(props);
-    this.state = {};
-  }
-
+export default class LoadingPage extends React.Component<LoadingPageProps> {
   render() {
     return (
       <Node

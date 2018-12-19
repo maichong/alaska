@@ -5,8 +5,8 @@ import service from '../';
 export default class Category extends Model {
   static label = 'Category';
   static icon = 'th-list';
-  static defaultColumns = '_id icon pic title parent activated sort createdAt';
-  static defaultSort = '-sort';
+  static defaultColumns = '_id group parent title icon pic activated sort createdAt';
+  static defaultSort = 'parent -sort';
   static searchFields = 'title';
 
   static api = {
@@ -100,6 +100,7 @@ export default class Category extends Model {
     }
   };
 
+  group: string;
   title: string;
   icon: Object;
   pic: Object;
@@ -111,6 +112,7 @@ export default class Category extends Model {
   sort: number;
   createdAt: Date;
   __parentChanged?: boolean;
+  __groupChanged?: boolean;
 
   async preSave() {
     if (!this.createdAt) {
@@ -121,12 +123,18 @@ export default class Category extends Model {
       if (old) service.error('Category title has already exists!');
     }
     this.__parentChanged = this.isNew || this.isModified('parent');
+    this.__groupChanged = this.isModified('group');
   }
 
   postSave() {
-    if (this.__parentChanged) {
-      service.sleds.UpdateCatRef.run({ category: this });
-    }
+    (async () => {
+      if (this.__parentChanged) {
+        await service.sleds.UpdateCatRef.run({ category: this });
+      }
+      await Category.updateMany({ parents: this._id }, {
+        group: this.group
+      })
+    })();
   }
 
   async preRemove() {

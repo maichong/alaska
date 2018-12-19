@@ -52,11 +52,11 @@ interface ListPageState {
 
 class ListPage extends React.Component<Props, ListPageState> {
   static contextTypes = {
-    views: PropTypes.object,
     router: PropTypes.object
   };
 
   context: any;
+
   _ref?: {
     scrollHeight: number;
     offsetHeight: number;

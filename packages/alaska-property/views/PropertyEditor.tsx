@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
@@ -40,10 +39,6 @@ interface PropertyRecord {
 }
 
 export default class PropertyEditor extends React.Component<Props, State> {
-  static contextTypes = {
-    views: PropTypes.object
-  };
-
   _cat: any;
 
   constructor(props: Props) {

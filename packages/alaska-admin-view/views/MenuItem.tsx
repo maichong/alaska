@@ -5,15 +5,7 @@ import Node from './Node';
 import { MenuItemProps } from '..';
 import Menu from './Menu';
 
-interface MenuItemState {
-}
-
-export default class MenuItem extends React.Component<MenuItemProps, MenuItemState> {
-  constructor(props: MenuItemProps) {
-    super(props);
-    this.state = {};
-  }
-
+export default class MenuItem extends React.Component<MenuItemProps> {
   render() {
     const {
       level: propLevel, menu, openId, onClick, layout, opened, onChange

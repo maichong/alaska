@@ -3,15 +3,7 @@ import Node from './Node';
 import { EditorActionBarProps } from '..';
 import EditorActions from './EditorActions';
 
-interface EditorActionBarState {
-}
-
-export default class EditorActionBar extends React.Component<EditorActionBarProps, EditorActionBarState> {
-  constructor(props: EditorActionBarProps) {
-    super(props);
-    this.state = {};
-  }
-
+export default class EditorActionBar extends React.Component<EditorActionBarProps> {
   render() {
     let { model, record, isNew } = this.props;
     return (

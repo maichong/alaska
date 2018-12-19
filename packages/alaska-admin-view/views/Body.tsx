@@ -1,30 +1,14 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
 import Node from './Node';
 import HomePage from './HomePage';
 import ListPage from './ListPage';
 import ErrorPage from './ErrorPage';
 import EditorPage from './EditorPage';
-import { BodyProps, Route as RouteItem } from '..';
+import { BodyProps, Route as RouteItem, views } from '..';
 
-interface BodyState {
-}
-
-export default class Body extends React.Component<BodyProps, BodyState> {
-
-  static contextTypes = {
-    views: PropTypes.object
-  };
-
-  context: any;
-  constructor(props: BodyProps) {
-    super(props);
-    this.state = {};
-  }
-
+export default class Body extends React.Component<BodyProps> {
   render() {
-    const { views } = this.context;
     return (
       <Node
         className="body"
