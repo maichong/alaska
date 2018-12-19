@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import * as React from 'react';
-import * as checkDepends from 'check-depends';
 import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
 import { connect } from 'react-redux';
@@ -12,6 +11,7 @@ import { QuickEditorProps, Record, StoreState, ActionState } from '..';
 import * as ActionRedux from '../redux/action';
 import QuickEditorActionBar from './QuickEditorActionBar';
 import QuickEditorTitleBar from './QuickEditorTitleBar';
+import checkAbility from '../utils/check-ability';
 
 interface QuickEditorState {
   mode: Mode;
@@ -73,8 +73,8 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
     // update存在
     let action = model.actions.update;
     if (selected.length === 1) {
-      if (action.disabled && checkDepends(action.disabled, selected[0])) return false;
-      if (action.hidden && checkDepends(action.hidden, selected[0])) return false;
+      if (action.disabled && checkAbility(action.disabled, selected[0])) return false;
+      if (action.hidden && checkAbility(action.hidden, selected[0])) return false;
     }
     return true;
   };

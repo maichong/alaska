@@ -1,5 +1,3 @@
-
-import { AbilityGenerator } from 'alaska';
 import { FieldOption, Model, Field as FieldType, FieldViewOption, FieldDataType } from 'alaska-model';
 import { Schema } from 'mongoose';
 import { DependsQueryExpression } from 'check-depends';
@@ -43,7 +41,6 @@ export default class Field {
   horizontal?: boolean;
   nolabel?: boolean;
   private?: boolean;
-  ability?: string | AbilityGenerator;
   help?: string;
   cell?: string;
   view?: string;

@@ -221,10 +221,6 @@ export interface ObjectMap<T> {
   [key: string]: T;
 }
 
-export interface AbilityGenerator {
-  (data: Object, user?: Object): string;
-}
-
 /**
  * 接口关闭
  */

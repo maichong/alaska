@@ -8,6 +8,7 @@ import Role from './models/Role';
 import User from './models/User';
 import { URRC } from 'alaska-user';
 import UserURRC from './urrc/user';
+import SelfURRC from './urrc/self';
 
 /**
  * @class UserService
@@ -19,6 +20,7 @@ class UserService extends Service {
     super(options);
     this.urrc = new Map();
     this.urrc.set('user', UserURRC({ field: 'user' }));
+    this.urrc.set('self', SelfURRC());
   }
 
   /**
@@ -101,6 +103,7 @@ class UserService extends Service {
         relationships.push(relationship);
       }
     }
+    // TODO: 检查指定关系
     for (let r of relationships) {
       let checker = this.urrc.get(r);
       if (!checker) continue;

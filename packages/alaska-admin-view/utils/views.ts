@@ -7,7 +7,11 @@ const views: Views = {
   widgets: [],
   listTools: [],
   editorTools: [],
+  urrc: {}
 };
+
+// @ts-ignore
+window.views = views;
 
 export default views;
 

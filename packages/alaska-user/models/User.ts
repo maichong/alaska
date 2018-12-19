@@ -1,7 +1,6 @@
 
 import { Model } from 'alaska-model';
 import { ObjectId } from 'mongodb';
-import Role from './Role';
 
 export default class User extends Model {
   static label = 'User';
@@ -22,17 +21,26 @@ export default class User extends Model {
       label: 'Username',
       type: String,
       unique: true,
-      required: true
+      required: true,
+      disabled: [{
+        ability: 'alaska-user.User.update'
+      }]
     },
     email: {
       label: 'Email',
       type: String,
-      index: true
+      index: true,
+      disabled: [{
+        ability: 'alaska-user.User.update'
+      }]
     },
     tel: {
       label: 'Tel',
       type: String,
-      index: true
+      index: true,
+      disabled: [{
+        ability: 'alaska-user.User.update'
+      }]
     },
     displayName: {
       label: 'Display Name',
@@ -41,8 +49,10 @@ export default class User extends Model {
     password: {
       label: 'Password',
       type: 'password',
-      private: true, // 前端API接口不返回
-      protected: true // admin后台接口不返回
+      private: true, // 前端API接口不返回,admin后台接口不返回
+      disabled: [{
+        ability: 'alaska-user.User.update'
+      }]
     },
     avatar: {
       label: 'Avatar',
@@ -53,18 +63,27 @@ export default class User extends Model {
       type: 'relationship',
       ref: 'Role',
       multi: true,
-      private: true
+      private: true,
+      disabled: [{
+        ability: 'alaska-user.User.update'
+      }]
     },
     abilities: {
       label: 'Abilities',
       type: 'relationship',
       ref: 'Ability',
       multi: true,
-      private: true
+      private: true,
+      disabled: [{
+        ability: 'alaska-user.User.update'
+      }]
     },
     createdAt: {
       label: 'Registered At',
-      type: Date
+      type: Date,
+      disabled: [{
+        ability: 'alaska-user.User.update'
+      }]
     }
   };
 

@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import * as checkDepends from 'check-depends';
 import * as tr from 'grackle';
 import { ModelAction } from 'alaska-model';
 import { connect } from 'react-redux';
@@ -9,9 +8,10 @@ import { bindActionCreators } from 'redux';
 import { confirm } from '@samoyed/modal';
 import toast from '@samoyed/toast';
 import { ObjectMap } from 'alaska';
-import { EditorActionsProps, StoreState, Settings, ActionState, ActionRequestPayload } from '..';
+import { EditorActionsProps, StoreState, ActionState, ActionRequestPayload } from '..';
 import ActionGroup from './ActionGroup';
 import * as ActionRedux from '../redux/action';
+import checkAbility from '../utils/check-ability';
 
 interface ActionMap {
   key: string;
@@ -28,7 +28,6 @@ interface EditorActionsState {
 
 interface Props extends EditorActionsProps {
   superMode: boolean;
-  settings?: Settings;
   actionRequest: (req: ActionRequestPayload) => any;
   action: ActionState;
 }
@@ -124,7 +123,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
 
   render() {
     const {
-      model, record, isNew, superMode, settings
+      model, record, isNew, superMode
     } = this.props;
 
     let redirect = this.state.redirect;
@@ -170,23 +169,10 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
     keys.forEach((key) => {
       let action = actions[key];
       if (action.list && !action.editor) return;
-      if (!superMode && checkDepends(action.super, record)) return;
-      if (checkDepends(action.hidden, record)) return;
+      if (!superMode && checkAbility(action.super, record)) return;
+      if (checkAbility(action.hidden, record)) return;
 
-      // TODO: ability 支持
-      // let { ability } = action;
-      // let abilityDisabled = false;
-      // if (typeof ability === 'function') {
-      //   ability = ability(record, settings.user);
-      // }
-      // if (ability && ability[0] === '*') {
-      //   ability = ability.substr(1);
-      //   abilityDisabled = true;
-      // }
-      // let hasAbility = !ability || (settings && settings.abilities && settings.abilities[ability]) || false;
-      // if (!hasAbility && !abilityDisabled) return;
-
-      let disabled = action.disabled && checkDepends(action.disabled, record);
+      let disabled = action.disabled && checkAbility(action.disabled, record);
       let obj = {} as ActionMap;
       if (key === 'create') {
         if (!isNew || model.nocreate) return;
@@ -251,6 +237,6 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
 
 
 export default connect(
-  ({ settings, action }: StoreState) => ({ superMode: settings.superMode, action, settings }),
+  ({ settings, action }: StoreState) => ({ superMode: settings.superMode, action }),
   (dispatch) => bindActionCreators({ actionRequest: ActionRedux.actionRequest }, dispatch)
 )(EditorActions);

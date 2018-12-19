@@ -1,6 +1,6 @@
 import { Client, PaginateResult } from 'akita';
 import { ObjectMap } from 'alaska';
-import { ModelAction, Filter, Filters } from 'alaska-model';
+import { ModelAction, Filter, Filters, AbilityCheckGate } from 'alaska-model';
 import * as React from 'react';
 import { Store } from 'redux';
 import * as immutable from 'seamless-immutable';
@@ -256,7 +256,7 @@ export interface ModelRelationship {
   title?: string;
   private?: boolean;
   populations?: any;
-  hidden?: DependsQueryExpression;
+  hidden?: DependsQueryExpression | AbilityCheckGate[];
 }
 
 export interface FieldGroup {
@@ -272,19 +272,19 @@ export interface FieldGroup {
   /**
    * 禁用条件，管理端组件禁用，注意：和Field.disabled 不同， Group.disabled 不影响API接口字段权限
    */
-  disabled?: DependsQueryExpression;
+  disabled?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 数据接口数据保护条件，数据接口不返回指定字段的值，只影响数据接口，不影响Admin接口
    */
-  hidden?: DependsQueryExpression;
+  hidden?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 静态视图条件，只控制管理端组件是否禁用，和 disabled 的区别是：fixed不影响API接口
    */
-  fixed?: DependsQueryExpression;
+  fixed?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 超级管理员模式，只控制管理端组件是否显示
    */
-  super?: DependsQueryExpression;
+  super?: DependsQueryExpression | AbilityCheckGate[];
 }
 
 export interface Field {
@@ -301,27 +301,27 @@ export interface Field {
   /**
    * 禁用条件，管理端组件禁用，并且接口不允许写
    */
-  disabled?: DependsQueryExpression;
+  disabled?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 数据接口数据保护条件，数据接口不返回指定字段的值，只影响数据接口，不影响Admin接口
    */
-  protected?: DependsQueryExpression;
+  protected?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 接口数据保护条件，数据接口、Admin接口都不返回字段的值，但是管理端组件正常显示，可配合 hidden 条件来隐藏前端
    */
-  private?: DependsQueryExpression;
+  private?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 前端视图隐藏条件，只控制管理端组件隐藏，不控制API接口
    */
-  hidden?: DependsQueryExpression;
+  hidden?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 静态视图条件，只控制管理端组件是否禁用，和 disabled 的区别是：fixed不影响API接口
    */
-  fixed?: DependsQueryExpression;
+  fixed?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 超级管理员模式，只控制管理端组件是否显示
    */
-  super?: DependsQueryExpression;
+  super?: DependsQueryExpression | AbilityCheckGate[];
 
   help?: string;
 
@@ -329,7 +329,7 @@ export interface Field {
   horizontal?: boolean;
   nolabel?: boolean;
   // TODO:
-  nosort?: DependsQueryExpression;
+  nosort?: DependsQueryExpression | AbilityCheckGate[];
   // fields
   match?: string;
   translate?: boolean;
@@ -466,6 +466,18 @@ export interface User {
 
 // Views
 
+/**
+ * User resource relationship checker
+ */
+export interface URRC {
+  /**
+   * @param {any} user 一定存在，{}空对象代表访客
+   * @param {Record} record 要检查的数据记录
+   * @returns {boolean}
+   */
+  check(user: any, record: any): boolean;
+}
+
 export interface Route {
   path: string;
   component: typeof React.Component;
@@ -482,6 +494,7 @@ export interface Views {
   widgets: typeof React.Component[];
   listTools: typeof React.Component[];
   editorTools: typeof React.Component[];
+  urrc: ObjectMap<URRC>;
 }
 
 
@@ -501,6 +514,9 @@ export interface ViewsMetadata {
   widgets?: string[];
   listTools?: string[];
   editorTools?: string[];
+  urrc?: {
+    [name: string]: string;
+  };
 }
 
 // Widget interface

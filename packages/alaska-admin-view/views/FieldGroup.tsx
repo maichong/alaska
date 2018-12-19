@@ -1,10 +1,9 @@
 import * as _ from 'lodash';
 import * as React from 'react';
 import * as tr from 'grackle';
-import * as checkDepends from 'check-depends';
 import Node from './Node';
 import { connect } from 'react-redux';
-import parseAbility from '../utils/parse-ability';
+import checkAbility from '../utils/check-ability';
 import { FieldGroupProps, Settings, StoreState, views } from '..';
 
 interface Props extends FieldGroupProps {
@@ -37,22 +36,10 @@ class FieldGroup extends React.Component<Props> {
       let fieldClasses: string[] = ['form-group', model.id + '-' + field.path + '-view'];
       if (horizontal) fieldClasses.push('row');
 
-      // TODO: ability 支持
-      // let { ability } = field;
-      // let abilityDisabled = false;
-      // if (typeof ability === 'function') {
-      //   ability = ability(record, settings.user);
-      // }
-      // if (ability && ability[0] === '*') {
-      //   ability = ability.substr(1);
-      //   abilityDisabled = true;
-      // }
-      // let hasAbility = !ability || settings.abilities[ability] || false;
       if (
         (!field.view)
-        // || (!hasAbility && !abilityDisabled)
-        || checkDepends(field.hidden, record)
-        || (!settings.superMode && checkDepends(field.super, record))
+        || checkAbility(field.hidden, record)
+        || (!settings.superMode && checkAbility(field.super, record))
       ) {
         delete this.fieldRefs[field.path];
         return;
@@ -65,23 +52,17 @@ class FieldGroup extends React.Component<Props> {
       }
 
       let fieldDisabled = disabled;
-      // if (!fieldDisabled && !hasAbility) {
-      //   fieldDisabled = abilityDisabled;
-      // }
-      if (!fieldDisabled) {
-        fieldDisabled = checkDepends(field.disabled, record);
+      if (!fieldDisabled && field.disabled) {
+        fieldDisabled = checkAbility(field.disabled, record);
       }
 
       let label = tr(field.label, serviceId);
       let help = tr(field.help, serviceId);
       let value: any = record[field.path];
-      let fixed = checkDepends(field.fixed, record);
+      let fixed = checkAbility(field.fixed, record);
       if (fixed) {
         fieldClasses.push('fixed');
       }
-      // if (!hasAbility) {
-      //   fieldClasses.push('no-ability');
-      // }
       if (fieldDisabled) {
         fieldClasses.push('disabled');
       }
@@ -128,40 +109,18 @@ class FieldGroup extends React.Component<Props> {
       title,
       path,
       settings,
-      disabled,
       wrapper
     } = props;
 
-    // TODO: ability 支持
-    // let { ability } = props;
-    // let abilityDisabled = false;
-    // if (typeof ability === 'function') {
-    //   ability = ability(record, settings.user);
-    // }
-    // if (ability && ability[0] === '*') {
-    //   ability = ability.substr(1);
-    //   abilityDisabled = true;
-    // }
-    // let hasAbility = !ability || settings.abilities[ability] || false;
-    // if (!hasAbility && !abilityDisabled) return ''; // ability
-    if (checkDepends(props.hidden, record)) return ''; // hidden
-    if (!settings.superMode && checkDepends(props.super, record)) return ''; // super
+    if (checkAbility(props.hidden, record)) return ''; // hidden
+    if (!settings.superMode && checkAbility(props.super, record)) return ''; // super
     function isDisabled(): boolean {
-      // if (disabled || abilityDisabled) return true;
-      let action = '';
       if (isNew) {
         if (model.nocreate) return true;
-        action = 'create';
       } else {
         if (model.noupdate) return true;
-        action = 'update';
       }
-      let actionAbility = _.get(model, `actions.${action}.ability`);
-      actionAbility = parseAbility(actionAbility, record, settings.user);
-      if (actionAbility) {
-        if (!settings.abilities[actionAbility]) return true;
-      } else if (!model.abilities[action]) { return true }
-      if (checkDepends(props.disabled, record)) return true;
+      if (checkAbility(props.disabled, record)) return true;
       return false;
     }
     let el = this.renderFields(isDisabled());

@@ -3,7 +3,7 @@ import * as mongodb from 'mongodb';
 import * as mongoose from 'mongoose';
 import * as stream from 'stream';
 import * as AdminView from 'alaska-admin-view';
-import { MainService, Service, Extension, ObjectMap, AbilityGenerator } from 'alaska';
+import { MainService, Service, Extension, ObjectMap } from 'alaska';
 import { Context, ContextState } from 'alaska-http';
 import { DependsQueryExpression } from 'check-depends';
 import { Colors } from '@samoyed/types';
@@ -506,19 +506,19 @@ export interface FieldGroup {
   /**
    * 禁用条件，管理端组件禁用，注意：和Field.disabled 不同， Group.disabled 不影响API接口字段权限
    */
-  disabled?: DependsQueryExpression;
+  disabled?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 数据接口数据保护条件，数据接口不返回指定字段的值，只影响数据接口，不影响Admin接口
    */
-  hidden?: DependsQueryExpression;
+  hidden?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 静态视图条件，只控制管理端组件是否禁用，和 disabled 的区别是：fixed不影响API接口
    */
-  fixed?: DependsQueryExpression;
+  fixed?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 超级管理员模式，只控制管理端组件是否显示
    */
-  super?: DependsQueryExpression;
+  super?: DependsQueryExpression | AbilityCheckGate[];
 }
 
 export interface ModelApi {
@@ -552,15 +552,15 @@ export interface ModelAction {
   /**
    * 禁用条件，管理端组件禁用，并且接口不允调用Action
    */
-  disabled?: DependsQueryExpression;
+  disabled?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 前端视图隐藏条件，只控制管理端组件隐藏，不控制API接口
    */
-  hidden?: DependsQueryExpression;
+  hidden?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 超级管理员模式，只控制管理端组件是否显示
    */
-  super?: DependsQueryExpression;
+  super?: DependsQueryExpression | AbilityCheckGate[];
   confirm?: string;
   pre?: string;
   script?: string;
@@ -574,7 +574,7 @@ export interface ModelRelationship {
   title?: string;
   private?: boolean;
   populations?: ObjectMap<ModelPopulation>;
-  hidden?: DependsQueryExpression;
+  hidden?: DependsQueryExpression | AbilityCheckGate[];
 }
 
 export interface ModelPopulation {
@@ -618,27 +618,27 @@ interface FieldBase {
   /**
    * 禁用条件，管理端组件禁用，并且接口不允许写
    */
-  disabled?: DependsQueryExpression;
+  disabled?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 数据接口数据保护条件，数据接口不返回指定字段的值，只影响数据接口，不影响Admin接口
    */
-  protected?: DependsQueryExpression;
+  protected?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 接口数据保护条件，数据接口、Admin接口都不返回字段的值，但是管理端组件正常显示，可配合 hidden 条件来隐藏前端
    */
-  private?: DependsQueryExpression;
+  private?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 前端视图隐藏条件，只控制管理端组件隐藏，不控制API接口
    */
-  hidden?: DependsQueryExpression;
+  hidden?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 静态视图条件，只控制管理端组件是否禁用，和 disabled 的区别是：fixed不影响API接口
    */
-  fixed?: DependsQueryExpression;
+  fixed?: DependsQueryExpression | AbilityCheckGate[];
   /**
    * 超级管理员模式，只控制管理端组件是否显示
    */
-  super?: DependsQueryExpression;
+  super?: DependsQueryExpression | AbilityCheckGate[];
   horizontal?: boolean;
   nolabel?: boolean;
   noexport?: boolean;
@@ -734,6 +734,11 @@ export type Filters = {
 
 interface FiltersGenerator {
   (ctx: Context): Filters | Promise<Filters> | null;
+}
+
+export interface AbilityCheckGate {
+  ability?: string;
+  check?: DependsQueryExpression;
 }
 
 export class Query<T> extends DocumentQuery<T, any> { }

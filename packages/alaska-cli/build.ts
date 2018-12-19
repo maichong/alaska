@@ -137,7 +137,8 @@ export default async function build(options: BuildOptions) {
     routes: [],
     widgets: [],
     listTools: [],
-    editorTools: []
+    editorTools: [],
+    urrc: {}
   };
 
   function parse(m: ViewsMetadata, dir: string) {
@@ -159,6 +160,12 @@ export default async function build(options: BuildOptions) {
         m.wrappers[name].forEach((file) => {
           views.wrappers[name].push(lookupFile(file));
         });
+      }
+    }
+    if (m.urrc) {
+      for (let name of Object.keys(m.urrc)) {
+        let file = m.urrc[name];
+        views.urrc[name] = lookupFile(file);
       }
     }
     if (m.routes) {
@@ -191,9 +198,10 @@ export default async function build(options: BuildOptions) {
       if (utils.isFile(viewsFile)) {
         // 如果views配置文件存在
         parse(require(viewsFile), viewsDir);
-      } else if (utils.isDir(viewsDir)) {
+      }
+      if (utils.isDir(viewsDir)) {
         fs.readdirSync(viewsDir)
-          .filter((f) => f[0] !== '.' && /\.[tj]sx?$/.test(f))
+          .filter((f) => f[0] !== '.' && /^[A-Z]\w*\.[tj]sx?$/.test(f))
           .forEach((f) => {
             f = f.replace(/\.[tj]sx?$/, '');
             views.components[f] = Path.join(viewsDir, f);
@@ -213,6 +221,15 @@ export default async function build(options: BuildOptions) {
     let r = slash(Path.relative(cwd, views.components[name]));
     content += `  ${name}: require('../../${r}').default,\n`;
     console.log(`view : ${name} -> ${r}`);
+  }
+  content += '};\n\n';
+
+  // 输出urrc
+  content += 'exports.urrc = {\n';
+  for (let name of Object.keys(views.urrc)) {
+    let r = slash(Path.relative(cwd, views.urrc[name]));
+    content += `  ${name}: require('../../${r}').default,\n`;
+    console.log(`urrc : ${name} -> ${r}`);
   }
   content += '};\n\n';
 

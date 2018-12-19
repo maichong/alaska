@@ -26,7 +26,6 @@ function filter(record: any, options?: SelectOption[]): SelectOption[] {
   }
   let res: SelectOption[] = [];
   _.forEach(options, (opt: SelectOption) => {
-    // if (opt.depends && !checkDepends(opt.depends, record)) return;
     opt.label = tr(opt.label);
     res.push(opt);
   });

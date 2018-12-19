@@ -2,7 +2,6 @@ import * as _ from 'lodash';
 import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
 import * as React from 'react';
-import * as checkDepends from 'check-depends';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -14,6 +13,7 @@ import Editor from './Editor';
 import LoadingPage from './LoadingPage';
 import * as detailsRedux from '../redux/details';
 import { ObjectMap } from 'alaska';
+import checkAbility from '../utils/check-ability';
 import {
   EditorPageProps,
   Model,
@@ -129,7 +129,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     const { isNew, id, model, record } = this.state;
     if (isNew) return null;
     return _(model.relationships)
-      .filter((rel) => !checkDepends(rel.hidden, record))
+      .filter((rel) => !checkAbility(rel.hidden, record))
       .map((r: ModelRelationship, key: string) => (<Relationship
         key={key}
         from={id}
