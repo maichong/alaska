@@ -125,9 +125,9 @@ class UserService extends Service {
       if (gate.ability) {
         if (!await this.hasAbility(user, gate.ability, record)) continue; // 此门不开
       }
-      return true; // 此门开着，放水
+      return false; // 此门开着，放水
     }
-    return false;
+    return true;
   }
 
   /**

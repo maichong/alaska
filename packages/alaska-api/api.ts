@@ -14,6 +14,32 @@ Service.resolveMain().then((main) => {
   USER = main.modules.services['alaska-user'].service;
 });
 
+async function trimProtectedField(data: any, user: any, model: typeof Model, record: Model) {
+  for (let key in data) {
+    if (key === 'id') continue;
+    let field = model._fields[key];
+    if (!field) continue;
+    if (field.protected && await USER.checkAbility(user, field.protected, record)) {
+      delete data[key];
+      continue;
+    }
+    if (field.private && await USER.checkAbility(user, field.private, record)) {
+      delete data[key];
+    }
+  }
+}
+
+async function trimDisabledField(data: any, user: any, model: typeof Model, record?: Model) {
+  for (let key in data) {
+    if (key === 'id') continue;
+    let field = model._fields[key];
+    if (!field) continue;
+    if (field.disabled && await USER.checkAbility(user, field.disabled, record)) {
+      delete data[key];
+    }
+  }
+}
+
 export async function count(ctx: Context) {
   const model: typeof Model = ctx.state.model;
 
@@ -65,8 +91,16 @@ export async function paginate(ctx: Context) {
 
   ctx.state.paginateResults = results;
 
+  // 过滤 protected 和 private 字段
+  let list = [];
+  for (let record of results.results) {
+    let data = record.data(scope);
+    list.push(data);
+    if (!USER) continue;
+    await trimProtectedField(data, ctx.user, model, record);
+  }
   ctx.body = _.assign({}, results, {
-    results: results.results.map((doc: Model) => doc.data(scope))
+    results: list
   });
 }
 
@@ -95,7 +129,16 @@ export async function list(ctx: Context) {
 
   ctx.state.listResults = results;
 
-  ctx.body = results.map((doc: Model) => doc.data(scope));
+  // 过滤 protected 和 private 字段
+  let list = [];
+  for (let record of results) {
+    let data = record.data(scope);
+    list.push(data);
+    if (!USER) continue;
+    await trimProtectedField(data, ctx.user, model, record);
+  }
+
+  ctx.body = list;
 }
 
 export async function show(ctx: Context) {
@@ -123,14 +166,24 @@ export async function show(ctx: Context) {
 
   ctx.state.record = record;
   ctx.body = record.data(ctx.state.scope || ctx.query._scope || scope);
+
+  if (USER) {
+    await trimProtectedField(ctx.body, ctx.user, model, record);
+  }
 }
 
 export async function create(ctx: Context) {
   const model: typeof Model = ctx.state.model;
 
   const ability = model.id + '.create';
-  // eslint-disable-next-line
-  let record = new model(ctx.state.body || ctx.request.body);
+  let body = Object.assign({}, ctx.state.body || ctx.request.body);
+
+  if (USER) {
+    let tmp = new model(body);
+    await trimDisabledField(body, ctx.user, model, tmp);
+  }
+
+  let record = new model(body);
 
   if (model.api.create > PUBLIC) {
     if (!USER) {
@@ -146,6 +199,10 @@ export async function create(ctx: Context) {
   await record.save();
   ctx.state.record = record;
   ctx.body = record.data('create');
+
+  if (USER) {
+    await trimProtectedField(ctx.body, ctx.user, model, record);
+  }
 }
 
 export async function update(ctx: Context) {
@@ -174,21 +231,11 @@ export async function update(ctx: Context) {
 
   let body = Object.assign({}, ctx.state.body || ctx.request.body);
 
-  // TODO: 不允许更新private 字段
-  _.forEach(model.fields, (conf, key) => {
-    if (conf.private) {
-      delete body[key];
-    }
-  });
+  if (USER) {
+    await trimDisabledField(body, ctx.user, model, record);
+  }
 
   record.set(body);
-
-  if (model.api.update > PUBLIC) {
-    if (!await USER.hasAbility(ctx.user, ability, record)) {
-      ctx.status = ctx.user ? 403 : 401;
-      return;
-    }
-  }
 
   const scope = ctx.state.scope || ctx.query._scope;
   if (!scope) {
@@ -201,6 +248,10 @@ export async function update(ctx: Context) {
   } else {
     ctx.body = _.pick(record.data('update'), 'id', record.__modifiedPaths);
     delete record.__modifiedPaths;
+  }
+
+  if (USER) {
+    await trimProtectedField(ctx.body, ctx.user, model, record);
   }
 }
 
@@ -226,12 +277,9 @@ export async function updateMulti(ctx: Context) {
 
   let body = Object.assign({}, ctx.state.body || ctx.request.body);
 
-  // 不允许更新private 字段
-  _.forEach(model.fields, (conf, key) => {
-    if (conf.private) {
-      delete body[key];
-    }
-  });
+  if (USER) {
+    await trimDisabledField(body, ctx.user, model);
+  }
 
   let res = await model.update(mergeFilters(filters, abilityFilters), body, { multi: true });
 
@@ -357,7 +405,7 @@ export async function watch(ctx: Context) {
     fullDocument: 'updateLookup'
   });
 
-  changeStream.on('change', (change) => {
+  changeStream.on('change', async (change) => {
     let object;
     let type = 'MODIFIED';
     switch (change.operationType) {
@@ -369,13 +417,19 @@ export async function watch(ctx: Context) {
         type = 'ADDED';
         break;
     }
+
     if (!object) {
       let data = change.fullDocument || change.documentKey;
       if (!data) return;
       // eslint-disable-next-line
       let record = new model(data);
       object = record.data();
+
+      if (USER) {
+        await trimProtectedField(object, ctx.user, model, record);
+      }
     }
+
     s.write(JSON.stringify({ type, object }) + '\n');
   });
   changeStream.on('close', () => {

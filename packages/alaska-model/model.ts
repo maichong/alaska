@@ -291,7 +291,7 @@ export default class Model {
             if (path !== '_id' || orgType !== 'objectid') { // 默认 _id 不需要执行 initSchema，否则创建数据将失败
               field.initSchema();
             }
-            if (!field.protected) {
+            if (field.protected !== true) {
               model.defaultScope[path] = 1;
             }
 
