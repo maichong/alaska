@@ -19,7 +19,7 @@ export default class Category extends Model {
       ref: 'Category',
       path: 'parent',
       title: 'Sub Categories',
-      private: true
+      protected: true
     }
   };
 
@@ -79,7 +79,7 @@ export default class Category extends Model {
       ref: 'Category',
       multi: true,
       hidden: true,
-      private: true,
+      protected: true,
       index: true
     },
     children: {
@@ -88,24 +88,24 @@ export default class Category extends Model {
       ref: 'Category',
       multi: true,
       hidden: true,
-      private: true
+      protected: true
     },
     activated: {
       label: 'Activated',
       type: Boolean,
       default: true,
-      private: true
+      protected: true
     },
     sort: {
       label: 'Sort',
       type: Number,
       default: 0,
-      private: true
+      protected: true
     },
     createdAt: {
       label: 'Created At',
       type: Date,
-      private: true
+      protected: true
     }
   };
 

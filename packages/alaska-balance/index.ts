@@ -21,6 +21,7 @@ class BalanceService extends Service {
     super(options);
   }
 
+  // FIXME: 使用新的hook
   postLoadConfig() {
     let currencies = this.config.get('currencies');
     if (!currencies || !currencies.length) {

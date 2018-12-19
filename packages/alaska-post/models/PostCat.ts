@@ -20,7 +20,7 @@ export default class PostCat extends Model {
       ref: 'PostCat',
       path: 'parent',
       title: 'Sub Categories',
-      private: true
+      protected: true
     }
   };
 
@@ -42,18 +42,18 @@ export default class PostCat extends Model {
       ref: 'PostCat',
       multi: true,
       hidden: true,
-      private: true
+      protected: true
     },
     sort: {
       label: 'Sort',
       type: Number,
       default: 0,
-      private: true
+      protected: true
     },
     createdAt: {
       label: 'Created At',
       type: Date,
-      private: true
+      protected: true
     }
   };
   title: string;

@@ -54,12 +54,12 @@ export default class Sku extends Model {
       label: 'Volume',
       type: Number,
       default: 0,
-      private: true
+      protected: true
     },
     valid: {
       label: 'Valid',
       type: Boolean,
-      private: true
+      protected: true
     },
     props: {
       label: 'Goods Properties',

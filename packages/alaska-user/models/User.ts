@@ -63,7 +63,7 @@ export default class User extends Model {
       type: 'relationship',
       ref: 'Role',
       multi: true,
-      private: true,
+      protected: true,
       disabled: [{
         ability: 'alaska-user.User.update'
       }]
@@ -73,7 +73,7 @@ export default class User extends Model {
       type: 'relationship',
       ref: 'Ability',
       multi: true,
-      private: true,
+      protected: true,
       disabled: [{
         ability: 'alaska-user.User.update'
       }]

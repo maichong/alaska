@@ -22,7 +22,7 @@ export default class PostTag extends Model {
     createdAt: {
       label: 'Created At',
       type: Date,
-      private: true
+      protected: true
     }
   };
   title: string;

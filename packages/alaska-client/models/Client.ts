@@ -15,20 +15,20 @@ export default class Client extends Model {
       type: 'relationship',
       ref: User,
       index: true,
-      private: true
+      protected: true
     },
     deviceId: {
       label: 'Device ID',
       type: String,
       default: '',
       index: true,
-      private: true
+      protected: true
     },
     platform: {
       label: 'Platform',
       type: String,
       default: '',
-      private: true
+      protected: true
     },
     token: {
       label: 'Token',
@@ -37,7 +37,7 @@ export default class Client extends Model {
     expiredAt: {
       label: 'Expired At',
       type: Date,
-      private: true
+      protected: true
     },
     createdAt: {
       label: 'Created At',

@@ -1,4 +1,4 @@
-import { FieldOption, Model, Field as FieldType, FieldViewOption, FieldDataType } from 'alaska-model';
+import { FieldOption, Model, Field as FieldType, FieldViewOption, FieldDataType, AbilityCheckGate } from 'alaska-model';
 import { Schema } from 'mongoose';
 import { DependsQueryExpression } from 'check-depends';
 import * as AdminView from 'alaska-admin-view';
@@ -33,14 +33,14 @@ export default class Field {
   label: string;
   path: string;
   group?: string;
-  disabled?: DependsQueryExpression;
-  hidden?: DependsQueryExpression;
-  protected?: DependsQueryExpression;
-  super?: DependsQueryExpression;
-  fixed?: DependsQueryExpression;
+  disabled?: DependsQueryExpression | AbilityCheckGate[];
+  hidden?: DependsQueryExpression | AbilityCheckGate[];
+  protected?: DependsQueryExpression | AbilityCheckGate[];
+  private?: DependsQueryExpression | AbilityCheckGate[];
+  super?: DependsQueryExpression | AbilityCheckGate[];
+  fixed?: DependsQueryExpression | AbilityCheckGate[];
   horizontal?: boolean;
   nolabel?: boolean;
-  private?: boolean;
   help?: string;
   cell?: string;
   view?: string;
@@ -106,7 +106,7 @@ export default class Field {
     let schema = this._schema;
 
     let options = {
-      type: this.plain || (<typeof Field> this.constructor).plain
+      type: this.plain || (<typeof Field>this.constructor).plain
     };
 
     let keys = [

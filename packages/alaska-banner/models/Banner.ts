@@ -63,37 +63,37 @@ export default class Banner extends Model {
       label: 'Sort',
       type: Number,
       default: 0,
-      private: true
+      protected: true
     },
     clicks: {
       label: 'Clicks',
       type: Number,
       default: 0,
       disabled: true,
-      private: true
+      protected: true
     },
     activated: {
       label: 'Activated',
       type: Boolean,
       default: true,
-      private: true
+      protected: true
     },
     startAt: {
       label: 'Start At',
       type: Date,
-      private: true
+      protected: true
     },
     endAt: {
       label: 'End At',
       type: Date,
-      private: true,
+      protected: true,
       index: true
     },
     createdAt: {
       label: 'Created At',
       type: Date,
       hidden: '!createdAt',
-      private: true
+      protected: true
     }
   };
 

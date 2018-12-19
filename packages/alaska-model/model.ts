@@ -291,7 +291,7 @@ export default class Model {
             if (path !== '_id' || orgType !== 'objectid') { // 默认 _id 不需要执行 initSchema，否则创建数据将失败
               field.initSchema();
             }
-            if (!field.private) {
+            if (!field.protected) {
               model.defaultScope[path] = 1;
             }
 
@@ -341,7 +341,7 @@ export default class Model {
             }
             r.key = key;
             r.ref = Ref;
-            if (!r.private) {
+            if (!r.protected) {
               model.defaultScope[key] = 1;
             }
             if (_.size(r.populations)) {
@@ -550,8 +550,8 @@ export default class Model {
         _.forEach(fields, (any, key) => {
           if (key[0] === '_') return;
           if (!model._virtuals[key]) {
-            if (model._fields[key] && (model._fields[key].private || !this.isSelected(key))) return;
-            if (!model._fields[key] && (!model.relationships[key] || model.relationships[key].private)) return;
+            if (model._fields[key] && (model._fields[key].protected === true || !this.isSelected(key))) return;
+            if (!model._fields[key] && (!model.relationships[key] || model.relationships[key].protected)) return;
           }
           if (fields[`_${key}`]) return;
           if (this._[key] && this._[key].data) {

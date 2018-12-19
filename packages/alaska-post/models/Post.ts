@@ -56,7 +56,7 @@ export default class Post extends Model {
       ref: 'PostCat',
       multi: true,
       hidden: true,
-      private: true
+      protected: true
     },
     seoTitle: {
       label: 'SEO Title',

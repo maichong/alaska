@@ -7,12 +7,12 @@ export default function (model: typeof Model) {
   model.fields.alipay_trade_no = {
     label: 'Alipay Trade No',
     type: String,
-    private: true
+    protected: true
   };
   model.fields.alipay_buyer_email = {
     label: 'Alipay Buyer Email',
     type: String,
-    private: true
+    protected: true
   };
   return model;
 }

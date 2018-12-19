@@ -43,12 +43,12 @@ export default class Help extends Model {
     sort: {
       label: 'Sort',
       type: Number,
-      private: true,
+      protected: true,
       default: 0
     },
     activated: {
       label: 'Activated',
-      private: true,
+      protected: true,
       type: Boolean
     },
     createdAt: {

@@ -7,12 +7,12 @@ export default function (model: typeof Model) {
   model.fields.tenpay_transaction_id = {
     label: 'Tenpay Trade No',
     type: String,
-    private: true
+    protected: true
   };
   model.fields.openid = {
     label: 'User Openid',
     type: String,
-    private: true
+    protected: true
   };
   return model;
 }

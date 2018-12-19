@@ -13,7 +13,7 @@ export default class Address extends Model {
       type: 'relationship',
       ref: 'alaska-user.User',
       required: true,
-      private: true
+      protected: true
     },
     name: {
       label: 'Name',

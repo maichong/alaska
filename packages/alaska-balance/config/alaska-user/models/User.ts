@@ -5,26 +5,29 @@ import Deposit from '../../../models/Deposit';
 import Withdraw from '../../../models/Withdraw';
 import service from '../../../';
 
-export const relationships = {
-  incomes: {
-    ref: Income,
-    path: 'user',
-    private: true
-  },
-  deposits: {
-    ref: Deposit,
-    path: 'user',
-    private: true
-  },
-  withdraw: {
-    ref: Withdraw,
-    path: 'user',
-    private: true
-  },
+export default {
+  relationships: {
+    incomes: {
+      ref: Income,
+      path: 'user',
+      protected: true
+    },
+    deposits: {
+      ref: Deposit,
+      path: 'user',
+      protected: true
+    },
+    withdraw: {
+      ref: Withdraw,
+      path: 'user',
+      protected: true
+    },
+  }
 };
 
 /**
- * 为User模型增加余额字段和income方法 // TODO:
+ * FIXME:
+ * 为User模型增加余额字段和income方法
  */
 export function preRegister() {
   // service._currencies.forEach((c) => {

@@ -174,7 +174,7 @@ export async function update(ctx: Context) {
 
   let body = Object.assign({}, ctx.state.body || ctx.request.body);
 
-  // 不允许更新private 字段
+  // TODO: 不允许更新private 字段
   _.forEach(model.fields, (conf, key) => {
     if (conf.private) {
       delete body[key];

@@ -27,7 +27,7 @@ export default {
       index: true,
       multi: true,
       hidden: true,
-      private: true
+      protected: true
     },
   },
   preSave() {

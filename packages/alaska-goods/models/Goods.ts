@@ -74,7 +74,7 @@ export default class Goods extends Model {
       type: 'relationship',
       ref: Category,
       multi: true,
-      private: true,
+      protected: true,
       hidden: true
     },
     brand: {
@@ -94,7 +94,7 @@ export default class Goods extends Model {
     activated: {
       label: 'Activated',
       type: Boolean,
-      private: true
+      protected: true
     },
     seoTitle: {
       label: 'SEO Title',
@@ -166,7 +166,7 @@ export default class Goods extends Model {
       label: 'Sort',
       type: Number,
       default: 0,
-      private: true
+      protected: true
     },
     createdAt: {
       label: 'Created At',

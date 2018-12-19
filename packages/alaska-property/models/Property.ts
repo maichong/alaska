@@ -24,7 +24,7 @@ export default class Property extends Model {
     values: {
       ref: 'PropertyValue',
       path: 'prop',
-      private: true,
+      protected: true,
       hidden: 'input'
     }
   };
@@ -48,7 +48,7 @@ export default class Property extends Model {
       type: 'category',
       ref: Category,
       multi: true,
-      private: true,
+      protected: true,
       hidden: 'common'
     },
     common: {
@@ -93,12 +93,12 @@ export default class Property extends Model {
       label: 'Sort',
       type: Number,
       default: 0,
-      private: true
+      protected: true
     },
     help: {
       label: 'Help',
       type: String,
-      private: true,
+      protected: true,
       help: 'This message will display in the property field.'
     },
     values: {
@@ -112,17 +112,17 @@ export default class Property extends Model {
       label: 'Activated',
       type: Boolean,
       default: true,
-      private: true
+      protected: true
     },
     createdAt: {
       label: 'Created At',
       type: Date,
-      private: true
+      protected: true
     },
     valueEditor: {
       type: String,
       view: 'PropertyValueEditor',
-      private: true,
+      protected: true,
       group: 'editor',
       filter: '',
       cell: '',

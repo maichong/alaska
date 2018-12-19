@@ -572,8 +572,8 @@ export interface ModelRelationship {
   ref: typeof Model | string;
   path: string;
   title?: string;
-  private?: boolean;
   populations?: ObjectMap<ModelPopulation>;
+  protected?: boolean;
   hidden?: DependsQueryExpression | AbilityCheckGate[];
 }
 

@@ -23,19 +23,19 @@ export default class Payment extends Model {
       label: 'Title',
       type: String,
       required: true,
-      private: true
+      protected: true
     },
     user: {
       label: 'User',
       type: 'relationship',
       ref: 'alaska-user.User',
-      private: true
+      protected: true
     },
     amount: {
       label: 'Amount',
       type: Number,
       required: true,
-      private: true
+      protected: true
     },
     type: {
       label: 'Payment Type',

@@ -31,7 +31,7 @@ export default class PropertyValue extends Model {
       label: 'Categories',
       type: 'category',
       ref: Category,
-      private: true,
+      protected: true,
       disabled: 'common'
     },
     common: {
@@ -47,7 +47,7 @@ export default class PropertyValue extends Model {
     createdAt: {
       label: 'Created At',
       type: Date,
-      private: true
+      protected: true
     }
   };
 
