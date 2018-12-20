@@ -1,4 +1,5 @@
 import { Context } from 'alaska-http';
+import { GET } from 'alaska-api';
 import Client from '../models/Client';
 
 /**
@@ -16,6 +17,13 @@ export async function create(ctx: Context) {
   } else if (token) {
     client = await Client.findOne({ token });
   }
+
+  // 删除过期
+  if (client && client.expiredAt && client.expiredAt < new Date()) {
+    await client.remove();
+    client = null;
+  }
+
   if (!client) {
     client = new Client();
   }
@@ -26,4 +34,13 @@ export async function create(ctx: Context) {
   await client.save();
 
   ctx.body = client.data();
+}
+
+GET(show);
+export default function show(ctx: Context) {
+  if (ctx.client) {
+    ctx.body = ctx.client.data();
+  } else {
+    ctx.body = {};
+  }
 }

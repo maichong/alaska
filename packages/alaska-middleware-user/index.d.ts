@@ -3,6 +3,6 @@ import { MiddlewareGenerator, MiddlewareOptions } from 'alaska-http';
 export interface UserMiddlewareOptions extends MiddlewareOptions {
 }
 
-declare const sessionMiddleware: MiddlewareGenerator<UserMiddlewareOptions>;
+declare const userMiddleware: MiddlewareGenerator<UserMiddlewareOptions>;
 
-export default sessionMiddleware;
+export default userMiddleware;

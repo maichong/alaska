@@ -19,6 +19,12 @@ export async function create(ctx: Context, next: Function) {
   }
   let client = await Client.findOne({ deviceId });
 
+  // 删除过期
+  if (client && client.expiredAt && client.expiredAt < new Date()) {
+    await client.remove();
+    client = null;
+  }
+
   // 需重新注册客户机信息
   if (!client) {
     client = new Client();

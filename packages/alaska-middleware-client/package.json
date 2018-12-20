@@ -1,0 +1,16 @@
+{
+  "name": "alaska-middleware-client",
+  "version": "0.13.2",
+  "description": "Alaska client middleware",
+  "keywords": [
+    "alaska",
+    "alaska-middleware"
+  ],
+  "alaska": "middleware",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-meddleware-client",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {}
+}

@@ -1,4 +1,4 @@
-import { Model } from 'alaska-model';
+import { RecordID, Model } from 'alaska-model';
 import User from 'alaska-user/models/User';
 import * as random from 'string-random';
 
@@ -53,7 +53,7 @@ export default class Client extends Model {
   deviceId: string;
   platform: string;
   token: string;
-  user: string;
+  user: RecordID;
   expiredAt: Date | null;
   createdAt: Date;
 
