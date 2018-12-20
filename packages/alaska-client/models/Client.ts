@@ -4,9 +4,9 @@ import * as random from 'string-random';
 
 export default class Client extends Model {
   static label = 'Client';
-  static icon = 'lock';
+  static icon = 'mobile';
   static titleField = 'token';
-  static defaultColumns = '_id user token uuid platform';
+  static defaultColumns = '_id user platform deviceId token createdAt expiredAt';
   static defaultSort = '_id';
 
   static fields = {
@@ -32,7 +32,8 @@ export default class Client extends Model {
     },
     token: {
       label: 'Token',
-      type: String
+      type: String,
+      index: true
     },
     expiredAt: {
       label: 'Expired At',
@@ -45,7 +46,6 @@ export default class Client extends Model {
     }
   };
 
-  _id: string | number | Object | any;
   deviceId: string;
   platform: string;
   token: string;

@@ -1,8 +1,7 @@
 import * as _ from 'lodash';
-import { Service, ServiceOptions } from 'alaska';
+import { Service } from 'alaska';
 import { SelectOption } from '@samoyed/types';
-import { Sled } from 'alaska-sled';
-import { SmsDriver, SmsDriverOptions } from '.';
+import { SmsDriver } from '.';
 
 class SmsService extends Service {
   driversOptions: SelectOption[];
@@ -13,13 +12,6 @@ class SmsService extends Service {
   _optionsPromise: Promise<SelectOption[]>;
   _optionsPromiseCallback: void | Function;
 
-  constructor(options?: ServiceOptions) {
-    options = options || { configFileName: '', id: '' };
-    options.id = options.id || 'alaska-sms';
-    options.configFileName = options.configFileName || __dirname;
-    super(options);
-  }
-
   preInit() {
     let drivers = this.config.get('drivers');
     if (!drivers || !Object.keys(drivers).length) {
@@ -27,7 +19,7 @@ class SmsService extends Service {
     }
     let driversOptions: { label: string; value: number }[] = [];
     let defaultDriver: SmsDriver<any, any>;
-    let driversMap: { [key: number]: SmsDriver<any, any>} = {};
+    let driversMap: { [key: number]: SmsDriver<any, any> } = {};
     _.forEach(drivers, (options, key: number) => {
       let label: string = options.label || key;
       driversOptions.push({ label, value: key });
@@ -62,25 +54,6 @@ class SmsService extends Service {
       });
     }
     return this._optionsPromise;
-  }
-
-  /**
-   * 运行一个Sled
-   * @param {string} sledName
-   * @param {Object} [data]
-   * @returns {Promise<*>}
-   */
-  run(sledName: string, data?: Object): Promise<any> {
-    if (!this.sleds || !this.sleds[sledName]) {
-      throw new Error(`"${sledName}" sled not found`);
-    }
-    try {
-      let SledClass: typeof Sled = this.sleds[sledName];
-      let sled = new SledClass(data);
-      return sled.run();
-    } catch (error) {
-      return Promise.reject(error);
-    }
   }
 }
 

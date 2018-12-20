@@ -1,6 +1,6 @@
 import * as Router from 'koa-router';
 import { Context } from 'alaska-http';
-import service from '..';
+import Send from '../sleds/Send';
 
 interface SendBody {
   id: string;
@@ -13,7 +13,7 @@ export default function (router: Router) {
     let body = ctx.state.body || requestBody;
     let id = body.id || requestBody.id;
     let to = body.to || requestBody.to;
-    await service.run('Send', { ctx, id, to });
+    await Send.run({ ctx, id, to });
     ctx.body = {};
   });
 }

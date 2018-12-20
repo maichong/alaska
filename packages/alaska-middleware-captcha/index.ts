@@ -1,7 +1,8 @@
 import * as _ from 'lodash';
 import * as minimatch from 'minimatch';
 import { MainService } from 'alaska';
-import Captcha from 'alaska-captcha';
+import captchaService from 'alaska-captcha';
+import Verify from 'alaska-captcha/sleds/Verify';
 import { Context } from 'alaska-http';
 import { Middleware } from 'koa';
 import { CaptchaMiddlewareOptions } from '.';
@@ -29,14 +30,14 @@ export default function (options: CaptchaMiddlewareOptions, main: MainService): 
     }
     let stateBody = ctx.state.body || {};
     let requestBody: any = ctx.request.body || {};
-    let to: number = stateBody[params.to] || requestBody[params.to];
+    let to: string = stateBody[params.to] || requestBody[params.to];
     let code = stateBody[params.captcha || 'captcha'] || requestBody[params.captcha || 'captcha'];
     if (!to || !code) {
-      Captcha.error('Invalid captcha');
+      captchaService.error('Invalid captcha');
     }
-    let success = await Captcha.run('Verify', { to, code });
+    let success = await Verify.run({ to, code });
     if (!success) {
-      Captcha.error('Invalid captcha');
+      captchaService.error('Invalid captcha');
     }
     await next();
   };

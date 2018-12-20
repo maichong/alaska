@@ -2,6 +2,7 @@ import * as random from 'string-random';
 import { Sled } from 'alaska-sled';
 import service, { CaptchaParams } from '..';
 import Captcha from '../models/Captcha';
+import { SmsService } from 'alaska-sms';
 
 export default class Send extends Sled<CaptchaParams, void> {
   /**
@@ -44,9 +45,9 @@ export default class Send extends Sled<CaptchaParams, void> {
 
     if (captcha.type === 'sms' && captcha.sms
       && service.main && service.main.services['alaska-sms']) {
-      let SMS = service.main.services['alaska-sms'] as any;
+      let SMS = service.main.services['alaska-sms'] as SmsService;
       try {
-        await SMS.run('Send', {
+        await SMS.sleds.Send.run({
           to,
           sms: captcha.sms,
           locale,
@@ -57,6 +58,7 @@ export default class Send extends Sled<CaptchaParams, void> {
       }
     } else if (captcha.type === 'email' && captcha.email
       && service.main && service.main.services['alaska-email']) {
+      // FIXME: 
       let EMAIL = service.main.services['alaska-email'] as any;
       try {
         await EMAIL.run('Send', {

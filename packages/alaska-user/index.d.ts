@@ -5,6 +5,11 @@ import { Context } from 'alaska-http';
 import Ability from './models/Ability';
 import Role from './models/Role';
 import User from './models/User';
+import Login from './sleds/Login';
+import Logout from './sleds/Logout';
+import Register from './sleds/Register';
+import RegisterAbility from './sleds/RegisterAbility';
+import RegisterRole from './sleds/RegisterRole';
 
 declare module 'alaska' {
   interface ConfigData {
@@ -80,6 +85,14 @@ export class UserService extends Service {
     User: typeof User;
     Ability: typeof Ability;
     Role: typeof Role;
+  };
+
+  sleds: {
+    Login: typeof Login;
+    Logout: typeof Logout;
+    Register: typeof Register;
+    RegisterAbility: typeof RegisterAbility;
+    RegisterRole: typeof RegisterRole;
   };
 
   /**

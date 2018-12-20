@@ -5,6 +5,8 @@ import AdminMenu from 'alaska-admin/models/AdminMenu';
 import { Settings } from 'alaska-admin-view';
 import { Model } from 'alaska-model';
 import { Context } from 'alaska-http';
+import RegisterNav from './sleds/RegisterNav';
+import RegisterMenu from './sleds/RegisterMenu';
 
 declare module 'alaska' {
   export interface ConfigData {
@@ -61,6 +63,11 @@ export class AdminService extends Service {
   models: {
     AdminNav: typeof AdminNav;
     AdminMenu: typeof AdminMenu;
+  };
+
+  sleds: {
+    RegisterNav: typeof RegisterNav;
+    RegisterMenu: typeof RegisterMenu;
   };
 
   settings(settings: Settings, user?: User): Promise<void>;
