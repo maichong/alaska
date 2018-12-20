@@ -181,6 +181,7 @@ export class Model {
   static pre(action: ModelHookName, fn: Function): void;
   static post(action: ModelHookName, fn: Function): void;
   static underscoreMethod(field: string, name: string, fn: Function): void;
+  static addField(path: string, options: FieldOption): void;
   static register(): Promise<void>;
   static createFilters(search: string, filters?: Filters): Filters;
   static createFiltersByContext(ctx: Context, state?: ContextState): Promise<Filters>;

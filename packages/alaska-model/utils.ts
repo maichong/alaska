@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import { Service } from 'alaska';
 import { Model, ModelFieldList, Filters } from 'alaska-model';
 
 export function processScope(fields: string | ModelFieldList, model: typeof Model): ModelFieldList {
@@ -135,4 +136,22 @@ export function getId(record: Model | any): string {
  */
 export function isIdEqual(a: any, b: any): boolean {
   return getId(a) === getId(b);
+}
+
+/**
+ * 递归加载字段配置，支持 type 重定向
+ * @param service 
+ * @param fieldTypeName 
+ */
+export function loadFieldConfig(service: Service, fieldTypeName: string): any {
+  // eslint-disable-next-line
+  let config = service.config.get(fieldTypeName, undefined, true);
+  if (!config) {
+    return {};
+  }
+  if (config.type && config.type !== fieldTypeName) {
+    let otherConfig = loadFieldConfig(service, config.type);
+    return _.assign({}, config, otherConfig);
+  }
+  return _.clone(config);
 }

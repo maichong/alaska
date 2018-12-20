@@ -22,7 +22,7 @@ import {
   DocumentQuery
 } from 'alaska-model';
 import { Data, objectToData } from './data';
-import { processScope, bindMethods, deepClone } from './utils';
+import { processScope, bindMethods, deepClone, loadFieldConfig } from './utils';
 
 function panic() {
   throw new Error('Can not call the function when Model has been initialized.');
@@ -182,24 +182,74 @@ export default class Model {
     this._post[action].push(fn);
   }
 
+  /**
+   * 动态给模型增加字段
+   */
+  static addField(path: string, options: FieldOption) {
+    // @ts-ignore
+    const model: typeof ModelType = this;
+    const { modelName, service, schema } = model;
+
+    if (!schema) throw new Error('Can not exec Model.addField() before register!');
+    if (model._fields.hasOwnProperty(path)) throw new Error(`Field alread exists [${model.id}.fields.${path}]`);
+
+    options.path = path;
+    let orgType = options.type;
+
+    // ...
+
+    let FieldClass: typeof Field = null;
+    if (options.type && typeof options.type === 'object' && (<any>options.type).classOfField) {
+      FieldClass = options.type;
+    } else {
+      let fieldTypeName = '';
+      if (options.type === String) {
+        fieldTypeName = 'alaska-field-text';
+      } else if (options.type === Date) {
+        fieldTypeName = 'alaska-field-datetime';
+      } else if (options.type === Boolean) {
+        fieldTypeName = 'alaska-field-checkbox';
+      } else if (options.type === Object) {
+        fieldTypeName = 'alaska-field-mixed';
+      } else if (options.type === Number) {
+        fieldTypeName = 'alaska-field-number';
+      } else if (typeof options.type === 'string') {
+        fieldTypeName = `alaska-field-${options.type}`;
+        // @ts-ignore Model.classOfModel
+      } else if (typeof options.type === 'function' && options.type.classOfModel) {
+        fieldTypeName = `alaska-field-subdoc`;
+        // @ts-ignore 省略 ref 时，type 就为ref model
+        options.ref = options.type;
+      } else {
+        throw new Error(`Unsupported field type for ${modelName}.${path}`);
+      }
+      delete options.type;
+      _.assign(options, loadFieldConfig(service, fieldTypeName));
+      if (options.type && typeof options.type === 'string') {
+        fieldTypeName = options.type;
+      }
+      FieldClass = service.main.modules.libraries[fieldTypeName];
+      if (!FieldClass) {
+        throw new Error(`Field type '${fieldTypeName}' not found!`);
+      }
+      options.type = FieldClass;
+    }
+    options.label = options.label || (path === '_id' ? 'ID' : path.toUpperCase());
+    let field = new FieldClass(options, schema, model);
+    model._fields[path] = field;
+    if (path !== '_id' || orgType !== 'objectid') { // 默认 _id 不需要执行 initSchema，否则创建数据将失败
+      field.initSchema();
+    }
+    if (field.protected !== true) {
+      model.defaultScope[path] = 1;
+    }
+  }
+
   static async register(): Promise<void> {
     // @ts-ignore
     const model: typeof ModelType = this;
     const me = this;
     const { modelName, service } = this;
-
-    function loadFieldConfig(fieldTypeName: string): any {
-      // eslint-disable-next-line
-      let config = service.config.get(fieldTypeName, undefined, true);
-      if (!config) {
-        return {};
-      }
-      if (config.type && config.type !== fieldTypeName) {
-        let otherConfig = loadFieldConfig(config.type);
-        return _.assign({}, config, otherConfig);
-      }
-      return _.clone(config);
-    }
 
     try {
       // pre register hooks
@@ -244,56 +294,7 @@ export default class Model {
           try {
             let options: FieldOption = _.clone(model.fields[path]);
 
-            options.path = path;
-            let orgType = options.type;
-
-            // ...
-
-            let FieldClass: typeof Field = null;
-            if (options.type && typeof options.type === 'object' && (<any>options.type).classOfField) {
-              FieldClass = options.type;
-            } else {
-              let fieldTypeName = '';
-              if (options.type === String) {
-                fieldTypeName = 'alaska-field-text';
-              } else if (options.type === Date) {
-                fieldTypeName = 'alaska-field-datetime';
-              } else if (options.type === Boolean) {
-                fieldTypeName = 'alaska-field-checkbox';
-              } else if (options.type === Object) {
-                fieldTypeName = 'alaska-field-mixed';
-              } else if (options.type === Number) {
-                fieldTypeName = 'alaska-field-number';
-              } else if (typeof options.type === 'string') {
-                fieldTypeName = `alaska-field-${options.type}`;
-                // @ts-ignore Model.classOfModel
-              } else if (typeof options.type === 'function' && options.type.classOfModel) {
-                fieldTypeName = `alaska-field-subdoc`;
-                // @ts-ignore 省略 ref 时，type 就为ref model
-                options.ref = options.type;
-              } else {
-                throw new Error(`Unsupported field type for ${modelName}.${path}`);
-              }
-              delete options.type;
-              _.assign(options, loadFieldConfig(fieldTypeName));
-              if (options.type && typeof options.type === 'string') {
-                fieldTypeName = options.type;
-              }
-              FieldClass = service.main.modules.libraries[fieldTypeName];
-              if (!FieldClass) {
-                throw new Error(`Field type '${fieldTypeName}' not found!`);
-              }
-              options.type = FieldClass;
-            }
-            options.label = options.label || (path === '_id' ? 'ID' : path.toUpperCase());
-            let field = new FieldClass(options, schema, model);
-            model._fields[path] = field;
-            if (path !== '_id' || orgType !== 'objectid') { // 默认 _id 不需要执行 initSchema，否则创建数据将失败
-              field.initSchema();
-            }
-            if (field.protected !== true) {
-              model.defaultScope[path] = 1;
-            }
+            this.addField(path, options);
 
           } catch (e) {
             console.error(`${model.id}.fields.${path} init failed!`);
@@ -593,6 +594,7 @@ export default class Model {
       });
 
       [
+        'addField',
         'paginateByContext',
         'listByContext',
         'showByContext',
