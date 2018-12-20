@@ -13,9 +13,8 @@ export class SettingsService extends Service {
     if (settings) {
       return settings;
     }
-    console.log('create settings');
     settings = new Settings(data);
-    console.log('new settings', settings);
+    console.log('Register settings', settings);
     settings._id = data.id;
     this.debug('register', data.id);
     await settings.save();

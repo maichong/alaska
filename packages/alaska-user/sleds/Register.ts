@@ -15,7 +15,7 @@ export default class Register extends Sled<RegisterParams, User> {
    * @param {User}    [params.user]
    * @param {string}  [params.username]
    * @param {string}  [params.password]
-   *                 ...
+   *                 [...]
    * @returns {User}
    */
   async exec(params: RegisterParams): Promise<User> {
@@ -46,7 +46,7 @@ export default class Register extends Sled<RegisterParams, User> {
     }
     await user.save();
 
-    if (params.ctx) {
+    if (params.ctx && params.ctx.session) {
       params.ctx.session.userId = user.id;
     }
     return user;

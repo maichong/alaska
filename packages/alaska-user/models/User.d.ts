@@ -2,8 +2,6 @@ import { Model } from 'alaska-model';
 import { ObjectId } from 'mongodb';
 
 declare class User extends Model {
-  _id: ObjectId;
-  id: string;
   username: string;
   email: string;
   password: string;

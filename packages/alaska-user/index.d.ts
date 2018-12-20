@@ -36,7 +36,7 @@ export interface LogoutParams {
   ctx: Context;
 }
 
-export interface RegisterParams {
+export interface RegisterParams extends Partial<User> {
   ctx?: Context;
   user?: User;
   email?: string;

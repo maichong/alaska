@@ -5,6 +5,8 @@ export interface ClientMiddlewareOptions extends MiddlewareOptions {
   tokenHeader?: string;
   // 自定义获取Token函数
   getToken?: (ctx: Context) => string;
+  // 自动续Client过期时间
+  extendTime?: number;
 }
 
 declare const clientMiddleware: MiddlewareGenerator<ClientMiddlewareOptions>;

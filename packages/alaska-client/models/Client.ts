@@ -1,6 +1,7 @@
 import { RecordID, Model } from 'alaska-model';
 import User from 'alaska-user/models/User';
 import * as random from 'string-random';
+import service from '..';
 
 export default class Client extends Model {
   static label = 'Client';
@@ -63,6 +64,12 @@ export default class Client extends Model {
     }
     if (!this.createdAt) {
       this.createdAt = new Date();
+    }
+    if (!this.expiredAt) {
+      let clientExpiredTime = service.config.get('clientExpiredTime');
+      if (clientExpiredTime) {
+        this.expiredAt = new Date(Date.now() + clientExpiredTime);
+      }
     }
   }
 }
