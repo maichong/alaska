@@ -99,6 +99,9 @@ export interface ModelSettings {
 
   methods?: ObjectMap<Function>;
 
+  preRegister?: Function;
+  postRegister: Function;
+
   preInit?: Function;
   postInit?: Function;
   preValidate?: Function;

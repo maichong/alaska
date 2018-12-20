@@ -10,6 +10,8 @@ export default {
   Title: '标题',
   Name: '名称',
   Sort: '排序',
+  State: '状态',
+  Pending: '未处理',
   User: '用户',
   Service: '服务',
   Type: '类型',

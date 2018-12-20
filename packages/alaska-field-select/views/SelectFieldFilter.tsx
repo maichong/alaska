@@ -1,14 +1,13 @@
-import * as _ from 'lodash';
 import * as React from 'react';
 import { FilterViewProps, Field } from 'alaska-admin-view';
 import { Filter, FilterValue, FilterObject } from 'alaska-model';
 import * as tr from 'grackle';
 import Select from '@samoyed/select';
-import Checkbox from '@samoyed/checkbox';
+import CheckboxGroup from '@samoyed/checkbox-group';
 import Switch from '@samoyed/switch';
 import { SelectValue, SelectOption } from '@samoyed/types';
 
-type TypeView = Select | Checkbox | Switch | any;
+type TypeView = Select | CheckboxGroup | Switch | any;
 
 interface FilterState {
   value: any;
@@ -91,7 +90,7 @@ export default class SelectFieldFilter extends React.Component<FilterProps, Filt
     let View: TypeView = Select;
     if (field.checkbox) {
       viewClassName = 'Checkbox';
-      View = Checkbox;
+      View = CheckboxGroup;
     } else if (field.switch) {
       viewClassName = 'Switch';
       View = Switch;

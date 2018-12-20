@@ -1,14 +1,12 @@
-import { Service, ServiceOptions } from 'alaska';
-import { Context } from 'alaska-http';
-import User from 'alaska-user/models/User';
-import { Currency, CurrencyMap } from './';
+import { ObjectMap, Service, ServiceOptions } from 'alaska';
+import { Currency } from './';
 
 /**
  * @class BalanceService
  */
 class BalanceService extends Service {
   _currencies: Currency[];
-  _currenciesMap: CurrencyMap;
+  _currenciesMap: ObjectMap<Currency>;
   _defaultCurrency: Currency;
   _currenciesPromise: void | Promise<Currency[]>;
   _currenciesPromiseCallback: void | Function;
@@ -19,51 +17,50 @@ class BalanceService extends Service {
     options = options || { id: '' };
     options.id = options.id || 'alaska-balance';
     super(options);
-  }
 
-  // FIXME: 使用新的hook
-  postLoadConfig() {
-    let currencies = this.config.get('currencies');
-    if (!currencies || !currencies.length) {
-      throw new Error('alaska-balance service require currency settings.');
-    }
-    this._currencies = currencies;
-    this._currenciesMap = {};
-    let currenciesMap = this._currenciesMap;
-    currencies.forEach((c: Currency) => {
-      currenciesMap[c.value] = c;
-      if (c.default) {
-        this._defaultCurrency = c;
+    this.resolveConfig().then((config) => {
+      let currencies = config.get('currencies');
+      if (!currencies || !currencies.length) {
+        throw new Error('alaska-balance service require currency settings.');
+      }
+      this._currencies = currencies;
+      this._currenciesMap = {};
+      let currenciesMap = this._currenciesMap;
+      currencies.forEach((c: Currency) => {
+        currenciesMap[c.value] = c;
+        if (c.default) {
+          this._defaultCurrency = c;
+        }
+      });
+      if (!this._defaultCurrency) {
+        throw new Error('Default currency not specified.');
+      }
+
+      // Callbacks
+      if (this._currenciesPromiseCallback) {
+        this._currenciesPromiseCallback(currencies);
+      }
+      if (this._defaultCurrencyPromiseCallback) {
+        this._defaultCurrencyPromiseCallback(this._defaultCurrency);
       }
     });
-    if (!this._defaultCurrency) {
-      throw new Error('Default currency not specified.');
-    }
-
-    // Callbacks
-    if (this._currenciesPromiseCallback) {
-      this._currenciesPromiseCallback(currencies);
-    }
-    if (this._defaultCurrencyPromiseCallback) {
-      this._defaultCurrencyPromiseCallback(this._defaultCurrency);
-    }
   }
 
   get currencies(): Currency[] {
-    return this._currencies;
+    return this._currencies || this.panic('Can not access currencies before load config!');
   }
 
-  get currenciesMap(): Object {
-    return this._currenciesMap;
+  get currenciesMap(): ObjectMap<Currency> {
+    return this._currenciesMap || this.panic('Can not access currenciesMap before load config!');
   }
 
   get defaultCurrency(): Currency {
-    return this._defaultCurrency;
+    return this._defaultCurrency || this.panic('Can not access defaultCurrency before load config!');
   }
 
   /**
    * 异步获取货币列表
-   * @returns {void|Promise.<Currency[]>}
+   * @returns {Promise<Currency[]>}
    */
   getCurrenciesAsync(): Promise<Currency[]> {
     if (!this._currenciesPromise) {
@@ -80,7 +77,7 @@ class BalanceService extends Service {
 
   /**
    * 异步获取默认货币
-   * @returns {void|Promise.<Currency>}
+   * @returns {Promise<Currency>}
    */
   getDefaultCurrencyAsync(): Promise<Currency> {
     if (!this._defaultCurrencyPromise) {
@@ -93,11 +90,6 @@ class BalanceService extends Service {
       });
     }
     return this._defaultCurrencyPromise;
-  }
-
-  async adminSettings(ctx: Context, user: User, settings: any) {
-    settings.currencies = this._currenciesMap;
-    settings.defaultCurrency = this._defaultCurrency;
   }
 }
 

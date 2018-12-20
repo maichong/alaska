@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import * as tr from 'grackle';
 import TooltipWrapper from '@samoyed/tooltip-wrapper';
+import checkAbility from '../utils/check-ability';
 import { ActionViewProps, views } from '..';
 
 export default class ActionView extends React.Component<ActionViewProps> {
@@ -25,6 +26,8 @@ export default class ActionView extends React.Component<ActionViewProps> {
       editor, model, action, record, records, selected
     } = this.props;
 
+    let disabled = action.disabled && checkAbility(action.disabled, record);
+
     if (action.view) {
       let View = views.components[action.view];
       if (!View) {
@@ -34,7 +37,7 @@ export default class ActionView extends React.Component<ActionViewProps> {
 
       return React.createElement(View, {
         // @ts-ignore 自定义Props
-        editor, model, action, records, selected, record, disabled: !!action.disabled
+        editor, model, action, records, selected, record, disabled
       });
     }
 
@@ -46,7 +49,7 @@ export default class ActionView extends React.Component<ActionViewProps> {
       <button
         onClick={this.handleClick}
         className={`btn btn-${action.style || 'default'}`}
-        disabled={!!action.disabled}
+        disabled={disabled}
         key={action.key}
       >
         {action.icon ? <i className={`fa fa-${action.icon}`} /> : null} {title}

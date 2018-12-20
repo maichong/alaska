@@ -5,23 +5,23 @@ import service, { WithdrawRejectParams } from '..';
 
 export default class WithdrawReject extends Sled<WithdrawRejectParams, Object> {
   async exec(params: WithdrawRejectParams): Promise<Object> {
-    let withdraw: Withdraw = params.withdraw;
-    if (withdraw.state === 0) {
+    let record: Withdraw = params.records[0];
+    if (record.state === 0) {
       let reason = params.body.reason || service.error('Missing reject reason');
-      withdraw.state = -1;
+      record.state = -1;
       if (reason) {
-        withdraw.reason = reason;
+        record.reason = reason;
       }
 
-      await withdraw.save();
+      await record.save();
 
-      let user: User = await User.findById(withdraw.user);
+      let user: User = await User.findById(record.user);
       if (user) {
-        await user._[withdraw.currency].income(withdraw.amount, 'Withdraw Rejected', 'withdraw_rejected');
+        await user._[record.currency].income(record.amount, 'Withdraw Rejected', 'withdraw_rejected');
       }
-    } else if (withdraw.state !== -1) {
+    } else if (record.state !== -1) {
       service.error('State error');
     }
-    return withdraw.toObject();
+    return record.toObject();
   }
 }

@@ -1,11 +1,10 @@
 
 import { Model } from 'alaska-model';
-import { ObjectId } from 'mongodb';
 
 export default class User extends Model {
   static label = 'User';
   static icon = 'user';
-  static titleField = 'username';
+  static titleField = 'displayName';
   static defaultColumns = 'avatar username email roles createdAt';
   static searchFields = 'username email';
   static defaultSort = '-createdAt';
@@ -66,7 +65,8 @@ export default class User extends Model {
       protected: true,
       disabled: [{
         ability: 'alaska-user.User.update'
-      }]
+      }],
+      checkbox: true
     },
     abilities: {
       label: 'Abilities',
@@ -87,7 +87,6 @@ export default class User extends Model {
     }
   };
 
-  _id: ObjectId;
   id: string;
   username: string;
   email: string;

@@ -20,7 +20,7 @@ export default function (router: Router) {
     const action = model.actions[actionName] || service.error('Action not found!');
     if (!action.sled) service.error('Missing action sled');
     let sledId = action.sled;
-    if (sledId.indexOf('.') < -1) {
+    if (!sledId.includes('.')) {
       sledId = `${model.service.id}.${sledId}`;
     }
     const sled = Sled.lookup(sledId) || service.error('Action sled not found!');

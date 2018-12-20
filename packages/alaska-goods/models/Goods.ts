@@ -114,6 +114,7 @@ export default class Goods extends Model {
     currency: {
       label: 'Currency',
       type: 'select',
+      switch: true,
       options: BALANCE.getCurrenciesAsync(),
       default: BALANCE.getDefaultCurrencyAsync().then((cur) => cur.value),
       group: 'price'

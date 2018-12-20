@@ -4,11 +4,11 @@ import { WithdrawAcceptParams } from '..';
 
 export default class WithdrawAccept extends Sled<WithdrawAcceptParams, Object> {
   async exec(params: WithdrawAcceptParams): Promise<Object> {
-    let withdraw: Withdraw = params.withdraw;
-    if (withdraw.state === 0) {
-      withdraw.state = 1;
-      await withdraw.save();
+    let record: Withdraw = params.records[0];
+    if (record.state === 0) {
+      record.state = 1;
+      await record.save();
     }
-    return withdraw.toObject();
+    return record.toObject();
   }
 }

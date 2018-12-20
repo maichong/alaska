@@ -1,7 +1,7 @@
 import { Model } from 'alaska-model';
+import Income from './Income';
 
 declare class Deposit extends Model {
-  _id: string;
   title: string;
   user: string;
   currency: string;
@@ -9,6 +9,8 @@ declare class Deposit extends Model {
   balance: number;
   createdAt: Date;
   expiredAt: Date;
+
+  income(amount: number, title: string, type?: string): Promise<Income>;
 }
 
 export default Deposit;

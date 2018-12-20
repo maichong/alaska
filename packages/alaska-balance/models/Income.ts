@@ -1,4 +1,5 @@
 import { Model } from 'alaska-model';
+import service from '..';
 
 export default class Income extends Model {
   static label = 'Income Record';
@@ -9,6 +10,11 @@ export default class Income extends Model {
   static nocreate = true;
   static noupdate = true;
   static noremove = true;
+
+  static api = {
+    paginate: 2,
+    show: 2
+  };
 
   static fields = {
     title: {
@@ -21,11 +27,13 @@ export default class Income extends Model {
       type: 'relationship',
       ref: 'alaska-user.User',
       index: true,
+      disabled: '_id',
       required: true
     },
     type: {
       label: 'Type',
       type: 'select',
+      disabled: '_id',
       default: '',
       options: [{
         label: 'Unknown',
@@ -44,6 +52,7 @@ export default class Income extends Model {
     target: {
       label: 'Target',
       type: 'select',
+      disabled: '_id',
       default: 'balance',
       checkbox: true,
       options: [{
@@ -58,6 +67,7 @@ export default class Income extends Model {
       label: 'Deposit',
       type: 'relationship',
       ref: 'Deposit',
+      disabled: '_id',
       hidden: {
         target: {
           $ne: 'deposit'
@@ -69,24 +79,28 @@ export default class Income extends Model {
     },
     currency: {
       label: 'Currency',
-      type: 'select', // TODO:
-      // options: service.getCurrenciesAsync(),
-      // default: service.getDefaultCurrencyAsync().then((cur) => cur.value)
-      options: [{}]
+      type: 'select',
+      disabled: '_id',
+      switch: true,
+      options: service.getCurrenciesAsync(),
+      default: service.getDefaultCurrencyAsync().then((cur) => cur.value)
     },
     amount: {
       label: 'Amount',
       type: Number,
+      disabled: '_id',
       default: 0
     },
     balance: {
       label: 'Balance',
       type: Number,
+      disabled: '_id',
       default: 0
     },
     createdAt: {
       label: 'Created At',
-      type: Date
+      type: Date,
+      disabled: '_id'
     }
   };
 

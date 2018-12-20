@@ -44,6 +44,12 @@ export default class Register extends Sled<RegisterParams, User> {
       }
       user = new User(_.omit(params, 'ctx', 'user'));
     }
+    if (!user.roles) {
+      user.roles = [];
+    }
+    if (!user.roles.includes('user')) {
+      user.roles.push('user');
+    }
     await user.save();
 
     if (params.ctx && params.ctx.session) {

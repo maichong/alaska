@@ -12,6 +12,12 @@ export default class Withdraw extends Model {
   static nocreate = true;
   static noremove = true;
 
+  static api = {
+    create: 2,
+    paginate: 2,
+    show: 2
+  };
+
   static actions = {
     update: {
       hidden: true
@@ -20,12 +26,14 @@ export default class Withdraw extends Model {
       title: 'Accept',
       sled: 'WithdrawAccept',
       style: 'success',
+      disabled: 'state',
       hidden: 'state'
     },
     reject: {
       title: 'Reject',
       sled: 'WithdrawReject',
       style: 'danger',
+      disabled: 'state',
       hidden: 'state'
     }
   };

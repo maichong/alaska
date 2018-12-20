@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import * as shallowEqualWithout from 'shallow-equal-without';
 import Select from '@samoyed/select';
-import Checkbox from '@samoyed/checkbox';
+import CheckboxGroup from '@samoyed/checkbox-group';
 import Switch from '@samoyed/switch';
 import { FieldViewProps } from 'alaska-admin-view';
 import relationQuery from 'alaska-admin-view/utils/query';
@@ -80,14 +80,15 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
     } = this.props;
     const { options } = this.state;
     let { help } = field;
-    let viewClassName = 'Select';
+    let viewClassName = 'relationship-select';
     let View: any = Select;
-    if (field.checkbox) {
-      View = Checkbox;
-      viewClassName = 'Checkbox';
+    let checkbox = field.multi && Array.isArray(value) && value.length > 20;
+    if (checkbox || field.checkbox) {
+      View = CheckboxGroup;
+      viewClassName = 'relationship-checkbox';
     } else if (field.switch) {
       View = Switch;
-      viewClassName = 'Switch';
+      viewClassName = 'relationship-switch';
     }
     className += ' relationship-field';
     if (errorText) {
@@ -127,7 +128,7 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
           value={value}
           disabled={disabled}
           onChange={this.handleChange}
-          options={options}
+          options={options || []}
           onInputChange={this.handleInput}
         />
       );

@@ -722,7 +722,7 @@ export interface EditorProps {
 
 export interface EditorActionBarProps {
   model: Model;
-  record: immutable.Immutable<Record>;
+  record: immutable.Immutable<Record> | null;
   isNew: boolean;
 }
 

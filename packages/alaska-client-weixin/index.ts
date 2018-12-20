@@ -14,7 +14,7 @@ export default class WeixinClientPlugin extends Plugin {
       let configMap: ObjectMap<ConfigData> = service.main.config.get('alaska-client-weixin');
       if (!configMap) throw new Error('Missing config [alaska-client-weixin]');
 
-      for (let key in configMap) {
+      for (let key of Object.keys(configMap)) {
         let config = configMap[key];
         if (!config.appid) throw new Error(`Missing config [alaska-client-weixin.${key}.appid]`);
         if (!config.secret) throw new Error(`Missing config [alaska-client-weixin.${key}.secret]`);

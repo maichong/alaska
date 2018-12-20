@@ -20,8 +20,16 @@ import {
   StoreState,
   DetailsState,
   Record,
-  ModelRelationship
+  ModelRelationship,
+  ActionState
 } from '..';
+
+interface Props extends EditorPageProps {
+  action: ActionState;
+  details: DetailsState;
+  models: ObjectMap<Model>;
+  loadDetails: Function;
+}
 
 interface EditorPageState {
   model: Model | null;
@@ -29,12 +37,7 @@ interface EditorPageState {
   record: immutable.Immutable<Record> | null;
   isNew: boolean;
   id: string;
-}
-
-interface Props extends EditorPageProps {
-  details: DetailsState;
-  models: ObjectMap<Model>;
-  loadDetails: Function;
+  _action: ActionState;
 }
 
 class EditorPage extends React.Component<Props, EditorPageState> {
@@ -43,6 +46,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      _action: props.action,
       id: '_new',
       model: null,
       record: null,
@@ -56,7 +60,10 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     const model = nextProps.models[modelId] || prevState.model;
     if (!model) return null;
 
+    const { action } = nextProps;
+
     const nextState: Partial<EditorPageState> = {
+      _action: action,
       id: params.id,
       isNew: params.id === '_new'
     };
@@ -93,6 +100,17 @@ class EditorPage extends React.Component<Props, EditorPageState> {
       } else if (!reduxRecord || !prevState.record) {
         nextState.record = reduxRecord;
       }
+
+      // 自定义Action完成后，刷新数据
+      if (
+        prevState._action !== action
+        && action.action
+        && !['create', 'update', 'remove'].includes(action.action)
+        && !action.fetching
+        && !action.error
+      ) {
+        nextState.record = null;
+      }
     }
     return nextState;
   }
@@ -123,6 +141,60 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     return models[modelId] || null;
   }
 
+  renderRelationships() {
+    const { isNew, id, model, record } = this.state;
+    if (isNew) return null;
+    return _(model.relationships)
+      .filter((rel) => !checkAbility(rel.hidden, record))
+      .map((r: ModelRelationship, key: string) => (<Relationship
+        key={key}
+        from={id}
+        path={r.path}
+        model={this.lookupModel(r.ref)}
+        title={r.title}
+      />))
+      .value();
+  }
+
+  renderLayout(content: React.ReactNode) {
+    const { model, record, isNew } = this.state;
+
+    let className = [
+      'editor-page',
+      `${model.serviceId}-${model.id}`,
+      model.canCreate ? 'can-create' : 'no-create',
+      model.canUpdate ? 'can-update' : 'no-update',
+      model.canRemove ? 'can-remove' : 'no-remove',
+    ].join(' ');
+
+    let editorTitle = record ? (record[model.titleField] || String(record._id)) : '';
+    if (isNew) {
+      editorTitle = tr('Create', model.serviceId);
+    }
+
+    return (
+      <Node
+        wrapper="EditorPage"
+        props={this.props}
+        className={className}
+      >
+        <EditorToolBar>
+          <Link
+            to={`/list/${model.serviceId}/${model.modelName}`}
+          >{tr(model.label, model.serviceId)}
+          </Link>&nbsp;{'>'}&nbsp;
+          {editorTitle}
+        </EditorToolBar>
+        {content}
+        <EditorActionBar
+          model={model}
+          record={record}
+          isNew={isNew}
+        />
+      </Node>
+    );
+  }
+
   renderError() {
     const { model, record } = this.state;
     return (
@@ -139,75 +211,32 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     );
   }
 
-  renderRelationships() {
-    const { isNew, id, model, record } = this.state;
-    if (isNew) return null;
-    return _(model.relationships)
-      .filter((rel) => !checkAbility(rel.hidden, record))
-      .map((r: ModelRelationship, key: string) => (<Relationship
-        key={key}
-        from={id}
-        path={r.path}
-        model={this.lookupModel(r.ref)}
-        title={r.title}
-      />))
-      .value();
-  }
-
   render() {
     const { model, record, isNew } = this.state;
-    if (!model || !record) {
+    if (!model) {
       return <LoadingPage />;
     }
 
-    let el = <Editor isNew={isNew} model={model} record={record} onChange={this.handleChange} />;
-    let error = false;
-    if (!record || (record && record._error)) {
+    if (!record) {
+      return this.renderLayout(<LoadingPage />);
+    }
+
+    let el;
+    if (record && record._error) {
       el = this.renderError();
-      error = true;
-    }
-    let editorTitle = record[model.titleField] || String(record._id);
-    if (isNew) {
-      editorTitle = tr('Create', model.serviceId);
+    } else {
+      el = <div>
+        <Editor isNew={isNew} model={model} record={record} onChange={this.handleChange} />
+        {this.renderRelationships()}
+      </div>;
     }
 
-    let className = [
-      'editor-page',
-      `${model.serviceId}-${model.id}`,
-      model.canCreate ? 'can-create' : 'no-create',
-      model.canUpdate ? 'can-update' : 'no-update',
-      model.canRemove ? 'can-remove' : 'no-remove',
-    ].join(' ');
-
-    return (
-      <Node
-        wrapper="EditorPage"
-        props={this.props}
-        className={className}
-      >
-        <EditorToolBar>
-          <Link
-            to={`/list/${model.serviceId}/${model.modelName}`}
-          >{tr(model.label, model.serviceId)}
-          </Link>&nbsp;{'>'}&nbsp;
-          {editorTitle}
-        </EditorToolBar>
-        {el}
-        {!error && this.renderRelationships()}
-        {
-          !error && <EditorActionBar
-            model={model}
-            record={record}
-            isNew={isNew}
-          />
-        }
-      </Node>
-    );
+    return this.renderLayout(el);
   }
 }
 
 export default connect(
-  ({ details, settings }: StoreState) => ({ details, models: settings.models }),
+  ({ details, settings, action }: StoreState) => ({ details, models: settings.models, action }),
   (dispatch) => bindActionCreators({
     loadDetails: detailsRedux.loadDetails
   }, dispatch)

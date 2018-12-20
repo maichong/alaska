@@ -3,13 +3,13 @@ import * as _ from 'lodash';
 import * as shallowEqualWithout from 'shallow-equal-without';
 import * as tr from 'grackle';
 import Select from '@samoyed/select';
-import Checkbox from '@samoyed/checkbox';
+import CheckboxGroup from '@samoyed/checkbox-group';
 import Switch from '@samoyed/switch';
 import { getOptionValue } from './utils';
 import { SelectOption } from '@samoyed/types';
 import { FieldViewProps, Field } from 'alaska-admin-view';
 
-type TypeView = Select | Checkbox | Switch | any;
+type TypeView = Select | CheckboxGroup | Switch | any;
 
 interface State {
   _field: Field & { checkbox: boolean; switch: boolean };
@@ -70,7 +70,7 @@ export default class SelectFieldView extends React.Component<FieldProps, State> 
     } = this.props;
     let View: TypeView = Select;
     if (field.checkbox) {
-      View = Checkbox;
+      View = CheckboxGroup;
     } else if (field.switch) {
       View = Switch;
     }

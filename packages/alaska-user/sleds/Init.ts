@@ -100,6 +100,13 @@ export default class Init extends Sled<{}, void> {
         await Promise.all(_.keys(Model.actions).map(registerAbility));
       }
     }
+
+    ['root', 'admin', 'user'].forEach((a) => {
+      if (!rootAbilities.includes(a)) {
+        rootAbilities.push(a);
+      }
+    });
+
     if (!_.isEqual(root.abilities, rootAbilities)) {
       root.abilities = rootAbilities;
       await root.save();

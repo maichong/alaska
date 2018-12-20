@@ -11,6 +11,11 @@ export default class Deposit extends Model {
   static defaultColumns = 'title user currency amount balance createdAt expiredAt';
   static defaultSort = '-createdAt';
 
+  static api = {
+    paginate: 2,
+    show: 2
+  };
+
   static fields = {
     title: {
       label: 'Title',
@@ -27,9 +32,9 @@ export default class Deposit extends Model {
     currency: {
       label: 'Currency',
       type: 'select',
-      options: [{}] // TODO:
-      // options: service.getCurrenciesAsync(),
-      // default: service.getDefaultCurrencyAsync().then((cur) => cur.value)
+      switch: true,
+      options: service.getCurrenciesAsync(),
+      default: service.getDefaultCurrencyAsync().then((cur) => cur.value)
     },
     amount: {
       label: 'Amount',
@@ -69,25 +74,25 @@ export default class Deposit extends Model {
     }
   }
 
-  // TODO:
-  // async income(amount: number, title: string, type?: string) {
-  //   let c = service.currenciesMap[this.currency] || service.defaultCurrency;
-  //   let balance = (this.balance + amount) || 0;
-  //   if (c.precision !== undefined) {
-  //     balance = _.round(balance, c.precision);
-  //   }
-  //   this.balance = balance;
-  //   let income = new Income({
-  //     type,
-  //     title,
-  //     amount,
-  //     balance,
-  //     currency: this.currency || c.value,
-  //     user: this.user,
-  //     target: 'deposit',
-  //     deposit: this.id
-  //   });
-  //   await income.save();
-  //   await this.save();
-  // }
+  async income(amount: number, title: string, type?: string): Promise<Income> {
+    let c = service.currenciesMap[this.currency] || service.defaultCurrency;
+    let balance = (this.balance + amount) || 0;
+    if (typeof c.precision !== 'undefined') {
+      balance = _.round(balance, c.precision);
+    }
+    this.balance = balance;
+    let income = new Income({
+      type,
+      title,
+      amount,
+      balance,
+      currency: this.currency || c.value,
+      user: this.user,
+      target: 'deposit',
+      deposit: this.id
+    });
+    await income.save();
+    await this.save();
+    return income;
+  }
 }

@@ -140,8 +140,8 @@ export function isIdEqual(a: any, b: any): boolean {
 
 /**
  * 递归加载字段配置，支持 type 重定向
- * @param service 
- * @param fieldTypeName 
+ * @param service
+ * @param fieldTypeName
  */
 export function loadFieldConfig(service: Service, fieldTypeName: string): any {
   // eslint-disable-next-line
