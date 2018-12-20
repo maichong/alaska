@@ -11,7 +11,7 @@ import {
 import CacheDriver from 'alaska-cache';
 
 export default function (options: SessionMiddlewareOptions, main: MainService) {
-  const storeOpts = options.store || main.panic('Missing configure [middlewares.alaska-middleware-session.store]');
+  const storeOpts = options.store || main.panic('Missing config [middlewares.alaska-middleware-session.store]');
   const cookieOpts = options.cookie || {};
   const key: string = cookieOpts.key || 'alaska.sid';
   const Store: typeof CacheDriver = main.modules.libraries[storeOpts.type];

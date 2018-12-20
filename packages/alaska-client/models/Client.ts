@@ -9,6 +9,10 @@ export default class Client extends Model {
   static defaultColumns = '_id user platform deviceId token createdAt expiredAt';
   static defaultSort = '_id';
 
+  static api = {
+    create: 1
+  };
+
   static fields = {
     user: {
       label: 'User',
@@ -33,7 +37,7 @@ export default class Client extends Model {
     token: {
       label: 'Token',
       type: String,
-      index: true
+      unique: true
     },
     expiredAt: {
       label: 'Expired At',

@@ -1,7 +1,7 @@
 import { Service } from 'alaska';
 import Client from './models/Client';
 
-declare class ClientService extends Service {
+export class ClientService extends Service {
   models: {
     Client: typeof Client;
   };

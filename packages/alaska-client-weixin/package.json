@@ -1,0 +1,20 @@
+{
+  "name": "alaska-client-weixin",
+  "version": "0.13.2",
+  "description": "Weixin login plugin for client service.",
+  "keywords": [
+    "alaska",
+    "alaska-client",
+    "alaska-client-plugin"
+  ],
+  "alaska": "plugin",
+  "alaska-plugin": "alaska-client",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-client-weixin",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "libwx": "^0.2.1"
+  }
+}
