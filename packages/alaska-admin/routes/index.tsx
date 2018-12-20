@@ -7,7 +7,7 @@ import ADMIN from '..';
 export default function (router: Router) {
   router.get('/', (ctx) => {
     if (!ctx.path.endsWith('/')) {
-      ctx.redirect(ctx.path + '/');
+      ctx.redirect(`${ctx.path}/`);
       return;
     }
     const min = ctx.state.env === 'production' ? '.min' : '';

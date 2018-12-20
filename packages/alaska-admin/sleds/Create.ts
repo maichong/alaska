@@ -11,11 +11,13 @@ export default class Create extends Sled<ActionSledParams, any> {
     const model = params.model;
     const body = params.body;
 
+    // eslint-disable-next-line new-cap
     let tmp = new model(body);
     await trimDisabledField(body, params.admin, model, tmp);
 
+    // eslint-disable-next-line new-cap
     let record = new model(body);
-    let ability = model.id + '.create';
+    let ability = `${model.id}.create`;
     if (!await USER.hasAbility(params.ctx.user, ability, record)) service.error('Access Denied', 403);
     await record.save();
 

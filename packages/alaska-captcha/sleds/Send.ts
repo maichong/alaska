@@ -40,7 +40,7 @@ export default class Send extends Sled<CaptchaParams, void> {
 
     values.code = code;
 
-    let cacheKey = 'captcha_' + to;
+    let cacheKey = `captcha_${to}`;
     CACHE.set(cacheKey, code, captcha.lifetime * 1000 || 1800 * 1000);
 
     if (captcha.type === 'sms' && captcha.sms
@@ -58,7 +58,7 @@ export default class Send extends Sled<CaptchaParams, void> {
       }
     } else if (captcha.type === 'email' && captcha.email
       && service.main && service.main.services['alaska-email']) {
-      // FIXME: 
+      // FIXME:
       let EMAIL = service.main.services['alaska-email'] as any;
       try {
         await EMAIL.run('Send', {

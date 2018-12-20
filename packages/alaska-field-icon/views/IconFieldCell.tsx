@@ -11,6 +11,6 @@ export default class IconFieldCell extends React.Component<CellViewProps> {
     if (!value) {
       return <div />;
     }
-    return <i className={'fa fa-' + value} />;
+    return <i className={`fa fa-${value}`} />;
   }
 }

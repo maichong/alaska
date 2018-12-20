@@ -163,7 +163,7 @@ class ListPage extends React.Component<Props, ListPageState> {
     if (options && _.size(options)) {
       optionsTemp = _.mapKeys(options, (v, k) => {
         if (k[0] !== '_') {
-          k = '_' + k;
+          k = `_${k}`;
           return k;
         }
         return k;
@@ -174,7 +174,7 @@ class ListPage extends React.Component<Props, ListPageState> {
       query._search = search;
     }
     let { pathname } = this.props.location;
-    this.context.router.history.replace({ pathname, search: '?' + qs.stringify(query, { encode: false }) });
+    this.context.router.history.replace({ pathname, search: `?${qs.stringify(query, { encode: false })}` });
   }
 
   handleScroll = () => {
@@ -256,7 +256,7 @@ class ListPage extends React.Component<Props, ListPageState> {
     }
     let className = [
       'list-page',
-      model.serviceId + '-' + model.id,
+      `${model.serviceId}-${model.id}`,
       model.canCreate ? 'can-create' : 'no-create',
       model.canUpdate ? 'can-update' : 'no-update',
       model.canRemove ? 'can-remove' : 'no-remove',
@@ -268,7 +268,7 @@ class ListPage extends React.Component<Props, ListPageState> {
         props={this.props}
       >
         <div
-          className={'list-page-inner' + (split ? ' with-editor' : '')}
+          className={`list-page-inner${split ? ' with-editor' : ''}`}
           onScroll={this.handleScroll}
           ref={(r) => {
             this._ref = r;

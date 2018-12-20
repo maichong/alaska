@@ -113,8 +113,8 @@ export default class RelationshipFieldFilter extends React.Component<FilterViewP
       value, inverse, error, options
     } = this.state;
     const buttonClassName = 'btn btn-default';
-    const buttonClassNameActive = buttonClassName + ' btn-success';
-    className += ' relationship-field-filter align-items-center' + (error ? ' error' : '');
+    const buttonClassNameActive = `${buttonClassName} btn-success`;
+    className += ` relationship-field-filter align-items-center${error ? ' error' : ''}`;
     return (
       <div className={className}>
         <label className="col-2 col-form-label text-right">{field.label}</label>

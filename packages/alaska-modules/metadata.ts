@@ -32,7 +32,7 @@ function getRelativePath(path: string): string {
   }
   p = Path.relative(srcDir, path);
   if (p[0] !== '.') {
-    p = './' + p;
+    p = `./${p}`;
   }
   return p;
 }
@@ -141,12 +141,12 @@ class ModulesMetadata {
       meta.path = path;
       return true;
     })) {
-      throw new Error('Can not load extension ' + meta.id);
+      throw new Error(`Can not load extension ${meta.id}`);
     }
 
     this.extensions[meta.id] = meta;
 
-    debug('extension create loader: ' + meta.id);
+    debug(`extension create loader: ${meta.id}`);
     const Loader: typeof LoaderClass = require(Path.join(meta.path, 'loader')).default;
     // @ts-ignore 忽略：插件扩展后导致 this 类型不兼容
     meta.loader = new Loader(this, extConfig);
@@ -172,7 +172,7 @@ class ModulesMetadata {
     if (meta.dismiss) {
       return;
     }
-    debug('load service: ' + meta.id);
+    debug(`load service: ${meta.id}`);
     if (!meta.path) {
       if (meta.loadConfig.dir) {
         if (Path.isAbsolute(meta.loadConfig.dir)) {
@@ -189,22 +189,22 @@ class ModulesMetadata {
         });
       }
     }
-    if (!meta.path) throw new Error('Service not found: ' + meta.id);
-    if (!isDirectory.sync(meta.path)) throw new Error('Service not exists: ' + meta.id + ', ' + meta.path);
+    if (!meta.path) throw new Error(`Service not found: ${meta.id}`);
+    if (!isDirectory.sync(meta.path)) throw new Error(`Service not exists: ${meta.id}, ${meta.path}`);
     if (!meta.configFile) {
       meta.configFile = Path.join(meta.path, 'config', meta.id);
     }
     if (!meta.config) {
       let config = require(meta.configFile).default;
-      debug(meta.id + ' base config', config);
+      debug(`${meta.id} base config`, config);
       meta.config = Config.applyData(_.cloneDeep(Config.defaultConfig), config);
     }
 
     this.services[meta.id] = meta;
 
     let loaderFile = Path.join(meta.path, 'loader');
-    if (fs.existsSync(loaderFile + '.ts') || fs.existsSync(loaderFile + '.js')) {
-      debug('service create loader: ' + meta.id);
+    if (fs.existsSync(`${loaderFile}.ts`) || fs.existsSync(`${loaderFile}.js`)) {
+      debug(`service create loader: ${meta.id}`);
       const Loader: typeof LoaderClass = require(loaderFile).default;
       // @ts-ignore 忽略：插件扩展后导致 this 类型不兼容
       meta.loader = new Loader(this, {});
@@ -530,7 +530,7 @@ class ModulesMetadata {
         // module path
         return Path.resolve(this.dir, value.path);
       } else if (Array.isArray(value)) {
-        return '[\n' + value.map(convent).join(',\n') + ']';
+        return `[\n${value.map(convent).join(',\n')}]`;
       } else if (value && typeof value === 'object') {
         // ModuleTree
         let result = '{\n';
@@ -539,9 +539,9 @@ class ModulesMetadata {
           if (/[-\.\/\\]/.test(k)) {
             k = `'${k}'`;
           }
-          result += `  ${k}: ` + convent(value[key]) + ',\n';
+          result += `  ${k}: ${convent(value[key])},\n`;
         }
-        return result + '}';
+        return `${result}}`;
       }
       return JSON.stringify(value);
     }

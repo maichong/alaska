@@ -105,7 +105,7 @@ export default class RelationshipField extends Field {
         if (_ref.indexOf('.') > -1) {
           this.model = this.ref;
         } else {
-          this.model = service.id + '.' + this.ref;
+          this.model = `${service.id}.${this.ref}`;
         }
       }
     }

@@ -14,7 +14,7 @@ function setModelDefaults(model: typeof ModelType, service: Service, name: strin
   if (!model.service) model.service = service;
   if (!model.modelName) model.modelName = name;
   if (!model.key) model.key = nameToKey(name);
-  if (!model.id) model.id = service.id + '.' + name;
+  if (!model.id) model.id = `${service.id}.${name}`;
 
   _.defaults(model, {
     label: model.modelName,

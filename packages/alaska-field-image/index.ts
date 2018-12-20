@@ -49,7 +49,7 @@ export default class ImageField extends Field {
     let adapter = this.adapter || service.error(`Missing adapter type!`);
     // @ts-ignore
     let adapterOptions: any = this[adapter] || service.error(`Missing adapter options!`);
-    let lib = 'fsd-' + adapter;
+    let lib = `fsd-${adapter}`;
     let Adapter = service.main.modules.libraries[lib] || service.error(`Missing adapter library [${lib}]!`);
 
     // 生成 fsd() 函数

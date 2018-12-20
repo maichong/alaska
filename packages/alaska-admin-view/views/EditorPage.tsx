@@ -119,7 +119,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
 
   lookupModel(modelRef: string): Model | null {
     let { models, match } = this.props;
-    let modelId = modelRef.indexOf('.') > -1 ? modelRef : match.params.service + '.' + modelRef;
+    let modelId = modelRef.indexOf('.') > -1 ? modelRef : `${match.params.service}.${modelRef}`;
     return models[modelId] || null;
   }
 
@@ -173,7 +173,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
 
     let className = [
       'editor-page',
-      model.serviceId + '-' + model.id,
+      `${model.serviceId}-${model.id}`,
       model.canCreate ? 'can-create' : 'no-create',
       model.canUpdate ? 'can-update' : 'no-update',
       model.canRemove ? 'can-remove' : 'no-remove',

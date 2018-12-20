@@ -6,12 +6,12 @@ import { Record, ActionRequestPayload } from 'alaska-admin-view';
 import * as actionRedux from 'alaska-admin-view/redux/action';
 
 type Props = {
-  record: Record,
-  actionRequest: (req: ActionRequestPayload) => any
+  record: Record;
+  actionRequest: (req: ActionRequestPayload) => any;
 };
 
 type State = {
-  value: string
+  value: string;
 };
 
 class PropertyValueEditor extends React.Component<Props, State> {

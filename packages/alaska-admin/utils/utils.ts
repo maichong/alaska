@@ -2,6 +2,7 @@ import USER from 'alaska-user';
 import { Model } from 'alaska-model';
 
 export async function trimPrivateField(data: any, user: any, model: typeof Model, record: Model) {
+  // eslint-disable-next-line guard-for-in
   for (let key in data) {
     let field = model._fields[key];
     if (!field) continue;

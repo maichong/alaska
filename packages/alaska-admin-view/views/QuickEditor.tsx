@@ -106,7 +106,7 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
     this._r = Math.random();
     let records = _.map(selected, (r) => r._id);
     actionRequest({
-      model: model.serviceId + '.' + model.modelName,
+      model: `${model.serviceId}.${model.modelName}`,
       records,
       action: 'update',
       body: dataForSave
@@ -118,7 +118,7 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
     const { model, selected, hidden, onCannel } = this.props;
     let { mode, data } = this.state;
 
-    let className = 'quick-editor quick-editor-' + (mode === Mode.ONE ? 'one' : 'multi');
+    let className = `quick-editor quick-editor-${mode === Mode.ONE ? 'one' : 'multi'}`;
 
     let title = '';
     let desc = '';
@@ -160,7 +160,7 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
           />
           <div className="quick-editor-content">
             {canEdit ? (<div
-              className={'quick-editor-desc alert alert-' + (mode === Mode.ONE ? 'info' : 'warning')}
+              className={`quick-editor-desc alert alert-${mode === Mode.ONE ? 'info' : 'warning'}`}
             >{desc}</div>) : null}
             {
               selected.length > 0 ? <Editor

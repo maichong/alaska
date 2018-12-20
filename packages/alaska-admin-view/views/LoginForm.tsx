@@ -78,7 +78,7 @@ class LoginForm extends React.Component<Props, LoginFormState> {
     return (
       <Node className="login-form" wrapper="LoginForm" props={this.props}>
         <div className="login-fileds">
-          <div className={'input-group mb-3' + state.usernameError}>
+          <div className={`input-group mb-3${state.usernameError}`}>
             <div className="input-group-prepend">
               <div className="input-group-text">
                 <i className="fa fa-user" />
@@ -92,7 +92,7 @@ class LoginForm extends React.Component<Props, LoginFormState> {
               value={state.username}
             />
           </div>
-          <div className={'input-group mb-3' + state.passwordError}>
+          <div className={`input-group mb-3${state.passwordError}`}>
             <div className="input-group-prepend">
               <div className="input-group-text">
                 <i className="fa fa-key" />

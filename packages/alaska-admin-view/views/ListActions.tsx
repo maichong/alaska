@@ -117,7 +117,7 @@ class ListActions extends React.Component<Props, ListActionsState> {
     const { model, selected, sort, filters, search } = this.props;
     let selecteds = _.map(selected, (item) => item._id);
     let query = _.assign({
-      _model: model.serviceId + '.' + model.modelName,
+      _model: `${model.serviceId}.${model.modelName}`,
       _records: selecteds,
       _action: 'export',
       _search: search || '',
@@ -213,7 +213,7 @@ class ListActions extends React.Component<Props, ListActionsState> {
         }, action, disabled ? { disabled: true } : {});
       } else if (key === 'add') {
         if (model.nocreate) return;
-        obj.link = '/edit/' + model.serviceId + '/' + model.modelName + '/_new';
+        obj.link = `/edit/${model.serviceId}/${model.modelName}/_new`;
         obj.action = _.assign({
           key: 'add',
           icon: 'plus',

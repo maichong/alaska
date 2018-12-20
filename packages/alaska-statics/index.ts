@@ -22,7 +22,7 @@ export default class StaticsExtension extends Extension {
         if (Path.isAbsolute(dir)) {
           dir = Path.join(process.cwd(), dir);
         }
-        if (!isDirectory.sync(dir)) throw new Error('Static dir is not found: ' + dir);
+        if (!isDirectory.sync(dir)) throw new Error(`Static dir is not found: ${dir}`);
         main.app.use(staticCache(dir, options));
       });
     });

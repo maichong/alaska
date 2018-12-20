@@ -31,7 +31,7 @@ export default class IconFieldView extends React.Component<FieldViewProps> {
     let inputElement;
     let icon = null;
     if (value) {
-      icon = <i className={'fa fa-' + value} />;
+      icon = <i className={`fa fa-${value}`} />;
     }
     if (field.fixed) {
       inputElement = <p className="form-control-plaintext">{icon}</p>;

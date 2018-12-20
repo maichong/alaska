@@ -108,7 +108,7 @@ export default class NumberFieldFilter extends React.Component<FilterViewProps, 
     } = this.state;
     const buttonClassName = 'btn btn-light';
     const buttonClassNameActive = 'btn btn-success';
-    className += ' number-field-filter align-items-center' + (error ? ' error' : '');
+    className += ` number-field-filter align-items-center${error ? ' error' : ''}`;
     return (
       <div className={className}>
         <div className="col-2 col-form-label text-right">{field.label}</div>

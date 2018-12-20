@@ -35,7 +35,7 @@ export default class ReactExtension extends Extension {
         await next();
         if (React.isValidElement(ctx.body)) {
           let element = React.createElement(ctx.state.Document || Document, { ctx }, ctx.body);
-          ctx.body = '<!DOCTYPE html>' + ReactDOMServer.renderToStaticMarkup(element);
+          ctx.body = `<!DOCTYPE html>${ReactDOMServer.renderToStaticMarkup(element)}`;
           ctx.type = 'html';
         }
       });

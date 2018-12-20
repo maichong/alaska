@@ -57,10 +57,10 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
         let redirect;
         if (nextProps.isNew && id) {
           // 创建成功跳转
-          redirect = '/edit/' + model.serviceId + '/' + model.modelName + '/' + id;
+          redirect = `/edit/${model.serviceId}/${model.modelName}/${id}`;
         } else if (action.action === 'remove') {
           // 删除成功跳转
-          redirect = '/list/' + model.serviceId + '/' + model.modelName;
+          redirect = `/list/${model.serviceId}/${model.modelName}`;
         }
         return { request: '', redirect };
       }
@@ -70,7 +70,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
 
   handleAdd = () => {
     const { model } = this.props;
-    let url = '/edit/' + model.serviceId + '/' + model.modelName + '/_new';
+    let url = `/edit/${model.serviceId}/${model.modelName}/_new`;
     this.context.router.history.replace(url);
   };
 
@@ -96,7 +96,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
       } else {
         let request = String(Math.random());
         actionRequest({
-          model: model.serviceId + '.' + model.modelName,
+          model: `${model.serviceId}.${model.modelName}`,
           action,
           request,
           records: !isNew && record._id ? [record._id] : [],

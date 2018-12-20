@@ -233,7 +233,7 @@ export default class TenpayPlugin extends PaymentPlugin {
       appId: params.sub_appid || this._config.appid,
       timeStamp: String((Date.now() / 1000 | 0)),
       nonceStr: random(16),
-      package: 'prepay_id=' + params.prepay_id,
+      package: `prepay_id=${params.prepay_id}`,
       signType: params.signType || 'MD5'
     };
     pkg.paySign = this._getSign(pkg, pkg.signType);
@@ -290,13 +290,13 @@ export default class TenpayPlugin extends PaymentPlugin {
       nonce_str: random(16)
     };
 
-    let url = 'weixin://wxpay/bizpayurl'
-      + '?sign=' + this._getSign(pkg)
-      + '&appid=' + pkg.appid
-      + '&mch_id=' + pkg.mch_id
-      + '&product_id=' + encodeURIComponent(pkg.product_id)
-      + '&time_stamp=' + pkg.time_stamp
-      + '&nonce_str=' + pkg.nonce_str;
+    let url = `${'weixin://wxpay/bizpayurl'
+      + '?sign='}${this._getSign(pkg)
+    }&appid=${pkg.appid
+    }&mch_id=${pkg.mch_id
+    }&product_id=${encodeURIComponent(pkg.product_id)
+    }&time_stamp=${pkg.time_stamp
+    }&nonce_str=${pkg.nonce_str}`;
     return url;
   }
 

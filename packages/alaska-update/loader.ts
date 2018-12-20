@@ -11,7 +11,7 @@ export default class UpdateLoader extends Loader {
   constructor(metadata: ModulesMetadata, extConfig: Object) {
     super(metadata, extConfig);
     metadata.post('buildService', async (res: any, meta: ServiceMetadata, tree: ModuleTree) => {
-      debug(meta.id + ' build updates');
+      debug(`${meta.id} build updates`);
       let updates: ObjectMap<string> = {};
       meta.updates = updates;
       let updatesDir = Path.join(meta.path, 'updates');

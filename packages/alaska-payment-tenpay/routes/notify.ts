@@ -41,7 +41,7 @@ export default function (router: Router) {
         return replay('total_fee error');
       }
       payment.tenpay_transaction_id = data.transaction_id;
-      let sledId = PAYMENT.id + '.Complete';
+      let sledId = `${PAYMENT.id}.Complete`;
       const Complete = Sled.lookup(sledId) || PAYMENT.error('Complete sled not found!');
       await Complete.run({ payment });
       ctx.body = 'OK';

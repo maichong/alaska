@@ -45,11 +45,11 @@ export default class ActionView extends React.Component<ActionViewProps> {
     let el = (
       <button
         onClick={this.handleClick}
-        className={'btn btn-' + (action.style || 'default')}
+        className={`btn btn-${action.style || 'default'}`}
         disabled={!!action.disabled}
         key={action.key}
       >
-        {action.icon ? <i className={'fa fa-' + action.icon} /> : null} {title}
+        {action.icon ? <i className={`fa fa-${action.icon}`} /> : null} {title}
       </button >
     );
     if (action.tooltip) {

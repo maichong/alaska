@@ -25,7 +25,7 @@ export default function (router: Router) {
     if (!record) service.error('Record not found', 404);
 
     // 验证资源权限
-    const ability = model.id + '.read';
+    const ability = `${model.id}.read`;
     if (!await USER.hasAbility(ctx.user, ability, record)) service.error('Access Denied', 403);
 
     let json = record.toJSON();

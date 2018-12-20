@@ -61,7 +61,7 @@ export default class PasswordFieldView extends React.Component<FieldViewProps, S
   handleChange(index: number, e: React.ChangeEvent<HTMLInputElement>) {
     let state = {} as State;
     // @ts-ignore index 值一定是 1 或者 2 为state属性中的一个
-    state[('value' + index)] = e.target.value as string;
+    state[(`value${index}`)] = e.target.value as string;
     this.setState(state);
   }
 

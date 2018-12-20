@@ -12,7 +12,7 @@ export default class ModelLoader extends Loader {
   constructor(metadata: ModulesMetadata, extConfig: Object) {
     super(metadata, extConfig);
     metadata.post('loadService', async (res: any, meta: ServiceMetadata) => {
-      debug(meta.id + ' load locales');
+      debug(`${meta.id} load locales`);
       let locales: ObjectMap<string> = {};
       meta.locales = locales;
       let localesDir = Path.join(meta.path, 'locales');
@@ -43,7 +43,7 @@ export default class ModelLoader extends Loader {
     });
 
     metadata.post('buildService', async (res: any, meta: ServiceMetadata, tree: ModuleTree) => {
-      debug(meta.id + ' build locales');
+      debug(`${meta.id} build locales`);
       let allowedLocales = metadata.config.locales || [];
       let locales = new ModuleTree();
       // @ts-ignore services 一定为 ModuleTree

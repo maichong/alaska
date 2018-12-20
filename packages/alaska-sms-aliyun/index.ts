@@ -49,9 +49,9 @@ export default class SmsAliyunDriver<T> extends SmsDriver<T, SmsAliyunOptions> {
       .map((key) => (`${encodeURIComponent(key)}=${encodeURIComponent(object[key])}`))
       .join('&');
 
-    let stringToSign = 'POST&%2F&' + encodeURIComponent(params);
+    let stringToSign = `POST&%2F&${encodeURIComponent(params)}`;
 
-    let hmac = crypto.createHmac('sha1', this.options.AccessKeySecret + '&');
+    let hmac = crypto.createHmac('sha1', `${this.options.AccessKeySecret}&`);
 
     hmac.update(Buffer.from(stringToSign, 'utf-8'));
 
@@ -60,7 +60,7 @@ export default class SmsAliyunDriver<T> extends SmsDriver<T, SmsAliyunOptions> {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: params + '&Signature=' + encodeURIComponent(sign)
+      body: `${params}&Signature=${encodeURIComponent(sign)}`
     });
   }
 }

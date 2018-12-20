@@ -7,7 +7,7 @@ import { CellViewProps, Settings, DetailsState, StoreState, Service } from 'alas
 
 function nameToKey(name: string): string {
   if (!name) return '';
-  return name.replace(/([a-z])([A-Z])/g, (a, b, c) => (b + '-' + c.toLowerCase())).toLowerCase();
+  return name.replace(/([a-z])([A-Z])/g, (a, b, c) => (`${b}-${c.toLowerCase()}`)).toLowerCase();
 }
 
 interface Props extends CellViewProps {
@@ -81,7 +81,7 @@ class RelationshipFieldCell extends React.Component<Props> {
     }
     return (<Link
       key={value}
-      to={'/edit/' + serviceId + '/' + modelName + '/' + encodeURIComponent(value)}
+      to={`/edit/${serviceId}/${modelName}/${encodeURIComponent(value)}`}
     >{title}</Link>);
   }
 

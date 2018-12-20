@@ -5,5 +5,5 @@ import { RegisterNavParams } from '..';
 /**
  * 注册管理员后台导航
  */
-export default class RegisterNav extends Sled<RegisterNavParams, AdminNav> { 
+export default class RegisterNav extends Sled<RegisterNavParams, AdminNav> {
 }

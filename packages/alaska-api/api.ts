@@ -45,7 +45,7 @@ async function trimDisabledField(data: any, user: any, model: typeof Model, reco
 export async function count(ctx: Context) {
   const model: typeof Model = ctx.state.model;
 
-  const ability = model.id + '.read';
+  const ability = `${model.id}.read`;
   let abilityFilters;
 
   if (model.api.count > PUBLIC) {
@@ -70,7 +70,7 @@ export async function count(ctx: Context) {
 export async function paginate(ctx: Context) {
   const model: typeof Model = ctx.state.model;
 
-  const ability = model.id + '.read';
+  const ability = `${model.id}.read`;
   let abilityFilters;
 
   if (model.api.paginate > PUBLIC) {
@@ -109,7 +109,7 @@ export async function paginate(ctx: Context) {
 export async function list(ctx: Context) {
   const model: typeof Model = ctx.state.model;
 
-  const ability = model.id + '.read';
+  const ability = `${model.id}.read`;
   let abilityFilters;
   if (model.api.list > PUBLIC) {
     if (!USER) {
@@ -146,7 +146,7 @@ export async function list(ctx: Context) {
 export async function show(ctx: Context) {
   const model: typeof Model = ctx.state.model;
 
-  const ability = model.id + '.read';
+  const ability = `${model.id}.read`;
   if (model.api.show > PUBLIC) {
     if (!USER) {
       ctx.status = 401;
@@ -177,14 +177,16 @@ export async function show(ctx: Context) {
 export async function create(ctx: Context) {
   const model: typeof Model = ctx.state.model;
 
-  const ability = model.id + '.create';
+  const ability = `${model.id}.create`;
   let body = Object.assign({}, ctx.state.body || ctx.request.body);
 
   if (USER) {
+    // eslint-disable-next-line new-cap
     let tmp = new model(body);
     await trimDisabledField(body, ctx.user, model, tmp);
   }
 
+  // eslint-disable-next-line new-cap
   let record = new model(body);
 
   if (model.api.create > PUBLIC) {
@@ -210,7 +212,7 @@ export async function create(ctx: Context) {
 export async function update(ctx: Context) {
   const model: typeof Model = ctx.state.model;
 
-  const ability = model.id + '.update';
+  const ability = `${model.id}.update`;
 
   let filters = await model.createFiltersByContext(ctx);
 
@@ -260,7 +262,7 @@ export async function update(ctx: Context) {
 export async function updateMulti(ctx: Context) {
   const model: typeof Model = ctx.state.model;
 
-  const ability = model.id + '.update';
+  const ability = `${model.id}.update`;
   let abilityFilters;
 
   if (model.api.updateMulti > PUBLIC) {
@@ -293,7 +295,7 @@ export async function updateMulti(ctx: Context) {
 export async function remove(ctx: Context) {
   const model: typeof Model = ctx.state.model;
 
-  const ability = model.id + '.remove';
+  const ability = `${model.id}.remove`;
 
   let filters = await model.createFiltersByContext(ctx);
 
@@ -323,7 +325,7 @@ export async function remove(ctx: Context) {
 export async function removeMulti(ctx: Context) {
   const model: typeof Model = ctx.state.model;
 
-  const ability = model.id + '.remove';
+  const ability = `${model.id}.remove`;
   let abilityFilters;
 
   if (model.api.updateMulti > PUBLIC) {
@@ -357,7 +359,7 @@ function filtersToMatch(filters: any): any {
   for (let key of Object.keys(filters)) {
     let nkey = key;
     if (nkey[0] !== '$') {
-      nkey = 'fullDocument.' + key;
+      nkey = `fullDocument.${key}`;
     }
     let value = filters[key];
     if (_.isPlainObject(value)) {
@@ -375,7 +377,7 @@ function filtersToMatch(filters: any): any {
 export async function watch(ctx: Context) {
   const model: typeof Model = ctx.state.model;
 
-  const ability = model.id + '.read';
+  const ability = `${model.id}.read`;
   let abilityFilters;
 
   if (model.api.updateMulti > PUBLIC) {
@@ -432,7 +434,7 @@ export async function watch(ctx: Context) {
       }
     }
 
-    s.write(JSON.stringify({ type, object }) + '\n');
+    s.write(`${JSON.stringify({ type, object })}\n`);
   });
   changeStream.on('close', () => {
     s.end();

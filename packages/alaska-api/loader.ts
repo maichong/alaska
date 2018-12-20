@@ -12,7 +12,7 @@ export default class ApiLoader extends Loader {
   constructor(metadata: ModulesMetadata, extConfig: Object) {
     super(metadata, extConfig);
     metadata.post('loadService', async (res: any, meta: ServiceMetadata) => {
-      debug(meta.id + ' load api');
+      debug(`${meta.id} load api`);
       let api: ObjectMap<string> = {};
       meta.api = api;
       let apiDir = Path.join(meta.path, 'api');
@@ -49,7 +49,7 @@ export default class ApiLoader extends Loader {
     });
 
     metadata.post('buildService', async (res: any, meta: ServiceMetadata, tree: ModuleTree) => {
-      debug(meta.id + ' build api');
+      debug(`${meta.id} build api`);
       let api = new ModuleTree();
       // @ts-ignore services 一定为 ModuleTree
       tree.services[meta.id].api = api;

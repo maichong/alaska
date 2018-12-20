@@ -14,8 +14,8 @@ export default class GeoFieldCell extends React.Component<CellViewProps> {
     }
     return (<a
       href={
-        'http://m.amap.com/navi/?dest=' + value[0] + ',' + value[1]
-        + '&destName=%E4%BD%8D%E7%BD%AE&key=e67780f754ee572d50e97c58d5a633cd'
+        `http://m.amap.com/navi/?dest=${value[0]},${value[1]
+        }&destName=%E4%BD%8D%E7%BD%AE&key=e67780f754ee572d50e97c58d5a633cd`
       }
       target="_blank"
       rel="noopener noreferrer"

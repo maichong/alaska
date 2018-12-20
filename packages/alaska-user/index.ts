@@ -74,7 +74,7 @@ class UserService extends Service {
    */
   async getUserAbilities(user: User | null): Promise<string[]> {
     let result: string[];
-    let cacheKey = 'cache:user-abilities:' + (user ? user.id : '_guest')
+    let cacheKey = `cache:user-abilities:${user ? user.id : '_guest'}`;
     if (this.cache) {
       result = await this.cache.get(cacheKey);
       if (result) return result;

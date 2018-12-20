@@ -103,10 +103,10 @@ export default class AlipayPlugin extends PaymentPlugin {
    * @returns {string}
    */
   createQueryString(params: ObjectMap<any>): string {
-    return Object.keys(params).sort().map((key) => key + '=' + params[key]).join('&');
+    return Object.keys(params).sort().map((key) => `${key}=${params[key]}`).join('&');
   }
 
   createQueryStringUrlencode(params: ObjectMap<any>): string {
-    return Object.keys(params).sort().map((key) => key + '=' + encodeURIComponent(params[key])).join('&');
+    return Object.keys(params).sort().map((key) => `${key}=${encodeURIComponent(params[key])}`).join('&');
   }
 }

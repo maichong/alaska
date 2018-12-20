@@ -28,7 +28,7 @@ export default class IIDField extends NumberField {
 
     // @ts-ignore
     let cacheDriver: CacheDriver<number, any, any> = service.createDriver(field.cache);
-    let key: string = field.key || model.modelName + '.' + field.path;
+    let key: string = field.key || `${model.modelName}.${field.path}`;
 
     schema.pre('save', function (next: Function) {
       let record = this;

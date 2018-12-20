@@ -28,8 +28,8 @@ export function checkXML(str: string): boolean {
 export function getFullDate(): string {
   const str = new Date();
   let YYYY = str.getFullYear();
-  let MM = ('00' + (str.getMonth() + 1)).substr(-2);
-  let DD = ('00' + str.getDate()).substr(-2);
+  let MM = (`00${str.getMonth() + 1}`).substr(-2);
+  let DD = (`00${str.getDate()}`).substr(-2);
   return YYYY + MM + DD;
 }
 
@@ -37,7 +37,7 @@ export function toQueryString(obj: ObjectMap<any>): string {
   return Object.keys(obj)
     .filter((key) => key !== 'sign' && obj[key] && obj[key] !== '')
     .sort()
-    .map((key) => key + '=' + obj[key])
+    .map((key) => `${key}=${obj[key]}`)
     .join('&');
 }
 

@@ -63,8 +63,7 @@ exports['bind-email'] = bindEmail;
  * @http-body {string} password
  */
 export async function passwd(ctx: Context) {
-  if (!ctx.user)
-    service.error(403);
+  if (!ctx.user) service.error(403);
 
   let body = ctx.request.body as { password: string };
 

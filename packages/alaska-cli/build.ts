@@ -60,7 +60,7 @@ export default async function build(options: BuildOptions) {
   }
 
   // views.d.ts
-  fs.writeFileSync(adminViewRuntime + '/views.d.ts', `import { Views } from 'alaska-admin-view';\ndeclare const views: Views;\nexport = views;`);
+  fs.writeFileSync(`${adminViewRuntime}/views.d.ts`, `import { Views } from 'alaska-admin-view';\ndeclare const views: Views;\nexport = views;`);
 
   // build modules
   console.log(chalk.green('Build modules...'));
@@ -71,15 +71,15 @@ export default async function build(options: BuildOptions) {
     const create: createMetadata = require(Path.join(alaskaModulesPath)).createMetadata;
     let configFile = options.config;
     if (!configFile) {
-      if (fs.existsSync('src/config/' + pkg.name + '.js') || fs.existsSync('src/config/' + pkg.name + '.ts')) {
+      if (fs.existsSync(`src/config/${pkg.name}.js`) || fs.existsSync(`src/config/${pkg.name}.ts`)) {
         configFile = pkg.name;
       } else {
         throw new Error('Can not resolve config file!');
       }
     }
-    let script = await create(pkg.name, process.cwd() + '/src', configFile, options.modulesDirs).toScript();
-    fs.writeFileSync(process.cwd() + '/src/modules.js', script);
-    fs.writeFileSync(process.cwd() + '/src/modules.d.ts', `import { Modules } from 'alaska-modules';\ndeclare const modules: Modules;\nexport default modules;`);
+    let script = await create(pkg.name, `${process.cwd()}/src`, configFile, options.modulesDirs).toScript();
+    fs.writeFileSync(`${process.cwd()}/src/modules.js`, script);
+    fs.writeFileSync(`${process.cwd()}/src/modules.d.ts`, `import { Modules } from 'alaska-modules';\ndeclare const modules: Modules;\nexport default modules;`);
   }
 
   if (options.ts) {
@@ -185,9 +185,9 @@ export default async function build(options: BuildOptions) {
 
   {
     // views 配置文件
-    let viewsFile = process.cwd() + '/src/views/admin-views.js';
+    let viewsFile = `${process.cwd()}/src/views/admin-views.js`;
     if (utils.isFile(viewsFile)) {
-      parse(require(viewsFile), process.cwd() + '/src/views');
+      parse(require(viewsFile), `${process.cwd()}/src/views`);
     }
   }
 

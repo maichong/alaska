@@ -27,7 +27,7 @@ export default class SelectFieldCell extends React.Component<CellViewProps> {
           }
           let c;
           if (opt.color) {
-            c = 'text-' + opt.color;
+            c = `text-${opt.color}`;
           }
           arr.push(<span className={c} key={String(opt.value)}>{label}</span>);
         }
@@ -37,7 +37,7 @@ export default class SelectFieldCell extends React.Component<CellViewProps> {
       let option = _.find(field.options, (opt) => opt.value === value);
       el = tr(option ? option.label : value, model.serviceId);
       if (option && option.color) {
-        cls += ' text-' + option.color;
+        cls += ` text-${option.color}`;
       }
     }
     return <div className={cls}>{el}</div>;

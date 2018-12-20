@@ -21,12 +21,12 @@ export default function (router: Router) {
     if (!action.sled) service.error('Missing action sled');
     let sledId = action.sled;
     if (sledId.indexOf('.') < -1) {
-      sledId = model.service.id + '.' + sledId;
+      sledId = `${model.service.id}.${sledId}`;
     }
     const sled = Sled.lookup(sledId) || service.error('Action sled not found!');
 
     // 验证 action 权限
-    const ability = model.id + '.' + actionName;
+    const ability = `${model.id}.${actionName}`;
 
     if (!recordsId.length) {
       if (!await USER.hasAbility(ctx.user, ability)) service.error('Access Denied', 403);

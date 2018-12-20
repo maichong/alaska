@@ -10,7 +10,7 @@ export { Sled };
 function setSledDefaults(sled: typeof Sled, service: Service, name: string) {
   if (!sled.service) sled.service = service;
   if (!sled.sledName) sled.sledName = name;
-  if (!sled.id) sled.id = sled.id + '.' + name;
+  if (!sled.id) sled.id = `${sled.id}.${name}`;
 }
 
 export default class SledExtension extends Extension {

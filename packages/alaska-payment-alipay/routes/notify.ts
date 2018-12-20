@@ -31,7 +31,7 @@ export default function (router: Router) {
     payment.alipay_trade_no = body.trade_no;
     payment.alipay_buyer_email = body.buyer_email;
     try {
-      let sledId = PAYMENT.id + '.Complete';
+      let sledId = `${PAYMENT.id}.Complete`;
       const Complete = Sled.lookup(sledId) || PAYMENT.error('Complete sled not found!');
       await Complete.run({ payment });
       ctx.body = 'OK';

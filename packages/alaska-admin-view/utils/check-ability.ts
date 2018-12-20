@@ -10,8 +10,8 @@ const warning: ObjectMap<boolean> = {};
 
 /**
  * 检查当前用户是否拥有指定 ability
- * @param ability 
- * @param record 
+ * @param ability
+ * @param record
  */
 function hasAbility(ability: string, record?: any): boolean {
   let settings: Settings = store.getState().settings;
@@ -32,7 +32,7 @@ function hasAbility(ability: string, record?: any): boolean {
   if (checker && !views.urrc.hasOwnProperty(checker)) {
     // checker 函数不存在
     if (!warning[checker]) {
-      console.error('Missing URRC: ' + checker);
+      console.error(`Missing URRC: ${checker}`);
       warning[checker] = true;
     }
     return false;
@@ -45,7 +45,7 @@ function hasAbility(ability: string, record?: any): boolean {
     if (!c) return true; // 拥有全类管理权限
     if (!views.urrc.hasOwnProperty(c)) {
       if (!warning[c]) {
-        console.error('Missing URRC: ' + c);
+        console.error(`Missing URRC: ${c}`);
         warning[c] = true;
       }
       continue;
@@ -57,8 +57,8 @@ function hasAbility(ability: string, record?: any): boolean {
 
 /**
  * 检查权限
- * @param {any} conditions 
- * @param {object} [record] 
+ * @param {any} conditions
+ * @param {object} [record]
  */
 export default function checkAbility(
   conditions: checkDepends.DependsQueryExpression | AbilityCheckGate[],

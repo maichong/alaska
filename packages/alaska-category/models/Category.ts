@@ -133,7 +133,7 @@ export default class Category extends Model {
       }
       await Category.updateMany({ parents: this._id }, {
         group: this.group
-      })
+      });
     })();
   }
 

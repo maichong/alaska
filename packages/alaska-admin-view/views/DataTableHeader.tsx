@@ -44,12 +44,12 @@ class DataTableHeader extends React.Component<Props> {
               if (field && !field.nosort && onSort) {
                 if (field.path === sort) {
                   sortIcon = <i className="fa fa-sort-asc m-l-5" />;
-                  handleClick = () => onSort('-' + field.path);
-                } else if ('-' + field.path === sort) {
+                  handleClick = () => onSort(`-${field.path}`);
+                } else if (`-${field.path}` === sort) {
                   sortIcon = <i className="fa fa-sort-desc m-l-5" />;
                   handleClick = () => onSort(field.path);
                 } else {
-                  handleClick = () => onSort('-' + field.path);
+                  handleClick = () => onSort(`-${field.path}`);
                 }
               }
               return (<th

@@ -48,7 +48,7 @@ export default class Sms extends Model {
       let SmsModel: typeof Model = Sms;
       SmsModel.fields.content.help = 'Default';
       locales.forEach((locale: string) => {
-        SmsModel.fields['content_' + locale.replace('-', '_')] = {
+        SmsModel.fields[`content_${locale.replace('-', '_')}`] = {
           label: 'Content',
           type: String,
           // help: service.t('lang', locale)

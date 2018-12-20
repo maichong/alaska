@@ -48,7 +48,7 @@ function createPropsMap(props: PropData[]): ObjectMap<PropMapData> {
   let map: ObjectMap<PropMapData> = {};
   _.forEach(props, (p) => {
     if (!p.sku) return;
-    let item: PropMapData = Object.assign({ valueMap: {} }, p);
+    let item: PropMapData = Object.assign({ valueMap: {}}, p);
     _.forEach(p.values, (v) => {
       item.valueMap[v.id] = v;
     });
@@ -121,12 +121,12 @@ function valueToList(
     let keyItems: string[] = [];
     let descItems: string[] = [];
     let props: PropData[] = [];
-    _.keys(item).sort().map((pid) => {
+    _.keys(item).sort().forEach((pid) => {
       let vid = item[pid];
-      keyItems.push(pid + ':' + vid);
+      keyItems.push(`${pid}:${vid}`);
       let prop = propsMap[pid];
       let propValue = prop.valueMap[vid];
-      descItems.push(prop.title + ':' + propValue.title);
+      descItems.push(`${prop.title}:${propValue.title}`);
       props.push({
         id: pid,
         title: prop.title,
@@ -149,7 +149,7 @@ function valueToList(
   return immutable(result);
 }
 
-class SkuItem extends React.Component<SkuItemProps>{
+class SkuItem extends React.Component<SkuItemProps> {
   handlePic = (e: any) => {
     // TODO: 选择或上传图片
   };
@@ -205,11 +205,11 @@ class SkuItem extends React.Component<SkuItemProps>{
           <i className="fa fa-close" onClick={onRemove} />
         </td>
       </tr>
-    )
+    );
   }
 }
 
-export default class SkuEditor extends React.Component<Props, State>{
+export default class SkuEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -302,7 +302,7 @@ export default class SkuEditor extends React.Component<Props, State>{
     if (!found) {
       newValue = newValue.concat([sku]);
     }
-    onChange(newValue)
+    onChange(newValue);
   };
 
   handleRemove(sku: SkuData) {
@@ -318,7 +318,7 @@ export default class SkuEditor extends React.Component<Props, State>{
   renderTable() {
     const { disabled } = this.props;
     const { list } = this.state;
-    if (!list.length) return <div className="p-3 text-center">{tr('Please select properties first')}</div>
+    if (!list.length) return <div className="p-3 text-center">{tr('Please select properties first')}</div>;
     return (
       <table className="table">
         <thead>
@@ -358,6 +358,4 @@ export default class SkuEditor extends React.Component<Props, State>{
     );
   }
 }
-
-
 

@@ -67,7 +67,7 @@ export default class TextFieldFilter extends React.Component<FilterViewProps, St
     const { mode, value, error } = this.state;
     const buttonClassName = 'btn btn-light';
     const buttonClassNameActive = 'btn btn-success';
-    className += ' text-field-filter align-items-center' + (error ? ' error' : '');
+    className += ` text-field-filter align-items-center${error ? ' error' : ''}`;
     return (
       <div className={className}>
         <label className="col-2 col-form-label text-right">{field.label}</label>

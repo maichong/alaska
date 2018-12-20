@@ -27,7 +27,7 @@ export default class FilterEditor extends React.Component<FilterEditorProps> {
             if (!field) return null;
             let FilterView = views.components[field.filter];
             if (!FilterView) return null;
-            let className = model.id + '-' + field.path + '-filter row field-filter';
+            let className = `${model.id}-${field.path}-filter row field-filter`;
             let cfg = _.assign({}, field, {
               label: tr(field.label, model.serviceId)
             });

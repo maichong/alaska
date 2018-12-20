@@ -12,7 +12,7 @@ export default class ModelLoader extends Loader {
   constructor(metadata: ModulesMetadata, extConfig: Object) {
     super(metadata, extConfig);
     metadata.post('loadService', async (res: any, meta: ServiceMetadata) => {
-      debug(meta.id + ' load sleds');
+      debug(`${meta.id} load sleds`);
       let sleds: ObjectMap<string> = {};
       meta.sleds = sleds;
       let sledsDir = Path.join(meta.path, 'sleds');
@@ -43,7 +43,7 @@ export default class ModelLoader extends Loader {
     });
 
     metadata.post('buildService', async (res: any, meta: ServiceMetadata, tree: ModuleTree) => {
-      debug(meta.id + ' build sleds');
+      debug(`${meta.id} build sleds`);
       let sleds = new ModuleTree();
       // @ts-ignore services 一定为 ModuleTree
       tree.services[meta.id].sleds = sleds;

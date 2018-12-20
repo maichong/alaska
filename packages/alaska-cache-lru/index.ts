@@ -23,7 +23,7 @@ export default class LruCacheDriver<T> extends CacheDriver<T, LruCacheDriverOpti
    * @returns {Promise<any>}
    */
   set(key: string, value: T, lifetime?: number): Promise<any> {
-    debug('set', key, '=>', value, '(', typeof lifetime !== 'undefined' ? lifetime : '{' + this._maxAge + '}', ')');
+    debug('set', key, '=>', value, '(', typeof lifetime !== 'undefined' ? lifetime : `{${this._maxAge}}`, ')');
     return Promise.resolve(this._driver.set(key, value, lifetime));
   }
 

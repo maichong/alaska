@@ -139,7 +139,7 @@ export default class Sled<T, R> {
       throw new ReferenceError('sled queue config not found');
     }
     // @ts-ignore
-    return this.service.createDriver(_.assign({ key: 'queue:' + id }, config.queue));
+    return this.service.createDriver(_.assign({ key: `queue:${id}` }, config.queue));
   }
 
   /**
@@ -154,7 +154,7 @@ export default class Sled<T, R> {
       throw new ReferenceError('sled subscribe config not found');
     }
     // @ts-ignore
-    return this.service.createDriver(_.defaults({ channel: 'subscribe:' + id }, config.subscribe));
+    return this.service.createDriver(_.defaults({ channel: `subscribe:${id}` }, config.subscribe));
   }
 
   /**

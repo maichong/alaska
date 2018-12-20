@@ -34,7 +34,7 @@ export default class CheckboxFieldFilter extends React.Component<FilterViewProps
     const buttonClassName = 'btn btn-light';
     const buttonClassNameActive = 'btn btn-success';
     return (
-      <div className={className + ' checkbox-field-filter align-items-center form-group'}>
+      <div className={`${className} checkbox-field-filter align-items-center form-group`}>
         <label className="col-2 col-form-label text-right">{field.label}</label>
         <div className="col-10">
           <div className="btn-group">

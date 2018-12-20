@@ -79,6 +79,6 @@ export default async function create(name: string) {
   });
 
   console.log(chalk.green('--- Alaska project created, please type the following commands for start server. ---'));
-  console.log(chalk.gray('>'), chalk.blue('cd ' + name));
+  console.log(chalk.gray('>'), chalk.blue(`cd ${name}`));
   console.log(chalk.gray('>'), chalk.blue('node server.js'));
 }

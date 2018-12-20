@@ -28,7 +28,7 @@ export default function (router: Router) {
     const model = Model.lookup(modelId) || service.error('Model not found!');
 
     // 验证 action 权限
-    const ability = model.id + '.read';
+    const ability = `${model.id}.read`;
 
     let abilityFilters = await USER.createFilters(ctx.user, ability);
     if (!abilityFilters) service.error('Access Denied', 403);

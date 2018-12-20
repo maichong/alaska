@@ -9,7 +9,7 @@ export default class TextFieldCell extends React.Component<CellViewProps> {
     let { value } = this.props;
     if (!value) return null;
     if (value.length > 50) {
-      value = value.substr(0, 50) + '...';
+      value = `${value.substr(0, 50)}...`;
     }
     return (
       <div>{value}</div>

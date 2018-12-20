@@ -56,7 +56,7 @@ function createDecorator(method: string) {
     }
     // @ts-ignore index
     middleware._methods[method] = allow !== false;
-  }
+  };
 }
 
 export const GET = createDecorator('GET');

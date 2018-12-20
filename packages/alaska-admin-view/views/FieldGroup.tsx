@@ -33,7 +33,7 @@ class FieldGroup extends React.Component<Props> {
     let fields: any = [];
     let errors: any = propsErrors;
     _.forEach(propFields, (field) => {
-      let fieldClasses: string[] = ['form-group', model.id + '-' + field.path + '-view'];
+      let fieldClasses: string[] = ['form-group', `${model.id}-${field.path}-view`];
       if (horizontal) fieldClasses.push('row');
 
       if (
@@ -47,7 +47,7 @@ class FieldGroup extends React.Component<Props> {
 
       let ViewClass = views.components[field.view];
       if (!ViewClass) {
-        console.error('Missing : ' + field.view);
+        console.error(`Missing : ${field.view}`);
         ViewClass = views.components.TextFieldView;
       }
 
@@ -137,7 +137,7 @@ class FieldGroup extends React.Component<Props> {
     if (panel !== false) {
       let heading = title ? <div className="card-title">{tr(title)}</div> : null;
       el = (
-        <div className={model.id + '-group-' + path + ' card'}>
+        <div className={`${model.id}-group-${path} card`}>
           {heading}
           <div className="card-body">{el}</div>
         </div>

@@ -85,8 +85,8 @@ export default class SelectFieldFilter extends React.Component<FilterProps, Filt
     let { className, field, onClose } = this.props;
     const { value, inverse, error } = this.state;
     const buttonClassName = 'btn btn-default';
-    const buttonClassNameActive = buttonClassName + ' btn-success';
-    className += ' select-field-filter align-items-center' + (error ? ' error' : '');
+    const buttonClassNameActive = `${buttonClassName} btn-success`;
+    className += ` select-field-filter align-items-center${error ? ' error' : ''}`;
     let viewClassName = 'Select';
     let View: TypeView = Select;
     if (field.checkbox) {

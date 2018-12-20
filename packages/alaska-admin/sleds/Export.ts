@@ -13,7 +13,7 @@ import moment = require('moment');
 function escapeText(text: any) {
   text = String(text);
   if (text.indexOf(',') > -1 || text.indexOf('"') > -1 || text.indexOf('\n') > -1) {
-    return '"' + text.replace(/"/g, '""').replace(/\n/g, '\r') + '"';
+    return `"${text.replace(/"/g, '""').replace(/\n/g, '\r')}"`;
   }
   return text;
 }
@@ -25,7 +25,7 @@ export default class Export extends Sled<ActionSledParams, any> {
   async exec(params: ActionSledParams): Promise<any> {
     const { model, ctx } = params;
 
-    const ability = model.id + '.export';
+    const ability = `${model.id}.export`;
 
     let abilityFilters = await USER.createFilters(params.admin, ability);
     if (!abilityFilters) service.error('Access Denied', 403);

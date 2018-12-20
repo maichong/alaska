@@ -106,7 +106,7 @@ export default class Field {
     let schema = this._schema;
 
     let options = {
-      type: this.plain || (<typeof Field>this.constructor).plain
+      type: this.plain || (<typeof Field> this.constructor).plain
     };
 
     let keys = [

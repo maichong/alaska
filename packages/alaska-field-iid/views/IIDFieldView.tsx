@@ -81,7 +81,7 @@ export default class IIDFieldView extends React.Component<FieldViewProps, State>
       let placeholder = field.placeholder ? tr(field.placeholder, model.serviceId) : '';
       inputElement = (<input
         type="number"
-        className={'form-control' + inputClassName}
+        className={`form-control${inputClassName}`}
         onChange={this.handleChange}
         onFocus={this.handleFocus}
         onBlur={this.handleBlur}

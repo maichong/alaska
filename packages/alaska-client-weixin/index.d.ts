@@ -25,7 +25,7 @@ export interface ConfigData {
     expires_in: string;
     // refresh_token 字段，默认 wxRefreshToken
     refresh_token: string;
-  }
+  };
 }
 
 export default class WeixinClientPlugin extends Plugin {
