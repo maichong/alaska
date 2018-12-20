@@ -54,7 +54,7 @@
     "koa-qs": "^2.0.0",
     "koa-router": "^7.4.0",
     "koa-static-cache": "^5.1.2",
-    "libwx": "^0.3.0",
+    "libwx": "^0.3.1",
     "lru-cache": "^5.1.1",
     "moment": "^2.23.0",
     "mongoose": "^5.4.0",

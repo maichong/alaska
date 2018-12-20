@@ -44,7 +44,7 @@ function onError(ctx: Context, error: Error) {
   };
   if (code && code > 100 && code < 600) {
     ctx.status = code;
-  } else if (status === 200) {
+  } else if (status === 404) {
     ctx.status = 500;
   }
 }

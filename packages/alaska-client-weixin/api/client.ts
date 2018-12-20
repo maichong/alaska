@@ -1,3 +1,4 @@
+import { ObjectMap } from 'alaska';
 import clientService from 'alaska-client';
 import Register from 'alaska-user/sleds/Register';
 import User from 'alaska-user/models/User';
@@ -14,11 +15,18 @@ export async function create(ctx: Context, next: Function) {
     await next();
     return;
   }
-  let res = await clientService.wx.getAccessToken(wxCode);
-  deviceId = res.openid;
-  if (!platform) {
-    platform = 'weixin';
-  }
+  if (!platform) clientService.error('platform is required!');
+  let wx = clientService.wxPlatforms[platform];
+  if (!wx || !wx.getAccessToken) clientService.error('invalid platform!');
+
+  let configMap: ObjectMap<ConfigData> = clientService.main.config.get('alaska-client-weixin');
+  let config = configMap[platform];
+  if (!config) clientService.error('invalid platform!');
+  let userFieldsMap = config.userFieldsMap || {} as typeof config.userFieldsMap;
+
+  let info = await wx.getAccessToken(wxCode);
+  deviceId = info.openid;
+
   let client = await Client.findOne({ deviceId });
 
   // 删除过期
@@ -33,23 +41,49 @@ export async function create(ctx: Context, next: Function) {
   }
   client.set({ deviceId, platform });
 
-  let user = await User.findOne({ openid: res.openid });
-  if (user) {
-    client.user = user._id;
-  } else {
-    let config: ConfigData = clientService.main.config.get('alaska-client-weixin');
-    if (config && config.autoRegiterUser) {
-      let userFieldsMap = config.userFieldsMap || {} as typeof config.userFieldsMap;
+  if (!client.user) {
+    // 如果该设备还未绑定用户
+
+    // 查询用户是否已经注册
+    let userFilter: any = {};
+    if (config.useUnionid && info.unionid) {
+      userFilter[userFieldsMap.unionid || 'unionid'] = info.unionid;
+    } else {
+      userFilter[userFieldsMap.openid || 'openid'] = info.openid;
+    }
+
+    let user = await User.findOne(userFilter);
+    if (user) {
+      // 用户已经注册，直接绑定
+      client.user = user._id;
+    } else if (config.autoRegiterUser) {
       // 自动注册User
-      user = await Register.run({
-        username: res.openid,
-        password: res.openid + Math.random().toString(),
-        [userFieldsMap.openid || 'openid']: res.openid,
-        [userFieldsMap.unionid || 'unionid']: res.unionid,
-        [userFieldsMap.access_token || 'wxAccessToken']: res.access_token,
-        [userFieldsMap.access_token || 'wxAccessTokenExpiredAt']: new Date(Date.now() + (res.expires_in * 1000)),
-        [userFieldsMap.refresh_token || 'wxRefreshToken']: res.refresh_token
-      });
+      let params: any = {
+        username: info.openid,
+        password: info.openid + Math.random().toString(),
+        [userFieldsMap.openid || 'openid']: info.openid,
+      };
+      if (config.useUnionid && info.unionid) {
+        params.username = info.unionid;
+      }
+      if (info.unionid) {
+        params[userFieldsMap.unionid || 'unionid'] = info.unionid;
+      }
+
+      if (info.access_token) {
+        // 公众号平台
+        params[userFieldsMap.access_token || 'wxAccessToken'] = info.access_token;
+        params[userFieldsMap.access_token || 'wxAccessTokenExpiredAt'] = new Date(Date.now() + (info.expires_in * 1000));
+        params[userFieldsMap.refresh_token || 'wxRefreshToken'] = info.refresh_token;
+      }
+
+      if (info.session_key) {
+        // 小程序平台
+        params[userFieldsMap.session_key || 'wxSessionKey'] = info.session_key;
+      }
+
+      user = await Register.run(params);
+
       client.user = user._id;
     }
   }
