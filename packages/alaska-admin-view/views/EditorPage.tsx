@@ -66,9 +66,17 @@ class EditorPage extends React.Component<Props, EditorPageState> {
 
     if (nextState.isNew) {
       // 新建
-      if (prevState.record && prevState.record._id) {
-        // 从编辑页面跳转到了新建页面
-        nextState.record = immutable({});
+      if (!prevState.record // 页面刚刚初始化， record 还是 null
+        || prevState.record._id || // 从编辑页面跳转到了新建页面
+        (prevState.model && prevState.model.id !== model.id) // 从另外一个模型的新建页面跳转而来
+      ) {
+        let defatuls: any = {};
+        _.forEach(model.fields, (field, key) => {
+          if (typeof field.default !== 'undefined') {
+            defatuls[key] = field.default;
+          }
+        });
+        nextState.record = immutable(defatuls);
       }
     } else {
       // 编辑
