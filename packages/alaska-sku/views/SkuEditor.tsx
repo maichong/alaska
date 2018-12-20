@@ -259,15 +259,32 @@ export default class SkuEditor extends React.Component<Props, State>{
   }
 
   componentDidUpdate() {
+    // 当商品属性列表变化后（去掉/新增了一些SKU属性），需要去除、新增某些原来存在的sku
     const { value, onChange } = this.props;
-    const { list } = this.state;
-    let newValue = list.flatMap((sku) => {
-      if (sku._id || sku.createdAt) return [sku];
-      return [];
-    })
-    let skuIds = _.map(value, (sku) => sku._id);
-    let newIds = _.map(newValue, (sku) => sku._id);
-    if (!_.isEqual(skuIds, newIds)) {
+    const { list, propsMap } = this.state;
+    let skuMap: ObjectMap<SkuData> = {};
+    let newValue = value.flatMap((sku) => {
+      if (_.find(sku.props, (p) => {
+        if (!propsMap[p.id]) return true;
+        if (!propsMap[p.id].valueMap[p.values[0].id]) return true;
+        return false;
+      })) {
+        // 删除了属性，去除原来存在的sku
+        return [];
+      }
+      skuMap[sku.key] = sku;
+      return [sku];
+    });
+    list.forEach((sku) => {
+      if (!skuMap[sku.key] &&
+        (sku._id || sku.price || sku.inventory || sku.discount) // 非空SKU（用户有过编辑）
+      ) {
+        // 新增了属性，需要增加新SKU
+        // @ts-ignore
+        newValue = newValue.concat([sku]);
+      }
+    });
+    if (value.length !== newValue.length) {
       onChange(newValue);
     }
   }
@@ -275,7 +292,7 @@ export default class SkuEditor extends React.Component<Props, State>{
   handleChange = (sku: SkuData) => {
     const { value, onChange } = this.props;
     let found = false;
-    let newValue: SkuData[] = value.map((s) => {
+    let newValue = value.map((s) => {
       if (s.key === sku.key) {
         found = true;
         return sku;
@@ -285,7 +302,7 @@ export default class SkuEditor extends React.Component<Props, State>{
     if (!found) {
       newValue = newValue.concat([sku]);
     }
-    onChange(newValue);
+    onChange(newValue)
   };
 
   handleRemove(sku: SkuData) {

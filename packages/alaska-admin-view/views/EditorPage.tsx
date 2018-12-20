@@ -81,16 +81,17 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     } else {
       // 编辑
       let details = nextProps.details[modelId];
-      let record = details ? (details[params.id] || null) : null;
-      nextState._record = record;
-      if (prevState.record && prevState.record._id && record && record != prevState._record) {
+      let reduxRecord = details ? (details[params.id] || null) : null;
+      nextState._record = reduxRecord;
+      // 检查Redux数据变更
+      if (prevState._record && reduxRecord && reduxRecord !== prevState._record) {
         // redux中数据更新了
-        nextState.record = record;
+        nextState.record = reduxRecord;
       } else if (!prevState.isNew && prevState.id !== nextState.id) {
         // 直接从一个一条记录跳转到另一条记录，强制加载一次
         nextState.record = null;
-      } else if (!record || !prevState.record) {
-        nextState.record = record;
+      } else if (!reduxRecord || !prevState.record) {
+        nextState.record = reduxRecord;
       }
     }
     return nextState;
