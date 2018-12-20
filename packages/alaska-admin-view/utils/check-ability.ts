@@ -3,7 +3,10 @@ import * as _ from 'lodash';
 import { AbilityCheckGate } from 'alaska-model';
 import store from '../redux';
 import views from './views';
+import { ObjectMap } from 'alaska';
 import { Settings } from '..';
+
+const warning: ObjectMap<boolean> = {};
 
 /**
  * 检查当前用户是否拥有指定 ability
@@ -28,6 +31,10 @@ function hasAbility(ability: string, record?: any): boolean {
   // 需要检查数据记录
   if (checker && !views.urrc.hasOwnProperty(checker)) {
     // checker 函数不存在
+    if (!warning[checker]) {
+      console.error('Missing URRC: ' + checker);
+      warning[checker] = true;
+    }
     return false;
   }
 
@@ -36,7 +43,13 @@ function hasAbility(ability: string, record?: any): boolean {
     if (prefix !== p) continue;
     if (checker && c !== checker) continue;
     if (!c) return true; // 拥有全类管理权限
-    if (!views.urrc.hasOwnProperty(c)) continue;
+    if (!views.urrc.hasOwnProperty(c)) {
+      if (!warning[c]) {
+        console.error('Missing URRC: ' + c);
+        warning[c] = true;
+      }
+      continue;
+    }
     if (views.urrc[c].check(settings.user, record)) return true;
   }
   return false;
