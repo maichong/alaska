@@ -193,7 +193,13 @@ export default class ApiExtension extends Extension {
 
             if (apiGroup && apiGroup[action] && action[0] !== '_') {
               try {
-                if (REST_ACTIONS.indexOf(action) > -1) {
+                if (action === 'default') {
+                  // 如果 action 为 default，说明一定是 REST 接口，优先处理REST
+                  await next();
+                  if (ctx.body) {
+                    return;
+                  }
+                } else if (REST_ACTIONS.indexOf(action) > -1) {
                   await next();
                   return;
                 }

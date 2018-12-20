@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "mime-types": "^2.1.21",
-    "moment": "^2.22.2",
+    "moment": "^2.23.0",
     "fsd": "^0.4.1"
   }
 }
