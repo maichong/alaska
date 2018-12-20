@@ -73,7 +73,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   reduceGroups() {
-    let { model, record, isNew, onChange } = this.props;
+    let { model, record, onChange } = this.props;
     let { errors } = this.state;
     let groups: ObjectMap<FieldGroupProps> = {
       default: {
@@ -82,7 +82,6 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
         path: 'default',
         model,
         record,
-        isNew,
         errors,
         onFieldChange: onChange
       }
@@ -92,7 +91,6 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
         fields: [],
         model,
         record,
-        isNew,
         errors,
         onFieldChange: onChange
       });

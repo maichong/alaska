@@ -77,7 +77,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
         || prevState.record.id || // 从编辑页面跳转到了新建页面
         (prevState.model && prevState.model.id !== model.id) // 从另外一个模型的新建页面跳转而来
       ) {
-        let defatuls: any = {};
+        let defatuls: any = { isNew: true };
         _.forEach(model.fields, (field, key) => {
           if (typeof field.default !== 'undefined') {
             defatuls[key] = field.default;
@@ -189,7 +189,6 @@ class EditorPage extends React.Component<Props, EditorPageState> {
         <EditorActionBar
           model={model}
           record={record}
-          isNew={isNew}
         />
       </Node>
     );
@@ -226,7 +225,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
       el = this.renderError();
     } else {
       el = <div>
-        <Editor isNew={isNew} model={model} record={record} onChange={this.handleChange} />
+        <Editor model={model} record={record} onChange={this.handleChange} />
         {this.renderRelationships()}
       </div>;
     }

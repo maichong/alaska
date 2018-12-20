@@ -89,7 +89,7 @@ class AdminService extends Service {
             plainName: 'string',
             cell: 'TextFieldCell',
             view: 'TextFieldView',
-            hidden: '!id'
+            hidden: 'isNew'
           };
         }
         _.defaults(model.fields._id, {

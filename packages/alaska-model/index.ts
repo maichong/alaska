@@ -53,7 +53,7 @@ function setModelDefaults(model: typeof ModelType, service: Service, name: strin
     link: '',
     editor: true,
     list: true,
-    hidden: '!_id'
+    hidden: 'isNew'
   });
 
   if (!model.actions.create) {
@@ -85,7 +85,7 @@ function setModelDefaults(model: typeof ModelType, service: Service, name: strin
     color: 'primary',
     sled: 'alaska-admin.Update',
     editor: true,
-    hidden: '!_id'
+    hidden: 'isNew'
   });
 
   if (!model.actions.remove) {
@@ -98,7 +98,7 @@ function setModelDefaults(model: typeof ModelType, service: Service, name: strin
     editor: true,
     list: true,
     needRecords: 1,
-    hidden: '!_id'
+    hidden: 'isNew'
   });
 
 }

@@ -32,7 +32,7 @@ export default class Property extends Model {
   static groups = {
     editor: {
       title: 'Create Property Values',
-      hidden: '!id'
+      hidden: 'isNew'
     }
   };
 

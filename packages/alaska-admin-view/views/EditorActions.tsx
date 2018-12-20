@@ -55,7 +55,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
         toast(tr(`${title} success!`), tr(`${title}`), { type: 'success' });
         let id = _.get(action, 'result._id');
         let redirect;
-        if (nextProps.isNew && id) {
+        if (nextProps.record.isNew && id) {
           // 创建成功跳转
           redirect = `/edit/${model.serviceId}/${model.modelName}/${id}`;
         } else if (action.action === 'remove') {
@@ -75,7 +75,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
   };
 
   handleAction = async (action: string) => {
-    const { model, actionRequest, record, isNew } = this.props;
+    const { model, actionRequest, record } = this.props;
     const config: ModelAction = model.actions[action];
 
     if (config && config.confirm) {
@@ -99,7 +99,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
           model: `${model.serviceId}.${model.modelName}`,
           action,
           request,
-          records: !isNew && record._id ? [record._id] : [],
+          records: record.isNew ? [] : [record._id],
           body: record
         });
         this.setState({ request });
@@ -123,7 +123,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
 
   render() {
     const {
-      model, record, isNew, superMode
+      model, record, superMode
     } = this.props;
 
     let redirect = this.state.redirect;
@@ -175,7 +175,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
       let disabled = action.disabled && checkAbility(action.disabled, record);
       let obj = {} as ActionMap;
       if (key === 'create') {
-        if (!isNew || model.nocreate) return;
+        if (!record.isNew || model.nocreate) return;
         obj.onClick = () => this.handleAction(key);
         obj.action = _.assign({
           key: 'create',
@@ -184,7 +184,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
           tooltip: 'Save'
         }, action, disabled ? { disabled: true } : {});
       } else if (key === 'update') {
-        if (isNew || model.noupdate) return;
+        if (record.isNew || model.noupdate) return;
         obj.onClick = () => this.handleAction(key);
         obj.action = _.assign({
           key: 'update',
@@ -193,7 +193,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
           tooltip: 'Save'
         }, action, disabled ? { disabled: true } : {});
       } else if (key === 'remove') {
-        if (isNew || model.noremove) return;
+        if (record.isNew || model.noremove) return;
         obj.onClick = () => this.handleRemove();
         obj.action = _.assign({
           key: 'remove',
@@ -202,7 +202,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
           tooltip: 'Remove'
         }, action, disabled ? { disabled: true } : {});
       } else if (key === 'add') {
-        if (isNew || model.nocreate) return;
+        if (record.isNew || model.nocreate) return;
         obj.onClick = () => this.handleAdd();
         obj.action = _.assign({
           key: 'add',
@@ -234,7 +234,6 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
     );
   }
 }
-
 
 export default connect(
   ({ settings, action }: StoreState) => ({ superMode: settings.superMode, action }),

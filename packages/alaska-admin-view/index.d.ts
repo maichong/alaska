@@ -385,6 +385,7 @@ export interface Service {
 
 export interface Record {
   [path: string]: any;
+  isNew?: boolean;
 }
 
 export interface ImageData {
@@ -714,7 +715,6 @@ export interface DeniedPageProps {
 }
 
 export interface EditorProps {
-  isNew?: boolean; //是否新建
   model: Model;
   record: immutable.Immutable<Record>;
   onChange: Function;
@@ -723,13 +723,11 @@ export interface EditorProps {
 export interface EditorActionBarProps {
   model: Model;
   record: immutable.Immutable<Record> | null;
-  isNew: boolean;
 }
 
 export interface EditorActionsProps {
   model: Model;
   record: immutable.Immutable<Record>;
-  isNew: boolean;
 }
 
 export interface EditorPageProps {
@@ -752,7 +750,6 @@ export interface FieldGroupProps extends FieldGroup {
   model: Model;
   record: immutable.Immutable<Record>;
   errors: ObjectMap<any>;
-  isNew: boolean;
   fields: Field[];
   onFieldChange: Function;
 }

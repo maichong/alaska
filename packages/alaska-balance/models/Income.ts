@@ -27,13 +27,13 @@ export default class Income extends Model {
       type: 'relationship',
       ref: 'alaska-user.User',
       index: true,
-      disabled: '_id',
+      disabled: '!isNew',
       required: true
     },
     type: {
       label: 'Type',
       type: 'select',
-      disabled: '_id',
+      disabled: '!isNew',
       default: '',
       options: [{
         label: 'Unknown',
@@ -52,7 +52,7 @@ export default class Income extends Model {
     target: {
       label: 'Target',
       type: 'select',
-      disabled: '_id',
+      disabled: '!isNew',
       default: 'balance',
       checkbox: true,
       options: [{
@@ -67,7 +67,7 @@ export default class Income extends Model {
       label: 'Deposit',
       type: 'relationship',
       ref: 'Deposit',
-      disabled: '_id',
+      disabled: '!isNew',
       hidden: {
         target: {
           $ne: 'deposit'
@@ -80,7 +80,7 @@ export default class Income extends Model {
     currency: {
       label: 'Currency',
       type: 'select',
-      disabled: '_id',
+      disabled: '!isNew',
       switch: true,
       options: service.getCurrenciesAsync(),
       default: service.getDefaultCurrencyAsync().then((cur) => cur.value)
@@ -88,19 +88,19 @@ export default class Income extends Model {
     amount: {
       label: 'Amount',
       type: Number,
-      disabled: '_id',
+      disabled: '!isNew',
       default: 0
     },
     balance: {
       label: 'Balance',
       type: Number,
-      disabled: '_id',
+      disabled: '!isNew',
       default: 0
     },
     createdAt: {
       label: 'Created At',
       type: Date,
-      disabled: '_id'
+      disabled: '!isNew'
     }
   };
 

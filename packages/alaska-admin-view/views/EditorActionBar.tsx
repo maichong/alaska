@@ -5,7 +5,7 @@ import EditorActions from './EditorActions';
 
 export default class EditorActionBar extends React.Component<EditorActionBarProps> {
   render() {
-    let { model, record, isNew } = this.props;
+    let { model, record } = this.props;
     return (
       <Node
         wrapper="EditorActionBar"
@@ -17,7 +17,6 @@ export default class EditorActionBar extends React.Component<EditorActionBarProp
             record ? <EditorActions
               model={model}
               record={record}
-              isNew={isNew}
             /> : null
           }
         </div>

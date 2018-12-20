@@ -26,7 +26,6 @@ class FieldGroup extends React.Component<Props> {
       horizontal,
       onFieldChange,
       errors: propsErrors,
-      isNew,
       settings
     } = props;
     const { serviceId } = model;
@@ -104,7 +103,6 @@ class FieldGroup extends React.Component<Props> {
       model,
       horizontal,
       form,
-      isNew,
       panel,
       title,
       path,
@@ -115,7 +113,7 @@ class FieldGroup extends React.Component<Props> {
     if (checkAbility(props.hidden, record)) return ''; // hidden
     if (!settings.superMode && checkAbility(props.super, record)) return ''; // super
     function isDisabled(): boolean {
-      if (isNew) {
+      if (record.isNew) {
         if (model.nocreate) return true;
       } else {
         if (model.noupdate) return true;
