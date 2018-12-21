@@ -21,8 +21,7 @@ export default class Address extends Model {
       label: 'User',
       type: 'relationship',
       ref: 'alaska-user.User',
-      required: true,
-      protected: true
+      required: true
     },
     name: {
       label: 'Name',

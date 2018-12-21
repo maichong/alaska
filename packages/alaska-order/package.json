@@ -1,0 +1,21 @@
+{
+  "name": "alaska-order",
+  "version": "0.13.2",
+  "description": "Alaska order service",
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
+  "alaska": "service",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-order",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "alaska-user": "^0.13.2"
+  },
+  "peerDependencies": {
+    "alaska-user": "^0.13.2"
+  }
+}
