@@ -767,13 +767,26 @@ export default class Model {
    * @param {Object} [state]
    */
   static async createFiltersByContext(ctx: Context, state?: ContextState): Promise<Filters> {
-    state = _.defaultsDeep({}, state, ctx.state);
+    let search;
+    let filters;
+
+    if (state && state.search) {
+      search = state.search;
+    } else {
+      search = ctx.state.search;
+    }
+
+    if (state && state.filters) {
+      filters = state.filters;
+    } else {
+      filters = ctx.state.filters;
+    }
 
     // @ts-ignore
     let model: typeof ModelType = this;
-    let filters = model.createFilters(
-      (state.search || ctx.query._search || '').trim(),
-      state.filters || ctx.query
+    filters = model.createFilters(
+      (search || ctx.query._search || '').trim(),
+      filters || ctx.query
     );
     let { defaultFilters } = model;
     if (defaultFilters) {
@@ -878,11 +891,14 @@ export default class Model {
     // @ts-ignore
     let model: typeof ModelType = this;
 
-    let filtersPromise = model.createFiltersByContext(ctx, state);
+    let filtersPromise: Promise<Filters>;
+    if (!state || state.filters) {
+      filtersPromise = model.createFiltersByContext(ctx, state);
+    }
 
     state = Object.assign({}, ctx.state, state);
 
-    let query: PaginateQuery<ModelType> = model.paginate()
+    let query: PaginateQuery<ModelType> = model.paginate(state && state.filters)
       .page(parseInt(state.page || ctx.query._page, 10) || 1)
       .limit(parseInt(state.limit || ctx.query._limit, 10) || model.defaultLimit || 10);
 
@@ -897,16 +913,17 @@ export default class Model {
       query.sort(sort);
     }
 
-    let execFn = query.exec;
-
-    // @ts-ignore
-    query.exec = function (callback?: Function) {
-      return filtersPromise.then((filters) => {
-        query.where(filters);
-        query.exec = execFn;
-        return query.exec(callback);
-      });
-    };
+    if (filtersPromise) {
+      let execFn = query.exec;
+      // @ts-ignore
+      query.exec = function (callback?: Function) {
+        return filtersPromise.then((filters) => {
+          query.where(filters);
+          query.exec = execFn;
+          return query.exec(callback);
+        });
+      };
+    }
 
     // TODO: relationships
     // TODO: populations
@@ -924,19 +941,23 @@ export default class Model {
     // @ts-ignore
     let model: typeof ModelType = this;
 
-    let query = model.find();
+    let query = model.find(state && state.filters);
 
-    let filtersPromise = model.createFiltersByContext(ctx, state);
+    if (!state || state.filters) {
+      let filtersPromise: Promise<Filters>;
+      filtersPromise = model.createFiltersByContext(ctx, state);
 
-    let execFn = query.exec;
-    // @ts-ignore
-    query.exec = function (callback?: Function) {
-      return filtersPromise.then((filters) => {
-        query.where(filters);
-        query.exec = execFn;
-        return query.exec(callback);
-      });
-    };
+      let execFn = query.exec;
+      // @ts-ignore
+      query.exec = function (callback?: Function) {
+        return filtersPromise.then((filters) => {
+          query.where(filters);
+          query.exec = execFn;
+          return query.exec(callback);
+        });
+      };
+    }
+
 
     state = Object.assign({}, ctx.state, state);
 
