@@ -3,9 +3,9 @@ import User from 'alaska-user/models/User';
 import Withdraw from '../models/Withdraw';
 import service, { WithdrawRejectParams } from '..';
 
-export default class WithdrawReject extends Sled<WithdrawRejectParams, Object> {
-  async exec(params: WithdrawRejectParams): Promise<Object> {
-    let record: Withdraw = params.records[0];
+export default class WithdrawReject extends Sled<WithdrawRejectParams, Withdraw> {
+  async exec(params: WithdrawRejectParams): Promise<Withdraw> {
+    let record: Withdraw = params.record;
     if (record.state === 0) {
       let reason = params.body.reason || service.error('Missing reject reason');
       record.state = -1;
@@ -22,6 +22,6 @@ export default class WithdrawReject extends Sled<WithdrawRejectParams, Object> {
     } else if (record.state !== -1) {
       service.error('State error');
     }
-    return record.toObject();
+    return record;
   }
 }

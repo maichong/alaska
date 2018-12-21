@@ -56,6 +56,7 @@ export interface ActionSledParams {
   admin: User;
   model: typeof Model;
   records: Model[];
+  record: Model;
   body: any;
 }
 

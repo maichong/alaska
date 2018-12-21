@@ -38,7 +38,7 @@ export default function (router: Router) {
       if (recordsId.length !== records.length) service.error('Record not found!');
       // 验证权限
       for (let record of records) {
-        if (!userService.hasAbility(ctx.user, ability, record)) service.error('Access Denied', 403);
+        if (!await userService.hasAbility(ctx.user, ability, record)) service.error('Access Denied', 403);
       }
     }
     let result = await sled.run({
@@ -46,6 +46,7 @@ export default function (router: Router) {
       admin: ctx.user,
       model,
       records,
+      record: records[0],
       body: body
     });
     if (result) {

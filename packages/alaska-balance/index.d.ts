@@ -61,9 +61,9 @@ export interface WithdrawParams {
 }
 
 export interface WithdrawAcceptParams extends ActionSledParams {
-  records: Withdraw[];
+  record: Withdraw;
 }
 
 export interface WithdrawRejectParams extends ActionSledParams {
-  records: Withdraw[];
+  record: Withdraw;
 }
