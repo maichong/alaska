@@ -26,10 +26,9 @@ export default class Order extends Model {
   static defaultFilters = defaultFilters;
 
   static relationships = {
-    items: {
+    goods: {
       ref: 'OrderGoods',
-      path: 'order',
-      protected: true
+      path: 'order'
     },
     logs: {
       ref: 'OrderLog',
@@ -49,10 +48,10 @@ export default class Order extends Model {
   };
 
   static api = {
-    list: 3,
-    count: 3,
-    show: 3,
-    create: 3
+    paginate: 2,
+    count: 2,
+    show: 2,
+    create: 2
   };
 
   static actions = {
@@ -60,22 +59,26 @@ export default class Order extends Model {
       title: 'Confirm',
       style: 'success',
       sled: 'Confirm',
-      depends: {
-        state: 300
+      hidden: {
+        state: {
+          $ne: 300
+        }
       }
     },
     ship: {
       title: 'Ship',
       style: 'success',
       sled: 'Ship',
-      depends: {
-        state: 400
+      hidden: {
+        state: {
+          $ne: 400
+        }
       }
     },
     delete: {
       title: 'Delete',
       style: 'danger',
-      confirm: 'Do you confirm the order?',
+      confirm: 'Confirm to delete the order?',
       sled: 'Delete',
       post: 'js:history.back()'
     }
@@ -91,6 +94,7 @@ export default class Order extends Model {
       label: 'User',
       type: 'relationship',
       ref: 'alaska-user.User',
+      required: true,
       index: true
     },
     type: {
