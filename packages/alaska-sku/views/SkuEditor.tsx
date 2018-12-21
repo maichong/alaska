@@ -48,7 +48,7 @@ function createPropsMap(props: PropData[]): ObjectMap<PropMapData> {
   let map: ObjectMap<PropMapData> = {};
   _.forEach(props, (p) => {
     if (!p.sku) return;
-    let item: PropMapData = Object.assign({ valueMap: {}}, p);
+    let item: PropMapData = Object.assign({ valueMap: {} }, p);
     _.forEach(p.values, (v) => {
       item.valueMap[v.id] = v;
     });
@@ -222,6 +222,7 @@ export default class SkuEditor extends React.Component<Props, State> {
   }
 
   static getDerivedStateFromProps(nextProps: Props, prevState: State) {
+    if (nextProps.record.isNew) return null;
     if (nextProps.record !== prevState._record) {
       let propsMap = createPropsMap(nextProps.record.props);
       let props = _.values(propsMap);
@@ -237,7 +238,7 @@ export default class SkuEditor extends React.Component<Props, State> {
 
   componentDidMount() {
     const { record, value } = this.props;
-    if (!record._id) return;
+    if (record.isNew) return;
     // TODO: 保存goods后，清除Sku查询缓存
     query({
       model: 'alaska-sku.Sku',
@@ -260,7 +261,8 @@ export default class SkuEditor extends React.Component<Props, State> {
 
   componentDidUpdate() {
     // 当商品属性列表变化后（去掉/新增了一些SKU属性），需要去除、新增某些原来存在的sku
-    const { value, onChange } = this.props;
+    const { value, onChange, record } = this.props;
+    if (!value || record.isNew) return;
     const { list, propsMap } = this.state;
     let skuMap: ObjectMap<SkuData> = {};
     let newValue = value.flatMap((sku) => {
@@ -349,7 +351,7 @@ export default class SkuEditor extends React.Component<Props, State> {
   render() {
     const { record } = this.props;
     const { props } = this.state;
-    if (!props.length || !record._id) return null;
+    if (!props.length || record.isNew) return null;
     return (
       <div className="card sku-editor">
         <div className="card-title">SKU</div>
