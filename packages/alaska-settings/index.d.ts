@@ -13,7 +13,7 @@ export interface RegisterSettings {
   options?: any;
 }
 
-declare class SettingsService extends Service {
+export class SettingsService extends Service {
   register(data: RegisterSettings): Promise<Settings>;
   get(id: string): Promise<any>;
   set(id: string, value: any): Promise<Settings>;

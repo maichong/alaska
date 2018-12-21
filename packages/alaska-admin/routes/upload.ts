@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as Router from 'koa-router';
 import { Context } from 'alaska-http';
 import { Model } from 'alaska-model';
-import USER from 'alaska-user';
+import userService from 'alaska-user';
 import { UploadFile } from 'alaska-middleware-upload';
 import ImageField from 'alaska-field-image';
 import service from '..';
@@ -16,7 +16,7 @@ interface DetailsQuery {
 export default function (router: Router) {
   router.post('/upload', async (ctx: Context) => {
     ctx.state.jsonApi = true;
-    if (!await USER.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
+    if (!await userService.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
 
     const id = ctx.query._id || service.error('Missing id!');
     const fieldPath = ctx.query._field || service.error('Missing field!');
@@ -30,13 +30,13 @@ export default function (router: Router) {
     if (id === '_new') {
       // 验证资源权限
       const ability = `${model.id}.create`;
-      if (!await USER.hasAbility(ctx.user, ability)) service.error('Access Denied', 403);
+      if (!await userService.hasAbility(ctx.user, ability)) service.error('Access Denied', 403);
     } else {
       let record = await model.findById(id);
       if (!record) service.error('Record not found');
       // 验证资源权限
       const ability = `${model.id}.update`;
-      if (!await USER.hasAbility(ctx.user, ability, record)) service.error('Access Denied', 403);
+      if (!await userService.hasAbility(ctx.user, ability, record)) service.error('Access Denied', 403);
     }
 
     // TODO: 检查字段权限

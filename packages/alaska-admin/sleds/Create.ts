@@ -1,5 +1,5 @@
 import { Sled } from 'alaska-sled';
-import USER from 'alaska-user';
+import userService from 'alaska-user';
 import service, { ActionSledParams } from '..';
 import { trimPrivateField, trimDisabledField } from '../utils/utils';
 
@@ -18,7 +18,7 @@ export default class Create extends Sled<ActionSledParams, any> {
     // eslint-disable-next-line new-cap
     let record = new model(body);
     let ability = `${model.id}.create`;
-    if (!await USER.hasAbility(params.ctx.user, ability, record)) service.error('Access Denied', 403);
+    if (!await userService.hasAbility(params.ctx.user, ability, record)) service.error('Access Denied', 403);
     await record.save();
 
     let json = record.toJSON();

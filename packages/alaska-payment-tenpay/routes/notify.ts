@@ -1,6 +1,6 @@
 import * as Router from 'koa-router';
 import { Context } from 'alaska-http';
-import PAYMENT from 'alaska-payment';
+import paymentService from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 import { Sled } from 'alaska-sled';
 import * as raw from 'raw-body';
@@ -28,7 +28,7 @@ export default function (router: Router) {
       if (data.return_code !== 'SUCCESS' || data.result_code !== 'SUCCESS') {
         return replay('not success');
       }
-      let success = await (PAYMENT.plugins.tenpay as TenpayPlugin).verify(data);
+      let success = await (paymentService.plugins.tenpay as TenpayPlugin).verify(data);
       if (!success) {
         return replay('sign error');
       }
@@ -41,8 +41,8 @@ export default function (router: Router) {
         return replay('total_fee error');
       }
       payment.tenpay_transaction_id = data.transaction_id;
-      let sledId = `${PAYMENT.id}.Complete`;
-      const Complete = Sled.lookup(sledId) || PAYMENT.error('Complete sled not found!');
+      let sledId = `${paymentService.id}.Complete`;
+      const Complete = Sled.lookup(sledId) || paymentService.error('Complete sled not found!');
       await Complete.run({ payment });
       ctx.body = 'OK';
       ctx.status = 200;

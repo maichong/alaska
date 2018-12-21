@@ -17,7 +17,7 @@ export interface CompleteParams {
   done?: boolean;
 }
 
-declare class PaymentService extends Service {
+export class PaymentService extends Service {
   models: {
     Payment: typeof Payment;
   }

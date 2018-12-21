@@ -3,7 +3,7 @@ import * as Router from 'koa-router';
 import { Context } from 'alaska-http';
 import { Model, Filter } from 'alaska-model';
 import { mergeFilters } from 'alaska-model/utils';
-import USER from 'alaska-user';
+import userService from 'alaska-user';
 import service from '..';
 import { trimPrivateField } from '../utils/utils';
 
@@ -23,7 +23,7 @@ interface ListQuery {
 export default function (router: Router) {
   router.get('/list', async (ctx: Context) => {
     ctx.state.jsonApi = true;
-    if (!await USER.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
+    if (!await userService.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
 
     const modelId = ctx.query._model || service.error('Missing model!');
     const model = Model.lookup(modelId) || service.error('Model not found!');
@@ -31,7 +31,7 @@ export default function (router: Router) {
     // 验证 action 权限
     const ability = `${model.id}.read`;
 
-    let abilityFilters = await USER.createFilters(ctx.user, ability);
+    let abilityFilters = await userService.createFilters(ctx.user, ability);
     if (!abilityFilters) service.error('Access Denied', 403);
 
     let filters = mergeFilters(await model.createFiltersByContext(ctx), abilityFilters);

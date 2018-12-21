@@ -2,7 +2,7 @@ import { Service } from 'alaska';
 import UpdateCatRef from './sleds/UpdateCatRef';
 import Category from './models/Category';
 
-declare class CategoryService extends Service {
+export class CategoryService extends Service {
   models: {
     Category: typeof Category;
   };

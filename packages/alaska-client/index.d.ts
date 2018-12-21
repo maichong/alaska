@@ -13,6 +13,6 @@ export class ClientService extends Service {
   };
 }
 
-declare const CLIENT: ClientService;
+declare const clientService: ClientService;
 
-export default CLIENT;
+export default clientService;

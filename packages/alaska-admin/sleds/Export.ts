@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import { ObjectMap } from 'alaska';
 import { Sled } from 'alaska-sled';
 import { Model } from 'alaska-model';
-import USER from 'alaska-user';
+import userService from 'alaska-user';
 import * as through from 'through';
 import { mergeFilters } from 'alaska-model/utils';
 import * as tr from 'grackle';
@@ -27,7 +27,7 @@ export default class Export extends Sled<ActionSledParams, any> {
 
     const ability = `${model.id}.export`;
 
-    let abilityFilters = await USER.createFilters(params.admin, ability);
+    let abilityFilters = await userService.createFilters(params.admin, ability);
     if (!abilityFilters) service.error('Access Denied', 403);
 
     let filters = mergeFilters(await model.createFiltersByContext(ctx), abilityFilters);
@@ -88,7 +88,7 @@ export default class Export extends Sled<ActionSledParams, any> {
             if (typeof value === 'undefined' || value === null) {
               value = '';
             }
-            if (field.private && await USER.checkAbility(ctx.user, field.private, record)) {
+            if (field.private && await userService.checkAbility(ctx.user, field.private, record)) {
               // 字段保护
               value = '';
             }

@@ -10,7 +10,7 @@ declare module 'alaska-goods/models/Goods' {
   }
 }
 
-declare class PropertyService extends Service {
+export class PropertyService extends Service {
   models: {
     Property: typeof Property;
     PropertyValue: typeof PropertyValue;

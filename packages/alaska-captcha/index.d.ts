@@ -20,7 +20,7 @@ export interface VerifyParams {
   code: string;
 }
 
-declare class CaptchaService extends Service {
+export class CaptchaService extends Service {
   models: {
     Captcha: typeof Captcha;
   };
@@ -31,6 +31,6 @@ declare class CaptchaService extends Service {
   cache: CacheDriver<string, any, any>;
 }
 
-declare const CAPTCHA: CaptchaService;
+declare const captchaService: CaptchaService;
 
-export default CAPTCHA;
+export default captchaService;

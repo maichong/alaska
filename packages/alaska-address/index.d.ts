@@ -1,8 +1,7 @@
 import { Service } from 'alaska';
 import Address from './models/Address';
 
-// Service
-declare class AddressService extends Service {
+export class AddressService extends Service {
   models: {
     Address: typeof Address;
   };

@@ -14,7 +14,7 @@ export interface Currency {
   default?: boolean;
 }
 
-declare class BalanceService extends Service {
+export class BalanceService extends Service {
   models: {
     Deposit: typeof Deposit;
     Income: typeof Income;

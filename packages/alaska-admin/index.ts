@@ -2,7 +2,7 @@
 import * as _ from 'lodash';
 import { Service, ServiceOptions } from 'alaska';
 import * as collie from 'collie';
-import USER from 'alaska-user';
+import userService from 'alaska-user';
 import User from 'alaska-user/models/User';
 import * as AdminView from 'alaska-admin-view';
 import { Model, ModelRelationship } from 'alaska-model';
@@ -111,7 +111,7 @@ class AdminService extends Service {
     });
 
     // abilities
-    _.forEach(await USER.getUserAbilities(user), (ability) => {
+    _.forEach(await userService.getUserAbilities(user), (ability) => {
       settings.abilities[ability] = true;
     });
   }

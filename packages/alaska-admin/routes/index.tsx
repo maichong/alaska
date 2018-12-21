@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as Router from 'koa-router';
 import * as Path from 'path';
 import * as tr from 'grackle';
-import ADMIN from '..';
+import service from '..';
 
 export default function (router: Router) {
   router.get('/', (ctx) => {
@@ -11,7 +11,7 @@ export default function (router: Router) {
       return;
     }
     const min = ctx.state.env === 'production' ? '.min' : '';
-    let prefix = ADMIN.config.get('prefix', '');
+    let prefix = service.config.get('prefix', '');
 
     if (prefix === '/') {
       prefix = '';

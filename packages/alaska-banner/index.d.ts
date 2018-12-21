@@ -1,7 +1,7 @@
 import { Service } from 'alaska';
 import Banner from './models/Banner';
 
-declare class BannerService extends Service {
+export class BannerService extends Service {
   models: {
     Banner: typeof Banner;
   }

@@ -30,6 +30,6 @@ export class SmsService extends Service {
   getDriverOptionsAsync(): Promise<SelectOption[]>
 }
 
-declare const SMS: SmsService;
+declare const smsService: SmsService;
 
-export default SMS;
+export default smsService;

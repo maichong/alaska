@@ -25,7 +25,7 @@ export interface UpdateFun {
   [key: string]: Function;
 }
 
-declare class UpdateService extends Service {
+export class UpdateService extends Service {
   models: {
     AppUpdate: typeof AppUpdate;
   }

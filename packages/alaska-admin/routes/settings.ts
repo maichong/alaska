@@ -1,13 +1,13 @@
 import * as Router from 'koa-router';
 import User from 'alaska-user/models/User';
-import SETTINGS from 'alaska-settings';
-import USER from 'alaska-user';
-import ADMIN from '..';
+import settingsService from 'alaska-settings';
+import userService from 'alaska-user';
+import service from '..';
 import { Settings } from 'alaska-admin-view';
 
 async function getLogo(key: string): Promise<string> {
   let logo = '';
-  let pic = await SETTINGS.get(key);
+  let pic = await settingsService.get(key);
   if (pic) {
     if (typeof pic === 'string') {
       logo = pic;
@@ -23,12 +23,12 @@ export default function (router: Router) {
     ctx.state.jsonApi = true;
     let user: User = ctx.user;
     let settings: Settings = {
-      authorized: await USER.hasAbility(user, 'admin'),
+      authorized: await userService.hasAbility(user, 'admin'),
       user: user ? user.data() : { id: '', username: '', avatar: '', displayName: 'Guest' },
       icon: await getLogo('adminIcon'),
       logo: await getLogo('adminLogo'),
       loginLogo: await getLogo('adminLoginLogo'),
-      copyright: await SETTINGS.get('adminCopyright'),
+      copyright: await settingsService.get('adminCopyright'),
       superMode: ctx.state.superMode || false,
       locale: ctx.locale || '',
       locales: {},
@@ -38,7 +38,7 @@ export default function (router: Router) {
       navItems: [],
       menuItems: []
     };
-    await ADMIN.settings(settings, user);
+    await service.settings(settings, user);
     // TODO:
     // ctx.session.lastAlive = Date.now();
     ctx.body = settings;

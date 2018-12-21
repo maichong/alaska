@@ -1,6 +1,6 @@
 import * as Router from 'koa-router';
 import { Context } from 'alaska-http';
-import PAYMENT from 'alaska-payment';
+import paymentService from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 import { Sled } from 'alaska-sled';
 import AlipayPlugin from 'alaska-payment-alipay';
@@ -21,7 +21,7 @@ export default function (router: Router) {
     let body = ctx.state.body || ctx.request.body;
     if (!body || body.trade_status !== 'TRADE_SUCCESS') return;
 
-    let success = await (PAYMENT.plugins.alipay as AlipayPlugin).verify(body);
+    let success = await (paymentService.plugins.alipay as AlipayPlugin).verify(body);
 
     if (!success) return;
     let paymentId = body.out_trade_no;
@@ -31,8 +31,8 @@ export default function (router: Router) {
     payment.alipay_trade_no = body.trade_no;
     payment.alipay_buyer_email = body.buyer_email;
     try {
-      let sledId = `${PAYMENT.id}.Complete`;
-      const Complete = Sled.lookup(sledId) || PAYMENT.error('Complete sled not found!');
+      let sledId = `${paymentService.id}.Complete`;
+      const Complete = Sled.lookup(sledId) || paymentService.error('Complete sled not found!');
       await Complete.run({ payment });
       ctx.body = 'OK';
       ctx.status = 200;

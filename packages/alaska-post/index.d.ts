@@ -6,7 +6,7 @@ import PostTag from './models/PostTag';
 import PostTopic from './models/PostTopic';
 import { Context } from 'alaska-http';
 
-declare class PostService extends Service {
+export class PostService extends Service {
   models: {
     Post: typeof Post;
     PostCat: typeof PostCat;
@@ -16,7 +16,9 @@ declare class PostService extends Service {
   }
 }
 
-export default PostService;
+declare const postService: PostService;
+
+export default postService;
 
 // Sleds
 

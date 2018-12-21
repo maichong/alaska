@@ -3,7 +3,7 @@
 import * as _ from 'lodash';
 import { ObjectMap } from 'alaska';
 import { Sled } from 'alaska-sled';
-import SETTINGS from 'alaska-settings';
+import settingsService from 'alaska-settings';
 import RegisterNav from './RegisterNav';
 import RegisterMenu from './RegisterMenu';
 import AdminMenu from '../models/AdminMenu';
@@ -31,28 +31,28 @@ export default class Init extends Sled<{}, void> {
       activated: true
     });
 
-    SETTINGS.register({
+    settingsService.register({
       id: 'adminLogo',
       title: 'Admin Logo',
       service: 'alaska-admin',
       type: 'ImageFieldView'
     });
 
-    SETTINGS.register({
+    settingsService.register({
       id: 'adminLoginLogo',
       title: 'Admin Login Logo',
       service: 'alaska-admin',
       type: 'ImageFieldView'
     });
 
-    SETTINGS.register({
+    settingsService.register({
       id: 'adminIcon',
       title: 'Admin Icon',
       service: 'alaska-admin',
       type: 'ImageFieldView'
     });
 
-    SETTINGS.register({
+    settingsService.register({
       id: 'adminCopyright',
       title: 'Admin Copyright',
       service: 'alaska-admin',
