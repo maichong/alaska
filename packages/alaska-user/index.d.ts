@@ -25,10 +25,11 @@ declare interface AutoLoginConfig {
 // Sleds
 
 export interface LoginParams {
-  ctx: Context;
+  ctx?: Context;
   user?: User;
   username: string;
   password: string;
+  channel?: string;
   remember?: boolean;
 }
 

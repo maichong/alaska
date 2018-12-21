@@ -1,5 +1,5 @@
 import { Sled } from 'alaska-sled';
-import SETTINGS from 'alaska-settings';
+import settingsService from 'alaska-settings';
 import * as escape from 'escape-string-regexp';
 import * as _ from 'lodash';
 import service, { RegisterParams } from '..';
@@ -19,9 +19,9 @@ export default class Register extends Sled<RegisterParams, User> {
    * @returns {User}
    */
   async exec(params: RegisterParams): Promise<User> {
-    let closeRegister = await SETTINGS.get('user.closeRegister');
+    let closeRegister = await settingsService.get('user.closeRegister');
     if (closeRegister) {
-      let closeRegisterReason = await SETTINGS.get('user.closeRegisterReason');
+      let closeRegisterReason = await settingsService.get('user.closeRegisterReason');
       service.error(closeRegisterReason || 'Register closed');
     }
     let user = params.user;

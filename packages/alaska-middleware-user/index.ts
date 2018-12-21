@@ -3,6 +3,7 @@ import {
   UserMiddlewareOptions,
 } from 'alaska-middleware-user';
 import User from 'alaska-user/models/User';
+import Login from 'alaska-user/sleds/Login';
 import Encryption from 'alaska-user/encryption';
 import { Context } from 'alaska-http';
 import { } from 'alaska-middleware-session';
@@ -17,7 +18,7 @@ export default function (options: UserMiddlewareOptions, main: MainService): Mid
   }
 
   return async function userMiddleware(ctx: Context, next): Promise<void> {
-    if (!ctx.session) {
+    if (!ctx.session || ctx.user) {
       await next();
       return;
     }
@@ -31,6 +32,7 @@ export default function (options: UserMiddlewareOptions, main: MainService): Mid
         console.error(e.stack);
       }
     }
+
     /*eslint max-depth: [2, 6]*/
     if (!ctx.user && encryption) {
       let cookie = ctx.cookies.get(key);
@@ -58,6 +60,22 @@ export default function (options: UserMiddlewareOptions, main: MainService): Mid
           console.error(error.stack);
           ctx.cookies.set(key);
         }
+      }
+    }
+    if (!ctx.user && options.enableBasicAuth && ctx.headers.authorization) {
+      try {
+        let [type, code] = ctx.headers.authorization.split(' ');
+        if (type === 'Basic' && code) {
+          code = Buffer.from(code, 'base64').toString() || '';
+          let index = code.indexOf(':');
+          let username = code.substr(0, index);
+          let password = code.substr(index + 1);
+          ctx.user = await Login.run({ username, password, remember: false, channel: 'basic-auth' });
+        } else {
+          throw new Error('invalid authorization');
+        }
+      } catch (error) {
+        throw new NormalError('Base Auth Field', 401);
       }
     }
     await next();

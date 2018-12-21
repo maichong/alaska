@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { ObjectMap } from 'alaska';
 import { Sled } from 'alaska-sled';
-import SETTINGS from 'alaska-settings';
+import settingsService from 'alaska-settings';
 import RegisterAbility from '../sleds/RegisterAbility';
 import RegisterRole from '../sleds/RegisterRole';
 import Ability from '../models/Ability';
@@ -52,14 +52,14 @@ export default class Init extends Sled<{}, void> {
         service: 'alaska-user'
       }),
 
-      SETTINGS.register({
+      settingsService.register({
         id: 'user.closeRegister',
         title: 'Close Register',
         service: 'alaska-user',
         type: 'CheckboxFieldView',
       }),
 
-      SETTINGS.register({
+      settingsService.register({
         id: 'user.closeRegisterReason',
         title: 'Close Register Reason',
         service: 'alaska-user',

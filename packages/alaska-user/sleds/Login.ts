@@ -14,10 +14,11 @@ export default class Login extends Sled<LoginParams, User> {
   /**
    * 登录失败将抛出异常
    * @param {Object}   params
-   * @param {Context}  params.ctx
+   * @param {Context}  [params.ctx]
    * @param {User}     [params.user]
    * @param {string}   params.username
    * @param {string}   params.password
+   * @param {string}   [params.channel]
    * @param {boolean}  [params.remember]
    * @returns {User}
    */
@@ -42,7 +43,9 @@ export default class Login extends Sled<LoginParams, User> {
       }
     }
 
-    params.ctx.session.userId = user.id;
+    if (params.ctx && params.ctx.session) {
+      params.ctx.session.userId = user.id;
+    }
 
     if (params.remember !== false) {
       const autoLogin = service.main.config.get('autoLogin');
