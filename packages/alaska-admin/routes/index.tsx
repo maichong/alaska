@@ -6,6 +6,7 @@ import service from '..';
 
 export default function (router: Router) {
   router.get('/', (ctx) => {
+    ctx.service = service;
     if (!ctx.path.endsWith('/')) {
       ctx.redirect(`${ctx.path}/`);
       return;

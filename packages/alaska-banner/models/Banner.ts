@@ -3,7 +3,7 @@ import { Context } from 'alaska-http';
 import * as moment from 'moment';
 
 function defaultFilters(ctx: Context) {
-  if (ctx.request.url.startsWith('/admin/')) return null;
+  if (ctx.service.id === 'alaska-admin') return null;
   return {
     activated: true,
     startAt: { $lte: new Date() },

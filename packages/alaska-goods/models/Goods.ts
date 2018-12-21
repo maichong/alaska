@@ -4,13 +4,11 @@ import balanceService from 'alaska-balance';
 import Category from 'alaska-category/models/Category';
 import { Sku } from 'alaska-sku';
 
-function defaultFilters(ctx: Context): null {
-  // TODO:
-  // if (ctx.service.id === 'alaska-admin') return null;
-  // return {
-  //   activated: true
-  // };
-  return null;
+function defaultFilters(ctx: Context) {
+  if (ctx.service.id === 'alaska-admin') return null;
+  return {
+    activated: true
+  };
 }
 
 export default class Goods extends Model {

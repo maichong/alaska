@@ -7,9 +7,6 @@ export default class Income extends Model {
   static defaultColumns = 'title user type target deposit currency amount balance createdAt';
   static defaultSort = '-createdAt';
   static searchFields = 'title';
-  static nocreate = true;
-  static noupdate = true;
-  static noremove = true;
 
   static api = {
     paginate: 2,

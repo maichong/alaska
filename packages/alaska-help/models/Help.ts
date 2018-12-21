@@ -2,7 +2,7 @@ import { Model } from 'alaska-model';
 import { Context } from 'alaska-http';
 
 function defaultFilters(ctx: Context) {
-  if (ctx.request.url.startsWith('/admin/')) return null;
+  if (ctx.service.id === 'alaska-admin') return null;
   return {
     activated: true
   };

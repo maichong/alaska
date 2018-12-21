@@ -25,6 +25,7 @@ export default function (router: Router) {
 
   router.use((ctx: Context, next: Function) => {
     ctx.state.superModel = setSuperMode(ctx);
+    ctx.service = service;
     return next();
   });
 }

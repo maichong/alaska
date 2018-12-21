@@ -41,6 +41,7 @@ export default class HttpExtension extends Extension {
       main.app.use(async (ctx, next) => {
         ctx.state.env = main.config.get('env');
         ctx.main = main;
+        ctx.service = main;
         try {
           await next();
           if (ctx.status === 404 && !ctx.body) main.error(404);
@@ -116,6 +117,5 @@ export default class HttpExtension extends Extension {
       // 拦截ready事件，等待listen成功
       await listenPromise;
     });
-
   }
 }

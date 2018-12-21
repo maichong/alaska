@@ -7,11 +7,11 @@ import { mergeFilters } from 'alaska-model/utils';
 import { UserService } from 'alaska-user';
 import { } from 'koa-bodyparser';
 
-let USER: UserService;
+let userService: UserService;
 Service.resolveMain().then((main) => {
   if (!main.modules.services['alaska-user']) return;
   // @ts-ignore
-  USER = main.modules.services['alaska-user'].service;
+  userService = main.modules.services['alaska-user'].service;
 });
 
 async function trimProtectedField(data: any, user: any, model: typeof Model, record: Model) {
@@ -19,11 +19,11 @@ async function trimProtectedField(data: any, user: any, model: typeof Model, rec
     if (key === 'id') continue;
     let field = model._fields[key];
     if (!field) continue;
-    if (field.protected && await USER.checkAbility(user, field.protected, record)) {
+    if (field.protected && await userService.checkAbility(user, field.protected, record)) {
       delete data[key];
       continue;
     }
-    if (field.private && await USER.checkAbility(user, field.private, record)) {
+    if (field.private && await userService.checkAbility(user, field.private, record)) {
       delete data[key];
     }
   }
@@ -35,7 +35,7 @@ async function trimDisabledField(data: any, user: any, model: typeof Model, reco
     let field = model._fields[key];
     if (
       !field
-      || (field.disabled && await USER.checkAbility(user, field.disabled, record))
+      || (field.disabled && await userService.checkAbility(user, field.disabled, record))
     ) {
       delete data[key];
     }
@@ -49,8 +49,8 @@ export async function count(ctx: Context) {
   let abilityFilters;
 
   if (model.api.count > PUBLIC) {
-    if (!USER) model.service.error(401);
-    abilityFilters = await USER.createFilters(ctx.user, ability);
+    if (!userService) model.service.error(401);
+    abilityFilters = await userService.createFilters(ctx.user, ability);
     if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
   }
 
@@ -68,8 +68,8 @@ export async function paginate(ctx: Context) {
   let abilityFilters;
 
   if (model.api.paginate > PUBLIC) {
-    if (!USER) model.service.error(401);
-    abilityFilters = await USER.createFilters(ctx.user, ability);
+    if (!userService) model.service.error(401);
+    abilityFilters = await userService.createFilters(ctx.user, ability);
     if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
   }
 
@@ -86,7 +86,7 @@ export async function paginate(ctx: Context) {
   for (let record of results.results) {
     let data = record.data(scope);
     list.push(data);
-    if (!USER) continue;
+    if (!userService) continue;
     await trimProtectedField(data, ctx.user, model, record);
   }
   ctx.body = _.assign({}, results, {
@@ -100,8 +100,8 @@ export async function list(ctx: Context) {
   const ability = `${model.id}.read`;
   let abilityFilters;
   if (model.api.list > PUBLIC) {
-    if (!USER) model.service.error(401);
-    abilityFilters = await USER.createFilters(ctx.user, ability);
+    if (!userService) model.service.error(401);
+    abilityFilters = await userService.createFilters(ctx.user, ability);
     if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
   }
 
@@ -118,7 +118,7 @@ export async function list(ctx: Context) {
   for (let record of results) {
     let data = record.data(scope);
     list.push(data);
-    if (!USER) continue;
+    if (!userService) continue;
     await trimProtectedField(data, ctx.user, model, record);
   }
 
@@ -130,7 +130,7 @@ export async function show(ctx: Context) {
 
   const ability = `${model.id}.read`;
   if (model.api.show > PUBLIC) {
-    if (!USER) model.service.error(401);
+    if (!userService) model.service.error(401);
   }
 
   const scope = ctx.state.scope || ctx.query._scope || 'show';
@@ -140,14 +140,14 @@ export async function show(ctx: Context) {
     //404
     return;
   }
-  if (model.api.show > PUBLIC && !await USER.hasAbility(ctx.user, ability, record)) {
+  if (model.api.show > PUBLIC && !await userService.hasAbility(ctx.user, ability, record)) {
     model.service.error(ctx.user ? 403 : 401);
   }
 
   ctx.state.record = record;
   ctx.body = record.data(ctx.state.scope || ctx.query._scope || scope);
 
-  if (USER) {
+  if (userService) {
     await trimProtectedField(ctx.body, ctx.user, model, record);
   }
 }
@@ -158,7 +158,7 @@ export async function create(ctx: Context) {
   const ability = `${model.id}.create`;
   let body = Object.assign({}, ctx.state.body || ctx.request.body);
 
-  if (USER) {
+  if (userService) {
     // eslint-disable-next-line new-cap
     let tmp = new model(body);
     await trimDisabledField(body, ctx.user, model, tmp);
@@ -168,8 +168,8 @@ export async function create(ctx: Context) {
   let record = new model(body);
 
   if (model.api.create > PUBLIC) {
-    if (!USER) model.service.error(401);
-    if (!await USER.hasAbility(ctx.user, ability, record)) {
+    if (!userService) model.service.error(401);
+    if (!await userService.hasAbility(ctx.user, ability, record)) {
       model.service.error(ctx.user ? 403 : 401);
     }
   }
@@ -178,7 +178,7 @@ export async function create(ctx: Context) {
   ctx.state.record = record;
   ctx.body = record.data('create');
 
-  if (USER) {
+  if (userService) {
     await trimProtectedField(ctx.body, ctx.user, model, record);
   }
 }
@@ -197,15 +197,15 @@ export async function update(ctx: Context) {
   }
 
   if (model.api.update > PUBLIC) {
-    if (!USER) model.service.error(401);
-    if (!await USER.hasAbility(ctx.user, ability, record)) {
+    if (!userService) model.service.error(401);
+    if (!await userService.hasAbility(ctx.user, ability, record)) {
       model.service.error(ctx.user ? 403 : 401);
     }
   }
 
   let body = Object.assign({}, ctx.state.body || ctx.request.body);
 
-  if (USER) {
+  if (userService) {
     await trimDisabledField(body, ctx.user, model, record);
   }
 
@@ -224,7 +224,7 @@ export async function update(ctx: Context) {
     delete record.__modifiedPaths;
   }
 
-  if (USER) {
+  if (userService) {
     await trimProtectedField(ctx.body, ctx.user, model, record);
   }
 }
@@ -236,8 +236,8 @@ export async function updateMulti(ctx: Context) {
   let abilityFilters;
 
   if (model.api.updateMulti > PUBLIC) {
-    if (!USER) model.service.error(401);
-    abilityFilters = await USER.createFilters(ctx.user, ability);
+    if (!userService) model.service.error(401);
+    abilityFilters = await userService.createFilters(ctx.user, ability);
     if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
   }
 
@@ -245,7 +245,7 @@ export async function updateMulti(ctx: Context) {
 
   let body = Object.assign({}, ctx.state.body || ctx.request.body);
 
-  if (USER) {
+  if (userService) {
     await trimDisabledField(body, ctx.user, model);
   }
 
@@ -271,8 +271,8 @@ export async function remove(ctx: Context) {
   }
 
   if (model.api.update > PUBLIC) {
-    if (!USER) model.service.error(401);
-    if (!await USER.hasAbility(ctx.user, ability, record)) {
+    if (!userService) model.service.error(401);
+    if (!await userService.hasAbility(ctx.user, ability, record)) {
       model.service.error(ctx.user ? 403 : 401);
     }
   }
@@ -289,8 +289,8 @@ export async function removeMulti(ctx: Context) {
   let abilityFilters;
 
   if (model.api.updateMulti > PUBLIC) {
-    if (!USER) model.service.error(401);
-    abilityFilters = await USER.createFilters(ctx.user, ability);
+    if (!userService) model.service.error(401);
+    abilityFilters = await userService.createFilters(ctx.user, ability);
     if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
   }
 
@@ -335,8 +335,8 @@ export async function watch(ctx: Context) {
   let abilityFilters;
 
   if (model.api.updateMulti > PUBLIC) {
-    if (!USER) model.service.error(401);
-    abilityFilters = await USER.createFilters(ctx.user, ability);
+    if (!userService) model.service.error(401);
+    abilityFilters = await userService.createFilters(ctx.user, ability);
     if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
   }
 
@@ -377,7 +377,7 @@ export async function watch(ctx: Context) {
       let record = new model(data);
       object = record.data();
 
-      if (USER) {
+      if (userService) {
         await trimProtectedField(object, ctx.user, model, record);
       }
     }

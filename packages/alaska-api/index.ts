@@ -7,7 +7,7 @@ import { ServiceModules } from 'alaska-modules';
 import { CustomApi, ApiMiddleware } from 'alaska-api';
 import { Context } from 'alaska-http';
 import { Model, ModelApi } from 'alaska-model';
-import * as defaultApiController from './api';
+import * as defaultApiControllers from './api';
 
 interface ApiGroup {
   [key: string]: ApiMiddleware | ApiMiddleware[];
@@ -184,7 +184,7 @@ export default class ApiExtension extends Extension {
         // 判断是否存在扩展接口
         let hasExtApi = !!_.find(info.apis, (api) => !!_.find(api, (fn, key) => !REST_ACTIONS.includes(key)));
         if (hasExtApi) {
-          router.use('/:group/:action?', async (ctx, next) => {
+          router.use('/:group/:action?', async (ctx: Context, next) => {
             let { group, action } = ctx.params;
             if (!action) {
               action = 'default';
@@ -209,6 +209,7 @@ export default class ApiExtension extends Extension {
               // console.log(ctx.method, methods);
               // @ts-ignore index
               if (methods[ctx.method] !== true) service.error(405);
+              ctx.service = service;
               await middleware(ctx, next);
               return;
             }
@@ -218,7 +219,7 @@ export default class ApiExtension extends Extension {
 
         // 挂载Restful接口
         function restApi(action: keyof ModelApi): ApiMiddleware {
-          return (ctx, next) => {
+          return (ctx: Context, next) => {
             let modelId = ctx.params.model;
             let model = info.models[modelId];
             if (!model) {
@@ -238,13 +239,14 @@ export default class ApiExtension extends Extension {
             // Model.api参数定义的中间件
             if (model.api && model.api[action]) {
               // @ts-ignore
-              middlewares.push(defaultApiController[action]);
+              middlewares.push(defaultApiControllers[action]);
             }
 
             if (!middlewares.length) {
               //404
               return next();
             }
+            ctx.service = service;
             if (middlewares.length === 1) {
               return middlewares[0](ctx, next);
             }

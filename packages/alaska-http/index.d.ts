@@ -89,6 +89,10 @@ export interface Context extends Koa.Context {
    * Main Service
    */
   main: MainService;
+  /**
+   * Current Service
+   */
+  service: Service;
 }
 
 export interface MiddlewareOptions {
