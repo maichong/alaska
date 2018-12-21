@@ -1,7 +1,6 @@
 import { Model } from 'alaska-model';
 
 declare class Address extends Model {
-  _id: string;
   user: string;
   name: string;
   tel: string;

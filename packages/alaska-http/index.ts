@@ -3,7 +3,7 @@ import * as Koa from 'koa';
 import * as KoaQS from 'koa-qs';
 import * as Router from 'koa-router';
 import * as _ from 'lodash';
-import { MainService, Extension } from 'alaska';
+import { MainService, Extension, NormalError } from 'alaska';
 import debug from './debug';
 import { } from 'alaska-http';
 
@@ -40,22 +40,32 @@ export default class HttpExtension extends Extension {
       }
       main.app.use(async (ctx, next) => {
         ctx.state.env = main.config.get('env');
+        ctx.main = main;
         try {
           await next();
+          if (ctx.status === 404 && !ctx.body) main.error(404);
         } catch (error) {
-          console.error(error);
-          ctx.body = {
-            code: error.code,
-            error: error.message
-          };
-          ctx.status = error.code || 500;
-        }
-        if (ctx.status === 404 && !ctx.body) {
-          ctx.body = {
-            code: 404,
-            error: 'Not Found'
-          };
-          ctx.status = 404;
+          if (!(error instanceof NormalError)) {
+            console.error(error);
+          }
+          let code = error.code;
+          let status = ctx.status;
+          if (!ctx.body) {
+            if (ctx.state.jsonApi) {
+              ctx.body = {
+                error: error.message,
+                code
+              };
+            } else {
+              // TODO: 渲染错误页面
+              ctx.body = error.message;
+            }
+          }
+          if (code && code > 100 && code < 600) {
+            ctx.status = code;
+          } else if (status === 404) {
+            ctx.status = 500;
+          }
         }
       });
     });

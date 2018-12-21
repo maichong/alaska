@@ -7,6 +7,15 @@ export default class Address extends Model {
   static defaultColumns = 'user name tel geo province city createdAt';
   static defaultSort = '-createdAt';
 
+  static api = {
+    create: 2,
+    show: 2,
+    list: 2,
+    paginate: 2,
+    remove: 2,
+    update: 2
+  };
+
   static fields = {
     user: {
       label: 'User',

@@ -20,6 +20,7 @@ async function getLogo(key: string): Promise<string> {
 
 export default function (router: Router) {
   router.get('/settings', async (ctx) => {
+    ctx.state.jsonApi = true;
     let user: User = ctx.user;
     let settings: Settings = {
       authorized: await USER.hasAbility(user, 'admin'),

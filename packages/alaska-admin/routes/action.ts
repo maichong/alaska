@@ -8,6 +8,7 @@ import service from '..';
 
 export default function (router: Router) {
   router.post('/action', async (ctx: Context) => {
+    ctx.state.jsonApi = true;
     if (!await USER.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
 
     const body: any = ctx.request.body;
@@ -31,7 +32,7 @@ export default function (router: Router) {
     if (!recordsId.length) {
       if (!await USER.hasAbility(ctx.user, ability)) service.error('Access Denied', 403);
     } else {
-      records = await model.find({ _id: { $in: recordsId }});
+      records = await model.find({ _id: { $in: recordsId } });
       // 数目对不上，说明某个Record不存在
       if (recordsId.length !== records.length) service.error('Record not found!');
       // 验证权限

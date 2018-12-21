@@ -28,7 +28,6 @@ declare module 'alaska' {
 
 declare module 'alaska-http' {
   export interface ContextState {
-    [key: string]: any;
     search?: string;
     filters?: Filters;
   }

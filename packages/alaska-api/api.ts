@@ -49,15 +49,9 @@ export async function count(ctx: Context) {
   let abilityFilters;
 
   if (model.api.count > PUBLIC) {
-    if (!USER) {
-      ctx.status = 401;
-      return;
-    }
+    if (!USER) model.service.error(401);
     abilityFilters = await USER.createFilters(ctx.user, ability);
-    if (!abilityFilters) {
-      ctx.status = ctx.user ? 403 : 401;
-      return;
-    }
+    if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
   }
 
   let filters = await model.createFiltersByContext(ctx);
@@ -74,15 +68,9 @@ export async function paginate(ctx: Context) {
   let abilityFilters;
 
   if (model.api.paginate > PUBLIC) {
-    if (!USER) {
-      ctx.status = 401;
-      return;
-    }
+    if (!USER) model.service.error(401);
     abilityFilters = await USER.createFilters(ctx.user, ability);
-    if (!abilityFilters) {
-      ctx.status = ctx.user ? 403 : 401;
-      return;
-    }
+    if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
   }
 
   const scope = ctx.state.scope || ctx.query._scope || 'list';
@@ -112,15 +100,9 @@ export async function list(ctx: Context) {
   const ability = `${model.id}.read`;
   let abilityFilters;
   if (model.api.list > PUBLIC) {
-    if (!USER) {
-      ctx.status = 401;
-      return;
-    }
+    if (!USER) model.service.error(401);
     abilityFilters = await USER.createFilters(ctx.user, ability);
-    if (!abilityFilters) {
-      ctx.status = ctx.user ? 403 : 401;
-      return;
-    }
+    if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
   }
 
   const scope = ctx.state.scope || ctx.query._scope || 'list';
@@ -148,10 +130,7 @@ export async function show(ctx: Context) {
 
   const ability = `${model.id}.read`;
   if (model.api.show > PUBLIC) {
-    if (!USER) {
-      ctx.status = 401;
-      return;
-    }
+    if (!USER) model.service.error(401);
   }
 
   const scope = ctx.state.scope || ctx.query._scope || 'show';
@@ -162,8 +141,7 @@ export async function show(ctx: Context) {
     return;
   }
   if (model.api.show > PUBLIC && !await USER.hasAbility(ctx.user, ability, record)) {
-    ctx.status = ctx.user ? 403 : 401;
-    return;
+    model.service.error(ctx.user ? 403 : 401);
   }
 
   ctx.state.record = record;
@@ -190,13 +168,9 @@ export async function create(ctx: Context) {
   let record = new model(body);
 
   if (model.api.create > PUBLIC) {
-    if (!USER) {
-      ctx.status = 401;
-      return;
-    }
+    if (!USER) model.service.error(401);
     if (!await USER.hasAbility(ctx.user, ability, record)) {
-      ctx.status = ctx.user ? 403 : 401;
-      return;
+      model.service.error(ctx.user ? 403 : 401);
     }
   }
 
@@ -223,13 +197,9 @@ export async function update(ctx: Context) {
   }
 
   if (model.api.update > PUBLIC) {
-    if (!USER) {
-      ctx.status = 401;
-      return;
-    }
+    if (!USER) model.service.error(401);
     if (!await USER.hasAbility(ctx.user, ability, record)) {
-      ctx.status = ctx.user ? 403 : 401;
-      return;
+      model.service.error(ctx.user ? 403 : 401);
     }
   }
 
@@ -266,15 +236,9 @@ export async function updateMulti(ctx: Context) {
   let abilityFilters;
 
   if (model.api.updateMulti > PUBLIC) {
-    if (!USER) {
-      ctx.status = 401;
-      return;
-    }
+    if (!USER) model.service.error(401);
     abilityFilters = await USER.createFilters(ctx.user, ability);
-    if (!abilityFilters) {
-      ctx.status = ctx.user ? 403 : 401;
-      return;
-    }
+    if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
   }
 
   let filters = await model.createFiltersByContext(ctx);
@@ -307,13 +271,9 @@ export async function remove(ctx: Context) {
   }
 
   if (model.api.update > PUBLIC) {
-    if (!USER) {
-      ctx.status = 401;
-      return;
-    }
+    if (!USER) model.service.error(401);
     if (!await USER.hasAbility(ctx.user, ability, record)) {
-      ctx.status = ctx.user ? 403 : 401;
-      return;
+      model.service.error(ctx.user ? 403 : 401);
     }
   }
 
@@ -329,15 +289,9 @@ export async function removeMulti(ctx: Context) {
   let abilityFilters;
 
   if (model.api.updateMulti > PUBLIC) {
-    if (!USER) {
-      ctx.status = 401;
-      return;
-    }
+    if (!USER) model.service.error(401);
     abilityFilters = await USER.createFilters(ctx.user, ability);
-    if (!abilityFilters) {
-      ctx.status = ctx.user ? 403 : 401;
-      return;
-    }
+    if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
   }
 
   ctx.body = {};
@@ -381,15 +335,9 @@ export async function watch(ctx: Context) {
   let abilityFilters;
 
   if (model.api.updateMulti > PUBLIC) {
-    if (!USER) {
-      ctx.status = 401;
-      return;
-    }
+    if (!USER) model.service.error(401);
     abilityFilters = await USER.createFilters(ctx.user, ability);
-    if (!abilityFilters) {
-      ctx.status = ctx.user ? 403 : 401;
-      return;
-    }
+    if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
   }
 
   let s = new stream.PassThrough();

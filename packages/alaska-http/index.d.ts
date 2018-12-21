@@ -61,7 +61,15 @@ declare module 'koa-router' {
 export default class HttpExtension extends Extension { }
 
 export interface ContextState {
+  [key: string]: any;
+  /**
+   * 运行环境
+   */
   env?: 'production' | 'development';
+  /**
+   * 是否是JSON API接口
+   */
+  jsonApi?: boolean;
 }
 
 export interface Context extends Koa.Context {
@@ -77,6 +85,10 @@ export interface Context extends Koa.Context {
    * User
    */
   user?: any;
+  /**
+   * Main Service
+   */
+  main: MainService;
 }
 
 export interface MiddlewareOptions {

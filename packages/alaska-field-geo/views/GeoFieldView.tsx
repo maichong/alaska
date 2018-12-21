@@ -27,10 +27,7 @@ export default class GeoFieldView extends React.Component<FieldViewProps> {
 
     if (value && value[0]) {
       value = <a
-        href={
-          `http://m.amap.com/navi/?dest=${value[0]},${value[1]
-          }&destName=%E4%BD%8D%E7%BD%AE&key=e67780f754ee572d50e97c58d5a633cd`
-        }
+        href={`https://uri.amap.com/marker?position=${value[0]},${value[1]}`}
         target="_blank"
         rel="noopener noreferrer"
       >{tr('LNG')}:{value[0]} {tr('LAT')}:{value[1]}

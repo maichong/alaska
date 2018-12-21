@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import * as collie from 'collie';
 import * as compose from 'koa-compose';
+import * as Router from 'koa-router';
 import { Service, MainService, Extension } from 'alaska';
 import { ServiceModules } from 'alaska-modules';
 import { CustomApi, ApiMiddleware } from 'alaska-api';
@@ -34,21 +35,6 @@ const REST_ACTIONS = [
   'watch'
 ];
 
-function onError(ctx: Context, error: Error) {
-  let status = ctx.status;
-  // @ts-ignore
-  let code: number = error.code;
-  ctx.body = {
-    code: code,
-    error: error.message
-  };
-  if (code && code > 100 && code < 600) {
-    ctx.status = code;
-  } else if (status === 404) {
-    ctx.status = 500;
-  }
-}
-
 function createDecorator(method: string) {
   return function (middleware: ApiMiddleware, allow?: boolean) {
     if (!middleware._methods) {
@@ -70,6 +56,7 @@ export const OPTIONS = createDecorator('OPTIONS');
 export default class ApiExtension extends Extension {
   static after = ['alaska-model', 'alaska-http', 'alaska-routes'];
   inited: string[];
+  routers: Map<string, Router>;
   apiInfos: {
     [prefix: string]: ApiInfo;
   };
@@ -77,6 +64,7 @@ export default class ApiExtension extends Extension {
   constructor(main: MainService) {
     super(main);
     this.inited = [];
+    this.routers = new Map();
     this.apiInfos = {};
 
     _.forEach(main.modules.services, (s: ServiceModules) => {
@@ -87,6 +75,19 @@ export default class ApiExtension extends Extension {
     main.post('initHttp', async () => {
       await main.initApi();
     });
+  }
+
+  getRouter(apiPrefix: string): Router {
+    let router = this.routers.get('apiPrefix');
+    if (!router) {
+      router = this.main.getRouter(apiPrefix);
+      this.routers.set(apiPrefix, router);
+      router.use((ctx, next) => {
+        ctx.state.jsonApi = true;
+        return next();
+      });
+    }
+    return router;
   }
 
   createInitApi(s: ServiceModules, service: Service) {
@@ -178,7 +179,7 @@ export default class ApiExtension extends Extension {
 
       // 挂载
       _.forEach(this.apiInfos, (info, apiPrefix) => {
-        let router = this.main.getRouter(apiPrefix);
+        let router = this.getRouter(apiPrefix);
 
         // 判断是否存在扩展接口
         let hasExtApi = !!_.find(info.apis, (api) => !!_.find(api, (fn, key) => !REST_ACTIONS.includes(key)));
@@ -192,28 +193,23 @@ export default class ApiExtension extends Extension {
             let apiGroup = info.apis[group];
 
             if (apiGroup && apiGroup[action] && action[0] !== '_') {
-              try {
-                if (action === 'default') {
-                  // 如果 action 为 default，说明一定是 REST 接口，优先处理REST
-                  await next();
-                  if (ctx.body) {
-                    return;
-                  }
-                } else if (REST_ACTIONS.indexOf(action) > -1) {
-                  await next();
+              if (action === 'default') {
+                // 如果 action 为 default，说明一定是 REST 接口，优先处理REST
+                await next();
+                if (ctx.body) {
                   return;
                 }
-                let middleware = apiGroup[action] as ApiMiddleware;
-                // check motheds
-                let methods = middleware._methods || { POST: true };
-                // console.log(ctx.method, methods);
-                // @ts-ignore index
-                if (methods[ctx.method] !== true) service.error(405);
-                await middleware(ctx, next);
-              } catch (error) {
-                onError(ctx, error);
+              } else if (REST_ACTIONS.indexOf(action) > -1) {
+                await next();
                 return;
               }
+              let middleware = apiGroup[action] as ApiMiddleware;
+              // check motheds
+              let methods = middleware._methods || { POST: true };
+              // console.log(ctx.method, methods);
+              // @ts-ignore index
+              if (methods[ctx.method] !== true) service.error(405);
+              await middleware(ctx, next);
               return;
             }
             await next();

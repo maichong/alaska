@@ -14,8 +14,8 @@ export default class Withdraw extends Model {
 
   static api = {
     create: 2,
-    paginate: 2,
-    show: 2
+    show: 2,
+    paginate: 2
   };
 
   static actions = {

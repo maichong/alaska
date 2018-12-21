@@ -12,8 +12,9 @@ export default class Deposit extends Model {
   static defaultSort = '-createdAt';
 
   static api = {
-    paginate: 2,
-    show: 2
+    show: 2,
+    list: 2,
+    paginate: 2
   };
 
   static fields = {
