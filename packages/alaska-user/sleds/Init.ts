@@ -36,20 +36,17 @@ export default class Init extends Sled<{}, void> {
 
       RegisterAbility.run({
         id: 'user',
-        title: 'Authenticated user',
-        service: 'alaska-user'
+        title: 'Authenticated user'
       }),
 
       RegisterAbility.run({
         id: 'admin',
-        title: 'Admin login',
-        service: 'alaska-user'
+        title: 'Admin login'
       }),
 
       RegisterAbility.run({
         id: 'root',
-        title: 'Root',
-        service: 'alaska-user'
+        title: 'Root'
       }),
 
       settingsService.register({
@@ -88,11 +85,20 @@ export default class Init extends Sled<{}, void> {
             rootAbilities.push(id);
           }
 
+          if (['read', 'create', 'remove', 'update'].includes(action) && Model.fields.user) {
+            let userAbility = id + ':user';
+            if (!abilities[userAbility]) {
+              await RegisterAbility.run({
+                id: userAbility,
+                title: `${action} own ${Model.modelName}`
+              });
+            }
+          }
+
           if (abilities[id]) return;
           await RegisterAbility.run({
             id,
-            title: `${action} ${Model.modelName}`,
-            service: serviceId
+            title: `${action} all ${Model.modelName}`
           });
         };
 

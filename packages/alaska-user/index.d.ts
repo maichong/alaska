@@ -48,7 +48,6 @@ export interface RegisterParams extends Partial<User> {
 export interface RegisterAbilityParams {
   id: string;
   title: string;
-  service: string;
 }
 
 export interface RegisterRoleParams {
