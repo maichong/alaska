@@ -4,9 +4,12 @@ import Sku from './models/Sku';
 import { Image } from 'alaska-field-image';
 
 declare module 'alaska-goods/models/Goods' {
+  export interface Goods {
+    skus: Sku[];
+  }
 }
 
-declare class SkuService extends Service {
+export class SkuService extends Service {
   models: {
     Sku: typeof Sku;
   };
@@ -15,3 +18,5 @@ declare class SkuService extends Service {
 declare const skuService: SkuService;
 
 export default skuService;
+
+export type Sku = Sku;

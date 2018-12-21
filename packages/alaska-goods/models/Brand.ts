@@ -1,4 +1,5 @@
 import { Model } from 'alaska-model';
+import { Image } from 'alaska-field-image';
 
 export default class Brand extends Model {
   static label = 'Brand';
@@ -58,9 +59,9 @@ export default class Brand extends Model {
 
   title: string;
   brief: string;
-  icon: Object;
-  logo: Object;
-  pic: Object;
+  icon: Image;
+  logo: Image;
+  pic: Image;
   initial: string;
   sort: number;
   createdAt: Date;

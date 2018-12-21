@@ -1,7 +1,8 @@
 import { Model } from 'alaska-model';
 import { Context } from 'alaska-http';
-import BALANCE from 'alaska-balance';
+import balanceService from 'alaska-balance';
 import Category from 'alaska-category/models/Category';
+import { Sku } from 'alaska-sku';
 
 function defaultFilters(ctx: Context): null {
   // TODO:
@@ -115,8 +116,8 @@ export default class Goods extends Model {
       label: 'Currency',
       type: 'select',
       switch: true,
-      options: BALANCE.getCurrenciesAsync(),
-      default: BALANCE.getDefaultCurrencyAsync().then((cur) => cur.value),
+      options: balanceService.getCurrenciesAsync(),
+      default: balanceService.getDefaultCurrencyAsync().then((cur) => cur.value),
       group: 'price'
     },
     price: {
@@ -186,7 +187,7 @@ export default class Goods extends Model {
   static virtuals = {
     get discountValid() {
       let now = new Date();
-      return this.discount > 0 && this.discountStartAt < now && this.discountEndAt > now;
+      return this.discount > 0 && (!this.discountStartAt || this.discountStartAt < now) && (!this.discountEndAt || this.discountEndAt > now);
     }
   };
 
@@ -214,6 +215,10 @@ export default class Goods extends Model {
   activated: boolean;
   createdAt: Date;
   desc: string;
+  discountValid: boolean;
+
+  // for alaska dev
+  skus: Sku[];
 
   async preSave() {
     if (!this.createdAt) {

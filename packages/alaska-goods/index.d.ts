@@ -1,6 +1,6 @@
 import { Service, Plugin } from 'alaska';
 
-declare class GoodsService extends Service {
+export class GoodsService extends Service {
   models: {
   }
 }
