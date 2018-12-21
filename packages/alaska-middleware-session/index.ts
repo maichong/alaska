@@ -11,13 +11,12 @@ import {
 import CacheDriver from 'alaska-cache';
 
 export default function (options: SessionMiddlewareOptions, main: MainService) {
-  const storeOpts = options.store || main.panic('Missing config [middlewares.alaska-middleware-session.store]');
+  const storeOpts = options.store;
+  if (!storeOpts) throw new Error('Missing config [middlewares.alaska-middleware-session.store]');
   const cookieOpts = options.cookie || {};
   const key: string = cookieOpts.key || 'alaska.sid';
   const Store: typeof CacheDriver = main.modules.libraries[storeOpts.type];
-  if (!Store) {
-    main.panic(`Session store driver '${storeOpts.type}' not found!`);
-  }
+  if (!Store) throw new Error(`Session store driver '${storeOpts.type}' not found!`);
   const store = new Store(storeOpts, main);
   let ignore: Array<RegExp | CustomIgnoreFunction> = null;
 

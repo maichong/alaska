@@ -4,7 +4,7 @@ import Plugin from './plugin';
 import Extension from './extension';
 import Loader from './loader';
 import Driver from './driver';
-import { NormalError, PanicError } from './errors';
+import { NormalError } from './errors';
 
 export {
   Config,
@@ -13,8 +13,7 @@ export {
   Extension,
   Loader,
   Driver,
-  NormalError,
-  PanicError
+  NormalError
 };
 
 /**

@@ -46,7 +46,7 @@ export default class RelationshipField extends Field {
       ref = model.lookup(ref);
 
       if (!this.optional && !ref) {
-        service.panic(`${model.id}.fields.${this.path}.ref not found [${this.ref}]`);
+        throw new Error(`${model.id}.fields.${this.path}.ref not found [${this.ref}]`);
       }
     }
 
@@ -68,7 +68,7 @@ export default class RelationshipField extends Field {
             let fieldLib = `alaska-field-${idType}`;
             let idFieldClass: typeof Field = main.modules.libraries[fieldLib];
             if (!idFieldClass) {
-              main.panic(`Field type '${fieldLib}' not found!`);
+              throw new Error(`Field type '${fieldLib}' not found!`);
             }
             type = idFieldClass.plain;
             this.filter = idFieldClass.prototype.filter;

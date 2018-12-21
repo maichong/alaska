@@ -6,7 +6,7 @@ import * as statuses from 'statuses';
 import { ServiceOptions, Extension, Plugin, MainService, Service as ServiceType, ServiceConfig, ObjectMap, DriverOptions } from '.';
 import { Modules, ServiceModules, PluginModules } from 'alaska-modules';
 import Config from './config';
-import { NormalError, PanicError } from './errors';
+import { NormalError } from './errors';
 import Driver from './driver';
 
 function noop() { return Promise.resolve() }
@@ -84,7 +84,7 @@ export default class Service {
     }
     if (!driver) {
       const DriverClass: typeof Driver = this.main.modules.libraries[options.type];
-      if (!DriverClass) this.panic(`Can not find driver ${options.type}`);
+      if (!DriverClass) throw new Error(`Can not find driver ${options.type}`);
       // @ts-ignore this 和 Service 类型兼容
       driver = new DriverClass(options, this);
       if (options.recycled) {
@@ -257,29 +257,6 @@ export default class Service {
     for (let id of _.keys(this.services)) {
       await this.services[id].ready();
     }
-  }
-
-  /**
-   * 抛出严重错误,并输出调用栈
-   * @param {string|number|Error} message
-   * @param {string|number} [code]
-   */
-  panic(message: string | number, code?: number): never {
-    let msg: string;
-    if (!code && typeof message === 'number') {
-      msg = statuses[message];
-      if (msg) {
-        code = message;
-      }
-    } else {
-      msg = String(message);
-    }
-    let error = new PanicError(msg);
-    if (code) {
-      error.code = code;
-    }
-    console.error(`Panic ${error.stack}`);
-    throw error;
   }
 
   /**

@@ -30,7 +30,7 @@ export default class AlipayPlugin extends PaymentPlugin {
     this.label = 'Alipay';
     let configTmp: AlipayConfig = service.config.get('alipay');
     if (!configTmp) {
-      service.panic('Alipay config not found');
+      throw new Error('Alipay config not found');
     }
 
     this._config = configTmp;
@@ -45,11 +45,13 @@ export default class AlipayPlugin extends PaymentPlugin {
       it_b_pay: '1d',
       sign_type: 'RSA'
     }, this._config);
-    let rsa_private_key = this._config.rsa_private_key || service.panic('rsa_private_key not found');
+    let rsa_private_key = this._config.rsa_private_key;
+    if (!rsa_private_key) throw new Error('rsa_private_key not found');
     delete this._config.rsa_private_key;
     this.rsa_private_key = fs.readFileSync(rsa_private_key) || '';
 
-    let rsa_public_key = this._config.rsa_public_key || service.panic('rsa_public_key not found');
+    let rsa_public_key = this._config.rsa_public_key;
+    if (!rsa_public_key) throw new Error('rsa_public_key not found');
     this.rsa_public_key = fs.readFileSync(rsa_public_key) || '';
     delete this._config.rsa_public_key;
   }

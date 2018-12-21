@@ -21,7 +21,10 @@ export default class MemoryLockDriver<T> extends LockDriver<T, MemoryLockDriverO
     if (this.locked || this.id) return Promise.reject(new Error('Aready locked'));
     let retryCount = this.options.retryCount || 10;
     let retryDelay = this.options.retryDelay || 200;
-    let resource = this.options.resource || this.service.panic('Missing resource for lock');
+    let resource = this.options.resource;
+    if (!resource) {
+      throw new Error('Missing resource for lock');
+    }
     ttl = ttl || this.options.ttl || 1000;
     let id = random();
     this.id = id;

@@ -22,7 +22,10 @@ export default class RedisLockDriver<T> extends LockDriver<T, RedisLockDriverOpt
 
   lock(ttl?: number): Promise<void> {
     debug('lock');
-    let resource = this.options.resource || this.service.panic('Missing resource for lock');
+    let resource = this.options.resource;
+    if (!resource) {
+      throw new Error('Missing resource for lock');
+    }
     ttl = ttl || this.options.ttl || 1000;
     return new Promise((resolve, reject) => {
       this._driver.lock(resource, ttl).then((lock) => {

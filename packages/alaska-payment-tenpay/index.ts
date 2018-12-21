@@ -52,7 +52,7 @@ export default class TenpayPlugin extends PaymentPlugin {
     this.label = 'Tenpay';
     let configTmp: TenpayConfig = service.config.get('tenpay');
     if (!configTmp) {
-      service.panic('Tenpay config not found');
+      throw new Error('Tenpay config not found');
     }
 
     this._config = configTmp;

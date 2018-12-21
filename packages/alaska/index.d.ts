@@ -124,10 +124,6 @@ export class Service {
    */
   ready(): Promise<void>;
   /**
-   * 抛出严重错误
-   */
-  panic(message: string | number, code?: number): never;
-  /**
    * 抛出普通错误
    */
   error(message: string | number, code?: number): never;
@@ -240,14 +236,6 @@ export const AUTHENTICATED = 2;
  * 一般错误
  */
 export class NormalError extends Error {
-  code: number | void;
-  constructor(message: string, code?: number);
-}
-
-/**
- * 严重错误
- */
-export class PanicError extends Error {
   code: number | void;
   constructor(message: string, code?: number);
 }

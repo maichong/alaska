@@ -31,35 +31,44 @@ export default class HttpExtension extends Extension {
 
     collie(main, 'initHttp', () => {
       main.debug('initHttp');
+      let env = main.config.get('env');
       if (!main.app) {
         main.app = new Koa();
-        main.app.env = main.config.get('env');
+        main.app.env = env;
         main.app.proxy = main.config.get('alaska-http.proxy');
         main.app.subdomainOffset = main.config.get('alaska-http.subdomainOffset');
         KoaQS(main.app);
       }
       main.app.use(async (ctx, next) => {
-        ctx.state.env = main.config.get('env');
+        ctx.state.env = env;
         ctx.main = main;
         ctx.service = main;
         try {
           await next();
           if (ctx.status === 404 && !ctx.body) main.error(404);
         } catch (error) {
-          if (!(error instanceof NormalError)) {
+          let code = error.code || error.status;
+          let expose = error.expose || error instanceof NormalError || false;
+          let message = expose ? error.message : 'Internal Server Error';
+          let debug;
+          if (env === 'development') {
+            debug = error.stack;
+          }
+          if (!expose) {
+            // 内部错误，输出到控制台
             console.error(error);
           }
-          let code = error.code;
           let status = ctx.status;
           if (!ctx.body) {
             if (ctx.state.jsonApi) {
               ctx.body = {
-                error: error.message,
-                code
+                error: message,
+                code,
+                debug
               };
             } else {
               // TODO: 渲染错误页面
-              ctx.body = error.message;
+              ctx.body = `<h1>${message}</h1><div><pre>${debug || ''}</pre></div>`;
             }
           }
           if (code && code > 100 && code < 600) {

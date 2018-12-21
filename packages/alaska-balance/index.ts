@@ -47,15 +47,18 @@ class BalanceService extends Service {
   }
 
   get currencies(): Currency[] {
-    return this._currencies || this.panic('Can not access currencies before load config!');
+    if (!this._currencies) throw new Error('Can not access currencies before load config!');
+    return this._currencies;
   }
 
   get currenciesMap(): ObjectMap<Currency> {
-    return this._currenciesMap || this.panic('Can not access currenciesMap before load config!');
+    if (!this._currenciesMap) throw new Error('Can not access currenciesMap before load config!');
+    return this._currenciesMap;
   }
 
   get defaultCurrency(): Currency {
-    return this._defaultCurrency || this.panic('Can not access defaultCurrency before load config!');
+    if (!this._defaultCurrency) throw new Error('Can not access defaultCurrency before load config!');
+    return this._defaultCurrency;
   }
 
   /**
