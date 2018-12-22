@@ -6,7 +6,7 @@ import { AkitaMiddlewareOptions } from '.';
 
 export default function (options: AkitaMiddlewareOptions, main: MainService): Middleware {
   return function clientMiddleware(ctx: Context, next): any {
-    if (ctx.method === 'POST' && ctx.headers['akita-method'] === 'PATCH') {
+    if (ctx.method === 'PUT' && ctx.headers['akita-method'] === 'PATCH') {
       ctx.method = 'PATCH';
     }
     return next();
