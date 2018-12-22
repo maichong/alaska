@@ -25,7 +25,7 @@
     "@types/react-redux": "^6.0.11",
     "@types/reactstrap": "^6.4.3",
     "@types/seamless-immutable": "^7.1.5",
-    "akita": "^0.7.1",
+    "akita": "^0.7.2",
     "alaska-field-checkbox": "^0.13.2",
     "check-depends": "^0.4.0",
     "grackle": "^0.2.0",

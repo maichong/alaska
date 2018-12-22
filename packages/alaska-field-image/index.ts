@@ -140,7 +140,7 @@ export default class ImageField extends Field {
       paths[mPath] = options;
     }
 
-    addPath('_id', String);
+    addPath('_id', mongoose.SchemaTypes.ObjectId);
     addPath('ext', String);
     addPath('path', String);
     addPath('url', String);
@@ -148,10 +148,16 @@ export default class ImageField extends Field {
     addPath('name', String);
     addPath('size', Number);
 
-    let imageSchema = new mongoose.Schema(paths);
+    let options = {
+      type: new mongoose.Schema(paths),
+      set(value: Image | string) {
+        if (typeof value === 'string') return { _id: new ObjectId(), url: value };
+        return value;
+      }
+    };
 
     schema.add({
-      [field.path]: field.multi ? [imageSchema] : imageSchema,
+      [field.path]: field.multi ? [options] : options,
     }, '');
 
     this.underscoreMethod('data', function () {
