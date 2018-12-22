@@ -9,6 +9,19 @@ export default class CartGoods extends Model {
   static defaultLimit = 100;
   static nocreate = true;
 
+  static populations = {
+    goods: {
+      auto: true,
+      autoSelect: true,
+      select: 'id title inventory price discount discountStartAt discountEndAt skus',
+      // populations: {
+      //   cat: {
+      //     auto: true
+      //   }
+      // }
+    }
+  };
+
   static api = {
     list: 2,
     create: 2,

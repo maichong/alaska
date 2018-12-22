@@ -22,7 +22,7 @@ import {
   DocumentQuery
 } from 'alaska-model';
 import { Data, objectToData } from './data';
-import { processScope, bindMethods, deepClone, loadFieldConfig } from './utils';
+import { processScope, bindMethods, deepClone, loadFieldConfig, processPopulation } from './utils';
 
 function panic() {
   throw new Error('Can not call the function when Model has been initialized.');
@@ -357,7 +357,6 @@ export default class Model {
         console.error(`${model.id} init relationships failed!`);
       }
 
-
       /**
        * init populations
        */
@@ -367,9 +366,6 @@ export default class Model {
         _.forEach(model.populations, (p: ModelPopulation, key: string) => {
           if (!p.path && typeof key === 'string') {
             p.path = key;
-          }
-          if (p.filters) {
-            p.match = p.filters;
           }
           let field: Field = model._fields[p.path];
           if (!field) {
@@ -979,6 +975,27 @@ export default class Model {
 
     // TODO: relationships
     // TODO: populations
+    let populations = [];
+    _.forEach(model.populations, (pop) => {
+      if (processPopulation(query, pop, model, scopeKey) && pop.populations) {
+        populations.push(pop);
+      }
+    });
+
+    // {
+    //   let execFn = query.exec;
+    //   // @ts-ignore
+    //   query.exec = async function (callback?: Function) {
+    //     query.exec = execFn;
+    //     let result = await query.exec();
+    //     result.forEach((record: any) => {
+    //       record.title = 'test';
+    //     });
+    //     if (callback) callback(null, result);
+    //     return result;
+    //   };
+    // }
+
     return query;
   }
 

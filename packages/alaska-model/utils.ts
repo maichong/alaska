@@ -1,6 +1,26 @@
 import * as _ from 'lodash';
 import { Service } from 'alaska';
-import { Model, ModelFieldList, Filters } from 'alaska-model';
+import { Model, ModelFieldList, Filters, Query, ModelPopulation } from 'alaska-model';
+import * as mongoose from 'mongoose';
+
+/**
+ * 查询数据时，处理关联查询配置
+ */
+export function processPopulation(query: Query<any>, pop: ModelPopulation, model: typeof Model, scopeKey: string): null | mongoose.ModelPopulateOptions {
+  // 判断scope是否不需要返回此path
+  if (model._scopes[scopeKey] && !model._scopes[scopeKey][pop.path]) return null;
+  let config = pop;
+  if (pop.autoSelect === false && pop.select) {
+    config = _.omit(pop, 'select');
+  } else if (pop.autoSelect !== false && pop.scopes && pop.scopes[scopeKey]) {
+    config = Object.assign({}, pop, {
+      select: pop.scopes[scopeKey]
+    });
+  }
+  query.populate(config);
+  // @ts-ignore config 中存在 path
+  return config;
+}
 
 export function processScope(fields: string | ModelFieldList, model: typeof Model): ModelFieldList {
   if (typeof fields === 'object') return fields;

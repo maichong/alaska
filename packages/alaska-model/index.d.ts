@@ -581,15 +581,39 @@ export interface ModelRelationship {
 }
 
 export interface ModelPopulation {
+  /**
+   * 关联的字段，此项不需要定义，启动后自动初始化
+   */
   path?: string;
-  match?: Object;
-  filters?: Object;
+  /**
+   * 关联的模型，此项不需要定义，启动后自动初始化
+   */
   model?: typeof Model;
+  /**
+   * 接口中自动返回关联的 Population 数据
+   */
+  auto?: boolean;
+  /**
+   * 关联匹配过滤器
+   */
+  filters?: Object;
+  /**
+   * 要查询的字段列表
+   */
   select?: string;
   _select?: ModelFieldList;
+  /**
+   * 只查询需要的字段
+   */
+  autoSelect?: boolean;
+  /**
+   * 要查询的Scopes
+   */
   scopes?: ObjectMap<string>;
   _scopes?: ObjectMap<ModelFieldList>;
-  autoSelect?: boolean;
+  /**
+   * populations 嵌套设置
+   */
   populations?: ObjectMap<ModelPopulation>;
 }
 

@@ -24,6 +24,7 @@ export default function (options: CaptchaMiddlewareOptions, main: MainService): 
       await next();
       return;
     }
+    ctx.state.jsonApi = true;
     let params = options.paths[path]; // 配置参数
     if (!params || !params.to || typeof params.to !== 'string') {
       throw new Error('CaptchaService middleware \'to\' of paths error');

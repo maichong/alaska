@@ -26,7 +26,7 @@ export default class Goods extends Model {
   static defaultFilters = defaultFilters;
 
   static scopes = {
-    list: 'title pic price discount inventory'
+    list: 'title pic price discount discountStartAt discountEndAt inventory'
   };
 
   static groups = {
