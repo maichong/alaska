@@ -11,11 +11,14 @@ export default class RoutesExtension extends Extension {
   constructor(main: MainService) {
     super(main);
 
+    let inited: string[] = [];
+
     _.forEach(main.modules.services, (s: ServiceModules) => {
       let service: Service = s.service;
 
       collie(service, 'initRoutes', async () => {
         service.debug('initRoutes');
+        inited.push(service.id);
         let prefix = service.config.get('prefix');
         if (prefix === false) return; // 强制关闭了 routes 路由
         _.forEach(s.plugins, (plugin) => {
@@ -26,11 +29,18 @@ export default class RoutesExtension extends Extension {
         _.forEach(s.routes, (route: RouteConfigurator) => {
           route(main.getRouter(prefix));
         });
-      });
 
-      main.post('initHttp', async () => {
-        await service.initRoutes();
+        // 挂载子Service接口
+        // TODO: 采用更加安全的算法
+        for (let id in service.services) {
+          if (inited.includes(id)) continue;
+          await service.services[id].initRoutes();
+        }
       });
+    });
+
+    main.post('initHttp', async () => {
+      await main.initRoutes();
     });
   }
 }

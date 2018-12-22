@@ -94,14 +94,6 @@ export default class ApiExtension extends Extension {
     collie(service, 'initApi', async () => {
       service.debug('initApi');
 
-      // 首先初始化子Service
-      for (let sid in service.services) {
-        if (this.inited.includes(sid)) continue;
-        this.inited.push(sid);
-        let sub = service.services[sid];
-        await sub.initApi();
-      }
-
       (() => {
         // 检查是否开放了接口
         if (
@@ -154,6 +146,14 @@ export default class ApiExtension extends Extension {
           }
         });
       })();
+
+      // 最后，初始化子Service，这样，当前Service就可以覆盖子Service接口
+      for (let sid in service.services) {
+        if (this.inited.includes(sid)) continue;
+        this.inited.push(sid);
+        let sub = service.services[sid];
+        await sub.initApi();
+      }
 
       if (!service.isMain()) return;
 
