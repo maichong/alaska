@@ -857,7 +857,8 @@ export default class Model {
         try {
           query.exec = execFn;
           let skip = (results.page - 1) * results.limit;
-          let res: ModelType[] = await query.find().skip(skip).limit(results.limit);
+          // @ts-ignore
+          let res: ModelType[] = await query.skip(skip).limit(results.limit).exec();
           results.results = res;
           if ((res.length || skip === 0) && res.length < results.limit) {
             // 优化，省略count查询
@@ -892,7 +893,7 @@ export default class Model {
     let model: typeof ModelType = this;
 
     let filtersPromise: Promise<Filters>;
-    if (!state || state.filters) {
+    if (!state || !state.filters) {
       filtersPromise = model.createFiltersByContext(ctx, state);
     }
 
@@ -943,7 +944,7 @@ export default class Model {
 
     let query = model.find(state && state.filters);
 
-    if (!state || state.filters) {
+    if (!state || !state.filters) {
       let filtersPromise: Promise<Filters>;
       filtersPromise = model.createFiltersByContext(ctx, state);
 
