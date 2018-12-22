@@ -708,6 +708,7 @@ export default class Model {
     }
 
     _.forEach(filters, (value, path) => {
+      if (path === 'id') path = '_id';
       let field = model._fields[path];
       if (!field) return;
       if (value instanceof RegExp) {

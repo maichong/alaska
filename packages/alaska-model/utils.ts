@@ -93,8 +93,8 @@ export function bindMethods(obj: BindObject, scope: Object): BindObject {
 /**
  * 合并多个Filters
  */
-export function mergeFilters(...filters: Filters[]): Filters | null {
-  let result: Filters = null;
+export function mergeFilters(...filters: Filters[]): Filters {
+  let result: Filters = {};
   _.forEach(filters, (f) => {
     if (!f || _.isEmpty(f)) return;
     if (!result) {
