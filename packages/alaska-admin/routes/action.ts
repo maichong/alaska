@@ -9,7 +9,6 @@ import service from '..';
 export default function (router: Router) {
   router.post('/action', async (ctx: Context) => {
     ctx.service = service;
-    ctx.state.jsonApi = true;
     if (!await userService.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
 
     const body: any = ctx.request.body;

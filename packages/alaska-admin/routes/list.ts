@@ -22,7 +22,6 @@ interface ListQuery {
 export default function (router: Router) {
   router.get('/list', async (ctx: Context) => {
     ctx.service = service;
-    ctx.state.jsonApi = true;
     if (!await userService.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
 
     const modelId = ctx.query._model || service.error('Missing model!');

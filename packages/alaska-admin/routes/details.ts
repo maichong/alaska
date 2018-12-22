@@ -14,7 +14,6 @@ interface DetailsQuery {
 export default function (router: Router) {
   router.get('/details', async (ctx: Context) => {
     ctx.service = service;
-    ctx.state.jsonApi = true;
     if (!await userService.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
 
     const id = ctx.query._id || service.error('Missing id!');

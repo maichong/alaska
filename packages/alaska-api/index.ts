@@ -82,7 +82,7 @@ export default class ApiExtension extends Extension {
     if (!router) {
       router = this.main.getRouter(apiPrefix);
       this.routers.set(apiPrefix, router);
-      router.use((ctx, next) => {
+      router.all('(.*)', (ctx, next) => {
         ctx.state.jsonApi = true;
         return next();
       });
@@ -184,8 +184,7 @@ export default class ApiExtension extends Extension {
         // 判断是否存在扩展接口
         let hasExtApi = !!_.find(info.apis, (api) => !!_.find(api, (fn, key) => !REST_ACTIONS.includes(key)));
         if (hasExtApi) {
-          router.use('/:group/:action?', async (ctx: Context, next) => {
-            ctx.state.jsonApi = true;
+          router.all('/:group/:action?', async (ctx: Context, next) => {
             let { group, action } = ctx.params;
             if (!action) {
               action = 'default';
@@ -221,7 +220,6 @@ export default class ApiExtension extends Extension {
         // 挂载Restful接口
         function restApi(action: keyof ModelApi): ApiMiddleware {
           return (ctx: Context, next) => {
-            ctx.state.jsonApi = true;
             let modelId = ctx.params.model;
             let model = info.models[modelId];
             if (!model) {

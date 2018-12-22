@@ -28,7 +28,7 @@ export default class Send extends Sled<CaptchaParams, void> {
     }
     let captcha = await Captcha.findById(id);
     if (!captcha) {
-      throw new Error('unknown captcha');
+      service.error('Unknown captcha');
     }
 
     if (!code) {

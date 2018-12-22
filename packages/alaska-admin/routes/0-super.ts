@@ -5,7 +5,15 @@ import service from '..';
 
 export default function (router: Router) {
   let config = service.config.get('superMode');
-  if (!config) return;
+
+  router.all('(.*)', (ctx: Context, next: Function) => {
+    ctx.service = service;
+    ctx.state.jsonApi = true;
+    if (config) {
+      ctx.state.superModel = setSuperMode(ctx);
+    }
+    return next();
+  });
 
   function has(array: string | string[], value: string): boolean {
     return Array.isArray(array) ? array.indexOf(value) > -1 : array === value;
@@ -22,11 +30,4 @@ export default function (router: Router) {
     }
     return false;
   }
-
-  router.use((ctx: Context, next: Function) => {
-    ctx.service = service;
-    ctx.state.jsonApi = true;
-    ctx.state.superModel = setSuperMode(ctx);
-    return next();
-  });
 }
