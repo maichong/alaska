@@ -36,6 +36,9 @@ export default class Income extends Model {
         label: 'Unknown',
         value: ''
       }, {
+        label: 'Spent',
+        value: 'spent'
+      }, {
         label: 'Recharge',
         value: 'recharge'
       }, {

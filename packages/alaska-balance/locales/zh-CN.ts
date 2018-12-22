@@ -7,6 +7,8 @@ export default {
   Default: '默认',
   'Income Record': '收支记录',
   Credit: '积分',
+  Spent: '花费',
+  Recharge: '充值',
   Withdraw: '提现',
   Note: '备注',
   Actions: '操作',
