@@ -1,7 +1,6 @@
 import { Sled } from 'alaska-sled';
 import userService from 'alaska-user';
 import service, { ActionSledParams } from '..';
-import { trimPrivateField, trimDisabledField } from '../utils/utils';
 
 /**
  * 创建数据
@@ -13,7 +12,7 @@ export default class Create extends Sled<ActionSledParams, any> {
 
     // eslint-disable-next-line new-cap
     let tmp = new model(body);
-    await trimDisabledField(body, params.admin, model, tmp);
+    await userService.trimDisabledField(body, params.admin, model, tmp);
 
     // eslint-disable-next-line new-cap
     let record = new model(body);
@@ -22,7 +21,7 @@ export default class Create extends Sled<ActionSledParams, any> {
     await record.save();
 
     let json = record.toJSON();
-    await trimPrivateField(json, params.admin, model, record);
+    await userService.trimPrivateField(json, params.admin, model, record);
 
     return json;
   }

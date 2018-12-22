@@ -14,34 +14,6 @@ Service.resolveMain().then((main) => {
   userService = main.modules.services['alaska-user'].service;
 });
 
-async function trimProtectedField(data: any, user: any, model: typeof Model, record: Model) {
-  for (let key in data) {
-    if (key === 'id') continue;
-    let field = model._fields[key];
-    if (!field) continue;
-    if (field.protected && await userService.checkAbility(user, field.protected, record)) {
-      delete data[key];
-      continue;
-    }
-    if (field.private && await userService.checkAbility(user, field.private, record)) {
-      delete data[key];
-    }
-  }
-}
-
-async function trimDisabledField(data: any, user: any, model: typeof Model, record?: Model) {
-  for (let key in data) {
-    if (key === 'id') continue;
-    let field = model._fields[key];
-    if (
-      !field
-      || (field.disabled && await userService.checkAbility(user, field.disabled, record))
-    ) {
-      delete data[key];
-    }
-  }
-}
-
 export async function count(ctx: Context) {
   const model: typeof Model = ctx.state.model;
 
@@ -87,7 +59,7 @@ export async function paginate(ctx: Context) {
     let data = record.data(scope);
     list.push(data);
     if (!userService) continue;
-    await trimProtectedField(data, ctx.user, model, record);
+    await userService.trimProtectedField(data, ctx.user, model, record);
   }
   ctx.body = _.assign({}, results, {
     results: list
@@ -119,7 +91,7 @@ export async function list(ctx: Context) {
     let data = record.data(scope);
     list.push(data);
     if (!userService) continue;
-    await trimProtectedField(data, ctx.user, model, record);
+    await userService.trimProtectedField(data, ctx.user, model, record);
   }
 
   ctx.body = list;
@@ -148,7 +120,7 @@ export async function show(ctx: Context) {
   ctx.body = record.data(ctx.state.scope || ctx.query._scope || scope);
 
   if (userService) {
-    await trimProtectedField(ctx.body, ctx.user, model, record);
+    await userService.trimProtectedField(ctx.body, ctx.user, model, record);
   }
 }
 
@@ -161,7 +133,7 @@ export async function create(ctx: Context) {
   if (userService) {
     // eslint-disable-next-line new-cap
     let tmp = new model(body);
-    await trimDisabledField(body, ctx.user, model, tmp);
+    await userService.trimDisabledField(body, ctx.user, model, tmp);
   }
 
   // eslint-disable-next-line new-cap
@@ -179,7 +151,7 @@ export async function create(ctx: Context) {
   ctx.body = record.data('create');
 
   if (userService) {
-    await trimProtectedField(ctx.body, ctx.user, model, record);
+    await userService.trimProtectedField(ctx.body, ctx.user, model, record);
   }
 }
 
@@ -206,7 +178,7 @@ export async function update(ctx: Context) {
   let body = Object.assign({}, ctx.state.body || ctx.request.body);
 
   if (userService) {
-    await trimDisabledField(body, ctx.user, model, record);
+    await userService.trimDisabledField(body, ctx.user, model, record);
   }
 
   record.set(body);
@@ -225,7 +197,7 @@ export async function update(ctx: Context) {
   }
 
   if (userService) {
-    await trimProtectedField(ctx.body, ctx.user, model, record);
+    await userService.trimProtectedField(ctx.body, ctx.user, model, record);
   }
 }
 
@@ -246,7 +218,7 @@ export async function updateMulti(ctx: Context) {
   let body = Object.assign({}, ctx.state.body || ctx.request.body);
 
   if (userService) {
-    await trimDisabledField(body, ctx.user, model);
+    await userService.trimDisabledField(body, ctx.user, model);
   }
 
   let res = await model.update(mergeFilters(filters, abilityFilters), body, { multi: true });
@@ -378,7 +350,7 @@ export async function watch(ctx: Context) {
       object = record.data();
 
       if (userService) {
-        await trimProtectedField(object, ctx.user, model, record);
+        await userService.trimProtectedField(object, ctx.user, model, record);
       }
     }
 

@@ -4,7 +4,6 @@ import { Context } from 'alaska-http';
 import { Model } from 'alaska-model';
 import userService from 'alaska-user';
 import service from '..';
-import { trimPrivateField } from '../utils/utils';
 
 interface DetailsQuery {
   // 模型id，必须
@@ -30,7 +29,7 @@ export default function (router: Router) {
     if (!await userService.hasAbility(ctx.user, ability, record)) service.error('Access Denied', 403);
 
     let json = record.toJSON();
-    await trimPrivateField(json, ctx.user, model, record);
+    await userService.trimPrivateField(json, ctx.user, model, record);
 
     ctx.body = json;
   });

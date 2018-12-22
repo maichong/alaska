@@ -49,6 +49,11 @@ export default class Init extends Sled<{}, void> {
         title: 'Root'
       }),
 
+      RegisterAbility.run({
+        id: 'alaska-user.User.update:self',
+        title: 'update user self'
+      }),
+
       settingsService.register({
         id: 'user.closeRegister',
         title: 'Close Register',

@@ -5,7 +5,6 @@ import { Model, Filter } from 'alaska-model';
 import { mergeFilters } from 'alaska-model/utils';
 import userService from 'alaska-user';
 import service from '..';
-import { trimPrivateField } from '../utils/utils';
 
 interface ListQuery {
   // 模型id，必须
@@ -57,7 +56,7 @@ export default function (router: Router) {
     for (let record of result.results) {
       let json = record.toJSON();
       list.push(json);
-      await trimPrivateField(json, ctx.user, model, record);
+      await userService.trimPrivateField(json, ctx.user, model, record);
     }
 
     ctx.body = _.assign({}, result, { results: list });

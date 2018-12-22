@@ -126,7 +126,8 @@ export class Service {
   /**
    * 抛出普通错误
    */
-  error(message: string | number, code?: number): never;
+  error(message: string , code?: number): never;
+  error(code: number): never;
 }
 
 /**

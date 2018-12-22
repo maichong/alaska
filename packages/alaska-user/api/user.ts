@@ -1,5 +1,7 @@
+import * as _ from 'lodash';
 import { Context } from 'alaska-http';
 import { GET, PATCH } from 'alaska-api';
+import User from '../models/User';
 import service from '..';
 
 /**
@@ -14,7 +16,12 @@ export async function info(ctx: Context) {
 
   if (ctx.method === 'PATCH') {
     // 修改信息
-    let body = ctx.request.body;
+    let body = ctx.state.body;
+    if (!body) {
+      // 权限检查
+      body = _.assign({}, ctx.request.body);
+      await service.trimDisabledField(body, user, User, user);
+    }
     user.set(body);
     await user.save();
   }
@@ -30,7 +37,7 @@ async function bindTel(ctx: Context) {
   let user = ctx.user;
   if (!user) service.error(403);
 
-  let { tel } = ctx.request.body;
+  let { tel } = ctx.state.body || ctx.request.body;
   if (!tel) service.error('tel is required');
 
   user.tel = tel;
@@ -48,7 +55,7 @@ async function bindEmail(ctx: Context) {
   let user = ctx.user;
   if (!user) service.error(403);
 
-  let { email } = ctx.request.body;
+  let { email } = ctx.state.body || ctx.request.body;
   if (!email) service.error('email is required');
 
   user.email = email;
@@ -65,7 +72,7 @@ exports['bind-email'] = bindEmail;
 export async function passwd(ctx: Context) {
   if (!ctx.user) service.error(403);
 
-  let body = ctx.request.body as { password: string };
+  let body = ctx.state.body || ctx.request.body as { password: string };
 
   if (!body || !body.password) {
     service.error('New password is required');

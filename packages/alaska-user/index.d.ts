@@ -38,6 +38,7 @@ export interface LogoutParams {
 }
 
 export interface RegisterParams extends Partial<User> {
+  [field: string]: any;
   ctx?: Context;
   user?: User;
   email?: string;
@@ -134,6 +135,31 @@ export class UserService extends Service {
    * @param {string} ability 权限
    */
   createFilters(user: User, ability: string): Promise<Filters | null>;
+
+  /**
+   * 依据用户权限，去除数据中 protected 字段，用于接口返回数据时处理
+   * @param data 要处理的数据
+   * @param user 当前用户
+   * @param model 数据模型
+   * @param record 要检查权限的Record
+   */
+  trimProtectedField(data: any, user: User | null, model: typeof Model, record: Model): Promise<void>;
+  /**
+   * 依据用户权限，去除数据中 private 字段，用于接口返回数据时处理
+   * @param data 要处理的数据
+   * @param user 当前用户
+   * @param model 数据模型
+   * @param record 要检查权限的Record
+   */
+  trimPrivateField(data: any, user: User | null, model: typeof Model, record: Model): Promise<void>;
+  /**
+   * 依据用户权限，去除数据中 disabled 字段，用户更新接口中处理用户提交的数据
+   * @param data 要处理的数据
+   * @param user 当前用户
+   * @param model 数据模型
+   * @param record 要检查权限的Record
+   */
+  trimDisabledField(data: any, user: User | null, model: typeof Model, record?: Model): Promise<void>;
 }
 
 declare const userService: UserService;

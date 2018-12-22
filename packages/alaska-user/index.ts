@@ -198,6 +198,68 @@ class UserService extends Service {
       $or: filters
     };
   }
+
+  /**
+   * 依据用户权限，去除数据中 protected 字段，用于接口返回数据时处理
+   * @param data 要处理的数据
+   * @param user 当前用户
+   * @param model 数据模型
+   * @param record 要检查权限的Record
+   */
+  async trimProtectedField(data: any, user: any, model: typeof Model, record: Model) {
+    // eslint-disable-next-line guard-for-in
+    for (let key in data) {
+      if (key === 'id') continue;
+      let field = model._fields[key];
+      if (!field) continue;
+      if (field.protected && await this.checkAbility(user, field.protected, record)) {
+        delete data[key];
+        continue;
+      }
+      if (field.private && await this.checkAbility(user, field.private, record)) {
+        delete data[key];
+      }
+    }
+  }
+
+  /**
+   * 依据用户权限，去除数据中 private 字段，用于接口返回数据时处理
+   * @param data 要处理的数据
+   * @param user 当前用户
+   * @param model 数据模型
+   * @param record 要检查权限的Record
+   */
+  async trimPrivateField(data: any, user: User | null, model: typeof Model, record: Model): Promise<void> {
+    // eslint-disable-next-line guard-for-in
+    for (let key in data) {
+      let field = model._fields[key];
+      if (!field) continue;
+      if (field.private && await this.checkAbility(user, field.private, record)) {
+        delete data[key];
+      }
+    }
+  }
+
+  /**
+   * 依据用户权限，去除数据中 disabled 字段，用户更新接口中处理用户提交的数据
+   * @param data 要处理的数据
+   * @param user 当前用户
+   * @param model 数据模型
+   * @param record 要检查权限的Record
+   */
+  async trimDisabledField(data: any, user: User | null, model: typeof Model, record?: Model): Promise<void> {
+    // eslint-disable-next-line guard-for-in
+    for (let key in data) {
+      if (key === 'id') continue;
+      let field = model._fields[key];
+      if (
+        !field
+        || (field.disabled && await this.checkAbility(user, field.disabled, record))
+      ) {
+        delete data[key];
+      }
+    }
+  }
 }
 
 export default new UserService({
