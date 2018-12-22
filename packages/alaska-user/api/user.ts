@@ -42,7 +42,7 @@ async function bindTel(ctx: Context) {
 
   user.tel = tel;
   await user.save();
-  ctx.body = user.info();
+  ctx.body = user.data('info');
 }
 
 exports['bind-tel'] = bindTel;
@@ -60,7 +60,7 @@ async function bindEmail(ctx: Context) {
 
   user.email = email;
   await user.save();
-  ctx.body = user.info();
+  ctx.body = user.data('info');
 }
 
 exports['bind-email'] = bindEmail;

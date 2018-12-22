@@ -40,7 +40,7 @@ export default class Send extends Sled<CaptchaParams, void> {
 
     values.code = code;
 
-    let cacheKey = `captcha_${to}`;
+    let cacheKey = `captcha:${to}`;
     CACHE.set(cacheKey, code, captcha.lifetime * 1000 || 1800 * 1000);
 
     if (captcha.type === 'sms' && captcha.sms
