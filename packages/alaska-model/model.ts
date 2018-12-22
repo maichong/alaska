@@ -968,7 +968,7 @@ export default class Model {
     if (sort) {
       query.sort(sort);
     }
-    let limit = parseInt(state.limit || ctx.query._limit) || 0;
+    let limit = parseInt(state.limit || ctx.query._limit) || model.listLimit;
     if (limit) {
       query.limit(limit);
     }

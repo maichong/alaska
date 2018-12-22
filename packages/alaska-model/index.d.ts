@@ -75,6 +75,7 @@ export interface ModelSettings {
   noexport?: boolean;
   titleField?: string;
   searchFields?: string | string[];
+  listLimit?: number;
   defaultLimit?: number;
   defaultSort?: string;
   defaultColumns?: string | string[];
@@ -150,6 +151,13 @@ export class Model {
   static noexport?: boolean;
   static titleField: string;
   static searchFields: string | string[];
+  /**
+   * 不分页列表接口数据量限制，如果数据量过大，为了安全和性能做限制
+   */
+  static listLimit?: number;
+  /**
+   * 分页列表接口，每一页默认数量限制
+   */
   static defaultLimit: number;
   static defaultSort: string;
   static defaultColumns: string | string[];

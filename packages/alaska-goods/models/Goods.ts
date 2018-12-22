@@ -17,9 +17,11 @@ export default class Goods extends Model {
   static defaultColumns = 'pic title cat cats price inventory activated sort createdAt';
   static defaultSort = '-sort';
   static searchFields = 'title';
+  static listLimit = 100;
 
   static api = {
     paginate: 1,
+    list: 1,
     show: 1
   };
 
