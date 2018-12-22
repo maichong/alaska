@@ -185,6 +185,7 @@ export default class ApiExtension extends Extension {
         let hasExtApi = !!_.find(info.apis, (api) => !!_.find(api, (fn, key) => !REST_ACTIONS.includes(key)));
         if (hasExtApi) {
           router.use('/:group/:action?', async (ctx: Context, next) => {
+            ctx.state.jsonApi = true;
             let { group, action } = ctx.params;
             if (!action) {
               action = 'default';
@@ -220,6 +221,7 @@ export default class ApiExtension extends Extension {
         // 挂载Restful接口
         function restApi(action: keyof ModelApi): ApiMiddleware {
           return (ctx: Context, next) => {
+            ctx.state.jsonApi = true;
             let modelId = ctx.params.model;
             let model = info.models[modelId];
             if (!model) {

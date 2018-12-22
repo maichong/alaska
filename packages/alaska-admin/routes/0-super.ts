@@ -24,8 +24,9 @@ export default function (router: Router) {
   }
 
   router.use((ctx: Context, next: Function) => {
-    ctx.state.superModel = setSuperMode(ctx);
     ctx.service = service;
+    ctx.state.jsonApi = true;
+    ctx.state.superModel = setSuperMode(ctx);
     return next();
   });
 }
