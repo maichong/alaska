@@ -1,4 +1,4 @@
-import { RecordID, Model } from 'alaska-model';
+import { RecordId, Model } from 'alaska-model';
 import { PropData } from 'alaska-property';
 import { Image } from 'alaska-field-image';
 
@@ -6,11 +6,9 @@ declare class Property extends Model {
 }
 
 export interface PropertyFields {
-  _id: RecordID;
-  id: string;
   key: string;
   pic: Image;
-  goods: RecordID;
+  goods: RecordId;
   desc: string;
   price: number;
   discount: number;

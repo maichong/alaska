@@ -1,4 +1,5 @@
 import * as collie from 'collie';
+import * as tr from 'grackle';
 import * as Koa from 'koa';
 import * as KoaQS from 'koa-qs';
 import * as Router from 'koa-router';
@@ -50,6 +51,9 @@ export default class HttpExtension extends Extension {
           let code = error.code || error.status;
           let expose = error.expose || error instanceof NormalError || false;
           let message = expose ? error.message : 'Internal Server Error';
+          if (ctx.locale) {
+            message = tr.locale(ctx.locale)(message);
+          }
           let debug;
           if (env === 'development') {
             debug = error.stack;

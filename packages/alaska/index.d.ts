@@ -126,7 +126,7 @@ export class Service {
   /**
    * 抛出普通错误
    */
-  error(message: string , code?: number): never;
+  error(message: string, code?: number): never;
   error(code: number): never;
 }
 
@@ -143,6 +143,10 @@ export interface MainService extends Service {
    * id -> Extension
    */
   extensions: ObjectMap<Extension>;
+  /**
+   * 所有Service，services属性只包含当前的直接Service
+   */
+  allServices: ObjectMap<Service>;
 }
 
 export class Plugin {

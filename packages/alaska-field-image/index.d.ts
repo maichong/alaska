@@ -1,4 +1,4 @@
-import { RecordID, Field } from 'alaska-model';
+import { RecordId, Field } from 'alaska-model';
 import { UploadFile } from 'alaska-middleware-upload';
 import * as FSD from 'fsd';
 import * as mongoose from 'mongoose';

@@ -1,6 +1,6 @@
 import { Model } from 'alaska-model';
 import User from 'alaska-user/models/User';
-import BALANCE from 'alaska-balance';
+import balanceService from 'alaska-balance';
 import OrderLog from './OrderLog';
 import OrderGoods from './OrderGoods';
 import { Context } from 'alaska-http';
@@ -22,6 +22,7 @@ export default class Order extends Model {
   static searchFields = 'title';
   static nocreate = true;
   static noremove = true;
+  static listLimit = 100;
 
   static defaultFilters = defaultFilters;
 
@@ -38,16 +39,17 @@ export default class Order extends Model {
   };
 
   static populations = {
-    items: {
-      path: 'items'
+    goods: {
+      path: 'goods'
     }
   };
 
   static scopes = {
-    list: '*'
+    // list: '*'
   };
 
   static api = {
+    list: 2,
     paginate: 2,
     count: 2,
     show: 2,
@@ -110,8 +112,8 @@ export default class Order extends Model {
       label: 'Picture',
       type: 'image'
     },
-    items: {
-      label: 'Order Items',
+    goods: {
+      label: 'Order Goods',
       type: 'relationship',
       ref: 'OrderGoods',
       multi: true,
@@ -124,8 +126,8 @@ export default class Order extends Model {
     currency: {
       label: 'Currency',
       type: 'select',
-      options: BALANCE.getCurrenciesAsync(),
-      default: BALANCE.getDefaultCurrencyAsync().then((cur) => cur.value)
+      options: balanceService.getCurrenciesAsync(),
+      default: balanceService.getDefaultCurrencyAsync().then((cur) => cur.value)
     },
     shipping: {
       //邮费,不包含在total中,由各个OrderItem.shipping相加
@@ -155,23 +157,38 @@ export default class Order extends Model {
         value: 'balance'
       }]
     },
-    refund: {
+    refundedAmount: {
       label: 'Refunded Amount',
       type: Number,
-      depends: 'refund'
+      hidden: '!refundedAmount'
+    },
+    refundedQuantity: {
+      label: 'Refunded Quantity',
+      type: Number,
+      hidden: '!refundedQuantity'
     },
     refundReason: {
       label: 'Refund Reason',
       type: String,
-      depends: 'refundReason'
+      hidden: '!refundReason'
     },
     refundAmount: {
       label: 'Refund Amount',
       type: Number,
-      depends: 'refundAmount'
+      hidden: '!refundAmount'
+    },
+    refundQuantity: {
+      label: 'Refund Quantity',
+      type: Number,
+      hidden: '!refundQuantity'
     },
     shipped: {
       label: 'Shipped',
+      type: Boolean,
+      hidden: true
+    },
+    closed: {
+      label: 'Closed',
       type: Boolean,
       hidden: true
     },
@@ -194,7 +211,7 @@ export default class Order extends Model {
         label: 'Order_Shipped',
         value: 500
       }, {
-        label: 'Order_Done',
+        label: 'Order_Closed',
         value: 600
       }, {
         label: 'Order_Refund',
@@ -216,17 +233,17 @@ export default class Order extends Model {
     paymentTimeout: {
       label: 'Payment Timeout',
       type: Date,
-      depends: 'paymentTimeout'
+      hidden: '!paymentTimeout'
     },
     receiveTimeout: {
       label: 'Receive Timeout',
       type: Date,
-      depends: 'receiveTimeout'
+      hidden: '!receiveTimeout'
     },
     refundTimeout: {
       label: 'Refund Timeout',
       type: Date,
-      depends: 'refundTimeout'
+      hidden: '!refundTimeout'
     },
     userDeleted: {
       label: 'User Deleted',
@@ -246,7 +263,7 @@ export default class Order extends Model {
   user: User;
   type: any;
   pic: Object;
-  items: OrderGoods[];
+  goods: OrderGoods[];
   address: Object;
   currency: string;
   shipping: number;
@@ -254,10 +271,30 @@ export default class Order extends Model {
   pay: number;
   payed: number;
   payment: string;
-  refund: number;
+  /**
+   * 订单已退款金额，总额
+   */
+  refundedAmount: number;
+  /**
+   * 客户已经退货的商品总数量
+   */
+  refundedQuantity: number;
+  /**
+   * 客户申请退款的原因
+   */
   refundReason: string;
+  /**
+   * 客户申请退款的总金额
+   * 如果退款审核通过，该值会重置为0
+   */
   refundAmount: number;
+  /**
+   * 客户申请退货的总数量
+   * 如果退款审核通过，该值会重置为0
+   */
+  refundQuantity: number;
   shipped: boolean;
+  closed: boolean;
   state: number;
   failure: string;
   createdAt: Date;
@@ -294,17 +331,17 @@ export default class Order extends Model {
    * @returns {*}
    */
   createLog(title: string): OrderLog {
-    let log = new OrderLog({ title, order: this });
+    let log = new OrderLog({ title, order: this, state: this.state });
     log.save();
     return log;
   }
 
   /**
    * 判断某个GoodsItem能不能合并到此订单
-   * @param {OrderGoods} item
+   * @param {OrderGoods} goods
    * @returns {boolean}
    */
-  canAppendItem(item: OrderGoods): boolean {
-    return !!item;
+  canAppendGoods(goods: OrderGoods): boolean {
+    return !!goods;
   }
 }

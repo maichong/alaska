@@ -1,4 +1,4 @@
-import { RecordID, Model } from 'alaska-model';
+import { RecordId, Model } from 'alaska-model';
 import User from 'alaska-user/models/User';
 import * as random from 'string-random';
 import service from '..';
@@ -54,7 +54,7 @@ export default class Client extends Model {
   deviceId: string;
   platform: string;
   token: string;
-  user: RecordID;
+  user: RecordId;
   expiredAt: Date | null;
   createdAt: Date;
 

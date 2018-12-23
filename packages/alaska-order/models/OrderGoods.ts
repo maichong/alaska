@@ -1,5 +1,5 @@
-import { RecordID, Model } from 'alaska-model';
-import BALANCE from 'alaska-balance';
+import { RecordId, Model } from 'alaska-model';
+import balanceService from 'alaska-balance';
 import Goods from 'alaska-goods/models/Goods';
 import Order from '../models/Order';
 
@@ -45,6 +45,11 @@ export default class OrderGoods extends Model {
       ref: 'alaska-goods.Sku',
       optional: true
     },
+    skuKey: {
+      label: 'SKU Key',
+      type: String,
+      hidden: true
+    },
     skuDesc: {
       label: 'SKU Desc',
       type: String
@@ -52,8 +57,8 @@ export default class OrderGoods extends Model {
     currency: {
       label: 'Currency',
       type: 'select',
-      options: BALANCE.getCurrenciesAsync(),
-      default: BALANCE.getDefaultCurrencyAsync().then((cur) => cur.value)
+      options: balanceService.getCurrenciesAsync(),
+      default: balanceService.getDefaultCurrencyAsync().then((cur) => cur.value)
     },
     price: {
       label: 'Price',
@@ -76,17 +81,33 @@ export default class OrderGoods extends Model {
       label: 'Total Amount',
       type: Number
     },
+    refundReason: {
+      label: 'Refund Reason',
+      type: String,
+      hidden: '!refundReason'
+    },
+    refundAmount: {
+      label: 'Refund Amount',
+      type: Number,
+      hidden: '!refundAmount'
+    },
+    refundQuantity: {
+      label: 'Refund Quantity',
+      type: Number,
+      hidden: '!refundQuantity'
+    },
     createdAt: {
-      label: '添加时间',
+      label: 'Created At',
       type: Date
     }
   };
 
   pic: Object;
   title: string;
-  order: Order;
-  goods: Goods;
-  sku?: RecordID;
+  order: RecordId;
+  goods: RecordId;
+  sku?: RecordId;
+  skuKey: string;
   skuDesc: string;
   currency: string;
   price: number;
@@ -94,6 +115,10 @@ export default class OrderGoods extends Model {
   quantity: number;
   shipping: number;
   total: number;
+  refund: number;
+  refundReason: string;
+  refundAmount: number;
+  refundQuantity: number;
   createdAt: Date;
 
   preSave() {

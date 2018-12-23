@@ -91,10 +91,9 @@ export default class LocaleExtension extends Extension {
       });
     }
 
-    // @ts-ignore
-    const ADMIN: AdminService = main.services['alaska-admin'];
-    if (ADMIN) {
-      ADMIN.pre('settings', (settings: Settings) => {
+    const adminService = main.allServices['alaska-admin'] as AdminService;
+    if (adminService) {
+      adminService.pre('settings', (settings: Settings) => {
         _.forEach(main.modules.services, (s: ServiceModules) => {
           if (!settings.authorized && s.id !== 'alaska-admin') return;
           if (_.size(s.service.locales)) {

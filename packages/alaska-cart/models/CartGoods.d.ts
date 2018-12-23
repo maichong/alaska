@@ -1,13 +1,13 @@
-import { RecordID, Model } from 'alaska-model';
+import { RecordId, Model } from 'alaska-model';
 import { Image } from 'alaska-field-image';
 
 export default class CartGoods extends Model {
   pic: Image;
   title: string;
-  goods: RecordID;
-  sku: RecordID;
+  goods: RecordId;
+  sku: RecordId;
   skuDesc: string;
-  user: RecordID;
+  user: RecordId;
   currency: string;
   price: number;
   discount: number;

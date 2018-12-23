@@ -1,5 +1,5 @@
 import { Service } from 'alaska';
-import { RecordID } from 'alaska-model';
+import { RecordId } from 'alaska-model';
 import CartGoods from './models/CartGoods';
 
 export class CartService extends Service {
@@ -13,8 +13,8 @@ declare const cartService: CartService;
 export default cartService;
 
 export interface CreateParams {
-  user: RecordID;
-  goods: RecordID;
-  sku?: RecordID;
+  user: RecordId;
+  goods: RecordId;
+  sku?: RecordId;
   quantity?: number;
 }

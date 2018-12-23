@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { RecordID, Model } from 'alaska-model';
+import { RecordId, Model } from 'alaska-model';
 
 export default class PostCat extends Model {
   static label = 'Post Category';
@@ -57,8 +57,8 @@ export default class PostCat extends Model {
     }
   };
   title: string;
-  parent: RecordID;
-  subCats: RecordID[];
+  parent: RecordId;
+  subCats: RecordId[];
   sort: number;
   createdAt: Date;
 

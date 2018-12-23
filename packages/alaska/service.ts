@@ -136,6 +136,7 @@ export default class Service {
 
     let main: MainService = this.main;
     main.extensions = {};
+    main.allServices = {};
 
     let serviceModules: ObjectMap<ServiceModules> = modules.services;
 
@@ -144,7 +145,7 @@ export default class Service {
       // console.log('ServiceModules', s);
       let service = s.service;
       service.config.apply(s.config);
-      // this.services[sid] = service;
+      main.allServices[sid] = service;
 
       // 应用插件配置
       _.forEach(s.plugins, (p: PluginModules) => {

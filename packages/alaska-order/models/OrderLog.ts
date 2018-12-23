@@ -1,5 +1,4 @@
-import { RecordID, Model } from 'alaska-model';
-import Order from './Order';
+import { RecordId, Model } from 'alaska-model';
 
 export default class OrderLog extends Model {
   static label = 'Order Log';
@@ -44,7 +43,7 @@ export default class OrderLog extends Model {
         label: 'Order_Shipped',
         value: 500
       }, {
-        label: 'Order_Done',
+        label: 'Order_Closed',
         value: 600
       }, {
         label: 'Order_Refund',
@@ -61,7 +60,7 @@ export default class OrderLog extends Model {
   };
 
   title: string;
-  order: RecordID;
+  order: RecordId;
   state: number;
   createdAt: Date;
 

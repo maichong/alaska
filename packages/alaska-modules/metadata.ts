@@ -253,14 +253,14 @@ class ModulesMetadata {
     if (!service.config.services) return;
     for (let sid of _.keys(service.config.services)) {
       let sub: ServiceMetadata = this.services[sid];
-      if (sub.dismiss) continue;
+      if (!sub || sub.dismiss) continue;
       if (sub.loadedSubServicePlugins) continue;
       sub.loadedSubServicePlugins = true;
       await this.loadSubServicePlugins(sub);
     }
     for (let sid of _.keys(service.config.services)) {
       let sub: ServiceMetadata = this.services[sid];
-      if (sub.dismiss) continue;
+      if (!sub || sub.dismiss) continue;
       // load
       let pluginDir = Path.join(service.path, 'plugins', sub.id);
       if (!isDirectory.sync(pluginDir)) continue;
@@ -288,7 +288,7 @@ class ModulesMetadata {
       // 递归调用子Service
       for (let sid of _.keys(service.config.services)) {
         let sub: ServiceMetadata = this.services[sid];
-        if (sub.dismiss) continue;
+        if (!sub || sub.dismiss) continue;
         if (sub.loadedServiceConfigPlugins) continue;
         sub.loadedServiceConfigPlugins = true;
         await this.loadServiceConfigPlugins(sub);

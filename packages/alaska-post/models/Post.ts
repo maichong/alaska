@@ -1,4 +1,4 @@
-import { RecordID, Model } from 'alaska-model';
+import { RecordId, Model } from 'alaska-model';
 import PostCat from './PostCat';
 import { ObjectID } from 'mongodb';
 
@@ -130,8 +130,8 @@ export default class Post extends Model {
   };
   title: string;
   user: ObjectID;
-  cat: RecordID;
-  cats: RecordID[];
+  cat: RecordId;
+  cats: RecordId[];
   seoTitle: string;
   seoKeywords: string;
   seoDescription: string;
@@ -155,7 +155,7 @@ export default class Post extends Model {
       this.seoTitle = this.title;
     }
     if (this.cat) {
-      let cats: RecordID[] = [];
+      let cats: RecordId[] = [];
       if (this.cat) {
         let catTemp: PostCat = await PostCat.findById(this.cat);
         if (catTemp) {

@@ -31,24 +31,26 @@ export default class SledExtension extends Extension {
       // plugins
       _.forEach(s.plugins, (plugin, pluginName) => {
         _.forEach(plugin.sleds, (settings, name) => {
-          if (typeof settings === 'function' && (settings as typeof Sled).classOfSled) {
-            service.sleds[name] = (settings as typeof Sled);
-          } else {
-            // SledGenerator
-            service.sleds[name] = (settings as SledGenerator)(service.sleds[name]);
-            if (!service.models[name] || !service.models[name].classOfModel) {
-              throw new Error(`Sled generator should return a Sled class [${pluginName}/sleds/${name}]`);
-            }
-            setSledDefaults(service.sleds[name], service, name);
-            return;
-          }
-
-          // Sled settings
-
+          console.log('sled plugin settings', settings);
           if (!settings) {
             throw new Error(`Invalid sled settings [${pluginName}/sled/${name}]`);
           }
 
+          if (typeof settings === 'function') {
+            if ((settings as typeof Sled).classOfSled) {
+              service.sleds[name] = (settings as typeof Sled);
+            } else {
+              // SledGenerator
+              service.sleds[name] = (settings as SledGenerator)(service.sleds[name]);
+              if (!service.models[name] || !service.models[name].classOfModel) {
+                throw new Error(`Sled generator should return a Sled class [${pluginName}/sleds/${name}]`);
+              }
+              setSledDefaults(service.sleds[name], service, name);
+              return;
+            }
+          }
+
+          // Sled settings
           let sled: typeof Sled = service.sleds[name];
           if (!sled) throw new Error(`Can not apply sled settings, ${service.id}.${name} not found!`);
           let { pre, post } = settings as SledSettings;

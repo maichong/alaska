@@ -15,7 +15,7 @@ export default function (options: CaptchaMiddlewareOptions, main: MainService): 
   let paths = _.keys(options.paths);
   if (!paths.length) throw new Error('CaptchaService middleware \'paths\' can not empty');
   return async function (ctx: Context, next: Function): Promise<void> {
-    if (!main.services || !main.services['alaska-captcha']) {
+    if (!main.allServices['alaska-captcha']) {
       await next();
       return;
     }

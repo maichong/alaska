@@ -53,7 +53,7 @@ declare module 'alaska-modules' {
 
 //// alaska-model
 
-export type RecordID = mongodb.ObjectID | string | number;
+export type RecordId = mongodb.ObjectID | string | number;
 
 export default class ModelExtension extends Extension {
 }
@@ -472,7 +472,7 @@ export class Model {
   /** Hash containing current validation errors. */
   errors: any;
   /** This documents _id. */
-  _id: RecordID;
+  _id: RecordId;
   id: string;
 
   /** Boolean flag specifying if the document is new. */
