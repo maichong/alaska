@@ -26,6 +26,12 @@ export default class OrderLog extends Model {
       ref: 'Order',
       index: true
     },
+    user: {
+      label: 'User',
+      type: 'relationship',
+      ref: 'alaska-user.User',
+      hidden: true
+    },
     state: {
       label: 'State',
       type: 'select',

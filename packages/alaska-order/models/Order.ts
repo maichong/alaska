@@ -347,7 +347,7 @@ export default class Order extends Model {
    * @returns {*}
    */
   createLog(title: string): OrderLog {
-    let log = new OrderLog({ title, order: this, state: this.state });
+    let log = new OrderLog({ title, order: this, state: this.state, user: this.user });
     log.save();
     return log;
   }
