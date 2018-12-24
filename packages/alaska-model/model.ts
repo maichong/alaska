@@ -925,6 +925,12 @@ export default class Model {
 
     // TODO: relationships
     // TODO: populations
+    let populations = [];
+    _.forEach(model.populations, (pop) => {
+      if (processPopulation(query, pop, model, scopeKey) && pop.populations) {
+        populations.push(pop);
+      }
+    });
 
     return query;
   }
@@ -1055,6 +1061,13 @@ export default class Model {
 
     // TODO: relationships
     // TODO: populations
+    let populations = [];
+    _.forEach(model.populations, (pop) => {
+      if (processPopulation(query, pop, model, scopeKey) && pop.populations) {
+        populations.push(pop);
+      }
+    });
+
     return query;
   }
 

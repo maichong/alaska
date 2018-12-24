@@ -27,7 +27,7 @@ export default class Order extends Model {
   static defaultFilters = defaultFilters;
 
   static relationships = {
-    goods: {
+    orderGoods: {
       ref: 'OrderGoods',
       path: 'order'
     },
@@ -40,6 +40,7 @@ export default class Order extends Model {
 
   static populations = {
     goods: {
+      auto: true,
       path: 'goods'
     }
   };
