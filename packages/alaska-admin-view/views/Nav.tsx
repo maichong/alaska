@@ -37,9 +37,12 @@ class Nav extends React.Component<Props, NavState> {
   render() {
     const { settings, menus } = this.props;
     const { navOpen } = this.state;
-    const { abilities } = settings;
     let navs = _.orderBy(settings.navItems, ['sort'], ['desc']);
-    navs = _.filter(navs, (item) => (item.id === 'default' || item.activated) && abilities[item.ability]);
+    navs = _.filter(navs, (item) =>
+      (item.id === 'default' || item.activated)
+      && (!item.ability || settings.abilities[item.ability])
+      && (!item.super || settings.superMode)
+    );
     let label = _.map(navs, (nav) => {
       if (nav.id !== menus.navId) return;
       return tr(nav.label);

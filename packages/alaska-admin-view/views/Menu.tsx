@@ -1,28 +1,40 @@
 import * as _ from 'lodash';
 import * as React from 'react';
 import Node from './Node';
-import { MenuProps, Settings, StoreState } from '..';
+import { MenuProps, StoreState, Menu as MenuType } from '..';
 import MenuItem from './MenuItem';
 import { connect } from 'react-redux';
 
 interface Props extends MenuProps {
   locale: string;
+  superMode: boolean;
+  abilities: {
+    [key: string]: boolean;
+  }
 }
 interface MenuState {
+  _superMode?: boolean;
+  _menus?: any;
   opendId: string;
+  menus: MenuType[];
 }
 
 class Menu extends React.Component<Props, MenuState> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      opendId: ''
+      opendId: '',
+      menus: []
     };
   }
 
   static getDerivedStateFromProps(nextProps: Props, prevState: MenuState) {
+    let nextState: Partial<MenuState> = {
+      _menus: nextProps.menus,
+      _superMode: nextProps.superMode
+    };
     if (!nextProps.opened && prevState.opendId) {
-      return { opendId: '' };
+      nextState.opendId = '';
     }
 
     let { menus } = nextProps;
@@ -30,10 +42,16 @@ class Menu extends React.Component<Props, MenuState> {
     if (path) {
       let menu = _.find(menus, (menu) => path === menu.link);
       if (menu) {
-        return { openId: menu.id };
+        nextState.opendId = menu.id;
       }
     }
-    return null;
+    if (nextProps.superMode !== prevState._superMode || menus !== prevState._menus) {
+      nextState.menus = _.filter(menus, (item) => (
+        (!item.ability || nextProps.abilities[item.ability])
+        && (!item.super || nextProps.superMode)
+      ))
+    }
+    return nextState;
   }
 
   handleClick = (menuId: string, opened: boolean) => {
@@ -49,8 +67,8 @@ class Menu extends React.Component<Props, MenuState> {
   }
 
   render() {
-    const { level, menus, layout, opened, onChange } = this.props;
-    const { opendId } = this.state;
+    const { level, layout, opened, onChange } = this.props;
+    const { opendId, menus } = this.state;
     return (
       <Node
         className={`menu menu-${level}`}
@@ -75,4 +93,4 @@ class Menu extends React.Component<Props, MenuState> {
   }
 }
 
-export default connect(({ settings }: StoreState) => ({ locale: settings.locale }))(Menu);
+export default connect(({ settings }: StoreState) => ({ locale: settings.locale, superMode: settings.superMode, abilities: settings.abilities }))(Menu);
