@@ -3,7 +3,7 @@ import { RecordId, Model } from 'alaska-model';
 export default class OrderLog extends Model {
   static label = 'Order Log';
   static icon = 'hourglass-2';
-  static defaultColumns = 'title order createdAt';
+  static defaultColumns = 'title order state createdAt';
   static defaultSort = '-createdAt';
   static nocreate = true;
   static noupdate = true;
@@ -54,7 +54,7 @@ export default class OrderLog extends Model {
       }]
     },
     createdAt: {
-      label: 'CreatedAt',
+      label: 'Created At',
       type: Date
     }
   };

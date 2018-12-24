@@ -22,7 +22,6 @@ export default class MixedFieldView extends React.Component<FieldViewProps, Stat
   }
 
   static getDerivedStateFromProps(nextProps: FieldViewProps, prevState: State) {
-    console.log('getDerivedStateFromProps', nextProps);
     if (!_.isEqual(nextProps.value, prevState._value)) {
       return {
         _value: nextProps.value,

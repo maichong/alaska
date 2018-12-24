@@ -4,6 +4,7 @@ import balanceService from 'alaska-balance';
 import OrderLog from './OrderLog';
 import OrderGoods from './OrderGoods';
 import { Context } from 'alaska-http';
+import service from '..';
 
 function defaultFilters(ctx: Context) {
   let field = ctx.service.id === 'alaska-admin' ? 'adminDeleted' : 'userDeleted';
@@ -17,7 +18,7 @@ function defaultFilters(ctx: Context) {
 export default class Order extends Model {
   static label = 'Order';
   static icon = 'file-text-o';
-  static defaultColumns = 'pic title user total state createdAt';
+  static defaultColumns = 'code pic title user total state createdAt';
   static defaultSort = '-createdAt';
   static searchFields = 'title';
   static nocreate = true;
@@ -88,6 +89,12 @@ export default class Order extends Model {
   };
 
   static fields = {
+    code: {
+      label: 'Order Code',
+      type: String,
+      unique: true,
+      disabled: true
+    },
     title: {
       label: 'Title',
       type: String,
@@ -117,6 +124,7 @@ export default class Order extends Model {
       label: 'Order Goods',
       type: 'relationship',
       ref: 'OrderGoods',
+      hidden: true,
       multi: true,
       disabled: true
     },
@@ -260,6 +268,7 @@ export default class Order extends Model {
     }
   };
 
+  code: string;
   title: string;
   user: User;
   type: any;
@@ -308,10 +317,16 @@ export default class Order extends Model {
   _logTotal: boolean;
   _logShipping: boolean;
 
-  preSave() {
+  async preValidate() {
     if (!this.createdAt) {
       this.createdAt = new Date();
     }
+    if (!this.code) {
+      this.code = await service.config.get('codeCreator')(this);
+    }
+  }
+
+  preSave() {
     this.pay = (this.total || 0) + (this.shipping || 0);
     this._logTotal = !this.isNew && this.isModified('total');
     this._logShipping = !this.isNew && this.isModified('shipping');

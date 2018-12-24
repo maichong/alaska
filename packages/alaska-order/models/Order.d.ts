@@ -3,6 +3,7 @@ import { Context } from 'alaska-http';
 import OrderGoods from './OrderGoods';
 
 export default class Order extends Model {
+  code: string;
   title: string;
   user: RecordId;
   type: any;

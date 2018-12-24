@@ -1,5 +1,7 @@
 export default {
   Order: '订单',
+  'Order Code': '订单编号',
+  'Order Goods': '订单商品',
   Picture: '图片',
   Address: '地址',
   Price: '价格',
