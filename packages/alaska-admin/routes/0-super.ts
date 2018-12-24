@@ -10,7 +10,7 @@ export default function (router: Router) {
     ctx.service = service;
     ctx.state.jsonApi = true;
     if (config) {
-      ctx.state.superModel = setSuperMode(ctx);
+      ctx.state.superMode = setSuperMode(ctx);
     }
     return next();
   });
@@ -22,7 +22,7 @@ export default function (router: Router) {
   function setSuperMode(ctx: Context): boolean {
     let superMode = ctx.state.superMode;
     if (superMode) return true;
-    if (config.cookie && ctx.cookies.get('config')) return true;
+    if (config.cookie && ctx.cookies.get(config.cookie)) return true;
     if (ctx.user) {
       if (config.userId && has(config.userId, ctx.user.id)) return true;
       if (config.username && has(config.username, ctx.user.username)) return true;
