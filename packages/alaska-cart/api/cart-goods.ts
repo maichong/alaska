@@ -30,7 +30,7 @@ export async function list(ctx: Context, next: Function) {
     }
     data.inventory = goods.inventory;
     if (data.sku) {
-      let sku = _.find(goods.skus, (s) => s._id.toString() === data.sku);
+      let sku = _.find(goods.skus, (s) => String(s.id) === String(data.sku));
       if (sku) {
         data.inventory = sku.inventory;
       }
