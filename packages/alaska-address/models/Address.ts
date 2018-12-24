@@ -98,4 +98,14 @@ export default class Address extends Model {
       this.createdAt = new Date();
     }
   }
+
+  async postSave() {
+    // 只能存在一个默认地址
+    if (this.isDefault) {
+      await Address.updateMany(
+        { user: this.user, isDefault: true, _id: { $ne: this._id } },
+        { isDefault: false }
+      );
+    }
+  }
 }

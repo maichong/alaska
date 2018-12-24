@@ -18,7 +18,7 @@ export default function (router: Router) {
       prefix = '';
     }
 
-    ctx.state.documentTitle = 'Alaska admin dashboard';
+    ctx.state.documentTitle = service.config.get('dashboardTitle');
 
     ctx.state.headMetas.push({
       name: 'viewport',

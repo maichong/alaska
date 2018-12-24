@@ -4,5 +4,6 @@ export default {
     // 'alaska-user': {
     // }
   },
-  defaultHorizontal: true
+  defaultHorizontal: true,
+  dashboardTitle: 'Alaska admin dashboard'
 };

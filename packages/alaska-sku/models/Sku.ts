@@ -3,7 +3,7 @@ import { PropData } from 'alaska-property';
 import { Image } from 'alaska-field-image';
 
 export default class Sku extends Model {
-  static label = 'Sku';
+  static label = 'SKU';
   static icon = 'cubes';
   static defaultColumns = 'pic goods desc inventory price valid';
   static defaultSort = '-sort';
