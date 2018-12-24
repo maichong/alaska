@@ -1,4 +1,6 @@
-import { Service, Plugin } from 'alaska';
+import { Service, Plugin, ObjectMap } from 'alaska';
+import User from 'alaska-user/models/User';
+import Order from 'alaska-order/models/Order';
 import Payment from './models/Payment';
 
 export class PaymentPlugin extends Plugin {
@@ -9,7 +11,10 @@ export class PaymentPlugin extends Plugin {
 }
 
 export interface CreateParams {
-  payment?: | Payment;
+  user: User;
+  type: string;
+  orders?: string[] | Order[];
+  payment?: Payment;
 }
 
 export interface CompleteParams {
@@ -20,7 +25,9 @@ export interface CompleteParams {
 export class PaymentService extends Service {
   models: {
     Payment: typeof Payment;
-  }
+  };
+
+  payments: ObjectMap<PaymentPlugin>;
 }
 
 declare const paymentService: PaymentService;

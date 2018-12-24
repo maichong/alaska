@@ -8,6 +8,10 @@ export default class Payment extends Model {
   static nocreate = true;
   static noupdate = true;
 
+  static api = {
+    create: 2
+  };
+
   static actions = {
     complete: {
       title: 'Complete',
@@ -82,6 +86,9 @@ export default class Payment extends Model {
   state: number;
   failure: string;
   createdAt: Date;
+
+  // for alaska dev
+  orders: any[];
 
   preSave() {
     if (!this.createdAt) {

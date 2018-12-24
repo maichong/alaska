@@ -18,6 +18,12 @@ import Refund from './sleds/Refund';
 import RefundReject from './sleds/RefundReject';
 import RefundAccept from './sleds/RefundAccept';
 
+declare module 'alaska-payment/models/Payment' {
+  export interface PaymentFields {
+    orders: Order[];
+  }
+}
+
 export class OrderService extends Service {
   models: {
     Order: typeof Order;

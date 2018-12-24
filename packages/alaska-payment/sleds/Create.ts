@@ -4,6 +4,7 @@ import { CreateParams } from '..';
 
 export default class Create extends Sled<CreateParams, Payment> {
   async exec(params: CreateParams): Promise<Payment> {
+    if (this.result) return;
     let payment = params.payment;
     if (!payment) {
       //前置钩子未生成任何支付记录
