@@ -23,6 +23,7 @@ export default {
   Order_Failed: '失败',
   Goods: '商品',
   'Can not create any order': '未能创建任何订单',
+  'Order state error': '订单状态错误',
   Shipping: '运费',
   'Total Amount': '总金额',
   'Pay Amount': '支付金额',

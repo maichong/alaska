@@ -41,17 +41,17 @@ export default class Init extends Sled<any, void> {
 
     RegisterAbility.run({
       id: 'alaska-order.Order.cancel:user',
-      title: 'cancel user Order'
+      title: 'cancel own Order'
     });
 
     RegisterAbility.run({
       id: 'alaska-order.Order.receive:user',
-      title: 'receive user Order'
+      title: 'receive own Order'
     });
 
     RegisterAbility.run({
       id: 'alaska-order.Order.refund:user',
-      title: 'apply refund user Order'
+      title: 'apply refund own Order'
     });
   }
 }

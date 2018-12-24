@@ -46,6 +46,7 @@ export default class Refund extends Sled<RefundParams, Order> {
     order.refundReason = refundReason;
     order.refundAmount = refundAmount + (order.refundAmount || 0);
     order.refundQuantity = refundQuantity + (order.refundQuantity || 0);
+    order.state = 800;
     await order.save();
     order.createLog('Apply refund');
 
