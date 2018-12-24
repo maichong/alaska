@@ -13,7 +13,7 @@ export default class AdminMenu extends Model {
   static label = 'Admin Menu';
   static icon = 'bars';
   static titleField = 'label';
-  static defaultColumns = 'icon label type parent sort service link ability super activated';
+  static defaultColumns = 'icon label type nav parent sort service link ability super activated';
   static defaultSort = '-sort';
   static searchFields = '_id label link parent';
   static defaultFilters = defaultFilters;
@@ -72,6 +72,7 @@ export default class AdminMenu extends Model {
       type: 'relationship',
       ref: 'AdminNav',
       hidden: 'parent',
+      default: 'default'
     },
     service: {
       label: 'Service',
