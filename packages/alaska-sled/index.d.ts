@@ -1,6 +1,7 @@
 import { MainService, Service, Extension, ObjectMap } from 'alaska';
 import QueueDriver, { QueueDriverOptions } from 'alaska-queue';
 import SubscribeDriver, { SubscribeDriverOptions } from 'alaska-subscribe';
+import LockDriver, { LockDriverOptions } from 'alaska-lock';
 
 declare module 'alaska' {
   export interface Service {
@@ -43,6 +44,7 @@ export interface SledSettings {
 export interface SledConfig {
   queue?: QueueDriverOptions;
   subscribe?: SubscribeDriverOptions;
+  lock?: LockDriverOptions;
 }
 
 export interface SledTask<T, R> {
@@ -64,7 +66,7 @@ export interface SledTask<T, R> {
 export interface SledMessage<R> {
   id: string;
   result?: R;
-  error?: Error;
+  error?: string;
 }
 
 export class Sled<T, R> {
@@ -74,13 +76,26 @@ export class Sled<T, R> {
   static config: SledConfig;
   static main: MainService;
   static service: Service;
+  /**
+   * 查找模型类
+   * @param {string} ref sledName or id
+   */
   static lookup(ref: string): typeof Sled | null;
-  static run<T, R>(this: { new(params: T): Sled<T, R> }, params?: T): Promise<R>;
+  /**
+   * 执行Sled
+   * @param {any} params 
+   */
+  static run<T, R>(this: { new(params: T): Sled<T, R> }, params?: T, lock?: boolean): Promise<R>;
   static pre(fn: Function): void;
   static post(fn: Function): void;
+  /**
+   * 从队列中读取一个Sled任务
+   * @param {number} [timeout] 读取超时,单位毫秒,默认Infinity
+   */
   static read<S extends Sled<any, any>>(this: { new(): S }, timeout?: number): Promise<S | null>;
-  static createQueueDriver<T, R>(): QueueDriver<SledTask<T, R>, any, any>;
-  static createSubscribeDriver<T>(): SubscribeDriver<SledMessage<T>, any, any>;
+  static createQueueDriver<T, R>(): QueueDriver<SledTask<T, R>>;
+  static createSubscribeDriver<T>(): SubscribeDriver<SledMessage<T>>;
+  static createLockDriver<T>(): LockDriver;
 
   readonly instanceOfSled: true;
   readonly sledName: string;
@@ -89,6 +104,7 @@ export class Sled<T, R> {
   readonly config: SledConfig;
   fromQueue?: boolean;
   fromJSON?: Function;
+  toJSON?: Function;
 
   /**
    * 队列任务，只有从队列中读取的Sled或将Sled发送到队列后才有此属性
@@ -112,21 +128,22 @@ export class Sled<T, R> {
    * 执行sled
    * @returns {any}
    */
-  run(): Promise<R>;
+  run(lock?: boolean): Promise<R>;
 
   /**
    * 将Sled发送到队列
-   * @param {number} [timeout] Sled超时时间,单位秒,默认60天
+   * @param {number} [timeout] Sled超时时间,单位毫秒,默认60天
    * @param {boolean} [notify] Sled执行后是否需要通知,默认false
    */
-  // send(timeout?: number, notify?: boolean): Promise<void>;
+  send(timeout?: number, notify?: boolean): Promise<SledTask<T, R>>;
+  send(notify?: boolean): Promise<SledTask<T, R>>;
 
   /**
    * 等待队列中sled执行
-   * @param {number} [waitTimeout] 超时时间,单位秒,默认为Infinity,超时后将返回null
-   * @param {number} [sledTimeout] Sled执行超时时间,单位秒,默认为60天
+   * @param {number} [waitTimeout] 超时时间,单位毫秒,默认为Infinity,超时后将返回null
+   * @param {number} [sledTimeout] Sled执行超时时间,单位毫秒,默认为60天
    */
-  // wait(waitTimeout?: number, sledTimeout?: number): Promise<any>;
+  wait(waitTimeout?: number, sledTimeout?: number): Promise<null | R>
 
   exec(params: T): Promise<R> | R;
 }

@@ -8,5 +8,5 @@ export interface RedisLockDriverOptions extends LockDriverOptions {
   servers: ServerConfig | ServerConfig[];
 }
 
-export default class RedisLockDriver<T> extends CacheDriver<T, RedisLockDriverOptions, Redlock> {
+export default class RedisLockDriver extends CacheDriver<RedisLockDriverOptions, Redlock> {
 }

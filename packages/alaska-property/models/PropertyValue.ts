@@ -62,7 +62,6 @@ export default class PropertyValue extends Model {
     if (!this.createdAt) {
       this.createdAt = new Date();
     }
-    // $Flow count
     let count = await PropertyValue.countDocuments({
       prop: this.prop,
       title: this.title

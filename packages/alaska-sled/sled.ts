@@ -1,8 +1,10 @@
 import * as _ from 'lodash';
 import * as collie from 'collie';
+import * as random from 'string-random';
 import { MainService, Service } from 'alaska';
 import QueueDriver from 'alaska-queue';
 import SubscribeDriver from 'alaska-subscribe';
+import LockDriver from 'alaska-lock';
 import { SledConfig, SledTask, SledMessage } from '.';
 
 export default class Sled<T, R> {
@@ -17,11 +19,13 @@ export default class Sled<T, R> {
 
   readonly instanceOfSled: true;
   params: T;
+  taskId?: string;
   task?: SledTask<T, R>;
   result?: R;
   error?: Error;
   fromQueue?: boolean;
   fromJSON?: Function;
+  toJSON?: Function;
   exec: (params: T) => Promise<R> | R;
 
   /**
@@ -42,23 +46,26 @@ export default class Sled<T, R> {
 
   /**
    * 查找模型类
-   * @param {string} ref modelName or id
+   * @param {string} ref sledName or id
    */
   static lookup(ref: string): typeof Sled | null {
     let service: Service = this.service || this.main;
     if (ref.indexOf('.') > -1) {
       let [serviceId, sledName] = ref.split('.');
       ref = sledName;
-      let serviceModule = this.main.modules.services[serviceId];
-      if (!serviceModule) return null;
-      service = serviceModule.service;
+      service = this.main.allServices[serviceId];
+      if (!service) return null;
     }
     return service.sleds[ref] || null;
   }
 
-  static run<T, R>(this: { new(params: T): Sled<T, R> }, params?: T): Promise<R> {
+  /**
+   * 执行Sled
+   * @param {any} params 
+   */
+  static run<T, R>(this: { new(params: T): Sled<T, R> }, params?: T, lock?: boolean): Promise<R> {
     let sled = new this(params);
-    return sled.run();
+    return sled.run(lock);
   }
 
   /**
@@ -67,9 +74,9 @@ export default class Sled<T, R> {
    * @returns {Object}
    */
   static get config(): SledConfig {
+    let { service, sledName } = this;
     if (!this._config) {
-      let { service, id } = this;
-      let name = `sled.${id}`;
+      let name = `sled.${sledName}`;
       let config = service.config.get(name, null, true);
       if (!config) {
         config = service.config.get('sled', null, true);
@@ -77,7 +84,7 @@ export default class Sled<T, R> {
       this._config = config;
     }
     if (!this._config) {
-      throw new ReferenceError('sled config not found');
+      throw new ReferenceError(`sled config not found [sled.${sledName}]`);
     }
     return this._config;
   }
@@ -104,9 +111,13 @@ export default class Sled<T, R> {
     this._post.push(fn);
   }
 
-  static async read<S extends Sled<any, any>>(this: { new(): S }, timeout?: number): Promise<S | null> {
-    let queue = (this.constructor as typeof Sled).createQueueDriver();
-    let task: SledTask<any, any> = await queue.pop(timeout);
+  /**
+   * 从队列中读取一个Sled任务
+   * @param {number} [timeout] 读取超时,单位毫秒,默认Infinity
+   */
+  static async read(timeout?: number): Promise<Sled<any, any> | null> {
+    let queue = (this as typeof Sled).createQueueDriver();
+    let task: SledTask<any, any> = await queue.pop(timeout || 0);
     queue.free();
     if (!task) {
       return null;
@@ -124,19 +135,16 @@ export default class Sled<T, R> {
     }
     sled.fromQueue = true;
     sled.task = task;
-    // $Flow
     return sled;
   }
 
   /**
    * 获取Sled队列驱动
-   * @private
-   * @returns {alaska$QueueDriver}
    */
-  static createQueueDriver<T, R>(): QueueDriver<SledTask<T, R>, any, any> {
-    let { config, id } = this;
+  static createQueueDriver<T, R>(): QueueDriver<SledTask<T, R>> {
+    let { config, id, sledName } = this;
     if (!config.queue) {
-      throw new ReferenceError('sled queue config not found');
+      throw new ReferenceError(`sled queue config not found [sled.${sledName}.queue]`);
     }
     // @ts-ignore
     return this.service.createDriver(_.assign({ key: `queue:${id}` }, config.queue));
@@ -144,17 +152,26 @@ export default class Sled<T, R> {
 
   /**
    * 获取Sled订阅驱动
-   * @private
-   * @param {string} channel 频道ID
-   * @returns {alaska$SubscribeDriver}
    */
-  static createSubscribeDriver<R>(): SubscribeDriver<SledMessage<R>, any, any> {
-    let { config, id } = this;
+  static createSubscribeDriver<R>(): SubscribeDriver<SledMessage<R>> {
+    let { config, id, sledName } = this;
     if (!config.subscribe) {
-      throw new ReferenceError('sled subscribe config not found');
+      throw new ReferenceError(`sled subscribe config not found [sled.${sledName}.subscribe]`);
     }
     // @ts-ignore
-    return this.service.createDriver(_.defaults({ channel: `subscribe:${id}` }, config.subscribe));
+    return this.service.createDriver(_.assign({ channel: `subscribe:${id}` }, config.subscribe));
+  }
+
+  /**
+   * 创建Lock驱动
+   */
+  static createLockDriver(): LockDriver {
+    let { config, id, sledName } = this;
+    if (!config.lock) {
+      throw new ReferenceError(`sled lock config not found [sled.${sledName}.lock]`);
+    }
+    // @ts-ignore
+    return this.service.createDriver(_.assign({ resource: `lock:${id}` }, config.lock));
   }
 
   /**
@@ -195,12 +212,19 @@ export default class Sled<T, R> {
    * 执行sled
    * @returns {any}
    */
-  async run(): Promise<R> {
+  async run(lock?: boolean): Promise<R> {
     if (this.error) {
       throw this.error;
     }
     if (typeof this.result !== 'undefined') {
       return this.result;
+    }
+
+    let locker: LockDriver;
+    if (lock) {
+      // 上锁
+      locker = (this.constructor as typeof Sled).createLockDriver();
+      await locker.lock();
     }
 
     if ((this.constructor as typeof Sled)._pre) {
@@ -209,6 +233,10 @@ export default class Sled<T, R> {
 
     // 如果已经有result,说明在前置hooks中已经执行完成任务
     if (typeof this.result !== 'undefined') {
+      if (locker) {
+        await locker.unlock();
+        locker.free();
+      }
       return this.result;
     }
 
@@ -224,6 +252,10 @@ export default class Sled<T, R> {
         await subscribe.publish({ id: this.task.id, error: error.message });
         subscribe.free();
       }
+      if (locker) {
+        await locker.unlock();
+        locker.free();
+      }
       throw error;
     }
     this.result = result;
@@ -238,6 +270,104 @@ export default class Sled<T, R> {
       await subscribe.publish({ id: this.task.id, result });
       subscribe.free();
     }
+    if (locker) {
+      await locker.unlock();
+      locker.free();
+    }
     return result;
+  }
+
+  /**
+   * 将Sled发送到队列
+   * @param {number} [timeout] Sled超时时间,单位毫秒,默认60天
+   * @param {boolean} [notify] Sled执行后是否需要通知,默认false
+   */
+  async send(timeout?: number, notify?: boolean): Promise<SledTask<T, R>> {
+    if (typeof notify === 'undefined' && typeof timeout === 'boolean') {
+      notify = timeout;
+      timeout = 0;
+    }
+    if (this.result || this.error) {
+      throw new Error('can not send a finished sled');
+    }
+    //如果已经有task属性,代表已经发送到队列,或者是从队列中读取的sled
+    if (this.task) {
+      return this.task;
+    }
+    //默认60天超时
+    timeout = timeout || 60 * 86400 * 1000;
+
+    let { params, id, taskId } = this;
+    if (this.toJSON) {
+      params = this.toJSON();
+    }
+
+    if (!taskId) {
+      taskId = 'sled.' + id + '.' + random(10);
+      this.taskId = taskId;
+    }
+    let task: SledTask<T, R> = {
+      id: taskId,
+      sled: id,
+      sledName: this.sledName,
+      notify: notify || false,
+      params,
+      result: undefined,
+      error: undefined,
+      timeout: timeout || 0,
+      createdAt: new Date(),
+      expiredAt: new Date(Date.now() + (timeout * 1000))
+    };
+
+    let queue = (this.constructor as typeof Sled).createQueueDriver();
+    await queue.push(task);
+    queue.free();
+    return task;
+  }
+
+  /**
+   * 等待队列中sled执行
+   * @param {number} [waitTimeout] 超时时间,单位毫秒,默认为Infinity,超时后将返回null
+   * @param {number} [sledTimeout] Sled执行超时时间,单位毫秒,默认为60天
+   */
+  async wait(waitTimeout?: number, sledTimeout?: number): Promise<null | R> {
+    if (this.result) {
+      return this.result;
+    }
+    if (this.error) {
+      throw this.error;
+    }
+
+    if (!this.taskId) {
+      this.taskId = 'sled.' + this.id + '.' + random(10);
+    }
+
+    if (!this.task) {
+      // 异步将sled插入队列
+      this.send(sledTimeout, true);
+    }
+
+    let start = Date.now();
+    let subscribe = (this.constructor as typeof Sled).createSubscribeDriver<R>();
+    await subscribe.subscribe();
+    while (true) {
+      let timeout;
+      if (waitTimeout) {
+        timeout = waitTimeout - (Date.now() - start);
+        if (timeout < 1) timeout = 1;
+      }
+      let msg = await subscribe.read(timeout);
+      if (msg && msg.id !== this.taskId) continue; // 不是当前Sled
+      await subscribe.cancel();
+      subscribe.free();
+      if (!msg) return null; // 超时
+      if (typeof msg.result !== 'undefined') {
+        this.result = msg.result;
+      } else if (msg.error) {
+        this.error = new Error(msg.error);
+        throw this.error;
+      }
+      return this.result;
+    }
   }
 }

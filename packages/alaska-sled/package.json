@@ -13,6 +13,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "is-promise": "^2.1.0"
+    "is-promise": "^2.1.0",
+    "string-random": "^0.1.3"
   }
 }

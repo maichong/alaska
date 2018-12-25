@@ -4,7 +4,7 @@ export interface QueueDriverOptions extends DriverOptions {
   key: string;
 }
 
-export default class QueueDriver<T, O extends QueueDriverOptions, D> extends Driver<O, D> {
+export default class QueueDriver<T, O extends QueueDriverOptions=any, D=any> extends Driver<O, D> {
   static readonly classOfQueueDriver: true;
   readonly instanceOfQueueDriver: true;
 

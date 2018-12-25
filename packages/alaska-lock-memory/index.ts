@@ -8,7 +8,7 @@ import { MemoryLockDriverOptions, LockMap } from 'alaska-lock-memory';
 const debug = Debugger('alaska-lock-memory');
 const locks: LockMap = new Map();
 
-export default class MemoryLockDriver<T> extends LockDriver<T, MemoryLockDriverOptions, LockMap> {
+export default class MemoryLockDriver extends LockDriver<MemoryLockDriverOptions, LockMap> {
   id: string;
 
   constructor(options: MemoryLockDriverOptions, service: Service) {
@@ -25,7 +25,7 @@ export default class MemoryLockDriver<T> extends LockDriver<T, MemoryLockDriverO
     if (!resource) {
       throw new Error('Missing resource for lock');
     }
-    ttl = ttl || this.options.ttl || 1000;
+    ttl = ttl || this.options.ttl || 2000;
     let id = random();
     this.id = id;
     let me = this;
@@ -71,7 +71,7 @@ export default class MemoryLockDriver<T> extends LockDriver<T, MemoryLockDriverO
     let resource = this.options.resource;
     let item = locks.get(resource);
     if (!item || item.id !== this.id) return Promise.reject(new Error('Extend lock failed.'));
-    ttl = ttl || this.options.ttl || 1000;
+    ttl = ttl || this.options.ttl || 2000;
     clearTimeout(item.timer);
     item.expiredAt += ttl;
     let me = this;

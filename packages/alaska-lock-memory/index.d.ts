@@ -11,5 +11,5 @@ export interface Lock {
 
 export type LockMap = Map<string, Lock>;
 
-export default class MemoryLockDriver<T> extends CacheDriver<T, MemoryLockDriverOptions, LockMap> {
+export default class MemoryLockDriver extends CacheDriver<MemoryLockDriverOptions, LockMap> {
 }

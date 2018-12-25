@@ -4,7 +4,7 @@ export interface SubscribeDriverOptions extends DriverOptions {
   channel: string;
 }
 
-export default class SubscribeDriver<T, O extends SubscribeDriverOptions, D> extends Driver<O, D> {
+export default class SubscribeDriver<T, O extends SubscribeDriverOptions=any, D=any> extends Driver<O, D> {
   static readonly classOfSubscribeDriver: true;
   readonly instanceOfSubscribeDriver: true;
 

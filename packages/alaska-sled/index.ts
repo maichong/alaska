@@ -1,16 +1,16 @@
 import * as _ from 'lodash';
 import { Extension, Service, MainService } from 'alaska';
 import { ServiceModules } from 'alaska-modules';
-import { SledGenerator, SledSettings } from '.';
+import { SledGenerator, SledSettings, Sled as SledType } from '.';
 import Sled from './sled';
 import debug from './debug';
 
 export { Sled };
 
-function setSledDefaults(sled: typeof Sled, service: Service, name: string) {
+function setSledDefaults(sled: typeof SledType, service: Service, name: string) {
   if (!sled.service) sled.service = service;
   if (!sled.sledName) sled.sledName = name;
-  if (!sled.id) sled.id = `${sled.id}.${name}`;
+  if (!sled.id) sled.id = `${service.id}.${name}`;
 }
 
 export default class SledExtension extends Extension {
@@ -23,7 +23,7 @@ export default class SledExtension extends Extension {
     _.forEach(main.modules.services, (s: ServiceModules) => {
       let service: Service = s.service;
       service.sleds = {};
-      _.forEach(s.sleds, (sled: typeof Sled, name: string) => {
+      _.forEach(s.sleds, (sled: typeof SledType, name: string) => {
         service.sleds[name] = sled;
         setSledDefaults(sled, service, name);
       });
