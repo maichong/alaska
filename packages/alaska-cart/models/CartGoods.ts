@@ -23,6 +23,7 @@ export default class CartGoods extends Model {
   };
 
   static api = {
+    count: 2,
     list: 2,
     create: 2,
     remove: 2,

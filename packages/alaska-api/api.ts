@@ -28,9 +28,38 @@ export async function count(ctx: Context) {
 
   let filters = await model.createFiltersByContext(ctx);
 
-  ctx.body = {
-    count: await model.countDocuments(mergeFilters(filters, abilityFilters))
-  };
+  let finalFilters = mergeFilters(filters, abilityFilters);
+
+  let groups: string[] = (ctx.state.groupby || ctx.query._groupby || '').split(',');
+  if (groups.length) {
+    groups = groups.filter((g) => model.fields[g] && model.fields[g].protected !== true);
+  }
+
+  if (groups.length) {
+    let _id: any = {};
+    groups.forEach((g) => {
+      _id[g] = `$${g}`;
+    })
+    let query = model.aggregate();
+    if (_.size(finalFilters)) {
+      query.match(finalFilters);
+    }
+    let result = await query.group({ _id, count: { $sum: 1 } });
+    let res = {
+      count: 0,
+      gorups: [] as any[]
+    };
+    _.forEach(result, (r) => {
+      r._id.count = r.count;
+      res.count += r.count;
+      res.gorups.push(r._id);
+    });
+    ctx.body = res;
+  } else {
+    ctx.body = {
+      count: await model.countDocuments(finalFilters)
+    };
+  }
 }
 
 export async function paginate(ctx: Context) {
