@@ -5,6 +5,7 @@ import { SkuService, Sku } from 'alaska-sku';
 import orderService, { CreateParams } from 'alaska-order';
 import Order from 'alaska-order/models/Order';
 import OrderGoods from 'alaska-order/models/OrderGoods';
+import { CartService } from 'alaska-cart';
 
 interface GoodsParams {
   goods: string;
@@ -19,6 +20,11 @@ interface Params extends CreateParams {
 let skuService: SkuService;
 orderService.resolveConfig().then(() => {
   skuService = orderService.main.allServices['alaska-sku'] as SkuService;
+});
+
+let cartService: CartService;
+orderService.resolveConfig().then(() => {
+  cartService = orderService.main.allServices['alaska-cart'] as CartService;
 });
 
 export async function pre() {
@@ -122,6 +128,19 @@ export async function pre() {
 }
 
 export async function post() {
+  let { goods, user } = this.params;
+  // 创建订单后，删除购物车内的对应商品
+  if (cartService && user && goods && goods.length) {
+    const CartGoods = cartService.models.CartGoods;
+    for (let g of goods) {
+      let conditions: any = { user, goods: g.goods };
+      if (g.sku) {
+        conditions.sku = g.sku;
+      }
+      CartGoods.remove(conditions).then();
+    }
+  }
+
   let orders = this.params.orders;
   // TODO: 减少商品库存
   // for (let order of orders) {
