@@ -14,7 +14,7 @@ export default class Create extends Sled<CreateParams, Order[]> {
     if (!params.record && _.isEmpty(params.records)) service.error('Can not create any order');
     let records = _.size(params.records) ? params.records : [params.record];
     if (!params.pre) {
-      let paymentTimeout = await settingsService.get('paymentTimeout');
+      let paymentTimeout = await settingsService.get('order.paymentTimeout');
       for (let order of records) {
         for (let goods of order.goods) {
           await goods.save();

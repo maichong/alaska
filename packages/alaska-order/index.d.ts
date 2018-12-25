@@ -43,6 +43,19 @@ export class OrderService extends Service {
     RefundReject: typeof RefundReject;
     RefundAccept: typeof RefundAccept;
   };
+
+  /**
+   * 检查支付超时Interval Timer
+   */
+  checkPayTimer: NodeJS.Timer;
+  /**
+   * 检查收货超时Interval Timer
+   */
+  checkReceiveTimer: NodeJS.Timer;
+  /**
+   * 检查退款超时Interval Timer
+   */
+  checkRefundTimer: NodeJS.Timer;
 }
 
 declare const orderService: OrderService;

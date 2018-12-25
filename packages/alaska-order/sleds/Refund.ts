@@ -38,7 +38,7 @@ export default class Refund extends Sled<RefundParams, Order> {
       await goods.save();
     }
     if (!order.refundTimeout) {
-      let refundTimeout = await settingsService.get('refundTimeout');
+      let refundTimeout = await settingsService.get('order.refundTimeout');
       if (refundTimeout) {
         order.refundTimeout = moment().add(refundTimeout, 's').toDate();
       }

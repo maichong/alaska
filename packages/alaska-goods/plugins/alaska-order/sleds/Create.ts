@@ -92,7 +92,8 @@ export async function pre() {
         type: 'goods',
         pic: item.pic,
         user: params.user._id,
-        currency: item.currency
+        currency: item.currency,
+        state: 200
       });
       order.address = params.address;
       // @ts-ignore

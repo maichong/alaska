@@ -19,7 +19,7 @@ export default class Ship extends Sled<ShipParams, Order[]> {
     for (let order of records) {
       order.state = 500;
       if (!order.receiveTimeout) {
-        let receiveTimeout = await settingsService.get('receiveTimeout');
+        let receiveTimeout = await settingsService.get('order.receiveTimeout');
         if (receiveTimeout) {
           order.receiveTimeout = moment().add(receiveTimeout, 's').toDate();
         }
