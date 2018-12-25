@@ -144,6 +144,11 @@ export default class Service {
     _.forEach(serviceModules, (s: ServiceModules, sid: string) => {
       // console.log('ServiceModules', s);
       let service = s.service;
+
+      // 设置主Service
+      // @ts-ignore readonly
+      service.main = main;
+
       service.config.apply(s.config);
       main.allServices[sid] = service;
 
@@ -166,14 +171,6 @@ export default class Service {
         if (!sub) return;
         service.services[sid] = sub.service;
       });
-
-      // 设置主Service
-      if (service === main) return;
-      if (service.main && service.main !== main) {
-        throw new Error(`Update main service error on ${sid}!`);
-      }
-      // @ts-ignore readonly
-      service.main = main;
     });
 
     // 加载扩展库
