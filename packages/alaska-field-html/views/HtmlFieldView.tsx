@@ -69,7 +69,7 @@ class HtmlFieldView extends React.Component<Props, HtmlState> {
     } else if (typeof UE !== 'undefined') {
       editor = <script id={this.state.id} type="text/plain" style={{ width: '100%', height: '300px' }}></script>;
     } else {
-      editor = <div className="form-control" style={{ border: 'none' }}>请引用ueditor相关文件</div>;
+      editor = <div className="form-control" style={{ border: 'none' }}>Missing UEditor</div>;
     }
 
     let { help } = field;

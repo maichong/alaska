@@ -263,6 +263,7 @@ export interface FieldGroup {
   path: string;
   title?: string;
   form?: boolean;
+  body?: boolean;
   panel?: boolean;
   color?: Colors;
   wrapper?: string; // 自定义Wrapper占位符

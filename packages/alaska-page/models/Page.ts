@@ -5,8 +5,14 @@ export default class Page extends Model {
   static icon = 'file-text';
   static defaultColumns = '_id title createdAt';
   static defaultSort = '-createdAt';
-
   static searchFields = 'title';
+  static listLimit = 100;
+
+  static api = {
+    list: 1,
+    paginate: 1,
+    show: 1
+  };
 
   static fields = {
     _id: {

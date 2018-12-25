@@ -509,6 +509,7 @@ export type ModelFieldList = ObjectMap<1>;
 export interface FieldGroup {
   title?: string;
   panel?: boolean;
+  body?: boolean;
   form?: boolean;
   color?: Colors;
   wrapper?: string; // 自定义Wrapper占位符

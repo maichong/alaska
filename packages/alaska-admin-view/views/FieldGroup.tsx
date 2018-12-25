@@ -107,7 +107,8 @@ class FieldGroup extends React.Component<Props> {
       title,
       path,
       settings,
-      wrapper
+      wrapper,
+      body
     } = props;
 
     if (checkAbility(props.hidden, record)) return ''; // hidden
@@ -134,10 +135,13 @@ class FieldGroup extends React.Component<Props> {
     }
     if (panel !== false) {
       let heading = title ? <div className="card-title">{tr(title)}</div> : null;
+      if (body !== false) {
+        el = <div className="card-body">{el}</div>;
+      }
       el = (
-        <div className={`${model.id}-group-${path} card`}>
+        <div className={`${model.serviceId}_${model.modelName}-group-${path} card`}>
           {heading}
-          <div className="card-body">{el}</div>
+          {el}
         </div>
       );
     } else {
