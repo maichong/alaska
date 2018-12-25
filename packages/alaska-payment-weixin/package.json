@@ -1,0 +1,24 @@
+{
+  "name": "alaska-payment-weixin",
+  "version": "0.13.2",
+  "description": "Weixin pay plugin for alaska payment service..",
+  "keywords": [
+    "alaska",
+    "alaska-payment",
+    "alaska-payment-plugin"
+  ],
+  "alaska": "plugin",
+  "alaska-plugin": "alaska-payment",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-payment-weixin",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "xml2js": "^0.4.19",
+    "string-random": "^0.1.3"
+  },
+  "peerDependencies": {
+    "alaska-payment": "^0.13.2"
+  }
+}

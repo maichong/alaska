@@ -1,5 +1,5 @@
 export default {
-  prefix: '',
+  prefix: '/payment',
   services: {
     'alaska-user': {}
   }

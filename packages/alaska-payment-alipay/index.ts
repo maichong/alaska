@@ -3,12 +3,12 @@ import * as fs from 'fs';
 import * as crypto from 'crypto';
 import PAYMENT, { PaymentPlugin } from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
-import { ObjectMap } from '@samoyed/types';
+import { ObjectMap } from 'alaska';
 import { AlipayConfig, CallbackData } from '.';
 
 const GATEWAY = 'https://mapi.alipay.com/gateway.do?';
 
-export default class AlipayPlugin extends PaymentPlugin {
+export default class AlipayPaymentPlugin extends PaymentPlugin {
   service: typeof PAYMENT;
   label: string;
   _config: AlipayConfig;

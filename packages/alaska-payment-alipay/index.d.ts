@@ -14,6 +14,6 @@ export interface CallbackData {
   sign?: string;
 }
 
-export default class AlipayPlugin extends PaymentPlugin {
+export default class AlipayPaymentPlugin extends PaymentPlugin {
   verify(data: AlipayConfig): boolean;
 }
