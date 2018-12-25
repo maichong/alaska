@@ -1,8 +1,9 @@
-import { Model } from 'alaska-model';
+import { RecordId, Model } from 'alaska-model';
 import { Context } from 'alaska-http';
 import balanceService from 'alaska-balance';
 import Category from 'alaska-category/models/Category';
 import { Sku } from 'alaska-sku';
+import { Image } from 'alaska-field-image';
 
 function defaultFilters(ctx: Context) {
   if (ctx.service.id === 'alaska-admin') return null;
@@ -28,7 +29,7 @@ export default class Goods extends Model {
   static defaultFilters = defaultFilters;
 
   static scopes = {
-    list: 'title pic price discount discountStartAt discountEndAt inventory'
+    list: 'title pic brief newGoods hotGoods cat price discount discountStartAt discountEndAt inventory'
   };
 
   static groups = {
@@ -74,6 +75,7 @@ export default class Goods extends Model {
       label: 'Categories',
       type: 'relationship',
       ref: Category,
+      index: true,
       multi: true,
       protected: true,
       hidden: true
@@ -193,11 +195,11 @@ export default class Goods extends Model {
 
   title: string;
   brief: string;
-  pic: Object;
-  pics: Object[];
-  cat: Object;
-  cats: Object[];
-  brand: Object;
+  pic: Image;
+  pics: Image[];
+  cat: RecordId;
+  cats: RecordId[];
+  brand: RecordId;
   newGoods: boolean;
   hotGoods: boolean;
   seoTitle: string;
@@ -231,7 +233,7 @@ export default class Goods extends Model {
 
     if (this.isModified('cat')) {
       let cat: Category = await Category.findById(this.cat);
-      this.cats = cat ? cat.parents : [];
+      this.cats = cat ? cat.parents.concat([this.cat]) : [this.cat];
     }
   }
 }

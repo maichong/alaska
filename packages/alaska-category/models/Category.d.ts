@@ -1,4 +1,4 @@
-import { Model } from 'alaska-model';
+import { RecordId, Model } from 'alaska-model';
 import { Image } from 'alaska-field-image';
 
 declare class Category extends Model {
@@ -6,9 +6,9 @@ declare class Category extends Model {
   icon: Image;
   pic: Image;
   desc: string;
-  parent: Object;
-  parents: Object[];
-  children: Object[];
+  parent: RecordId;
+  parents: RecordId[];
+  children: RecordId[];
   activated: boolean;
   sort: number;
   createdAt: Date;

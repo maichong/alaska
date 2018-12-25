@@ -3,11 +3,11 @@ import { Model } from 'alaska-model';
 declare class Goods extends Model {
   title: string;
   brief: string;
-  pic: Object;
-  pics: Object[];
-  cat: Object;
-  cats: Object[];
-  brand: Object;
+  pic: Image;
+  pics: Image[];
+  cat: RecordId;
+  cats: RecordId[];
+  brand: RecordId;
   newGoods: boolean;
   hotGoods: boolean;
   seoTitle: string;

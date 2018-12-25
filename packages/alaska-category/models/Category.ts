@@ -1,6 +1,7 @@
-import { Model } from 'alaska-model';
+import { RecordId, Model } from 'alaska-model';
 import * as _ from 'lodash';
-import service from '../';
+import { Image } from 'alaska-field-image';
+import service from '..';
 
 export default class Category extends Model {
   static label = 'Category';
@@ -102,12 +103,12 @@ export default class Category extends Model {
 
   group: string;
   title: string;
-  icon: Object;
-  pic: Object;
+  icon: Image;
+  pic: Image;
   desc: string;
-  parent: Object;
-  parents: Object[];
-  children: Object[];
+  parent: RecordId;
+  parents: RecordId[];
+  children: RecordId[];
   activated: boolean;
   sort: number;
   createdAt: Date;
