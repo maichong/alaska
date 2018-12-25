@@ -157,7 +157,7 @@ export interface RefundParams {
     refundReason?: string;
     refundAmount?: number;
     refundQuantity?: number;
-  }
+  };
 }
 
 export interface RefundRejectParams {

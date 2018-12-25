@@ -91,7 +91,7 @@ export default class Init extends Sled<{}, void> {
           }
 
           if (['read', 'create', 'remove', 'update'].includes(action) && Model.fields.user) {
-            let userAbility = id + ':user';
+            let userAbility = `${id}:user`;
             if (!abilities[userAbility]) {
               await RegisterAbility.run({
                 id: userAbility,

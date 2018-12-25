@@ -99,7 +99,7 @@ export default class ApiExtension extends Extension {
         if (
           !_.size(s.api) // Service API
           && !_.find(s.plugins, (plugin) => !!_.size(plugin.api)) // 检查Plugin
-          && !_.find(service.models, (model) => model.api && !!_.find(model.api, level => level > 0)) // Model
+          && !_.find(service.models, (model) => model.api && !!_.find(model.api, (level) => level > 0)) // Model
         ) return;
 
         let apiPrefix = service.config.get('apiPrefix');

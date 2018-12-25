@@ -4,7 +4,7 @@ import * as crypto from 'crypto';
 import PAYMENT, { PaymentPlugin } from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 import { ObjectMap } from '@samoyed/types';
-import { AlipayConfig } from './';
+import { AlipayConfig, CallbackData } from '.';
 
 const GATEWAY = 'https://mapi.alipay.com/gateway.do?';
 
@@ -63,7 +63,7 @@ export default class AlipayPlugin extends PaymentPlugin {
    * @returns {any}
    */
   async createParams(payment: Payment): Promise<string> {
-    let params = Object.assign({}, this._config, {
+    let params: ObjectMap<any> = Object.assign({}, this._config, {
       subject: payment.title,
       out_trade_no: payment._id,
       total_fee: payment.amount
@@ -77,7 +77,7 @@ export default class AlipayPlugin extends PaymentPlugin {
     return GATEWAY + this.createQueryStringUrlencode(params);
   }
 
-  async verify(data: AlipayConfig) {
+  async verify(data: CallbackData) {
     let filtered = this.paramsFilter(data);
     let link = this.createQueryString(filtered);
     let verify = crypto.createVerify('RSA-SHA1');

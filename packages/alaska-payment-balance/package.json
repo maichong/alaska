@@ -1,0 +1,20 @@
+{
+  "name": "alaska-payment-balance",
+  "version": "0.13.2",
+  "description": "Alaska balance payment plugin",
+  "keywords": [
+    "alaska",
+    "alaska-payment",
+    "alaska-payment-plugin"
+  ],
+  "alaska": "plugin",
+  "alaska-plugin": "alaska-payment",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-payment-balance",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "peerDependencies": {
+    "alaska-payment": "^0.13.2"
+  }
+}

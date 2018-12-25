@@ -1,4 +1,24 @@
-import { Model } from 'alaska-model';
+import { RecordId, Model } from 'alaska-model';
+import { BalanceService } from 'alaska-balance';
+import service from '..';
+
+async function getCurrenciesAsync() {
+  await service.resolveConfig();
+  let balanceService = service.main.allServices['alaska-balance'] as BalanceService;
+  if (balanceService) {
+    return await balanceService.getCurrenciesAsync();
+  }
+  return [];
+}
+
+async function getDefaultCurrencyAsync() {
+  await service.resolveConfig();
+  let balanceService = service.main.allServices['alaska-balance'] as BalanceService;
+  if (balanceService) {
+    return await balanceService.getDefaultCurrencyAsync();
+  }
+  return { value: '' };
+}
 
 export default class Payment extends Model {
   static label = 'Payment Logs';
@@ -35,21 +55,27 @@ export default class Payment extends Model {
       ref: 'alaska-user.User',
       protected: true
     },
-    amount: {
-      label: 'Amount',
-      type: Number,
-      required: true,
-      protected: true
-    },
     type: {
       label: 'Payment Type',
       type: 'select',
       options: [] as any[],
       required: true
     },
+    currency: {
+      label: 'Currency',
+      type: 'select',
+      options: getCurrenciesAsync(),
+      default: getDefaultCurrencyAsync().then((cur) => cur.value)
+    },
+    amount: {
+      label: 'Amount',
+      type: Number,
+      required: true,
+      protected: true
+    },
     params: {
       label: 'Params',
-      type: String,
+      type: Object,
       required: true
     },
     state: {
@@ -79,10 +105,11 @@ export default class Payment extends Model {
   };
 
   title: string;
-  user: string;
+  user: RecordId;
+  currency: string;
   amount: number;
   type: string;
-  params: string;
+  params: any;
   state: number;
   failure: string;
   createdAt: Date;

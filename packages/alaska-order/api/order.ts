@@ -55,7 +55,7 @@ export async function create(ctx: Context) {
   ctx.body = {
     orders: results
   };
-};
+}
 
 /**
  * 用户取消订单
@@ -76,7 +76,7 @@ export async function cancel(ctx: Context) {
   let data = order.data();
   await userService.trimProtectedField(data, ctx.user, Order, order);
   ctx.body = data;
-};
+}
 
 /**
  * 买家确认收货
@@ -155,7 +155,7 @@ export async function remove(ctx: Context) {
     await Delete.run({ record: order });
   }
   ctx.body = {};
-};
+}
 
 // TODO: 商家端 confirm
 // TODO: 商家端 reject

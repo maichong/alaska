@@ -7,6 +7,10 @@ export interface AlipayConfig {
   rsa_public_key: string;
   notify_url: string;
   return_url: string;
+}
+
+export interface CallbackData {
+  [key: string]: any;
   sign?: string;
 }
 

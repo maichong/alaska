@@ -16,7 +16,7 @@ export default {
   codeCreator: async (order: Order) => {
     while (true) {
       let code = moment(order.createdAt).format('YYMMDD');
-      let max = await Order.findOne({ code: new RegExp('^' + code) }).sort('-code').select('code');
+      let max = await Order.findOne({ code: new RegExp(`^${code}`) }).sort('-code').select('code');
       let num = max ? parseInt(max.code.substr(6)) : 0;
       num += _.random(1, 20);
       code += _.padStart(num.toString(), Order.service.config.get('codeRandomLength'), '0');

@@ -2,6 +2,8 @@ import { Service, Plugin, ObjectMap } from 'alaska';
 import User from 'alaska-user/models/User';
 import Order from 'alaska-order/models/Order';
 import Payment from './models/Payment';
+import Create from './sleds/Create';
+import Complete from './sleds/Complete';
 
 export class PaymentPlugin extends Plugin {
   static readonly classOfPaymentPlugin: true;
@@ -25,6 +27,10 @@ export interface CompleteParams {
 export class PaymentService extends Service {
   models: {
     Payment: typeof Payment;
+  };
+  sleds: {
+    Create: typeof Create;
+    Complete: typeof Complete;
   };
 
   payments: ObjectMap<PaymentPlugin>;

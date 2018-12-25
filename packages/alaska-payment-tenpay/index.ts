@@ -147,11 +147,11 @@ export default class TenpayPlugin extends PaymentPlugin {
     }
     if (!format) return xml;
 
-    let arr = xml.trim().split(/\r?\n/).filter(item => item.trim());
+    let arr = xml.trim().split(/\r?\n/).filter((item) => item.trim());
     let total_data = arr.pop().substr(1).split(',`');
     let total_title = arr.pop().split(',');
     let list_title = arr.shift().split(',');
-    let list_data = arr.map(item => item.substr(1).split(',`'));
+    let list_data = arr.map((item) => item.substr(1).split(',`'));
     return { total_title, total_data, list_title, list_data };
   }
 

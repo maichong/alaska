@@ -19,7 +19,7 @@ export default class Refund extends Sled<RefundParams, Order> {
     if (order.state === 800) return order;
     if (![400, 500, 600, 800].includes(order.state)) service.error('Order state error');
 
-    let refundReason = params.reason || _.get(params, 'body.refundReason') || ''
+    let refundReason = params.reason || _.get(params, 'body.refundReason') || '';
     let refundAmount = params.amount || _.get(params, 'body.refundAmount') || service.error('refund amount is required');
     let refundQuantity = params.quantity || _.get(params, 'body.refundQuantity') || 0;
 
