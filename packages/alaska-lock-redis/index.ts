@@ -3,7 +3,7 @@ import { Service } from 'alaska';
 import * as redis from 'redis';
 import * as Redlock from 'redlock';
 import LockDriver from 'alaska-lock';
-import { RedisLockDriverOptions } from 'alaska-lock-redis';
+import { RedisLockDriverOptions } from '.';
 
 const debug = Debugger('alaska-lock-redis');
 

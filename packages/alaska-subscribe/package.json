@@ -9,7 +9,6 @@
     "subscribe",
     "publish"
   ],
-  "alaska-driver": "subscribe",
   "main": "index.js",
   "types": "index.d.js",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-subscribe",

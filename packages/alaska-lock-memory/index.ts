@@ -3,7 +3,7 @@ import { Service } from 'alaska';
 import LockDriver from 'alaska-lock';
 import * as random from 'string-random';
 import delay from 'delay';
-import { MemoryLockDriverOptions, LockMap } from 'alaska-lock-memory';
+import { MemoryLockDriverOptions, LockMap } from '.';
 
 const debug = Debugger('alaska-lock-memory');
 const locks: LockMap = new Map();

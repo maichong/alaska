@@ -6,7 +6,6 @@
     "alaska",
     "alaska-lock"
   ],
-  "alaska": "driver",
   "main": "index.js",
   "types": "index.d.ts",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-lock",
