@@ -31,7 +31,7 @@ export default class WeixinClientPlugin extends Plugin {
         }
 
         service.wxPlatforms[key] = new Weixin({
-          platform: config.platform,
+          channel: config.channel,
           appid: config.appid,
           secret: config.secret
         });

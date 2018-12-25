@@ -4,17 +4,13 @@ import { Weixin } from 'libwx';
 declare module 'alaska-client' {
   interface ClientService {
     wxPlatforms: {
-      // 这里的平台是 Client.platform
       [platform: string]: Weixin;
     };
   }
 }
 
 export interface ConfigData {
-  /**
-   * 这里的平台只是指libwx微信平台类型，和 Client.platform 没关系
-   */
-  platform: 'h5' | 'app' | 'wxapp';
+  channel: 'jssdk' | 'app' | 'wxapp';
   appid: string;
   secret: string;
   /**

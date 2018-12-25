@@ -15,6 +15,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "libwx": "^0.3.1"
+    "libwx": "^0.4.0"
   }
 }
