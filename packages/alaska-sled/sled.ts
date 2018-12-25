@@ -15,7 +15,7 @@ export default class Sled<T, R> {
   static service: Service;
   static _pre?: Function[];
   static _post?: Function[];
-  static _config?: SledConfig;
+  static _config?: null | SledConfig;
 
   readonly instanceOfSled: true;
   params: T;
@@ -74,17 +74,17 @@ export default class Sled<T, R> {
    * @returns {Object}
    */
   static get config(): SledConfig {
-    let { service, sledName } = this;
-    if (!this._config) {
-      let name = `sled.${sledName}`;
-      let config = service.config.get(name, null, true);
-      if (!config) {
-        config = service.config.get('sled', null, true);
-      }
-      this._config = config;
+    let config = this._getConfig();
+    if (!config) {
+      throw new ReferenceError(`sled config not found [sled.${this.sledName}]`);
     }
-    if (!this._config) {
-      throw new ReferenceError(`sled config not found [sled.${sledName}]`);
+    return config;
+  }
+
+  static _getConfig(): SledConfig {
+    let { service, sledName } = this;
+    if (typeof this._config === 'undefined') {
+      this._config = service.config.get(`sled.${sledName}`, null);
     }
     return this._config;
   }
@@ -218,6 +218,13 @@ export default class Sled<T, R> {
     }
     if (typeof this.result !== 'undefined') {
       return this.result;
+    }
+
+    if (typeof lock === 'undefined') {
+      let config = (this.constructor as typeof Sled)._getConfig();
+      if (config && config.lock) {
+        lock = true;
+      }
     }
 
     let locker: LockDriver;

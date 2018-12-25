@@ -76,6 +76,7 @@ export class Sled<T, R> {
   static config: SledConfig;
   static main: MainService;
   static service: Service;
+  static _getConfig(): SledConfig;
   /**
    * 查找模型类
    * @param {string} ref sledName or id
@@ -84,6 +85,8 @@ export class Sled<T, R> {
   /**
    * 执行Sled
    * @param {any} params 
+   * @param {boolean} [lock] 是否上锁，true 为上锁，false 为不上锁，默认根据Sled是否设置了lock驱动
+   * @returns {any}
    */
   static run<T, R>(this: { new(params: T): Sled<T, R> }, params?: T, lock?: boolean): Promise<R>;
   static pre(fn: Function): void;
@@ -126,6 +129,7 @@ export class Sled<T, R> {
 
   /**
    * 执行sled
+   * @param {boolean} [lock] 是否上锁，true 为上锁，false 为不上锁，默认根据Sled是否设置了lock驱动
    * @returns {any}
    */
   run(lock?: boolean): Promise<R>;
