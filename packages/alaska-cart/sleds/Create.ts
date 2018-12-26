@@ -46,13 +46,18 @@ export default class Create extends Sled<CreateParams, CartGoods> {
     }
 
     let record: CartGoods = await CartGoods.findOne(filters);
+    if (!record) {
+      record = new CartGoods(filters);
+      record.quantity = 0;
+    }
 
     // @ts-ignore parse int
     let quantity = parseInt(params.quantity) || 1;
-    if (!record) {
-      record = new CartGoods(filters);
+    if (params.replaceQuantity) {
+      // 替换数量
       record.quantity = quantity;
     } else {
+      // 累加数量
       record.quantity += quantity;
     }
     if (record.quantity > inventory) {

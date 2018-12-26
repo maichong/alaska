@@ -31,7 +31,11 @@ export async function update(ctx: Context) {
   if (!await userService.hasAbility(ctx.user, 'alaska-cart.CartGoods.update', record)) ctx.throw(403);
 
   record = await Create.run({
-    user: ctx.user._id, goods: record.goods, sku: record.sku, quantity: body.quantity
+    user: ctx.user._id,
+    goods: record.goods,
+    sku: record.sku,
+    quantity: body.quantity,
+    replaceQuantity: true
   });
   ctx.state.record = record;
   let data = record.data('create');

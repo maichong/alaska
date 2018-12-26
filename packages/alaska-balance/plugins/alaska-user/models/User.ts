@@ -61,7 +61,10 @@ export default {
         format,
         disabled: [{
           ability: 'root'
-        }]
+        }],
+        set(value: number) {
+          return _.round(value, c.precision)
+        }
       };
     });
   }

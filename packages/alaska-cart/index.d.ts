@@ -15,6 +15,8 @@ export default cartService;
 export interface CreateParams {
   user: RecordId;
   goods: RecordId;
+  // 是否更新数量，默认累加数量
+  replaceQuantity?: boolean;
   sku?: RecordId;
   quantity?: number;
 }
