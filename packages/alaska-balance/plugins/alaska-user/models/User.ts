@@ -49,11 +49,16 @@ export default {
         await user.save();
       });
       if (User.fields[c.value]) return;
+      let format = '0,0';
+      if (c.precision) {
+        format += '.' + _.repeat('0', c.precision)
+      }
       User.fields[c.value] = {
         label: c.label,
         type: Number,
         default: 0,
         addonAfter: c.unit,
+        format,
         disabled: [{
           ability: 'root'
         }]
