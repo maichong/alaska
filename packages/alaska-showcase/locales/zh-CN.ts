@@ -1,5 +1,7 @@
 export default {
   Showcase: '橱窗',
+  Place: '位置',
+  Home: '首页',
   Layout: '布局',
   Width: '宽度',
   Height: '高度',

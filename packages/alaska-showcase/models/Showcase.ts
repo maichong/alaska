@@ -43,10 +43,10 @@ export default class Showcase extends Model {
       label: 'Place',
       type: 'select',
       switch: true,
-      default: 'default',
+      default: 'home',
       options: [{
-        label: 'Default',
-        value: 'default'
+        label: 'Home',
+        value: 'home'
       }]
     },
     className: {

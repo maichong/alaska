@@ -39,7 +39,7 @@ export default class ShowcaseEditor extends React.Component<FieldViewProps, Stat
     let columns: string[] = record.layout.split('-').map((cellCount: string) => _.repeat('0', parseInt(cellCount)));
 
     let index = -1;
-    let els = columns.map((cols, col) => {
+    let els = columns.map((cells, colIndex) => {
       let colClassName = '';
       let colStyle: any = { height: record.height };
       let firstCell = items[index + 1];
@@ -51,8 +51,8 @@ export default class ShowcaseEditor extends React.Component<FieldViewProps, Stat
         colClassName += 'flex-fill';
       }
       return (
-        <ul className={colClassName} key={col} style={{ height: record.height }}>
-          {_.map(cols, (z, cell) => {
+        <ul className={colClassName} key={colIndex} style={{ height: record.height }}>
+          {_.map(cells, (z, cellIndex) => {
             index += 1;
             let _index = index;
             let item = items[index] || {};
@@ -61,14 +61,14 @@ export default class ShowcaseEditor extends React.Component<FieldViewProps, Stat
               width: item.width,
               height: item.height
             };
-            if (cell !== 0) {
+            if (cellIndex !== 0) {
               // 不是此列的第一个单元格，那么宽度等于列宽度，自己的宽度无用
               cellStyle.width = colStyle.width;
               if (actived === _index) {
                 className += ' no-width';
               }
             }
-            if (cols.length === 1) {
+            if (cells.length === 1) {
               // 此列只有一格，单元格的高度等于整个橱窗
               cellStyle.height = record.height;
               if (actived === _index) {
@@ -77,7 +77,7 @@ export default class ShowcaseEditor extends React.Component<FieldViewProps, Stat
             }
             return (
               <li
-                key={cell}
+                key={cellIndex}
                 className={cellClassName}
                 onClick={() => this.setState({ actived: _index })}
                 style={cellStyle}
