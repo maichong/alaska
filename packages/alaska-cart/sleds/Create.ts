@@ -23,12 +23,14 @@ export default class Create extends Sled<CreateParams, CartGoods> {
     let sku: Sku;
     let goods: Goods = await Goods.findById(params.goods);
     if (!goods) service.error('Goods not found');
+    let inventory = goods.inventory;
     if (!skuId && goods.skus && goods.skus.length === 1) {
       skuId = goods.skus[0]._id;
     }
     if (params.sku && skuService) {
       sku = await skuService.models.Sku.findById(skuId).where({ goods: goods._id });
       if (!sku) service.error('Sku not found');
+      inventory = sku.inventory;
     }
     if (goods.skus && goods.skus.length && !sku) {
       service.error('Please select sku');
@@ -45,14 +47,17 @@ export default class Create extends Sled<CreateParams, CartGoods> {
 
     let record: CartGoods = await CartGoods.findOne(filters);
 
+    // @ts-ignore parse int
+    let quantity = parseInt(params.quantity) || 1;
     if (!record) {
       record = new CartGoods(filters);
-      record.quantity = 1;
+      record.quantity = quantity;
     } else {
-      record.quantity += 1;
+      record.quantity += quantity;
     }
-    if (params.quantity) {
-      record.quantity = params.quantity;
+    if (record.quantity > inventory) {
+      // 最大库存
+      record.quantity = inventory;
     }
     record.pic = sku && sku.pic ? sku.pic : goods.pic;
     record.title = goods.title;
@@ -61,6 +66,8 @@ export default class Create extends Sled<CreateParams, CartGoods> {
     record.discount = discount;
     record.skuDesc = sku ? sku.desc : '';
     await record.save();
+    // @ts-ignore
+    record.inventory = inventory;
     return record;
   }
 }
