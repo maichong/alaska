@@ -49,6 +49,10 @@ export default class Showcase extends Model {
         value: 'default'
       }]
     },
+    className: {
+      label: 'Style Class',
+      type: String
+    },
     sort: {
       label: 'Sort',
       type: Number,

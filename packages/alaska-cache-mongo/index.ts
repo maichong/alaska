@@ -24,6 +24,7 @@ export default class MongoCacheDriver<T> extends CacheDriver<T, MongoCacheDriver
 
     let mongoOpts: mongodb.MongoClientOptions = _.omit(options, 'id', 'uri', 'type', 'collection', 'maxAge');
     mongoOpts.useNewUrlParser = true;
+    mongoOpts.autoReconnect = true;
 
     this._connecting = mongodb.MongoClient.connect(options.uri, mongoOpts);
     this._connecting.then((client: mongodb.MongoClient) => {

@@ -4,6 +4,7 @@ export default {
   Width: '宽度',
   Height: '高度',
   Items: '项目',
+  'Style Class': '样式类',
   'Cell Editor': '单元格编辑',
   'Please select a cell for edit': '请选择一个单元格进行编辑',
 };
