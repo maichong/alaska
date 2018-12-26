@@ -116,8 +116,8 @@ export async function refund(ctx: Context) {
   let body = ctx.state.body || ctx.request.body;
   if ((!body.order && !order)) ctx.throw(400, 'order is required');
   let reason = body.reason || '';
-  let amount = parseFloat(body.amount) || 0;
-  let quantity = parseInt(body.quantity) || 0;
+  let amount = body.amount || 0;
+  let quantity = body.quantity || 0;
   let orderGoods = body.orderGoods || '';
 
   if (!order) {

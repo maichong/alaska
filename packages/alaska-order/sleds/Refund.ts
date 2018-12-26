@@ -21,14 +21,13 @@ export default class Refund extends Sled<RefundParams, Order> {
     if (![400, 500, 600, 800].includes(order.state)) service.error('Order state error');
 
     let refundReason = params.reason || _.get(params, 'body.refundReason') || '';
-    let refundAmount: number = params.amount || _.get(params, 'body.refundAmount') || service.error('refund amount is required');
-    let refundQuantity: number = params.quantity || _.get(params, 'body.refundQuantity') || 0;
+    let refundQuantity: number = Number(params.quantity || _.get(params, 'body.refundQuantity') || 0);
+    if (Number.isNaN(refundQuantity) || refundQuantity < 0 || refundQuantity !== _.round(refundQuantity)) service.error('invalid quantity');
 
+    let refundAmount: number = Number(params.amount || _.get(params, 'body.refundAmount') || 0) || service.error('refund amount is required');
     let currency = balanceService.currenciesMap[order.currency] || balanceService.defaultCurrency;
-    // 金额去除多余小数
-    refundAmount = _.round(refundAmount, currency.precision);
-    // @ts-ignore parse number
-    refundQuantity = parseInt(refundQuantity);
+    // 检查金额是否有多余小数
+    if (Number.isNaN(refundAmount) || refundAmount <= 0 || refundAmount !== _.round(refundAmount, currency.precision)) service.error('invalid amount');
 
     if (refundAmount + (order.refundAmount || 0) + (order.refundedAmount || 0) > order.payed) service.error('refund amount can not greater than payed amount');
 
