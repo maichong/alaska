@@ -129,10 +129,8 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     }
   }
 
-  handleChange = (label: string, value: any) => {
-    let { record } = this.state;
-    let newRecord = record.set(label, value);
-    this.setState({ record: newRecord });
+  handleChange = (record: immutable.Immutable<Record>) => {
+    this.setState({ record });
   }
 
   lookupModel(modelRef: string): Model | null {

@@ -32,7 +32,7 @@ class FieldGroup extends React.Component<Props> {
     let fields: any = [];
     let errors: any = propsErrors;
     _.forEach(propFields, (field) => {
-      let fieldClasses: string[] = ['form-group', `${model.id}-${field.path}-view`];
+      let fieldClasses: string[] = ['form-group', `${model.serviceId}_${model.modelName}-${field.path}-view`];
       if (horizontal) fieldClasses.push('row');
 
       if (

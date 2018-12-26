@@ -79,9 +79,7 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
     return true;
   };
 
-  handleChange = (label: string, value: any) => {
-    let { data } = this.state;
-    data = data.set(label, value);
+  handleChange = (data: immutable.Immutable<Record>) => {
     this.setState({ data });
   }
 

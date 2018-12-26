@@ -32,11 +32,9 @@ export default function (router: Router) {
       const ability = `${model.id}.create`;
       if (!await userService.hasAbility(ctx.user, ability)) service.error('Access Denied', 403);
     } else {
-      let record = await model.findById(id);
-      if (!record) service.error('Record not found');
       // 验证资源权限
       const ability = `${model.id}.update`;
-      if (!await userService.hasAbility(ctx.user, ability, record)) service.error('Access Denied', 403);
+      if (!await userService.hasAbility(ctx.user, ability)) service.error('Access Denied', 403);
     }
 
     // TODO: 检查字段权限

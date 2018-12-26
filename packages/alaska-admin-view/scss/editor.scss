@@ -6,6 +6,7 @@
   bottom: $header-height + $content-space;
   right: 0;
   padding: $content-space;
+  padding-bottom: 20rem;
   .editor-tool-bar {
     height: $top-toolbar-height;
     position: fixed;
@@ -16,7 +17,6 @@
     border-bottom: solid $border-width $border-color;
     z-index: 100;
   }
-
   .editor-action-bar {
     .app.icon & {
       left: $menu-icon-width;
@@ -57,6 +57,4 @@
   }
 }
 
-.relationship {
-
-}
+.relationship {}

@@ -719,6 +719,7 @@ export interface EditorProps {
   model: Model;
   record: immutable.Immutable<Record>;
   onChange: Function;
+  disabled?: boolean;
 }
 
 export interface EditorActionBarProps {

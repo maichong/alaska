@@ -44,6 +44,7 @@ export default class Banner extends Model {
     action: {
       label: 'Action',
       type: 'select',
+      switch: true,
       default: 'url',
       options: [{
         label: 'URL',
@@ -106,7 +107,7 @@ export default class Banner extends Model {
   clicks: number;
   activated: boolean;
   startAt: Date;
-  endAt: Date | moment.Moment;
+  endAt: Date;
   createdAt: Date;
 
   preSave() {
@@ -114,7 +115,7 @@ export default class Banner extends Model {
       this.startAt = new Date();
     }
     if (!this.endAt) {
-      this.endAt = moment(this.startAt).add(1, 'month');
+      this.endAt = moment(this.startAt).add(1, 'year').endOf('year').toDate();
     }
     if (!this.createdAt) {
       this.createdAt = new Date();

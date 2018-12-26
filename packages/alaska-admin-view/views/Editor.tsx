@@ -72,8 +72,13 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
     return null;
   }
 
-  reduceGroups() {
-    let { model, record, onChange } = this.props;
+  handleFieldChange = (key: string, value: any) => {
+    let { record, onChange } = this.props;
+    onChange(record.set(key, value));
+  };
+
+  renderGroups() {
+    let { model, record, disabled } = this.props;
     let { errors } = this.state;
     let groups: ObjectMap<FieldGroupProps> = {
       default: {
@@ -83,17 +88,21 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
         model,
         record,
         errors,
-        onFieldChange: onChange
+        onFieldChange: this.handleFieldChange
       }
     };
+
     _.forEach(model.groups, (group, key: string) => {
       groups[key] = _.assign({ path: key }, group, {
         fields: [],
         model,
         record,
         errors,
-        onFieldChange: onChange
+        onFieldChange: this.handleFieldChange
       });
+      if (disabled === true) {
+        groups[key].disabled = true;
+      }
     });
 
     _.forEach(model.fields, (field) => {
@@ -118,7 +127,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
         props={this.props}
         className="editor"
       >
-        {this.reduceGroups()}
+        {this.renderGroups()}
       </Node>
     );
   }
