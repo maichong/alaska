@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Sled } from 'alaska-sled';
 import settingsService from 'alaska-settings';
+import balanceService from 'alaska-balance';
 import Order from '../models/Order';
 import service, { RefundParams } from '..';
 import OrderGoods from '../models/OrderGoods';
@@ -20,8 +21,14 @@ export default class Refund extends Sled<RefundParams, Order> {
     if (![400, 500, 600, 800].includes(order.state)) service.error('Order state error');
 
     let refundReason = params.reason || _.get(params, 'body.refundReason') || '';
-    let refundAmount = params.amount || _.get(params, 'body.refundAmount') || service.error('refund amount is required');
-    let refundQuantity = params.quantity || _.get(params, 'body.refundQuantity') || 0;
+    let refundAmount: number = params.amount || _.get(params, 'body.refundAmount') || service.error('refund amount is required');
+    let refundQuantity: number = params.quantity || _.get(params, 'body.refundQuantity') || 0;
+
+    let currency = balanceService.currenciesMap[order.currency] || balanceService.defaultCurrency;
+    // 金额去除多余小数
+    refundAmount = _.round(refundAmount, currency.precision);
+    // @ts-ignore parse number
+    refundQuantity = parseInt(refundQuantity);
 
     if (refundAmount + (order.refundAmount || 0) + (order.refundedAmount || 0) > order.payed) service.error('refund amount can not greater than payed amount');
 
