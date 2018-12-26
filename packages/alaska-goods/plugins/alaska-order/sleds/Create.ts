@@ -130,7 +130,7 @@ export async function pre() {
 export async function post() {
   let { goods, user } = this.params;
   // 创建订单后，删除购物车内的对应商品
-  if (cartService && user && goods && goods.length) {
+  if (!this.params.pre && cartService && user && goods && goods.length) {
     const CartGoods = cartService.models.CartGoods;
     for (let g of goods) {
       let conditions: any = { user, goods: g.goods };

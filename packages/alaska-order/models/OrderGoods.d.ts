@@ -14,7 +14,14 @@ export default class OrderGoods extends Model {
   quantity: number;
   shipping: number;
   total: number;
-  refund: number;
+  /**
+   * 订单已退款金额，总额
+   */
+  refundedAmount: number;
+  /**
+   * 客户已经退货的商品总数量
+   */
+  refundedQuantity: number;
   refundReason: string;
   refundAmount: number;
   refundQuantity: number;

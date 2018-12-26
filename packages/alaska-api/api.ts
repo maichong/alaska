@@ -47,12 +47,12 @@ export async function count(ctx: Context) {
     let result = await query.group({ _id, count: { $sum: 1 } });
     let res = {
       count: 0,
-      gorups: [] as any[]
+      groups: [] as any[]
     };
     _.forEach(result, (r) => {
       r._id.count = r.count;
       res.count += r.count;
-      res.gorups.push(r._id);
+      res.groups.push(r._id);
     });
     ctx.body = res;
   } else {
