@@ -27,12 +27,12 @@ export default function (router: Router) {
     const sled = Sled.lookup(sledId) || service.error('Action sled not found!');
 
     // 验证 action 权限
-    const ability = `${model.id}.${actionName}`;
+    const ability = action.ability || `${model.id}.${actionName}`;
 
     if (!recordsId.length) {
       if (!await userService.hasAbility(ctx.user, ability)) service.error('Access Denied', 403);
     } else {
-      records = await model.find({ _id: { $in: recordsId }});
+      records = await model.find({ _id: { $in: recordsId } });
       // 数目对不上，说明某个Record不存在
       if (recordsId.length !== records.length) service.error('Record not found!');
       // 验证权限
