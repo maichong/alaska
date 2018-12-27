@@ -2,7 +2,7 @@
 import * as _ from 'lodash';
 import * as checkDepends from 'check-depends';
 import { Service, ServiceOptions } from 'alaska';
-import { Model, Filters, AbilityCheckGate } from 'alaska-model';
+import { RecordId, Model, Filters, AbilityCheckGate } from 'alaska-model';
 import CacheDriver from 'alaska-cache';
 import Ability from './models/Ability';
 import Role from './models/Role';
@@ -66,6 +66,21 @@ class UserService extends Service {
     //   await cache.set('abilities_list', Role.toObjectArray(roles), 600 * 1000);
     // }
     return roles;
+  }
+
+  /**
+   * 清除用户权限缓存
+   * @param {RecordId} [user]
+   */
+  async clearUserAbilitiesCache(user?: RecordId): Promise<void> {
+    if (this.cache) {
+      if (user) {
+        let cacheKey = `cache:user-abilities:${user}`;
+        await this.cache.del(cacheKey);
+      } else {
+        await this.cache.flush();
+      }
+    }
   }
 
   /**

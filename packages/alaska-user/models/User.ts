@@ -1,5 +1,6 @@
 
 import { Model } from 'alaska-model';
+import service from '..';
 
 export default class User extends Model {
   static label = 'User';
@@ -97,12 +98,21 @@ export default class User extends Model {
   createdAt: Date;
   displayName: string;
 
-  async preSave() {
+  _clearCache: boolean;
+
+  preSave() {
     if (!this.createdAt) {
       this.createdAt = new Date();
     }
     if (!this.displayName) {
       this.displayName = this.username;
+    }
+    this._clearCache = this.isModified('abilities') || this.isModified('roles');
+  }
+
+  postSave() {
+    if (this._clearCache) {
+      service.clearUserAbilitiesCache(this.id);
     }
   }
 

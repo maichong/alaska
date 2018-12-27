@@ -1,4 +1,5 @@
 import { Model } from 'alaska-model';
+import service from '..';
 
 export default class Ability extends Model {
   static label = 'Ability';
@@ -27,9 +28,18 @@ export default class Ability extends Model {
   title: string;
   createdAt: Date;
 
-  async preSave() {
+  _isNew: boolean;
+
+  preSave() {
     if (!this.createdAt) {
       this.createdAt = new Date();
+    }
+    this._isNew = this.isNew;
+  }
+
+  postSave() {
+    if (this._isNew) {
+      service.clearUserAbilitiesCache();
     }
   }
 }

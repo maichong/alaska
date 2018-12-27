@@ -1,5 +1,6 @@
 import { Model } from 'alaska-model';
 import Ability from './Ability';
+import service from '..';
 
 export default class Role extends Model {
   static label = 'Role';
@@ -41,9 +42,18 @@ export default class Role extends Model {
   sort: number;
   createdAt: Date;
 
-  async preSave() {
+  _clearCache: boolean;
+
+  preSave() {
     if (!this.createdAt) {
       this.createdAt = new Date();
+    }
+    this._clearCache = this.isNew || this.isModified('abilities');
+  }
+
+  postSave() {
+    if (this._clearCache) {
+      service.clearUserAbilitiesCache();
     }
   }
 }

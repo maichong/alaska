@@ -1,5 +1,5 @@
 import { Service } from 'alaska';
-import { Model, Filters, AbilityCheckGate } from 'alaska-model';
+import { RecordId, Model, Filters, AbilityCheckGate } from 'alaska-model';
 import { DependsQueryExpression } from 'check-depends';
 import { Context } from 'alaska-http';
 import Ability from './models/Ability';
@@ -101,9 +101,13 @@ export class UserService extends Service {
    */
   urrc: Map<string, URRC>;
 
+  /**
+   * 清除用户权限缓存
+   * @param {RecordId} [user]
+   */
   abilities(): Promise<Ability[]>;
   roles(): Promise<Role[]>;
-
+  clearUserAbilitiesCache(user?: RecordId): Promise<void>;
   /**
    * 获取用户的所有权限列表
    * @param {User|null} user 如果为null，则代表未登录
