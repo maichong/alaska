@@ -52,6 +52,8 @@ class LocaleWidget extends React.Component<Props, LocaleWidgetState> {
         }
       });
     });
+    // 少于两种语言，没必要显示切换按钮
+    if (_.size(list) < 2) return null;
     return (
       <li className="locale-widget">
         <ButtonDropdown
