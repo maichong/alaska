@@ -8,6 +8,7 @@ import ButtonDropdown from 'reactstrap/lib/ButtonDropdown';
 import DropdownToggle from 'reactstrap/lib/DropdownToggle';
 import DropdownMenu from 'reactstrap/lib/DropdownMenu';
 import DropdownItem from 'reactstrap/lib/DropdownItem';
+import TooltipWrapper from '@samoyed/tooltip-wrapper';
 
 interface Props extends FiltersToolProps {
   superMode: boolean;
@@ -65,9 +66,14 @@ class FiltersTool extends React.Component<Props, FiltersToolState> {
           isOpen={this.state.filtersOpen}
           toggle={() => this.setState({ filtersOpen: !filtersOpen })}
         >
-          <DropdownToggle caret color="default">
-            <i className="fa fa-filter" />
-          </DropdownToggle>
+          <TooltipWrapper
+            tooltip={tr('Filter')}
+            placement="bottom"
+          >
+            <DropdownToggle color="light">
+              <i className="fa fa-filter" />
+            </DropdownToggle>
+          </TooltipWrapper>
           <DropdownMenu>
             {items}
           </DropdownMenu>

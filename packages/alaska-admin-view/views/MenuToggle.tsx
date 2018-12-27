@@ -35,7 +35,7 @@ class MenuToggle extends React.Component<Props> {
         props={this.props}
         className="menu-toggle"
       >
-        <button className="btn btn-default" onClick={this.handleToggle}>
+        <button className="btn btn-light" onClick={this.handleToggle}>
           <i className="fa fa-bars" />
         </button>
       </Node>

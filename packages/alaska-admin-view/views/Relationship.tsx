@@ -7,6 +7,7 @@ import Node from './Node';
 import DataTable from './DataTable';
 import * as listsRedux from '../redux/lists';
 import { RelationshipProps, StoreState, RecordList, Record } from '..';
+import { hasAbility } from '../utils/check-ability';
 
 interface RelationshipState {
   records: immutable.Immutable<Record[]>;
@@ -49,6 +50,8 @@ class Relationship extends React.Component<Props, RelationshipState> {
 
   init() {
     let { model, filters: propFilters, loadList } = this.props;
+    if (!model) return;
+    if (!hasAbility(model.id + '.read')) return; // 没有权限
     let list = this.props.lists[model.id];
     if (list && this.state.records && list.results === this.state.records) return;
     let filters = Object.assign({}, propFilters, { [this.props.path]: this.props.from });
@@ -63,6 +66,7 @@ class Relationship extends React.Component<Props, RelationshipState> {
     let { title, model } = this.props;
     let { records } = this.state;
     if (!model) return <div>Relationship ERROR</div>;
+    if (!hasAbility(model.id + '.read')) return ''; // 没有权限
     if (!title) {
       title = `${tr('Relationship')}: ${tr(model.label || model.modelName, model.serviceId)}`;
     } else {

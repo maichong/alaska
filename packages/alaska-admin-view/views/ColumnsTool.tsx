@@ -8,6 +8,7 @@ import ButtonDropdown from 'reactstrap/lib/ButtonDropdown';
 import DropdownToggle from 'reactstrap/lib/DropdownToggle';
 import DropdownMenu from 'reactstrap/lib/DropdownMenu';
 import DropdownItem from 'reactstrap/lib/DropdownItem';
+import TooltipWrapper from '@samoyed/tooltip-wrapper';
 
 interface Props extends ColumnsToolProps {
   superMode: boolean;
@@ -74,9 +75,14 @@ class ColumnsTool extends React.Component<Props, ColumnsToolState> {
           isOpen={this.state.columnsOpen}
           toggle={() => this.setState({ columnsOpen: !columnsOpen })}
         >
-          <DropdownToggle caret color="default">
-            <i className="fa fa-columns" />
-          </DropdownToggle>
+          <TooltipWrapper
+            tooltip={tr('Select columns')}
+            placement="bottom"
+          >
+            <DropdownToggle color="light">
+              <i className="fa fa-columns" />
+            </DropdownToggle>
+          </TooltipWrapper>
           <DropdownMenu>
             {items}
           </DropdownMenu>

@@ -7,30 +7,22 @@ export interface Props extends FieldViewProps {
   settings?: Settings;
 }
 
-interface HtmlState {
-  id: string;
-}
-
-class HtmlFieldView extends React.Component<Props, HtmlState> {
+class HtmlFieldView extends React.Component<Props> {
   domEditor: any;
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      id: new Date().getTime().toString()
-    };
-  }
-
+  id: string;
 
   componentDidMount() {
     // @ts-ignore
-    if (typeof UE !== 'undefined') {
+    if (this.id && typeof UE !== 'undefined') {
       // @ts-ignore
-      let editor = UE.getEditor(this.state.id);
+      let editor = UE.getEditor(this.id);
       editor.ready(() => {
         let value = this.props.value ? this.props.value : '<p></p>';
         editor.setContent(value);
       });
       editor.addListener('contentChange', () => {
+        let { disabled } = this.props;
+        if (disabled) return;
         let content = editor.getContent();
         this.props.onChange(content);
       });
@@ -39,7 +31,7 @@ class HtmlFieldView extends React.Component<Props, HtmlState> {
 
   componentWillUnmount() {
     // @ts-ignore
-    if (typeof UE !== 'undefined') {
+    if (this.id && typeof UE !== 'undefined') {
       // @ts-ignore
       UE.delEditor(this.state.id);
     }
@@ -50,24 +42,24 @@ class HtmlFieldView extends React.Component<Props, HtmlState> {
       className,
       errorText,
       field,
-      value
+      value,
+      disabled
     } = this.props;
 
-    let readonly = field.disabled || field.fixed;
+    let readonly = disabled || field.fixed;
 
     let editor;
     if (readonly) {
       editor = (<div
+        className="html-field-fixed p-2"
         dangerouslySetInnerHTML={{ __html: value || '' }}
-        style={{
-          padding: 10,
-          border: '2px solid #e7e9ec',
-          borderRadius: 6
-        }}
       />);
       // @ts-ignore
     } else if (typeof UE !== 'undefined') {
-      editor = <script id={this.state.id} type="text/plain" style={{ width: '100%', height: '300px' }}></script>;
+      if (!this.id) {
+        this.id = 'html-editor-' + Math.random();
+      }
+      editor = <script id={this.id} type="text/plain" style={{ width: '100%', height: '300px' }}></script>;
     } else {
       editor = <div className="form-control" style={{ border: 'none' }}>Missing UEditor</div>;
     }

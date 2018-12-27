@@ -16,7 +16,7 @@ class RefreshWidget extends React.Component<Props> {
   render() {
     return (
       <li className="refresh-widget">
-        <button className="btn btn-default" onClick={() => this.handleRefresh()}>
+        <button className="btn" onClick={() => this.handleRefresh()}>
           <i className="fa fa-refresh" />
         </button>
       </li>

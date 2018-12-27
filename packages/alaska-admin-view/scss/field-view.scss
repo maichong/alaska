@@ -1,11 +1,3 @@
-//备用 样式无误后删除
-// .multi-level-select~.invalid-feedback,
-// .rdt~.invalid-feedback,
-// .checkbox~.invalid-feedback,
-// .input-group~.invalid-feedback,
-// .form-control-plaintext~.invalid-feedback {
-//   display: block;
-// }
 .field-group {
   .field-group-form {
     .form-group {
@@ -27,38 +19,3 @@
     }
   }
 }
-
-//暂未发现样式问题 先注释保留
-// .card {
-//   box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-//   border-color: $border-color;
-//   border-radius: $border-radius;
-//   .card-body {
-//     padding: $padding-field-view;
-//     .form-horizontal {
-//       .form-group {
-//         .control-label {
-//           text-align: right;
-//           margin-bottom: 0;
-//           padding-top: 0.438rem; // 7px;
-//         }
-//         .form-control {
-//           border-radius: 0;
-//         }
-//         .btn {
-//           line-height: 1.25rem; // 20px;
-//           &.btn-default {
-//             border: 1px solid $border-color;
-//             color: $btn-default-color;
-//             &:hover {
-//               background-color: $bg-light;
-//             }
-//           }
-//           &.active {
-//             box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
-//           }
-//         }
-//       }
-//     }
-//   }
-// }

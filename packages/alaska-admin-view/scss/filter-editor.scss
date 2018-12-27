@@ -35,7 +35,6 @@
       margin-left: -$border-width;
       border-radius: 0;
       &.btn-light {
-        color: $btn-default-color;
         background-color: $white-color;
         &:hover {
           background-color: $bg-light;
@@ -67,11 +66,6 @@
     line-height: 1.25rem; // 20px;
     i {
       color: $blue;
-    }
-    &:hover {
-      i {
-        color: $btn-default-color;
-      }
     }
   }
 }

@@ -107,5 +107,6 @@ export default {
   'No records': '没有数据',
   'Not Found!': '没找到！',
   'Requested page not found.': '请求的页面没有找到。',
-  OK: '确定'
+  OK: '确定',
+  'Select columns': '选择列',
 };

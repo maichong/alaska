@@ -209,7 +209,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
   }
 
   render() {
-    const { model, record, isNew } = this.state;
+    const { model, record } = this.state;
     if (!model) {
       return <LoadingPage />;
     }

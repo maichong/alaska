@@ -34,6 +34,9 @@ export default class ListModeTool extends React.Component<ToolProps, ListModeToo
     let { page } = this.props;
     if (page === 'editor') return null;
 
+    // TODO:
+    return '';
+
     return (
       <Node
         className="list-mode-tool"

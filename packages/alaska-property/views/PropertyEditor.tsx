@@ -107,7 +107,7 @@ export default class PropertyEditor extends React.Component<Props, State> {
   };
 
   render() {
-    const { record, model } = this.props;
+    const { record, model, disabled } = this.props;
     if (!record.cat) {
       return <p className="text-center">{tr('Select category first!', model.serviceId)}</p>;
     }
@@ -187,6 +187,7 @@ export default class PropertyEditor extends React.Component<Props, State> {
             multi={p.multi}
             options={p.options}
             allowCreate={p.input}
+            disabled={disabled}
             onChange={handleChange}
           />
           <div><small className="text-muted">{helpElement}</small></div>

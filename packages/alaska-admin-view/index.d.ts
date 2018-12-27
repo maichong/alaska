@@ -10,6 +10,10 @@ import { LangGroup } from 'alaska-locale';
 
 // exports
 
+export function setStorage(key: string, value: any): void;
+export function getStorage(key: string): null | any;
+export function removeStorage(key: string): void;
+
 export function query(options: QueryOptions): Promise<QueryCache>;
 
 export function upload(options: UploadOptions): Promise<UploadResult>;

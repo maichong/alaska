@@ -21,7 +21,7 @@ class LogoutWidget extends React.Component<Props> {
     }
     return (
       <li className="logout-widget">
-        <button className="btn btn-default" onClick={() => this.handleLogout()}>
+        <button className="btn" onClick={() => this.handleLogout()}>
           <i className="fa fa-power-off" />
         </button>
       </li>

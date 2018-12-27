@@ -19,6 +19,7 @@ import {
   ListPageProps, ListsState, StoreState, Record, Model, Settings,
   Service
 } from '..';
+import { getStorage, setStorage } from '../utils/storage';
 
 interface Props extends ListPageProps {
   settings: Settings;
@@ -75,7 +76,7 @@ class ListPage extends React.Component<Props, ListPageState> {
       search: '',
       filters: {},
       columns: [],
-      split: false
+      split: getStorage('split')
     };
   }
 
@@ -217,6 +218,7 @@ class ListPage extends React.Component<Props, ListPageState> {
 
   handleSplit = (split: boolean) => {
     this.setState({ split });
+    setStorage('split', split);
   };
 
   handleColumns = (columns: string[]) => {

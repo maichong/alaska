@@ -11,7 +11,7 @@ import { QuickEditorProps, Record, StoreState, ActionState } from '..';
 import * as ActionRedux from '../redux/action';
 import QuickEditorActionBar from './QuickEditorActionBar';
 import QuickEditorTitleBar from './QuickEditorTitleBar';
-import checkAbility from '../utils/check-ability';
+import checkAbility, { hasAbility } from '../utils/check-ability';
 
 interface QuickEditorState {
   mode: Mode;
@@ -70,6 +70,7 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
     if (!model || (!selected.length)) return false;
     if (model.noupdate) return false;
     if (!model.actions || !model.actions.update) return false;
+    if (!hasAbility(model.id + '.update', selected[0])) return false;
     // update存在
     let action = model.actions.update;
     if (selected.length === 1) {
