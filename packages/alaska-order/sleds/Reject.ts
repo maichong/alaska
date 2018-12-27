@@ -21,6 +21,8 @@ export default class Reject extends Sled<RejectParams, Order[]> {
       }
       await order.save();
       order.createLog('Order rejected');
+
+      // TODO: 退款
     }
     return records;
   }

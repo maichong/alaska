@@ -22,6 +22,8 @@ export default {
     if (!_.size(this.skus)) return;
     let skus = await Sku.find({ goods: this._id });
     let skusMap = _.keyBy(skus, 'key');
+    let inventory = 0;
+    let volume = 0;
     for (let sku of this.skus) {
       let record = skusMap[sku.key];
       if (!record) {
@@ -31,7 +33,11 @@ export default {
         sku._id = record._id;
       }
       record.set(sku);
-      await record.save();
+      record.save();
+      inventory += sku.inventory;
+      volume += sku.volume;
     }
+    this.inventory = inventory;
+    this.volume = volume;
   }
 };

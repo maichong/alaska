@@ -40,33 +40,18 @@ export async function doInput(body: ParamsBody): Promise<Inventory> {
   }
 
   if (sku) {
-    let newSku = await skuService.models.Sku.findOneAndUpdate(
-      { _id: sku._id },
-      { $inc: { inventory: body.quantity } },
-      { new: true }
-    );
-    if (!newSku) throw new Error('Update sku inventory failed');
+    let newSku = await skuService.models.Sku.incInventory(sku._id, body.quantity);
+    if (!newSku) throw new Error('Failed to update sku inventory');
     record.inventory = newSku.inventory;
-    let index = _.findIndex(goods.skus, ['key', sku.key]);
-    await Goods.findByIdAndUpdate(goods._id, {
-      $inc: { inventory: body.quantity },
-      $set: {
-        [`skus.${index}.inventory`]: newSku.inventory
-      },
-    });
   } else {
     // 没有SKU，直接更新商品
     if (_.size(goods.skus)) service.error('goods sku is required');
-    let newGoods = await Goods.findOneAndUpdate(
-      { _id: goods._id },
-      { $inc: { inventory: body.quantity } },
-      { new: true }
-    );
+    let newGoods = await Goods.incInventory(goods._id, body.quantity);
     if (newGoods) {
       record.inventory = newGoods.inventory;
     } else {
-      // 异常
-      record.inventory = goods.inventory + body.quantity;
+      // 异常，没有找到商品
+      service.error('Goods not found');
     }
   }
 

@@ -218,13 +218,14 @@ class SkuItem extends React.Component<SkuItemProps, SkuItemState> {
         <td className="sku-discount">
           <input type="number" disabled={disabled} value={value.discount || 0} onChange={this.handleDiscount} />
         </td>
+        <td className="sku-volume">{value.volume}</td>
         <td className="sku-inventory">
-          <input
+          {(disabled || !!inventoryBtn) ? value.inventory : <input
             type="number"
             disabled={disabled || !!inventoryBtn}
             value={value.inventory || 0}
             onChange={this.handleInventory}
-          />
+          />}
         </td>
         <td className="sku-actions">{inventoryBtn}</td>
       </tr>
@@ -352,13 +353,14 @@ export default class SkuEditor extends React.Component<Props, State> {
             <th className="sku-desc">{tr('Properties', 'alaska-sku')}</th>
             <th className="sku-price">{tr('Price', 'alaska-sku')}</th>
             <th className="sku-discount">{tr('Discount', 'alaska-sku')}</th>
+            <th className="sku-volume">{tr('Volume', 'alaska-sku')}</th>
             <th className="sku-inventory">{tr('Inventory', 'alaska-sku')}</th>
             <th className="sku-actions" />
           </tr>
         </thead>
         <tbody>
           {
-            _.map(list, (sku: immutable.Immutable<SkuData>, index: number) => (<SkuItem
+            _.map(list, (sku: immutable.Immutable<SkuData>) => (<SkuItem
               key={sku.key}
               disabled={disabled}
               value={sku}

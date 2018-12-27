@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import { Sled } from 'alaska-sled';
 import Order from '../models/Order';
 import RefundAccept from './RefundAccept';

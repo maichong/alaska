@@ -1,11 +1,12 @@
 import { RecordId, Model } from 'alaska-model';
 import { PropData } from 'alaska-property';
 import { Image } from 'alaska-field-image';
+import Goods from 'alaska-goods/models/Goods';
 
 export default class Sku extends Model {
   static label = 'SKU';
   static icon = 'cubes';
-  static defaultColumns = 'pic goods desc inventory price';
+  static defaultColumns = 'pic goods desc price discount volume inventory';
   static defaultSort = '-sort';
   static noupdate = true;
   static noremove = true;
@@ -67,6 +68,64 @@ export default class Sku extends Model {
       type: Date
     }
   };
+
+  /**
+   * 增加SKU库存，并自动更新对应的商品，成功后将返回新的sku数据记录，否则返回null
+   * @param id sku id
+   * @param quantity 增加数量
+   */
+  static async incInventory(id: RecordId, quantity: number): Promise<Sku | null> {
+    // 更新 SKU 表
+    let newSku = await Sku.findOneAndUpdate(
+      { _id: id },
+      { $inc: { inventory: quantity } },
+      { new: true }
+    );
+    if (!newSku) return null;
+    // 更新Goods.skus
+    let goods = await Goods.findOneAndUpdate(
+      { _id: newSku.goods, 'skus._id': newSku._id },
+      { $set: { 'skus.$.inventory': newSku.inventory } },
+      { new: true }
+    );
+    if (goods) {
+      // 更新Goods.inventory
+      await Goods.findOneAndUpdate(
+        { _id: newSku.goods },
+        { $inc: { inventory: quantity } }
+      );
+    }
+    return newSku;
+  }
+
+  /**
+   * 增加SKU销量，并自动更新对应的商品，成功后将返回新的sku数据记录，否则返回null
+   * @param id sku id
+   * @param quantity 增加数量
+   */
+  static async incVolume(id: RecordId, quantity: number): Promise<Sku | null> {
+    // 更新 SKU 表
+    let newSku = await Sku.findOneAndUpdate(
+      { _id: id },
+      { $inc: { volume: quantity } },
+      { new: true }
+    );
+    if (!newSku) return null;
+    // 更新Goods.skus
+    let goods = await Goods.findOneAndUpdate(
+      { _id: newSku.goods, 'skus._id': newSku._id },
+      { $set: { 'skus.$.volume': newSku.volume } },
+      { new: true }
+    );
+    if (goods) {
+      // 更新Goods.volume
+      await Goods.findOneAndUpdate(
+        { _id: newSku.goods },
+        { $inc: { volume: quantity } }
+      );
+    }
+    return newSku;
+  }
 
   key: string;
   pic: Image;

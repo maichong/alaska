@@ -43,7 +43,7 @@ export async function pre() {
   for (let g of gids) {
     if (!g.goods) continue;
     let goods: Goods = await Goods.findById(g.goods);
-    if (!goods) continue;
+    if (!goods) orderService.error('Goods not found');
     if (!goods.activated) orderService.error('Goods is not activated');
 
     let discountValid = goods.discountValid;
@@ -73,6 +73,8 @@ export async function pre() {
       if (sku.pic) {
         item.pic = sku.pic;
       }
+      // SKU 库存不足
+      if (item.quantity > sku.inventory) orderService.error('Inventory shortage');
     } else if (goods.skus && goods.skus.length) {
       // 如果没有选择SKU,但是商品却又有SKU设置
       orderService.error('Please select goods props');
@@ -82,6 +84,8 @@ export async function pre() {
     } else {
       // 没有指定SKU的商品
     }
+    // 商品库存不足
+    if (!sku && item.quantity > goods.inventory) orderService.error('Inventory shortage');
     let currency = currenciesMap[goods.currency] || balanceService.defaultCurrency;
     let precision = currency.precision || 0;
 
@@ -130,9 +134,12 @@ export async function pre() {
 }
 
 export async function post() {
-  let { goods, user } = this.params;
+  let { goods, user, records } = this.params;
+  if (this.params.pre) return; // 预下单，不影响库存
+  if (_.isEmpty(goods)) return; // 不是商品订单
+
   // 创建订单后，删除购物车内的对应商品
-  if (!this.params.pre && cartService && user && goods && goods.length) {
+  if (cartService && user) {
     const CartGoods = cartService.models.CartGoods;
     for (let g of goods) {
       let conditions: any = { user, goods: g.goods };
@@ -143,8 +150,18 @@ export async function post() {
     }
   }
 
-  let orders = this.params.orders;
-  // TODO: 减少商品库存
-  // for (let order of orders) {
-  // }
+  // 减少商品库存
+  let orders = this.result;
+  for (let order of (orders || records)) {
+    let items = await OrderGoods.find({ order: order._id });
+    for (let item of items) {
+      if (item.sku && skuService) {
+        // 减少SKU 库存
+        skuService.models.Sku.incInventory(item.sku, -item.quantity);
+      } else if (item.goods) {
+        // 减小商品库存
+        Goods.incInventory(item.goods, -item.quantity);
+      }
+    }
+  }
 }

@@ -2,10 +2,21 @@ import { RecordId, Model } from 'alaska-model';
 import { PropData } from 'alaska-property';
 import { Image } from 'alaska-field-image';
 
-declare class Property extends Model {
-}
+declare class Sku extends Model {
+  /**
+   * 增加SKU库存，并自动更新对应的商品，成功后将返回新的sku数据记录，否则返回null
+   * @param id sku id
+   * @param quantity 增加数量
+   */
+  static incInventory(id: RecordId, quantity: number): Promise<Sku | null>;
 
-export interface PropertyFields {
+  /**
+   * 增加SKU销量，并自动更新对应的商品，成功后将返回新的sku数据记录，否则返回null
+   * @param id sku id
+   * @param quantity 增加数量
+   */
+  static incVolume(id: RecordId, quantity: number): Promise<Sku | null>;
+
   key: string;
   pic: Image;
   goods: RecordId;
@@ -18,6 +29,4 @@ export interface PropertyFields {
   createdAt: Date;
 }
 
-interface Property extends PropertyFields { }
-
-export default Property;
+export default Sku;

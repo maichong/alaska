@@ -16,4 +16,8 @@ export default {
   Inventory: '库存',
   Volume: '销量',
   Initial: '首字母',
+  'Goods not found': '商品未找到',
+  'Goods have been sold out': '商品已售完',
+  'Goods is not activated': '商品已下架',
+  'Inventory shortage': '库存不足',
 };

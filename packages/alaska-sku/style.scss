@@ -5,6 +5,8 @@
   }
   tr td {
     padding: 0;
+    vertical-align: middle;
+    text-align: center;
   }
   td.sku-desc {
     font-size: 12px;
@@ -13,10 +15,6 @@
   }
   td.text-center {
     line-height: 48px;
-  }
-  td.sku-actions {
-    vertical-align: middle;
-    text-align: center;
   }
   .sku-pic {
     img {
@@ -33,7 +31,7 @@
     height: 48px;
     line-height: 48px;
     text-align: center;
-    background: transparent;
+    background: #f5fcfb;
     &:focus {
       background: #e8f9f6;
     }
