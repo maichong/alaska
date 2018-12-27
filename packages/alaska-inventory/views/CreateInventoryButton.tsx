@@ -38,7 +38,7 @@ export default class CreateInventoryButton extends React.Component<ActionViewPro
     if (!record) {
       disabled = true;
     } else {
-      if (!record.id) return null; // 新建页面
+      if (!record._id) return null; // 新建页面
       goods = record._id;
       if (model.modelName === 'Sku') {
         goods = record.goods;
