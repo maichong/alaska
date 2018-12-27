@@ -23,6 +23,7 @@ function setModelDefaults(model: typeof ModelType, service: Service, name: strin
     defaultSort: '',
     defaultColumns: '',
     defaultFilters: null,
+    listLimit: 100,
     schemaOptions: {},
     actions: {},
     groups: {},

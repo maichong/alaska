@@ -20,7 +20,6 @@ interface SkuData {
   discount?: number;
   inventory?: number;
   volume?: number;
-  valid?: boolean;
   props: PropData[];
   createdAt?: string;
 }

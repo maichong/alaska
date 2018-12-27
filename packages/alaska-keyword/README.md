@@ -1,2 +1,2 @@
-# alaska-goods
-Alaska goods service
+# alaska-keyword
+Alaska keyword service

@@ -5,7 +5,7 @@ import { Image } from 'alaska-field-image';
 export default class Sku extends Model {
   static label = 'SKU';
   static icon = 'cubes';
-  static defaultColumns = 'pic goods desc inventory price valid';
+  static defaultColumns = 'pic goods desc inventory price';
   static defaultSort = '-sort';
   static noupdate = true;
   static noremove = true;
@@ -28,6 +28,7 @@ export default class Sku extends Model {
       // pid1:vid1;pid2:vid2
       label: 'KEY',
       type: String,
+      hidden: true,
       index: true
     },
     desc: {
@@ -56,14 +57,10 @@ export default class Sku extends Model {
       default: 0,
       protected: true
     },
-    valid: {
-      label: 'Valid',
-      type: Boolean,
-      protected: true
-    },
     props: {
       label: 'Goods Properties',
-      type: Object
+      type: Object,
+      hidden: true
     },
     createdAt: {
       label: 'Created At',
@@ -79,7 +76,6 @@ export default class Sku extends Model {
   discount: number;
   inventory: number;
   volume: number;
-  valid: boolean;
   props: PropData[];
   createdAt: Date;
 
