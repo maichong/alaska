@@ -15,8 +15,8 @@ import Reject from './sleds/Reject';
 import Cancel from './sleds/Cancel';
 import Delete from './sleds/Delete';
 import Refund from './sleds/Refund';
-import RefundReject from './sleds/RefundReject';
-import RefundAccept from './sleds/RefundAccept';
+import RejectRefund from './sleds/RejectRefund';
+import AcceptRefund from './sleds/AcceptRefund';
 
 declare module 'alaska-payment/models/Payment' {
   export interface PaymentFields {
@@ -40,8 +40,8 @@ export class OrderService extends Service {
     Cancel: typeof Cancel;
     Delete: typeof Delete;
     Refund: typeof Refund;
-    RefundReject: typeof RefundReject;
-    RefundAccept: typeof RefundAccept;
+    RejectRefund: typeof RejectRefund;
+    AcceptRefund: typeof AcceptRefund;
   };
 
   /**
@@ -71,8 +71,8 @@ export type Reject = Reject;
 export type Cancel = Cancel;
 export type Delete = Delete;
 export type Refund = Refund;
-export type RefundReject = RefundReject;
-export type RefundAccept = RefundAccept;
+export type RejectRefund = RejectRefund;
+export type AcceptRefund = AcceptRefund;
 
 /**
  * 下单参数
@@ -173,12 +173,12 @@ export interface RefundParams {
   };
 }
 
-export interface RefundRejectParams {
+export interface RejectRefundParams {
   record?: Order;
   records?: Order[];
 }
 
-export interface RefundAcceptParams {
+export interface AcceptRefundParams {
   record?: Order;
   records?: Order[];
   /**

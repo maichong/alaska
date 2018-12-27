@@ -18,7 +18,7 @@ function defaultFilters(ctx: Context) {
 export default class Order extends Model {
   static label = 'Order';
   static icon = 'file-text-o';
-  static defaultColumns = 'code pic title user total state createdAt';
+  static defaultColumns = 'code pic title user total payed refundedAmount state createdAt';
   static defaultSort = '-createdAt';
   static searchFields = 'title';
   static nocreate = true;
@@ -69,6 +69,17 @@ export default class Order extends Model {
         }
       }
     },
+    reject: {
+      title: 'Reject',
+      style: 'danger',
+      sled: 'Reject',
+      confirm: 'Confirm to reject the order?',
+      hidden: {
+        state: {
+          $ne: 300
+        }
+      }
+    },
     ship: {
       title: 'Ship',
       style: 'success',
@@ -76,6 +87,28 @@ export default class Order extends Model {
       hidden: {
         state: {
           $ne: 400
+        }
+      }
+    },
+    acceptRefund: {
+      title: 'Accept Refund',
+      style: 'success',
+      confirm: 'Confirm to accept refund?',
+      sled: 'AcceptRefund',
+      hidden: {
+        state: {
+          $ne: 800
+        }
+      }
+    },
+    rejectRefund: {
+      title: 'Reject Refund',
+      style: 'success',
+      confirm: 'Confirm to reject refund?',
+      sled: 'RejectRefund',
+      hidden: {
+        state: {
+          $ne: 800
         }
       }
     },

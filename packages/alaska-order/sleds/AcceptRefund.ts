@@ -1,14 +1,14 @@
 import * as _ from 'lodash';
 import { Sled } from 'alaska-sled';
 import Order from '../models/Order';
-import service, { RefundAcceptParams } from '..';
+import service, { AcceptRefundParams } from '..';
 
 /**
  * 接受退款
  * 800 -> 600
  */
-export default class RefundAccept extends Sled<RefundAcceptParams, Order[]> {
-  async exec(params: RefundAcceptParams): Promise<Order[]> {
+export default class AcceptRefund extends Sled<AcceptRefundParams, Order[]> {
+  async exec(params: AcceptRefundParams): Promise<Order[]> {
     if (this.result) return this.result; // 在前置插件中已经处理
     if (!params.record && _.isEmpty(params.records)) throw new Error('record or records is required');
     let records = _.size(params.records) ? params.records : [params.record];

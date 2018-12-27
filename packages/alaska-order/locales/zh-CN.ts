@@ -51,5 +51,10 @@ export default {
   Confirm: '确认',
   Ship: '发货',
   'Refund Reason': '退款原因',
-  'Do you confirm the order?': '确定要删除订单吗?'
+  'Accept Refund': '接受退款',
+  'Reject Refund': '拒绝退款',
+  'Confirm to accept refund?': '确定要接受退款吗？',
+  'Confirm to reject refund?': '确定要拒绝退款吗？',
+  'Confirm to reject the order?': '确定要拒绝订单吗？',
+  'Do you confirm the order?': '确定要删除订单吗？'
 };

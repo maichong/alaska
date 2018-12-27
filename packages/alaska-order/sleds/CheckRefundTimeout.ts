@@ -1,6 +1,6 @@
 import { Sled } from 'alaska-sled';
 import Order from '../models/Order';
-import RefundAccept from './RefundAccept';
+import AcceptRefund from './AcceptRefund';
 
 export default class CheckRefundTimeout extends Sled<{}, any> {
   async exec() {
@@ -11,6 +11,6 @@ export default class CheckRefundTimeout extends Sled<{}, any> {
       }
     }).limit(10);
     if (!records.length) return;
-    await RefundAccept.run({ records });
+    await AcceptRefund.run({ records });
   }
 }

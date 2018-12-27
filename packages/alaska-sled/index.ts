@@ -31,7 +31,6 @@ export default class SledExtension extends Extension {
       // plugins
       _.forEach(s.plugins, (plugin, pluginName) => {
         _.forEach(plugin.sleds, (settings, name) => {
-          console.log('sled plugin settings', settings);
           if (!settings) {
             throw new Error(`Invalid sled settings [${pluginName}/sled/${name}]`);
           }
