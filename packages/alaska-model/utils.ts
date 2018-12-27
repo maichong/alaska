@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { Service } from 'alaska';
-import { Model, ModelFieldList, Filters, Query, ModelPopulation } from 'alaska-model';
+import { RecordId, Model, ModelFieldList, Filters, Query, ModelPopulation } from '.';
 import * as mongoose from 'mongoose';
 
 /**
@@ -141,20 +141,21 @@ export function deepClone<T extends any>(target: T, src: T): T {
 
 /**
  * 获取记录的字符串ID
- * @param {Model|string|any} record
+ * @param {Model|string|RecordId} record
  * @return {string}
  */
-export function getId(record: Model | any): string {
+export function getId(record: Model | RecordId): string {
+  // @ts-ignore object._id
   return String(record && typeof record === 'object' ? (record._id || record) : record);
 }
 
 /**
  * 判断两个记录的ID是否相同
- * @param {Model|string|any} a 记录A
- * @param {Model|string|any} b 记录B
+ * @param {Model|string|RecordId} a 记录A
+ * @param {Model|string|RecordId} b 记录B
  * @return {boolean}
  */
-export function isIdEqual(a: any, b: any): boolean {
+export function isIdEqual(a: Model | RecordId, b: Model | RecordId): boolean {
   return getId(a) === getId(b);
 }
 

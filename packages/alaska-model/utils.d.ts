@@ -18,7 +18,7 @@ export function deepClone<T extends any>(target: T, src: T): T;
  * @param {Model|string|any} record
  * @return {string}
  */
-export function getId(record: Model | any): string;
+export function getId(record: Model | RecordId): string;
 
 /**
  * 判断两个记录的ID是否相同
@@ -26,4 +26,4 @@ export function getId(record: Model | any): string;
  * @param {Model|string|any} b 记录B
  * @return {boolean}
  */
-export function isIdEqual(a: any, b: any): boolean;
+export function isIdEqual(a: Model | RecordId, b: Model | RecordId): boolean;

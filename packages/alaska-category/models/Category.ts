@@ -1,4 +1,6 @@
+import { NormalError } from 'alaska';
 import { RecordId, Model } from 'alaska-model';
+import { isIdEqual } from 'alaska-model/utils';
 import * as _ from 'lodash';
 import { Image } from 'alaska-field-image';
 import service from '..';
@@ -119,6 +121,18 @@ export default class Category extends Model {
     if (!this.createdAt) {
       this.createdAt = new Date();
     }
+
+    // 检查父分类
+    if (this.parent) {
+      if (isIdEqual(this.parent, this.id)) {
+        // 父分类不能为自身
+        throw new NormalError('Category parent can not be self');
+      }
+      let parent = await Category.findById(this.parent);
+      if (!parent) throw new NormalError('Parent category not found');
+      if (_.find(parent.parents, (p) => isIdEqual(p, this.id))) throw new NormalError('Parent category circular dependency');
+    }
+
     if (this.isNew) {
       let old = await Category.findOne({ parent: this.parent, title: this.title });
       if (old) service.error('Category title has already exists!');

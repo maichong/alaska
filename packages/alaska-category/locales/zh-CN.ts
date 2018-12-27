@@ -6,4 +6,7 @@ export default {
   'Category Group': '分类集合',
   'Parent Category': '父分类',
   'Sub Categories': '子分类',
+  'Category parent can not be self': '父分类不能为自身',
+  'Parent category not found': '父分类未找到',
+  'Parent category circular dependency': '父分类循环依赖',
 };
