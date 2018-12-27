@@ -13,7 +13,7 @@ const warning: ObjectMap<boolean> = {};
  * @param ability
  * @param record
  */
-function hasAbility(ability: string, record?: any): boolean {
+export function hasAbility(ability: string, record?: any): boolean {
   let settings: Settings = store.getState().settings;
   let { abilities } = settings;
   let [prefix, checker] = ability.split(':');
@@ -57,19 +57,20 @@ function hasAbility(ability: string, record?: any): boolean {
 
 /**
  * 检查权限
- * @param {any} conditions
+ * @param {any} conditions 高级权限查询条件
  * @param {object} [record]
+ * @returns 是否满足条件
  */
 export default function checkAbility(
   conditions: checkDepends.DependsQueryExpression | AbilityCheckGate[],
   record?: any
 ): boolean {
   if (!conditions) return false;
-  if (!Array.isArray(conditions)) return checkDepends(conditions, record);
+  if (!Array.isArray(conditions)) return checkDepends(conditions, record || {});
   // 寻找开着的门
   return !_.find(conditions, (gate: AbilityCheckGate) => {
     if (gate.check) {
-      if (!checkDepends(gate.check, record)) return false; // 此门不开
+      if (!checkDepends(gate.check, record || {})) return false; // 此门不开
     }
     if (gate.ability) {
       if (!hasAbility(gate.ability, record)) return false; // 此门不开

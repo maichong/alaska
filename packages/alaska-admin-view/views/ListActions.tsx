@@ -8,9 +8,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import toast from '@samoyed/toast';
 import { confirm } from '@samoyed/modal';
-import { ListActionsProps, StoreState, Settings, ActionState, ActionRequestPayload } from '..';
+import { ListActionsProps, StoreState, Settings, ActionState, ActionRequestPayload, Record } from '..';
 import ActionGroup from './ActionGroup';
 import * as ActionRedux from '../redux/action';
+import checkAbility, { hasAbility } from '../utils/check-ability';
 
 interface ListActionsState {
   request?: string;
@@ -170,12 +171,20 @@ class ListActions extends React.Component<Props, ListActionsState> {
 
     _.forEach(list, flat);
 
+    let record: Record;
+    if (selected) {
+      record = selected[0];
+    }
+
     let actionList: ActionMap[] = [];
     // eslint-disable-next-line complexity
     keys.forEach((key) => {
       let action = actions[key];
       if (!action.list) return;
-      if (!superMode && action.super) return;
+      if (!superMode && checkAbility(action.super, record)) return;
+      if (checkAbility(action.hidden, record)) return;
+      let ability = model.id + '.' + key;
+      if (!hasAbility(ability, record)) return;
 
       // TODO: ability 支持
       // let { ability } = action;

@@ -11,7 +11,7 @@ import { ObjectMap } from 'alaska';
 import { EditorActionsProps, StoreState, ActionState, ActionRequestPayload } from '..';
 import ActionGroup from './ActionGroup';
 import * as ActionRedux from '../redux/action';
-import checkAbility from '../utils/check-ability';
+import checkAbility, { hasAbility } from '../utils/check-ability';
 
 interface ActionMap {
   key: string;
@@ -171,6 +171,8 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
       if (action.list && !action.editor) return;
       if (!superMode && checkAbility(action.super, record)) return;
       if (checkAbility(action.hidden, record)) return;
+      let ability = model.id + '.' + key;
+      if (!hasAbility(ability, record)) return;
 
       let disabled = action.disabled && checkAbility(action.disabled, record);
       let obj = {} as ActionMap;
