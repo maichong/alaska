@@ -92,7 +92,7 @@ export default class Order extends Model {
     },
     acceptRefund: {
       title: 'Accept Refund',
-      style: 'success',
+      style: 'warning',
       confirm: 'Confirm to accept refund?',
       sled: 'AcceptRefund',
       hidden: {
@@ -103,7 +103,7 @@ export default class Order extends Model {
     },
     rejectRefund: {
       title: 'Reject Refund',
-      style: 'success',
+      style: 'danger',
       confirm: 'Confirm to reject refund?',
       sled: 'RejectRefund',
       hidden: {
