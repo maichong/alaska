@@ -183,7 +183,7 @@ class ListActions extends React.Component<Props, ListActionsState> {
       if (!action.list) return;
       if (!superMode && checkAbility(action.super, record)) return;
       if (checkAbility(action.hidden, record)) return;
-      let ability = model.id + '.' + key;
+      let ability = action.ability || model.id + '.' + key;
       if (!hasAbility(ability, record)) return;
 
       let disabled = action.needRecords && (!selected || selected.length < action.needRecords);

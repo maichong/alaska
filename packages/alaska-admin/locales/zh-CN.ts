@@ -46,6 +46,7 @@ export default {
   Ability: '权限',
   Relationship: '关联',
   More: '更多',
+  Optional: '可选',
   'Parent Menu': '父菜单',
   'Admin Menu': '管理菜单',
   'Admin Nav': '管理导航',

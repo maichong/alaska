@@ -2,16 +2,14 @@ import { Service, Plugin } from 'alaska';
 import User from 'alaska-user/models/User';
 import { RecordId } from 'alaska-model';
 import Inventory from './models/Inventory';
-import Input from './sleds/Input';
-import Output from './sleds/Output';
+import Create from './sleds/Create';
 
 export class InventoryService extends Service {
   models: {
     Inventory: typeof Inventory;
   };
   sleds: {
-    Input: typeof Input;
-    Output: typeof Output;
+    Create: typeof Create;
   };
 }
 
@@ -21,18 +19,14 @@ export default inventoryService;
 
 export interface ParamsBody {
   user?: RecordId;
+  type?: string;
   goods?: RecordId;
   sku?: RecordId;
   quantity: number;
+  desc?: string;
 }
 
-export interface InputParams {
-  admin?: User;
-  user?: User;
-  body: ParamsBody;
-}
-
-export interface OutputParams {
+export interface CreateParams {
   admin?: User;
   user?: User;
   body: ParamsBody;

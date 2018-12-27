@@ -1,8 +1,8 @@
 import { Service } from 'alaska';
 
-class GoodsService extends Service {
+class InventoryService extends Service {
 }
 
-export default new GoodsService({
+export default new InventoryService({
   id: 'alaska-inventory'
 });

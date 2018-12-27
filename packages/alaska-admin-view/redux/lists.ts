@@ -19,8 +19,8 @@ export const APPLY_LIST = 'APPLY_LIST';
 export const LOAD_LIST_FAILURE = 'LOAD_LIST_FAILURE';
 
 /**
- * 清空列表 action
- * @params {string} [model] 要清空的列表model，空代表清空全部
+ * 清空列表 options
+ * @params {string} [options.model] 要清空的列表model，空代表清空全部
  */
 export const clearList = createAction<ClearListPayload>(CLEAR_LIST);
 

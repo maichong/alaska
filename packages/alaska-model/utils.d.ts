@@ -1,4 +1,4 @@
-import { Filters, Model } from '.';
+import { Filters, Model, RecordId } from '.';
 
 /**
  * 合并多个Filters

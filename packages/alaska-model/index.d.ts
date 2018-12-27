@@ -562,6 +562,11 @@ export interface ModelAction {
   link?: string;
 
   /**
+   * Action 自定义要检查的权限，默认为 {Model.id}.{action.key}
+   */
+  ability?: string,
+
+  /**
    * 禁用条件，管理端组件禁用，并且接口不允调用Action
    */
   disabled?: DependsQueryExpression | AbilityCheckGate[];

@@ -171,7 +171,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
       if (action.list && !action.editor) return;
       if (!superMode && checkAbility(action.super, record)) return;
       if (checkAbility(action.hidden, record)) return;
-      let ability = model.id + '.' + key;
+      let ability = action.ability || model.id + '.' + key;
       if (!hasAbility(ability, record)) return;
 
       let disabled = action.disabled && checkAbility(action.disabled, record);

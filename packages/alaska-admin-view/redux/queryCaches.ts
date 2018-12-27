@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { createAction, handleActions } from 'redux-actions';
 import * as immutable from 'seamless-immutable';
-import { QueryCachesState, QueryCache, ClearQueryCachePayload } from '..';
+import { QueryCachesState, QueryCache, ClearQueryCachePayload, ClearListPayload } from '..';
 
 export const APPLY_QUERY_CACHE = 'APPLY_QUERY_CACHE';
 export const CLEAR_QUERY_CACHE = 'CLEAR_QUERY_CACHE';
@@ -48,5 +48,10 @@ export default handleActions({
     // @ts-ignore
     const payload: ClearQueryCachePayload = action.payload;
     return state.without(payload.model);
+  },
+  CLEAR_LIST: (state, action) => {
+    // @ts-ignore
+    const payload: ClearListPayload = action.payload;
+    return payload.model ? state.without(payload.model) : INITIAL_STATE;
   }
 }, INITIAL_STATE);

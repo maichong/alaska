@@ -3,7 +3,7 @@ import { Model, RecordId } from 'alaska-model';
 export default class Inventory extends Model {
   static label = 'Inventory History';
   static icon = 'truck';
-  static defaultColumns = 'goods sku type quantity inventory createdAt';
+  static defaultColumns = 'goods sku type quantity inventory desc createdAt';
   static defaultSort = '-createdAt';
   static nocreate = true;
   static noupdate = true;
@@ -56,6 +56,10 @@ export default class Inventory extends Model {
     inventory: {
       label: 'Residual Inventory',
       type: Number
+    },
+    desc: {
+      label: 'Description',
+      type: String,
     },
     createdAt: {
       label: 'Created At',

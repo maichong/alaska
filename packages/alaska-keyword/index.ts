@@ -2,7 +2,7 @@ import { ObjectMap, Service, ServiceOptions } from 'alaska';
 import { Context } from 'alaska-http';
 import Keyword from './models/Keyword';
 
-class GoodsService extends Service {
+class KeywordService extends Service {
   _keywords: ObjectMap<number> = {};
   _timer: NodeJS.Timer;
 
@@ -48,6 +48,6 @@ class GoodsService extends Service {
   };
 }
 
-export default new GoodsService({
+export default new KeywordService({
   id: 'alaska-keyword'
 });

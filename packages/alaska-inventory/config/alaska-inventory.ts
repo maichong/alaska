@@ -1,5 +1,5 @@
 export default {
-  serivces: {
+  services: {
     'alaska-goods': {},
     'alaska-sku': {
       optional: true
