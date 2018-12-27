@@ -36,6 +36,8 @@ export async function pre() {
   }
   params.records = params.records || [];
   let orders: Order[] = params.records;
+
+  // 生成 OrderGoods 列表
   let orderItems: OrderGoods[] = [];
 
   for (let g of gids) {
@@ -87,10 +89,11 @@ export async function pre() {
     orderItems.push(item);
   }
 
-  orderItems.forEach((item: OrderGoods) => {
+  // 将 OrderGoods 放置到不同的订单中
+  _.forEach(orderItems, (item: OrderGoods) => {
     let order: Order = _.find(orders, (o: Order) => o.type === 'goods' && o.canAppendGoods(item));
     if (order) {
-      // @ts-ignore
+      item.order = order._id;
       order.goods.push(item);
     } else {
       order = new Order({
@@ -101,16 +104,15 @@ export async function pre() {
         currency: item.currency,
         state: 200
       });
+      item.order = order._id;
       order.address = params.address;
-      // @ts-ignore
       order.goods = [item];
       orders.push(order);
     }
-    item.order = order._id;
   });
 
   //计算订单价格
-  orders.forEach((order: Order) => {
+  _.forEach(orders, (order: Order) => {
     if (order.type !== 'goods') return;
     let shipping = 0;
     let total = 0;

@@ -33,7 +33,7 @@ class HtmlFieldView extends React.Component<Props> {
     // @ts-ignore
     if (this.id && typeof UE !== 'undefined') {
       // @ts-ignore
-      UE.delEditor(this.state.id);
+      UE.delEditor(this.id);
     }
   }
 
