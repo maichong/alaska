@@ -49,10 +49,10 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
     if (prevState.request && prevState.request === action.request && !action.fetching) {
       let title = nextProps.action.action || 'action';
       if (action.error) {
-        toast(tr(action.error.message), tr(`${_.upperFirst(title)} Failure`), { type: 'error' });
+        toast(tr(`${_.upperFirst(title)} Failure`), tr(action.error.message), { type: 'error' });
         return { request: '' };
       } else {
-        toast(tr(`${title} success!`), tr(`${title}`), { type: 'success' });
+        toast(tr(`${title}`), tr(`${title} success!`), { type: 'success' });
         let id = _.get(action, 'result._id');
         let redirect;
         if (nextProps.record.isNew && id) {
@@ -110,7 +110,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
         eval(config.post.substr(3));
       }
     } catch (error) {
-      toast('error', tr('Failed'), error.message);
+      toast(tr('Failed'), error.message, { type: 'error' });
     }
   };
 

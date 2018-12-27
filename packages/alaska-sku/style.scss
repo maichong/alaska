@@ -14,12 +14,9 @@
   td.text-center {
     line-height: 48px;
   }
-  td .fa-close {
-    display: none;
-    cursor: pointer;
-  }
-  tr.danger td .fa-close {
-    display: inline;
+  td.sku-actions {
+    vertical-align: middle;
+    text-align: center;
   }
   .sku-pic {
     img {

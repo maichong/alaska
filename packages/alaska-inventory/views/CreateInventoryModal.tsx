@@ -7,6 +7,7 @@ import Modal from 'reactstrap/lib/Modal';
 import ModalHeader from 'reactstrap/lib/ModalHeader';
 import ModalBody from 'reactstrap/lib/ModalBody';
 import Switch from '@samoyed/switch';
+import toast from '@samoyed/toast';
 import { StoreState, ActionRequestPayload, ClearListPayload, ActionState } from 'alaska-admin-view';
 import * as actionRedux from 'alaska-admin-view/redux/action';
 import * as listsRedux from 'alaska-admin-view/redux/lists';
@@ -22,6 +23,7 @@ interface Props {
 }
 
 interface State {
+  _action?: ActionState;
   request?: string;
   type: string;
   quantity: string;
@@ -39,6 +41,19 @@ class CreateInventoryModal extends React.Component<Props, State> {
       desc: '',
     };
     this.id = random();
+  }
+
+  static getDerivedStateFromProps(nextProps: Props, prevState: State) {
+    const { action } = nextProps;
+    if (action === prevState._action) return null;
+    if (action.request === prevState.request && !action.fetching) {
+      if (action.error) {
+        toast(tr('Failed'), action.error.message, { type: 'error' });
+      } else {
+        toast(tr('Success'));
+      }
+    }
+    return { _action: action };
   }
 
   handleSave = () => {

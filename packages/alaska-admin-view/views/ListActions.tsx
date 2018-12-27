@@ -92,7 +92,7 @@ class ListActions extends React.Component<Props, ListActionsState> {
         eval(config.post.substr(3));
       }
     } catch (err) {
-      toast('error', tr('Failed'), err.message);
+      toast(tr('Failed'), err.message, { type: 'error' });
     }
   };
 

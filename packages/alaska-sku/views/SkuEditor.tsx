@@ -3,7 +3,7 @@ import * as tr from 'grackle';
 import * as _ from 'lodash';
 import * as immutable from 'seamless-immutable';
 import { ObjectMap } from 'alaska';
-import { FieldViewProps, ImageData, query } from 'alaska-admin-view';
+import { FieldViewProps, ImageData, query, views } from 'alaska-admin-view';
 import { PropData, PropValueData } from 'alaska-property';
 
 interface PropMapData extends PropData {
@@ -40,14 +40,17 @@ interface SkuItemProps {
   disabled: boolean;
   value: immutable.Immutable<SkuData>;
   onChange: Function;
-  onRemove: () => void;
+}
+
+interface SkuItemState {
+  opened?: boolean;
 }
 
 function createPropsMap(props: PropData[]): ObjectMap<PropMapData> {
   let map: ObjectMap<PropMapData> = {};
   _.forEach(props, (p) => {
     if (!p.sku) return;
-    let item: PropMapData = Object.assign({ valueMap: {}}, p);
+    let item: PropMapData = Object.assign({ valueMap: {} }, p);
     _.forEach(p.values, (v) => {
       item.valueMap[v.id] = v;
     });
@@ -148,7 +151,8 @@ function valueToList(
   return immutable(result);
 }
 
-class SkuItem extends React.Component<SkuItemProps> {
+class SkuItem extends React.Component<SkuItemProps, SkuItemState> {
+  state = { opened: false };
   handlePic = (e: any) => {
     // TODO: 选择或上传图片
   };
@@ -168,11 +172,33 @@ class SkuItem extends React.Component<SkuItemProps> {
     onChange(value.set('discount', e.target.value));
   };
 
+  handleOpen = () => {
+    this.setState({ opened: true });
+  };
+
+  handleClose = () => {
+    this.setState({ opened: false });
+  };
+
   render() {
-    const { value, disabled, onRemove } = this.props;
+    const { value, disabled } = this.props;
+    const { opened } = this.state;
     let thumbUrl = '';
     if (value.pic) {
       thumbUrl = value.pic.thumbUrl;
+    }
+    let CreateInventoryModal = views.components['CreateInventoryModal'];
+    let inventoryBtn;
+    if (value._id && CreateInventoryModal) {
+      inventoryBtn = <button className="btn btn-primary btn-sm" onClick={this.handleOpen}>
+        {tr('Input Inventory')}
+        {opened && <CreateInventoryModal
+          modelId="alaska-sku.Sku"
+          goods={value.goods}
+          sku={value._id}
+          onClose={this.handleClose}
+        />}
+      </button>;
     }
     return (
       <tr>
@@ -180,14 +206,6 @@ class SkuItem extends React.Component<SkuItemProps> {
           <img alt="" src={thumbUrl} onClick={this.handlePic} />
         </td>
         <td className="sku-desc" dangerouslySetInnerHTML={{ __html: value.desc.replace(/\;/g, '<br/>') }} />
-        <td className="sku-inventory">
-          <input
-            type="number"
-            disabled={disabled}
-            value={value.inventory || 0}
-            onChange={this.handleInventory}
-          />
-        </td>
         <td className="sku-price">
           <input
             className={value.price > 0 ? '' : 'is-invalid'}
@@ -200,9 +218,15 @@ class SkuItem extends React.Component<SkuItemProps> {
         <td className="sku-discount">
           <input type="number" disabled={disabled} value={value.discount || 0} onChange={this.handleDiscount} />
         </td>
-        <td className="text-center text-danger sku-actions">
-          <i className="fa fa-close" onClick={onRemove} />
+        <td className="sku-inventory">
+          <input
+            type="number"
+            disabled={disabled || !!inventoryBtn}
+            value={value.inventory || 0}
+            onChange={this.handleInventory}
+          />
         </td>
+        <td className="sku-actions">{inventoryBtn}</td>
       </tr>
     );
   }
@@ -326,9 +350,9 @@ export default class SkuEditor extends React.Component<Props, State> {
           <tr>
             <th className="sku-pic">{tr('Picture', 'alaska-sku')}</th>
             <th className="sku-desc">{tr('Properties', 'alaska-sku')}</th>
-            <th className="sku-inventory">{tr('Inventory', 'alaska-sku')}</th>
             <th className="sku-price">{tr('Price', 'alaska-sku')}</th>
             <th className="sku-discount">{tr('Discount', 'alaska-sku')}</th>
+            <th className="sku-inventory">{tr('Inventory', 'alaska-sku')}</th>
             <th className="sku-actions" />
           </tr>
         </thead>
@@ -339,7 +363,6 @@ export default class SkuEditor extends React.Component<Props, State> {
               disabled={disabled}
               value={sku}
               onChange={this.handleChange}
-              onRemove={() => this.handleRemove(sku)}
             />))
           }
         </tbody>

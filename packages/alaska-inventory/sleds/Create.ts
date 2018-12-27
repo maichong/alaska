@@ -19,7 +19,7 @@ export async function doInput(body: ParamsBody): Promise<Inventory> {
     sku: body.sku,
     quantity: body.quantity,
   });
-  if (!body.sku || !body.goods) service.error('goods or sku is required');
+  if (!body.sku && !body.goods) service.error('goods or sku is required');
 
   let goods: Goods;
   let sku: Sku;
@@ -32,6 +32,11 @@ export async function doInput(body: ParamsBody): Promise<Inventory> {
   if (!goods) {
     goods = await Goods.findById(body.goods);
     if (!goods) service.error('Goods not found');
+  }
+
+  if (skuService && !sku && _.size(goods.skus) === 1) {
+    // 如果goods 只有一条sku数据，允许 sku 参数可选
+    sku = await skuService.models.Sku.findById(goods.skus[0]._id);
   }
 
   if (sku) {
