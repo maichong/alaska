@@ -4,8 +4,9 @@ import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
 import * as React from 'react';
 import Node from './Node';
-import { EditorProps, FieldGroupProps, Field } from '..';
+import { EditorProps, FieldGroupProps } from '..';
 import FieldGroup from './FieldGroup';
+import { hasAbility } from '../utils/check-ability';
 
 type Errors = immutable.Immutable<{
   [key: string]: string;
@@ -14,6 +15,7 @@ type Errors = immutable.Immutable<{
 interface EditorState {
   _record?: any;
   errors: Errors;
+  disabled?: boolean;
 }
 
 function checkErrors(props?: EditorProps, errors?: Errors | null): Errors {
@@ -64,12 +66,20 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   static getDerivedStateFromProps(nextProps: EditorProps, prevState: EditorState) {
+    const { model, record } = nextProps;
+    const isNew = !record.id;
+    const nextState: Partial<EditorState> = {
+      disabled: nextProps.disabled || (isNew && model.nocreate) || (isNew && model.noupdate)
+    };
+    if (!nextState.disabled) {
+      let ability = nextProps.model.id + (isNew ? '.create' : '.update');
+      nextState.disabled = !hasAbility(ability, record);
+    }
     const { errors: stateError } = prevState;
     if (nextProps.record !== prevState._record) {
-      let errors = checkErrors(nextProps, stateError);
-      return { errors };
+      nextState.errors = checkErrors(nextProps, stateError);
     }
-    return null;
+    return nextState;
   }
 
   handleFieldChange = (key: string, value: any) => {
@@ -78,8 +88,8 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
   };
 
   renderGroups() {
-    let { model, record, disabled } = this.props;
-    let { errors } = this.state;
+    let { model, record } = this.props;
+    let { errors, disabled } = this.state;
     let groups: ObjectMap<FieldGroupProps> = {
       default: {
         title: '',

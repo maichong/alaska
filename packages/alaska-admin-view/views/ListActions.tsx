@@ -186,20 +186,6 @@ class ListActions extends React.Component<Props, ListActionsState> {
       let ability = model.id + '.' + key;
       if (!hasAbility(ability, record)) return;
 
-      // TODO: ability 支持
-      // let { ability } = action;
-      // let abilityDisabled = false;
-      // if (typeof ability === 'function') {
-      //   // TODO: 遍历所有selected 依次判断ability
-      //   ability = '*';
-      // }
-      // if (ability && ability[0] === '*') {
-      //   ability = ability.substr(1);
-      //   abilityDisabled = true;
-      // }
-      // let hasAbility = !ability || (settings && settings.abilities && settings.abilities[ability]) || false;
-      // if (!hasAbility && !abilityDisabled) return;
-
       let disabled = action.needRecords && (!selected || selected.length < action.needRecords);
       let obj = {} as ActionMap;
       if (key === 'remove') {
