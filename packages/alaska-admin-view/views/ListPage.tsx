@@ -275,13 +275,19 @@ class ListPage extends React.Component<Props, ListPageState> {
             onFilters={this.handleFilters}
             onSplit={this.handleSplit}
             filters={filters}
+            options={options}
             columns={columns}
             split={split}
           >
-            {tr(model.label)} &nbsp;
-            {recordTotal ? <i>{recordTotal}&nbsp;{tr('records')}</i> : <i>{tr('No records')}</i>}
+            {
+              options.title ? options.title : (
+                <span>
+                  {tr(model.label)} &nbsp;
+                  {recordTotal ? <i>{recordTotal}&nbsp;{tr('records')}</i> : <i>{tr('No records')}</i>}
+                </span>
+              )}
           </ListToolbar>
-          <FilterEditor model={model} value={filters} onChange={this.handleFilters} />
+          {!options.nofilters && <FilterEditor model={model} value={filters} onChange={this.handleFilters} />}
           <List
             options={options}
             model={model}

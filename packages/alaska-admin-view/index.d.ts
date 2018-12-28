@@ -826,6 +826,7 @@ export interface ListPageProps {
 
 export interface ListToolbarProps {
   model: Model;
+  options?: any;
   filters?: Filter;
   columns?: string[];
   split?: boolean;
