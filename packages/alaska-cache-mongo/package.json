@@ -16,6 +16,6 @@
   "dependencies": {
     "alaska-cache": "^0.13.2",
     "mongodb": "*",
-    "debug": "^4.1.0"
+    "debug": "^4.1.1"
   }
 }

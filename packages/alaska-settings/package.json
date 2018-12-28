@@ -16,7 +16,7 @@
     "alaska-field-mixed": "^0.13.2",
     "alaska-field-select": "^0.13.2",
     "alaska-field-text": "^0.13.2",
-    "debug": "^4.1.0"
+    "debug": "^4.1.1"
   },
   "peerDependencies": {
     "alaska-field-mixed": "^0.13.2",

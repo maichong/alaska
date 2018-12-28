@@ -14,6 +14,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "koa-static-cache": "^5.1.2"
+    "koa-static-cache": "^5.1.2",
+    "is-directory": "^0.3.1"
   }
 }

@@ -18,7 +18,7 @@
     "alaska-field-html": "^0.13.2",
     "alaska-field-datetime": "^0.13.2",
     "alaska-http": "^0.13.2",
-    "debug": "^4.1.0"
+    "debug": "^4.1.1"
   },
   "peerDependencies": {
     "alaska-field-relationship": "^0.13.2",

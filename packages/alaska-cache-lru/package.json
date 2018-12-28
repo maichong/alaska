@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "alaska-cache": "^0.13.2",
-    "debug": "^4.1.0",
+    "debug": "^4.1.1",
     "lru-cache": "^5.1.1"
   }
 }
