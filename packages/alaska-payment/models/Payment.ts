@@ -36,7 +36,7 @@ export default class Payment extends Model {
     complete: {
       title: 'Complete',
       sled: 'Complete',
-      style: 'warning',
+      color: 'warning',
       confirm: 'COMPLETE_PAYMENT_WARING',
       hidden: 'state'
     }

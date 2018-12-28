@@ -25,14 +25,14 @@ export default class Withdraw extends Model {
     accept: {
       title: 'Accept',
       sled: 'WithdrawAccept',
-      style: 'success',
+      color: 'success',
       disabled: 'state',
       hidden: 'state'
     },
     reject: {
       title: 'Reject',
       sled: 'WithdrawReject',
-      style: 'danger',
+      color: 'danger',
       disabled: 'state',
       hidden: 'state'
     }

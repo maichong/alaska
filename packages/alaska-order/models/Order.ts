@@ -61,7 +61,7 @@ export default class Order extends Model {
   static actions = {
     confirm: {
       title: 'Confirm',
-      style: 'success',
+      color: 'success',
       sled: 'Confirm',
       hidden: {
         state: {
@@ -71,7 +71,7 @@ export default class Order extends Model {
     },
     reject: {
       title: 'Reject',
-      style: 'danger',
+      color: 'danger',
       sled: 'Reject',
       confirm: 'Confirm to reject the order?',
       hidden: {
@@ -82,7 +82,7 @@ export default class Order extends Model {
     },
     ship: {
       title: 'Ship',
-      style: 'success',
+      color: 'success',
       sled: 'Ship',
       hidden: {
         state: {
@@ -92,7 +92,7 @@ export default class Order extends Model {
     },
     acceptRefund: {
       title: 'Accept Refund',
-      style: 'warning',
+      color: 'warning',
       confirm: 'Confirm to accept refund?',
       sled: 'AcceptRefund',
       hidden: {
@@ -103,7 +103,7 @@ export default class Order extends Model {
     },
     rejectRefund: {
       title: 'Reject Refund',
-      style: 'danger',
+      color: 'danger',
       confirm: 'Confirm to reject refund?',
       sled: 'RejectRefund',
       hidden: {
@@ -114,7 +114,7 @@ export default class Order extends Model {
     },
     delete: {
       title: 'Delete',
-      style: 'danger',
+      color: 'danger',
       confirm: 'Confirm to delete the order?',
       sled: 'Delete',
       post: 'js:history.back()'

@@ -4,7 +4,7 @@ export default class Address extends Model {
   static label = 'Address';
   static icon = 'map-marker';
   static titleField = 'name';
-  static defaultColumns = 'user name tel geo province city createdAt';
+  static defaultColumns = 'user name tel province city district street detail isDefault';
   static defaultSort = '-createdAt';
 
   static api = {
