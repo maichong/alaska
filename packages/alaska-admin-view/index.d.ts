@@ -94,7 +94,7 @@ export type ActionState = immutable.Immutable<{
   fetching: boolean;
   request: string;
   error: Error | null;
-  records: Record[];
+  records: string[];
   search: string;
   sort: string;
   filters: any;
@@ -106,7 +106,7 @@ export interface ActionRequestPayload {
   action: string;
   model: string;
   request: string;
-  records?: Record[];
+  records?: string[];
   search?: string;
   sort?: string;
   filters?: any;
@@ -582,9 +582,9 @@ export interface FieldViewProps {
   className: string;
   model: Model;
   field: Field;
-  record: immutable.Immutable<Record>;
+  record?: immutable.Immutable<Record>;
   value: any;
-  disabled: boolean;
+  disabled?: boolean;
   errorText?: string;
   locale?: string;
   onChange: (v: any) => void;
@@ -653,15 +653,16 @@ export interface FilterEditorViewProps {
 export interface FilterEditorView extends React.Component<FilterEditorViewProps> { }
 
 
-export interface ActionMap {
+export interface ActionItem {
   key: string;
   link?: string;
   action: ModelAction;
   onClick?: Function;
 }
+
 // Props
 export interface ActionGroupProps {
-  items: ActionMap[];
+  items: ActionItem[];
   model: Model;
   editor?: boolean;
   selected?: immutable.Immutable<Record[]>;

@@ -44,7 +44,7 @@ export default class ActionView extends React.Component<ActionViewProps> {
 
     let title: React.ReactNode;
     if (action.title) {
-      title = tr(action.title, model.serviceId);
+      title = tr(action.title, model && model.serviceId);
     }
     if (title) {
       title = <span className="action-title">{title}</span>
@@ -52,7 +52,7 @@ export default class ActionView extends React.Component<ActionViewProps> {
     let el = (
       <button
         onClick={this.handleClick}
-        className={classnames('btn', `btn-${action.style || 'light'}`, {
+        className={classnames('btn', `btn-${action.color || 'light'}`, {
           'with-icon': !!action.icon,
           'with-title': !!title
         })}

@@ -78,7 +78,7 @@ class Relationship extends React.Component<Props, RelationshipState> {
         props={this.props}
         className="relationship card mt-2"
       >
-        <div className="card-title">{title}</div>
+        <div className="card-heading">{title}</div>
         <DataTable
           model={model}
           records={records}

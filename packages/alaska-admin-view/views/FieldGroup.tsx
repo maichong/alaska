@@ -134,7 +134,7 @@ class FieldGroup extends React.Component<Props> {
       </div>;
     }
     if (panel !== false) {
-      let heading = title ? <div className="card-title">{tr(title)}</div> : null;
+      let heading = title ? <div className="card-heading">{tr(title)}</div> : null;
       if (body !== false) {
         el = <div className="card-body">{el}</div>;
       }

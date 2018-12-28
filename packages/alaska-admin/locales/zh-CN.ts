@@ -110,4 +110,5 @@ export default {
   'Requested page not found.': '请求的页面没有找到。',
   OK: '确定',
   'Select columns': '选择列',
+  'Admin Copyright': '管理平台版权说明',
 };

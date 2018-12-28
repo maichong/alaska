@@ -378,7 +378,7 @@ export default class SkuEditor extends React.Component<Props, State> {
     if (!props.length || record.isNew) return null;
     return (
       <div className="card sku-editor">
-        <div className="card-title">SKU</div>
+        <div className="card-heading">SKU</div>
         {this.renderTable()}
       </div>
     );

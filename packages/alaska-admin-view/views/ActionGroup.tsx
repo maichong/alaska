@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import * as React from 'react';
 import { ActionGroupProps } from '..';
 import ActionView from './ActionView';
+import Node from './Node';
 
 export default class ActionGroup extends React.Component<ActionGroupProps> {
   render() {
@@ -9,7 +10,11 @@ export default class ActionGroup extends React.Component<ActionGroupProps> {
       items, editor, model, record, records, selected
     } = this.props;
     return (
-      <div className="action-group">
+      <Node
+        wrapper="ActionGroup"
+        className="action-group"
+        props={this.props}
+      >
         {
           items.map((item) => {
             let { action, onClick, link } = item;
@@ -28,7 +33,7 @@ export default class ActionGroup extends React.Component<ActionGroupProps> {
             );
           })
         }
-      </div>
+      </Node>
     );
   }
 }

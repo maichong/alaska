@@ -182,7 +182,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
         obj.action = _.assign({
           key: 'create',
           icon: 'save',
-          style: 'primary',
+          color: 'primary',
           tooltip: 'Save'
         }, action, disabled ? { disabled: true } : {});
       } else if (key === 'update') {
@@ -191,25 +191,25 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
         obj.action = _.assign({
           key: 'update',
           icon: 'save',
-          style: 'primary',
+          color: 'primary',
           tooltip: 'Save'
         }, action, disabled ? { disabled: true } : {});
       } else if (key === 'remove') {
         if (record.isNew || model.noremove) return;
-        obj.onClick = () => this.handleRemove();
+        obj.onClick = this.handleRemove;
         obj.action = _.assign({
           key: 'remove',
           icon: 'close',
-          style: 'danger',
+          color: 'danger',
           tooltip: 'Remove'
         }, action, disabled ? { disabled: true } : {});
       } else if (key === 'add') {
         if (record.isNew || model.nocreate) return;
-        obj.onClick = () => this.handleAdd();
+        obj.onClick = this.handleAdd;
         obj.action = _.assign({
           key: 'add',
           icon: 'plus',
-          style: 'success',
+          color: 'success',
           tooltip: 'Create record'
         }, actions.create, actions.add, disabled ? { disabled: true } : {});
       } else {

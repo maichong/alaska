@@ -550,7 +550,6 @@ export interface ModelAction {
   key?: string;
   icon?: string;
   title?: string;
-  style?: string;
   tooltip?: string;
   color?: Colors;
   sled?: string;

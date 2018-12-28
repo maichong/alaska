@@ -190,20 +190,20 @@ class ListActions extends React.Component<Props, ListActionsState> {
       let obj = {} as ActionMap;
       if (key === 'remove') {
         if (model.noremove) return;
-        obj.onClick = () => this.handleRemove();
+        obj.onClick = this.handleRemove;
         obj.action = _.assign({
           key: 'remove',
           icon: 'close',
-          style: 'danger',
+          color: 'danger',
           tooltip: 'Remove selected records'
         }, action, disabled ? { disabled: true } : {});
       } else if (key === 'export') {
         if (model.noexport) return;
-        obj.onClick = () => this.handleExport();
+        obj.onClick = this.handleExport;
         obj.action = _.assign({
           key: 'export',
           icon: 'download',
-          style: 'info',
+          color: 'info',
           tooltip: 'Export records'
         }, action, disabled ? { disabled: true } : {});
       } else if (key === 'add') {
@@ -212,7 +212,7 @@ class ListActions extends React.Component<Props, ListActionsState> {
         obj.action = _.assign({
           key: 'add',
           icon: 'plus',
-          style: 'success',
+          color: 'success',
           tooltip: 'Create record'
         }, action, disabled ? { disabled: true } : {});
       } else {
