@@ -21,6 +21,7 @@
     "@samoyed/toast": "^0.2.0",
     "@samoyed/tooltip-wrapper": "^0.2.0",
     "@samoyed/types": "^0.2.0",
+    "@types/history": "^4.7.2",
     "@types/react-dom": "^16.0.11",
     "@types/react-redux": "^6.0.11",
     "@types/reactstrap": "^6.4.3",

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import * as tr from 'grackle';
+import * as classnames from 'classnames';
 import TooltipWrapper from '@samoyed/tooltip-wrapper';
 import checkAbility from '../utils/check-ability';
 import { ActionViewProps, views } from '..';
@@ -41,18 +42,24 @@ export default class ActionView extends React.Component<ActionViewProps> {
       });
     }
 
-    let title: string;
+    let title: React.ReactNode;
     if (action.title) {
       title = tr(action.title, model.serviceId);
+    }
+    if (title) {
+      title = <span className="action-title">{title}</span>
     }
     let el = (
       <button
         onClick={this.handleClick}
-        className={`btn btn-${action.style || 'default'}`}
+        className={classnames('btn', `btn-${action.style || 'light'}`, {
+          'with-icon': !!action.icon,
+          'with-title': !!title
+        })}
         disabled={disabled}
         key={action.key}
       >
-        {action.icon ? <i className={`fa fa-${action.icon}`} /> : null} {title}
+        {action.icon ? <i className={`action-icon fa fa-${action.icon}`} /> : null} {title}
       </button >
     );
     if (action.tooltip) {

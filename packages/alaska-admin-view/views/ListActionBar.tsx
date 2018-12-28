@@ -5,6 +5,7 @@ import Node from './Node';
 import ListActions from './ListActions';
 import { ListActionBarProps } from '..';
 import SearchField from './SearchField';
+import ActionBar from './ActionBar';
 
 interface ListActionBarState {
   searchMode?: boolean;
@@ -31,21 +32,17 @@ export default class ListActionBar extends React.Component<ListActionBarProps, L
     const { searchMode } = this.state;
     const canSearch = model.searchFields.length;
 
-    let className = 'list-action-bar';
-    if (canSearch && searchMode) {
-      className += ' search-mode';
-    }
+    let className = (canSearch && searchMode) ? 'search-mode' : '';
     return (
       <Node
-        className={className}
         wrapper="ListActionBar"
         props={this.props}
       >
-        <div className="container-fluid">
+        <ActionBar className={className}>
           <div className="action-bar-form">
             {
               canSearch ? <div className="form-group">
-                <i className="fa fa-search" onClick={() => this.setState({ searchMode: true })} />
+                <i className="fa fa-search list-search-toggle" onClick={() => this.setState({ searchMode: true })} />
                 <SearchField
                   placeholder={tr('Press enter to search')}
                   value={search}
@@ -65,7 +62,7 @@ export default class ListActionBar extends React.Component<ListActionBarProps, L
             sort={sort}
             search={search}
           />
-        </div>
+        </ActionBar>
       </Node>
     );
   }

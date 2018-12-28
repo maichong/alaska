@@ -26,7 +26,7 @@ export default class Init extends Sled<{}, void> {
       icon: 'cogs',
       type: 'link',
       link: '/settings',
-      ability: 'admin.alaska-settings.settings.update',
+      ability: 'alaska-settings.Settings.update',
       service: 'alaska-settings',
       activated: true
     });

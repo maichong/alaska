@@ -18,28 +18,6 @@
     z-index: 100;
   }
   .editor-action-bar {
-    .app.icon & {
-      left: $menu-icon-width;
-    }
-    .app.hidden & {
-      left: 0;
-    }
-    position: fixed;
-    left: $menu-width;
-    bottom: 0;
-    right: 0;
-    margin-bottom: 0;
-    border-width: $border-width 0 0;
-    background: $dark-color;
-    z-index: 999;
-    color: #fff;
-    min-height: $bottom-toolbar-height;
-    display: flex;
-    .container-fluid {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-    }
     .editor-actions {
       .btn {
         margin-left: $padding-base-horizontal; // 10px

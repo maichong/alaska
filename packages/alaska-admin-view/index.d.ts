@@ -1,9 +1,10 @@
+import * as React from 'react';
+import * as H from 'history';
+import * as immutable from 'seamless-immutable';
 import { Client, PaginateResult } from 'akita';
 import { ObjectMap } from 'alaska';
 import { ModelAction, Filter, Filters, AbilityCheckGate } from 'alaska-model';
-import * as React from 'react';
 import { Store } from 'redux';
-import * as immutable from 'seamless-immutable';
 import { DependsQueryExpression } from 'check-depends';
 import { Colors, SelectOption } from '@samoyed/types';
 import { LangGroup } from 'alaska-locale';
@@ -525,6 +526,18 @@ export interface ViewsMetadata {
   };
 }
 
+// 带路由页面的Props
+export interface RouterProps<T = any> {
+  history: H.History;
+  location: H.Location;
+  match: {
+    isExact: boolean;
+    params: T;
+    path: string;
+    url: string;
+  }
+}
+
 // Widget interface
 export interface WidgetProps {
 }
@@ -915,4 +928,9 @@ export interface ToolGroupProps {
 }
 
 export interface WidgetGroupProps {
+}
+
+export interface ActionBarProps {
+  className?: string;
+  children: React.ReactNode;
 }

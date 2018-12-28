@@ -49,16 +49,17 @@ export default class CreateInventoryButton extends React.Component<ActionViewPro
       }
     }
     return (
-      <div className={'btn btn-primary' + (disabled ? ' disabled' : '')} onClick={this.handleClick}>
-        <i className="fa fa-truck" />
-        {' ' + tr('Input Inventory')}
+      <button className={'btn btn-primary with-icon with-title' + (disabled ? ' disabled' : '')} onClick={this.handleClick}>
+        <i className="action-icon fa fa-truck" />
+        {' '}
+        <span className="action-title">{tr('Input Inventory')}</span>
         {this.state.opened && !disabled && <CreateInventoryModal
           modelId={model.id}
           goods={goods}
           sku={sku}
           onClose={this.handleClose}
         />}
-      </div>
+      </button>
     );
   }
 }

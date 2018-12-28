@@ -2,6 +2,7 @@ import * as React from 'react';
 import Node from './Node';
 import { EditorActionBarProps } from '..';
 import EditorActions from './EditorActions';
+import ActionBar from './ActionBar';
 
 export default class EditorActionBar extends React.Component<EditorActionBarProps> {
   render() {
@@ -10,16 +11,15 @@ export default class EditorActionBar extends React.Component<EditorActionBarProp
       <Node
         wrapper="EditorActionBar"
         props={this.props}
-        className="editor-action-bar"
       >
-        <div className="container-fluid">
+        <ActionBar className="editor-action-bar">
           {
             record ? <EditorActions
               model={model}
               record={record}
             /> : null
           }
-        </div>
+        </ActionBar>
       </Node>
     );
   }

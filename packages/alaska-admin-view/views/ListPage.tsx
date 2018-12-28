@@ -17,20 +17,13 @@ import LoadingPage from './LoadingPage';
 import * as listsRedux from '../redux/lists';
 import {
   ListPageProps, ListsState, StoreState, Record, Model, Settings,
-  Service
+  Service, RouterProps
 } from '..';
 import { getStorage, setStorage } from '../utils/storage';
 
-interface Props extends ListPageProps {
+interface Props extends ListPageProps, RouterProps<{ service: string; model: string; }> {
   settings: Settings;
   lists: ListsState;
-  match: {
-    params: {
-      service: string;
-      model: string;
-    };
-  };
-  location: Location;
   loadMore: Function;
 }
 

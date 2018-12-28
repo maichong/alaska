@@ -14,14 +14,13 @@ body {
   margin-left: $menu-width;
 }
 
-.icon {
+.app.icon {
   .content {
     margin-left: $menu-icon-width;
   }
   .header,
   .list-page-inner,
   .list-toolbar,
-  .list-action-bar,
   .editor-toolbar,
   .editor-page {
     left: $menu-icon-width;
@@ -31,14 +30,13 @@ body {
   }
 }
 
-.hidden {
+.app.hidden {
   .content {
     margin-left: 0;
   }
   .header,
   .list-page-inner,
   .list-toolbar,
-  .list-action-bar,
   .editor-toolbar,
   .editor-page {
     left: 0;
@@ -91,15 +89,14 @@ body {
   }
   .card-body {
     padding: $content-space-medium;
- 
   }
 }
 
 @media(min-width: 576px) {
   .card {
     .card-body {
-      .row{
-        .col-sm-2{
+      .row {
+        .col-sm-2 {
           text-align: right;
         }
       }
@@ -125,7 +122,7 @@ body {
   &.with-editor {
     right: $quick-editor-with;
     .list-toolbar,
-    .list-action-bar {
+    .action-bar {
       right: $quick-editor-with;
     }
   }
@@ -136,7 +133,7 @@ body {
     &.with-editor {
       right: $quick-editor-large-with;
       .list-toolbar,
-      .list-action-bar {
+      .action-bar {
         right: $quick-editor-large-with;
       }
     }
@@ -162,11 +159,11 @@ body {
 @import "./list-tool-bar.scss";
 @import "./filter-editor.scss";
 @import "./list.scss";
-@import "./list-action-bar.scss";
 @import "./search-field.scss";
 @import "./field-view.scss";
 //errorPage
 @import "./error-page.scss";
 @import "./editor.scss";
 @import "./quick-editor.scss";
+@import "./action-bar.scss";
 @import "./toastr.scss";
