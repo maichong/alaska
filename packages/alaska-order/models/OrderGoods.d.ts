@@ -22,8 +22,25 @@ export default class OrderGoods extends Model {
    * 客户已经退货的商品总数量
    */
   refundedQuantity: number;
+  /**
+   * 当前申请退款原因
+   */
   refundReason: string;
+  /**
+   * 当前申请退款金额
+   */
   refundAmount: number;
+  /**
+   * 当前申请退货数量
+   */
   refundQuantity: number;
+  /**
+   * 上一次审核通过的退款金额
+   */
+  lastRefundAmount: number;
+  /**
+   * 上一次审核通过的退货数量
+   */
+  lastRefundQuantity: number;
   createdAt: Date;
 }

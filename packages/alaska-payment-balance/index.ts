@@ -2,6 +2,7 @@ import balanceService from 'alaska-balance';
 import User from 'alaska-user/models/User';
 import { PaymentService, PaymentPlugin } from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
+import Refund from 'alaska-payment/models/Refund';
 
 export default class BalancePaymentPlugin extends PaymentPlugin {
   constructor(service: PaymentService) {
@@ -43,5 +44,26 @@ export default class BalancePaymentPlugin extends PaymentPlugin {
     payment.state = 1;
 
     return 1;
+  }
+
+  async refund(refund: Refund, payment: Payment): Promise<void> {
+    const currency = refund.type.split(':')[1];
+    if (!currency) throw new Error('Unkown currency');
+    if (refund.currency && refund.currency !== currency) throw new Error('Currency not match');
+    let user: User;
+    if (refund.populated('user')) {
+      // @ts-ignore populated
+      user = refund.user;
+    } else {
+      user = await User.findById(refund.user);
+    }
+    if (!user) {
+      throw new Error('Unknown user for refund');
+    }
+
+    await user._[currency].income(refund.amount, refund.title, 'refund');
+
+    refund.currency = currency;
+    refund.state = 1;
   }
 }

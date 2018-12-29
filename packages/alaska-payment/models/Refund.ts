@@ -1,46 +1,13 @@
 import { RecordId, Model } from 'alaska-model';
-import { BalanceService } from 'alaska-balance';
-import service from '..';
+import Payment, { getCurrenciesAsync, getDefaultCurrencyAsync } from './Payment';
 
-export async function getCurrenciesAsync() {
-  await service.resolveConfig();
-  let balanceService = service.main.allServices['alaska-balance'] as BalanceService;
-  if (balanceService) {
-    return await balanceService.getCurrenciesAsync();
-  }
-  return [];
-}
-
-export async function getDefaultCurrencyAsync() {
-  await service.resolveConfig();
-  let balanceService = service.main.allServices['alaska-balance'] as BalanceService;
-  if (balanceService) {
-    return await balanceService.getDefaultCurrencyAsync();
-  }
-  return { value: '' };
-}
-
-export default class Payment extends Model {
-  static label = 'Payment Logs';
-  static icon = 'money';
-  static defaultColumns = 'title user type amount state createdAt';
+export default class Refund extends Model {
+  static label = 'Refund';
+  static icon = 'undo';
+  static defaultColumns = 'title user payment order type amount state createdAt';
   static defaultSort = '-createdAt';
   static nocreate = true;
   static noupdate = true;
-
-  static api = {
-    create: 2
-  };
-
-  static actions = {
-    complete: {
-      title: 'Complete',
-      sled: 'Complete',
-      color: 'warning',
-      confirm: 'COMPLETE_PAYMENT_WARING',
-      hidden: 'state'
-    }
-  };
 
   static fields = {
     title: {
@@ -53,6 +20,12 @@ export default class Payment extends Model {
       label: 'User',
       type: 'relationship',
       ref: 'alaska-user.User',
+      protected: true
+    },
+    payment: {
+      label: 'Payment',
+      type: 'relationship',
+      ref: Payment,
       protected: true
     },
     type: {
@@ -72,11 +45,6 @@ export default class Payment extends Model {
       type: Number,
       required: true,
       protected: true
-    },
-    params: {
-      label: 'Params',
-      type: Object,
-      required: true
     },
     state: {
       label: 'State',
@@ -106,16 +74,13 @@ export default class Payment extends Model {
 
   title: string;
   user: RecordId;
+  payment: RecordId;
   currency: string;
   amount: number;
   type: string;
-  params: any;
   state: number;
   failure: string;
   createdAt: Date;
-
-  // for alaska dev
-  orders: any[];
 
   preSave() {
     if (!this.createdAt) {

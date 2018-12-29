@@ -224,6 +224,18 @@ export default class Order extends Model {
       type: Number,
       hidden: '!refundQuantity'
     },
+    lastRefundAmount: {
+      label: 'Last Refund Amount',
+      type: Number,
+      hidden: true,
+      disabled: true
+    },
+    lastRefundQuantity: {
+      label: 'Last Refund Quantity',
+      type: Number,
+      hidden: true,
+      disabled: true
+    },
     shipped: {
       label: 'Shipped',
       type: Boolean,
@@ -336,6 +348,14 @@ export default class Order extends Model {
    * 如果退款审核通过，该值会重置为0
    */
   refundQuantity: number;
+  /**
+   * 上一次审核通过的退款金额
+   */
+  lastRefundAmount: number;
+  /**
+   * 上一次审核通过的退货数量
+   */
+  lastRefundQuantity: number;
   shipped: boolean;
   closed: boolean;
   state: number;

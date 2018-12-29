@@ -16,5 +16,7 @@ export default {
   'Username is exists': '用户名已经存在',
   'Email is exists': 'Email已经存在',
   'Close Register': '关闭注册',
-  'Close Register Reason': '关闭注册原因'
+  'Close Register Reason': '关闭注册原因',
+  'Tel has already exists': '手机号已经存在',
+  'Email has already exists': '邮箱地址已经存在',
 };

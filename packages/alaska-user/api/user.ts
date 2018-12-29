@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import { Context } from 'alaska-http';
 import { GET, PATCH } from 'alaska-api';
+import * as escapeStringRegexp from 'escape-string-regexp';
 import User from '../models/User';
 import service from '..';
 
@@ -40,6 +41,8 @@ async function bindTel(ctx: Context) {
   let { tel } = ctx.state.body || ctx.request.body;
   if (!tel) service.error('tel is required');
 
+  if (await User.findOne({ tel }).select('_id')) service.error('Tel has already exists');
+
   user.tel = tel;
   await user.save();
   ctx.body = user.data('info');
@@ -57,6 +60,10 @@ async function bindEmail(ctx: Context) {
 
   let { email } = ctx.state.body || ctx.request.body;
   if (!email) service.error('email is required');
+
+  if (await User.findOne({
+    email: new RegExp('^' + escapeStringRegexp(email) + '$', 'i')
+  }).select('_id')) service.error('Email has already exists');
 
   user.email = email;
   await user.save();

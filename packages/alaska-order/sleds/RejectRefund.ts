@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import { Sled } from 'alaska-sled';
 import Order from '../models/Order';
+import OrderGoods from '../models/OrderGoods';
 import service, { RejectRefundParams } from '..';
 
 /**
@@ -27,6 +28,12 @@ export default class RejectRefund extends Sled<RejectRefundParams, Order[]> {
       order.refundQuantity = 0;
       await order.save();
       order.createLog('Refund rejected');
+      let goods = await OrderGoods.find({ order: order._id });
+      await Promise.all(goods.map(async (item: OrderGoods) => {
+        item.refundAmount = 0;
+        item.refundQuantity = 0;
+        await item.save();
+      }));
     }
     return records;
   }

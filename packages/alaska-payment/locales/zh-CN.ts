@@ -1,5 +1,6 @@
 export default {
   Payment: '支付',
+  Refund: '退款',
   Orders: '订单',
   'Payment Logs': '支付记录',
   Pending: '进行中',
