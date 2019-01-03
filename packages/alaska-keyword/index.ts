@@ -31,12 +31,12 @@ class KeywordService extends Service {
 
   updateRecords = async () => {
     this._timer = null;
-    for (let search in this._keywords) {
+    for (let search of Object.keys(this._keywords)) {
       let hot = this._keywords[search];
       delete this._keywords[search];
       let record = await Keyword.findOneAndUpdate(
         { title: search },
-        { $inc: { hot } },
+        { $inc: { hot }},
         // @ts-ignore returnOriginal
         { upsert: true, returnOriginal: false }
       );

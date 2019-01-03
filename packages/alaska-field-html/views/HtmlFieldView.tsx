@@ -57,7 +57,7 @@ class HtmlFieldView extends React.Component<Props> {
       // @ts-ignore
     } else if (typeof UE !== 'undefined') {
       if (!this.id) {
-        this.id = 'html-editor-' + Math.random();
+        this.id = `html-editor-${Math.random()}`;
       }
       editor = <script id={this.id} type="text/plain" style={{ width: '100%', height: '300px' }}></script>;
     } else {

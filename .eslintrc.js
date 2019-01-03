@@ -24,6 +24,7 @@ module.exports = {
     'no-param-reassign': 'off',
     "no-return-await": 'off',
     'no-unused-vars': 'off',
+    'no-shadow': 'error',
     'prefer-template': 'error',
     radix: 'off',
     'react/jsx-indent-props': ['error', 2]

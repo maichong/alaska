@@ -65,12 +65,12 @@ export default class Export extends Sled<ActionSledParams, any> {
 
     let caches: ObjectMap<string> = {};
 
-    async function getRefLabel(model: typeof Model, id: string) {
-      let key = `${model.key}:${id}`;
+    async function getRefLabel(m: typeof Model, id: string) {
+      let key = `${m.key}:${id}`;
       if (!caches[key]) {
-        let record = await model.findById(id);
+        let record = await m.findById(id);
         if (record) {
-          caches[key] = record.get(model.titleField) || id;
+          caches[key] = record.get(m.titleField) || id;
         } else {
           caches[key] = id;
         }

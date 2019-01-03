@@ -1,20 +1,13 @@
 import ImageField from 'alaska-field-image';
+import { ImageService } from 'alaska-image';
 
 export default class ImageLinkField extends ImageField {
   static plain = String;
   static plainName = 'string';
-  // static viewOptions = ['multi', 'thumbSuffix', 'max', 'allowed'];
-  // static defaultOptions = {
-  //   cell: 'ImageLinkFieldCell',
-  //   view: 'ImageLinkFieldView',
-  //   pathFormat: 'YYYY/MM/DD/',
-  //   thumbSuffix: '',
-  //   allowed: ['jpg', 'png', 'gif'],
-  //   adapter: 'fs'
-  // };
 
   initSchema() {
-    let schema = this._schema;
+    const field = this;
+    const schema = this._schema;
     if (this.multi) {
       this.plain = Array;
       this.plainName = 'array';
@@ -22,6 +15,14 @@ export default class ImageLinkField extends ImageField {
       this.plain = String;
       this.plainName = 'string';
     }
+
+    let main = field._model.service.main;
+    let imageService = main.allServices['alaska-image'] as ImageService;
+    if (imageService) {
+      let driver = field.driver || 'default';
+      if (!imageService.drivers.hasOwnProperty(driver)) throw new Error('Image storage driver not found!');
+    }
+
     let options = {
       type: this.plain
     };

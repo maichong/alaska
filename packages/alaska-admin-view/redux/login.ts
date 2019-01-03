@@ -1,6 +1,9 @@
-import { createAction, handleActions } from 'redux-actions';
+import { createAction, handleActions, Action } from 'redux-actions';
+import { put } from 'redux-saga/effects';
 import * as immutable from 'seamless-immutable';
 import { LoginPayload, LoginState } from 'alaska-admin-view';
+import api from '../utils/api';
+import { refreshSettings } from './settings';
 
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
@@ -46,3 +49,24 @@ export default handleActions({
   LOGIN_SUCCESS: (state) => state.set('error', null),
   LOGOUT: () => INITIAL_STATE
 }, INITIAL_STATE);
+
+
+export function* loginSaga({ payload }: Action<LoginPayload>) {
+  try {
+    yield api.post('/login', { body: payload });
+    yield put(loginSuccess());
+    yield put(refreshSettings());
+  } catch (e) {
+    console.error(e);
+    yield put(loginFailure(e));
+  }
+}
+
+export function* logoutSaga() {
+  try {
+    yield api.get('/logout');
+    yield put(refreshSettings());
+  } catch (e) {
+    console.error(e);
+  }
+}

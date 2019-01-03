@@ -6,27 +6,23 @@ import { ObjectId } from 'mongodb';
 
 export interface Image {
   _id: ObjectId;
+  user: ObjectId;
   ext?: string;
   path?: string;
   url: string;
   thumbUrl?: string;
   name?: string;
   size?: number;
+  width?: number;
+  height?: number;
 }
 
 export interface ImageFieldOptions {
   max: number;
-  pathFormat: string;
-  thumbSuffix: string;
-  allowed: string[];
-  adapter: string;
-  fs?: any;
-  oss?: any;
+  driver?: string;
 }
 
 declare class ImageField extends Field {
-  fsd: FSD.fsd;
-  upload(file: UploadFile): Promise<Image>;
 }
 
 interface ImageField extends ImageFieldOptions { }

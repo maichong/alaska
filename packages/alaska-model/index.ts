@@ -52,7 +52,7 @@ function setModelDefaults(model: typeof ModelType, service: Service, name: strin
     color: 'success',
     // TODO:
     link: '',
-    ability: model.id + '.create',
+    ability: `${model.id}.create`,
     editor: true,
     list: true,
     hidden: 'isNew'

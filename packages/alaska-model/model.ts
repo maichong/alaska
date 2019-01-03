@@ -1039,8 +1039,8 @@ export default class Model {
           // @ts-ignore 重写 query.exec
           query.exec = function (callback: Function) {
             // @ts-ignore defaultFilters.then 存在
-            return defaultFilters.then((filters: any) => {
-              query.where(filters);
+            return defaultFilters.then((f: any) => {
+              query.where(f);
               query.exec = execFn;
               return query.exec(callback);
             });

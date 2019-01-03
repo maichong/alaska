@@ -1,7 +1,7 @@
 import { RecordId, Model } from 'alaska-model';
 import { Image } from 'alaska-field-image';
 
-export default class CartGoods extends Model {
+declare class CartGoods extends Model {
   pic: Image;
   title: string;
   goods: RecordId;
@@ -14,3 +14,5 @@ export default class CartGoods extends Model {
   quantity: number;
   createdAt: Date;
 }
+
+export default CartGoods;

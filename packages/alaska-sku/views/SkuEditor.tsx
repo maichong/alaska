@@ -50,7 +50,7 @@ function createPropsMap(props: PropData[]): ObjectMap<PropMapData> {
   let map: ObjectMap<PropMapData> = {};
   _.forEach(props, (p) => {
     if (!p.sku) return;
-    let item: PropMapData = Object.assign({ valueMap: {} }, p);
+    let item: PropMapData = Object.assign({ valueMap: {}}, p);
     _.forEach(p.values, (v) => {
       item.valueMap[v.id] = v;
     });
@@ -122,14 +122,14 @@ function valueToList(
   let result: immutable.Immutable<SkuData>[] = itemList.map((item) => {
     let keyItems: string[] = [];
     let descItems: string[] = [];
-    let props: PropData[] = [];
+    let skuProps: PropData[] = [];
     _.keys(item).sort().forEach((pid) => {
       let vid = item[pid];
       keyItems.push(`${pid}:${vid}`);
       let prop = propsMap[pid];
       let propValue = prop.valueMap[vid];
       descItems.push(`${prop.title}:${propValue.title}`);
-      props.push({
+      skuProps.push({
         id: pid,
         title: prop.title,
         values: [{ id: vid, title: propValue.title }]
@@ -140,7 +140,7 @@ function valueToList(
       key,
       desc: descItems.join(';'),
       goods: record._id,
-      props
+      props: skuProps
     });
     if (defaultPic && !sku.pic) {
       sku = sku.set('pic', defaultPic);

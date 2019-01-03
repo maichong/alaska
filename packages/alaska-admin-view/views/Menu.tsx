@@ -28,7 +28,7 @@ class Menu extends React.Component<Props, MenuState> {
     let { menus } = nextProps;
     let path = window.location.hash.substr(1);
     if (path) {
-      let menu = _.find(menus, (menu) => path === menu.link);
+      let menu = _.find(menus, (m) => path === m.link);
       if (menu) {
         return { openId: menu.id };
       }

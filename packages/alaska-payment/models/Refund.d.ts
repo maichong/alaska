@@ -1,6 +1,6 @@
 import { RecordId, Model } from 'alaska-model';
 
-export default class Refund extends Model {
+declare class Refund extends Model {
   title: string;
   user: RecordId;
   payment: RecordId;
@@ -11,3 +11,5 @@ export default class Refund extends Model {
   failure: string;
   createdAt: Date;
 }
+
+export default Refund;

@@ -1,34 +1,28 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import * as shallowEqualWithout from 'shallow-equal-without';
-import { FieldViewProps, upload } from 'alaska-admin-view';
+import { FieldViewProps, api } from 'alaska-admin-view';
 import * as tr from 'grackle';
 
 type State = {
   max: number;
-  errorText: string;
+  error: string;
   multi: any;
 };
 
 export default class ImageFieldView extends React.Component<FieldViewProps, State> {
   imageInput: any;
+  uploadQueue: File[];
+  currentTask: File;
 
   constructor(props: FieldViewProps) {
     super(props);
     this.state = {
       max: props.field.multi ? (props.field.max || 1000) : 1,
-      errorText: '',
+      error: '',
       multi: ''
     };
-  }
-
-  static getDerivedStateFromProps(nextProps: FieldViewProps, prevState: State) {
-    if (typeof nextProps.errorText !== 'undefined') {
-      return {
-        errorText: nextProps.errorText
-      };
-    }
-    return null;
+    this.uploadQueue = [];
   }
 
   shouldComponentUpdate(props: FieldViewProps, state: State) {
@@ -36,10 +30,41 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
       || !shallowEqualWithout(state, this.state);
   }
 
+  async upload() {
+    const { field } = this.props;
+    let file = this.uploadQueue.shift();
+    if (!file) return;
+    this.currentTask = file;
+    try {
+      let image = await api.post('/action', {
+        query: {
+          _model: 'alaska-image.Image',
+          _action: 'create'
+        },
+        body: {
+          driver: field.driver,
+          file
+        }
+      });
+      let item = field.plainName === 'mixed' ? image : image.url;
+      let { value, onChange } = this.props;
+      if (field.multi) {
+        value = (value || []).concat(item);
+        onChange(value);
+      } else {
+        onChange(item);
+      }
+    } catch (e) {
+      this.setState({ error: e.message });
+    }
+    this.currentTask = null;
+    if (this.uploadQueue.length) {
+      this.upload();
+    }
+  }
+
   handleAddImage = () => {
-    let {
-      model, field, record, value
-    } = this.props;
+    let { field, value } = this.props;
     let { multi } = field;
     if (value) {
       if (!multi) {
@@ -51,43 +76,32 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
       value = [];
     }
 
-    let id = '_new';
-    if (record && record._id) {
-      id = record._id;
-    }
     let nextState = {
-      errorText: ''
+      error: ''
     };
 
-    _.forEach(this.imageInput.files, (file) => {
+    _.forEach(this.imageInput.files, (file: File) => {
       if (value.length >= this.state.max || !file) return;
       let matchs = file.name.match(/\.(\w+)$/);
       if (!matchs) {
-        nextState.errorText = 'Invalid image format';
+        nextState.error = 'Invalid image format';
         return;
       }
       let ext = matchs[1].replace('jpeg', 'jpg').toLowerCase();
       if ((field.allowed || ['jpg', 'png']).indexOf(ext) < 0) {
-        nextState.errorText = 'Invalid image format';
+        nextState.error = 'Invalid image format';
         return;
       }
 
-      upload({
-        file,
-        model: model.id,
-        field: field.path,
-        id
-      }).then((image) => {
-        let item = field.plainName === 'mixed' ? image : image.url;
-        value = value.concat(item);
-        if (this.props.onChange) {
-          this.props.onChange(multi ? value : item);
-        }
-      }, (error) => {
-        this.setState({ errorText: error.message });
-      });
+      if (file.size && file.size > field.maxSize) {
+        nextState.error = 'Image exceeds the allowed size';
+        return;
+      }
+
+      this.uploadQueue.push(file);
     });
     this.setState(nextState);
+    if (this.uploadQueue.length && !this.currentTask) this.upload();
   };
 
   handleRemoveItem(item: any) {
@@ -107,9 +121,9 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
 
   render() {
     let {
-      className, field, value, disabled
+      className, field, value, disabled, errorText
     } = this.props;
-    let { errorText, max } = this.state;
+    let { error, max } = this.state;
     if (!field.multi) {
       value = value ? [value] : [];
     }
@@ -118,9 +132,10 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
     _.forEach(value, (item, index) => {
       let url = '';
       if (typeof item === 'string') {
-        url = item + (field.thumbSuffix || '');
+        let matchs = item.match(/\.(\w+)$/i);
+        url = item + ((field.thumbSuffix || '').replace('{EXT}', matchs ? matchs[1] : '') || '');
       } else {
-        url = item.thumbUrl || item.url + (field.thumbSuffix || '');
+        url = item.thumbUrl || item.url + ((field.thumbSuffix || '').replace('{EXT}', item.ext || '') || '');
       }
       items.push((
         <div key={index} className="image-field-item">
@@ -167,11 +182,12 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
 
     let { help } = field;
     className += ' image-field';
-    if (errorText) {
+    error = error || errorText;
+    if (error) {
       className += ' is-invalid';
-      help = tr(errorText);
+      help = tr(error);
     }
-    let helpElement = help ? <small className={errorText ? 'invalid-feedback' : 'text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'invalid-feedback' : 'text-muted'}>{help}</small> : null;
 
     let label = field.nolabel ? '' : field.label;
 

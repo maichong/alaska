@@ -166,10 +166,10 @@ export default class Service {
       srv._configWatcher = [];
 
       // 关联子Service
-      _.forEach(service.config.get('services'), (cfg: ServiceConfig, sid: string) => {
-        let sub = serviceModules[sid];
+      _.forEach(service.config.get('services'), (cfg: ServiceConfig, subSid: string) => {
+        let sub = serviceModules[subSid];
         if (!sub) return;
-        service.services[sid] = sub.service;
+        service.services[subSid] = sub.service;
       });
     });
 

@@ -69,6 +69,17 @@ export default class Sku extends Model {
     }
   };
 
+  key: string;
+  pic: Image;
+  goods: RecordId;
+  desc: string;
+  price: number;
+  discount: number;
+  inventory: number;
+  volume: number;
+  props: PropData[];
+  createdAt: Date;
+
   /**
    * 增加SKU库存，并自动更新对应的商品，成功后将返回新的sku数据记录，否则返回null
    * @param id sku id
@@ -78,21 +89,21 @@ export default class Sku extends Model {
     // 更新 SKU 表
     let newSku = await Sku.findOneAndUpdate(
       { _id: id },
-      { $inc: { inventory: quantity } },
+      { $inc: { inventory: quantity }},
       { new: true }
     );
     if (!newSku) return null;
     // 更新Goods.skus
     let goods = await Goods.findOneAndUpdate(
       { _id: newSku.goods, 'skus._id': newSku._id },
-      { $set: { 'skus.$.inventory': newSku.inventory } },
+      { $set: { 'skus.$.inventory': newSku.inventory }},
       { new: true }
     );
     if (goods) {
       // 更新Goods.inventory
       await Goods.findOneAndUpdate(
         { _id: newSku.goods },
-        { $inc: { inventory: quantity } }
+        { $inc: { inventory: quantity }}
       );
     }
     return newSku;
@@ -107,36 +118,25 @@ export default class Sku extends Model {
     // 更新 SKU 表
     let newSku = await Sku.findOneAndUpdate(
       { _id: id },
-      { $inc: { volume: quantity } },
+      { $inc: { volume: quantity }},
       { new: true }
     );
     if (!newSku) return null;
     // 更新Goods.skus
     let goods = await Goods.findOneAndUpdate(
       { _id: newSku.goods, 'skus._id': newSku._id },
-      { $set: { 'skus.$.volume': newSku.volume } },
+      { $set: { 'skus.$.volume': newSku.volume }},
       { new: true }
     );
     if (goods) {
       // 更新Goods.volume
       await Goods.findOneAndUpdate(
         { _id: newSku.goods },
-        { $inc: { volume: quantity } }
+        { $inc: { volume: quantity }}
       );
     }
     return newSku;
   }
-
-  key: string;
-  pic: Image;
-  goods: RecordId;
-  desc: string;
-  price: number;
-  discount: number;
-  inventory: number;
-  volume: number;
-  props: PropData[];
-  createdAt: Date;
 
   preSave() {
     if (!this.createdAt) {

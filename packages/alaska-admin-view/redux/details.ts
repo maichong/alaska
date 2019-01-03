@@ -1,6 +1,7 @@
-import { createAction, handleActions } from 'redux-actions';
+import { createAction, handleActions, Action } from 'redux-actions';
 import * as immutable from 'seamless-immutable';
 import * as _ from 'lodash';
+import api from '../utils/api';
 import {
   AnyRecordMap,
   DetailsState,
@@ -8,6 +9,7 @@ import {
   LoadDetailsPayload,
   ApplyDetailsPayload
 } from 'alaska-admin-view';
+import store from './index';
 
 export const LOAD_DETAILS = 'LOAD_DETAILS';
 export const APPLY_DETAILS = 'APPLY_DETAILS';
@@ -103,3 +105,49 @@ export default handleActions({
   },
   LOGOUT: () => INITIAL_STATE
 }, INITIAL_STATE);
+
+
+
+const fetching: {
+  [model: string]: boolean;
+} = {};
+
+let queue: ApplyDetailsPayload[] = [];
+let timer: number = 0;
+
+export function* detailsSaga({ payload }: Action<LoadDetailsPayload>) {
+  let fetchingKey = `${payload.model}/${payload.id}`;
+  try {
+    if (fetching[fetchingKey]) {
+      return;
+    }
+    fetching[fetchingKey] = true;
+    let res = yield api.get('/details', {
+      query: {
+        _model: payload.model,
+        _id: payload.id,
+      }
+    });
+    fetching[fetchingKey] = false;
+    queue.push({ model: payload.model, data: res });
+  } catch (e) {
+    fetching[fetchingKey] = false;
+    queue.push({
+      model: payload.model,
+      data: {
+        _id: payload.id,
+        _error: e.message
+      }
+    });
+  }
+  if (!timer) {
+    timer = window.setTimeout(() => {
+      timer = 0;
+      let cur = queue;
+      queue = [];
+      if (cur.length) {
+        store.dispatch(batchApplyDetails(cur));
+      }
+    }, 50);
+  }
+}

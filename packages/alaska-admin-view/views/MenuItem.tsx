@@ -19,15 +19,15 @@ export default class MenuItem extends React.Component<MenuItemProps> {
         tag="li"
       >
         <Link to={menu.type === 'link' ? menu.link : ''} replace onClick={(e) => {
-          let opened = false;
+          let o = false;
           if (menu.type !== 'link' || (menu.subs && menu.subs.length > 0)) {
             e.preventDefault();
-            opened = true;
+            o = true;
           }
           if (layout === 'full') {
-            opened = true;
+            o = true;
           }
-          onClick(menu.id, opened);
+          onClick(menu.id, o);
         }}>
           <i className={`fa fa-${menu.icon}`} />
           <span>{tr(menu.label)}</span>

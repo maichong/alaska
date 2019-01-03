@@ -56,7 +56,7 @@ class SettingsPage extends React.Component<Props, State> {
   static getDerivedStateFromProps(nextProps: Props, prevState: State): null | Partial<State> {
     const { lists } = nextProps;
     let list = lists[MODEL_ID];
-    if (!list) return { values: {} };
+    if (!list) return { values: {}};
     if (list.results === prevState._results) return null;
     let nextState: Partial<State> = {
       _results: list.results,
@@ -147,7 +147,7 @@ class SettingsPage extends React.Component<Props, State> {
         let items = _.map(group.items, (item) => {
           let FieldView = views.components[item.type] || views.components.MixedFieldView;
           let value = values[item._id];
-          if (value === undefined) {
+          if (typeof value === 'undefined') {
             value = item.value;
           }
           return React.createElement(FieldView, {

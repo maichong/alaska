@@ -193,33 +193,6 @@ export default class Goods extends Model {
     }
   };
 
-  /**
-   * 增加商品库存，如果增加成功，返回新的商品记录，否则返回null
-   * @param id 商品ID
-   * @param quantity 增加数量
-   */
-  static async incInventory(id: RecordId, quantity: number): Promise<Goods | null> {
-    // 更新 Goods 表
-    return await Goods.findOneAndUpdate(
-      { _id: id },
-      { $inc: { inventory: quantity } },
-      { new: true }
-    );
-  }
-
-  /**
-   * 增加商品销量，如果增加成功，返回新的商品记录，否则返回null
-   * @param id 商品ID
-   * @param quantity 增加数量
-   */
-  static async incVolume(id: RecordId, quantity: number): Promise<Goods | null> {
-    // 更新 Goods 表
-    return await Goods.findOneAndUpdate(
-      { _id: id },
-      { $inc: { volume: quantity } },
-      { new: true }
-    );
-  }
 
   title: string;
   brief: string;
@@ -249,6 +222,34 @@ export default class Goods extends Model {
 
   // for alaska dev
   skus: Sku[];
+
+  /**
+   * 增加商品库存，如果增加成功，返回新的商品记录，否则返回null
+   * @param id 商品ID
+   * @param quantity 增加数量
+   */
+  static async incInventory(id: RecordId, quantity: number): Promise<Goods | null> {
+    // 更新 Goods 表
+    return await Goods.findOneAndUpdate(
+      { _id: id },
+      { $inc: { inventory: quantity }},
+      { new: true }
+    );
+  }
+
+  /**
+   * 增加商品销量，如果增加成功，返回新的商品记录，否则返回null
+   * @param id 商品ID
+   * @param quantity 增加数量
+   */
+  static async incVolume(id: RecordId, quantity: number): Promise<Goods | null> {
+    // 更新 Goods 表
+    return await Goods.findOneAndUpdate(
+      { _id: id },
+      { $inc: { volume: quantity }},
+      { new: true }
+    );
+  }
 
   async preSave() {
     if (!this.createdAt) {

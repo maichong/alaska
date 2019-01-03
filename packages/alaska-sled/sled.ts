@@ -61,7 +61,7 @@ export default class Sled<T, R> {
 
   /**
    * 执行Sled
-   * @param {any} params 
+   * @param {any} params
    */
   static run<T, R>(this: { new(params: T): Sled<T, R> }, params?: T, lock?: boolean): Promise<R> {
     let sled = new this(params);
@@ -310,7 +310,7 @@ export default class Sled<T, R> {
     }
 
     if (!taskId) {
-      taskId = 'sled.' + id + '.' + random(10);
+      taskId = `sled.${id}.${random(10)}`;
       this.taskId = taskId;
     }
     let task: SledTask<T, R> = {
@@ -319,7 +319,9 @@ export default class Sled<T, R> {
       sledName: this.sledName,
       notify: notify || false,
       params,
+      // eslint-disable-next-line no-undefined
       result: undefined,
+      // eslint-disable-next-line no-undefined
       error: undefined,
       timeout: timeout || 0,
       createdAt: new Date(),
@@ -346,7 +348,7 @@ export default class Sled<T, R> {
     }
 
     if (!this.taskId) {
-      this.taskId = 'sled.' + this.id + '.' + random(10);
+      this.taskId = `sled.${this.id}.${random(10)}`;
     }
 
     if (!this.task) {

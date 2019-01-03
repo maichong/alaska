@@ -1,7 +1,7 @@
 import { Model } from 'alaska-model';
 import { ShowcaseItem } from '..';
 
-export default class Showcase extends Model {
+declare class Showcase extends Model {
   title: string;
   place: string;
   layout: string;
@@ -16,3 +16,5 @@ export default class Showcase extends Model {
 
   isValid(): boolean;
 }
+
+export default Showcase;

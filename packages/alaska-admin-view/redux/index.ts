@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import configureStore from './configureStore';
-import rootSaga from '../sagas';
+import rootSaga from './sagas';
 
 import queryCachesReducer from './queryCaches';
 import detailsReducer from './details';

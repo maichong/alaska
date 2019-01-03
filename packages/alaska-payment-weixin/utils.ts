@@ -1,4 +1,5 @@
 import * as crypto from 'crypto';
+import * as _ from 'lodash';
 import * as xml2js from 'xml2js';
 import { ObjectMap } from 'alaska';
 
@@ -54,7 +55,7 @@ export function xml2data(xml: string | Buffer): Promise<any> {
         return reject(new Error('XMLDataError'));
       }
       let data: any = {};
-      for (let key in result.xml) {
+      for (let key of _.keys(result.xml)) {
         let value = result.xml[key];
         data[key] = value && value.length === 1 ? value[0] : value;
       }

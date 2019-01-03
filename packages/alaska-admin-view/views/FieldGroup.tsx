@@ -82,7 +82,7 @@ class FieldGroup extends React.Component<Props> {
         disabled: fieldDisabled,
         locale: settings.locale,
         errorText: errors[field.path],
-        onChange: (value: any) => onFieldChange(field.path, value),
+        onChange: (v: any) => onFieldChange(field.path, v),
         className: fieldClasses.join(' ')
       }));
     });

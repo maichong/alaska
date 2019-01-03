@@ -2,7 +2,7 @@ import { RecordId, Model } from 'alaska-model';
 import { Context } from 'alaska-http';
 import OrderGoods from './OrderGoods';
 
-export default class Order extends Model {
+declare class Order extends Model {
   code: string;
   title: string;
   user: RecordId;
@@ -58,3 +58,5 @@ export default class Order extends Model {
 
   canAppendGoods(goods: OrderGoods): boolean;
 }
+
+export default Order;

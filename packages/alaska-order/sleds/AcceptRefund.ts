@@ -49,7 +49,7 @@ export default class AcceptRefund extends Sled<AcceptRefundParams, Order[]> {
             refund
           });
         } else {
-          console.error('Not payment found for refund, Order:' + order.id);
+          console.error(`Not payment found for refund, Order:${order.id}`);
         }
       }
 

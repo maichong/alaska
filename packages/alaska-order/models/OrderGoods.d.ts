@@ -1,6 +1,6 @@
 import { RecordId, Model } from 'alaska-model';
 
-export default class OrderGoods extends Model {
+declare class OrderGoods extends Model {
   pic: Object;
   title: string;
   order: RecordId;
@@ -44,3 +44,5 @@ export default class OrderGoods extends Model {
   lastRefundQuantity: number;
   createdAt: Date;
 }
+
+export default OrderGoods;

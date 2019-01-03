@@ -39,12 +39,12 @@ export async function count(ctx: Context) {
     let _id: any = {};
     groups.forEach((g) => {
       _id[g] = `$${g}`;
-    })
+    });
     let query = model.aggregate();
     if (_.size(finalFilters)) {
       query.match(finalFilters);
     }
-    let result = await query.group({ _id, count: { $sum: 1 } });
+    let result = await query.group({ _id, count: { $sum: 1 }});
     let res = {
       count: 0,
       groups: [] as any[]
@@ -78,20 +78,20 @@ export async function paginate(ctx: Context) {
 
   let filters = await model.createFiltersByContext(ctx);
 
-  let results = await model.paginateByContext(ctx, { scope, filters: mergeFilters(filters, abilityFilters) });
+  let res = await model.paginateByContext(ctx, { scope, filters: mergeFilters(filters, abilityFilters) });
 
-  ctx.state.paginateResults = results;
+  ctx.state.paginateResults = res;
 
   // 过滤 protected 和 private 字段
-  let list = [];
-  for (let record of results.results) {
+  let results = [];
+  for (let record of res.results) {
     let data = record.data(scope);
-    list.push(data);
+    results.push(data);
     if (!userService) continue;
     await userService.trimProtectedField(data, ctx.user, model, record);
   }
-  ctx.body = _.assign({}, results, {
-    results: list
+  ctx.body = _.assign({}, res, {
+    results
   });
 }
 
@@ -110,20 +110,20 @@ export async function list(ctx: Context) {
 
   let filters = await model.createFiltersByContext(ctx);
 
-  let results = await model.listByContext(ctx, { scope, filters: mergeFilters(filters, abilityFilters) });
+  let res = await model.listByContext(ctx, { scope, filters: mergeFilters(filters, abilityFilters) });
 
-  ctx.state.listResults = results;
+  ctx.state.listResults = res;
 
   // 过滤 protected 和 private 字段
-  let list = [];
-  for (let record of results) {
+  let results = [];
+  for (let record of res) {
     let data = record.data(scope);
-    list.push(data);
+    results.push(data);
     if (!userService) continue;
     await userService.trimProtectedField(data, ctx.user, model, record);
   }
 
-  ctx.body = list;
+  ctx.body = results;
 }
 
 export async function show(ctx: Context) {

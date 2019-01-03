@@ -17,8 +17,6 @@ export function removeStorage(key: string): void;
 
 export function query(options: QueryOptions): Promise<QueryCache>;
 
-export function upload(options: UploadOptions): Promise<UploadResult>;
-
 export function setViews(views: Partial<Views>): void;
 
 export const api: Client;
@@ -370,15 +368,9 @@ export interface Field {
   precision?: number;
   // image
   allowed?: string[];
-  target?: string;
+  maxSize?: number;
   thumbSuffix?: string;
-  defaultImage?: string;
-  upload?: {
-    model: string;
-    path: string;
-    leaveConfirm: string;
-    service: string;
-  };
+  driver?: string;
 }
 
 export interface Service {
@@ -535,7 +527,7 @@ export interface RouterProps<T = any> {
     params: T;
     path: string;
     url: string;
-  }
+  };
 }
 
 // Widget interface

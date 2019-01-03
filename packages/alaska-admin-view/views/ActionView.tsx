@@ -47,7 +47,7 @@ export default class ActionView extends React.Component<ActionViewProps> {
       title = tr(action.title, model && model.serviceId);
     }
     if (title) {
-      title = <span className="action-title">{title}</span>
+      title = <span className="action-title">{title}</span>;
     }
     let el = (
       <button

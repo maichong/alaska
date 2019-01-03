@@ -30,40 +30,40 @@ export default class ListModeTool extends React.Component<ToolProps, ListModeToo
   }
 
   render() {
-    let { mode, open } = this.state;
+    // let { mode, open } = this.state;
     let { page } = this.props;
     if (page === 'editor') return null;
 
     // TODO:
     return '';
 
-    return (
-      <Node
-        className="list-mode-tool"
-        wrapper="ListModeTool"
-        props={this.props}
-      >
-        <ButtonDropdown
-          isOpen={open}
-          toggle={() => this.setState({ open: !open })}
-        >
-          <DropdownToggle caret color="default">
-            <i className={`fa fa-${mode}`} />
-          </DropdownToggle>
-          <DropdownMenu>
-            {
-              options.map((i) => (
-                <DropdownItem
-                  key={i.value}
-                  onClick={() => this.setState({ mode: i.value })}
-                >
-                  <i className={`fa fa-${i.value}`} />{tr(i.label)}
-                </DropdownItem>
-              ))
-            }
-          </DropdownMenu>
-        </ButtonDropdown>
-      </Node>
-    );
+    // return (
+    //   <Node
+    //     className="list-mode-tool"
+    //     wrapper="ListModeTool"
+    //     props={this.props}
+    //   >
+    //     <ButtonDropdown
+    //       isOpen={open}
+    //       toggle={() => this.setState({ open: !open })}
+    //     >
+    //       <DropdownToggle caret color="default">
+    //         <i className={`fa fa-${mode}`} />
+    //       </DropdownToggle>
+    //       <DropdownMenu>
+    //         {
+    //           options.map((i) => (
+    //             <DropdownItem
+    //               key={i.value}
+    //               onClick={() => this.setState({ mode: i.value })}
+    //             >
+    //               <i className={`fa fa-${i.value}`} />{tr(i.label)}
+    //             </DropdownItem>
+    //           ))
+    //         }
+    //       </DropdownMenu>
+    //     </ButtonDropdown>
+    //   </Node>
+    // );
   }
 }

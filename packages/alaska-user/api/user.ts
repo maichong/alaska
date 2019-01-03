@@ -62,7 +62,7 @@ async function bindEmail(ctx: Context) {
   if (!email) service.error('email is required');
 
   if (await User.findOne({
-    email: new RegExp('^' + escapeStringRegexp(email) + '$', 'i')
+    email: new RegExp(`^${escapeStringRegexp(email)}$`, 'i')
   }).select('_id')) service.error('Email has already exists');
 
   user.email = email;

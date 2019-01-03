@@ -88,23 +88,6 @@ export default <ConfigData>{
       maxAge: 60000
     }
   },
-  'alaska-field-image': {
-    adapter: 'fs',
-    fs: {
-      // https://github.com/maichong/fsd/tree/master/packages/fsd-fs
-      root: 'public/uploads',
-      urlPrefix: 'http://localhost:5000/uploads'
-    }
-  },
-  'alaska-field-image-link': {
-    thumbSuffix: '?thumb',
-    adapter: 'fs',
-    fs: {
-      // https://github.com/maichong/fsd/tree/master/packages/fsd-fs
-      root: 'public/uploads',
-      urlPrefix: 'http://localhost:5000/uploads'
-    }
-  },
   autoLogin: {
     key: 'alaska.uid',
     secret: 'secret'

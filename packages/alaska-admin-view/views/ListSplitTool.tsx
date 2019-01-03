@@ -29,7 +29,7 @@ export default class ListSplitTool extends React.Component<Props, ListSplitToolS
           tooltip={tr('Quick Viewer')}
           placement="bottom"
         >
-          <button className={'btn btn-light' + (value ? ' active' : '')} onClick={this.handleSplit}>
+          <button className={`btn btn-light${value ? ' active' : ''}`} onClick={this.handleSplit}>
             <i className="fa fa-pencil-square-o" />
           </button>
         </TooltipWrapper>

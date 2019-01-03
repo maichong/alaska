@@ -1,7 +1,9 @@
 import { Model } from 'alaska-model';
 
-export default class Keyword extends Model {
+declare class Keyword extends Model {
   title: string;
   hot: number;
   createdAt: Date;
 }
+
+export default Keyword;

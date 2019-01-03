@@ -69,7 +69,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
     const { model, record } = nextProps;
     const isNew = !record.id;
     const nextState: Partial<EditorState> = {
-      disabled: nextProps.disabled || (isNew && model.nocreate) || (isNew && model.noupdate)
+      disabled: nextProps.disabled || (isNew && model.nocreate) || (!isNew && model.noupdate)
     };
     if (!nextState.disabled) {
       let ability = nextProps.model.id + (isNew ? '.create' : '.update');

@@ -1,7 +1,9 @@
-import { createAction, handleActions } from 'redux-actions';
+import { createAction, handleActions, Action } from 'redux-actions';
+import { put } from 'redux-saga/effects';
 import * as immutable from 'seamless-immutable';
 import * as _ from 'lodash';
 import { PaginateResult } from 'akita';
+import api from '../utils/api';
 import {
   AnyRecordList,
   ListsState,
@@ -11,6 +13,7 @@ import {
   LoadMorePayload,
   ApplyListPayload
 } from 'alaska-admin-view';
+import store from './index';
 
 export const CLEAR_LIST = 'CLEAR_LIST';
 export const LOAD_LIST = 'LOAD_LIST';
@@ -164,3 +167,43 @@ export default handleActions({
   },
   LOGOUT: () => INITIAL_STATE
 }, INITIAL_STATE);
+
+export function* listSaga({ payload }: Action<LoadListPayload>) {
+  try {
+    let res = yield api.get('/list',
+      {
+        query: _.assign({
+          _model: payload.model,
+          _search: payload.search,
+          _limit: payload.limit || 50,
+          _page: payload.page || 1,
+          _sort: payload.sort || ''
+        }, payload.filters)
+      });
+    yield put(applyList(payload.model, res));
+  } catch (e) {
+    yield put(loadListFailure(payload.model, e));
+  }
+}
+
+export function* moreSaga({ payload }: Action<LoadMorePayload>) {
+  let model = payload.model;
+  let lists: ListsState = store.getState().lists;
+  let list: AnyRecordList = lists[model];
+  if (!list) return;
+  try {
+    let res = yield api.get('/list',
+      {
+        query: _.assign({
+          _model: payload.model,
+          _search: list.search,
+          _limit: list.limit || 30,
+          _page: list.page + 1,
+          _sort: list.sort || ''
+        }, list.filters)
+      });
+    yield put(applyList(payload.model, res));
+  } catch (e) {
+    yield put(loadListFailure(payload.model, e));
+  }
+}

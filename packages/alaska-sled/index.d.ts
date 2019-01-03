@@ -84,7 +84,7 @@ export class Sled<T, R> {
   static lookup(ref: string): typeof Sled | null;
   /**
    * 执行Sled
-   * @param {any} params 
+   * @param {any} params
    * @param {boolean} [lock] 是否上锁，true 为上锁，false 为不上锁，默认根据Sled是否设置了lock驱动
    * @returns {any}
    */

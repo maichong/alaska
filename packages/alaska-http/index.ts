@@ -54,9 +54,9 @@ export default class HttpExtension extends Extension {
           if (ctx.locale) {
             message = tr.locale(ctx.locale)(message);
           }
-          let debug;
+          let debugInfo;
           if (env === 'development') {
-            debug = error.stack;
+            debugInfo = error.stack;
           }
           if (!expose) {
             // 内部错误，输出到控制台
@@ -68,11 +68,11 @@ export default class HttpExtension extends Extension {
               ctx.body = {
                 error: message,
                 code,
-                debug
+                debug: debugInfo
               };
             } else {
               // TODO: 渲染错误页面
-              ctx.body = `<h1>${message}</h1><div><pre>${debug || ''}</pre></div>`;
+              ctx.body = `<h1>${message}</h1><div><pre>${debugInfo || ''}</pre></div>`;
             }
           }
           if (code && code > 100 && code < 600) {

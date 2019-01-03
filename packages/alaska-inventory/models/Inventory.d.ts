@@ -1,6 +1,6 @@
 import { Model, RecordId } from 'alaska-model';
 
-export default class Inventory extends Model {
+declare class Inventory extends Model {
   title: string;
   user: RecordId;
   goods: RecordId;
@@ -10,3 +10,5 @@ export default class Inventory extends Model {
   inventory: number;
   createdAt: Date;
 }
+
+export default Inventory;

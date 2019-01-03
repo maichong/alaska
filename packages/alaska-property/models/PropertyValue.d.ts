@@ -1,6 +1,6 @@
 import { Model } from 'alaska-model';
 
-export default class PropertyValue extends Model {
+declare class PropertyValue extends Model {
   title: string;
   prop: Object;
   cats: Object;
@@ -9,3 +9,5 @@ export default class PropertyValue extends Model {
   sort: number;
   createdAt: Date;
 }
+
+export default PropertyValue;

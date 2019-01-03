@@ -18,7 +18,7 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
     let config = service.main.config.get('alaska-payment-weixin') || service.error('Missing config [alaska-payment-weixin]');
     if (_.isEmpty(config)) throw new Error('no weixin payment channel found');
     this.config = config;
-    for (let key in config) {
+    for (let key of _.keys(config)) {
       let options: WeixinPaymentOptions = config[key];
       ['channel', 'appid', 'secret', 'mch_id', 'pay_key', 'notify_url'].forEach((k) => {
         // @ts-ignore index

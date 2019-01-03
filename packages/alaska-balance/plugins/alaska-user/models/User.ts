@@ -51,7 +51,7 @@ export default {
       if (User.fields[c.value]) return;
       let format = '0,0';
       if (c.precision) {
-        format += '.' + _.repeat('0', c.precision)
+        format += `.${_.repeat('0', c.precision)}`;
       }
       User.fields[c.value] = {
         label: c.label,
@@ -63,7 +63,7 @@ export default {
           ability: 'root'
         }],
         set(value: number) {
-          return _.round(value, c.precision)
+          return _.round(value, c.precision);
         }
       };
     });
