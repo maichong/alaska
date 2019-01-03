@@ -1,0 +1,18 @@
+{
+  "name": "alaska-admin-ueditor",
+  "version": "0.13.2",
+  "description": "Alaska admin service UEditor plugin",
+  "keywords": [
+    "alaska",
+    "alaska-admin",
+    "alaska-admin-plugin"
+  ],
+  "alaska": "plugin",
+  "alaska-plugin": "alaska-admin",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-admin-ueditor",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {}
+}
