@@ -10,8 +10,15 @@ import * as fileType from 'file-type';
 import Image from '../models/Image';
 import service, { CreateParams } from '..';
 
+interface ImageInfo {
+  width: number;
+  height: number;
+  type: string;
+}
+
 const stat = util.promisify(fs.stat);
-const imageSizeAsync = util.promisify(imageSize);
+// @ts-ignore
+const imageSizeAsync: (path: string) => Promise<ImageInfo> = util.promisify(imageSize);
 
 export default class Create extends Sled<CreateParams, Image> {
   async exec(params: CreateParams): Promise<Image> {
@@ -30,9 +37,13 @@ export default class Create extends Sled<CreateParams, Image> {
     }
 
     let image = new Image({
-      name: params.name,
-      user: params.user || params.admin
+      name: params.name
     });
+
+    let user = params.user || params.admin;
+    if (user) {
+      image.user = user._id;
+    }
 
     let filePath: string;
     if (typeof file === 'string') {
@@ -80,7 +91,7 @@ export default class Create extends Sled<CreateParams, Image> {
         image.width = width;
         image.height = height;
       } else if (filePath) {
-        let { width, height } = await imageSize(filePath);
+        let { width, height } = await imageSizeAsync(filePath);
         image.width = width;
         image.height = height;
       }
