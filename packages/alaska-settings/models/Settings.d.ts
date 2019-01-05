@@ -1,6 +1,9 @@
 import { Model } from 'alaska-model';
 
-declare class Settings extends Model {
+declare class Settings extends Model { }
+interface Settings extends SettingsFields { }
+
+export interface SettingsFields {
 }
 
 declare interface Settings {

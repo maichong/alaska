@@ -1,6 +1,9 @@
 import { Model } from 'alaska-model';
 
-declare class Banner extends Model {
+declare class Banner extends Model { }
+interface Banner extends BannerFields { }
+
+export interface BannerFields {
   title: string;
   pic: Object;
   place: string;

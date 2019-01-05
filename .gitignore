@@ -6,6 +6,7 @@ package-lock.json
 yarn.lock
 .history
 packages/**/*.js
+!packages/alaska-admin-ueditor/ueditor/**/*.js
 dist
 backup
 public

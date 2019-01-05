@@ -1,7 +1,9 @@
 import { Model } from 'alaska-model';
 
-declare class Income extends Model {
-  _id: string;
+declare class Income extends Model { }
+interface Income extends IncomeFields { }
+
+export interface IncomeFields {
   title: string;
   user: string;
   type: string;

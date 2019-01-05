@@ -1,6 +1,9 @@
 import { Model } from 'alaska-model';
 
-declare class AdminMenu extends Model {
+declare class AdminMenu extends Model { }
+interface AdminMenu extends AdminMenuFields { }
+
+export interface AdminMenuFields {
   _id: string;
   id: string;
   label: string;

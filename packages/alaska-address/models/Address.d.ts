@@ -1,6 +1,9 @@
 import { Model } from 'alaska-model';
 
-declare class Address extends Model {
+declare class Address extends Model { }
+interface Address extends AddressFields { }
+
+export interface AddressFields {
   user: string;
   name: string;
   tel: string;

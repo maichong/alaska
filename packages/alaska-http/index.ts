@@ -1,5 +1,6 @@
 import * as collie from 'collie';
 import * as tr from 'grackle';
+import * as http from 'http';
 import * as Koa from 'koa';
 import * as KoaQS from 'koa-qs';
 import * as Router from 'koa-router';
@@ -38,6 +39,7 @@ export default class HttpExtension extends Extension {
         main.app.env = env;
         main.app.proxy = main.config.get('alaska-http.proxy');
         main.app.subdomainOffset = main.config.get('alaska-http.subdomainOffset');
+        main.server = http.createServer(main.app.callback());
         KoaQS(main.app);
       }
       main.app.use(async (ctx, next) => {
@@ -106,11 +108,10 @@ export default class HttpExtension extends Extension {
         main.debug('listen');
         let listenConfig = main.config.get('alaska-http.listen');
         if (!listenConfig) throw new Error('Missing http listen configure [alaska-http.listen]');
-        let server = main.app.listen(listenConfig, () => {
+        main.server.listen(listenConfig, () => {
           main.debug('listen ready');
           resolve();
         });
-        return server;
       });
     });
 

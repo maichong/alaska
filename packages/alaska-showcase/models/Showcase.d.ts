@@ -1,7 +1,10 @@
 import { Model } from 'alaska-model';
 import { ShowcaseItem } from '..';
 
-declare class Showcase extends Model {
+declare class Showcase extends Model { }
+interface Showcase extends ShowcaseFields { }
+
+export interface ShowcaseFields {
   title: string;
   place: string;
   layout: string;

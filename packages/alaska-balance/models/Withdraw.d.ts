@@ -1,7 +1,9 @@
 import { Model } from 'alaska-model';
 
-declare class Withdraw extends Model {
-  _id: string;
+declare class Withdraw extends Model { }
+interface Withdraw extends WithdrawFields { }
+
+export interface WithdrawFields {
   title: string;
   user: string;
   currency: string;

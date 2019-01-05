@@ -7,6 +7,7 @@ import { Server } from 'http';
 
 declare module 'alaska' {
   export interface MainService {
+    server: Server;
     app: Koa;
     getRouter(prefix: string): Router;
     initHttp(): Promise<void>;

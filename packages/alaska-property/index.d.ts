@@ -4,7 +4,7 @@ import Property from './models/Property';
 import PropertyValue from './models/PropertyValue';
 
 declare module 'alaska-goods/models/Goods' {
-  interface Goods {
+  export interface GoodsFields {
     props: PropData[];
     propValues: RecordId[];
   }

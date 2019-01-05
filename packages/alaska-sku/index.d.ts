@@ -4,7 +4,7 @@ import Sku from './models/Sku';
 import { Image } from 'alaska-field-image';
 
 declare module 'alaska-goods/models/Goods' {
-  export interface Goods {
+  export interface GoodsFields {
     skus: Sku[];
   }
 }

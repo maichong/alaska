@@ -19,7 +19,7 @@ export interface UEditorConfig {
   catcherLocalDomain?: string;
   toolbars?: string[][];
   labelMap?: {
-    [key: string]: string
+    [key: string]: string;
   };
   lang?: string;
   langPath?: string;
@@ -110,7 +110,7 @@ export interface UEditorConfig {
     clearFontFamily: boolean;
     removeEmptyNode: boolean;
     removeTagNames: {
-      [tag: string]: 1
+      [tag: string]: 1;
     };
     indent: boolean;
     indentValue: string;
@@ -118,7 +118,7 @@ export interface UEditorConfig {
     tobdc: boolean;
   };
   tableDragable?: boolean;
-  sourceEditor?: "codemirror" | "textarea";
+  sourceEditor?: 'codemirror' | 'textarea';
   codeMirrorJsUrl?: string;
   codeMirrorCssUrl?: string;
   sourceEditorFirst?: boolean;

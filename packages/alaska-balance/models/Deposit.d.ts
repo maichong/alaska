@@ -1,7 +1,10 @@
 import { Model } from 'alaska-model';
 import Income from './Income';
 
-declare class Deposit extends Model {
+declare class Deposit extends Model { }
+interface Deposit extends DepositFields { }
+
+export interface DepositFields {
   title: string;
   user: string;
   currency: string;

@@ -1,6 +1,9 @@
 import { Model, RecordId } from 'alaska-model';
 
-declare class Inventory extends Model {
+declare class Inventory extends Model { }
+interface Inventory extends InventoryFields { }
+
+export interface InventoryFields {
   title: string;
   user: RecordId;
   goods: RecordId;

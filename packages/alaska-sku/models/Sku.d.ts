@@ -16,6 +16,10 @@ declare class Sku extends Model {
    * @param quantity 增加数量
    */
   static incVolume(id: RecordId, quantity: number): Promise<Sku | null>;
+}
+interface Sku extends SkuFields { }
+
+export interface SkuFields {
 
   key: string;
   pic: Image;

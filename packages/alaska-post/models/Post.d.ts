@@ -1,7 +1,10 @@
 import { Model } from 'alaska-model';
 import { ObjectID } from 'mongodb';
 
-declare class Post extends Model {
+declare class Post extends Model { }
+interface Post extends PostFields { }
+
+export interface PostFields {
   id: string;
   title: string;
   user: ObjectID;

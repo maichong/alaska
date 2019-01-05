@@ -2,7 +2,10 @@ import { RecordId, Model } from 'alaska-model';
 import { Context } from 'alaska-http';
 import OrderGoods from './OrderGoods';
 
-declare class Order extends Model {
+declare class Order extends Model { }
+interface Order extends OrderFields { }
+
+export interface OrderFields {
   code: string;
   title: string;
   user: RecordId;

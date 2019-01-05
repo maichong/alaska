@@ -1,7 +1,9 @@
 import { Model } from 'alaska-model';
 
-declare class Captcha extends Model {
-  _id: string | number | Object | any;
+declare class Captcha extends Model { }
+interface Captcha extends CaptchaFields { }
+
+export interface CaptchaFields {
   title: string;
   type: string;
   numbers: string;

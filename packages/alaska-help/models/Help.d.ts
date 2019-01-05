@@ -1,7 +1,9 @@
 import { Model } from 'alaska-model';
 
-declare class Help extends Model {
-  _id: string;
+declare class Help extends Model { }
+interface Help extends HelpFields { }
+
+export interface HelpFields {
   title: string;
   parent: string;
   relations: string[];

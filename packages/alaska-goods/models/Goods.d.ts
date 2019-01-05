@@ -15,6 +15,10 @@ declare class Goods extends Model {
    * @param quantity 增加数量
    */
   static incVolume(id: RecordId, quantity: number): Promise<Goods | null>;
+}
+interface Goods extends GoodsFields { }
+
+export interface GoodsFields {
 
   title: string;
   brief: string;

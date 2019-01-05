@@ -1,6 +1,9 @@
 import { Model, RecordId } from 'alaska-model';
 
-declare class Image extends Model {
+declare class Image extends Model { }
+interface Image extends ImageFields { }
+
+export interface ImageFields {
   user: RecordId;
   name: string;
   ext: string;

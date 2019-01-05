@@ -1,7 +1,10 @@
 import { Model } from 'alaska-model';
 import { ObjectID } from 'mongodb';
 
-declare class PostCat extends Model {
+declare class PostCat extends Model { }
+interface PostCat extends PostCatFields { }
+
+export interface PostCatFields {
   id: string;
   title: string;
   parent: ObjectID;

@@ -1,7 +1,9 @@
 import { Model } from 'alaska-model';
 
-declare class Page extends Model {
-  _id: string;
+declare class Page extends Model { }
+interface Page extends PageFields { }
+
+export interface PageFields {
   title: string;
   seoTitle: string;
   seoKeywords: string;

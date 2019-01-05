@@ -26,8 +26,8 @@ export default function (router: Router) {
 
   router.get('/ueditor-config', async (ctx: Context) => {
     let ueditorConfig: UEditorConfig = _.assign({
-      UEDITOR_HOME_URL: ctx.protocol + '://' + ctx.host + Path.dirname(ctx.path) + '/ueditor/',
-      serverUrl: ctx.protocol + '://' + ctx.host + Path.dirname(ctx.path) + '/ueditor-controller'
+      UEDITOR_HOME_URL: `${ctx.protocol}://${ctx.host}${Path.dirname(ctx.path)}/ueditor/`,
+      serverUrl: `${ctx.protocol}://${ctx.host}${Path.dirname(ctx.path)}/ueditor-controller`
     }, defaultConfig, adminService.config.get('ueditor', {}));
     ctx.body = `(function () {
       window.UEDITOR_CONFIG = ${JSON.stringify(ueditorConfig)};
