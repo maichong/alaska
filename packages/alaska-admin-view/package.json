@@ -23,7 +23,7 @@
     "@samoyed/types": "^0.2.0",
     "@types/history": "^4.7.2",
     "@types/react-dom": "^16.0.11",
-    "@types/react-redux": "^6.0.11",
+    "@types/react-redux": "^6.0.12",
     "@types/reactstrap": "^6.4.3",
     "@types/seamless-immutable": "^7.1.5",
     "akita": "^0.7.2",

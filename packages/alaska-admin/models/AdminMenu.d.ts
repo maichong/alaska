@@ -4,8 +4,6 @@ declare class AdminMenu extends Model { }
 interface AdminMenu extends AdminMenuFields { }
 
 export interface AdminMenuFields {
-  _id: string;
-  id: string;
   label: string;
   icon: string;
   type: string;
