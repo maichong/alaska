@@ -1,8 +1,12 @@
 import * as React from 'react';
 import * as Router from 'koa-router';
 import * as Path from 'path';
+import * as fs from 'fs';
+import * as hasha from 'hasha';
 import * as tr from 'grackle';
 import service from '..';
+
+let jsHash = '';
 
 export default function (router: Router) {
   router.get('/', (ctx) => {
@@ -12,6 +16,18 @@ export default function (router: Router) {
       return;
     }
     const min = ctx.state.env === 'production' ? '.min' : '';
+
+    if (!jsHash) {
+      try {
+        jsHash = hasha(fs.readFileSync(`public/admin/js/app${min}.js`), {
+          algorithm: 'md5'
+        }).substr(0, 8);
+      } catch (e) {
+        jsHash = '-';
+      }
+    }
+
+    const resourceVersion = service.config.get('resourceVersion') || jsHash;
     let prefix = service.config.get('prefix', '');
 
     if (prefix === '/') {
@@ -44,7 +60,7 @@ body{background:#eaf0f5}
       content: `var PREFIX='${prefix}';`
     });
     ctx.state.bodyScripts.push({
-      src: Path.join(prefix, `/js/app${min}.js`)
+      src: Path.join(prefix, `/js/app${min}.js?${resourceVersion}`)
     });
 
     ctx.body = (
