@@ -251,6 +251,8 @@ class ModulesMetadata {
   async loadSubServicePlugins(service: ServiceMetadata) {
     debug('loadSubServicePlugins', service.id);
     if (!service.config.services) return;
+
+    // 先为子Service加载插件
     for (let sid of _.keys(service.config.services)) {
       let sub: ServiceMetadata = this.services[sid];
       if (!sub || sub.dismiss) continue;
@@ -258,6 +260,8 @@ class ModulesMetadata {
       sub.loadedSubServicePlugins = true;
       await this.loadSubServicePlugins(sub);
     }
+
+    // 查询当前Service的plugins目录，加载插件
     for (let sid of _.keys(service.config.services)) {
       let sub: ServiceMetadata = this.services[sid];
       if (!sub || sub.dismiss) continue;
@@ -275,6 +279,17 @@ class ModulesMetadata {
       if (!meta.dismiss) {
         sub.plugins[id] = meta;
       }
+    }
+
+    // 如果为开发模式，警告无用的 plugins/xx 目录
+    if (process.env.NODE_ENV === 'development') {
+      let pluginsDir = Path.join(service.path, 'plugins');
+      if (!isDirectory.sync(pluginsDir)) return;
+      fs.readdirSync(pluginsDir).forEach((name) => {
+        if (name[0] === '.') return;
+        if (service.config.services[name]) return;
+        console.warn(`WARN: Sub service not found for plugin ${Path.relative(process.cwd(), Path.join(pluginsDir, name))}`);
+      });
     }
   }
 

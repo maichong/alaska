@@ -91,12 +91,13 @@ export default class User extends Model {
   id: string;
   username: string;
   email: string;
+  tel: string;
+  displayName: string;
   password: string;
   avatar: Object;
   roles: any[];
   abilities: any[];
   createdAt: Date;
-  displayName: string;
 
   _clearCache: boolean;
 
