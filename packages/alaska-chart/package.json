@@ -1,0 +1,17 @@
+{
+  "name": "alaska-chart",
+  "version": "0.13.2",
+  "description": "Alaska chart service",
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
+  "alaska": "service",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {},
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-chart",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {}
+}
