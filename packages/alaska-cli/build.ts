@@ -234,7 +234,7 @@ export default async function build(options: BuildOptions) {
   content += '};\n\n';
 
   // 输出 wrappers
-  content += 'exports.wrapper = {\n';
+  content += 'exports.wrappers = {\n';
   Object.keys(views.wrappers).forEach((name, index) => {
     console.log(`wrapper : ${name}`);
     content += `  '${name}': [`;
