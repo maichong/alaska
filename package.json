@@ -42,7 +42,7 @@
     "async-busboy": "^0.7.0",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^4.2.1",
-    "check-depends": "^0.4.0",
+    "check-depends": "^0.5.0",
     "collie": "^0.3.0",
     "escape-string-regexp": "^1.0.5",
     "fsd": "^0.4.1",

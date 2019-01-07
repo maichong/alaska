@@ -127,7 +127,12 @@ export default class Goods extends Model {
       type: Number,
       default: 0,
       format: '0.00',
-      group: 'price'
+      group: 'price',
+      disabled: {
+        'skus.length': {
+          $gt: 0
+        }
+      }
     },
     discount: {
       label: 'Discount',
@@ -135,7 +140,12 @@ export default class Goods extends Model {
       default: 0,
       format: '0.00',
       help: '0 for no discount',
-      group: 'price'
+      group: 'price',
+      disabled: {
+        'skus.length': {
+          $gt: 0
+        }
+      }
     },
     discountStartAt: {
       label: 'Discount Start',
@@ -158,13 +168,23 @@ export default class Goods extends Model {
       label: 'Inventory',
       type: Number,
       default: 0,
-      group: 'inventory'
+      group: 'inventory',
+      disabled: {
+        'skus.length': {
+          $gt: 0
+        }
+      }
     },
     volume: {
       label: 'Volume',
       type: Number,
       default: 0,
-      group: 'inventory'
+      group: 'inventory',
+      disabled: {
+        'skus.length': {
+          $gt: 0
+        }
+      }
     },
     sort: {
       label: 'Sort',
@@ -232,7 +252,7 @@ export default class Goods extends Model {
     // 更新 Goods 表
     return await Goods.findOneAndUpdate(
       { _id: id },
-      { $inc: { inventory: quantity }},
+      { $inc: { inventory: quantity } },
       { new: true }
     );
   }
@@ -246,7 +266,7 @@ export default class Goods extends Model {
     // 更新 Goods 表
     return await Goods.findOneAndUpdate(
       { _id: id },
-      { $inc: { volume: quantity }},
+      { $inc: { volume: quantity } },
       { new: true }
     );
   }

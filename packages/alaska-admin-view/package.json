@@ -28,7 +28,7 @@
     "@types/seamless-immutable": "^7.1.5",
     "akita": "^0.7.2",
     "alaska-field-checkbox": "^0.13.2",
-    "check-depends": "^0.4.0",
+    "check-depends": "^0.5.0",
     "grackle": "^0.2.0",
     "lodash": "^4.17.11",
     "prop-types": "^15.6.2",
