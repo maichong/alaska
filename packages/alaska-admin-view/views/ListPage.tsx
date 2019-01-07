@@ -33,6 +33,7 @@ interface ListPageOptions {
 
 interface ListPageState {
   records: immutable.Immutable<Record[]>;
+  activated: immutable.Immutable<Record> | null;
   recordTotal: number;
   model: Model | null;
   selected: immutable.Immutable<Record[]>;
@@ -61,6 +62,7 @@ class ListPage extends React.Component<Props, ListPageState> {
     super(props);
     this.state = {
       records: immutable([]),
+      activated: null,
       recordTotal: 0,
       model: null,
       selected: immutable([]),
@@ -102,6 +104,7 @@ class ListPage extends React.Component<Props, ListPageState> {
       nextState.model = model;
       if (!model || !nextState.records.length) {
         nextState.selected = immutable([]);
+        nextState.activated = null;
       }
     }
 
@@ -221,15 +224,21 @@ class ListPage extends React.Component<Props, ListPageState> {
   };
 
   handleSelect = (selected: immutable.Immutable<Record[]>) => {
-    this.setState({ selected });
+    //@ts-ignore
+    let nextState = { selected, activated: null };
+    if (selected.length && !this.state.activated) {
+      nextState.activated = selected[0];
+    }
+    this.setState(nextState);
   };
 
-  handleActive = (record: Record) => {
+  handleActive = (record: immutable.Immutable<Record>) => {
     let { selected } = this.state;
     let nextState = {} as ListPageState;
     if (!selected.length || (selected.length === 1 && selected[0] !== record)) {
       nextState.selected = immutable([record]);
     }
+    nextState.activated = record;
     this.setState(nextState);
   };
 
@@ -244,7 +253,8 @@ class ListPage extends React.Component<Props, ListPageState> {
       split,
       recordTotal,
       records,
-      search
+      search,
+      activated
     } = this.state;
     if (!model) {
       return <LoadingPage />;
@@ -298,6 +308,7 @@ class ListPage extends React.Component<Props, ListPageState> {
             selected={selected}
             onSort={this.handleSort}
             onSelect={this.handleSelect}
+            activated={activated}
             onActive={this.handleActive}
           />
           <ListActionBar

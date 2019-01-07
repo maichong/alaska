@@ -67,7 +67,7 @@ class List extends React.Component<Props> {
 
   render() {
     const {
-      model, sort, columns, selected,
+      model, sort, columns, selected, activated,
       onSort, onSelect, onActive, list
     } = this.props;
     if (!list || (list.fetching && !list.results.length)) return <LoadingPage />;
@@ -84,6 +84,7 @@ class List extends React.Component<Props> {
           columns={columns}
           records={list.results}
           selected={selected}
+          activated={activated}
           onActive={onActive}
           onSort={onSort}
           onSelect={onSelect}

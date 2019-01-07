@@ -1,5 +1,9 @@
 const Path = require('path');
 
+exports.components = {
+  OrderPreview: Path.join(__dirname, '/previews/OrderPreview.tsx'),
+};
+
 exports.wrappers = {
   Copyright: [Path.join(__dirname, '/wrappers/CopyrightWrapper.tsx')],
 };

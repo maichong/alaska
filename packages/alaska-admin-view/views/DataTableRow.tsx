@@ -30,54 +30,74 @@ class DataTableRow extends React.Component<Props> {
 
   render() {
     let {
-      model, columns, record, selected,
+      model, columns, record, selected, active,
       onActive, onSelect, superMode
     } = this.props;
-    return (
-      <tr
-        className="data-table-row"
-        onClick={() => (onActive ? onActive(record) : '')}
-        onDoubleClick={() => this.handleDoubleClick()}
-      >
-        <Node
-          tag={false}
-          wrapper="DataTableRow"
-          props={this.props}
-          className="data-table-row"
-        >
-          {
-            onSelect ?
-              <td onClick={(e: any) => e.stopPropagation()}>
-                <Checkbox value={selected} onChange={this.handleChange} />
-              </td>
-              : null
-          }
-          {
-            columns.map((key: string) => {
-              let field: Field = model.fields[key];
-              if (!field || field.hidden === true || !field.cell) return null;
-              if (field.super && !superMode) return null;
-              let Cell = views.components[field.cell];
-              return <td key={key}>
-                {
-                  Cell ?
-                    <Cell model={model} field={field} value={record[key]} />
-                    : (record[key] || '').toString()
-                }
-              </td>;
-            })
-          }
-          {
-            onSelect ?
-              <td className="actions">
-                <i className="fa fa-eye text-primary" />
-              </td>
-              : null
-          }
-        </Node>
 
-      </tr>
-    );
+    let el = <tr
+      key={`${record._id}-data-table-row`}
+      className="data-table-row"
+      onClick={() => (onActive ? onActive(record) : '')}
+      onDoubleClick={() => this.handleDoubleClick()}
+    >
+      <Node
+        tag={false}
+        wrapper="DataTableRow"
+        props={this.props}
+        className="data-table-row"
+      >
+        {
+          onSelect ?
+            <td onClick={(e: any) => e.stopPropagation()}>
+              <Checkbox value={selected} onChange={this.handleChange} />
+            </td>
+            : null
+        }
+        {
+          columns.map((key: string) => {
+            let field: Field = model.fields[key];
+            if (!field || field.hidden === true || !field.cell) return null;
+            if (field.super && !superMode) return null;
+            let Cell = views.components[field.cell];
+            return <td key={key}>
+              {
+                Cell ?
+                  <Cell model={model} field={field} value={record[key]} />
+                  : (record[key] || '').toString()
+              }
+            </td>;
+          })
+        }
+        {
+          onSelect ?
+            <td className="actions">
+              <i className="fa fa-eye text-primary" />
+            </td>
+            : null
+        }
+      </Node>
+
+    </tr>;
+    if (active && model.preView) {
+      let View = views.components[model.preView];
+      if (View) {
+        let preivew = (
+          <tr key={`${record._id}-preivew`} className="preview-line">
+            <td colSpan={columns.length + (onSelect ? 2 : 1)}>
+              <View
+                model={model}
+                columns={columns}
+                record={record}
+                selected={selected}
+              />
+            </td>
+          </tr>
+        );
+        return [el, preivew];
+      }
+      console.warn(`Missing : ${model.preView}`);
+    }
+    return el;
   }
 }
 export default connect(

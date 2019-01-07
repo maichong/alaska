@@ -530,6 +530,16 @@ export interface RouterProps<T = any> {
   };
 }
 
+// Preview interface
+export interface PreviewProps {
+  model: Model;
+  record: immutable.Immutable<Record>;
+  columns?: string[];
+  selected?: boolean;
+}
+
+export interface Preview extends React.Component<PreviewProps> { }
+
 // Widget interface
 export interface WidgetProps {
 }
@@ -698,6 +708,7 @@ export interface DataTableProps {
   columns?: string[];
   selected?: immutable.Immutable<Record[]>;
   records: immutable.Immutable<Record[]>;
+  activated?: immutable.Immutable<Record>;
   sort?: string;
   onSort?: Function;
   onSelect?: Function;
@@ -718,6 +729,7 @@ export interface DataTableRowProps {
   record: immutable.Immutable<Record>;
   columns?: string[];
   onActive?: Function;
+  active?: boolean;
   selected?: boolean;
   onSelect?: Function | null;
 }

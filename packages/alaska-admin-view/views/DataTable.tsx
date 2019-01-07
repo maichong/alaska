@@ -71,7 +71,7 @@ export default class DataTable extends React.Component<DataTableProps, DataTable
 
   render() {
     let {
-      model, columns, records,
+      model, columns, records, activated,
       sort, onSort, onActive, onSelect
     } = this.props;
     let { selectAll, selectList } = this.state;
@@ -96,13 +96,14 @@ export default class DataTable extends React.Component<DataTableProps, DataTable
         />
         <tbody>
           {
-            records.map((item) => (<DataTableRow
+            records.map((item: immutable.Immutable<Record>) => (<DataTableRow
               key={item._id}
               model={model}
               columns={columns}
               record={item}
               selected={selectAll || selectList.indexOf(String(item._id)) > -1}
               onSelect={onSelect ? this.handleSelect : null}
+              active={activated === item}
               onActive={onActive}
             />))
           }

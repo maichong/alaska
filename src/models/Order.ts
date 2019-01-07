@@ -4,6 +4,7 @@ export default class Order extends Model {
   static label = 'Order';
   static icon = 'circle';
   static titleField = 'title';
+  static preView = 'OrderPreview';
   static defaultColumns = 'image title user content state createdAt';
   static searchFields = 'title content';
   static defaultSort = '-createdAt';
