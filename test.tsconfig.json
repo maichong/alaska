@@ -1,8 +1,6 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
