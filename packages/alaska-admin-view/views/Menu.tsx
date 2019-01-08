@@ -4,6 +4,7 @@ import Node from './Node';
 import { MenuProps, Settings, StoreState } from '..';
 import MenuItem from './MenuItem';
 import { connect } from 'react-redux';
+import { hasAbility } from '../utils/check-ability';
 
 interface Props extends MenuProps {
   settings: Settings;
@@ -60,7 +61,7 @@ class Menu extends React.Component<Props, MenuState> {
       >
         {
           _.map(menus, (menu) => {
-            if (menu.ability && !settings.abilities[menu.ability]) return null;
+            if (menu.ability && !hasAbility(menu.ability)) return null;
             if (menu.super && !settings.superMode) return null;
             return (<MenuItem
               key={menu.id}
