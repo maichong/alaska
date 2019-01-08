@@ -12,7 +12,7 @@
     margin: $content-space-small;
     .btn {
       &:focus {
-        box-shadow: none;
+        box-shadow: none !important;
       }
       .fa {
         font-size: 1.25rem; // 20px;
@@ -71,13 +71,14 @@
 
 .widget-group {
   margin-right: $header-right;
-  line-height: $header-height;
+  height: $header-height;
   list-style: none;
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 0;
   li {
     .btn {
-      height: $header-height;
+      height: 100%;
       border-radius: 0;
       padding-left: $padding-widget;
       padding-right: $padding-widget;
@@ -97,6 +98,7 @@
   }
   .user-widget {
     padding: 0 $padding-widget;
+    line-height: $header-height;
     img {
       width: $header-img;
       height: $header-img;
@@ -114,6 +116,7 @@
     }
   }
   .locale-widget {
+    line-height: $header-height;
     img {
       width: $header-img;
       height: $header-img;
