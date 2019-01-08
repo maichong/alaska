@@ -45,8 +45,7 @@ export default handleActions({
     });
     let newMenuItems: MenuItem[] = _.filter(
       menuItems,
-      (item) => item.activated && abilities[item.ability]
-      && (!item.nav || navIds.indexOf(String(item.nav)) >= 0)
+      (item) => item.activated && (!item.nav || navIds.indexOf(String(item.nav)) >= 0)
     );
     let menus = recursion(newMenuItems);
     let menusMap = _.groupBy(menus, 'nav');
