@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { PreviewProps } from 'alaska-admin-view';
+import { PreViewProps } from 'alaska-admin-view';
 
 interface State {
 }
 
-export default class OrderPreview extends React.Component<PreviewProps, State> {
+export default class OrderPreview extends React.Component<PreViewProps, State> {
   render() {
     return (
       <div>

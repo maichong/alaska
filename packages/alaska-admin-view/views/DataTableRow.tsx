@@ -88,7 +88,6 @@ class DataTableRow extends React.Component<Props> {
                 model={model}
                 columns={columns}
                 record={record}
-                selected={selected}
               />
             </td>
           </tr>

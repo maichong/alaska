@@ -530,16 +530,6 @@ export interface RouterProps<T = any> {
   };
 }
 
-// Preview interface
-export interface PreviewProps {
-  model: Model;
-  record: immutable.Immutable<Record>;
-  columns?: string[];
-  selected?: boolean;
-}
-
-export interface Preview extends React.Component<PreviewProps> { }
-
 // Widget interface
 export interface WidgetProps {
 }
