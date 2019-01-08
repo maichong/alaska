@@ -14,6 +14,8 @@ const warning: ObjectMap<boolean> = {};
  * @param record
  */
 export function hasAbility(ability: string, record?: any): boolean {
+  if (ability === 'every') return true;
+  if (ability === 'god') return false;
   let settings: Settings = store.getState().settings;
   let { abilities } = settings;
   let [prefix, checker] = ability.split(':');

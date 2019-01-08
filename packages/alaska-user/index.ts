@@ -152,6 +152,8 @@ class UserService extends Service {
    * @param {Model} [record] 要检查的数据记录
    */
   async hasAbility(user: User | null, ability: string, record?: Model): Promise<boolean> {
+    if (ability === 'every') return true;
+    if (ability === 'god') return false;
     let abilities = await this.getUserAbilities(user);
     let [prefix, checker] = ability.split(':');
 
@@ -189,6 +191,8 @@ class UserService extends Service {
    * @param {string} ability
    */
   async createFilters(user: User, ability: string): Promise<Filters | null> {
+    if (ability === 'every') return {};
+    if (ability === 'god') return null;
     let abilities = await this.getUserAbilities(user);
     let relationships = [];
     let filters = [];

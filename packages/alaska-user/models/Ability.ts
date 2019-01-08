@@ -35,6 +35,7 @@ export default class Ability extends Model {
       this.createdAt = new Date();
     }
     this._isNew = this.isNew;
+    if (['god', 'every'].includes(String(this.id))) throw new Error('Invalid ability id');
   }
 
   postSave() {
