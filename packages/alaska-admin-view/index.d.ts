@@ -728,6 +728,7 @@ export interface DeniedPageProps {
 }
 
 export interface EditorProps {
+  embedded?: boolean;
   model: Model;
   record: immutable.Immutable<Record>;
   onChange: Function;
@@ -761,6 +762,7 @@ export interface ErrorPageProps {
 }
 
 export interface FieldGroupProps extends FieldGroup {
+  embedded?: boolean;
   model: Model;
   record: immutable.Immutable<Record>;
   errors: ObjectMap<any>;

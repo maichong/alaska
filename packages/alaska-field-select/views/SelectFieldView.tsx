@@ -12,12 +12,12 @@ import { FieldViewProps, Field } from 'alaska-admin-view';
 type TypeView = Select | CheckboxGroup | Switch | any;
 
 interface State {
-  _field: Field & { checkbox: boolean; switch: boolean };
+  _field: Field & { checkbox?: boolean; switch?: boolean };
   options: SelectOption[];
 }
 
 interface FieldProps extends FieldViewProps {
-  field: Field & { checkbox: boolean; switch: boolean };
+  field: Field & { checkbox?: boolean; switch?: boolean };
 }
 
 function filter(record: any, options?: SelectOption[]): SelectOption[] {

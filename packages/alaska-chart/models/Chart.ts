@@ -1,4 +1,5 @@
 import { Model } from 'alaska-model';
+import Series from './Series';
 
 export default class Chart extends Model {
   static label = 'Chart';
@@ -7,6 +8,10 @@ export default class Chart extends Model {
   static defaultSort = '-sort';
 
   static groups = {
+    series: {
+      title: 'Series',
+      panel: false
+    }
   };
 
   static api = {
@@ -24,10 +29,12 @@ export default class Chart extends Model {
       type: String,
       required: true
     },
-    sort: {
-      label: 'Sort',
-      type: Number,
-      default: 0
+    series: {
+      label: 'Series',
+      type: 'subdoc',
+      ref: Series,
+      multi: true,
+      group: 'series'
     },
     createdAt: {
       label: 'Created At',
@@ -38,9 +45,9 @@ export default class Chart extends Model {
   title: string;
   createdAt: Date;
 
-  preSave(){
-    if(!this.createdAt){
-      this.createdAt=new Date();
+  preSave() {
+    if (!this.createdAt) {
+      this.createdAt = new Date();
     }
   }
 }

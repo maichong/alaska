@@ -111,4 +111,6 @@ export default {
   OK: '确定',
   'Select columns': '选择列',
   'Admin Copyright': '管理平台版权说明',
+  'No item': '没有项目',
+  'Confirm to remove the item?': '确定要删除数据项目吗？',
 };

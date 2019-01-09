@@ -93,6 +93,7 @@ export default class ShowcaseEditor extends React.Component<FieldViewProps, Stat
       form = <div className="p-4">{tr('Please select a cell for edit')}</div>;
     } else {
       form = <Editor
+        embedded
         model={store.getState().settings.models['alaska-showcase.ShowcaseItem']}
         record={immutable(items[actived] || {})}
         onChange={this.handleChange}
