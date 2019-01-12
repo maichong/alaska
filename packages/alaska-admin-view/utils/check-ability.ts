@@ -19,7 +19,7 @@ export function hasAbility(ability: string, record?: any): boolean {
   let settings: Settings = store.getState().settings;
   let { abilities } = settings;
   let [prefix, checker] = ability.split(':');
-  if (!record) {
+  if (!record || record.isNew) {
     // 不检查数据记录，只检查数据类型
     if (abilities[ability] === true) return true;
     if (checker) return false;
