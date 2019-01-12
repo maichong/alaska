@@ -90,7 +90,7 @@ export default handleActions({
     const payload: ApplyDetailsPayload = action.payload;
     let { model, data } = payload;
     let map: AnyRecordMap = state[model] || immutable({});
-    map = map.set(data._id, _.assign({}, data, { id: data._id }));
+    map = map.set(data._id, data);
     return state.set(model, map);
   },
   BATCH_APPLY_DETAILS: (state: DetailsState, action) => {
@@ -98,7 +98,7 @@ export default handleActions({
     const payload: ApplyDetailsPayload[] = action.payload;
     for (let { model, data } of payload) {
       let map: AnyRecordMap = state[model] || immutable({});
-      map = map.set(data._id, _.assign({}, data, { id: data._id }));
+      map = map.set(data._id, data);
       state = state.set(model, map);
     }
     return state;
@@ -129,7 +129,7 @@ export function* detailsSaga({ payload }: Action<LoadDetailsPayload>) {
       }
     });
     fetching[fetchingKey] = false;
-    queue.push({ model: payload.model, data: res });
+    queue.push({ model: payload.model, data: _.assign(res, { id: res._id, _rev: Date.now() }) });
   } catch (e) {
     fetching[fetchingKey] = false;
     queue.push({

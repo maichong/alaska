@@ -383,7 +383,10 @@ export interface Service {
 
 export interface Record {
   [path: string]: any;
+  _id?: any;
+  id?: string;
   isNew?: boolean;
+  _rev?: number;
 }
 
 export interface ImageData {
@@ -728,6 +731,7 @@ export interface DeniedPageProps {
 }
 
 export interface EditorProps {
+  embedded?: boolean;
   model: Model;
   record: immutable.Immutable<Record>;
   onChange: Function;
@@ -761,6 +765,7 @@ export interface ErrorPageProps {
 }
 
 export interface FieldGroupProps extends FieldGroup {
+  embedded?: boolean;
   model: Model;
   record: immutable.Immutable<Record>;
   errors: ObjectMap<any>;

@@ -1,15 +1,16 @@
-import { Model, Field } from 'alaska-model';
+import { Field } from 'alaska-model';
 import * as mongoose from 'mongoose';
 
 export default class SubdocField extends Field {
   static fieldName = 'Mixed';
   static plain = mongoose.Schema.Types.Embedded;
   static plainName = 'subdoc';
-  static viewOptions = ['codeMirrorOptions'];
+  static viewOptions = ['codeMirrorOptions', 'multi'];
 
   static defaultOptions = {
-    cell: 'MixedFieldCell',
-    view: 'MixedFieldView',
+    filter: '',
+    cell: '',
+    view: 'SubdocFieldView',
   };
 
   initSchema() {

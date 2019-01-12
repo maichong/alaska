@@ -7,6 +7,7 @@ import * as tr from 'grackle';
 import service from '..';
 
 let jsHash = '';
+let cssHash = '';
 
 export default function (router: Router) {
   router.get('/', (ctx) => {
@@ -16,18 +17,27 @@ export default function (router: Router) {
       return;
     }
     const min = ctx.state.env === 'production' ? '.min' : '';
+    const resourceVersion = service.config.get('resourceVersion');
 
-    if (!jsHash) {
+    if (!jsHash && !resourceVersion) {
       try {
-        jsHash = hasha(fs.readFileSync(`public/admin/js/app${min}.js`), {
+        jsHash = hasha(fs.readFileSync(`public/admin/app${min}.js`), {
           algorithm: 'md5'
         }).substr(0, 8);
       } catch (e) {
         jsHash = '-';
       }
     }
+    if (!cssHash && !resourceVersion) {
+      try {
+        cssHash = hasha(fs.readFileSync(`public/admin/app.css`), {
+          algorithm: 'md5'
+        }).substr(0, 8);
+      } catch (e) {
+        cssHash = '-';
+      }
+    }
 
-    const resourceVersion = service.config.get('resourceVersion') || jsHash;
     let prefix = service.config.get('prefix', '');
 
     if (prefix === '/') {
@@ -60,7 +70,12 @@ body{background:#eaf0f5}
       content: `var PREFIX='${prefix}';`
     });
     ctx.state.bodyScripts.push({
-      src: Path.join(prefix, `/js/app${min}.js?${resourceVersion}`)
+      src: Path.join(prefix, `/app${min}.js?${resourceVersion || jsHash}`)
+    });
+    ctx.state.headLinks.push({
+      rel: 'stylesheet',
+      type: 'text/css',
+      href: Path.join(prefix, `/app.css?${resourceVersion || cssHash}`)
     });
 
     ctx.body = (

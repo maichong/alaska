@@ -108,7 +108,8 @@ class FieldGroup extends React.Component<Props> {
       path,
       settings,
       wrapper,
-      body
+      body,
+      embedded
     } = props;
 
     if (checkAbility(props.hidden, record)) return ''; // hidden
@@ -139,7 +140,7 @@ class FieldGroup extends React.Component<Props> {
         el = <div className="card-body">{el}</div>;
       }
       el = (
-        <div className={`${model.serviceId}_${model.modelName}-group-${path} card`}>
+        <div className={`${model.serviceId}_${model.modelName}-group-${path}` + (embedded ? '' : ' card')}>
           {heading}
           {el}
         </div>
@@ -147,7 +148,7 @@ class FieldGroup extends React.Component<Props> {
     } else {
       // el = <div className="card"><div className="card-body">{el}</div></div>;
     }
-    el = <Node wrapper="FieldGroup" className="field-group" props={this.props}>{el}</Node>;
+    el = <Node wrapper="FieldGroup" className={'field-group' + (embedded ? ' embedded' : '')} props={this.props}>{el}</Node>;
     if (wrapper) {
       return <Node
         wrapper={wrapper}

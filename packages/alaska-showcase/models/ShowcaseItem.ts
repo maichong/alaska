@@ -1,15 +1,8 @@
 import { Model } from 'alaska-model';
 
 export default class ShowcaseItem extends Model {
-  static label = 'ShowcaseItem';
+  static label = 'Showcase Item';
   static hidden = true;
-
-  static groups = {
-    default: {
-      form: false,
-      panel: false
-    }
-  };
 
   static fields = {
     pic: {

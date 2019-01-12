@@ -88,10 +88,11 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
   };
 
   renderGroups() {
-    let { model, record } = this.props;
+    let { model, record, embedded } = this.props;
     let { errors, disabled } = this.state;
     let groups: ObjectMap<FieldGroupProps> = {
       default: {
+        embedded,
         title: '',
         fields: [],
         path: 'default',
@@ -105,6 +106,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
     _.forEach(model.groups, (group, key: string) => {
       groups[key] = _.assign({ path: key }, group, {
         fields: [],
+        embedded,
         model,
         record,
         errors,
@@ -135,7 +137,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
       <Node
         wrapper="Editor"
         props={this.props}
-        className="editor"
+        className={'editor' + (this.props.embedded ? ' embedded' : '')}
       >
         {this.renderGroups()}
       </Node>

@@ -13,5 +13,10 @@
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-chart",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "alaska-field-model": "^0.13.2",
+    "echarts": "^4.2.0-rc.2",
+    "echarts-for-react": "^2.0.15-beta.0",
+    "lru-cache": "^5.1.1"
+  }
 }

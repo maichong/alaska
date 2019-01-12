@@ -73,10 +73,12 @@ export function* actionSaga({ payload }: Action<any>) {
     yield put(clearQueryCache({ model: payload.model }));
     if (Array.isArray(result)) {
       // 同时保存了多条记录
-      let list: any = result.map((data) => ({ model: payload.model, data }));
+      let list: any = result.map((data) => ({ model: payload.model, data: _.assign(data, { id: data._id, _rev: Date.now() }) }));
       yield put(batchApplyDetails(list));
     } else {
       // 只保存了一条记录
+      result.id = result._id;
+      result._rev = Date.now();
       yield put(applyDetails(payload.model, result));
     }
   }

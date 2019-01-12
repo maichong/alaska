@@ -84,7 +84,7 @@ body {
   box-shadow: 0 $border-width $border-width rgba(0, 0, 0, .05);
   .card-heading {
     padding: $content-space $content-space-medium;
-    margin-bottom: 0;
+    margin: 0;
     border-bottom: $border-width solid $border-color;
   }
   .card-body {

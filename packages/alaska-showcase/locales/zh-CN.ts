@@ -1,5 +1,6 @@
 export default {
   Showcase: '橱窗',
+  'Showcase Item': '橱窗项',
   Place: '位置',
   Home: '首页',
   Layout: '布局',
