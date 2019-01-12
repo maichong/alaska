@@ -11,6 +11,7 @@ export interface OrderGoodsFields {
   sku?: RecordId;
   skuDesc: string;
   skuKey: string;
+  state: number;
   currency: string;
   price: number;
   discount: number;

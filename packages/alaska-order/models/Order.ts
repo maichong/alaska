@@ -369,6 +369,7 @@ export default class Order extends Model {
 
   _logTotal: boolean;
   _logShipping: boolean;
+  _stateChanged: boolean;
 
   async preValidate() {
     if (!this.createdAt) {
@@ -383,6 +384,7 @@ export default class Order extends Model {
     this.pay = (this.total || 0) + (this.shipping || 0);
     this._logTotal = !this.isNew && this.isModified('total');
     this._logShipping = !this.isNew && this.isModified('shipping');
+    this._stateChanged = this.isNew || this.isModified('state');
   }
 
   postSave() {
@@ -391,6 +393,9 @@ export default class Order extends Model {
     }
     if (this._logShipping) {
       this.createLog('Modified shipping fee');
+    }
+    if (this._stateChanged && this.goods && this.goods.length) {
+      OrderGoods.updateMany({ order: this._id }, { state: this.state }).exec();
     }
   }
 

@@ -3,11 +3,13 @@ import { Model, Filters } from 'alaska-model';
 import { mergeFilters } from 'alaska-model/utils';
 import Series from './Series';
 import chartService, { Slice, KeyParser, ValueParser } from '..';
+import { Context } from 'alaska-http';
+import userService from 'alaska-user';
 
 export default class Chart extends Model {
   static label = 'Chart';
   static icon = 'line-chart';
-  static defaultColumns = 'title sort createdAt';
+  static defaultColumns = 'title place sort createdAt';
   static defaultSort = '-sort';
 
   static groups = {
@@ -29,9 +31,17 @@ export default class Chart extends Model {
       type: String,
       required: true
     },
+    place: {
+      label: 'Place',
+      type: String
+    },
     createdAt: {
       label: 'Created At',
       type: Date
+    },
+    sort: {
+      label: 'Sort',
+      type: Number
     },
     reverse: {
       label: 'Reverse',
@@ -56,9 +66,11 @@ export default class Chart extends Model {
   };
 
   title: string;
+  place: string;
   reverse: boolean;
   series: Series[];
   createdAt: Date;
+  sort: number;
   options?: echarts.EChartOption;
 
   preSave() {
@@ -67,6 +79,87 @@ export default class Chart extends Model {
     }
   }
 
+  /**
+   * 导出当前图表的选项设置
+   * @param {Context} [ctx] 可选Context，如果不传入，则代表不自动检查权限 
+   * @param {Filters} [filters] 可选过滤器
+   */
+  async getChartOption(ctx?: Context, filters?: Filters): Promise<echarts.EChartOption> {
+    const xAxis = this.reverse ? 'yAxis' : 'xAxis';
+    const yAxis = this.reverse ? 'xAxis' : 'yAxis';
+
+    let echartOption: echarts.EChartOption = _.defaultsDeep({
+      title: {
+        text: this.title,
+      },
+      tooltip: {
+        trigger: 'axis'
+      },
+      legend: {
+        data: []
+      },
+      [xAxis]: {},
+      [yAxis]: {
+        type: 'value'
+      },
+      series: []
+    }, this.options);
+
+    for (let s of this.series) {
+      let modelId = s.source;
+      let model = Model.lookup(modelId);
+      if (!model) continue;
+
+      if (ctx) {
+        let abliityFilters = await userService.createFilters(ctx.user, model.id + '.read');
+        if (!abliityFilters) continue;
+        let userFilters = await model.createFiltersByContext(ctx);
+        filters = mergeFilters(filters, abliityFilters, userFilters);
+      }
+
+      // @ts-ignore
+      echartOption.legend.data.push(s.title);
+      let series: echarts.EChartOption.Series = s.options || {};
+      series.type = s.type;
+      // @ts-ignore
+      series.name = s.title;
+      // @ts-ignore
+      series.data = await this.getSeriesData(s, filters);
+      let xAxisType: echarts.EChartOption.BasicComponents.CartesianAxis.Type;
+      switch (s.keyAxisType) {
+        case 'time':
+          xAxisType = 'time';
+          break;
+        case 'cycle':
+        case 'category':
+          xAxisType = 'category';
+          break;
+        case 'value':
+          xAxisType = 'value';
+          break;
+      }
+      let xAxisOption = echartOption[xAxis];
+      if (Array.isArray(xAxisOption)) {
+        // @ts-ignore
+        let index = series.xAxisIndex || 0;
+        xAxisOption = xAxisOption[index] || xAxisOption[0];
+        if (xAxisOption) {
+          xAxisOption.type = xAxisType;
+        }
+      } else {
+        xAxisOption.type = xAxisType;
+      }
+
+      echartOption.series.push(series);
+    }
+    return echartOption;
+  }
+
+  /**
+   * 统计某个数据列
+   * @param {Series} series 数据列对象
+   * @param {Filters} [filters] 可选过滤器
+   */
   async getSeriesData(series: Series, filters?: Filters): Promise<any[]> {
     if (!series.keyAxis) return [];
     let keyParser: KeyParser = chartService.keyParsers.get(series.keyParser);

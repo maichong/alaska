@@ -1,7 +1,5 @@
 import { RecordId, Model } from 'alaska-model';
 import balanceService from 'alaska-balance';
-import Goods from 'alaska-goods/models/Goods';
-import Order from '../models/Order';
 
 export default class OrderGoods extends Model {
   static label = 'Order Item';
@@ -53,6 +51,35 @@ export default class OrderGoods extends Model {
     skuDesc: {
       label: 'SKU Desc',
       type: String
+    },
+    state: {
+      label: 'State',
+      type: 'select',
+      number: true,
+      hidden: true,
+      disabled: true,
+      options: [{
+        label: 'Order_New',
+        value: 200
+      }, {
+        label: 'Order_Payed',
+        value: 300
+      }, {
+        label: 'Order_Confirmed',
+        value: 400
+      }, {
+        label: 'Order_Shipped',
+        value: 500
+      }, {
+        label: 'Order_Closed',
+        value: 600
+      }, {
+        label: 'Order_Refund',
+        value: 800
+      }, {
+        label: 'Order_Failed',
+        value: 900
+      }]
     },
     currency: {
       label: 'Currency',
@@ -131,6 +158,7 @@ export default class OrderGoods extends Model {
   sku?: RecordId;
   skuKey: string;
   skuDesc: string;
+  state: number;
   currency: string;
   price: number;
   discount: number;

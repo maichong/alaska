@@ -83,6 +83,9 @@ module.exports = function (env) {
                 ['@babel/preset-env', {
                   targets: { ie: '11' }
                 }]
+              ],
+              plugins: [
+                '@babel/plugin-proposal-class-properties'
               ]
             }
           }

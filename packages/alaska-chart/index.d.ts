@@ -49,3 +49,9 @@ export interface ValueParser<V=any, T={}> {
   }): void | Promise<void>;
 }
 
+export interface ChartProps {
+  place?: string;
+  chart?: string;
+  filters?: any;
+  theme?: string;
+}
