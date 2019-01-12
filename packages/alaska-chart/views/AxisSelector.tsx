@@ -21,8 +21,10 @@ export default class AxisSelector extends React.Component<FieldViewProps, State>
 
   static getDerivedStateFromProps(nextProps: FieldViewProps, prevState: State): Partial<State> | null {
     let { record, field } = nextProps;
-    let model = store.getState().settings.models[record.model];
-    if (model === prevState.model && record.keyAxisType === prevState._keyAxisType) return null;
+    let model = store.getState().settings.models[record.source];
+    if (!model
+      || (model === prevState.model && record.keyAxisType === prevState._keyAxisType)
+    ) return null;
     let allowedDataPlains: Set<string> = new Set();
     if (field.path === 'keyAxis') {
       // x轴

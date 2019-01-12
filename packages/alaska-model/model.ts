@@ -617,6 +617,7 @@ export default class Model {
         if (!dbConfig || !dbConfig.uri) throw new Error('Missing database configure [alaska-model.mongodb.uri]');
         service.debug(`Connecting ${dbConfig.uri}`);
         db = await mongoose.createConnection(dbConfig.uri, _.assign({
+          poolSize: 10,
           autoReconnect: true,
           useCreateIndex: true,
           useNewUrlParser: true

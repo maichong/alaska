@@ -180,6 +180,10 @@ export function* listSaga({ payload }: Action<LoadListPayload>) {
           _sort: payload.sort || ''
         }, payload.filters)
       });
+    _.forEach(res.results, (data) => {
+      data.id = data._id;
+      data.rev = Date.now();
+    });
     yield put(applyList(payload.model, res));
   } catch (e) {
     yield put(loadListFailure(payload.model, e));
@@ -202,6 +206,10 @@ export function* moreSaga({ payload }: Action<LoadMorePayload>) {
           _sort: list.sort || ''
         }, list.filters)
       });
+    _.forEach(res.results, (data) => {
+      data.id = data._id;
+      data.rev = Date.now();
+    });
     yield put(applyList(payload.model, res));
   } catch (e) {
     yield put(loadListFailure(payload.model, e));

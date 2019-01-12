@@ -15,7 +15,7 @@
   "dependencies": {
     "file-type": "^10.7.0",
     "fsd": "^0.4.1",
-    "image-size": "^0.6.3",
+    "image-size": "^0.7.1",
     "is-stream": "^1.1.0",
     "is-svg": "^3.0.0",
     "moment": "^2.23.0"

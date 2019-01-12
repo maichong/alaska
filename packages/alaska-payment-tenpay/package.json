@@ -15,7 +15,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "urllib": "^2.31.3",
+    "urllib": "^2.33.0",
     "xml2js": "^0.4.19"
   },
   "peerDependencies": {

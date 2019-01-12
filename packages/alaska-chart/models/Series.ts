@@ -5,7 +5,7 @@ export default class Series extends Model {
 
   static fields = {
     title: {
-      label: 'Title',
+      label: 'Series Title',
       type: String
     },
     type: {
@@ -86,11 +86,15 @@ export default class Series extends Model {
         value: 'value'
       }]
     },
-    unit: {
-      label: 'Unit',
+    keyParser: {
+      label: 'Key Parser',
       type: 'select',
       switch: true,
+      default: 'day',
       options: [{
+        label: 'Default',
+        value: 'default'
+      }, {
         label: 'Year',
         value: 'year',
         depends: {
@@ -113,8 +117,8 @@ export default class Series extends Model {
         value: 'hour'
       }]
     },
-    function: {
-      label: 'Function',
+    valueParser: {
+      label: 'Value Parser',
       type: 'select',
       switch: true,
       default: 'count',
@@ -136,8 +140,8 @@ export default class Series extends Model {
         value: 'max'
       }]
     },
-    model: {
-      label: 'Model',
+    source: {
+      label: 'Data Source',
       type: 'model',
       required: true
     },
@@ -153,24 +157,19 @@ export default class Series extends Model {
       type: String,
       filter: '',
       cell: '',
-      view: 'AxisSelector'
+      view: 'AxisSelector',
+      hidden: {
+        valueParser: 'count'
+      }
     },
     precision: {
       label: 'Precision',
       type: Number,
-      default: 0
+      default: 0,
+      hidden: {
+        valueParser: 'count'
+      }
     },
-    limit: {
-      label: 'Limit',
-      type: Number
-    },
-    // TODO:
-    // filters: {
-    //   label: 'Filters',
-    //   type: 'filter',
-    //   ref: ':model',
-    //   disabled: '!model'
-    // },
     sort: {
       label: 'Sort',
       type: 'select',
@@ -187,14 +186,44 @@ export default class Series extends Model {
       }, {
         label: 'Value Axis Desc',
         value: 'value-desc'
-      }]
+      }],
+      hidden: {
+        keyAxisType: {
+          $ne: 'category'
+        }
+      }
+    },
+    limit: {
+      label: 'Limit',
+      type: Number,
+      hidden: {
+        keyAxisType: {
+          $ne: 'category'
+        }
+      }
+    },
+    filters: {
+      label: 'Filters',
+      type: Object
     },
     options: {
-      label: 'Options',
+      label: 'Series Options',
       type: Object
     }
   };
 
-  preSave() {
-  }
+  title: string;
+  type: 'line' | 'bar' | 'pie' | 'scatter' | 'effectScatter' | 'radar' | 'heatmap' | 'map' | 'funnel' | 'gauge';
+  coordinateSystem: 'grid' | 'polar' | 'geo';
+  keyAxisType: 'time' | 'cycle' | 'category' | 'value';
+  keyParser: 'year' | 'quarter' | 'month' | 'week' | 'day' | 'hour' | string;
+  valueParser: 'count' | 'sum' | 'average' | 'min' | 'max' | string;
+  source: string;
+  keyAxis: string;
+  valueAxis?: string;
+  precision?: number;
+  limit?: number;
+  sort?: 'key-asc' | 'key-desc' | 'value-asc' | 'value-desc';
+  options?: echarts.EChartOption.Series;
+  filters?: any;
 }

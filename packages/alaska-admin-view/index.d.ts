@@ -383,7 +383,10 @@ export interface Service {
 
 export interface Record {
   [path: string]: any;
+  _id?: any;
+  id?: string;
   isNew?: boolean;
+  _rev?: number;
 }
 
 export interface ImageData {

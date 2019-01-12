@@ -110,7 +110,7 @@ export default class SubdocFieldView extends React.Component<FieldViewProps, Sta
           <button className="btn btn-sm btn-success ml-2" onClick={this.handleAdd}>{tr('Create', model.serviceId)}</button>
         </div>;
       }
-      value = value[actived];
+      value = value[actived] || {};
     }
 
     if (!form && refModel) {
