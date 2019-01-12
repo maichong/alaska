@@ -73,7 +73,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
     };
     if (!nextState.disabled) {
       let ability = nextProps.model.id + (isNew ? '.create' : '.update');
-      nextState.disabled = !hasAbility(ability, record);
+      nextState.disabled = !hasAbility(ability, isNew ? null : record);
     }
     const { errors: stateError } = prevState;
     if (nextProps.record !== prevState._record) {
