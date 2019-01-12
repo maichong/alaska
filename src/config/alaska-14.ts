@@ -73,15 +73,33 @@ export default <ConfigData>{
     }
   },
   'alaska-statics': <StaticsConfig>{
-    main: {
-      prefix: '',
-      dir: 'public',
+    uploads: {
+      prefix: '/uploads',
+      dir: 'public/uploads',
+      dynamic: true,
+      preload: false,
+      buffer: false,
+      maxAge: isProduction ? 60000 : 0, // 生产环境允许文件生存周期
+    },
+    admin: {
+      prefix: '/admin',
+      dir: 'public/admin',
+      gzip: true,
       dynamic: !isProduction, // 非生产环境、DEV环境，动态载入文件
       preload: isProduction, // 生产环境预加载文件
       buffer: isProduction, // 生产环境将文件储存在内存中
       maxAge: isProduction ? 60000 : 0, // 生产环境允许文件生存周期
     },
-    admin: {
+    editor: {
+      prefix: '/admin/ueditor',
+      dir: 'node_modules/alaska-admin-ueditor/ueditor',
+      gzip: true,
+      dynamic: true,
+      preload: false,
+      buffer: true,
+      maxAge: 60000
+    },
+    adminDefaults: {
       prefix: '/admin',
       dir: 'node_modules/alaska-admin/statics',
       buffer: true,
