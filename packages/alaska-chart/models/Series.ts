@@ -204,7 +204,7 @@ export default class Series extends Model {
     },
     filters: {
       label: 'Filters',
-      type: Object
+      type: 'json'
     },
     options: {
       label: 'Series Options',

@@ -270,6 +270,8 @@ export default class Model {
 
       model.schema = schema;
 
+      schema.set('toJSON', { getters: true, virtuals: false });
+
       /**
        * init fields
        */
