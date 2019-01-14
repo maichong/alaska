@@ -7,7 +7,7 @@ interface RegisterBody {
   password: string;
 }
 
-export async function login(ctx: Context) {
+export default async function register(ctx: Context) {
   let body: RegisterBody = ctx.state.body || _.pick(ctx.request.body, 'username', 'password');
 
   if (!body.username) ctx.throw(400, 'Username is required');
