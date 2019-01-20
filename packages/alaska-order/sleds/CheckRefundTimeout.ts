@@ -9,8 +9,8 @@ export default class CheckRefundTimeout extends Sled<{}, any> {
       refundTimeout: {
         $lt: new Date()
       }
-    }).limit(10);
+    }).limit(10).session(this.dbSession);
     if (!records.length) return;
-    await AcceptRefund.run({ records });
+    await AcceptRefund.run({ records }, { dbSession: this.dbSession });
   }
 }

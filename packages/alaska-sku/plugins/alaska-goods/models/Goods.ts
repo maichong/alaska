@@ -20,7 +20,8 @@ export default {
   },
   async preSave() {
     if (!_.size(this.skus)) return;
-    let skus = await Sku.find({ goods: this._id });
+    let dbSession = this.$session();
+    let skus = await Sku.find({ goods: this._id }).session(dbSession);
     let skusMap = _.keyBy(skus, 'key');
     let inventory = 0;
     let volume = 0;
@@ -36,7 +37,7 @@ export default {
         sku._id = record._id;
       }
       record.set(sku);
-      record.save();
+      record.save({ session: dbSession });
       inventory += sku.inventory;
       volume += sku.volume;
       if (sku.price) {

@@ -14,14 +14,14 @@ export async function post() {
   // 增加商品销量
   let orders = this.result;
   for (let order of orders) {
-    let items = await OrderGoods.find({ order: order._id });
+    let items = await OrderGoods.find({ order: order._id }).session(this.dbSession);
     for (let item of items) {
       if (item.sku && skuService) {
         // 增加SKU销量
-        skuService.models.Sku.incVolume(item.sku, item.quantity);
+        await skuService.models.Sku.incVolume(item.sku, item.quantity, this.dbSession);
       } else if (item.goods) {
         // 增加商品库存
-        Goods.incVolume(item.goods, item.quantity);
+        await Goods.incVolume(item.goods, item.quantity, this.dbSession);
       }
     }
   }

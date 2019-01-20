@@ -26,13 +26,13 @@ export default class RejectRefund extends Sled<RejectRefundParams, Order[]> {
       order.refundTimeout = null;
       order.refundAmount = 0;
       order.refundQuantity = 0;
-      await order.save();
-      order.createLog('Refund rejected');
+      await order.save({ session: this.dbSession });
+      order.createLog('Refund rejected', this.dbSession);
       let goods = await OrderGoods.find({ order: order._id });
       await Promise.all(goods.map(async (item: OrderGoods) => {
         item.refundAmount = 0;
         item.refundQuantity = 0;
-        await item.save();
+        await item.save({ session: this.dbSession });
       }));
     }
     return records;

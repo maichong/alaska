@@ -42,7 +42,7 @@ export async function pre() {
 
   for (let g of gids) {
     if (!g.goods) continue;
-    let goods: Goods = await Goods.findById(g.goods);
+    let goods: Goods = await Goods.findById(g.goods).session(this.dbSession);
     if (!goods) orderService.error('Goods not found');
     if (!goods.activated) orderService.error('Goods is not activated');
 
@@ -62,7 +62,7 @@ export async function pre() {
     let sku: Sku;
     if (g.sku) {
       // 如果选择了SKU
-      sku = await skuService.models.Sku.findById(g.sku).where('goods', goods._id);
+      sku = await skuService.models.Sku.findById(g.sku).where('goods', goods._id).session(this.dbSession);
       if (!sku || !sku.inventory) orderService.error('Goods have been sold out');
       if (!_.find(goods.skus, (s) => s.key === sku.key)) orderService.error('Goods have been sold out');
       item.price = sku.price;
@@ -146,21 +146,21 @@ export async function post() {
       if (g.sku) {
         conditions.sku = g.sku;
       }
-      CartGoods.remove(conditions).then();
+      await CartGoods.remove(conditions).session(this.dbSession);
     }
   }
 
   // 减少商品库存
   let orders = this.result;
   for (let order of (orders || records)) {
-    let items = await OrderGoods.find({ order: order._id });
+    let items = await OrderGoods.find({ order: order._id }).session(this.dbSession);
     for (let item of items) {
       if (item.sku && skuService) {
         // 减少SKU 库存
-        skuService.models.Sku.incInventory(item.sku, -item.quantity);
+        await skuService.models.Sku.incInventory(item.sku, -item.quantity, this.dbSession);
       } else if (item.goods) {
         // 减小商品库存
-        Goods.incInventory(item.goods, -item.quantity);
+        await Goods.incInventory(item.goods, -item.quantity, this.dbSession);
       }
     }
   }

@@ -1,5 +1,6 @@
 import { ObjectMap, Service } from 'alaska';
 import { Context } from 'alaska-http';
+import * as mongodb from 'mongodb';
 import User from 'alaska-user/models/User';
 import { ActionSledParams } from 'alaska-admin';
 import Deposit from './models/Deposit';
@@ -66,4 +67,8 @@ export interface WithdrawAcceptParams extends ActionSledParams {
 
 export interface WithdrawRejectParams extends ActionSledParams {
   record: Withdraw;
+}
+
+export interface CreateIncome {
+  (amount: number, title: string, type?: string, dbSession?: mongodb.ClientSession): Promise<Income>;
 }

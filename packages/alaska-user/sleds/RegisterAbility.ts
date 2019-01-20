@@ -16,7 +16,7 @@ export default class RegisterAbility extends Sled<RegisterAbilityParams, Ability
    */
   async exec(params: RegisterAbilityParams): Promise<Ability> {
     let id = params.id;
-    let ability = await Ability.findById(id);
+    let ability = await Ability.findById(id).session(this.dbSession);
     if (ability) {
       //权限已经存在
       return ability;
@@ -24,7 +24,7 @@ export default class RegisterAbility extends Sled<RegisterAbilityParams, Ability
     console.log(`Register ability: ${id}`);
     ability = new Ability(params);
     ability._id = id;
-    await ability.save();
+    await ability.save({ session: this.dbSession });
     return ability;
   }
 }

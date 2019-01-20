@@ -19,11 +19,11 @@ class OrderService extends Service {
 
   postStart() {
     // 每10秒检查一次支付超时
-    this.checkPayTimer = setInterval(() => CheckPayTimeout.run(), 10000);
+    this.checkPayTimer = setInterval(() => CheckPayTimeout.runWithTransaction(), 10000);
     // 每1分钟检查一次收货超时
-    this.checkReceiveTimer = setInterval(() => CheckReceiveTimeout.run(), 60000);
+    this.checkReceiveTimer = setInterval(() => CheckReceiveTimeout.runWithTransaction(), 60000);
     // 每1分钟检查一次退款超时
-    this.checkRefundTimer = setInterval(() => CheckRefundTimeout.run(), 60000);
+    this.checkRefundTimer = setInterval(() => CheckRefundTimeout.runWithTransaction(), 60000);
   }
 }
 

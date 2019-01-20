@@ -44,7 +44,7 @@ export async function count(ctx: Context) {
     if (_.size(finalFilters)) {
       query.match(finalFilters);
     }
-    let result = await query.group({ _id, count: { $sum: 1 }});
+    let result = await query.group({ _id, count: { $sum: 1 } });
     let res = {
       count: 0,
       groups: [] as any[]
@@ -175,7 +175,7 @@ export async function create(ctx: Context) {
     }
   }
 
-  await record.save();
+  await record.save({ session: ctx.dbSession });
   ctx.state.record = record;
   ctx.body = record.data('create');
 
@@ -191,7 +191,7 @@ export async function update(ctx: Context) {
 
   let filters = await model.createFiltersByContext(ctx);
 
-  let record = await model.findById(ctx.state.id || ctx.params.id).where(filters);
+  let record = await model.findById(ctx.state.id || ctx.params.id).where(filters).session(ctx.dbSession);
   if (!record) {
     //404
     return;
@@ -216,7 +216,7 @@ export async function update(ctx: Context) {
   if (!scope) {
     record.__modifiedPaths = [];
   }
-  await record.save();
+  await record.save({ session: ctx.dbSession });
   ctx.state.record = record;
   if (scope) {
     ctx.body = record.data(scope);
@@ -250,7 +250,11 @@ export async function updateMulti(ctx: Context) {
     await userService.trimDisabledField(body, ctx.user, model);
   }
 
-  let res = await model.update(mergeFilters(filters, abilityFilters), body, { multi: true });
+  let res = await model.updateMany(
+    mergeFilters(filters, abilityFilters),
+    body,
+    { session: ctx.dbSession }
+  );
 
   ctx.body = {
     updated: res.nModified
@@ -264,7 +268,7 @@ export async function remove(ctx: Context) {
 
   let filters = await model.createFiltersByContext(ctx);
 
-  let record = await model.findById(ctx.state.id || ctx.params.id).where(filters);
+  let record = await model.findById(ctx.state.id || ctx.params.id).where(filters).session(ctx.dbSession);
   if (!record) {
     //404
     ctx.body = {};
@@ -298,7 +302,7 @@ export async function removeMulti(ctx: Context) {
   ctx.body = {};
   let filters = await model.createFiltersByContext(ctx);
 
-  let res = await model.deleteMany(mergeFilters(filters, abilityFilters));
+  let res = await model.deleteMany(mergeFilters(filters, abilityFilters)).session(ctx.dbSession);
 
   ctx.body = {
     removed: res.n

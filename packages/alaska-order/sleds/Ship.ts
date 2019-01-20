@@ -25,8 +25,8 @@ export default class Ship extends Sled<ShipParams, Order[]> {
         }
       }
       order.shipped = true;
-      await order.save();
-      order.createLog('Order shipped');
+      await order.save({ session: this.dbSession });
+      order.createLog('Order shipped', this.dbSession);
     }
 
     return records;

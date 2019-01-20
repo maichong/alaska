@@ -17,13 +17,13 @@ export default class Create extends Sled<CreateParams, Order[]> {
       let paymentTimeout = await settingsService.get('order.paymentTimeout');
       for (let order of records) {
         for (let goods of order.goods) {
-          await goods.save();
+          await goods.save({ session: this.dbSession });
         }
         if (paymentTimeout && order.state === 200 && !order.paymentTimeout) {
           order.paymentTimeout = moment().add(paymentTimeout, 's').toDate();
         }
-        await order.save();
-        order.createLog('Order created');
+        await order.save({ session: this.dbSession });
+        order.createLog('Order created', this.dbSession);
       }
     }
     return records;

@@ -26,14 +26,14 @@ export default function (router: Router) {
     if (!success) return;
     let paymentId = body.out_trade_no;
 
-    let payment = (await Payment.findById(paymentId)) as PaymentAlipay;
+    let payment = (await Payment.findById(paymentId).session(ctx.dbSession)) as PaymentAlipay;
     if (!payment) return;
     payment.alipay_trade_no = body.trade_no;
     payment.alipay_buyer_email = body.buyer_email;
     try {
       let sledId = `${paymentService.id}.Complete`;
       const Complete = Sled.lookup(sledId) || paymentService.error('Complete sled not found!');
-      await Complete.run({ payment });
+      await Complete.run({ payment }, { dbSession: this.dbSession });
       ctx.body = 'OK';
       ctx.status = 200;
     } catch (error) {

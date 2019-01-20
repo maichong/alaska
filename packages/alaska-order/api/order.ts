@@ -44,7 +44,7 @@ export async function create(ctx: Context) {
   body.user = ctx.user;
   body.ctx = ctx;
 
-  let orders = await Create.run(body);
+  let orders = await Create.run(body, { dbSession: ctx.dbSession });
 
   let results = [];
   for (let order of orders) {
@@ -67,11 +67,11 @@ export async function cancel(ctx: Context) {
   let orderId = body.order || ctx.request.body.order;
   if (!orderId && !order) ctx.throw(400, 'order is required');
   if (!order) {
-    order = await Order.findById(orderId);
+    order = await Order.findById(orderId).session(ctx.dbSession);
     if (!order) service.error('Order not found');
   }
   if (!userService.hasAbility(ctx.user, 'alaska-order.Order.cancel', order)) service.error(403);
-  await Cancel.run({ record: order });
+  await Cancel.run({ record: order }, { dbSession: ctx.dbSession });
 
   let data = order.data();
   await userService.trimProtectedField(data, ctx.user, Order, order);
@@ -91,13 +91,13 @@ export async function receive(ctx: Context) {
   if (typeof orderId === 'object' && orderId instanceof Order) {
     order = orderId;
   } else {
-    order = await Order.findById(orderId);
+    order = await Order.findById(orderId).session(ctx.dbSession);
     if (!order) service.error('Order not found');
     if (order.state !== 500) service.error('Order state error');
   }
 
   if (!userService.hasAbility(ctx.user, 'alaska-order.Order.receive', order)) service.error(403);
-  await Receive.run({ record: order });
+  await Receive.run({ record: order }, { dbSession: ctx.dbSession });
 
   let data = order.data();
   await userService.trimProtectedField(data, ctx.user, Order, order);
@@ -121,7 +121,7 @@ export async function refund(ctx: Context) {
   let orderGoods = body.orderGoods || '';
 
   if (!order) {
-    order = await Order.findById(body.order);
+    order = await Order.findById(body.order).session(ctx.dbSession);
     if (!order) service.error('Order not found');
   }
   if (!amount) {
@@ -137,7 +137,7 @@ export async function refund(ctx: Context) {
     reason,
     amount,
     quantity
-  });
+  }, { dbSession: ctx.dbSession });
 
   let data = order.data();
   await userService.trimProtectedField(data, ctx.user, Order, order);
@@ -149,10 +149,10 @@ export async function refund(ctx: Context) {
  */
 export async function remove(ctx: Context) {
   if (!ctx.user) service.error(401);
-  let order = ctx.state.order || await Order.findById(ctx.state.id || ctx.params.id).where('user', ctx.user._id);
+  let order = ctx.state.order || await Order.findById(ctx.state.id || ctx.params.id).where('user', ctx.user._id).session(ctx.dbSession);
   if (order) {
     if (!userService.hasAbility(ctx.user, 'alaska-order.Order.delete', order)) service.error(403);
-    await Delete.run({ record: order });
+    await Delete.run({ record: order }, { dbSession: ctx.dbSession });
   }
   ctx.body = {};
 }

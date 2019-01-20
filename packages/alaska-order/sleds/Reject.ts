@@ -19,8 +19,8 @@ export default class Reject extends Sled<RejectParams, Order[]> {
       if (!order.failure) {
         order.failure = 'Rejected';
       }
-      await order.save();
-      order.createLog('Order rejected');
+      await order.save({ session: this.dbSession });
+      order.createLog('Order rejected', this.dbSession);
 
       // TODO: 退款
     }

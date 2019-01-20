@@ -21,14 +21,14 @@ export default class Create extends Sled<CreateParams, CartGoods> {
   async exec(params: CreateParams): Promise<CartGoods> {
     let skuId = params.sku;
     let sku: Sku;
-    let goods: Goods = await Goods.findById(params.goods);
+    let goods: Goods = await Goods.findById(params.goods).session(this.dbSession);
     if (!goods) service.error('Goods not found');
     let inventory = goods.inventory;
     if (!skuId && goods.skus && goods.skus.length === 1) {
       skuId = goods.skus[0]._id;
     }
     if (params.sku && skuService) {
-      sku = await skuService.models.Sku.findById(skuId).where({ goods: goods._id });
+      sku = await skuService.models.Sku.findById(skuId).where({ goods: goods._id }).session(this.dbSession);
       if (!sku) service.error('Sku not found');
       inventory = sku.inventory;
     }
@@ -45,7 +45,7 @@ export default class Create extends Sled<CreateParams, CartGoods> {
       filters.sku = skuId;
     }
 
-    let record: CartGoods = await CartGoods.findOne(filters);
+    let record: CartGoods = await CartGoods.findOne(filters).session(this.dbSession);
     if (!record) {
       record = new CartGoods(filters);
       record.quantity = 0;
@@ -70,7 +70,7 @@ export default class Create extends Sled<CreateParams, CartGoods> {
     record.price = sku ? sku.price : goods.price;
     record.discount = discount;
     record.skuDesc = sku ? sku.desc : '';
-    await record.save();
+    await record.save({ session: this.dbSession });
     // @ts-ignore
     record.inventory = inventory;
     return record;

@@ -27,7 +27,7 @@ export default class RegisterRole extends Sled<RegisterRoleParams, Role> {
     }
     role = new Role(params);
     role._id = id;
-    await role.save();
+    await role.save({ session: this.dbSession });
     return role;
   }
 }

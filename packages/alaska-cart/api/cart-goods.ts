@@ -15,7 +15,7 @@ export async function create(ctx: Context) {
   if (!goods) service.error(400);
   let record = await Create.run({
     user: ctx.user._id, goods, sku, quantity
-  });
+  }, { dbSession: ctx.dbSession });
   ctx.state.record = record;
   let data = record.data('create');
   // @ts-ignore
@@ -26,7 +26,7 @@ export async function create(ctx: Context) {
 export async function update(ctx: Context) {
   let id = ctx.state.id || ctx.params.id || ctx.throw(400);
   let body = ctx.state.body || ctx.request.body;
-  let record = await CartGoods.findById(id);
+  let record = await CartGoods.findById(id).session(ctx.dbSession);
   if (!record) ctx.throw(404);
   if (!await userService.hasAbility(ctx.user, 'alaska-cart.CartGoods.update', record)) ctx.throw(403);
 
@@ -36,7 +36,7 @@ export async function update(ctx: Context) {
     sku: record.sku,
     quantity: body.quantity,
     replaceQuantity: true
-  });
+  }, { dbSession: ctx.dbSession });
   ctx.state.record = record;
   let data = record.data('create');
   // @ts-ignore

@@ -1,11 +1,12 @@
 import * as _ from 'lodash';
 import * as collie from 'collie';
 import * as random from 'string-random';
+import * as mongodb from 'mongodb';
 import { MainService, Service } from 'alaska';
 import QueueDriver from 'alaska-queue';
 import SubscribeDriver from 'alaska-subscribe';
 import LockDriver from 'alaska-lock';
-import { SledConfig, SledTask, SledMessage } from '.';
+import { SledConfig, SledTask, SledMessage, SledOptions } from '.';
 
 export default class Sled<T, R> {
   static classOfSled: true = true;
@@ -19,6 +20,7 @@ export default class Sled<T, R> {
 
   readonly instanceOfSled: true;
   params: T;
+  dbSession: null | mongodb.ClientSession;
   taskId?: string;
   task?: SledTask<T, R>;
   result?: R;
@@ -38,6 +40,7 @@ export default class Sled<T, R> {
     this.params = params || {};
     // 队列task数据,只有从队列中读取的Sled或将Sled发送到队列后才有此属性
     this.task = null;
+    this.dbSession = null;
     // 执行结果
     // this.result = undefined;
     // 错误
@@ -62,10 +65,22 @@ export default class Sled<T, R> {
   /**
    * 执行Sled
    * @param {any} params
+   * @param {SledOptions} [options]
+   * @returns {any}
    */
-  static run<T, R>(this: { new(params: T): Sled<T, R> }, params?: T, lock?: boolean): Promise<R> {
+  static run<T, R>(this: { new(params: T): Sled<T, R> }, params?: T, options?: SledOptions): Promise<R> {
     let sled = new this(params);
-    return sled.run(lock);
+    return sled.run(options);
+  }
+
+  /**
+   * 执行时使用MongoDB事务，如果执行失败自动回滚
+   * @param {any} params
+   * @returns {any}
+   */
+  static runWithTransaction<T, R>(this: { new(params: T): Sled<T, R> }, params?: T): Promise<R> {
+    let sled = new this(params);
+    return sled.runWithTransaction();
   }
 
   /**
@@ -207,12 +222,13 @@ export default class Sled<T, R> {
     return (this.constructor as typeof Sled).config;
   }
 
-
   /**
    * 执行sled
+   * @param {SledOptions} [options]
    * @returns {any}
    */
-  async run(lock?: boolean): Promise<R> {
+  async run(options?: SledOptions): Promise<R> {
+    options = options || {};
     if (this.error) {
       throw this.error;
     }
@@ -220,6 +236,7 @@ export default class Sled<T, R> {
       return this.result;
     }
 
+    let lock = options.lock;
     if (typeof lock === 'undefined') {
       let config = (this.constructor as typeof Sled)._getConfig();
       if (config && config.lock) {
@@ -232,6 +249,11 @@ export default class Sled<T, R> {
       // 上锁
       locker = (this.constructor as typeof Sled).createLockDriver();
       await locker.lock();
+    }
+
+    // MongoDB session
+    if (typeof options.dbSession !== 'undefined') {
+      this.dbSession = options.dbSession;
     }
 
     if ((this.constructor as typeof Sled)._pre) {
@@ -282,6 +304,23 @@ export default class Sled<T, R> {
       locker.free();
     }
     return result;
+  }
+
+  /**
+   * 执行时使用MongoDB事务，如果执行失败自动回滚
+   * @returns {any}
+   */
+  async runWithTransaction(): Promise<R> {
+    let dbSession = await this.service.db.startSession();
+    await dbSession.startTransaction();
+    try {
+      let result = await this.run({ dbSession });
+      await dbSession.commitTransaction();
+      return result;
+    } catch (error) {
+      await dbSession.abortTransaction();
+      throw error;
+    }
   }
 
   /**

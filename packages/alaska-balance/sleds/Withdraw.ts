@@ -1,7 +1,7 @@
 import { Sled } from 'alaska-sled';
 import User from 'alaska-user/models/User';
 import WithdrawModel from '../models/Withdraw';
-import service, { WithdrawParams } from '..';
+import service, { WithdrawParams, CreateIncome } from '..';
 
 export default class Withdraw extends Sled<WithdrawParams, WithdrawModel> {
   /**
@@ -31,7 +31,7 @@ export default class Withdraw extends Sled<WithdrawParams, WithdrawModel> {
     if (balance < amount) service.error('Insufficient balance');
 
     if (amount) {
-      await user._[currency.toString()].income(-amount, params.title || 'Withdraw', 'withdraw');
+      await (user._[currency.toString()].income as CreateIncome)(-amount, params.title || 'Withdraw', 'withdraw', this.dbSession);
     }
 
     withdraw = new WithdrawModel({
@@ -41,7 +41,7 @@ export default class Withdraw extends Sled<WithdrawParams, WithdrawModel> {
       currency,
       amount
     });
-    await withdraw.save();
+    await withdraw.save({ session: this.dbSession });
     return withdraw;
   }
 }

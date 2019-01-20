@@ -35,7 +35,7 @@ export default class AcceptRefund extends Sled<AcceptRefundParams, Order[]> {
         let payment = await Payment.findOne({
           state: 1,
           orders: order._id
-        });
+        }).session(this.dbSession);
         if (payment) {
           let refund = new Refund();
           refund.title = payment.title;
@@ -47,7 +47,7 @@ export default class AcceptRefund extends Sled<AcceptRefundParams, Order[]> {
           await paymentService.sleds.Refund.run({
             payment,
             refund
-          });
+          }, { dbSession: this.dbSession });
         } else {
           console.error(`Not payment found for refund, Order:${order.id}`);
         }
@@ -56,15 +56,15 @@ export default class AcceptRefund extends Sled<AcceptRefundParams, Order[]> {
       // 商品数量并不会自动退回入库，因为在线商城的退款流程中，商家审核通过退货之后，买家才将商品邮寄回去，而此时是不能直接认为商品回到库存中，而是商家收到货后，再进行入库操作
       // 另外，考虑到用户退回的货物可能是问题产品，不能再次进行售卖，所以此时不自动将退货数量计入库存
       // 如果需要，可在具体项目中加入后置钩子，进行自定义处理
-      await order.save();
+      await order.save({ session: this.dbSession });
       order.createLog('Order refunded');
-      let goods = await OrderGoods.find({ order: order._id });
+      let goods = await OrderGoods.find({ order: order._id }).session(this.dbSession);
       await Promise.all(goods.map(async (item: OrderGoods) => {
         item.lastRefundAmount = item.refundAmount;
         item.lastRefundQuantity = item.refundQuantity;
         item.refundAmount = 0;
         item.refundQuantity = 0;
-        await item.save();
+        await item.save({ session: this.dbSession });
       }));
     }
     return records;

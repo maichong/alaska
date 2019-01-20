@@ -17,11 +17,11 @@ export default class Delete extends Sled<DeleteParams, Order[]> {
     for (let order of records) {
       if (params.admin) {
         order.adminDeleted = true;
-        await order.save();
+        await order.save({ session: this.dbSession });
       } else {
         order.userDeleted = true;
-        await order.save();
-        order.createLog('Deleted');
+        await order.save({ session: this.dbSession });
+        order.createLog('Deleted', this.dbSession);
       }
     }
     return records;

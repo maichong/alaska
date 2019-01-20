@@ -34,14 +34,13 @@ export default class Refund extends Sled<RefundParams, Order> {
     if (params.orderGoods) {
       let goods = await OrderGoods.findById(params.orderGoods, {
         order: order._id
-      });
+      }).session(this.dbSession);
       if (!goods) service.error('Order goods not found');
       if (goods.refundAmount) service.error('The goods of the order already applied refund');
       goods.refundReason = refundReason;
       goods.refundAmount = refundAmount;
       goods.refundQuantity = refundQuantity;
-      // TODO: 事务回滚
-      await goods.save();
+      await goods.save({ session: this.dbSession });
     }
     if (!order.refundTimeout) {
       let refundTimeout = await settingsService.get('order.refundTimeout');
@@ -53,8 +52,8 @@ export default class Refund extends Sled<RefundParams, Order> {
     order.refundAmount = refundAmount + (order.refundAmount || 0);
     order.refundQuantity = refundQuantity + (order.refundQuantity || 0);
     order.state = 800;
-    await order.save();
-    order.createLog('Apply refund');
+    await order.save({ session: this.dbSession });
+    order.createLog('Apply refund', this.dbSession);
 
     return order;
   }

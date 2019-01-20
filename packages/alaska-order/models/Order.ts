@@ -1,3 +1,4 @@
+import * as mongodb from 'mongodb';
 import { Model } from 'alaska-model';
 import User from 'alaska-user/models/User';
 import balanceService from 'alaska-balance';
@@ -387,15 +388,15 @@ export default class Order extends Model {
     this._stateChanged = this.isNew || this.isModified('state');
   }
 
-  postSave() {
+  async postSave() {
     if (this._logTotal) {
-      this.createLog('Modified total price');
+      this.createLog('Modified total price', this.$session());
     }
     if (this._logShipping) {
-      this.createLog('Modified shipping fee');
+      this.createLog('Modified shipping fee', this.$session());
     }
     if (this._stateChanged && this.goods && this.goods.length) {
-      OrderGoods.updateMany({ order: this._id }, { state: this.state }).exec();
+      await OrderGoods.updateMany({ order: this._id }, { state: this.state }).session(this.$session()).exec();
     }
   }
 
@@ -404,9 +405,9 @@ export default class Order extends Model {
    * @param title
    * @returns {*}
    */
-  createLog(title: string): OrderLog {
+  createLog(title: string, dbSession?: mongodb.ClientSession): OrderLog {
     let log = new OrderLog({ title, order: this, state: this.state, user: this.user });
-    log.save();
+    log.save({ session: dbSession });
     return log;
   }
 

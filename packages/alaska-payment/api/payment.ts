@@ -10,10 +10,10 @@ export async function create(ctx: Context) {
   if (!userService.hasAbility(ctx.user, 'alaska-payment.Payment.create')) service.error(403);
   let body = ctx.state.body || ctx.request.body;
   body.user = user;
-  let payment = await Create.run(body);
+  let payment = await Create.run(body, { dbSession: ctx.dbSession });
 
   if (payment.state === 1) {
-    await Complete.run({ payment });
+    await Complete.run({ payment }, { dbSession: ctx.dbSession });
   }
 
   let data = payment.data('create');

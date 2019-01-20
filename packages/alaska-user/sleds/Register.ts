@@ -29,7 +29,7 @@ export default class Register extends Sled<RegisterParams, User> {
       if (params.username) {
         let count = await User.countDocuments({
           username: new RegExp(`^${escape(params.username)}$`, 'i')
-        });
+        }).session(this.dbSession);
         if (count) {
           service.error('Username is exists');
         }
@@ -37,7 +37,7 @@ export default class Register extends Sled<RegisterParams, User> {
       if (params.email) {
         let emailCount = await User.countDocuments({
           email: new RegExp(`^${escape(params.email)}$`, 'i')
-        });
+        }).session(this.dbSession);
         if (emailCount) {
           service.error('Email is exists');
         }
@@ -50,7 +50,7 @@ export default class Register extends Sled<RegisterParams, User> {
     if (!user.roles.includes('user')) {
       user.roles.push('user');
     }
-    await user.save();
+    await user.save({ session: this.dbSession });
 
     if (params.ctx && params.ctx.session) {
       params.ctx.session.userId = user.id;

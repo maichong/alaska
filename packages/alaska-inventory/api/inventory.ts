@@ -11,5 +11,5 @@ export async function create(ctx: Context) {
   await Create.run({
     user: ctx.user,
     body
-  });
+  }, { dbSession: ctx.dbSession });
 }

@@ -14,14 +14,14 @@ export async function post() {
   // 恢复商品库存
   let orders = this.result;
   for (let order of orders) {
-    let items = await OrderGoods.find({ order: order._id });
+    let items = await OrderGoods.find({ order: order._id }).session(this.dbSession);
     for (let item of items) {
       if (item.sku && skuService) {
         // 恢复SKU 库存
-        skuService.models.Sku.incInventory(item.sku, item.quantity);
+        await skuService.models.Sku.incInventory(item.sku, item.quantity, this.dbSession);
       } else if (item.goods) {
         // 恢复商品库存
-        Goods.incInventory(item.goods, item.quantity);
+        await Goods.incInventory(item.goods, item.quantity, this.dbSession);
       }
     }
   }

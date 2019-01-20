@@ -1,8 +1,13 @@
+import * as mongodb from 'mongodb';
 import { RecordId, Model } from 'alaska-model';
 import { Context } from 'alaska-http';
 import OrderGoods from './OrderGoods';
+import OrderLog from './OrderLog';
 
-declare class Order extends Model { }
+declare class Order extends Model {
+  canAppendGoods(goods: OrderGoods): boolean;
+  createLog(title: string, dbSession?: mongodb.ClientSession): OrderLog;
+}
 interface Order extends OrderFields { }
 
 export interface OrderFields {
@@ -58,8 +63,6 @@ export interface OrderFields {
   refundTimeout: Date;
   userDeleted: boolean;
   adminDeleted: boolean;
-
-  canAppendGoods(goods: OrderGoods): boolean;
 }
 
 export default Order;

@@ -6,7 +6,7 @@ export async function pre() {
   if (!payment.orders || !payment.orders.length) return;
   for (let order of payment.orders) {
     if (!order.save) {
-      order = await Order.findById(order);
+      order = await Order.findById(order).session(this.dbSession);
     }
     if (payment.orders.length === 1) {
       order.payed += payment.amount;
@@ -15,7 +15,7 @@ export async function pre() {
       order.payed = order.pay;
     }
     order.payment = payment.type;
-    await Pay.run({ record: order });
+    await Pay.run({ record: order }, { dbSession: this.dbSession });
   }
   this.params.done = true;
 }

@@ -9,8 +9,8 @@ export default class CheckReceiveTimeout extends Sled<{}, any> {
       receiveTimeout: {
         $lt: new Date()
       }
-    }).limit(10);
+    }).limit(10).session(this.dbSession);
     if (!records.length) return;
-    await Receive.run({ records });
+    await Receive.run({ records }, { dbSession: this.dbSession });
   }
 }

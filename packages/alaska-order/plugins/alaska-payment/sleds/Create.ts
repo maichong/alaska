@@ -18,7 +18,7 @@ export async function pre() {
   });
   for (let order of orders) {
     if (typeof order === 'string') {
-      order = await Order.findById(order).where('user', user._id);
+      order = await Order.findById(order).where('user', user._id).session(this.dbSession);
       if (!order) paymentService.error('Order not found');
       if (order.state !== 200) {
         paymentService.error('Order state error');

@@ -13,6 +13,6 @@ export default async function register(ctx: Context) {
   if (!body.username) ctx.throw(400, 'Username is required');
   if (!body.password) ctx.throw(400, 'Password is required');
 
-  let user = await Register.run(_.assign({ ctx }, body));
+  let user = await Register.run(_.assign({ ctx }, body), { dbSession: ctx.dbSession });
   ctx.body = user.data('info');
 }

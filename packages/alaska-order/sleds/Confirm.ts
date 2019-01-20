@@ -16,8 +16,8 @@ export default class Confirm extends Sled<ConfirmParams, Order[]> {
 
     for (let order of records) {
       order.state = 400;
-      await order.save();
-      order.createLog('Order confirmed');
+      await order.save({ session: this.dbSession });
+      order.createLog('Order confirmed', this.dbSession);
     }
     return records;
   }

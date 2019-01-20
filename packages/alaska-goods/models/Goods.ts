@@ -1,3 +1,4 @@
+import * as mongodb from 'mongodb';
 import { RecordId, Model } from 'alaska-model';
 import { Context } from 'alaska-http';
 import balanceService from 'alaska-balance';
@@ -248,12 +249,12 @@ export default class Goods extends Model {
    * @param id 商品ID
    * @param quantity 增加数量
    */
-  static async incInventory(id: RecordId, quantity: number): Promise<Goods | null> {
+  static async incInventory(id: RecordId, quantity: number, dbSession?: mongodb.ClientSession): Promise<Goods | null> {
     // 更新 Goods 表
     return await Goods.findOneAndUpdate(
       { _id: id },
       { $inc: { inventory: quantity } },
-      { new: true }
+      { new: true, session: dbSession }
     );
   }
 
@@ -262,12 +263,12 @@ export default class Goods extends Model {
    * @param id 商品ID
    * @param quantity 增加数量
    */
-  static async incVolume(id: RecordId, quantity: number): Promise<Goods | null> {
+  static async incVolume(id: RecordId, quantity: number, dbSession?: mongodb.ClientSession): Promise<Goods | null> {
     // 更新 Goods 表
     return await Goods.findOneAndUpdate(
       { _id: id },
       { $inc: { volume: quantity } },
-      { new: true }
+      { new: true, session: dbSession }
     );
   }
 

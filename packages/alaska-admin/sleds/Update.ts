@@ -11,13 +11,14 @@ export default class Update extends Sled<ActionSledParams, any> {
   async exec(params: ActionSledParams): Promise<any> {
     let { body, records, admin, model } = params;
     let results: any[] = [];
+    let { dbSession } = this;
 
     async function updateRecord(record: Model, data: any) {
       data = _.omit(data, '_id', 'id');
       await userService.trimDisabledField(data, admin, model, record);
 
       record.set(data);
-      await record.save();
+      await record.save({ session: dbSession });
 
       let json = record.toJSON();
       await userService.trimPrivateField(json, admin, model, record);

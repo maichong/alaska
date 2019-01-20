@@ -83,9 +83,9 @@ export default class PropertyValue extends Model {
    * 整理相应属性的属性值
    */
   async processProp() {
-    let prop: Property = await Property.findById(this.prop);
+    let prop: Property = await Property.findById(this.prop).session(this.$session());
     if (!prop) return;
-    let values: PropertyValue[] = await PropertyValue.find({ prop: prop._id });
+    let values: PropertyValue[] = await PropertyValue.find({ prop: prop._id }).session(this.$session());
     prop.values = values.map((v: PropertyValue) => (v._id));
     await prop.save();
   }

@@ -33,7 +33,7 @@ export default function (router: Router) {
         return replay('sign error');
       }
       let paymentId = data.out_trade_no;
-      let payment = (await Payment.findById(paymentId)) as PaymentTenpay;
+      let payment = (await Payment.findById(paymentId).session(this.dbSession)) as PaymentTenpay;
       if (!payment) {
         return replay('out_trade_no error');
       }
@@ -43,7 +43,7 @@ export default function (router: Router) {
       payment.tenpay_transaction_id = data.transaction_id;
       let sledId = `${paymentService.id}.Complete`;
       const Complete = Sled.lookup(sledId) || paymentService.error('Complete sled not found!');
-      await Complete.run({ payment });
+      await Complete.run({ payment }, { dbSession: this.dbSession });
       ctx.body = 'OK';
       ctx.status = 200;
     } catch (err) {

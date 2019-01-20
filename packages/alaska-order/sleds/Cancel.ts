@@ -19,8 +19,8 @@ export default class Cancel extends Sled<CancelParams, Order[]> {
       if (!order.failure) {
         order.failure = 'Canceled';
       }
-      await order.save();
-      order.createLog('Order Canceled');
+      await order.save({ session: this.dbSession });
+      order.createLog('Order Canceled', this.dbSession);
     }
     return records;
   }

@@ -18,7 +18,7 @@ export default class Create extends Sled<ActionSledParams, any> {
     let record = new model(body);
     let ability = `${model.id}.create`;
     if (!await userService.hasAbility(params.ctx.user, ability, record)) service.error('Access Denied', 403);
-    await record.save();
+    await record.save({ session: this.dbSession });
 
     let json = record.toJSON();
     await userService.trimPrivateField(json, params.admin, model, record);

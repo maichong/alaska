@@ -9,8 +9,8 @@ export default class CheckPayTimeout extends Sled<{}, any> {
       paymentTimeout: {
         $lt: new Date()
       }
-    }).limit(10);
+    }).limit(10).session(this.dbSession);
     if (!records.length) return;
-    await Timeout.run({ records });
+    await Timeout.run({ records }, { dbSession: this.dbSession });
   }
 }

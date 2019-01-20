@@ -27,7 +27,7 @@ export async function create(ctx: Context, next: Function) {
   let info = await wx.getAccessToken(wxCode);
   deviceId = info.openid;
 
-  let client = await Client.findOne({ deviceId });
+  let client = await Client.findOne({ deviceId }).session(ctx.dbSession);
 
   // 删除过期
   if (client && client.expiredAt && client.expiredAt < new Date()) {
@@ -52,7 +52,7 @@ export async function create(ctx: Context, next: Function) {
       userFilter[userFieldsMap.openid || 'openid'] = info.openid;
     }
 
-    let user = await User.findOne(userFilter);
+    let user = await User.findOne(userFilter).session(ctx.dbSession);
     if (user) {
       // 用户已经注册，直接绑定
       client.user = user._id;
@@ -82,13 +82,13 @@ export async function create(ctx: Context, next: Function) {
         params[userFieldsMap.session_key || 'wxSessionKey'] = info.session_key;
       }
 
-      user = await Register.run(params);
+      user = await Register.run(params, { dbSession: ctx.dbSession });
 
       client.user = user._id;
     }
   }
 
-  await client.save();
+  await client.save({ session: ctx.dbSession });
 
   ctx.body = client.data();
 }

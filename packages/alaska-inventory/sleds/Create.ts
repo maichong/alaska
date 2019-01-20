@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import * as mongodb from 'mongodb';
 import { Sled } from 'alaska-sled';
 import Goods from 'alaska-goods/models/Goods';
 import Inventory from '../models/Inventory';
@@ -10,7 +11,7 @@ service.resolveConfig().then(() => {
   skuService = service.main.allServices['alaska-sku'] as SkuService;
 });
 
-export async function doInput(body: ParamsBody): Promise<Inventory> {
+async function doInput(body: ParamsBody, session: mongodb.ClientSession): Promise<Inventory> {
   let record = new Inventory({
     user: body.user,
     type: body.type,
@@ -55,7 +56,7 @@ export async function doInput(body: ParamsBody): Promise<Inventory> {
     }
   }
 
-  await record.save();
+  await record.save({ session });
   return record;
 }
 
@@ -72,6 +73,6 @@ export default class Create extends Sled<CreateParams, Inventory> {
     } else {
       body.type = 'input';
     }
-    return await doInput(body);
+    return await doInput(body, this.dbSession);
   }
 }

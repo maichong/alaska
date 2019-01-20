@@ -1,3 +1,4 @@
+import * as mongodb from 'mongodb';
 import { Model } from 'alaska-model';
 import Income from './Income';
 
@@ -13,7 +14,7 @@ export interface DepositFields {
   createdAt: Date;
   expiredAt: Date;
 
-  income(amount: number, title: string, type?: string): Promise<Income>;
+  income(amount: number, title: string, type?: string, dbSession?: mongodb.ClientSession): Promise<Income>;
 }
 
 export default Deposit;

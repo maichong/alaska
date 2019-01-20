@@ -24,7 +24,7 @@ export async function info(ctx: Context) {
       await service.trimDisabledField(body, user, User, user);
     }
     user.set(body);
-    await user.save();
+    await user.save({ session: ctx.dbSession });
   }
 
   ctx.body = user.data('info');
@@ -44,7 +44,7 @@ async function bindTel(ctx: Context) {
   if (await User.findOne({ tel }).select('_id')) service.error('Tel has already exists');
 
   user.tel = tel;
-  await user.save();
+  await user.save({ session: ctx.dbSession });
   ctx.body = user.data('info');
 }
 
@@ -66,7 +66,7 @@ async function bindEmail(ctx: Context) {
   }).select('_id')) service.error('Email has already exists');
 
   user.email = email;
-  await user.save();
+  await user.save({ session: ctx.dbSession });
   ctx.body = user.data('info');
 }
 
@@ -86,6 +86,6 @@ export async function passwd(ctx: Context) {
   }
 
   ctx.user.password = body.password;
-  await ctx.user.save();
+  await ctx.user.save({ session: ctx.dbSession });
   ctx.body = {};
 }

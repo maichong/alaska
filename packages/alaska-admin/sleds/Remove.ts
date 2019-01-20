@@ -6,9 +6,10 @@ import { ActionSledParams } from '..';
  */
 export default class Remove extends Sled<ActionSledParams, any> {
   async exec(params: ActionSledParams): Promise<any> {
-    for (let record of params.records) {
+    await Promise.all(params.records.map(async (record) => {
+      record.$session(this.dbSession);
       await record.remove();
-    }
+    }));
     return {};
   }
 }

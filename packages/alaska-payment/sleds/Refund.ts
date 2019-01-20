@@ -12,7 +12,7 @@ export default class Refund extends Sled<RefundParams, RefundModel> {
     }
     if (!paymentService.payments[refund.type]) paymentService.error('Unknown payment type');
     await paymentService.payments[refund.type].refund(refund, params.payment);
-    await refund.save();
+    await refund.save({ session: this.dbSession });
     return refund;
   }
 }

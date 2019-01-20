@@ -3,6 +3,7 @@ import * as Router from 'koa-router';
 import { Extension, Service, MainService } from 'alaska';
 import { ListenOptions } from 'net';
 import { Server } from 'http';
+import * as mongodb from 'mongodb';
 // import User from 'alaska-user/models/User';
 
 declare module 'alaska' {
@@ -94,6 +95,10 @@ export interface Context extends Koa.Context {
    * Current Service
    */
   service: Service;
+  /**
+   * MongoDB Session
+   */
+  dbSession?: mongodb.ClientSession;
 }
 
 export interface MiddlewareOptions {

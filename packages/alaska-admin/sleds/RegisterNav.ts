@@ -16,7 +16,7 @@ export default class RegisterNav extends Sled<RegisterNavParams, AdminNav> {
 
     record = new AdminNav(params);
     record._id = id;
-    await record.save();
+    await record.save({ session: this.dbSession });
 
     return record;
   }

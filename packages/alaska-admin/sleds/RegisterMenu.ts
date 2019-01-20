@@ -19,7 +19,7 @@ export default class RegisterMenu extends Sled<RegisterMenuParams, AdminMenu> {
     if (!record.parent && !record.nav) {
       record.nav = 'default';
     }
-    await record.save();
+    await record.save({ session: this.dbSession });
 
     return record;
   }

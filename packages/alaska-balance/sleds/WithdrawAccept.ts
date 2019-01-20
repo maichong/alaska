@@ -7,7 +7,7 @@ export default class WithdrawAccept extends Sled<WithdrawAcceptParams, Withdraw>
     let record: Withdraw = params.record;
     if (record.state === 0) {
       record.state = 1;
-      await record.save();
+      await record.save({ session: this.dbSession });
     }
     return record;
   }

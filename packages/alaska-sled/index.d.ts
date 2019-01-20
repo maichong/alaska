@@ -2,6 +2,7 @@ import { MainService, Service, Extension, ObjectMap } from 'alaska';
 import QueueDriver, { QueueDriverOptions } from 'alaska-queue';
 import SubscribeDriver, { SubscribeDriverOptions } from 'alaska-subscribe';
 import LockDriver, { LockDriverOptions } from 'alaska-lock';
+import * as mongodb from 'mongodb';
 
 declare module 'alaska' {
   export interface Service {
@@ -69,6 +70,17 @@ export interface SledMessage<R> {
   error?: string;
 }
 
+export interface SledOptions {
+  /**
+   * 是否上锁，true 为上锁，false 为不上锁，默认根据Sled是否设置了lock驱动
+   */
+  lock?: boolean;
+  /**
+   * MongoDB Session
+   */
+  dbSession?: null | mongodb.ClientSession;
+}
+
 export class Sled<T, R> {
   static readonly classOfSled: true;
   static sledName: string;
@@ -85,10 +97,16 @@ export class Sled<T, R> {
   /**
    * 执行Sled
    * @param {any} params
-   * @param {boolean} [lock] 是否上锁，true 为上锁，false 为不上锁，默认根据Sled是否设置了lock驱动
+   * @param {SledOptions} [options]
    * @returns {any}
    */
-  static run<T, R>(this: { new(params: T): Sled<T, R> }, params?: T, lock?: boolean): Promise<R>;
+  static run<T, R>(this: { new(params: T): Sled<T, R> }, params?: T, options?: SledOptions): Promise<R>;
+  /**
+   * 执行时使用MongoDB事务，如果执行失败自动回滚
+   * @param {any} params
+   * @returns {any}
+   */
+  static runWithTransaction<T, R>(this: { new(params: T): Sled<T, R> }, params?: T): Promise<R>;
   static pre(fn: Function): void;
   static post(fn: Function): void;
   /**
@@ -105,6 +123,7 @@ export class Sled<T, R> {
   readonly id: string;
   readonly service: Service;
   readonly config: SledConfig;
+  dbSession: null | mongodb.ClientSession;
   fromQueue?: boolean;
   fromJSON?: Function;
   toJSON?: Function;
@@ -129,10 +148,16 @@ export class Sled<T, R> {
 
   /**
    * 执行sled
-   * @param {boolean} [lock] 是否上锁，true 为上锁，false 为不上锁，默认根据Sled是否设置了lock驱动
+   * @param {SledOptions} [options]
    * @returns {any}
    */
-  run(lock?: boolean): Promise<R>;
+  run(options?: SledOptions): Promise<R>;
+  /**
+   * 执行时使用MongoDB事务，如果执行失败自动回滚
+   * @returns {any}
+   */
+  runWithTransaction(): Promise<R>;
+
 
   /**
    * 将Sled发送到队列

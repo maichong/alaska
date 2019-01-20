@@ -17,8 +17,8 @@ export default class Pay extends Sled<PayParams, Order[]> {
     for (let order of records) {
       order.state = 300;
       order.paymentTimeout = null;
-      await order.save();
-      order.createLog('Order payed');
+      await order.save({ session: this.dbSession });
+      order.createLog('Order payed', this.dbSession);
     }
 
     return records;

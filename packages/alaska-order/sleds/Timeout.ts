@@ -19,8 +19,8 @@ export default class Timeout extends Sled<TimeoutParams, Order[]> {
       if (!order.failure) {
         order.failure = 'Timeout';
       }
-      await order.save();
-      order.createLog('Order Timeout');
+      await order.save({ session: this.dbSession });
+      order.createLog('Order Timeout', this.dbSession);
     }
     return records;
   }

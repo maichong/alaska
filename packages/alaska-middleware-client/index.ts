@@ -17,7 +17,7 @@ export default function (options: ClientMiddlewareOptions, main: MainService): M
         token = ctx.headers[options.tokenHeader || 'client-token'];
       }
       if (token) {
-        let client = await Client.findOne({ token });
+        let client = await Client.findOne({ token }).session(ctx.dbSession);
 
         // 删除过期
         if (client && client.expiredAt && client.expiredAt < new Date()) {
@@ -27,13 +27,13 @@ export default function (options: ClientMiddlewareOptions, main: MainService): M
 
         if (options.extendTime && client && client.expiredAt < new Date(Date.now() + options.extendTime)) {
           client.expiredAt = new Date(client.expiredAt.getTime() + options.extendTime);
-          await client.save();
+          await client.save({ session: ctx.dbSession });
         }
 
         if (client) {
           ctx.client = client;
           if (client.user && !ctx.user) {
-            ctx.user = await User.findById(client.user);
+            ctx.user = await User.findById(client.user).session(ctx.dbSession);
           }
         }
       }

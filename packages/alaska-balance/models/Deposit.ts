@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import * as moment from 'moment';
+import * as mongodb from 'mongodb';
 import { Model } from 'alaska-model';
 import service from '../';
 import Income from './Income';
@@ -75,7 +76,7 @@ export default class Deposit extends Model {
     }
   }
 
-  async income(amount: number, title: string, type?: string): Promise<Income> {
+  async income(amount: number, title: string, type?: string, dbSession?: mongodb.ClientSession): Promise<Income> {
     let c = service.currenciesMap[this.currency] || service.defaultCurrency;
     let balance = (this.balance + amount) || 0;
     if (typeof c.precision !== 'undefined') {
@@ -92,8 +93,8 @@ export default class Deposit extends Model {
       target: 'deposit',
       deposit: this.id
     });
-    await income.save();
-    await this.save();
+    await income.save({ session: dbSession });
+    await this.save({ session: dbSession });
     return income;
   }
 }

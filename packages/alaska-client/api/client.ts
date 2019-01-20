@@ -31,7 +31,7 @@ export async function create(ctx: Context) {
   client.deviceId = deviceId;
   client.platform = platform;
 
-  await client.save();
+  await client.save({ session: ctx.dbSession });
 
   ctx.body = client.data();
 }
