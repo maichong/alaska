@@ -7,7 +7,7 @@ import {
   SessionMiddlewareOptions,
   CustomIgnoreFunction,
   IngoreRule
-} from 'alaska-middleware-session';
+} from '.';
 import CacheDriver from 'alaska-cache';
 
 export default function (options: SessionMiddlewareOptions, main: MainService) {
@@ -45,7 +45,7 @@ export default function (options: SessionMiddlewareOptions, main: MainService) {
         if (
           (reg instanceof RegExp && reg.test(ctx.path))
           // @ts-ignore
-          || (typeof reg === 'function' && reg(ctx.path))
+          || (typeof reg === 'function' && reg(ctx.path, ctx))
         ) {
           await next();
           return;

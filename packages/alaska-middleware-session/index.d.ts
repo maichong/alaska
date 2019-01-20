@@ -21,7 +21,7 @@ export interface Session {
 }
 
 export interface CustomIgnoreFunction {
-  (path: string): boolean;
+  (path: string, ctx: Context): boolean;
 }
 
 export type IngoreRule = RegExp | string | CustomIgnoreFunction;
