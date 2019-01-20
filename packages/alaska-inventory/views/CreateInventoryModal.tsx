@@ -3,14 +3,14 @@ import * as tr from 'grackle';
 import * as random from 'string-random';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Modal from 'reactstrap/lib/Modal';
-import ModalHeader from 'reactstrap/lib/ModalHeader';
-import ModalBody from 'reactstrap/lib/ModalBody';
 import Switch from '@samoyed/switch';
 import toast from '@samoyed/toast';
 import { StoreState, ActionRequestPayload, ClearListPayload, ActionState } from 'alaska-admin-view';
 import * as actionRedux from 'alaska-admin-view/redux/action';
 import * as listsRedux from 'alaska-admin-view/redux/lists';
+import ModalType from 'react-bootstrap/lib/Modal';
+
+const Modal: typeof ModalType = require('react-bootstrap/lib/Modal');
 
 interface Props {
   modelId: string;
@@ -31,8 +31,6 @@ interface State {
 }
 
 class CreateInventoryModal extends React.Component<Props, State> {
-  id: string;
-
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -40,7 +38,6 @@ class CreateInventoryModal extends React.Component<Props, State> {
       quantity: '',
       desc: '',
     };
-    this.id = random();
   }
 
   static getDerivedStateFromProps(nextProps: Props, prevState: State) {
@@ -50,7 +47,7 @@ class CreateInventoryModal extends React.Component<Props, State> {
       if (action.error) {
         toast(tr('Failed'), action.error.message, { type: 'error' });
       } else {
-        toast(tr('Success'));
+        toast(tr('Success'), '', { type: 'success' });
       }
     }
     return { _action: action };
@@ -112,11 +109,11 @@ class CreateInventoryModal extends React.Component<Props, State> {
     const { desc, quantity, type } = this.state;
     let disabled = !parseInt(quantity);
     return (
-      <Modal isOpen key={this.id}>
-        <ModalHeader toggle={onClose}>
+      <Modal show centered onHide={onClose}>
+        <Modal.Header>
           {tr('Create inventory')}
-        </ModalHeader>
-        <ModalBody>
+        </Modal.Header>
+        <Modal.Body>
           <div className="form form-horizontal">
             <div className="form-group row">
               <label className="col-sm-2 col-form-label">{tr('Type')}</label>
@@ -144,7 +141,7 @@ class CreateInventoryModal extends React.Component<Props, State> {
               </div>
             </div>
           </div>
-        </ModalBody>
+        </Modal.Body>
         <div className="modal-footer">
           <button className="btn btn-light" onClick={onClose}>{tr('Cancel')}</button>
           <button className="btn btn-primary" onClick={this.handleSave} disabled={disabled}>{tr('OK')}</button>

@@ -190,15 +190,17 @@ class SkuItem extends React.Component<SkuItemProps, SkuItemState> {
     let CreateInventoryModal = views.components['CreateInventoryModal'];
     let inventoryBtn;
     if (value._id && CreateInventoryModal) {
-      inventoryBtn = <button className="btn btn-primary btn-sm" onClick={this.handleOpen}>
-        {tr('Input Inventory')}
+      inventoryBtn = <>
+        <button className="btn btn-primary btn-sm" onClick={this.handleOpen}>
+          {tr('Input Inventory')}
+        </button>
         {opened && <CreateInventoryModal
           modelId="alaska-sku.Sku"
           goods={value.goods}
           sku={value._id}
           onClose={this.handleClose}
         />}
-      </button>;
+      </>;
     }
     return (
       <tr>

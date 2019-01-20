@@ -6,7 +6,7 @@ import Series from './Series';
 declare class Chart extends Model {
   /**
    * 导出当前图表的选项设置
-   * @param {Context} [ctx] 可选Context，如果不传入，则代表不自动检查权限 
+   * @param {Context} [ctx] 可选Context，如果不传入，则代表不自动检查权限
    * @param {Filters} [filters] 可选过滤器
    */
   getChartOption(ctx?: Context, filters?: Filters): Promise<echarts.EChartOption>;

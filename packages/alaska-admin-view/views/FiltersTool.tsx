@@ -4,11 +4,10 @@ import * as tr from 'grackle';
 import { connect } from 'react-redux';
 import { FiltersToolProps, StoreState } from '..';
 import Node from './Node';
-import ButtonDropdown from 'reactstrap/lib/ButtonDropdown';
-import DropdownToggle from 'reactstrap/lib/DropdownToggle';
-import DropdownMenu from 'reactstrap/lib/DropdownMenu';
-import DropdownItem from 'reactstrap/lib/DropdownItem';
 import TooltipWrapper from '@samoyed/tooltip-wrapper';
+import DropdownType from 'react-bootstrap/lib/Dropdown';
+
+const Dropdown: typeof DropdownType = require('react-bootstrap/lib/Dropdown');
 
 interface Props extends FiltersToolProps {
   superMode: boolean;
@@ -48,12 +47,12 @@ class FiltersTool extends React.Component<Props, FiltersToolState> {
       if (field.super && !superMode) return false;
       let icon = filters.hasOwnProperty(field.path) ? iconEle : null;
       return (
-        <DropdownItem
+        <Dropdown.Item
           key={field.path}
           className="with-icon"
           onClick={() => this.handleSelect(field.path)}
         >{icon} {tr(field.label, model.serviceId)}
-        </DropdownItem>
+        </Dropdown.Item>
       );
     }).filter(_.identity);
     return (
@@ -62,22 +61,22 @@ class FiltersTool extends React.Component<Props, FiltersToolState> {
         wrapper="FilterTool"
         props={this.props}
       >
-        <ButtonDropdown
-          isOpen={this.state.filtersOpen}
-          toggle={() => this.setState({ filtersOpen: !filtersOpen })}
+        <Dropdown
+          show={this.state.filtersOpen}
+          onToggle={(isOpen: boolean) => this.setState({ filtersOpen: isOpen })}
         >
           <TooltipWrapper
             tooltip={tr('Filter')}
             placement="bottom"
           >
-            <DropdownToggle color="light">
+            <Dropdown.Toggle variant="light" id="filters-tool">
               <i className="fa fa-filter" />
-            </DropdownToggle>
+            </Dropdown.Toggle>
           </TooltipWrapper>
-          <DropdownMenu>
+          <Dropdown.Menu>
             {items}
-          </DropdownMenu>
-        </ButtonDropdown>
+          </Dropdown.Menu>
+        </Dropdown>
       </Node>
     );
   }

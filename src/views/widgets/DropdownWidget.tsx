@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { WidgetProps } from 'alaska-admin-view';
-// import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import ButtonDropdown from 'reactstrap/lib/ButtonDropdown';
-import DropdownToggle from 'reactstrap/lib/DropdownToggle';
-import DropdownMenu from 'reactstrap/lib/DropdownMenu';
-import DropdownItem from 'reactstrap/lib/DropdownItem';
+import DropdownType from 'react-bootstrap/lib/Dropdown';
+
+const Dropdown: typeof DropdownType = require('react-bootstrap/lib/Dropdown');
 
 interface TestWidgetState {
   open: boolean;
@@ -22,16 +20,16 @@ export default class DropdownWidget extends React.Component<WidgetProps, TestWid
     const { open } = this.state;
     return (
       <li>
-        <ButtonDropdown isOpen={open} toggle={() => this.setState({ open: !open })}>
-          <DropdownToggle caret>
+        <Dropdown show={open} onToggle={(isOpen: boolean) => this.setState({ open: isOpen })}>
+          <Dropdown.Toggle id="drapdown-widget">
             Button Dropdown
-          </DropdownToggle>
-          <DropdownMenu>
-            <DropdownItem>Action</DropdownItem>
-            <DropdownItem divider />
-            <DropdownItem>Another Action</DropdownItem>
-          </DropdownMenu>
-        </ButtonDropdown>
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item>Action</Dropdown.Item>
+            <Dropdown.Item divider />
+            <Dropdown.Item>Another Action</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       </li>
     );
   }

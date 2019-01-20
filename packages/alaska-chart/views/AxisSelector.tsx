@@ -38,6 +38,7 @@ export default class AxisSelector extends React.Component<FieldViewProps, State>
           allowedDataPlains.add('bool');
           allowedDataPlains.add('objectid');
         // 这里不能break
+        // eslint-disable-next-line no-fallthrough
         case 'value':
           allowedDataPlains.add('number');
           break;

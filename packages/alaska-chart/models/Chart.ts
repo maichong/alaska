@@ -81,7 +81,7 @@ export default class Chart extends Model {
 
   /**
    * 导出当前图表的选项设置
-   * @param {Context} [ctx] 可选Context，如果不传入，则代表不自动检查权限 
+   * @param {Context} [ctx] 可选Context，如果不传入，则代表不自动检查权限
    * @param {Filters} [filters] 可选过滤器
    */
   async getChartOption(ctx?: Context, filters?: Filters): Promise<echarts.EChartOption> {
@@ -111,7 +111,7 @@ export default class Chart extends Model {
       if (!model) continue;
 
       if (ctx) {
-        let abliityFilters = await userService.createFilters(ctx.user, model.id + '.read');
+        let abliityFilters = await userService.createFilters(ctx.user, `${model.id}.read`);
         if (!abliityFilters) continue;
         let userFilters = await model.createFiltersByContext(ctx);
         filters = mergeFilters(filters, abliityFilters, userFilters);

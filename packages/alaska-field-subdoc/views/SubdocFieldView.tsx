@@ -35,7 +35,7 @@ export default class SubdocFieldView extends React.Component<FieldViewProps, Sta
     let { value, onChange, model } = this.props;
     let { actived } = this.state;
     if (!await confirm(tr('Confirm to remove the item?', model.serviceId))) return;
-    value = value.flatMap((item: any, index: number) => index === actived ? [] : [item]);
+    value = value.flatMap((item: any, index: number) => (index === actived ? [] : [item]));
     onChange(value);
     if (actived > value.length - 1) {
       this.setState({ actived: value.length - 1 });

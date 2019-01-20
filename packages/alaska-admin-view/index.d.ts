@@ -4,7 +4,8 @@ import * as immutable from 'seamless-immutable';
 import { Client, PaginateResult } from 'akita';
 import { ObjectMap } from 'alaska';
 import { ModelAction, Filter, Filters, AbilityCheckGate } from 'alaska-model';
-import { Store } from 'redux';
+import { Store as ReduxStore } from 'redux';
+import { Saga, Task } from '@redux-saga/types';
 import { DependsQueryExpression } from 'check-depends';
 import { Colors, SelectOption } from '@samoyed/types';
 import { LangGroup } from 'alaska-locale';
@@ -23,7 +24,11 @@ export const api: Client;
 
 export const views: Views;
 
-export const store: Store<StoreState, any>;
+export const store: Store;
+
+export interface Store extends ReduxStore<StoreState, any> {
+  runSaga<S extends Saga>(saga: S, ...args: Parameters<S>): Task;
+}
 
 export interface UploadOptions {
   /**

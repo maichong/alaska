@@ -7,28 +7,13 @@ import { NavProps, StoreState, Menus, Settings } from '..';
 import NavItem from './NavItem';
 import * as menusRedux from '../redux/menus';
 import * as tr from 'grackle';
-import ButtonDropdown from 'reactstrap/lib/ButtonDropdown';
-import DropdownToggle from 'reactstrap/lib/DropdownToggle';
-import DropdownMenu from 'reactstrap/lib/DropdownMenu';
-import DropdownItem from 'reactstrap/lib/DropdownItem';
-
-interface NavState {
-  navOpen: boolean;
-}
 
 interface Props extends NavProps {
   menus: Menus;
   settings: Settings;
   applyMenusNav: Function;
 }
-class Nav extends React.Component<Props, NavState> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      navOpen: false
-    };
-  }
-
+class Nav extends React.Component<Props> {
   handleClick = (navId: string) => {
     const { applyMenusNav } = this.props;
     applyMenusNav(navId);
@@ -36,17 +21,12 @@ class Nav extends React.Component<Props, NavState> {
 
   render() {
     const { settings, menus } = this.props;
-    const { navOpen } = this.state;
     let navs = _.orderBy(settings.navItems, ['sort'], ['desc']);
     navs = _.filter(navs, (item) =>
       (item.id === 'default' || item.activated)
       && (!item.ability || settings.abilities[item.ability])
       && (!item.super || settings.superMode)
     );
-    let label = _.map(navs, (nav) => {
-      if (nav.id !== menus.navId) return;
-      return tr(nav.label);
-    });
     return (
       <Node
         tag="ul"
@@ -62,28 +42,6 @@ class Nav extends React.Component<Props, NavState> {
             navId={menus.navId}
           />)
         }
-        <ButtonDropdown
-          isOpen={this.state.navOpen}
-          toggle={() => this.setState({ navOpen: !navOpen })}
-        >
-          <DropdownToggle color="default">
-            <span className="label">{label}</span>
-            <i className="fa fa-caret-down" />
-          </DropdownToggle>
-          <DropdownMenu>
-            {
-              navs.length > 1 && _.map(navs, (nav) => (
-                <DropdownItem
-                  key={nav.id}
-                  onClick={() => this.handleClick(nav.id)}
-                  className={`${nav.id === menus.navId ? 'active' : ''}`}
-                >
-                  {tr(nav.label)}
-                </DropdownItem>
-              ))
-            }
-          </DropdownMenu>
-        </ButtonDropdown>
       </Node>
     );
   }

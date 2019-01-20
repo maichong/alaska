@@ -44,9 +44,9 @@ class ListActions extends React.Component<Props, ListActionsState> {
     if (prevState.request && action.request === prevState.request && !action.fetching) {
       let title = nextProps.action.action;
       if (nextProps.action.error) {
-        toast(tr(nextProps.action.error.message), tr(`${_.upperFirst(title)} Failure`), { type: 'error' });
+        toast(tr(`${_.upperFirst(title)} Failure`), tr(nextProps.action.error.message), { type: 'error' });
       } else {
-        toast(tr(`${title} success!`), tr(`${title}`), { type: 'success' });
+        toast(tr(`${title} success!`), '', { type: 'success' });
       }
       return { request: '' };
     }

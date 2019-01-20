@@ -57,7 +57,7 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
       if (action && action.error) {
         toast(tr(`${_.upperFirst(title)} Failure`), tr(action.error.message), { type: 'error' });
       } else {
-        toast(tr(title), tr(`${title} success!`), { type: 'success' });
+        toast(tr(`${title} success!`), '', { type: 'success' });
       }
       nextState.updateError = false;
     }

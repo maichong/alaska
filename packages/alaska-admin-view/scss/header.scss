@@ -77,7 +77,27 @@
   flex-wrap: wrap;
   margin-bottom: 0;
   li {
-    .btn {
+    .dropdown {
+      height: 100%;
+      border-radius: 0;
+      border: none;
+    }
+    .dropdown-toggle {
+      background: #fff;
+      border: none;
+      height: 100%;
+      border-radius: 0;
+      padding-left: $padding-widget;
+      padding-right: $padding-widget;
+      margin-top: -4px;
+      &::after {
+        display: none;
+      }
+      &:hover {
+        background-color: $grag-color;
+      }
+    }
+    &>.btn {
       height: 100%;
       border-radius: 0;
       padding-left: $padding-widget;

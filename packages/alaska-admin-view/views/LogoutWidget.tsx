@@ -1,8 +1,10 @@
 import * as React from 'react';
+import * as tr from 'grackle';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { WidgetProps, StoreState, User } from '..';
 import * as loginRedux from '../redux/login';
+import { confirm } from '@samoyed/modal';
 
 interface Props extends WidgetProps {
   logout: Function;
@@ -10,7 +12,8 @@ interface Props extends WidgetProps {
 }
 
 class LogoutWidget extends React.Component<Props> {
-  handleLogout = () => {
+  handleLogout = async () => {
+    if (!await confirm(tr('Confirm logout?'))) return;
     this.props.logout();
   }
 

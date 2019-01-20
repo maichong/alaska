@@ -4,12 +4,11 @@ import * as React from 'react';
 import { LangGroup } from 'alaska-locale';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import ButtonDropdown from 'reactstrap/lib/ButtonDropdown';
-import DropdownToggle from 'reactstrap/lib/DropdownToggle';
-import DropdownMenu from 'reactstrap/lib/DropdownMenu';
-import DropdownItem from 'reactstrap/lib/DropdownItem';
 import { WidgetProps, StoreState } from '..';
 import * as settingsRedux from '../redux/settings';
+import DropdownType from 'react-bootstrap/lib/Dropdown';
+
+const Dropdown: typeof DropdownType = require('react-bootstrap/lib/Dropdown');
 
 interface LocaleWidgetState {
   active: string;
@@ -56,27 +55,27 @@ class LocaleWidget extends React.Component<Props, LocaleWidgetState> {
     if (_.size(list) < 2) return null;
     return (
       <li className="locale-widget">
-        <ButtonDropdown
-          isOpen={this.state.localeOpen}
-          toggle={() => this.setState({ localeOpen: !localeOpen })}
+        <Dropdown
+          show={this.state.localeOpen}
+          onToggle={(isOpen: boolean) => this.setState({ localeOpen: isOpen })}
         >
-          <DropdownToggle color="default">
+          <Dropdown.Toggle variant="light" id="locale-widget">
             <img src={`img/locales/${locale}.png`} alt="" />
-          </DropdownToggle>
-          <DropdownMenu>
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
             {
               list.map((key) => (
-                <DropdownItem
+                <Dropdown.Item
                   key={key}
                   onClick={(() => this.handleChange(key))}
                 >
                   <img src={`img/locales/${key}.png`} alt="" />
                   {tr.locale(key)('lang')}
-                </DropdownItem>
+                </Dropdown.Item>
               ))
             }
-          </DropdownMenu>
-        </ButtonDropdown>
+          </Dropdown.Menu>
+        </Dropdown>
       </li>
     );
   }

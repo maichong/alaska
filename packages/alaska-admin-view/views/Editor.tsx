@@ -137,7 +137,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
       <Node
         wrapper="Editor"
         props={this.props}
-        className={'editor' + (this.props.embedded ? ' embedded' : '')}
+        className={`editor${this.props.embedded ? ' embedded' : ''}`}
       >
         {this.renderGroups()}
       </Node>

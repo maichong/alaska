@@ -34,7 +34,7 @@ function trChart(chart: echarts.EChartOption) {
         slice.name = tr(slice.name);
       }
     });
-  })
+  });
 }
 
 export default class Chart extends React.Component<ChartProps, State> {
@@ -81,7 +81,7 @@ export default class Chart extends React.Component<ChartProps, State> {
 
     if (place) {
       api.get('chart', { query: _.assign({ _place: place }, filters) }).then((res: echarts.EChartOption[]) => {
-        _.forEach(res, trChart)
+        _.forEach(res, trChart);
         this.setState({ options: res, loading: false });
       });
     } else {
@@ -114,12 +114,12 @@ export default class Chart extends React.Component<ChartProps, State> {
     const { options, option } = this.state;
     if (place) {
       return (
-        <div className={'chart-place chart-place-' + place}>
+        <div className={`chart-place chart-place-${place}`}>
           {_.map(options, (opt, index) => this.renderChart(opt, index))}
         </div>
       );
     }
-    if (!option) return <div>Loading chart...</div>
+    if (!option) return <div>Loading chart...</div>;
     return this.renderChart(option);
   }
 }
