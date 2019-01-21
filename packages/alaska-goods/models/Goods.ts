@@ -84,7 +84,8 @@ export default class Goods extends Model {
     brand: {
       label: 'Brand',
       type: 'relationship',
-      ref: 'Brand',
+      ref: 'alaska-brand.Brand',
+      optional: true,
       index: true
     },
     newGoods: {

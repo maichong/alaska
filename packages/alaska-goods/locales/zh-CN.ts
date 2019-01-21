@@ -1,7 +1,5 @@
 export default {
   Goods: '商品',
-  Brand: '品牌',
-  Brief: '摘要',
   Pictures: '图片',
   'Main Picture': '主图',
   'Is New Goods': '是新品',
