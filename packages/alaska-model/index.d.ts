@@ -552,13 +552,19 @@ export interface ModelAction {
   title?: string;
   tooltip?: string;
   color?: Colors;
-  sled?: string;
-  view?: string;
+
+  /**
+   * 动作显示排序
+   */
   after?: string;
-  editor?: boolean;
-  list?: boolean;
+  /**
+   * 动作出现的页面列表，默认为 ['editor']
+   */
+  pages?: string[];
+  /**
+   * 列表页面显示动作时，需要用户选择记录的数量，如果数量不足，动作为禁用状态
+   */
   needRecords?: number;
-  link?: string;
 
   /**
    * Action 自定义要检查的权限，默认为 {Model.id}.{action.key}
@@ -577,10 +583,34 @@ export interface ModelAction {
    * 超级管理员模式，只控制管理端组件是否显示
    */
   super?: DependsQueryExpression | AbilityCheckGate[];
+  /**
+   * 弹窗确认是否执行动作
+   */
   confirm?: string;
+  /**
+   * 执行该动作的前置JS脚本
+   */
   pre?: string;
-  script?: string;
+  /**
+   * 动作执行成功后调用的后置脚本
+   */
   post?: string;
+  /**
+   * 动作出发Sled
+   */
+  sled?: string;
+  /**
+   * 动作区域显示自定义组件
+   */
+  view?: string;
+  /**
+   * 动作链接
+   */
+  link?: string;
+  /**
+   * 动作出发JS脚本
+   */
+  script?: string;
 }
 
 export interface ModelRelationship {

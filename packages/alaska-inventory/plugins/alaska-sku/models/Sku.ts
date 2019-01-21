@@ -5,8 +5,7 @@ export default {
       view: 'CreateInventoryButton',
       ability: 'alaska-inventory.Inventory.create',
       sled: 'alaska-inventory.Create',
-      editor: true,
-      list: true,
+      pages: ['editor', 'list'],
       needRecords: 1
     }
   },

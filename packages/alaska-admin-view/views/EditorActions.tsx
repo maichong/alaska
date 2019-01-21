@@ -168,7 +168,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
     // eslint-disable-next-line complexity
     keys.forEach((key) => {
       let action = actions[key];
-      if (action.list && !action.editor) return;
+      if (!(action.pages || []).includes('editor')) return;
       if (!superMode && checkAbility(action.super, record)) return;
       if (checkAbility(action.hidden, record)) return;
       let ability = action.ability || `${model.id}.${key}`;
