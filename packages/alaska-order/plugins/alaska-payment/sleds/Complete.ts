@@ -1,21 +1,23 @@
-import Pay from 'alaska-order/sleds/Pay';
+import PayOrder from 'alaska-order/sleds/Pay';
 import Order from 'alaska-order/models/Order';
+import CompletePayment from 'alaska-payment/sleds/Complete';
 
 export async function pre() {
-  let payment = this.params.payment;
-  if (!payment.orders || !payment.orders.length) return;
-  for (let order of payment.orders) {
+  const me = this as CompletePayment;
+  let record = me.params.record;
+  if (!record.orders || !record.orders.length) return;
+  for (let order of record.orders) {
     if (!order.save) {
-      order = await Order.findById(order).session(this.dbSession);
+      order = await Order.findById(order).session(me.dbSession);
     }
-    if (payment.orders.length === 1) {
-      order.payed += payment.amount;
+    if (record.orders.length === 1) {
+      order.payed += record.amount;
     } else {
       // 多个订单一起支付
       order.payed = order.pay;
     }
-    order.payment = payment.type;
-    await Pay.run({ record: order }, { dbSession: this.dbSession });
+    order.payment = record.type;
+    await PayOrder.run({ record: order }, { dbSession: me.dbSession });
   }
-  this.params.done = true;
+  me.params.done = true;
 }

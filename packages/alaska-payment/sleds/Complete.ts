@@ -7,12 +7,12 @@ export default class Complete extends Sled<CompleteParams, Payment> {
    * @param data
    *        data.payment
    */
-  async exec(params: { payment: Payment; done?: boolean }) {
+  async exec(params: CompleteParams) {
     if (this.result) return;
     if (!params.done) this.service.error('No valid payment complete hooks');
-    let payment = params.payment;
-    payment.state = 1;
-    await payment.save({ session: this.dbSession });
-    return payment;
+    let record = params.record;
+    record.state = 1;
+    await record.save({ session: this.dbSession });
+    return record;
   }
 }

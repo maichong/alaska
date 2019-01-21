@@ -1,6 +1,6 @@
 import * as mongodb from 'mongodb';
 import { Model } from 'alaska-model';
-import Income from './Income';
+import Income from 'alaska-balance/models/Income';
 
 declare class Deposit extends Model { }
 interface Deposit extends DepositFields { }

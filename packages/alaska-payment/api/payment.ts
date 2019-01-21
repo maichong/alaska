@@ -13,7 +13,7 @@ export async function create(ctx: Context) {
   let payment = await Create.run(body, { dbSession: ctx.dbSession });
 
   if (payment.state === 1) {
-    await Complete.run({ payment }, { dbSession: ctx.dbSession });
+    await Complete.run({ record: payment }, { dbSession: ctx.dbSession });
   }
 
   let data = payment.data('create');

@@ -1,9 +1,11 @@
 import paymentService from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 import Order from 'alaska-order/models/Order';
+import CreatePayment from 'alaska-payment/sleds/Create';
 
 export async function pre() {
-  let params = this.params;
+  const me = this as CreatePayment;
+  let params = me.params;
   let orders = params.orders;
   if (params.payment || !orders || !Array.isArray(orders) || !orders.length) return;
   let user = params.user || paymentService.error('Missing user info');
@@ -18,7 +20,7 @@ export async function pre() {
   });
   for (let order of orders) {
     if (typeof order === 'string') {
-      order = await Order.findById(order).where('user', user._id).session(this.dbSession);
+      order = await Order.findById(order).where('user', user._id).session(me.dbSession);
       if (!order) paymentService.error('Order not found');
       if (order.state !== 200) {
         paymentService.error('Order state error');

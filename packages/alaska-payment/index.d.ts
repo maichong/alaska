@@ -36,7 +36,7 @@ export interface CreateParams {
 }
 
 export interface CompleteParams {
-  payment: Payment;
+  record: Payment;
   done?: boolean;
 }
 

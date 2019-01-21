@@ -79,9 +79,8 @@ export default class Deposit extends Model {
   async income(amount: number, title: string, type?: string, dbSession?: mongodb.ClientSession): Promise<Income> {
     let c = balanceService.currenciesMap[this.currency] || balanceService.defaultCurrency;
     let balance = (this.balance + amount) || 0;
-    if (typeof c.precision !== 'undefined') {
-      balance = _.round(balance, c.precision);
-    }
+    balance = _.round(balance, c.precision);
+
     this.balance = balance;
     let income = new Income({
       type,

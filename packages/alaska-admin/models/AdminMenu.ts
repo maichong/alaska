@@ -71,6 +71,7 @@ export default class AdminMenu extends Model {
       label: 'Nav',
       type: 'relationship',
       ref: 'AdminNav',
+      switch: true,
       hidden: 'parent',
       default: 'default'
     },

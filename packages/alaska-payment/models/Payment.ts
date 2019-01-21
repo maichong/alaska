@@ -116,6 +116,7 @@ export default class Payment extends Model {
 
   // for alaska dev
   orders: any[];
+  recharge: RecordId;
 
   preSave() {
     if (!this.createdAt) {
