@@ -1,4 +1,9 @@
-.Select {
+.form-group {
+  .checkbox-group {
+    .checkbox {
+      margin-right: 1rem;
+    }
+  }
   .Select__control {
     border-radius: $input-border-radius;
     border-color: $input-border-color;
@@ -13,13 +18,5 @@
   }
   .Select__menu {
     z-index: 1100;
-  }
-}
-
-.form-group {
-  .checkbox-group {
-    .checkbox {
-      margin-right: 1rem;
-    }
   }
 }

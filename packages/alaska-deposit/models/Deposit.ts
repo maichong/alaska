@@ -2,8 +2,8 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import * as mongodb from 'mongodb';
 import { Model } from 'alaska-model';
-import service from '../';
-import Income from './Income';
+import balanceService from 'alaska-balance';
+import Income from 'alaska-balance/models/Income';
 
 export default class Deposit extends Model {
   static label = 'Deposit';
@@ -35,8 +35,8 @@ export default class Deposit extends Model {
       label: 'Currency',
       type: 'select',
       switch: true,
-      options: service.getCurrenciesAsync(),
-      default: service.getDefaultCurrencyAsync().then((cur) => cur.value)
+      options: balanceService.getCurrenciesAsync(),
+      default: balanceService.getDefaultCurrencyAsync().then((cur) => cur.value)
     },
     amount: {
       label: 'Amount',
@@ -77,7 +77,7 @@ export default class Deposit extends Model {
   }
 
   async income(amount: number, title: string, type?: string, dbSession?: mongodb.ClientSession): Promise<Income> {
-    let c = service.currenciesMap[this.currency] || service.defaultCurrency;
+    let c = balanceService.currenciesMap[this.currency] || balanceService.defaultCurrency;
     let balance = (this.balance + amount) || 0;
     if (typeof c.precision !== 'undefined') {
       balance = _.round(balance, c.precision);

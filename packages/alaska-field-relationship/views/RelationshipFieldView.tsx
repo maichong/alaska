@@ -123,6 +123,7 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
     } else {
       inputElement = (
         <View
+          clearable={!disabled && !field.required}
           className={viewClassName}
           multi={field.multi || false}
           value={value}

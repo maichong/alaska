@@ -1,29 +1,9 @@
 import * as _ from 'lodash';
 import * as mongodb from 'mongodb';
 import Income from '../../../models/Income';
-import Deposit from '../../../models/Deposit';
-import Withdraw from '../../../models/Withdraw';
 import service, { CreateIncome } from '../../..';
 
 export default {
-  relationships: {
-    incomes: {
-      ref: Income,
-      path: 'user',
-      protected: true
-    },
-    deposits: {
-      ref: Deposit,
-      path: 'user',
-      protected: true
-    },
-    withdraw: {
-      ref: Withdraw,
-      path: 'user',
-      protected: true
-    },
-  },
-
   /**
    * 为User模型增加余额字段和income方法
    */

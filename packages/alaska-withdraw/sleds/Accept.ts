@@ -1,9 +1,9 @@
 import { Sled } from 'alaska-sled';
 import Withdraw from '../models/Withdraw';
-import { WithdrawAcceptParams } from '..';
+import { AcceptParams } from '..';
 
-export default class WithdrawAccept extends Sled<WithdrawAcceptParams, Withdraw> {
-  async exec(params: WithdrawAcceptParams): Promise<Withdraw> {
+export default class Accept extends Sled<AcceptParams, Withdraw> {
+  async exec(params: AcceptParams): Promise<Withdraw> {
     let record: Withdraw = params.record;
     if (record.state === 0) {
       record.state = 1;

@@ -1,9 +1,10 @@
 import { Sled } from 'alaska-sled';
+import balanceService, { CreateIncome } from 'alaska-balance';
 import User from 'alaska-user/models/User';
 import WithdrawModel from '../models/Withdraw';
-import service, { WithdrawParams, CreateIncome } from '..';
+import service, { CreateParams } from '..';
 
-export default class Withdraw extends Sled<WithdrawParams, WithdrawModel> {
+export default class Create extends Sled<CreateParams, WithdrawModel> {
   /**
    * 提现
    * @param {Object} params
@@ -15,13 +16,13 @@ export default class Withdraw extends Sled<WithdrawParams, WithdrawModel> {
    * @param {Object} [params.currency]
    * @param {number} params.amount
    */
-  async exec(params: WithdrawParams): Promise<WithdrawModel> {
+  async exec(params: CreateParams): Promise<WithdrawModel> {
     let withdraw: WithdrawModel = params.withdraw;
     if (withdraw) return withdraw;
 
-    let currency = params.currency || service.defaultCurrency.value;
+    let currency = params.currency || balanceService.defaultCurrency.value;
 
-    if (!service.currenciesMap[currency]) service.error('Unknown currency');
+    if (!balanceService.currenciesMap[currency]) service.error('Unknown currency');
 
     let amount = Math.abs(params.amount) || service.error('Invalid amount');
 

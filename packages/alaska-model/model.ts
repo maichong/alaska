@@ -357,6 +357,7 @@ export default class Model {
         model.relationships = relationships;
       } catch (e) {
         console.error(`${model.id} init relationships failed!`);
+        throw e;
       }
 
       /**
@@ -383,6 +384,7 @@ export default class Model {
         model.populations = populations;
       } catch (e) {
         console.error(`${model.id} init populations failed!`);
+        throw e;
       }
 
       if (needRef) {
@@ -669,7 +671,7 @@ export default class Model {
       delete this._post;
 
     } catch (e) {
-      console.error(`${model.id}.init failed!`);
+      console.error(`${model.id}.register failed!`);
       throw e;
     }
   }

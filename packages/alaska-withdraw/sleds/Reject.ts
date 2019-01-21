@@ -1,10 +1,11 @@
 import { Sled } from 'alaska-sled';
 import User from 'alaska-user/models/User';
+import { CreateIncome } from 'alaska-balance';
 import Withdraw from '../models/Withdraw';
-import service, { WithdrawRejectParams, CreateIncome } from '..';
+import service, { RejectParams } from '..';
 
-export default class WithdrawReject extends Sled<WithdrawRejectParams, Withdraw> {
-  async exec(params: WithdrawRejectParams): Promise<Withdraw> {
+export default class Reject extends Sled<RejectParams, Withdraw> {
+  async exec(params: RejectParams): Promise<Withdraw> {
     let record: Withdraw = params.record;
     if (record.state === 0) {
       let reason = params.body.reason || service.error('Missing reject reason');

@@ -108,7 +108,7 @@ export default class SelectFieldView extends React.Component<FieldProps, State> 
       inputElement = <p className="form-control-plaintext">{inputElement}</p>;
     } else {
       inputElement = <View
-        className="Select"
+        clearable={!disabled && !field.required}
         value={value}
         multi={field.multi}
         disabled={disabled}

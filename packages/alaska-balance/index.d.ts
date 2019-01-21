@@ -3,9 +3,7 @@ import { Context } from 'alaska-http';
 import * as mongodb from 'mongodb';
 import User from 'alaska-user/models/User';
 import { ActionSledParams } from 'alaska-admin';
-import Deposit from './models/Deposit';
 import Income from './models/Income';
-import Withdraw from './models/Withdraw';
 
 export interface Currency {
   value: string;
@@ -17,9 +15,7 @@ export interface Currency {
 
 export class BalanceService extends Service {
   models: {
-    Deposit: typeof Deposit;
     Income: typeof Income;
-    Withdraw: typeof Withdraw;
   }
 
   /**
@@ -48,26 +44,6 @@ export class BalanceService extends Service {
 
 declare const balanceService: BalanceService;
 export default balanceService;
-
-// Sleds
-
-export interface WithdrawParams {
-  ctx: Context;
-  withdraw?: Withdraw;
-  title?: string;
-  note?: string;
-  user: User;
-  currency?: string;
-  amount: number;
-}
-
-export interface WithdrawAcceptParams extends ActionSledParams {
-  record: Withdraw;
-}
-
-export interface WithdrawRejectParams extends ActionSledParams {
-  record: Withdraw;
-}
 
 export interface CreateIncome {
   (amount: number, title: string, type?: string, dbSession?: mongodb.ClientSession): Promise<Income>;
