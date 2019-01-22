@@ -6,48 +6,63 @@ import MultiLevelSelect from './MultiLevelSelect';
 import { FieldViewProps } from 'alaska-admin-view';
 import relationQuery from 'alaska-admin-view/utils/query';
 import * as tr from 'grackle';
+import { SelectOption } from '@samoyed/types';
 
-interface Option {
-  label: string;
-  value: string;
-  parent: undefined | string;
-}
 interface State {
-  options: Option[];
+  options?: SelectOption[];
+  filters: any;
 }
 
 export default class CategoryFieldView extends React.Component<FieldViewProps, State> {
   constructor(props: FieldViewProps) {
     super(props);
     this.state = {
-      options: immutable([])
+      filters: {}
     };
+  }
+
+  static getDerivedStateFromProps(nextProps: FieldViewProps, prevState: State): State | null {
+    const { field, record } = nextProps;
+    let filters = _.reduce(field.filters || {}, (res: any, v: any, key: string) => {
+      res[key] = v;
+      if (_.isString(v) && v[0] === ':') {
+        res[key] = record[v.substr(1)];
+      }
+      return res;
+    }, {});
+    if (!_.isEqual(filters, prevState.filters)) {
+      return { filters, options: null };
+    }
+    return null;
+  }
+
+  shouldComponentUpdate(nextProps: FieldViewProps, state: State) {
+    return !shallowEqualWithout(nextProps, this.props, 'record', 'onChange', 'search')
+      || !shallowEqualWithout(state, this.state);
   }
 
   componentDidMount() {
     this.init();
   }
 
-  shouldComponentUpdate(props: FieldViewProps, state: State) {
-    return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'search')
-      || this.state.options !== state.options;
+  componentDidUpdate() {
+    this.init();
   }
 
-  async init() {
+  init() {
+    if (this.state.options) return;
     let { field } = this.props;
-    let relation = await relationQuery({
+    relationQuery({
       model: field.model,
-      filters: field.filters || {}
-    });
-    let options = _.map(relation.results, (val) => {
-      let temp = {
+      filters: this.state.filters
+    }).then((relation) => {
+      let options = _.map(relation.results, (val) => ({
         label: val[field.modelTitleField] || val.title || val._id,
         value: val._id,
         parent: val.parent
-      };
-      return temp;
+      }));
+      this.setState({ options: immutable(options) });
     });
-    this.setState({ options });
   }
 
   handleChange = (index: number, value: any) => {
@@ -64,7 +79,7 @@ export default class CategoryFieldView extends React.Component<FieldViewProps, S
       if (!values.length) {
         values = values.concat([value]);
       } else {
-        values = values.flatMap((item: Option, idx: number) => {
+        values = values.flatMap((item: SelectOption, idx: number) => {
           if (index === idx) {
             return [value];
           }

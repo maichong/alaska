@@ -11,7 +11,7 @@ export default {
     const User = this;
     service.currencies.forEach((c) => {
       User.underscoreMethod(c.value, 'income',
-        <CreateIncome>async function (amount: number, title: string, type?: string, dbSession?: mongodb.ClientSession) {
+        <CreateIncome> async function (amount: number, title: string, type?: string, dbSession?: mongodb.ClientSession) {
           let user = this;
           let balance = (user.get(c.value) + amount) || 0;
           balance = _.round(balance, c.precision);

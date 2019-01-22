@@ -14,6 +14,9 @@ export default {
       type: Object,
       default: [] as PropData[],
       view: 'PropertyEditor',
+      filters: {
+        group: 'goods'
+      },
       group: 'props',
       spec: {
         // TODO:

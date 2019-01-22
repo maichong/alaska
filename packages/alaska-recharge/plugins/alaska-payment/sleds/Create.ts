@@ -17,7 +17,7 @@ export async function pre() {
   let amount = parseFloat(params.amount) || paymentService.error('Missing payment amount!');
   if (amount <= 0) paymentService.error('Invalid amount!');
   let currency = params.currency || '';
-  let deposit = params.deposit || undefined;
+  let deposit = params.deposit;
   let currencyOpt = BALANCE.defaultCurrency;
   // 如果充值目标为余额
   if (recharge === 'balance') {
@@ -41,7 +41,7 @@ export async function pre() {
   if (amount <= 0) paymentService.error('Invalid amount!');
 
   let record = new Recharge({
-    title: params.title || 'Recharge-' + amount,
+    title: params.title || `Recharge-${amount}`,
     user,
     target: recharge,
     currency,
@@ -50,7 +50,7 @@ export async function pre() {
   });
 
   let payment = new Payment({
-    title: params.title || 'Recharge-' + amount,
+    title: params.title || `Recharge-${amount}`,
     user,
     type,
     amount,

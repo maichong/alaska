@@ -16,23 +16,69 @@ function getOptionValue(opt: any) {
 
 interface State {
   options?: SelectOption[];
+  filters: any;
+  search: string;
 }
 
 export default class RelationshipFieldView extends React.Component<FieldViewProps, State> {
   constructor(props: FieldViewProps) {
     super(props);
     this.state = {
+      filters: {},
+      search: ''
     };
+  }
+
+  static getDerivedStateFromProps(nextProps: FieldViewProps, prevState: State): Partial<State> | null {
+    const { field, record } = nextProps;
+    let filters = _.reduce(field.filters || {}, (res: any, v: any, key: string) => {
+      res[key] = v;
+      if (_.isString(v) && v[0] === ':') {
+        res[key] = record[v.substr(1)];
+      }
+      return res;
+    }, {});
+    if (!_.isEqual(filters, prevState.filters)) {
+      return { filters, options: null };
+    }
+    return null;
   }
 
   shouldComponentUpdate(nextProps: FieldViewProps, state: State) {
     return !shallowEqualWithout(nextProps, this.props, 'record', 'onChange', 'search')
-      || this.state.options !== state.options;
+      || !shallowEqualWithout(state, this.state);
   }
 
   componentDidMount() {
-    this.handleInput('');
+    this.init();
   }
+
+  componentDidUpdate() {
+    this.init();
+  }
+
+  init() {
+    if (this.state.options) return;
+    const { field } = this.props;
+    const { filters, search } = this.state;
+    if (!field || !field.model) return;
+    relationQuery({
+      model: field.model,
+      search,
+      filters
+    }).then((relation) => {
+      let options = _.map(relation.results, (val) => ({
+        label: val[field.modelTitleField] || val.title || val._id,
+        value: val._id
+      }));
+      console.log('options', options);
+      this.setState({ options });
+    });
+  }
+
+  handleInput = (keyword: string) => {
+    this.setState({ search: keyword, options: null });
+  };
 
   handleChange = (value: any) => {
     if (this.props.onChange) {
@@ -46,32 +92,6 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
       }
       this.props.onChange(val);
     }
-  };
-
-  handleInput = (keyword: string) => {
-    const { field, record } = this.props;
-    if (!field || !field.model) return;
-    let filters = _.reduce(field.filters || {}, (res: any, v: any, key: string) => {
-      res[key] = v;
-      if (_.isString(v) && v[0] === ':') {
-        res[key] = record[v.substr(1)];
-      }
-      return res;
-    }, {});
-    relationQuery({
-      model: field.model,
-      search: keyword,
-      filters
-    }).then((relation) => {
-      let options = _.map(relation.results, (val) => {
-        let temp = {
-          label: val[field.modelTitleField] || val.title || val._id,
-          value: val._id
-        };
-        return temp;
-      });
-      this.setState({ options });
-    });
   };
 
   render() {

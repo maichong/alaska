@@ -14,8 +14,10 @@ interface Props extends FieldViewProps {
 }
 
 interface State {
-  props: immutable.Immutable<PropertyRecord[]>;
+  props?: immutable.Immutable<PropertyRecord[]>;
   valueMap: ObjectMap<immutable.Immutable<PropData>>;
+  filters: any;
+  _value?: any;
 }
 
 interface PropertyRecord {
@@ -44,50 +46,41 @@ export default class PropertyEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      props: immutable([]),
-      valueMap: _.keyBy(props.value, 'id')
+      valueMap: _.keyBy(props.value, 'id'),
+      filters: {}
     };
   }
 
-  componentDidMount() {
-    let { record } = this.props;
-    if (record.cat) {
-      this.fetchProps(record.cat);
+  static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
+    const { field, record } = nextProps;
+    let nextState: Partial<State> = {};
+    // FIXME: cats 索引bug
+    let filters = _.assign({ cats: record.cat }, field.filters);
+    if (!_.isEqual(filters, prevState.filters)) {
+      nextState = { filters, props: null };
     }
-  }
-
-  componentWillReceiveProps(props: Props) {
-    let newState: State = {} as State;
-    if (props.value) {
-      newState.valueMap = _.keyBy(props.value, 'id');
-      this.setState(newState);
-    }
-    if (props.record.cat && props.record.cat !== this._cat) {
-      this.fetchProps(props.record.cat);
-    }
-  }
-
-  handleChange = () => {
-    let { props, valueMap } = this.state;
-    let value: PropData[] = [];
-    _.forEach(props, (p) => {
-      let prop = valueMap[p._id];
-      if (prop && prop.values.length) {
-        value.push(prop);
+    if (nextProps.value !== prevState._value) {
+      nextState._value = nextProps.value;
+      if (nextProps.value) {
+        nextState.valueMap = _.keyBy(nextProps.value, 'id');
       }
-    });
-    this.props.onChange(immutable(value));
-  };
+    }
+    return nextState;
+  }
 
-  fetchProps = (cat: any) => {
-    cat = cat || this.props.record.cat;
-    if (this._cat === cat) return;
-    this._cat = cat;
+  componentDidMount() {
+    this.init();
+  }
+
+  componentDidUpdate() {
+    this.init();
+  }
+
+  init = () => {
+    if (this.state.props) return;
     query({
       model: 'alaska-property.Property',
-      filters: {
-        cat
-      },
+      filters: this.state.filters,
       populations: ['values']
     }).then((res) => {
       let props = res.results.map((prop: immutable.Immutable<PropertyRecord>) => {
@@ -106,14 +99,26 @@ export default class PropertyEditor extends React.Component<Props, State> {
     });
   };
 
+  handleChange = () => {
+    let { props, valueMap } = this.state;
+    let value: PropData[] = [];
+    _.forEach(props, (p) => {
+      let prop = valueMap[p._id];
+      if (prop && prop.values.length) {
+        value.push(prop);
+      }
+    });
+    this.props.onChange(immutable(value));
+  };
+
   render() {
-    const { record, model, disabled } = this.props;
-    if (!record.cat) {
-      return <p className="text-center">{tr('Select category first!', model.serviceId)}</p>;
-    }
+    const { disabled } = this.props;
     const { props, valueMap } = this.state;
-    if (!props || !props.length) {
+    if (!props) {
       return <p className="text-center">Loading...</p>;
+    }
+    if (!props.length) {
+      return <p className="text-center">{tr('No properties found')}</p>;
     }
 
     let me = this;

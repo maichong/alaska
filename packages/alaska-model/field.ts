@@ -191,6 +191,7 @@ export default class Field {
       view: field.view,
       filter: field.filter,
       after: field.after,
+      filters: field.filters,
     };
 
     if (FieldClass.viewOptions && FieldClass.viewOptions.length) {

@@ -5,7 +5,7 @@ import service from '../';
 export default class Property extends Model {
   static label = 'Properties';
   static icon = 'th';
-  static defaultColumns = 'title common required multi sku filter input activated sort createdAt';
+  static defaultColumns = 'title group common required multi sku filter input activated sort createdAt';
   static defaultSort = '-sort';
   static searchFields = 'title';
 
@@ -43,13 +43,34 @@ export default class Property extends Model {
       required: true,
       placeholder: 'eg. Size'
     },
+    group: {
+      label: 'Property Group',
+      type: 'select',
+      default: 'default',
+      switch: true,
+      index: true,
+      required: true,
+      options: [{
+        label: 'Default',
+        value: 'default'
+      }, {
+        label: 'Goods',
+        value: 'goods'
+      }, {
+        label: 'Post',
+        value: 'post'
+      }]
+    },
     cats: {
       label: 'Categories',
       type: 'category',
       ref: Category,
       multi: true,
       protected: true,
-      hidden: 'common'
+      hidden: 'common',
+      filters: {
+        group: ':group'
+      }
     },
     common: {
       label: 'Common property',

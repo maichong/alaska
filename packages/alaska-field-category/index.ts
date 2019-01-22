@@ -3,7 +3,7 @@ import RelationshipField from 'alaska-field-relationship';
 
 export default class CategoryField extends RelationshipField {
   static fieldName = 'Category';
-  static viewOptions = ['filters', 'multi',
+  static viewOptions = ['multi',
     (options: any, field: CategoryField) => {
       let ref = field.ref;
       if (ref && ref.classOfModel) {

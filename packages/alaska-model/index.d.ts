@@ -721,6 +721,7 @@ interface FieldBase {
   options?: any;
   checkbox?: boolean;
   switch?: boolean;
+  filters?: Filters;
 }
 
 export interface FieldOption extends FieldBase {

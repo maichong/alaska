@@ -70,7 +70,10 @@ export default class Goods extends Model {
       label: 'Category',
       type: 'category',
       ref: Category,
-      index: true
+      index: true,
+      filters: {
+        group: 'goods'
+      }
     },
     cats: {
       label: 'Categories',

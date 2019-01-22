@@ -50,6 +50,7 @@ export default class Category extends Model {
       default: 'default',
       switch: true,
       index: true,
+      required: true,
       options: [{
         label: 'Default',
         value: 'default'

@@ -19,24 +19,23 @@ export default class Order extends Model {
   static actions = {
     testAction: {
       title: 'Test',
-      list: true,
-      editor: true
+      pages: ['list', 'editor']
     },
     activatedAction: {
       title: 'activatedAction',
       style: 'info',
       sled: 'test.BatchActivated',
-      list: true,
+      pages: ['list'],
       needRecords: 1
     },
     // unactivatedAction: {
     //   title: 'unactivatedAction',
     //   style: 'danger',
     //   sled: 'test.BatchUnActivated',
-    //   list: true,
+    //   pages:['list'],
     //   needRecords: 1
     // }
-  }
+  };
 
   static fields = {
     title: {

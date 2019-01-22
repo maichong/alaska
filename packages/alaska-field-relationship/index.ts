@@ -9,7 +9,7 @@ export default class RelationshipField extends Field {
   static fieldName = 'Relationship';
   static plain = TypeObjectId;
   static viewOptions = [
-    'filters', 'multi', 'checkbox', 'switch',
+    'multi', 'checkbox', 'switch',
     (options: any, field: RelationshipField) => {
       let ref = field.ref;
       if (ref && ref instanceof Model) {
