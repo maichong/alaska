@@ -130,10 +130,10 @@ export function deepClone<T extends any>(target: T, src: T): T {
   // @ts-ignore
   target = target || {};
   _.keys(src).forEach((key) => {
-    if (typeof target[key] !== 'object' || Array.isArray(target[key])) {
+    if (!target[key] || Array.isArray(src[key]) || typeof target[key] !== 'object') {
       target[key] = src[key];
     } else {
-      target[key] = _.defaultsDeep({}, src[key], target[key]);
+      target[key] = deepClone(target[key], src[key]);
     }
   });
   return target;
