@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as tr from 'grackle';
-import * as _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Record, Model, ActionState, StoreState, ActionRequestPayload } from 'alaska-admin-view';
