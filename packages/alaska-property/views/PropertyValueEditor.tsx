@@ -1,13 +1,18 @@
 import * as React from 'react';
 import * as tr from 'grackle';
+import * as _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Record, ActionRequestPayload } from 'alaska-admin-view';
+import { Record, Model, ActionState, StoreState, ActionRequestPayload } from 'alaska-admin-view';
 import * as actionRedux from 'alaska-admin-view/redux/action';
+import * as detailsRedux from 'alaska-admin-view/redux/details';
 
 type Props = {
   record: Record;
+  model: Model;
   actionRequest: (req: ActionRequestPayload) => any;
+  action: ActionState;
+  loadDetails: Function;
 };
 
 type State = {
@@ -22,8 +27,19 @@ class PropertyValueEditor extends React.Component<Props, State> {
     };
   }
 
-  shouldComponentUpdate(props: Props, state: State) {
-    return state.value !== this.state.value;
+  // shouldComponentUpdate(props: Props, state: State) {
+  //   return state.value !== this.state.value;
+  // }
+
+  componentDidUpdate(prevProps: Props) {
+    let { action, model, record, loadDetails } = this.props;
+    let { action: preAction } = prevProps;
+    //前后action.fetching对比，保证刷新一次详情
+    if (action && action.request === preAction.request && preAction.fetching && !action.fetching && !action.error) {
+      if (model && model.id && record && record._id) {
+        loadDetails({ model: model.id, id: record._id });
+      }
+    }
   }
 
   handleSave = () => {
@@ -73,6 +89,9 @@ class PropertyValueEditor extends React.Component<Props, State> {
   }
 }
 
-export default connect(null, (dispatch) => bindActionCreators({
-  actionRequest: actionRedux.actionRequest
-}, dispatch))(PropertyValueEditor);
+export default connect(
+  ({ action }: StoreState) => ({ action }),
+  (dispatch) => bindActionCreators({
+    actionRequest: actionRedux.actionRequest,
+    loadDetails: detailsRedux.loadDetails
+  }, dispatch))(PropertyValueEditor);
