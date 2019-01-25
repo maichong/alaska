@@ -44,7 +44,7 @@ export async function count(ctx: Context) {
     if (_.size(finalFilters)) {
       query.match(finalFilters);
     }
-    let result = await query.group({ _id, count: { $sum: 1 }});
+    let result = await query.group({ _id, count: { $sum: 1 } });
     let res = {
       count: 0,
       groups: [] as any[]

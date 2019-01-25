@@ -257,7 +257,7 @@ export default class Goods extends Model {
     // 更新 Goods 表
     return await Goods.findOneAndUpdate(
       { _id: id },
-      { $inc: { inventory: quantity }},
+      { $inc: { inventory: quantity } },
       { new: true, session: dbSession }
     );
   }
@@ -271,7 +271,7 @@ export default class Goods extends Model {
     // 更新 Goods 表
     return await Goods.findOneAndUpdate(
       { _id: id },
-      { $inc: { volume: quantity }},
+      { $inc: { volume: quantity } },
       { new: true, session: dbSession }
     );
   }

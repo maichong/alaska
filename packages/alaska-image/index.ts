@@ -11,24 +11,29 @@ class ImageService extends Service {
     this.drivers = {};
 
     this.resolveConfig().then(() => {
-      let configs: ObjectMap<ImageDriverConfig> = this.config.get('drivers');
-      if (!configs) throw new Error('Missing config [alaska-image:drivers]');
-      for (let key of _.keys(configs)) {
-        let config = _.assign({}, configs[key]);
-        if (!config.adapter) throw new Error(`Missing config [alaska-image:drivers.${key}.adapter]`);
-        if (!config.adapterOptions) throw new Error(`Missing config [alaska-image:drivers.${key}.adapterOptions]`);
-        let Adapter = this.main.modules.libraries[config.adapter] || this.error(`Missing adapter library [${config.adapter}]!`);
-        config.fsd = FSD({ adapter: new Adapter(config.adapterOptions) });
-        if (!config.allowed) {
-          config.allowed = ['jpg', 'png', 'webp', 'gif', 'svg'];
+      try {
+        let configs: ObjectMap<ImageDriverConfig> = this.config.get('drivers');
+        if (!configs) throw new Error('Missing config [alaska-image:drivers]');
+        for (let key of _.keys(configs)) {
+          let config = _.assign({}, configs[key]);
+          if (!config.adapter) throw new Error(`Missing config [alaska-image:drivers.${key}.adapter]`);
+          if (!config.adapterOptions) throw new Error(`Missing config [alaska-image:drivers.${key}.adapterOptions]`);
+          let Adapter = this.main.modules.libraries[config.adapter] || this.error(`Missing adapter library [${config.adapter}]!`);
+          config.fsd = FSD({ adapter: new Adapter(config.adapterOptions) });
+          if (!config.allowed) {
+            config.allowed = ['jpg', 'png', 'webp', 'gif', 'svg'];
+          }
+          if (typeof config.pathFormat === 'undefined') {
+            config.pathFormat = '/YYYY/MM/DD/{ID}.{EXT}';
+          }
+          if (!config.maxSize) {
+            config.maxSize = 5242880;
+          }
+          this.drivers[key] = config;
         }
-        if (typeof config.pathFormat === 'undefined') {
-          config.pathFormat = '/YYYY/MM/DD/{ID}.{EXT}';
-        }
-        if (!config.maxSize) {
-          config.maxSize = 5242880;
-        }
-        this.drivers[key] = config;
+      } catch (error) {
+        console.error(error);
+        process.exit(1);
       }
     });
   }

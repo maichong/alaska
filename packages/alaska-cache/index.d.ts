@@ -4,7 +4,7 @@ export interface CacheDriverOptions extends DriverOptions {
   maxAge?: number;
 }
 
-export default class CacheDriver<T, O extends CacheDriverOptions, D> extends Driver<O, D> {
+export default class CacheDriver<T, O extends CacheDriverOptions=any, D=any> extends Driver<O, D> {
   static readonly classOfCacheDriver: true;
   readonly instanceOfCacheDriver: true;
 

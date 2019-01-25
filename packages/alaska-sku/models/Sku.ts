@@ -90,21 +90,21 @@ export default class Sku extends Model {
     // 更新 SKU 表
     let newSku = await Sku.findOneAndUpdate(
       { _id: id },
-      { $inc: { inventory: quantity }},
+      { $inc: { inventory: quantity } },
       { new: true, session: dbSession }
     );
     if (!newSku) return null;
     // 更新Goods.skus
     let goods = await Goods.findOneAndUpdate(
       { _id: newSku.goods, 'skus._id': newSku._id },
-      { $set: { 'skus.$.inventory': newSku.inventory }},
+      { $set: { 'skus.$.inventory': newSku.inventory } },
       { new: true, session: dbSession }
     );
     if (goods) {
       // 更新Goods.inventory
       await Goods.findOneAndUpdate(
         { _id: newSku.goods },
-        { $inc: { inventory: quantity }},
+        { $inc: { inventory: quantity } },
         { session: dbSession }
       );
     }
@@ -120,21 +120,21 @@ export default class Sku extends Model {
     // 更新 SKU 表
     let newSku = await Sku.findOneAndUpdate(
       { _id: id },
-      { $inc: { volume: quantity }},
+      { $inc: { volume: quantity } },
       { new: true, session: dbSession }
     );
     if (!newSku) return null;
     // 更新Goods.skus
     let goods = await Goods.findOneAndUpdate(
       { _id: newSku.goods, 'skus._id': newSku._id },
-      { $set: { 'skus.$.volume': newSku.volume }},
+      { $set: { 'skus.$.volume': newSku.volume } },
       { new: true, session: dbSession }
     );
     if (goods) {
       // 更新Goods.volume
       await Goods.findOneAndUpdate(
         { _id: newSku.goods },
-        { $inc: { volume: quantity }},
+        { $inc: { volume: quantity } },
         { session: dbSession }
       );
     }

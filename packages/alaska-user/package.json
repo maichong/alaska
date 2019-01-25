@@ -14,6 +14,8 @@
   "license": "MIT",
   "dependencies": {
     "alaska": "^0.13.2",
+    "alaska-cache": "^0.13.2",
+    "alaska-cache-lru": "^0.13.2",
     "alaska-field-datetime": "^0.13.2",
     "alaska-field-objectid": "^0.13.2",
     "alaska-field-image": "^0.13.2",

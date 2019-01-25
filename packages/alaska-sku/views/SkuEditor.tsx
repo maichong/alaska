@@ -50,7 +50,7 @@ function createPropsMap(props: PropData[]): ObjectMap<PropMapData> {
   let map: ObjectMap<PropMapData> = {};
   _.forEach(props, (p) => {
     if (!p.sku) return;
-    let item: PropMapData = Object.assign({ valueMap: {}}, p);
+    let item: PropMapData = Object.assign({ valueMap: {} }, p);
     _.forEach(p.values, (v) => {
       item.valueMap[v.id] = v;
     });

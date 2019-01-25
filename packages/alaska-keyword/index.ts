@@ -36,7 +36,7 @@ class KeywordService extends Service {
       delete this._keywords[search];
       let record = await Keyword.findOneAndUpdate(
         { title: search },
-        { $inc: { hot }},
+        { $inc: { hot } },
         // @ts-ignore returnOriginal
         { upsert: true, returnOriginal: false }
       );

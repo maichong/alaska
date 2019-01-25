@@ -25,6 +25,7 @@ module.exports = {
     "no-return-await": 'off',
     'no-unused-vars': 'off',
     'no-shadow': 'error',
+    'object-curly-spacing': ['error', 'always'],
     'prefer-template': 'error',
     radix: 'off',
     'react/jsx-indent-props': ['error', 2]

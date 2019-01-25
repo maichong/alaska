@@ -103,7 +103,7 @@ export default class Address extends Model {
     // 只能存在一个默认地址
     if (this.isDefault) {
       await Address.updateMany(
-        { user: this.user, isDefault: true, _id: { $ne: this._id }},
+        { user: this.user, isDefault: true, _id: { $ne: this._id } },
         { isDefault: false }
       );
     }

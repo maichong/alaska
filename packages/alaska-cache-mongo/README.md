@@ -9,7 +9,7 @@ export default {
   cache: {
     type: 'alaska-cache-mongo',
     // The connection URI string
-    url: 'mongodb://localhost/mydb',
+    uri: 'mongodb://localhost/mydb',
     // The cache collection
     collection: 'caches',
     // Default maximum age in milliseconds, 0 for forever
