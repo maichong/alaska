@@ -1,4 +1,4 @@
-import * as Router from 'koa-router';
+import { Router } from 'alaska-http';
 import User from 'alaska-user/models/User';
 import settingsService from 'alaska-settings';
 import userService from 'alaska-user';

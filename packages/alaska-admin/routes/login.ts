@@ -1,5 +1,4 @@
-import * as Router from 'koa-router';
-import { Context } from 'alaska-http';
+import { Context, Router } from 'alaska-http';
 import userService from 'alaska-user';
 import Login from 'alaska-user/sleds/Login';
 import Logout from 'alaska-user/sleds/Logout';

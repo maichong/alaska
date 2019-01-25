@@ -2,7 +2,7 @@ import { Service } from 'alaska';
 import Client from './models/Client';
 
 declare module 'alaska-http' {
-  interface Context {
+  export interface AlaskaContext {
     client: Client;
   }
 }

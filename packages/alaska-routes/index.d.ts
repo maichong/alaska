@@ -1,5 +1,5 @@
 import { Extension, ObjectMap } from 'alaska';
-import * as Router from 'koa-router';
+import { Router } from 'alaska-http';
 
 declare module 'alaska' {
   export interface Service {

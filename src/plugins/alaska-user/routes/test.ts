@@ -1,4 +1,4 @@
-import * as Router from 'koa-router';
+import { Router } from 'alaska-http';
 
 export default function (router: Router) {
   router.get('/test', async (ctx, next) => {

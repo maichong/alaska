@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
-import * as Router from 'koa-router';
-import { Context } from 'alaska-http';
+import { Context, Router } from 'alaska-http';
 import { Model } from 'alaska-model';
 import userService from 'alaska-user';
 import service from '..';

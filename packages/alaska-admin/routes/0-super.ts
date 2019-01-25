@@ -1,5 +1,4 @@
-import * as Router from 'koa-router';
-import { Context } from 'alaska-http';
+import { Context, Router } from 'alaska-http';
 import { } from 'alaska-admin';
 import service from '..';
 

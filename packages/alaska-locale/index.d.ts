@@ -31,15 +31,6 @@ declare module 'alaska-modules' {
   }
 }
 
-declare module 'alaska-http' {
-  export interface Context {
-    locale?: string;
-  }
-  export interface ContextState {
-    locale?: string;
-  }
-}
-
 export interface Lang {
   [message: string]: string;
 }

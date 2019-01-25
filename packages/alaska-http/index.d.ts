@@ -1,10 +1,9 @@
 import * as Koa from 'koa';
-import * as Router from 'koa-router';
 import { Extension, Service, MainService } from 'alaska';
 import { ListenOptions } from 'net';
 import { Server } from 'http';
 import * as mongodb from 'mongodb';
-// import User from 'alaska-user/models/User';
+import * as KoaRouter from 'koa-router';
 
 declare module 'alaska' {
   export interface MainService {
@@ -46,19 +45,14 @@ declare module 'alaska-modules' {
   }
 }
 
-declare module 'koa' {
-  export interface Context {
-    state: any | ContextState;
-  }
-  export interface Request {
-    body: any;
-  }
-}
-
-declare module 'koa-router' {
-  export interface IRouterContext extends Context {
-  }
-}
+// declare module 'koa' {
+//   export interface Context {
+//     state: any | ContextState;
+//   }
+//   export interface Request {
+//     body: any;
+//   }
+// }
 
 export default class HttpExtension extends Extension { }
 
@@ -72,9 +66,13 @@ export interface ContextState {
    * 是否是JSON API接口
    */
   jsonApi?: boolean;
+  /**
+   * Current client locale
+   */
+  locale?: string;
 }
 
-export interface Context extends Koa.Context {
+export interface AlaskaContext {
   /**
    * url params
    */
@@ -83,6 +81,9 @@ export interface Context extends Koa.Context {
    * the router instance
    */
   router: Router;
+  session?: Session;
+  sessionKey?: string;
+  sessionId?: string;
   /**
    * User
    */
@@ -99,6 +100,19 @@ export interface Context extends Koa.Context {
    * MongoDB Session
    */
   dbSession?: mongodb.ClientSession;
+  /**
+   * Current client locale
+   */
+  locale?: string;
+}
+
+export interface Context extends Koa.ParameterizedContext<ContextState, AlaskaContext> {
+}
+
+export interface Router extends KoaRouter<ContextState, AlaskaContext> {
+}
+
+export interface Middleware extends Koa.Middleware<ContextState, AlaskaContext> {
 }
 
 export interface MiddlewareOptions {
@@ -108,4 +122,11 @@ export interface MiddlewareOptions {
 
 export interface MiddlewareGenerator<T extends MiddlewareOptions> {
   (options: T, main: MainService): Koa.Middleware;
+}
+
+export interface Session {
+  [key: string]: any;
+  isNew: boolean;
+  toJSON(): Object;
+  isChanged(prev: string): boolean;
 }

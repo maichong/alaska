@@ -1,6 +1,5 @@
-import * as Router from 'koa-router';
 import Help from '../models/Help';
-import { Context } from 'alaska-http';
+import { Context, Router } from 'alaska-http';
 import { ObjectMap } from '@samoyed/types';
 
 export default function (router: Router) {

@@ -3,7 +3,7 @@ import { MiddlewareGenerator, MiddlewareOptions } from 'alaska-http';
 import { ReadStream } from 'fs';
 
 declare module 'alaska-http' {
-  interface Context {
+  export interface AlaskaContext {
     files: ObjectMap<UploadFile | UploadFile[]>;
   }
 }

@@ -1,5 +1,5 @@
 import { Extension, ObjectMap } from 'alaska';
-import * as Router from 'koa-router';
+import { Middleware } from 'alaska-http';
 
 declare module 'alaska' {
   export interface Service {
@@ -37,7 +37,7 @@ export const DELETE: MethodDecorator;
 export const OPTIONS: MethodDecorator;
 export const HEAD: MethodDecorator;
 
-export interface ApiMiddleware extends Router.IMiddleware {
+export interface ApiMiddleware extends Middleware {
   _methods?: {
     GET?: boolean;
     POST?: boolean;

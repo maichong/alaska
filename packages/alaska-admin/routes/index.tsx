@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Router from 'koa-router';
+import { Router } from 'alaska-http';
 import * as Path from 'path';
 import * as fs from 'fs';
 import * as hasha from 'hasha';

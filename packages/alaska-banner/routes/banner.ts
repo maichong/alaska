@@ -1,5 +1,4 @@
-import * as Router from 'koa-router';
-import { Context } from 'alaska-http';
+import { Context, Router } from 'alaska-http';
 import Banner from '../models/Banner';
 
 export default function (router: Router) {

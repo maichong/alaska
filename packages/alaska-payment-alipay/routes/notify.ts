@@ -1,5 +1,4 @@
-import * as Router from 'koa-router';
-import { Context } from 'alaska-http';
+import { Context, Router } from 'alaska-http';
 import paymentService from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 import { Sled } from 'alaska-sled';

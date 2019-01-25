@@ -1,11 +1,10 @@
 import * as _ from 'lodash';
 import * as collie from 'collie';
 import * as compose from 'koa-compose';
-import * as Router from 'koa-router';
 import { Service, MainService, Extension } from 'alaska';
 import { ServiceModules } from 'alaska-modules';
 import { CustomApi, ApiMiddleware } from 'alaska-api';
-import { Context } from 'alaska-http';
+import { Context, Router } from 'alaska-http';
 import { Model, ModelApi } from 'alaska-model';
 import * as defaultApiControllers from './api';
 

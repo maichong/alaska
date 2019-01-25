@@ -3,12 +3,6 @@ import { Model } from 'alaska-model';
 import Chart from './models/Chart';
 import Series from './models/Series';
 
-declare module 'alaska-http' {
-  interface Context {
-    chart: Chart;
-  }
-}
-
 export class ChartService extends Service {
   models: {
     Chart: typeof Chart;

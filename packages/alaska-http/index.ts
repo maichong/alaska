@@ -3,11 +3,11 @@ import * as tr from 'grackle';
 import * as http from 'http';
 import * as Koa from 'koa';
 import * as KoaQS from 'koa-qs';
-import * as Router from 'koa-router';
+import * as KoaRouter from 'koa-router';
 import * as _ from 'lodash';
 import { MainService, Extension, NormalError } from 'alaska';
 import debug from './debug';
-import { } from 'alaska-http';
+import { Router } from 'alaska-http';
 
 export default class HttpExtension extends Extension {
   static after = ['alaska-model'];
@@ -23,7 +23,7 @@ export default class HttpExtension extends Extension {
       }
       let router = routers.get(prefix);
       if (!router) {
-        router = new Router({
+        router = new KoaRouter({
           prefix
         });
         routers.set(prefix, router);

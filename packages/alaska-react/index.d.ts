@@ -10,7 +10,7 @@ declare module 'alaska' {
 
 declare module 'alaska-http' {
   export interface ContextState {
-    Document?: React.Component<DocumentProps>;
+    Document?: React.ComponentClass<DocumentProps>;
     // 页面标题
     documentTitle?: string;
     // 页面描述
