@@ -45,14 +45,11 @@ declare module 'alaska-modules' {
   }
 }
 
-// declare module 'koa' {
-//   export interface Context {
-//     state: any | ContextState;
-//   }
-//   export interface Request {
-//     body: any;
-//   }
-// }
+declare module 'koa' {
+  export interface Request {
+    body: any;
+  }
+}
 
 export default class HttpExtension extends Extension { }
 

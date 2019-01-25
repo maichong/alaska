@@ -22,21 +22,6 @@ export default function createMetadata(id: string, dir: string, configFileName: 
   return metadata;
 }
 
-function getRelativePath(path: string): string {
-  let cwd = process.cwd();
-  let srcDir = Path.join(cwd, 'src');
-  let nodeModulesDir = Path.join(cwd, 'node_modules');
-  let p = Path.relative(nodeModulesDir, path);
-  if (p[0] !== '.') {
-    return p;
-  }
-  p = Path.relative(srcDir, path);
-  if (p[0] !== '.') {
-    p = `./${p}`;
-  }
-  return p;
-}
-
 class ModulesMetadata {
   id: string;
   dir: string;
@@ -93,6 +78,20 @@ class ModulesMetadata {
     collie(this, 'buildService');
     collie(this, 'buildPlugin');
     collie(this, 'buildLibrary');
+  }
+
+  getRelativePath(path: string): string {
+    let cwd = process.cwd();
+    let nodeModulesDir = Path.join(cwd, 'node_modules');
+    let p = Path.relative(nodeModulesDir, path);
+    if (p[0] !== '.') {
+      return p;
+    }
+    p = Path.relative(this.dir, path);
+    if (p[0] !== '.') {
+      p = `./${p}`;
+    }
+    return p;
   }
 
   async load() {
@@ -268,7 +267,7 @@ class ModulesMetadata {
       // load
       let pluginDir = Path.join(service.path, 'plugins', sub.id);
       if (!isDirectory.sync(pluginDir)) continue;
-      let id = getRelativePath(pluginDir);
+      let id = this.getRelativePath(pluginDir);
       if (sub.plugins[id]) continue;
       let meta: PluginMetadata = {
         id,
@@ -329,7 +328,7 @@ class ModulesMetadata {
       if (!dir) {
         throw new Error(`Can not find plugin "${key}" for service “${service.id}”`);
       }
-      let id = getRelativePath(dir);
+      let id = this.getRelativePath(dir);
       if (service.plugins[dir]) continue;
       let meta: PluginMetadata = {
         id,
@@ -530,13 +529,13 @@ class ModulesMetadata {
   async toScript(): Promise<string> {
     await this.load();
 
-    function requirePath(path: string, type: ModuleType): string {
-      let str = `require('${getRelativePath(path)}')`;
+    const requirePath = (path: string, type: ModuleType): string => {
+      let str = `require('${this.getRelativePath(path)}')`;
       if (type !== 'CommonJs') {
         str = `importDefault(${str})`;
       }
       return str;
-    }
+    };
 
     function convent(value: any): string {
       if (value instanceof Module) {
