@@ -30,29 +30,37 @@ export default function (options: TransactionMiddlewareOptions) {
   }
 
   return async function transactionMiddleware(ctx: Context, next: Function) {
-    if (ignoreMethods.includes(ctx.method)) {
-      await next();
-      return;
-    }
-    if (ignores) {
-      for (let reg of ignores) {
-        if (
-          (reg instanceof RegExp && reg.test(ctx.path))
-          // @ts-ignore
-          || (typeof reg === 'function' && reg(ctx.path, ctx))
-        ) {
-          await next();
-          return;
+    // 初始化 ctx.dbSession
+
+    function initSession(): boolean {
+      if (ignoreMethods.includes(ctx.method)) {
+        return false;
+      }
+      if (ignores) {
+        for (let reg of ignores) {
+          if (
+            (reg instanceof RegExp && reg.test(ctx.path))
+            // @ts-ignore
+            || (typeof reg === 'function' && reg(ctx.path, ctx))
+          ) {
+            return false;
+          }
         }
       }
+      return true;
     }
 
-    // 启用事务
-    ctx.dbSession = await ctx.service.db.startSession();
-    await ctx.dbSession.startTransaction();
+    if (initSession()) {
+      // 启用事务
+      ctx.dbSession = await ctx.service.db.startSession();
+      await ctx.dbSession.startTransaction();
+    }
+
     try {
       await next();
     } catch (error) {
+      if (!ctx.dbSession) throw error;
+
       // 业务错误，回滚
       if (ctx.dbSession.inTransaction()) {
         await ctx.dbSession.abortTransaction();
@@ -67,6 +75,8 @@ export default function (options: TransactionMiddlewareOptions) {
       }
     }
 
+    // 不在事务中
+    if (!ctx.dbSession) return;
     if (!ctx.dbSession.inTransaction()) return;
 
     // 业务成功，提交
