@@ -1,7 +1,6 @@
 
 import * as _ from 'lodash';
 import { Service } from 'alaska';
-import { Sled } from 'alaska-sled';
 import CacheDriver from 'alaska-cache';
 
 class CaptchaService extends Service {

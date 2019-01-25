@@ -26,8 +26,7 @@ export default class IIDField extends NumberField {
 
     if (!field.cache) throw new Error(`Missing iid field cache config`);
 
-    // @ts-ignore
-    let cacheDriver: CacheDriver<number, any, any> = service.createDriver(field.cache);
+    let cacheDriver = service.createDriver(field.cache) as CacheDriver<number>;
     let key: string = field.key || `${model.modelName}.${field.path}`;
 
     schema.pre('save', function (next: Function) {

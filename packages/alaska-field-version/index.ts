@@ -13,8 +13,6 @@ export default class VersionField extends NumberField {
 
     if (!field.cache) throw new Error('Missing config [alaska-field-version.cache]');
 
-    console.log('field.cache', field.cache);
-
     let cacheDriver = model.service.createDriver(field.cache) as CacheDriver<number>;
     let key: string = field.key || `${model.modelName}.${field.path}`;
 
