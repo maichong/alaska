@@ -3,6 +3,7 @@ import { Sled } from 'alaska-sled';
 import service, { CaptchaParams } from '..';
 import Captcha from '../models/Captcha';
 import { SmsService } from 'alaska-sms';
+import { EmailService } from 'alaska-email';
 
 export default class Send extends Sled<CaptchaParams, void> {
   /**
@@ -58,10 +59,9 @@ export default class Send extends Sled<CaptchaParams, void> {
       }
     } else if (captcha.type === 'email' && captcha.email
       && service.main && service.main.allServices['alaska-email']) {
-      // FIXME:
-      let EMAIL = service.main.allServices['alaska-email'] as any;
+      let EMAIL = service.main.allServices['alaska-email'] as EmailService;
       try {
-        await EMAIL.run('Send', {
+        await EMAIL.sleds.Send.run({
           to,
           email: captcha.email,
           locale,

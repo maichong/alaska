@@ -44,5 +44,6 @@ export default class Driver<O extends DriverOptions, D> {
    */
   destroy() {
     // abstract method
+    this._driver = null;
   }
 }
