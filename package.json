@@ -18,7 +18,7 @@
     "alaska-build": "ts-node packages/alaska-cli/alaska.ts build --ts test.tsconfig.json",
     "clean": "find packages -type f -name '*.js' | grep -v 'alaska-admin-ueditor' | xargs rm -f",
     "start": "node dist/server.js",
-    "start-dev": "cross-env DEBUG=* NODE_ENV=development ts-node src/server-dev.ts",
+    "start-dev": "cross-env DEBUG=* NODE_ENV=development node --inspect -r ts-node/register src/server-dev.ts",
     "webpack": "webpack --config webpack/webpack.config.js --env.production",
     "webpack-dev": "webpack --config webpack/webpack.config.js",
     "webpack-watch": "webpack --config webpack/webpack.config.js -w"

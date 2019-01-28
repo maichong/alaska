@@ -242,5 +242,6 @@ export const AUTHENTICATED = 2;
  */
 export class NormalError extends Error {
   code: number | void;
+  status: number | void;
   constructor(message: string, code?: number);
 }

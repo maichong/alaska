@@ -113,13 +113,31 @@ export default class ApiExtension extends Extension {
           this.apiInfos[apiPrefix] = info;
         }
 
+        const models: Map<string, typeof Model> = new Map();
+
+        _.forEach(service.models, (model) => {
+          models.set(model.key, model);
+          if (model.api && _.find(model.api, (level) => level > 0)) {
+            if (info.models[model.key]) {
+              throw new Error(`Init api failed, ${model.id} conflict to ${info.models[model.key].id}`);
+            }
+            info.models[model.key] = model;
+          }
+        });
+
         function applyPlugin(api: CustomApi, group: string) {
           if (!info.apis[group]) {
             info.apis[group] = {};
           }
           let groupInfo = info.apis[group];
           _.forEach(api, (fn, action) => {
-            if (action[0] === '_') return;
+            if (typeof fn !== 'function' || action.startsWith('__')) return;
+            if (action[0] === '_') {
+              // record action
+              let model = models.get(group);
+              if (!model) return;
+              info.models[group] = model;
+            }
             if (groupInfo[action]) {
               if (!Array.isArray(groupInfo[action])) {
                 // 转换为数组
@@ -135,15 +153,6 @@ export default class ApiExtension extends Extension {
           _.forEach(plugin.api, applyPlugin);
         });
         _.forEach(s.api, applyPlugin);
-
-        _.forEach(service.models, (model) => {
-          if (model.api && _.find(model.api, (level) => level > 0)) {
-            if (info.models[model.key]) {
-              throw new Error(`Init api failed, ${model.id} conflict to ${info.models[model.key].id}`);
-            }
-            info.models[model.key] = model;
-          }
-        });
       })();
 
       // 最后，初始化子Service，这样，当前Service就可以覆盖子Service接口
@@ -181,7 +190,19 @@ export default class ApiExtension extends Extension {
         let router = this.getRouter(apiPrefix);
 
         // 判断是否存在扩展接口
-        let hasExtApi = !!_.find(info.apis, (api) => !!_.find(api, (fn, key) => !REST_ACTIONS.includes(key)));
+        let hasExtApi = false;
+        let hasRecordApi = false;
+        _.forEach(info.apis, (api) => {
+          if (!hasExtApi && !hasRecordApi) {
+            _.forEach(api, (fn, key) => {
+              if (key[0] === '_') {
+                hasRecordApi = true;
+              } else if (!REST_ACTIONS.includes(key)) {
+                hasExtApi = true;
+              }
+            });
+          }
+        });
         if (hasExtApi) {
           router.all('/:group/:action?', async (ctx: Context, next) => {
             let { group, action } = ctx.params;
@@ -207,7 +228,7 @@ export default class ApiExtension extends Extension {
               let methods = middleware._methods || { POST: true };
               // console.log(ctx.method, methods);
               // @ts-ignore index
-              if (methods[ctx.method] !== true) service.error(405);
+              if (methods[ctx.method] !== true) ctx.throw(405);
               ctx.service = service;
               await middleware(ctx, next);
               return;
@@ -215,12 +236,41 @@ export default class ApiExtension extends Extension {
             await next();
           });
         }
+        if (hasRecordApi) {
+          router.all('/:group/:id/:action', async (ctx: Context, next) => {
+            let { group, action, id } = ctx.params;
+            let fnName = `_${action}`;
+            let model = info.models[group];
+
+            let apiGroup = info.apis[group];
+            if (!model || !apiGroup || typeof apiGroup[fnName] !== 'function') {
+              await next();
+              return;
+            }
+
+            let middleware = apiGroup[fnName] as ApiMiddleware;
+            // check motheds
+            let methods = middleware._methods || { POST: true };
+            // console.log(ctx.method, methods);
+            // @ts-ignore index
+            if (methods[ctx.method] !== true) service.error(405);
+
+            let record = await model.findById(id).where(await model.createFiltersByContext(ctx)).session(ctx.dbSession);
+            if (!record) {
+              ctx.throw(404);
+            }
+            ctx.state.id = id;
+            ctx.state.record = record;
+            ctx.service = service;
+            await middleware(ctx, next);
+          });
+        }
 
         // 挂载Restful接口
         function restApi(action: keyof ModelApi): ApiMiddleware {
           return (ctx: Context, next) => {
-            let modelId = ctx.params.model;
-            let model = info.models[modelId];
+            let modekKey = ctx.params.model;
+            let model = info.models[modekKey];
             if (!model) {
               //404
               return next();
@@ -232,8 +282,8 @@ export default class ApiExtension extends Extension {
             }
 
             // api 目录下定义的中间件
-            if (info.apis[modelId] && info.apis[modelId][action]) {
-              middlewares = middlewares.concat(info.apis[modelId][action]);
+            if (info.apis[modekKey] && info.apis[modekKey][action]) {
+              middlewares = middlewares.concat(info.apis[modekKey][action]);
             }
             // Model.api参数定义的中间件
             if (model.api && model.api[action]) {

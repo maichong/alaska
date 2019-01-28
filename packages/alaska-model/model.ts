@@ -263,9 +263,10 @@ export default class Model {
         await this.preRegister();
       }
 
+      const collectionName = model.collectionName || ((service.config.get('alaska-model.collectionPrefix') || '') + model.key.replace(/-/g, '_'));
       const schema = new mongoose.Schema({}, {
         ...model.schemaOptions,
-        collection: model.collectionName || ((service.config.get('alaska-model.collection-prefix') || '') + model.key.replace(/-/g, '_'))
+        collection: collectionName
       });
 
       model.schema = schema;
@@ -628,6 +629,8 @@ export default class Model {
         }, dbConfig.options));
         service.db = db;
       }
+
+      await db.createCollection(collectionName);
 
       let MongooseModel = db.model(modelName, schema);
 

@@ -50,7 +50,6 @@ export default class HttpExtension extends Extension {
           await next();
           if (ctx.status === 404 && !ctx.body) main.error(404);
         } catch (error) {
-          let code = error.code || error.status;
           let expose = error.expose || error instanceof NormalError || false;
           let message = expose ? error.message : 'Internal Server Error';
           if (ctx.locale) {
@@ -69,7 +68,7 @@ export default class HttpExtension extends Extension {
             if (ctx.state.jsonApi) {
               ctx.body = {
                 error: message,
-                code,
+                code: error.code,
                 debug: debugInfo
               };
             } else {
@@ -77,8 +76,8 @@ export default class HttpExtension extends Extension {
               ctx.body = `<h1>${message}</h1><div><pre>${debugInfo || ''}</pre></div>`;
             }
           }
-          if (code && code > 100 && code < 600) {
-            ctx.status = code;
+          if (error.status) {
+            ctx.status = error.status;
           } else if (status === 404) {
             ctx.status = 500;
           }

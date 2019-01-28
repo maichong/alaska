@@ -167,6 +167,9 @@ export async function create(ctx: Context) {
 
   // eslint-disable-next-line new-cap
   let record = new model(body);
+  if (body.id) {
+    record._id = body.id;
+  }
 
   if (model.api.create > PUBLIC) {
     if (!userService) model.service.error(401);

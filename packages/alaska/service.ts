@@ -272,10 +272,7 @@ export default class Service {
     } else {
       msg = String(message);
     }
-    let error = new NormalError(msg);
-    if (code) {
-      error.code = code;
-    }
+    let error = new NormalError(msg, code);
     throw error;
   }
 }
