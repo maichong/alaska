@@ -8,7 +8,7 @@ import { SmsAliyunOptions } from '.';
 
 const api = akita.resolve('aliyun-sms-driver');
 
-export default class SmsAliyunDriver<T> extends SmsDriver<T, SmsAliyunOptions> {
+export default class SmsAliyunDriver<T> extends SmsDriver<T, SmsAliyunOptions, null> {
 
   constructor(options: SmsAliyunOptions, service: Service) {
     super(options, service);

@@ -1,7 +1,7 @@
 import SmsDriver from 'alaska-sms/driver';
 import { SmsTestOptions } from '.';
 
-export default class SmsTestDriver extends SmsDriver<Object, SmsTestOptions> {
+export default class SmsTestDriver extends SmsDriver<{}, SmsTestOptions, null> {
 
   /**
    * @param {string} to

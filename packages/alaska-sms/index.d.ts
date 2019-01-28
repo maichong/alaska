@@ -7,7 +7,7 @@ export interface SendParams {
   sms: string | Sms; //短信模板ID或记录
   to: string; //目标手机号
   message?: string; //短信内容,如果有此值,则忽略params.sms
-  driver?: void | SmsDriver<any, any>; //驱动,如果不指定,则采用params.sms记录中指定的驱动或默认驱动
+  driver?: void | SmsDriver; //驱动,如果不指定,则采用params.sms记录中指定的驱动或默认驱动
   locale?: string; //短信采用的语言
   values: { [key: string]: any }; //短信内容中填充的数据
 }
@@ -16,7 +16,7 @@ export interface SmsDriverOptions extends DriverOptions {
   label: string; //驱动显示名称
 }
 
-export class SmsDriver<T, O extends SmsDriverOptions> extends Driver<O, null> {
+export class SmsDriver<T=any, O extends SmsDriverOptions=any, D=any> extends Driver<O, D> {
   static readonly classOfSmsDriver: true;
   readonly instanceOfSmsDriver: true;
 
