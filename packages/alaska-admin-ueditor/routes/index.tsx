@@ -1,3 +1,4 @@
+import * as React from 'react';
 import * as Path from 'path';
 import * as _ from 'lodash';
 import { Context, Router } from 'alaska-http';
@@ -14,12 +15,8 @@ export default function (router: Router) {
     if (prefix === '/') {
       prefix = '';
     }
-    ctx.state.bodyScripts.push({
-      src: Path.join(prefix, `/ueditor-config`)
-    });
-    ctx.state.bodyScripts.push({
-      src: Path.join(prefix, `/ueditor/ueditor.all.min.js`)
-    });
+    ctx.state.foots.push(<script src={Path.join(prefix, `/ueditor-config`)}></script>);
+    ctx.state.foots.push(<script src={Path.join(prefix, `/ueditor/ueditor.all.min.js`)}></script>);
     await next();
   });
 

@@ -1,33 +1,130 @@
 import * as _ from 'lodash';
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import { DocumentProps, ScriptProps } from 'alaska-react';
-import { ContextState } from 'alaska-http';
+import { DocumentProps } from 'alaska-react';
+
+function onlyReactElement(
+  list: React.ReactElement<any>[],
+  child: React.ReactChild,
+): React.ReactElement<any>[] {
+  if (typeof child === 'string' || typeof child === 'number') {
+    return list;
+  }
+  if (child.type === React.Fragment) {
+    return list.concat(
+      React.Children.toArray(child.props.children).reduce((
+        fragmentList: React.ReactElement<any>[],
+        fragmentChild: React.ReactChild,
+      ): React.ReactElement<any>[] => {
+        if (
+          typeof fragmentChild === 'string' ||
+          typeof fragmentChild === 'number'
+        ) {
+          return fragmentList;
+        }
+        return fragmentList.concat(fragmentChild);
+      }, []),
+    );
+  }
+  return list.concat(child);
+}
+
+const METATYPES = ['name', 'httpEquiv', 'charSet', 'itemProp'];
+
+function unique() {
+  const keys = new Set();
+  const tags = new Set();
+  const metaTypes = new Set();
+  const metaCategories: { [metatype: string]: Set<string> } = {};
+
+  return (h: React.ReactElement<any>): boolean => {
+    if (h.key && typeof h.key !== 'number') {
+      if (keys.has(h.key)) return false;
+      keys.add(h.key);
+      return true;
+    }
+    switch (h.type) {
+      case 'title':
+      case 'base':
+        if (tags.has(h.type)) return false;
+        tags.add(h.type);
+        break;
+      case 'meta':
+        for (let metatype of METATYPES) {
+          if (!h.props.hasOwnProperty(metatype)) continue;
+          if (metatype === 'charSet') {
+            if (metaTypes.has(metatype)) return false;
+            metaTypes.add(metatype);
+          } else {
+            const category = h.props[metatype];
+            const categories = metaCategories[metatype] || new Set();
+            if (categories.has(category)) return false;
+            categories.add(category);
+            metaCategories[metatype] = categories;
+          }
+        }
+        break;
+    }
+    return true;
+  };
+}
 
 export default class Document extends React.Component<DocumentProps> {
   static childContextTypes = {
-    _ssr: PropTypes.bool,
-    _documentProps: PropTypes.any
+    _ssr: PropTypes.bool
   }
 
   getChildContext() {
     return {
-      _ssr: true,
-      _documentProps: this.props
+      _ssr: true
     };
   }
 
   render() {
-    const { ctx } = this.props;
-    // @ts-ignore
-    let lang = ctx.locale || undefined; // eslint-disable-line
-    let bodyClass = ctx.state.bodyClass;
+    const { ctx, heads, foots, children } = this.props;
+    const { state } = ctx;
+    let headers = [
+      <meta key="charSet" charSet="utf-8" />
+    ];
+
+    if (state.documentTitle) {
+      headers.push(<title>{state.documentTitle}</title>);
+    }
+
+    if (state.documentDescription) {
+      headers.push(<meta name="Description" content={state.documentDescription} />);
+    }
+
     return (
-      <html lang={lang}>
-        <Head />
-        <body className={bodyClass}>
-          <Main />
-          <BodyScripts />
+      <html lang={ctx.locale}>
+        <head>
+          {
+            headers.concat(heads)
+              .concat(ctx.state.heads)
+              .reduce(onlyReactElement, [])
+              .reverse()
+              .filter(unique())
+              .reverse()
+              .map((el, index) => {
+                const key = el.key || index;
+                return React.cloneElement(el, { key });
+              })
+          }
+        </head>
+        <body className={state.bodyClass}>
+          <div id="__viewport">{children}</div>
+          {
+            ([] as React.ReactElement<any>[]).concat(ctx.state.foots)
+              .concat(foots)
+              .reduce(onlyReactElement, [])
+              .reverse()
+              .filter(unique())
+              .reverse()
+              .map((el, index) => {
+                const key = el.key || index;
+                return React.cloneElement(el, { key });
+              })
+          }
         </body>
       </html>
     );
@@ -35,61 +132,13 @@ export default class Document extends React.Component<DocumentProps> {
 }
 
 export class Head extends React.Component<{}> {
-  static contextTypes = {
-    _documentProps: PropTypes.any
-  }
-
-  context: any;
-  render() {
-    const state: ContextState = this.context._documentProps.ctx.state;
-
-    return (
-      <head>
-        <meta charSet="utf-8" />
-        <title>{state.documentTitle}</title>
-        {state.documentDescription && <meta name="Description" content={state.documentDescription} />}
-        {state.headElements}
-        {_.map(state.headMetas, (meta) => <meta key={Math.random()} {...meta} />)}
-        {_.map(state.headLinks, (link) => <link key={Math.random()} {...link} />)}
-        {_.map(state.headScripts, (script) => <Script key={Math.random()} {...script} />)}
-      </head>
-    );
+  render(): null {
+    return null;
   }
 }
 
-export class Main extends React.Component<{}> {
-  static contextTypes = {
-    _documentProps: PropTypes.any
-  }
-
-  context: any;
-  render() {
-    const documnetProps: DocumentProps = this.context._documentProps;
-    return (
-      <div id="__viewport">{documnetProps.children}</div>
-    );
-  }
-}
-
-export class BodyScripts extends React.Component<{}> {
-  static contextTypes = {
-    _documentProps: PropTypes.any
-  }
-
-  context: any;
-  render() {
-    const state: ContextState = this.context._documentProps.ctx.state;
-    return _.map(state.bodyScripts, (script) => <Script key={Math.random()} {...script} />);
-  }
-}
-
-export class Script extends React.Component<ScriptProps> {
-  render() {
-    const props = this.props;
-    let attrs = _.omit(props, 'content');
-    if (props.content) {
-      return <script dangerouslySetInnerHTML={{ __html: props.content }} {...attrs} />;
-    }
-    return <script {...attrs} />;
+export class Foot extends React.Component<{}> {
+  render(): null {
+    return null;
   }
 }
