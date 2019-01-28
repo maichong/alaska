@@ -110,7 +110,28 @@ export interface Router extends KoaRouter<ContextState, AlaskaContext> {
 }
 
 export interface Middleware extends Koa.Middleware<ContextState, AlaskaContext> {
+  _methods?: {
+    GET?: boolean;
+    POST?: boolean;
+    PATCH?: boolean;
+    PUT?: boolean;
+    DELETE?: boolean;
+    OPTIONS?: boolean;
+    HEAD?: boolean;
+  };
 }
+
+export interface MethodDecorator {
+  (fn: Middleware, allow?: boolean): void;
+}
+
+export const GET: MethodDecorator;
+export const POST: MethodDecorator;
+export const PATCH: MethodDecorator;
+export const PUT: MethodDecorator;
+export const DELETE: MethodDecorator;
+export const OPTIONS: MethodDecorator;
+export const HEAD: MethodDecorator;
 
 export interface MiddlewareOptions {
   [key: string]: any;

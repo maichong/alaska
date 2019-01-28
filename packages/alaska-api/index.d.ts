@@ -25,47 +25,23 @@ declare module 'alaska-modules' {
   }
 }
 
-export interface MethodDecorator {
-  (fn: ApiMiddleware, allow?: boolean): void;
-}
-
-export const GET: MethodDecorator;
-export const POST: MethodDecorator;
-export const PATCH: MethodDecorator;
-export const PUT: MethodDecorator;
-export const DELETE: MethodDecorator;
-export const OPTIONS: MethodDecorator;
-export const HEAD: MethodDecorator;
-
-export interface ApiMiddleware extends Middleware {
-  _methods?: {
-    GET?: boolean;
-    POST?: boolean;
-    PATCH?: boolean;
-    PUT?: boolean;
-    DELETE?: boolean;
-    OPTIONS?: boolean;
-    HEAD?: boolean;
-  };
-}
-
 export interface RestApi {
-  count?: ApiMiddleware;
-  paginate?: ApiMiddleware;
-  show?: ApiMiddleware;
-  list?: ApiMiddleware;
-  create?: ApiMiddleware;
-  update?: ApiMiddleware;
-  updateMulti?: ApiMiddleware;
-  remove?: ApiMiddleware;
-  removeMulti?: ApiMiddleware;
-  watch?: ApiMiddleware;
+  count?: Middleware;
+  paginate?: Middleware;
+  show?: Middleware;
+  list?: Middleware;
+  create?: Middleware;
+  update?: Middleware;
+  updateMulti?: Middleware;
+  remove?: Middleware;
+  removeMulti?: Middleware;
+  watch?: Middleware;
 }
 
 export type RestActions = keyof RestApi;
 
 export interface CustomApi extends RestApi {
-  [key: string]: ApiMiddleware;
+  [key: string]: Middleware;
 }
 
 export default class ApiExtension extends Extension { }

@@ -1,5 +1,4 @@
-import { Context } from 'alaska-http';
-import { GET } from 'alaska-api';
+import { Context, GET } from 'alaska-http';
 import Client from '../models/Client';
 
 /**

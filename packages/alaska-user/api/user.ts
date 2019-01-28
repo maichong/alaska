@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
-import { Context } from 'alaska-http';
-import { GET, PATCH } from 'alaska-api';
+import { Context, GET, PATCH } from 'alaska-http';
 import * as escapeStringRegexp from 'escape-string-regexp';
 import User from '../models/User';
 import service from '..';

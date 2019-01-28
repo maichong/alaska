@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
-import { Context } from 'alaska-http';
-import { GET, POST } from 'alaska-api';
+import { Context, GET, POST } from 'alaska-http';
 import Login from '../sleds/Login';
 import Logout from '../sleds/Logout';
 

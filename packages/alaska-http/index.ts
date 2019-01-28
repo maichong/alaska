@@ -7,7 +7,25 @@ import * as KoaRouter from 'koa-router';
 import * as _ from 'lodash';
 import { MainService, Extension, NormalError } from 'alaska';
 import debug from './debug';
-import { Router } from 'alaska-http';
+import { Router, Middleware } from '.';
+
+function createDecorator(method: string) {
+  return function (middleware: Middleware, allow?: boolean) {
+    if (!middleware._methods) {
+      middleware._methods = {};
+    }
+    // @ts-ignore index
+    middleware._methods[method] = allow !== false;
+  };
+}
+
+export const GET = createDecorator('GET');
+export const POST = createDecorator('POST');
+export const HEAD = createDecorator('HEAD');
+export const PATCH = createDecorator('PATCH');
+export const PUT = createDecorator('PUT');
+export const DELETE = createDecorator('DELETE');
+export const OPTIONS = createDecorator('OPTIONS');
 
 export default class HttpExtension extends Extension {
   static after = ['alaska-model'];

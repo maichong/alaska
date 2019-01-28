@@ -3,13 +3,13 @@ import * as collie from 'collie';
 import * as compose from 'koa-compose';
 import { Service, MainService, Extension } from 'alaska';
 import { ServiceModules } from 'alaska-modules';
-import { CustomApi, ApiMiddleware } from 'alaska-api';
-import { Context, Router } from 'alaska-http';
+import { Context, Router, Middleware } from 'alaska-http';
 import { Model, ModelApi } from 'alaska-model';
+import { CustomApi } from '.';
 import * as defaultApiControllers from './api';
 
 interface ApiGroup {
-  [key: string]: ApiMiddleware | ApiMiddleware[];
+  [key: string]: Middleware | Middleware[];
 }
 
 interface ApiInfo {
@@ -33,24 +33,6 @@ const REST_ACTIONS = [
   'updateMulti',
   'watch'
 ];
-
-function createDecorator(method: string) {
-  return function (middleware: ApiMiddleware, allow?: boolean) {
-    if (!middleware._methods) {
-      middleware._methods = {};
-    }
-    // @ts-ignore index
-    middleware._methods[method] = allow !== false;
-  };
-}
-
-export const GET = createDecorator('GET');
-export const POST = createDecorator('POST');
-export const HEAD = createDecorator('HEAD');
-export const PATCH = createDecorator('PATCH');
-export const PUT = createDecorator('PUT');
-export const DELETE = createDecorator('DELETE');
-export const OPTIONS = createDecorator('OPTIONS');
 
 export default class ApiExtension extends Extension {
   static after = ['alaska-model', 'alaska-http', 'alaska-routes'];
@@ -141,9 +123,9 @@ export default class ApiExtension extends Extension {
             if (groupInfo[action]) {
               if (!Array.isArray(groupInfo[action])) {
                 // 转换为数组
-                groupInfo[action] = [<ApiMiddleware>groupInfo[action]];
+                groupInfo[action] = [<Middleware>groupInfo[action]];
               }
-              groupInfo[action] = (<ApiMiddleware[]>groupInfo[action]).concat(fn);
+              groupInfo[action] = (<Middleware[]>groupInfo[action]).concat(fn);
             } else {
               groupInfo[action] = fn;
             }
@@ -172,11 +154,11 @@ export default class ApiExtension extends Extension {
         _.forEach(info.apis, (apiGroup) => {
           for (let action in apiGroup) {
             if (Array.isArray(apiGroup[action])) {
-              let array = apiGroup[action] as ApiMiddleware[];
+              let array = apiGroup[action] as Middleware[];
               apiGroup[action] = compose(array);
               for (let fn of array) {
                 if (fn._methods) {
-                  (apiGroup[action] as ApiMiddleware)._methods = fn._methods;
+                  (apiGroup[action] as Middleware)._methods = fn._methods;
                   break;
                 }
               }
@@ -223,7 +205,7 @@ export default class ApiExtension extends Extension {
                 await next();
                 return;
               }
-              let middleware = apiGroup[action] as ApiMiddleware;
+              let middleware = apiGroup[action] as Middleware;
               // check motheds
               let methods = middleware._methods || { POST: true };
               // console.log(ctx.method, methods);
@@ -248,7 +230,7 @@ export default class ApiExtension extends Extension {
               return;
             }
 
-            let middleware = apiGroup[fnName] as ApiMiddleware;
+            let middleware = apiGroup[fnName] as Middleware;
             // check motheds
             let methods = middleware._methods || { POST: true };
             // console.log(ctx.method, methods);
@@ -267,7 +249,7 @@ export default class ApiExtension extends Extension {
         }
 
         // 挂载Restful接口
-        function restApi(action: keyof ModelApi): ApiMiddleware {
+        function restApi(action: keyof ModelApi): Middleware {
           return (ctx: Context, next) => {
             let modekKey = ctx.params.model;
             let model = info.models[modekKey];
@@ -276,7 +258,7 @@ export default class ApiExtension extends Extension {
               return next();
             }
             ctx.state.model = model;
-            let middlewares: ApiMiddleware[] = [];
+            let middlewares: Middleware[] = [];
             if (ctx.params.id) {
               ctx.state.id = ctx.params.id;
             }
