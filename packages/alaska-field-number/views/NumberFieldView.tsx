@@ -90,7 +90,7 @@ export default class NumberFieldView extends React.Component<FieldViewProps, Sta
       className += ' is-invalid';
       help = errorText;
     }
-    let helpElement = help ? <small className={errorText ? 'invalid-feedback' : 'text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
     if (field.fixed) {
       inputElement = <p className="form-control-plaintext">{value}</p>;

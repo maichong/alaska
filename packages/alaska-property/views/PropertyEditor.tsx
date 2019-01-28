@@ -195,7 +195,7 @@ export default class PropertyEditor extends React.Component<Props, State> {
             disabled={disabled}
             onChange={handleChange}
           />
-          <div><small className="text-muted">{helpElement}</small></div>
+          <div><small className="form-text text-muted">{helpElement}</small></div>
         </div>
       </div>);
     });

@@ -83,7 +83,7 @@ export default class BytesFieldView extends React.Component<FilterViewProps, Sta
     }
     let u = focused ? unit : (units[0] + (unit || ''));
     let display = focused ? value : _.round(num, precision);
-    let helpElement = help ? <small className={errorText ? 'invalid-feedback' : 'text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
     if (field.fixed) {
       inputElement = <p className="form-control-plaintext">{display}</p>;

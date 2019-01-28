@@ -187,7 +187,7 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
       className += ' is-invalid';
       help = tr(error);
     }
-    let helpElement = help ? <small className={error ? 'invalid-feedback' : 'text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
 
     let label = field.nolabel ? '' : field.label;
 

@@ -33,7 +33,7 @@ export default class DateFieldView extends React.Component<FieldViewProps> {
     if (field.format && value) {
       value = moment(value).format(field.format);
     }
-    let helpElement = help ? <small className={errorText ? 'invalid-feedback' : 'text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
     if (field.fixed) {
       inputElement = <p className="form-control-plaintext">{value}</p>;

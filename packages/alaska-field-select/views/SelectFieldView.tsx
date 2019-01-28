@@ -86,7 +86,7 @@ export default class SelectFieldView extends React.Component<FieldProps, State> 
       className += ' is-invalid';
       help = errorText;
     }
-    let helpElement = help ? <small className={errorText ? 'invalid-feedback' : 'text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
     if (field.fixed) {
       if (field.multi) {
