@@ -7,6 +7,6 @@ export interface SmsAliyunOptions extends SmsDriverOptions {
   SignName: string;
 }
 
-export default class SmsAliyunDriver<T> extends SmsDriver<T, SmsAliyunOptions> {
+export default class SmsAliyunDriver<T> extends SmsDriver<T, SmsAliyunOptions, null> {
   options: SmsAliyunOptions
 }

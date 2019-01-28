@@ -5,6 +5,6 @@ export interface SmsTestOptions extends SmsDriverOptions {
 
 }
 
-export default class SmsTestDriver extends SmsDriver<Object, SmsTestOptions> {
+export default class SmsTestDriver extends SmsDriver<{}, SmsTestOptions, null> {
 
 }
