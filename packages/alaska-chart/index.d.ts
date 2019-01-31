@@ -28,7 +28,7 @@ export interface KeyParser<V=any> {
     record: Model;
     keyField: string;
     results: Map<string, Slice<V>>;
-    series: Series;
+    series: SeriesOptions;
   }): Slice<V> | string | number | Promise<Slice<V> | string | number>;
 }
 
@@ -39,13 +39,37 @@ export interface ValueParser<V=any, T={}> {
     valueField: string;
     slice: Slice<V> & T;
     results: Map<string, Slice<V>>;
-    series: Series;
+    series: SeriesOptions;
   }): void | Promise<void>;
 }
 
 export interface ChartProps {
   place?: string;
-  chart?: string;
+  chart?: string | ChartOptions;
   filters?: any;
   theme?: string;
+}
+
+export interface SeriesOptions {
+  title?: string;
+  type: 'line' | 'bar' | 'pie' | 'scatter' | 'effectScatter' | 'radar' | 'heatmap' | 'map' | 'funnel' | 'gauge';
+  coordinateSystem?: 'grid' | 'polar' | 'geo';
+  keyAxisType: 'time' | 'cycle' | 'category' | 'value';
+  keyParser: 'year' | 'quarter' | 'month' | 'week' | 'day' | 'hour' | string;
+  valueParser?: 'count' | 'sum' | 'average' | 'min' | 'max' | string;
+  source: string;
+  keyAxis: string;
+  valueAxis?: string;
+  precision?: number;
+  limit?: number;
+  sort?: 'key-asc' | 'key-desc' | 'value-asc' | 'value-desc';
+  options?: echarts.EChartOption.Series;
+  filters?: any;
+}
+
+export interface ChartOptions {
+  title?: string;
+  reverse?: boolean;
+  series: SeriesOptions[];
+  options?: echarts.EChartOption;
 }

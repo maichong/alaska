@@ -1,34 +1,32 @@
 import * as echarts from 'echarts';
 import { Model, Filters } from 'alaska-model';
 import { Context } from 'alaska-http';
-import Series from './Series';
+import { ChartOptions, SeriesOptions } from '..';
 
 declare class Chart extends Model {
   /**
    * 导出当前图表的选项设置
+   * @param {ChartOptions} chart 图表设置或图表记录
    * @param {Context} [ctx] 可选Context，如果不传入，则代表不自动检查权限
    * @param {Filters} [filters] 可选过滤器
    */
-  getChartOption(ctx?: Context, filters?: Filters): Promise<echarts.EChartOption>;
+  static getChartOption(chart?: ChartOptions, ctx?: Context, filters?: Filters): Promise<echarts.EChartOption>;
 
   /**
    * 统计某个数据列
+   * @param {ChartOptions} chart 图表设置或图表记录
    * @param {Series} series 数据列对象
    * @param {Filters} [filters] 可选过滤器
    */
-  getSeriesData(series: Series, filters?: Filters): Promise<any[]>;
+  static getSeriesData(chart: ChartOptions, series: SeriesOptions, filters?: Filters): Promise<any[]>;
 }
 
 interface Chart extends ChartFields { }
 
-export interface ChartFields {
-  title: string;
+interface ChartFields extends ChartOptions {
   place: string;
-  reverse: boolean;
-  series: Series[];
   createdAt: Date;
   sort: number;
-  options?: echarts.EChartOption;
 }
 
 export default Chart;

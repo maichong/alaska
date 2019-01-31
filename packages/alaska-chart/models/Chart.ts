@@ -1,8 +1,9 @@
 import * as _ from 'lodash';
+import * as echarts from 'echarts';
 import { Model, Filters } from 'alaska-model';
 import { mergeFilters } from 'alaska-model/utils';
 import Series from './Series';
-import chartService, { Slice, KeyParser, ValueParser } from '..';
+import chartService, { Slice, KeyParser, ValueParser, SeriesOptions, ChartOptions } from '..';
 import { Context } from 'alaska-http';
 import userService from 'alaska-user';
 
@@ -73,24 +74,19 @@ export default class Chart extends Model {
   sort: number;
   options?: echarts.EChartOption;
 
-  preSave() {
-    if (!this.createdAt) {
-      this.createdAt = new Date();
-    }
-  }
-
   /**
    * 导出当前图表的选项设置
+   * @param {ChartOptions} chart 图表设置或图表记录
    * @param {Context} [ctx] 可选Context，如果不传入，则代表不自动检查权限
    * @param {Filters} [filters] 可选过滤器
    */
-  async getChartOption(ctx?: Context, filters?: Filters): Promise<echarts.EChartOption> {
-    const xAxis = this.reverse ? 'yAxis' : 'xAxis';
-    const yAxis = this.reverse ? 'xAxis' : 'yAxis';
+  static async getChartOption(chart?: ChartOptions, ctx?: Context, filters?: Filters): Promise<echarts.EChartOption> {
+    const xAxis = chart.reverse ? 'yAxis' : 'xAxis';
+    const yAxis = chart.reverse ? 'xAxis' : 'yAxis';
 
     let echartOption: echarts.EChartOption = _.defaultsDeep({
       title: {
-        text: this.title,
+        text: chart.title || '',
       },
       tooltip: {
         trigger: 'axis'
@@ -103,9 +99,9 @@ export default class Chart extends Model {
         type: 'value'
       },
       series: []
-    }, this.options);
+    }, chart.options);
 
-    for (let s of this.series) {
+    for (let s of chart.series || []) {
       let modelId = s.source;
       let model = Model.lookup(modelId);
       if (!model) continue;
@@ -124,7 +120,7 @@ export default class Chart extends Model {
       // @ts-ignore
       series.name = s.title;
       // @ts-ignore
-      series.data = await this.getSeriesData(s, filters);
+      series.data = await Chart.getSeriesData(chart, s, filters);
       let xAxisType: echarts.EChartOption.BasicComponents.CartesianAxis.Type;
       switch (s.keyAxisType) {
         case 'time':
@@ -157,10 +153,11 @@ export default class Chart extends Model {
 
   /**
    * 统计某个数据列
+   * @param {ChartOptions} chart 图表设置或图表记录
    * @param {Series} series 数据列对象
    * @param {Filters} [filters] 可选过滤器
    */
-  async getSeriesData(series: Series, filters?: Filters): Promise<any[]> {
+  static async getSeriesData(chart: ChartOptions, series: SeriesOptions, filters?: Filters): Promise<any[]> {
     if (!series.keyAxis) return [];
     let keyParser: KeyParser = chartService.keyParsers.get(series.keyParser);
     let valueParser: ValueParser = chartService.valueParsers.get(series.valueParser);
@@ -218,7 +215,7 @@ export default class Chart extends Model {
       }
     }
 
-    if (this.reverse) {
+    if (chart.reverse) {
       return data.map((slice) => {
         if (series.type === 'pie') {
           return { value: slice.key, name: slice.value };
@@ -233,5 +230,11 @@ export default class Chart extends Model {
       }
       return slice.result.concat(slice.value);
     });
+  }
+
+  preSave() {
+    if (!this.createdAt) {
+      this.createdAt = new Date();
+    }
   }
 }

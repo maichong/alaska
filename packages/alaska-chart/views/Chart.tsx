@@ -16,8 +16,9 @@ import 'echarts/lib/component/tooltip';
 
 interface State {
   _filters?: any;
-  option: echarts.EChartOption;
-  options: echarts.EChartOption[];
+  _chart?: any;
+  option?: echarts.EChartOption;
+  options?: echarts.EChartOption[];
   needLoading: boolean;
   loading: boolean;
 }
@@ -44,7 +45,7 @@ export default class Chart extends React.Component<ChartProps, State> {
     super(props);
     this.state = {
       option: null,
-      options: [],
+      options: null,
       needLoading: true,
       loading: false
     };
@@ -54,8 +55,8 @@ export default class Chart extends React.Component<ChartProps, State> {
   }
 
   static getDerivedStateFromProps(nextProps: ChartProps, prevState: State): Partial<State> | null {
-    if (!_.isEqual(nextProps.filters, prevState._filters)) {
-      return { _filters: nextProps.filters, needLoading: true };
+    if (!_.isEqual(nextProps.filters, prevState._filters) || !_.isEqual(nextProps.chart, prevState._chart)) {
+      return { _filters: nextProps.filters, _chart: nextProps.chart, needLoading: true };
     }
     return null;
   }
@@ -85,10 +86,19 @@ export default class Chart extends React.Component<ChartProps, State> {
         this.setState({ options: res, loading: false });
       });
     } else {
-      api.get(`chart/${chart}`, { query: filters }).then((res: echarts.EChartOption) => {
-        trChart(res);
-        this.setState({ option: res, loading: false });
-      });
+      if (chart && typeof chart === 'object') {
+        // chart options
+        api.get('chart', { query: { _chart: chart } }).then((res: echarts.EChartOption[]) => {
+          _.forEach(res, trChart);
+          this.setState({ options: res, loading: false });
+        });
+      } else {
+        // chart id
+        api.get(`chart/${chart}`, { query: filters }).then((res: echarts.EChartOption) => {
+          trChart(res);
+          this.setState({ option: res, loading: false });
+        });
+      }
     }
     this.setState({ loading: true, needLoading: false });
   }
@@ -112,7 +122,7 @@ export default class Chart extends React.Component<ChartProps, State> {
   render() {
     const { place } = this.props;
     const { options, option } = this.state;
-    if (place) {
+    if (options) {
       return (
         <div className={`chart-place chart-place-${place}`}>
           {_.map(options, (opt, index) => this.renderChart(opt, index))}
