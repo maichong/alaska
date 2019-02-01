@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { WidgetProps } from 'alaska-admin-view';
-import DropdownType from 'react-bootstrap/lib/Dropdown';
+import DropdownType from 'react-bootstrap/Dropdown';
 
-const Dropdown: typeof DropdownType = require('react-bootstrap/lib/Dropdown');
+const Dropdown: typeof DropdownType = require('react-bootstrap/Dropdown');
 
 interface TestWidgetState {
   open: boolean;

@@ -6,9 +6,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { WidgetProps, StoreState } from '..';
 import * as settingsRedux from '../redux/settings';
-import DropdownType from 'react-bootstrap/lib/Dropdown';
+import DropdownType from 'react-bootstrap/Dropdown';
 
-const Dropdown: typeof DropdownType = require('react-bootstrap/lib/Dropdown');
+const Dropdown: typeof DropdownType = require('react-bootstrap/Dropdown');
 
 interface LocaleWidgetState {
   active: string;

@@ -8,9 +8,9 @@ import toast from '@samoyed/toast';
 import { StoreState, ActionRequestPayload, ClearListPayload, ActionState } from 'alaska-admin-view';
 import * as actionRedux from 'alaska-admin-view/redux/action';
 import * as listsRedux from 'alaska-admin-view/redux/lists';
-import ModalType from 'react-bootstrap/lib/Modal';
+import ModalType from 'react-bootstrap/Modal';
 
-const Modal: typeof ModalType = require('react-bootstrap/lib/Modal');
+const Modal: typeof ModalType = require('react-bootstrap/Modal');
 
 interface Props {
   modelId: string;

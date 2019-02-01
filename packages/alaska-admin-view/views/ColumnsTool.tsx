@@ -5,9 +5,9 @@ import { connect } from 'react-redux';
 import { ColumnsToolProps, StoreState } from '..';
 import Node from './Node';
 import TooltipWrapper from '@samoyed/tooltip-wrapper';
-import DropdownType from 'react-bootstrap/lib/Dropdown';
+import DropdownType from 'react-bootstrap/Dropdown';
 
-const Dropdown: typeof DropdownType = require('react-bootstrap/lib/Dropdown');
+const Dropdown: typeof DropdownType = require('react-bootstrap/Dropdown');
 
 interface Props extends ColumnsToolProps {
   superMode: boolean;
