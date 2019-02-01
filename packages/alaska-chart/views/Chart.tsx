@@ -70,7 +70,8 @@ export default class Chart extends React.Component<ChartProps, State> {
   }
 
   init() {
-    const { place, chart } = this.props;
+    const { place, chart, data } = this.props;
+    if (data) return;
     const { loading, needLoading } = this.state;
     if ((place || chart) && needLoading && !loading) {
       this.load();
@@ -78,7 +79,8 @@ export default class Chart extends React.Component<ChartProps, State> {
   }
 
   load() {
-    const { place, chart, filters } = this.props;
+    const { place, chart, filters, data } = this.props;
+    if (data) return;
 
     if (place) {
       api.get('chart', { query: _.assign({ _place: place }, filters) }).then((res: echarts.EChartOption[]) => {
@@ -120,8 +122,11 @@ export default class Chart extends React.Component<ChartProps, State> {
   }
 
   render() {
-    const { place } = this.props;
+    const { place, data } = this.props;
     const { options, option } = this.state;
+    if (data) {
+      return this.renderChart(data);
+    }
     if (options) {
       return (
         <div className={`chart-place chart-place-${place}`}>

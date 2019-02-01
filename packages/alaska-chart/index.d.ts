@@ -44,9 +44,28 @@ export interface ValueParser<V=any, T={}> {
 }
 
 export interface ChartProps {
+  /**
+   * 图表位置，自动加载此位置中所有的图表
+   * place、chart、data 三选一
+   */
   place?: string;
+  /**
+   * 图表ID，或图表设置
+   * place、chart、data 三选一
+   */
   chart?: string | ChartOptions;
+  /**
+   * EChart设置，如果存在，则直接渲染显示，忽略 place 和 chart，不再自动加载数据
+   * place、chart、data 三选一
+   */
+  data?: echarts.EChartOption;
+  /**
+   * 自定义数据过滤器
+   */
   filters?: any;
+  /**
+   * EChart皮肤
+   */
   theme?: string;
 }
 
