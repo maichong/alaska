@@ -60,12 +60,14 @@ class Nav extends React.Component<Props, State> {
         props={this.props}
         className={`nav ${toggle ? 'visible' : 'hidden'}`}
       >
-        <li
-          className="nav-item nav-tab nav-toggle"
-          onClick={() => { this.setState({ toggle: !toggle }) }}
-        >
-          {this.state.toggleActive || '选择菜单'}<i className="fa fa-sort-down ml-1" />
-        </li>
+        {
+          navs.length > 1 ? <li
+            className="nav-item nav-tab nav-toggle"
+            onClick={() => { this.setState({ toggle: !toggle }) }}
+          >
+            {this.state.toggleActive || '选择菜单'}<i className="fa fa-sort-down ml-1" />
+          </li> : null
+        }
         {
           navs.length > 1 && _.map(navs, (nav) => <NavItem
             key={nav.id}
