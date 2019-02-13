@@ -13,14 +13,40 @@ interface Props extends NavProps {
   settings: Settings;
   applyMenusNav: Function;
 }
-class Nav extends React.Component<Props> {
+interface State {
+  toggleActive?: string;
+  toggle?: boolean;
+}
+
+class Nav extends React.Component<Props, State> {
+
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      toggleActive: '',
+      toggle: false
+    };
+  }
+
+  static getDerivedStateFromProps(nextProps: Props, prevState: State) {
+    const { settings, menus } = nextProps;
+    let navs = settings.navItems;
+    let nav = _.find(navs, (item) => item.id === menus.navId);
+    if (nav && nav.label !== prevState.toggleActive) {
+      return { toggleActive: nav.label };
+    }
+    return null;
+  }
+
   handleClick = (navId: string) => {
     const { applyMenusNav } = this.props;
+    this.setState({ toggle: !this.state.toggle });
     applyMenusNav(navId);
   }
 
   render() {
     const { settings, menus } = this.props;
+    const { toggle, toggleActive } = this.state;
     let navs = _.orderBy(settings.navItems, ['sort'], ['desc']);
     navs = _.filter(navs, (item) =>
       (item.id === 'default' || item.activated)
@@ -32,8 +58,14 @@ class Nav extends React.Component<Props> {
         tag="ul"
         wrapper="Nav"
         props={this.props}
-        className="nav"
+        className={`nav ${toggle ? 'visible' : 'hidden'}`}
       >
+        <li
+          className="nav-item nav-tab nav-toggle"
+          onClick={() => { this.setState({ toggle: !toggle }) }}
+        >
+          {this.state.toggleActive || '选择菜单'}<i className="fa fa-sort-down ml-1" />
+        </li>
         {
           navs.length > 1 && _.map(navs, (nav) => <NavItem
             key={nav.id}
