@@ -3,9 +3,10 @@ import * as fs from 'fs';
 import * as random from 'string-random';
 import { NormalError } from 'alaska';
 import PAYMENT, { PaymentPlugin } from 'alaska-payment';
+import Payment from 'alaska-payment/models/Payment';
 import * as urllib from 'urllib';
 import { ObjectMap } from '@samoyed/types';
-import { TenpayConfig, PaymentTenpay } from './';
+import { TenpayConfig } from '.';
 import * as utils from './utils/utils';
 
 const GATEWAY: ObjectMap<string> = {
@@ -36,6 +37,9 @@ export default class TenpayPlugin extends PaymentPlugin {
   service: typeof PAYMENT;
   label: string;
   _config: TenpayConfig;
+  _partnerKey: string;
+  _refund_url: string;
+  _pfx: any;
 
   constructor(service: typeof PAYMENT) {
     super(service);
@@ -48,6 +52,7 @@ export default class TenpayPlugin extends PaymentPlugin {
       service.plugins = {};
     }
     service.plugins.tenpay = this;
+    service.payments.tenpay = this;
 
     this.label = 'Tenpay';
     let configTmp: TenpayConfig = service.config.get('tenpay');
@@ -60,16 +65,20 @@ export default class TenpayPlugin extends PaymentPlugin {
       appid: '',
       mch_id: '',
       partnerKey: '',
-      pfx: '',
       notify_url: '',
-      refund_url: '',
-      spbill_create_ip: '127.0.0.1'
+      spbill_create_ip: '127.0.0.1',
+      trade_type: 'JSAPI'
     }, this._config);
     let pfxPath = this._config.pfx;
     if (pfxPath) {
       let pfx = fs.readFileSync(pfxPath) || '';
-      this._config = Object.assign(this._config, { pfx });
+      this._pfx = pfx;
     }
+    delete this._config.pfx;
+    this._partnerKey = this._config.partnerKey;
+    delete this._config.partnerKey;
+    this._refund_url = this._config.refund_url;
+    delete this._config.refund_url;
   }
 
   /**
@@ -102,7 +111,7 @@ export default class TenpayPlugin extends PaymentPlugin {
         json.req_info = await utils.parseXML(
           utils.decrypt(
             json.req_info,
-            utils.md5(this._config.partnerKey).toLowerCase()
+            utils.md5(this._partnerKey).toLowerCase()
           )
         );
         break;
@@ -166,12 +175,12 @@ export default class TenpayPlugin extends PaymentPlugin {
    * @param type 签名类型 default='MD5'
    */
   _getSign(params: ObjectMap<any>, type: string = 'MD5') {
-    let str = `${utils.toQueryString(params)}&key=${this._config.partnerKey}`;
+    let str = `${utils.toQueryString(params)}&key=${this._partnerKey}`;
     if (type === 'MD5') {
       return utils.md5(str).toUpperCase();
     }
     if (type === 'SHA256') {
-      return utils.sha256(str, this._config.partnerKey).toUpperCase();
+      return utils.sha256(str, this._partnerKey).toUpperCase();
     }
     throw new Error('SignType Error');
   }
@@ -187,7 +196,7 @@ export default class TenpayPlugin extends PaymentPlugin {
 
     let pkg: ObjectMap<any> = { method: 'POST', dataType: 'text', data: utils.buildXML(params) };
     if (cert) {
-      pkg.pfx = this._config.pfx;
+      pkg.pfx = this._pfx;
       pkg.passphrase = this._config.mch_id;
     }
 
@@ -262,21 +271,22 @@ export default class TenpayPlugin extends PaymentPlugin {
     return pkg;
   }
 
+  // FIXME: 将此any替换成payment
   /**
    * 获取JSAPI支付参数
    * @param {Payment} payment
    * @param {Object} [data]
    * @returns {any}
    */
-  async createParams(payment: PaymentTenpay): Promise<ObjectMap<any>> {
-    let trade_type = this._config.trade_type || 'JSAPI';
-    let params = Object.assign({}, {
+  async createParams(payment: any): Promise<ObjectMap<any>> {
+    let trade_type = payment.tradeType || this._config.trade_type;
+    let params = Object.assign({}, this._config, {
       trade_type,
       body: payment.title,
-      out_trade_no: payment._id,
+      out_trade_no: String(payment._id),
       total_fee: payment.amount * 100,
       openid: payment.openid
-    }, this._config);
+    });
     return this.getPayParams(params);
   }
 
@@ -290,13 +300,8 @@ export default class TenpayPlugin extends PaymentPlugin {
       nonce_str: random(16)
     };
 
-    let url = `${'weixin://wxpay/bizpayurl'
-      + '?sign='}${this._getSign(pkg)
-    }&appid=${pkg.appid
-    }&mch_id=${pkg.mch_id
-    }&product_id=${encodeURIComponent(pkg.product_id)
-    }&time_stamp=${pkg.time_stamp
-    }&nonce_str=${pkg.nonce_str}`;
+    let url = `weixin://wxpay/bizpayurl?sign=${this._getSign(pkg)}&appid=${pkg.appid}&mch_id=${pkg.mch_id}&product_id=${
+      encodeURIComponent(pkg.product_id)}&time_stamp=${pkg.time_stamp}&nonce_str=${pkg.nonce_str}`;
     return url;
   }
 
@@ -382,7 +387,7 @@ export default class TenpayPlugin extends PaymentPlugin {
       nonce_str: random(16),
       sign_type: params.sign_type || 'MD5',
       op_user_id: params.op_user_id || this._config.mch_id,
-      notify_url: params.notify_url || this._config.refund_url
+      notify_url: params.notify_url || this._refund_url
     };
     if (!pkg.notify_url) delete pkg.notify_url;
 

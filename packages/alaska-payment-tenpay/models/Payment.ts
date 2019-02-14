@@ -14,5 +14,10 @@ export default function (model: typeof Model) {
     type: String,
     protected: true
   };
+  model.fields.tradeType = {
+    label: 'Trade Type',
+    type: String,
+    protected: true
+  };
   return model;
 }
