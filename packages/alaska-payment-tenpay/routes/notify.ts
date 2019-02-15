@@ -6,11 +6,7 @@ import * as raw from 'raw-body';
 import { ObjectMap } from '@samoyed/types';
 import TenpayPlugin from 'alaska-payment-tenpay';
 import * as utils from 'alaska-payment-tenpay/utils/utils';
-
-
-interface PaymentTenpay extends Payment {
-  tenpay_transaction_id: string;
-}
+import { PaymentTenpay } from '..';
 
 export default function (router: Router) {
   /**

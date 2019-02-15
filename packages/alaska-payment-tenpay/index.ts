@@ -3,10 +3,9 @@ import * as fs from 'fs';
 import * as random from 'string-random';
 import { NormalError } from 'alaska';
 import PAYMENT, { PaymentPlugin } from 'alaska-payment';
-import Payment from 'alaska-payment/models/Payment';
 import * as urllib from 'urllib';
 import { ObjectMap } from '@samoyed/types';
-import { TenpayConfig } from '.';
+import { TenpayConfig, PaymentTenpay } from '.';
 import * as utils from './utils/utils';
 
 const GATEWAY: ObjectMap<string> = {
@@ -271,14 +270,13 @@ export default class TenpayPlugin extends PaymentPlugin {
     return pkg;
   }
 
-  // FIXME: 将此any替换成payment
   /**
    * 获取JSAPI支付参数
-   * @param {Payment} payment
+   * @param {PaymentTenpay} payment
    * @param {Object} [data]
    * @returns {any}
    */
-  async createParams(payment: any): Promise<ObjectMap<any>> {
+  async createParams(payment: PaymentTenpay): Promise<ObjectMap<any>> {
     let trade_type = payment.tradeType || this._config.trade_type;
     let params = Object.assign({}, this._config, {
       trade_type,
