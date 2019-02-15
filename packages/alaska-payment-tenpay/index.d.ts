@@ -2,11 +2,9 @@ import { PaymentPlugin } from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 import { ObjectMap } from '@samoyed/types';
 
-declare module 'alaska-payment/models/Payment' {
-  export interface PaymentFields {
-    openid: string;
-    tradeType: string;
-  }
+export interface PaymentTenpay extends Payment {
+  tenpay_transaction_id: string;
+  openid: string;
 }
 
 export interface TenpayConfig {
