@@ -52,7 +52,9 @@ export default class TenpayPlugin extends PaymentPlugin {
       service.plugins = {};
     }
     service.plugins.tenpay = this;
-    service.payments.tenpay = this;
+    ['jssdk', 'wxapp', 'native', 'app'].forEach((item) => {
+      service.payments[`tenpay:${item}`] = this;
+    });
 
     this.label = 'Tenpay';
     let configTmp: TenpayConfig = service.config.get('tenpay');
@@ -271,6 +273,22 @@ export default class TenpayPlugin extends PaymentPlugin {
     return pkg;
   }
 
+  _getTradeType(channel: string): string {
+    switch (channel) {
+      case 'jssdk':
+      case 'wxapp':
+        return 'JSAPI';
+      case 'app':
+        return 'APP';
+      case 'native':
+        return 'NATIVE';
+      case 'h5':
+        return 'MWEB';
+      default:
+        throw new Error(`Unsupported payment channel ${channel}`);
+    }
+  }
+
   // FIXME: 将此any替换成payment
   /**
    * 获取JSAPI支付参数
@@ -279,15 +297,27 @@ export default class TenpayPlugin extends PaymentPlugin {
    * @returns {any}
    */
   async createParams(payment: any): Promise<ObjectMap<any>> {
-    let trade_type = payment.tradeType || this._config.trade_type;
+    const [, channel] = payment.type.split(':');
+    let trade_type = this._getTradeType(channel);
     let params = Object.assign({}, this._config, {
       trade_type,
       body: payment.title,
       out_trade_no: String(payment._id),
       total_fee: payment.amount * 100,
-      openid: payment.openid
     });
-    return this.getPayParams(params);
+    switch (trade_type) {
+      case 'NATIVE':
+      case 'MWEB':
+        return await this.unifiedOrder(params);
+      case 'APP':
+        return await this.getAppParams(params);
+      default:
+        if (!payment.openid) {
+          throw new Error('openid is required');
+        }
+        params = Object.assign({}, params, { openid: payment.openid });
+        return this.getPayParams(params);
+    }
   }
 
   // 扫码支付, 生成URL(模式一)
