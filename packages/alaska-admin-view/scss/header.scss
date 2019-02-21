@@ -27,7 +27,7 @@
     .nav-tab {
       line-height: $header-height;
       padding: 0 1rem;
-      background-color: $blue;
+      background: $white-color;
       &.active {
         color: $active-color;
       }
