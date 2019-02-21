@@ -18,7 +18,7 @@
     "alaska-field-icon": "^0.13.2",
     "alaska-middleware-upload": "^0.13.2",
     "alaska-user": "^0.13.2",
-    "check-depends": "^0.5.1",
+    "check-depends": "^0.5.2",
     "collie": "^0.3.0",
     "grackle": "^0.2.0",
     "hasha": "^3.0.0",

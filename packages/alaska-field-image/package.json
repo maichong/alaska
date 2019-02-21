@@ -13,8 +13,8 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "mime-types": "^2.1.21",
+    "mime-types": "^2.1.22",
     "moment": "^2.24.0",
-    "fsd": "^0.4.1"
+    "fsd": "^0.4.2"
   }
 }

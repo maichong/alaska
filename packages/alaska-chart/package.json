@@ -16,7 +16,7 @@
   "dependencies": {
     "alaska-field-json": "^0.13.2",
     "alaska-field-model": "^0.13.2",
-    "echarts": "^4.2.0-rc.2",
+    "echarts": "^4.2.1-rc.1",
     "echarts-for-react": "^2.0.15-beta.0",
     "lru-cache": "^5.1.1"
   }

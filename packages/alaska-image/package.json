@@ -13,9 +13,9 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "file-type": "^10.7.1",
-    "fsd": "^0.4.1",
-    "image-size": "^0.7.1",
+    "file-type": "^10.8.0",
+    "fsd": "^0.4.2",
+    "image-size": "^0.7.2",
     "is-stream": "^1.1.0",
     "is-svg": "^3.0.0",
     "moment": "^2.24.0"
