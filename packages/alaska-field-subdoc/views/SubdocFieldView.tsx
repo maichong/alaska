@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
 import { confirm } from '@samoyed/modal';
-import { FieldViewProps, store, Record } from 'alaska-admin-view';
+import { FieldViewProps, store, Record, ErrorsObject } from 'alaska-admin-view';
 import Editor from 'alaska-admin-view/views/Editor';
 
 interface State {
@@ -18,16 +18,16 @@ export default class SubdocFieldView extends React.Component<FieldViewProps, Sta
     };
   }
 
-  handleChange = (newValue: immutable.Immutable<Record>) => {
+  handleChange = (newValue: immutable.Immutable<Record>, error: immutable.Immutable<ErrorsObject>) => {
     let { value, field, onChange } = this.props;
     let { actived } = this.state;
     if (field.multi) {
       if (!value) value = [];
       if (!_.isArray(value) && _.isObject(value)) value = [value];
       value = immutable(value).set(actived, newValue);
-      onChange(value);
+      onChange(value, error || null);
     } else {
-      onChange(newValue);
+      onChange(newValue, error || null);
     }
   };
 
@@ -92,7 +92,8 @@ export default class SubdocFieldView extends React.Component<FieldViewProps, Sta
       disabled,
       value,
       field,
-      model
+      model,
+      error
     } = this.props;
     let { actived } = this.state;
 
@@ -118,6 +119,7 @@ export default class SubdocFieldView extends React.Component<FieldViewProps, Sta
         embedded
         model={refModel}
         record={immutable(value)}
+        errors={error as immutable.Immutable<ErrorsObject>}
         onChange={this.handleChange}
         disabled={disabled}
       />;

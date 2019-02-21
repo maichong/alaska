@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 import toast from '@samoyed/toast';
 import Node from './Node';
 import Editor from './Editor';
-import { QuickEditorProps, Record, StoreState, ActionState } from '..';
+import { QuickEditorProps, Record, StoreState, ActionState, ErrorsObject } from '..';
 import * as ActionRedux from '../redux/action';
 import QuickEditorActionBar from './QuickEditorActionBar';
 import QuickEditorTitleBar from './QuickEditorTitleBar';
@@ -15,7 +15,8 @@ import checkAbility, { hasAbility } from '../utils/check-ability';
 
 interface QuickEditorState {
   mode: Mode;
-  data: immutable.Immutable<Record>;
+  record: immutable.Immutable<Record>;
+  errors: immutable.Immutable<ErrorsObject> | null;
   updateError: boolean;
 }
 
@@ -34,7 +35,8 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      data: immutable({}),
+      record: immutable({}),
+      errors: null,
       mode: Mode.ONE,
       updateError: false
     };
@@ -47,9 +49,9 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
 
     if (prevState.mode === Mode.ONE && selected.length > 1) {
       nextState.mode = Mode.MULTI;
-      nextState.data = immutable({ _id: '' });
-    } else if (selected.length === 1 && (!prevState.data || selected[0]._id !== prevState.data._id)) {
-      nextState.data = selected[0];
+      nextState.record = immutable({ _id: '' });
+    } else if (selected.length === 1 && (!prevState.record || selected[0]._id !== prevState.record._id)) {
+      nextState.record = selected[0];
       nextState.mode = Mode.ONE;
     }
     if (prevState.updateError) {
@@ -80,26 +82,25 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
     return true;
   };
 
-  handleChange = (data: immutable.Immutable<Record>) => {
-    this.setState({ data });
+  handleChange = (record: immutable.Immutable<Record>, errors: immutable.Immutable<ErrorsObject>) => {
+    this.setState({ record, errors });
   }
 
   handleSave = () => {
     const { model, selected, actionRequest } = this.props;
-    const { data, mode } = this.state;
+    const { record, mode, errors } = this.state;
 
-    if (!data) return;
+    if (!record) return;
     let dataForSave;
     if (mode === Mode.ONE) {
       if (!this.editorRef) return;
-      let errors = this.editorRef.checkErrors();
       if (_.size(errors)) return;
       dataForSave = {
-        id: data._id,
-        ...data
+        id: record._id,
+        ...record
       };
     } else {
-      let dataWitoutId = _.omit(data, '_id');
+      let dataWitoutId = _.omit(record, '_id');
       dataForSave = { ...dataWitoutId };
     }
     this._r = Math.random();
@@ -115,7 +116,7 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
 
   render() {
     const { model, selected, hidden, onCannel } = this.props;
-    let { mode, data } = this.state;
+    let { mode, record, errors } = this.state;
 
     let className = `quick-editor quick-editor-${mode === Mode.ONE ? 'one' : 'multi'}`;
 
@@ -148,7 +149,7 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
         }
       } else if (mode === Mode.ONE) {
         title = tr('Quick Viewer');
-        data = selected[0];
+        record = selected[0];
       }
 
       el = (
@@ -167,12 +168,14 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
                   this.editorRef = r;
                 }}
                 model={model}
-                record={data}
+                record={record}
+                errors={errors}
                 onChange={this.handleChange}
               /> : null
             }
           </div>
           <QuickEditorActionBar
+            errors={mode === Mode.ONE && errors}
             saveText={saveText}
             canEdit={canEdit}
             onCannel={onCannel}

@@ -4,11 +4,11 @@ import { QuickEditorActionBarProps } from '..';
 
 export default class QuickEditorActionBar extends React.Component<QuickEditorActionBarProps> {
   render() {
-    const { canEdit, saveText, onCannel, onSave } = this.props;
+    const { canEdit, saveText, onCannel, onSave, errors } = this.props;
     return (
       <div className="quick-editor-action-bar">
         <div className="inner">
-          {canEdit ? <div className="btn btn-primary" onClick={() => onSave()}>{tr(saveText)}</div> : null}
+          {canEdit ? <button className="btn btn-primary" disabled={!!errors} onClick={errors ? null : () => onSave()}>{tr(saveText)}</button> : null}
           <div className="btn btn-light" onClick={() => onCannel()}>{tr('Cancel')}</div>
         </div>
       </div>

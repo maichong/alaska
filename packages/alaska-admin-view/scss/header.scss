@@ -27,7 +27,7 @@
     .nav-tab {
       line-height: $header-height;
       padding: 0 1rem;
-      background: $white-color;
+      margin-top: -1px;
       &.active {
         color: $active-color;
       }
@@ -37,17 +37,14 @@
     }
   }
 }
-.header-space {
-  flex: 1;
-}
 
 .widget-group {
-  margin-right: $header-right;
+  margin: 0;
+  padding: 0;
   height: $header-height;
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 0;
   li {
     .dropdown {
       height: 100%;
@@ -133,17 +130,16 @@
 }
 
 @media(max-width: 768px) {
-
   .header {
     .nav {
       display: block;
       .nav-toggle {
         display: block;
       }
-      &.hidden{
+      &.hidden {
         overflow: hidden;
       }
-      &.visible{
+      &.visible {
         overflow: visible;
       }
       .nav-tab {
@@ -153,7 +149,6 @@
       }
     }
   }
-  
   .widget-group {
     .refresh-widget,
     .logout-widget {

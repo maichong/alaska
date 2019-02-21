@@ -3,22 +3,22 @@ import * as numeral from 'numeral';
 import * as _ from 'lodash';
 import * as shallowEqualWithout from 'shallow-equal-without';
 import { Filter } from 'alaska-model';
-import { FilterViewProps } from 'alaska-admin-view';
+import { FieldViewProps } from 'alaska-admin-view';
 
 interface State {
   display?: Filter;
   focused?: boolean;
 }
 
-export default class BytesFieldView extends React.Component<FilterViewProps, State> {
-  constructor(props: FilterViewProps) {
+export default class BytesFieldView extends React.Component<FieldViewProps, State> {
+  constructor(props: FieldViewProps) {
     super(props);
     this.state = {
       display: numeral(props.value).format('0,0')
     };
   }
 
-  static getDerivedStateFromProps(nextProps: FilterViewProps, prevState: State) {
+  static getDerivedStateFromProps(nextProps: FieldViewProps, prevState: State) {
     let newState: State = {};
     if (prevState.focused) {
       //正在输入
@@ -30,7 +30,7 @@ export default class BytesFieldView extends React.Component<FilterViewProps, Sta
     return newState;
   }
 
-  shouldComponentUpdate(props: FilterViewProps, state: State) {
+  shouldComponentUpdate(props: FieldViewProps, state: State) {
     return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model')
       || !shallowEqualWithout(state, this.state);
   }
@@ -63,16 +63,16 @@ export default class BytesFieldView extends React.Component<FilterViewProps, Sta
       className,
       field,
       disabled,
-      errorText,
+      error,
     } = this.props;
     let { focused } = this.state;
     let {
       help, unit, size, precision
     } = field;
     className += ' bytes-field';
-    if (errorText) {
+    if (error) {
       className += ' is-invalid';
-      help = errorText;
+      help = error as string;
     }
     let value: number = numeral(this.state.display).value() || 0;
     let units = ['B', 'K', 'M', 'G', 'T', 'P', 'E'];
@@ -83,7 +83,7 @@ export default class BytesFieldView extends React.Component<FilterViewProps, Sta
     }
     let u = focused ? unit : (units[0] + (unit || ''));
     let display = focused ? value : _.round(num, precision);
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
     if (field.fixed) {
       inputElement = <p className="form-control-plaintext">{display}</p>;
@@ -91,7 +91,7 @@ export default class BytesFieldView extends React.Component<FilterViewProps, Sta
       inputElement = (<div className="input-group">
         <input
           type="text"
-          className={!errorText ? 'form-control' : 'form-control is-invalid'}
+          className={!error ? 'form-control' : 'form-control is-invalid'}
           onChange={this.handleChange}
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}

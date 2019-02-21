@@ -80,17 +80,17 @@ export default class NumberFieldView extends React.Component<FieldViewProps, Sta
       field,
       disabled,
       value,
-      errorText,
+      error,
       model
     } = this.props;
     let { help } = field;
     className += ' number-field';
 
-    if (errorText) {
+    if (error) {
       className += ' is-invalid';
-      help = errorText;
+      help = error as string;
     }
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
     if (field.fixed) {
       inputElement = <p className="form-control-plaintext">{value}</p>;
@@ -98,7 +98,7 @@ export default class NumberFieldView extends React.Component<FieldViewProps, Sta
       let placeholder = field.placeholder ? tr(field.placeholder, model.serviceId) : '';
       inputElement = (<input
         type="text"
-        className={!errorText ? 'form-control' : 'form-control is-invalid'}
+        className={!error ? 'form-control' : 'form-control is-invalid'}
         onChange={this.handleChange}
         onFocus={this.handleFocus}
         onBlur={this.handleBlur}

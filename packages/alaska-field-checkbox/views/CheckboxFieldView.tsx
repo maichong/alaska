@@ -18,17 +18,17 @@ export default class CheckboxFieldView extends React.Component<FieldViewProps> {
     let {
       field,
       value,
-      errorText,
+      error,
       disabled,
       className
     } = this.props;
     let { help } = field;
     className += ' checkbox-field';
-    if (errorText) {
+    if (error) {
       className += ' is-invalid';
-      help = errorText;
+      help = error as string;
     }
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     if (field.fixed) {
       disabled = true;
     }

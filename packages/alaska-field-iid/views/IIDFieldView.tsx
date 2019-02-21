@@ -62,18 +62,18 @@ export default class IIDFieldView extends React.Component<FieldViewProps, State>
       field,
       disabled,
       value,
-      errorText,
+      error,
       model
     } = this.props;
     let { help } = field;
     let inputClassName = '';
     className += ' number-field';
-    if (errorText) {
+    if (error) {
       className += ' is-invalid';
-      help = errorText;
+      help = error as string;
       inputClassName = ' is-invalid';
     }
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
     if (field.fixed) {
       inputElement = <p className="form-control-plaintext">{value}</p>;

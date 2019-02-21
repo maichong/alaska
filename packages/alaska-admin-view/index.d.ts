@@ -585,9 +585,9 @@ export interface FieldViewProps {
   record?: immutable.Immutable<Record>;
   value: any;
   disabled?: boolean;
-  errorText?: string;
+  error?: Errors;
   locale?: string;
-  onChange: (v: any) => void;
+  onChange: (v: any, error?: Errors) => any;
 }
 
 export interface FieldView extends React.Component<FieldViewProps> { }
@@ -735,11 +735,18 @@ export interface DataTableRowProps {
 export interface DeniedPageProps {
 }
 
+export interface ErrorsObject {
+  [key: string]: null | string | string[] | ErrorsObject | ErrorsObject[];
+}
+
+export type Errors = null | string | string[] | immutable.Immutable<ErrorsObject> | immutable.Immutable<ErrorsObject[]>;
+
 export interface EditorProps {
   embedded?: boolean;
   model: Model;
   record: immutable.Immutable<Record>;
-  onChange: Function;
+  errors: immutable.Immutable<ErrorsObject> | null;
+  onChange: (data: any, errors: ErrorsObject | null) => any;
   disabled?: boolean;
 }
 
@@ -773,7 +780,7 @@ export interface FieldGroupProps extends FieldGroup {
   embedded?: boolean;
   model: Model;
   record: immutable.Immutable<Record>;
-  errors: ObjectMap<any>;
+  errors: immutable.Immutable<ErrorsObject>;
   fields: Field[];
   onFieldChange: Function;
 }
@@ -902,6 +909,7 @@ export interface QuickEditorProps {
 }
 
 export interface QuickEditorActionBarProps {
+  errors: immutable.Immutable<ErrorsObject> | null;
   canEdit: boolean;
   saveText: string;
   onSave: Function;

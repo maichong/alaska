@@ -80,19 +80,19 @@ export default class MixedFieldView extends React.Component<FieldViewProps, Stat
 
   render() {
     let {
-      className, field, disabled, errorText
+      className, field, disabled, error
     } = this.props;
 
     let { help } = field;
     let inputError = '';
 
     className += ' mixed-field ';
-    if (errorText || this.state.hasError) {
-      help = errorText;
+    if (error || this.state.hasError) {
+      help = error as string;
       inputError = 'is-invalid';
     }
 
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
 
     let label = field.nolabel ? '' : field.label;
 

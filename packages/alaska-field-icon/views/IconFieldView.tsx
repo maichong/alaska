@@ -19,15 +19,15 @@ export default class IconFieldView extends React.Component<FieldViewProps> {
       field,
       disabled,
       value,
-      errorText
+      error
     } = this.props;
     let { help } = field;
     className += ' icon-field';
-    if (errorText) {
+    if (error) {
       className += ' is-invalid';
-      help = errorText;
+      help = error as string;
     }
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
     let icon = null;
     if (value) {
@@ -39,7 +39,7 @@ export default class IconFieldView extends React.Component<FieldViewProps> {
       inputElement = <div className="input-group">
         <input
           type="text"
-          className={!errorText ? 'form-control' : 'form-control is-invalid'}
+          className={!error ? 'form-control' : 'form-control is-invalid'}
           onChange={this.handleChange}
           value={value || ''}
           disabled={disabled}

@@ -121,7 +121,7 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
 
   render() {
     let {
-      className, field, value, disabled, errorText
+      className, field, value, disabled, error: errorText
     } = this.props;
     let { error, max } = this.state;
     if (!field.multi) {
@@ -182,7 +182,7 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
 
     let { help } = field;
     className += ' image-field';
-    error = error || errorText;
+    error = error || errorText as string;
     if (error) {
       className += ' is-invalid';
       help = tr(error);

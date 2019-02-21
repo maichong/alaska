@@ -104,15 +104,15 @@ export default class CategoryFieldView extends React.Component<FieldViewProps, S
 
   render() {
     let {
-      className, field, value, disabled, errorText, model
+      className, field, value, disabled, error, model
     } = this.props;
     let { help } = field;
     className += ' category-field';
-    if (errorText) {
+    if (error) {
       className += ' is-invalid';
-      help = errorText;
+      help = error as string;
     }
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
     if (field.multi) {
       className += ' category-field-multi';

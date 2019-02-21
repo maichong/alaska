@@ -37,18 +37,18 @@ export default class TextFieldView extends React.Component<FieldViewProps> {
       field,
       disabled,
       value,
-      errorText,
+      error,
       model
     } = this.props;
     let { help } = field;
     className += ' text-field';
-    errorText = errorText || this.getError();
+    error = error || this.getError();
 
-    if (errorText) {
+    if (error) {
       className += ' is-invalid';
-      help = errorText;
+      help = error as string;
     }
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
     value = value || '';
     if (disabled && value && field.translate) {
@@ -60,7 +60,7 @@ export default class TextFieldView extends React.Component<FieldViewProps> {
       let placeholder = field.placeholder ? tr(field.placeholder, field.service || model.serviceId) : '';
       if (field.multiLine) {
         inputElement = (<textarea
-          className={!errorText ? 'form-control' : 'form-control is-invalid'}
+          className={!error ? 'form-control' : 'form-control is-invalid'}
           placeholder={placeholder}
           onChange={this.handleChange}
           disabled={disabled}
@@ -69,7 +69,7 @@ export default class TextFieldView extends React.Component<FieldViewProps> {
       } else {
         inputElement = (<input
           type="text"
-          className={!errorText ? 'form-control' : 'form-control is-invalid'}
+          className={!error ? 'form-control' : 'form-control is-invalid'}
           placeholder={placeholder}
           onChange={this.handleChange}
           value={value}

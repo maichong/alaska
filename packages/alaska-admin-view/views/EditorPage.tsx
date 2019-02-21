@@ -21,7 +21,8 @@ import {
   DetailsState,
   Record,
   ModelRelationship,
-  ActionState
+  ActionState,
+  ErrorsObject
 } from '..';
 
 interface Props extends EditorPageProps {
@@ -35,6 +36,7 @@ interface EditorPageState {
   model: Model | null;
   _record?: immutable.Immutable<Record> | null;
   record: immutable.Immutable<Record> | null;
+  errors: immutable.Immutable<ErrorsObject> | null;
   isNew: boolean;
   id: string;
   _action: ActionState;
@@ -50,6 +52,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
       id: '_new',
       model: null,
       record: null,
+      errors: null,
       isNew: true
     };
   }
@@ -129,8 +132,8 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     }
   }
 
-  handleChange = (record: immutable.Immutable<Record>) => {
-    this.setState({ record });
+  handleChange = (record: immutable.Immutable<Record>, errors: immutable.Immutable<ErrorsObject>) => {
+    this.setState({ record, errors });
   }
 
   lookupModel(modelRef: string): Model | null {
@@ -209,7 +212,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
   }
 
   render() {
-    const { model, record } = this.state;
+    const { model, record, errors } = this.state;
     if (!model) {
       return <LoadingPage />;
     }
@@ -223,7 +226,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
       el = this.renderError();
     } else {
       el = <div>
-        <Editor model={model} record={record} onChange={this.handleChange} />
+        <Editor model={model} record={record} errors={errors} onChange={this.handleChange} />
         {this.renderRelationships()}
       </div>;
     }

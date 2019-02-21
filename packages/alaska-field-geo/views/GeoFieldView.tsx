@@ -14,15 +14,15 @@ export default class GeoFieldView extends React.Component<FieldViewProps> {
       className,
       field,
       value,
-      errorText
+      error
     } = this.props;
     let { help } = field;
     className += ' geo-field';
-    if (errorText) {
+    if (error) {
       className += ' is-invalid';
-      help = errorText;
+      help = error as string;
     }
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
 
     if (value && value[0]) {

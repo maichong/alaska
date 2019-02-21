@@ -40,7 +40,7 @@ class HtmlFieldView extends React.Component<Props> {
   render() {
     let {
       className,
-      errorText,
+      error,
       field,
       value,
       disabled
@@ -66,10 +66,10 @@ class HtmlFieldView extends React.Component<Props> {
 
     let { help } = field;
     className += ' html-field';
-    if (errorText) {
-      help = errorText;
+    if (error) {
+      help = error as string;
     }
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
 
     let label = field.nolabel ? '' : field.label;
 

@@ -66,7 +66,7 @@ export default class SelectFieldView extends React.Component<FieldProps, State> 
 
   render() {
     let {
-      className, field, value, disabled, errorText, onChange
+      className, field, value, disabled, error, onChange
     } = this.props;
     let View: TypeView = Select;
     if (field.checkbox) {
@@ -82,11 +82,11 @@ export default class SelectFieldView extends React.Component<FieldProps, State> 
       value = _.filter(value, (v) => typeof v !== 'undefined' && v !== null);
     }
     className += ' select-field';
-    if (errorText) {
+    if (error) {
       className += ' is-invalid';
-      help = errorText;
+      help = error as string;
     }
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
     if (field.fixed) {
       if (field.multi) {

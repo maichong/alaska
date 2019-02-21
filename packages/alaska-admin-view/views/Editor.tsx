@@ -4,35 +4,15 @@ import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
 import * as React from 'react';
 import Node from './Node';
-import { EditorProps, FieldGroupProps } from '..';
+import { EditorProps, FieldGroupProps, ErrorsObject } from '..';
 import FieldGroup from './FieldGroup';
 import { hasAbility } from '../utils/check-ability';
 
-type Errors = immutable.Immutable<{
-  [key: string]: string;
-}>;
+type Errors = immutable.Immutable<ErrorsObject>;
 
 interface EditorState {
   _record?: any;
-  errors: Errors;
   disabled?: boolean;
-}
-
-function checkErrors(props?: EditorProps, errors?: Errors | null): Errors {
-  const { model, record } = props;
-  errors = errors || immutable({});
-  _.forEach(model.fields, (field, key) => {
-    if (field.required && !record[key]) {
-      let value = tr('This field is required!');
-      errors = errors.set(key, value);
-    } else if (field.required && typeof record[key] === 'object' && !_.size(record[key])) {
-      let value = tr('This field is required!');
-      errors = errors.set(key, value);
-    } else if (errors[key]) {
-      errors = errors.without(key);
-    }
-  });
-  return errors;
 }
 
 function sortByAfter<T extends { path: string; after?: string }>(items: T[]): T[] {
@@ -58,11 +38,13 @@ function sortByAfter<T extends { path: string; after?: string }>(items: T[]): T[
 }
 
 export default class Editor extends React.Component<EditorProps, EditorState> {
+  errorCheckers: ObjectMap<boolean>;
+
   constructor(props: EditorProps) {
     super(props);
     this.state = {
-      errors: immutable({})
     };
+    this.errorCheckers = {};
   }
 
   static getDerivedStateFromProps(nextProps: EditorProps, prevState: EditorState) {
@@ -75,21 +57,74 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
       let ability = nextProps.model.id + (isNew ? '.create' : '.update');
       nextState.disabled = !hasAbility(ability, isNew ? null : record);
     }
-    const { errors: stateError } = prevState;
-    if (nextProps.record !== prevState._record) {
-      nextState.errors = checkErrors(nextProps, stateError);
-    }
+    // const { errors: stateError } = prevState;
+    // if (nextProps.record !== prevState._record) {
+    //   nextState.errors = checkErrors(nextProps, stateError);
+    // }
     return nextState;
   }
 
-  handleFieldChange = (key: string, value: any) => {
-    let { record, onChange } = this.props;
-    onChange(record.set(key, value));
+  componentDidMount() {
+    this._checkErrors();
+  }
+
+  componentDidUpdate() {
+    this._checkErrors();
+  }
+
+  _checkErrors() {
+    const { record, errors, onChange } = this.props;
+    let newErrors = this._getErrors(errors);
+    if (errors !== newErrors) {
+      onChange(record, newErrors);
+    }
+  }
+
+  _getErrors(errors: immutable.Immutable<ErrorsObject> | null): Errors | null {
+    let { model, record } = this.props;
+    errors = errors || immutable({});
+    _.forEach(model.fields, (field, key) => {
+      if (this.errorCheckers[key] === true) {
+        // Field有自定义检查器
+        return;
+      }
+      if (field.required && !record[key]) {
+        let value = tr('This field is required!');
+        if (errors[key] !== value) {
+          errors = errors.set(key, value);
+        }
+      } else if (field.required && typeof record[key] === 'object' && !_.size(record[key])) {
+        let value = tr('This field is required!');
+        if (errors[key] !== value) {
+          errors = errors.set(key, value);
+        }
+      } else if (errors[key]) {
+        errors = errors.without(key);
+      }
+    });
+    if (_.isEmpty(errors)) return null;
+    return errors;
+  }
+
+  handleFieldChange = (key: string, value: any, error?: Errors) => {
+    let { record, onChange, errors } = this.props;
+    if (typeof error !== 'undefined') {
+      this.errorCheckers[key] = true;
+      errors = errors || immutable({});
+      if (error) {
+        errors = errors.set(key, error);
+      } else if (errors[key]) {
+        error = errors.without(key);
+      }
+    } else {
+      this.errorCheckers[key] = false;
+    }
+    onChange(record.set(key, value), this._getErrors(errors));
   };
 
   renderGroups() {
-    let { model, record, embedded } = this.props;
-    let { errors, disabled } = this.state;
+    let { model, record, embedded, errors } = this.props;
+    let { disabled } = this.state;
     let groups: ObjectMap<FieldGroupProps> = {
       default: {
         embedded,

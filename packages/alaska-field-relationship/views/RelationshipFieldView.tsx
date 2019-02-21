@@ -71,7 +71,6 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
         label: val[field.modelTitleField] || val.title || val._id,
         value: val._id
       }));
-      console.log('options', options);
       this.setState({ options });
     });
   }
@@ -96,7 +95,7 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
 
   render() {
     let {
-      className, field, value, disabled, errorText
+      className, field, value, disabled, error
     } = this.props;
     const { options } = this.state;
     let { help } = field;
@@ -111,11 +110,11 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
       viewClassName = 'relationship-switch';
     }
     className += ' relationship-field';
-    if (errorText) {
+    if (error) {
       className += ' is-invalid';
-      help = errorText;
+      help = error as string;
     }
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
 
     let inputElement;
     if (field.fixed) {

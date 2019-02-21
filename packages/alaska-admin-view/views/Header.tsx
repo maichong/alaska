@@ -15,7 +15,7 @@ export default class Header extends React.Component<HeaderProps> {
       >
         <MenuToggle />
         <Nav />
-        <div className="header-space" />
+        <div className="flex-fill" />
         <WidgetGroup />
       </Node>
     );

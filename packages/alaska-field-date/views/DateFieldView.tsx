@@ -22,18 +22,18 @@ export default class DateFieldView extends React.Component<FieldViewProps> {
 
   render() {
     let {
-      className, value, field, disabled, errorText, onChange
+      className, value, field, disabled, error, onChange
     } = this.props;
     let { help } = field;
     className += ' date-field';
-    if (errorText) {
+    if (error) {
       className += ' is-invalid';
-      help = errorText;
+      help = error as string;
     }
     if (field.format && value) {
       value = moment(value).format(field.format);
     }
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
     if (field.fixed) {
       inputElement = <p className="form-control-plaintext">{value}</p>;

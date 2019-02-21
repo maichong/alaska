@@ -22,15 +22,15 @@ export default class CodeFieldView extends React.Component<FieldViewProps> {
       field,
       value,
       disabled,
-      errorText
+      error
     } = this.props;
     let { help } = field;
     className += ' code-field';
-    if (errorText) {
+    if (error) {
       className += ' is-invalid';
-      help = errorText;
+      help = error as string;
     }
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
     if (field.fixed) {
       inputElement = <p className="form-control-plaintext">{value}</p>;

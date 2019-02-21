@@ -21,8 +21,8 @@ export default class WidgetGroup extends React.Component<WidgetGroupProps> {
         {widgetViews}
         <LocaleWidget />
         <RefreshWidget />
-        <UserWidget />
         <LogoutWidget />
+        <UserWidget />
       </Node>
     );
   }

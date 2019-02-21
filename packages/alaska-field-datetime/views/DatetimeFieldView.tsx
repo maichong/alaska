@@ -16,7 +16,7 @@ export default class DatetimeFieldView extends React.Component<FieldViewProps> {
 
   render() {
     let {
-      className, value, field, disabled, errorText, onChange
+      className, value, field, disabled, error, onChange
     } = this.props;
     let format = field.format ? field.format : 'YYYY-MM-DD HH:mm:ss';
     let dateFormat = field.dateFormat ? field.dateFormat : 'YYYY-MM-DD';
@@ -27,11 +27,11 @@ export default class DatetimeFieldView extends React.Component<FieldViewProps> {
     }
     let { help } = field;
     className += ' date-field';
-    if (errorText) {
+    if (error) {
       className += ' is-invalid';
-      help = errorText;
+      help = error as string;
     }
-    let helpElement = help ? <small className={errorText ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
+    let helpElement = help ? <small className={error ? 'form-text invalid-feedback' : 'form-text text-muted'}>{help}</small> : null;
     let inputElement;
     if (field.fixed) {
       inputElement = <p className="form-control-plaintext">{valueString}</p>;

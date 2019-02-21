@@ -4,7 +4,7 @@ import * as tr from 'grackle';
 import Node from './Node';
 import { connect } from 'react-redux';
 import checkAbility from '../utils/check-ability';
-import { FieldGroupProps, Settings, StoreState, views } from '..';
+import { FieldGroupProps, Settings, StoreState, views, Errors } from '..';
 
 interface Props extends FieldGroupProps {
   settings: Settings;
@@ -25,12 +25,11 @@ class FieldGroup extends React.Component<Props> {
       model,
       horizontal,
       onFieldChange,
-      errors: propsErrors,
+      errors,
       settings
     } = props;
     const { serviceId } = model;
     let fields: any = [];
-    let errors: any = propsErrors;
     _.forEach(propFields, (field) => {
       let fieldClasses: string[] = ['form-group', `${model.serviceId}_${model.modelName}-${field.path}-view`];
       if (horizontal) fieldClasses.push('row');
@@ -81,8 +80,8 @@ class FieldGroup extends React.Component<Props> {
         }),
         disabled: fieldDisabled,
         locale: settings.locale,
-        errorText: errors[field.path],
-        onChange: (v: any) => onFieldChange(field.path, v),
+        error: errors && errors[field.path] || null,
+        onChange: (v: any, error?: Errors) => onFieldChange(field.path, v, error),
         className: fieldClasses.join(' ')
       }));
     });
