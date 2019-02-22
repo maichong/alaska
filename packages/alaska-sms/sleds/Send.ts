@@ -19,16 +19,15 @@ export default class Send extends Sled<SendParams, void> {
     if (driver && to && message) {
       return await driver.send(to, message);
     }
-    let smsModel: Sms = null;
+    let sms: Sms;
     if (params.sms && typeof params.sms === 'string') {
-      let s: Sms = await Sms.findById(params.sms);
-      smsModel = s;
+      sms = await Sms.findById(params.sms);
     } else {
-      smsModel = params.sms as Sms || null;
+      sms = params.sms as Sms || null;
     }
     if (!message) {
-      if (!smsModel) throw new Error('Can not find sms');
-      message = smsModel.content;
+      if (!sms) throw new Error('Can not find sms template');
+      message = sms.content;
       // if (params.locale) {
       //   //定义了语言
       //   let field: string = 'content_' + params.locale.replace('-', '_');
@@ -39,8 +38,8 @@ export default class Send extends Sled<SendParams, void> {
     }
 
     if (!driver) {
-      if (smsModel && smsModel.driver) {
-        driver = service.driversMap[smsModel.driver];
+      if (sms && sms.driver) {
+        driver = service.driversMap[sms.driver];
       }
       if (!driver) {
         driver = service.defaultDriver;

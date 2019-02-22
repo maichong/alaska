@@ -13,7 +13,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "codemirror": "^5.43.0",
+    "codemirror": "^5.44.0",
     "react-codemirror2": "^5.1.0"
   }
 }

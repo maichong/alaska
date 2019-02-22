@@ -270,11 +270,34 @@ export class Model {
 
 
   static findByIdAndUpdate<T>(this: { new(): T }): DocumentQuery<T | null, T>;
-  static findByIdAndUpdate<T>(this: { new(): T }, id: any | number | string, update: any): DocumentQuery<T | null, T>;
-  static findByIdAndUpdate<T>(this: { new(): T }, id: any | number | string, update: any,
-    options: { upsert: true; new: true } & mongoose.ModelFindByIdAndUpdateOptions): DocumentQuery<T, T>;
-  static findByIdAndUpdate<T>(this: { new(): T }, id: any | number | string, update: any,
-    options: mongoose.ModelFindByIdAndUpdateOptions): DocumentQuery<T | null, T>;
+  static findByIdAndUpdate<T>(this: { new(): T },
+    id: any | number | string,
+    update: any
+  ): DocumentQuery<T | null, T>;
+
+  static findByIdAndUpdate<T>(this: { new(): T },
+    id: any | number | string,
+    update: any,
+    options: { rawResult: true } & { upsert: true } & { new: true } & mongoose.QueryFindOneAndUpdateOptions
+  ): DocumentQuery<T, T>;
+
+  static findByIdAndUpdate<T>(this: { new(): T },
+    id: any | number | string,
+    update: any,
+    options: { upsert: true; new: true } & mongoose.QueryFindOneAndUpdateOptions
+  ): Query<mongodb.FindAndModifyWriteOpResultObject<T>>;
+
+  static findByIdAndUpdate<T>(this: { new(): T },
+    id: any | number | string,
+    update: any,
+    options: { rawResult: true } & mongoose.QueryFindOneAndUpdateOptions
+  ): Query<mongodb.FindAndModifyWriteOpResultObject<T | null>>
+
+  static findByIdAndUpdate<T>(this: { new(): T },
+    id: any | number | string,
+    update: any,
+    options: mongoose.QueryFindOneAndUpdateOptions
+  ): DocumentQuery<T | null, T>;
 
 
   static findOne<T>(this: { new(): T }, conditions?: any): DocumentQuery<T | null, T>;
@@ -320,11 +343,35 @@ export class Model {
 
 
   static findOneAndUpdate<T>(this: { new(): T }): DocumentQuery<T | null, T>;
-  static findOneAndUpdate<T>(this: { new(): T }, conditions: any, update: any): DocumentQuery<T | null, T>;
-  static findOneAndUpdate<T>(this: { new(): T }, conditions: any, update: any,
-    options: { upsert: true; new: true } & mongoose.ModelFindOneAndUpdateOptions): DocumentQuery<T, T>;
-  static findOneAndUpdate<T>(this: { new(): T }, conditions: any, update: any,
-    options: mongoose.ModelFindOneAndUpdateOptions): DocumentQuery<T | null, T>;
+
+  static findOneAndUpdate<T>(this: { new(): T },
+    conditions: any,
+    update: any
+  ): DocumentQuery<T | null, T>;
+
+  static findOneAndUpdate<T>(this: { new(): T },
+    conditions: any,
+    update: any,
+    options: { rawResult: true } & { upsert: true; new: true } & mongoose.QueryFindOneAndUpdateOptions
+  ): Query<mongodb.FindAndModifyWriteOpResultObject<T>>;
+
+  static findOneAndUpdate<T>(this: { new(): T },
+    conditions: any,
+    update: any,
+    options: { upsert: true; new: true } & mongoose.QueryFindOneAndUpdateOptions
+  ): DocumentQuery<T | null, T>;
+
+  static findOneAndUpdate<T>(this: { new(): T },
+    conditions: any,
+    update: any,
+    options: { rawResult: true } & mongoose.QueryFindOneAndUpdateOptions
+  ): Query<mongodb.FindAndModifyWriteOpResultObject<T | null>>;
+
+  static findOneAndUpdate<T>(this: { new(): T },
+    conditions: any,
+    update: any,
+    options: mongoose.QueryFindOneAndUpdateOptions
+  ): DocumentQuery<T | null, T>;
 
 
   static geoSearch<T>(this: { new(): T }, conditions: any, options: {

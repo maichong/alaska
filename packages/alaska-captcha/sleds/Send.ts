@@ -44,29 +44,21 @@ export default class Send extends Sled<CaptchaParams, void> {
     if (captcha.type === 'sms' && captcha.sms
       && service.main && service.main.allServices['alaska-sms']) {
       let SMS = service.main.allServices['alaska-sms'] as SmsService;
-      try {
-        await SMS.sleds.Send.run({
-          to,
-          sms: captcha.sms,
-          locale,
-          values
-        });
-      } catch (error) {
-        throw new Error(error);
-      }
+      await SMS.sleds.Send.run({
+        to,
+        sms: captcha.sms,
+        locale,
+        values
+      });
     } else if (captcha.type === 'email' && captcha.email
       && service.main && service.main.allServices['alaska-email']) {
       let EMAIL = service.main.allServices['alaska-email'] as EmailService;
-      try {
-        await EMAIL.sleds.Send.run({
-          to,
-          email: captcha.email,
-          locale,
-          values
-        });
-      } catch (error) {
-        throw new Error(error);
-      }
+      await EMAIL.sleds.Send.run({
+        to,
+        email: captcha.email,
+        locale,
+        values
+      });
     } else {
       throw new Error('unsupported captcha type');
     }

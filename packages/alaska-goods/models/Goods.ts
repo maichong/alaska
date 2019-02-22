@@ -258,8 +258,8 @@ export default class Goods extends Model {
     return await Goods.findOneAndUpdate(
       { _id: id },
       { $inc: { inventory: quantity } },
-      { new: true, session: dbSession }
-    );
+      { new: true }
+    ).session(dbSession);
   }
 
   /**
@@ -272,8 +272,8 @@ export default class Goods extends Model {
     return await Goods.findOneAndUpdate(
       { _id: id },
       { $inc: { volume: quantity } },
-      { new: true, session: dbSession }
-    );
+      { new: true }
+    ).session(dbSession);
   }
 
   async preSave() {
