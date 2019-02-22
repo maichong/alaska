@@ -22,17 +22,12 @@ export default class Captcha extends Model {
       label: 'Type',
       type: 'select',
       default: 'sms',
-      options: [] as Array<{label: string; value: string}>,
+      options: [] as Array<{ label: string; value: string }>,
     },
-    numbers: {
-      label: 'Numbers',
+    characters: {
+      label: 'Characters',
       type: String,
-      default: '0123456789'
-    },
-    letters: {
-      label: 'Letters',
-      type: String,
-      default: 'ABCDEFGHJKMNPQRSTWXYZ'
+      default: '0123456789ABCDEFGHJKMNPQRSTWXYZ'
     },
     length: {
       label: 'Length',
@@ -50,8 +45,7 @@ export default class Captcha extends Model {
   _id: string | number | Object | any;
   title: string;
   type: string;
-  numbers: string;
-  letters: string;
+  characters: string;
   length: number;
   lifetime: number;
   createdAt: Date;

@@ -6,8 +6,7 @@ interface Captcha extends CaptchaFields { }
 export interface CaptchaFields {
   title: string;
   type: string;
-  numbers: string;
-  letters: string;
+  characters: string;
   length: number;
   lifetime: number;
   createdAt: Date;

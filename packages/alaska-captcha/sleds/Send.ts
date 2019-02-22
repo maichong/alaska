@@ -33,10 +33,7 @@ export default class Send extends Sled<CaptchaParams, void> {
     }
 
     if (!code) {
-      code = random(captcha.length, {
-        numbers: captcha.numbers || false,
-        letters: captcha.letters || false
-      });
+      code = random(captcha.length,captcha.characters);
     }
 
     values.code = code;
