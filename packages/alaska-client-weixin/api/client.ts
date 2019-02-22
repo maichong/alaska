@@ -90,5 +90,15 @@ export async function create(ctx: Context, next: Function) {
 
   await client.save({ session: ctx.dbSession });
 
-  ctx.body = client.data();
+  let data = client.data();
+  data.user = null;
+
+  if (client.user) {
+    let user = await User.findById(client.user).session(ctx.dbSession);
+    if (user) {
+      data.user = user.data('info');
+    }
+  }
+
+  ctx.body = data;
 }

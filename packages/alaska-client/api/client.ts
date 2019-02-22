@@ -1,4 +1,5 @@
 import { Context, GET } from 'alaska-http';
+import User from 'alaska-user/models/User';
 import Client from '../models/Client';
 
 /**
@@ -10,11 +11,13 @@ import Client from '../models/Client';
  */
 export async function create(ctx: Context) {
   const { deviceId, token, platform } = ctx.state.body || ctx.request.body;
-  let client: Client;
-  if (deviceId && token) {
-    client = await Client.findOne({ deviceId, token });
-  } else if (token) {
-    client = await Client.findOne({ token });
+  let client: Client = ctx.client;
+  if (!client) {
+    if (deviceId && token) {
+      client = await Client.findOne({ deviceId, token });
+    } else if (token) {
+      client = await Client.findOne({ token });
+    }
   }
 
   // 删除过期
@@ -32,7 +35,17 @@ export async function create(ctx: Context) {
 
   await client.save({ session: ctx.dbSession });
 
-  ctx.body = client.data();
+  let data = client.data();
+  data.user = null;
+
+  if (client.user) {
+    let user = await User.findById(client.user).session(ctx.dbSession);
+    if (user) {
+      data.user = user.data('info');
+    }
+  }
+
+  ctx.body = data;
 }
 
 GET(show);
