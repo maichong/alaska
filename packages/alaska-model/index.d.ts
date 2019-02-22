@@ -509,6 +509,7 @@ export type ModelFieldList = ObjectMap<1>;
 export interface FieldGroup {
   title?: string;
   panel?: boolean;
+  full?: boolean;
   body?: boolean;
   form?: boolean;
   color?: Colors;

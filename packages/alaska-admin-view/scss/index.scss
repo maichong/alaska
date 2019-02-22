@@ -88,6 +88,10 @@ body {
   }
   .card-body {
     padding: $content-space-medium;
+    &.full {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
   }
 }
 

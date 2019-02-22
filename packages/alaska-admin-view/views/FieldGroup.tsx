@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import * as React from 'react';
 import * as tr from 'grackle';
+import * as classnames from 'classnames';
 import Node from './Node';
 import { connect } from 'react-redux';
 import checkAbility from '../utils/check-ability';
@@ -108,6 +109,7 @@ class FieldGroup extends React.Component<Props> {
       settings,
       wrapper,
       body,
+      full,
       embedded
     } = props;
 
@@ -136,7 +138,7 @@ class FieldGroup extends React.Component<Props> {
     if (panel !== false) {
       let heading = title ? <div className="card-heading">{tr(title)}</div> : null;
       if (body !== false) {
-        el = <div className="card-body">{el}</div>;
+        el = <div className={classnames('card-body', { full })}>{el}</div>;
       }
       el = (
         <div className={`${model.serviceId}_${model.modelName}-group-${path}${embedded ? '' : ' card'}`}>
@@ -147,7 +149,7 @@ class FieldGroup extends React.Component<Props> {
     } else {
       // el = <div className="card"><div className="card-body">{el}</div></div>;
     }
-    el = <Node wrapper="FieldGroup" className={`field-group${embedded ? ' embedded' : ''}`} props={this.props}>{el}</Node>;
+    el = <Node wrapper="FieldGroup" className={classnames('field-group', { embedded })} props={this.props}>{el}</Node>;
     if (wrapper) {
       return <Node
         wrapper={wrapper}

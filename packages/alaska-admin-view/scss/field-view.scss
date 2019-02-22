@@ -19,3 +19,9 @@
     }
   }
 }
+
+.field-group-list {
+  .form-group:last-of-type {
+    margin-bottom: 0;
+  }
+}
