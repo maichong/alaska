@@ -209,14 +209,6 @@ export default async function build(options: BuildOptions) {
     });
   }
 
-  {
-    // views 配置文件
-    let viewsFile = `${srcDir}/views/admin-views.js`;
-    if (utils.isFile(viewsFile)) {
-      parse(require(viewsFile), `${srcDir}/views`);
-    }
-  }
-
   viewModulesList.forEach((dir) => {
     try {
       let viewsDir = Path.join(dir, 'views');
@@ -237,6 +229,14 @@ export default async function build(options: BuildOptions) {
       console.log(err);
     }
   });
+
+  {
+    // views 配置文件
+    let viewsFile = `${srcDir}/views/admin-views.js`;
+    if (utils.isFile(viewsFile)) {
+      parse(require(viewsFile), `${srcDir}/views`);
+    }
+  }
 
   function requireFile(file: string) {
     let r = slash(Path.relative(nodeModulesDir, file));

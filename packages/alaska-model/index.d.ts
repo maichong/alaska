@@ -799,12 +799,8 @@ export type Filters = {
   [path: string]: Filter | Filters[];
 };
 
-// export type Filters = {
-//   $or: Filters[]
-// } | FilterGroup;
-
 interface FiltersGenerator {
-  (ctx: Context): Filters | Promise<Filters> | null;
+  (ctx: Context, filters: Filters | null): Filters | Promise<Filters> | null;
 }
 
 export interface AbilityCheckGate {

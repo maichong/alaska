@@ -8,6 +8,7 @@ export default {
   'Common property': '通用属性',
   'Common': '通用',
   'Available for all categories': '所有分类可用',
+  'No properties found': '没有可用属性',
   Required: '必选属性',
   Multipe: '可多选',
   'SKU property': 'SKU属性',

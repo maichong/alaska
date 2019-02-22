@@ -796,7 +796,7 @@ export default class Model {
     let { defaultFilters } = model;
     if (defaultFilters) {
       if (typeof defaultFilters === 'function') {
-        let f = defaultFilters(ctx);
+        let f = defaultFilters(ctx, filters);
         if (f && f instanceof Promise) {
           // async defaultFilters
           f = await f;
@@ -1033,13 +1033,13 @@ export default class Model {
 
     let filters = model.createFilters('', ctx.state.filters || ctx.query);
 
-    let query: DocumentQuery<ModelType, ModelType> = model.findById(id).where(filters);
+    let query: DocumentQuery<ModelType, ModelType> = model.findById(id);
 
     let { defaultFilters } = model;
     if (defaultFilters) {
       if (typeof defaultFilters === 'function') {
         // @ts-ignore
-        defaultFilters = defaultFilters(ctx);
+        defaultFilters = defaultFilters(ctx, filters);
         // @ts-ignore promise.then
         if (defaultFilters && typeof defaultFilters.then === 'function') {
           // async defaultFilters
@@ -1048,15 +1048,18 @@ export default class Model {
           query.exec = function (callback: Function) {
             // @ts-ignore defaultFilters.then 存在
             return defaultFilters.then((f: any) => {
+              query.where(filters);
               query.where(f);
               query.exec = execFn;
               return query.exec(callback);
             });
           };
         } else {
+          query.where(filters);
           query.where(defaultFilters);
         }
       } else {
+        query.where(filters);
         query.where(defaultFilters);
       }
     }

@@ -1,6 +1,20 @@
-import { Model } from 'alaska-model';
+import { Model, Filters } from 'alaska-model';
+import { Context } from 'alaska-http';
 import Category from 'alaska-category/models/Category';
 import service from '../';
+
+function defaultFilters(ctx: Context, filters: Filters) {
+  if (!filters || !filters.cats) return null;
+  let cats = filters.cats;
+  delete filters.cats;
+  return {
+    $or: [{
+      common: true
+    }, {
+      cats
+    }]
+  };
+}
 
 export default class Property extends Model {
   static label = 'Properties';
@@ -8,6 +22,7 @@ export default class Property extends Model {
   static defaultColumns = 'title group common required multi sku filter input activated sort createdAt';
   static defaultSort = '-sort';
   static searchFields = 'title';
+  static defaultFilters = defaultFilters;
 
   static api = {
     paginate: 1,

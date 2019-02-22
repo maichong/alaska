@@ -4,6 +4,7 @@ export default {
   'Main Picture': '主图',
   'Is New Goods': '是新品',
   'Is Hot Goods': '是热门商品',
+  Brief: '摘要',
   Activated: '上架',
   Price: '价格',
   Discount: '打折价',

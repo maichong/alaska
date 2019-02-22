@@ -40,14 +40,14 @@ export default class Client extends Model {
       type: String,
       unique: true
     },
+    createdAt: {
+      label: 'Created At',
+      type: Date
+    },
     expiredAt: {
       label: 'Expired At',
       type: Date,
       protected: true
-    },
-    createdAt: {
-      label: 'Created At',
-      type: Date
     }
   };
 
