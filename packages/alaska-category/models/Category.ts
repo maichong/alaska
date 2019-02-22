@@ -66,7 +66,10 @@ export default class Category extends Model {
       label: 'Parent Category',
       type: 'category',
       ref: 'Category',
-      index: true
+      index: true,
+      filters: {
+        group: ':group'
+      }
     },
     parents: {
       label: 'Parents',

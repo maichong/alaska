@@ -1,28 +1,24 @@
-import { Model } from 'alaska-model';
-import { ObjectID } from 'mongodb';
+import { Model, RecordId } from 'alaska-model';
+import { Image } from 'alaska-field-image';
 
 declare class Post extends Model { }
 interface Post extends PostFields { }
 
 export interface PostFields {
-  id: string;
   title: string;
-  user: ObjectID;
-  cat: ObjectID;
-  cats: ObjectID[];
+  user: RecordId;
+  cat: RecordId;
+  cats: RecordId[];
   seoTitle: string;
   seoKeywords: string;
   seoDescription: string;
   summary: string;
-  pic: ObjectID;
+  pic: Image;
   content: string;
-  tags: ObjectID[];
   source: string;
-  commentCount: number;
   hots: number;
   recommend: boolean;
-  relations: ObjectID[];
-  topics: ObjectID[];
+  relations: RecordId[];
   createdAt: Date;
 }
 

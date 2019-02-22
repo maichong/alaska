@@ -1,6 +1,6 @@
 import { RecordId, Model } from 'alaska-model';
-import PostCat from './PostCat';
-import { ObjectID } from 'mongodb';
+import { Image } from 'alaska-field-image';
+import CategoryType from 'alaska-category/models/Category';
 
 export default class Post extends Model {
   static label = 'Post';
@@ -8,30 +8,16 @@ export default class Post extends Model {
   static defaultColumns = 'pic title cat user createdAt';
   static defaultSort = '-createdAt';
   static searchFields = 'title summary';
-
   static autoSelect = false;
 
   static api = {
     paginate: 1,
+    list: 1,
     show: 1
   };
 
-  static populations = {
-    tags: {},
-    user: {
-      select: ':tiny'
-    },
-    cat: {
-      select: 'title'
-    },
-    relations: {
-      select: ':tiny'
-    }
-  };
-
   static scopes = {
-    tiny: 'title hots createdAt',
-    list: 'title user summary pic tags commentCount hots createdAt'
+    list: 'title user summary pic cat hots createdAt'
   };
 
   static fields = {
@@ -46,17 +32,22 @@ export default class Post extends Model {
       ref: 'alaska-user.User'
     },
     cat: {
-      label: 'Post Category',
+      label: 'Category',
       type: 'relationship',
-      ref: 'PostCat'
+      ref: 'alaska-category.Category',
+      optional: true,
+      filters: {
+        group: 'post'
+      }
     },
     cats: {
       label: 'Categories',
       type: 'relationship',
-      ref: 'PostCat',
+      ref: 'alaska-category.Category',
+      optional: true,
       multi: true,
       hidden: true,
-      protected: true
+      private: true
     },
     seoTitle: {
       label: 'SEO Title',
@@ -82,25 +73,9 @@ export default class Post extends Model {
       label: 'Main Picture',
       type: 'image'
     },
-    content: {
-      label: 'Content',
-      type: 'html',
-      default: ''
-    },
-    tags: {
-      label: 'Tags',
-      type: 'relationship',
-      ref: 'PostTag',
-      multi: true,
-    },
     source: {
       label: 'Source',
       type: String
-    },
-    commentCount: {
-      label: 'Comment Count',
-      type: Number,
-      default: 0
     },
     hots: {
       label: 'Hots',
@@ -117,35 +92,35 @@ export default class Post extends Model {
       ref: 'Post',
       multi: true,
     },
-    topics: {
-      label: 'Related Topic',
-      type: 'relationship',
-      ref: 'PostTopic',
-      multi: true
-    },
     createdAt: {
       label: 'Created At',
       type: Date
+    },
+    content: {
+      label: 'Content',
+      type: 'html',
+      default: ''
     }
   };
+
   title: string;
-  user: ObjectID;
+  user: RecordId;
   cat: RecordId;
   cats: RecordId[];
   seoTitle: string;
   seoKeywords: string;
   seoDescription: string;
   summary: string;
-  pic: ObjectID;
+  pic: Image;
   content: string;
-  tags: ObjectID[];
   source: string;
-  commentCount: number;
   hots: number;
   recommend: boolean;
-  relations: ObjectID[];
-  topics: ObjectID[];
+  relations: RecordId[];
   createdAt: Date;
+  // TODO: tags
+  // TODO: topics
+  // TODO: commentCount
 
   async preSave() {
     if (!this.createdAt) {
@@ -155,20 +130,10 @@ export default class Post extends Model {
       this.seoTitle = this.title;
     }
     if (this.cat) {
-      let cats: RecordId[] = [];
-      if (this.cat) {
-        let catTemp: PostCat = await PostCat.findById(this.cat);
-        if (catTemp) {
-          cats.push(catTemp._id);
-        }
-        while (catTemp && catTemp.parent) {
-          let c: PostCat = await PostCat.findById(catTemp.parent);
-          catTemp = c;
-          cats.push(catTemp._id);
-        }
-        // cats = cats.map((cat: ObjectID) => cat);
-      }
-      this.cats = cats;
+      const Category = Model.lookup('alaska-category.Category') as typeof CategoryType;
+      if (!Category) return;
+      let cat = await Category.findById(this.cat);
+      this.cats = (cat.parents || []).concat(cat._id);
     }
   }
 }
