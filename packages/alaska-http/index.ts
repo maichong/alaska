@@ -49,7 +49,7 @@ export default class HttpExtension extends Extension {
       return router;
     };
 
-    collie(main, 'initHttp', () => {
+    collie(main, 'initHttp', async () => {
       main.debug('initHttp');
       let env = main.config.get('env');
       if (!main.app) {
@@ -60,6 +60,23 @@ export default class HttpExtension extends Extension {
         main.server = http.createServer(main.app.callback());
         KoaQS(main.app);
       }
+
+      _(main.config.get('middlewares'))
+        .map((options, id) => ({
+          id,
+          sort: options.sort || 0,
+          options
+        }))
+        .filter((item) => item.sort >= 10000)
+        .orderBy(['sort'], ['desc'])
+        .forEach(({ id, options }) => {
+          let fn = main.modules.middlewares[id];
+          if (!fn) return;
+          debug('use super middleware', id);
+          main.app.use(fn(options, main));
+        });
+
+      main.debug('use internal middleware');
       main.app.use(async (ctx, next) => {
         ctx.state.env = env;
         ctx.main = main;
@@ -101,6 +118,7 @@ export default class HttpExtension extends Extension {
           }
         }
       });
+      await main.initMiddlewares();
     });
 
     collie(main, 'initMiddlewares', () => {
@@ -111,6 +129,7 @@ export default class HttpExtension extends Extension {
           sort: options.sort || 0,
           options
         }))
+        .filter((item) => item.sort < 10000)
         .orderBy(['sort'], ['desc'])
         .forEach(({ id, options }) => {
           let fn = main.modules.middlewares[id];
@@ -134,7 +153,6 @@ export default class HttpExtension extends Extension {
 
     main.pre('init', async () => {
       await main.initHttp();
-      await main.initMiddlewares();
     });
 
     main.post('start', async () => {
