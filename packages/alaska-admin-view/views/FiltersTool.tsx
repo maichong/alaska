@@ -39,11 +39,10 @@ class FiltersTool extends React.Component<Props, FiltersToolState> {
 
   render() {
     let { model, filters, superMode } = this.props;
-    let { filtersOpen } = this.state;
     if (this.props.page === 'edit') return null;
     let iconEle = <i className="fa fa-check" />;
     let items = _.map(model.fields, (field) => {
-      if (field.hidden || !field.cell) return false;
+      if (field.hidden === true || !field.cell) return false;
       if (field.super && !superMode) return false;
       let icon = filters.hasOwnProperty(field.path) ? iconEle : null;
       return (
