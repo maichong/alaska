@@ -1,4 +1,4 @@
-import { Model } from 'alaska-model';
+import { Model, RecordId } from 'alaska-model';
 
 declare class Client extends Model { }
 interface Client extends ClientFields { }
@@ -8,7 +8,7 @@ export interface ClientFields {
   token: string;
   deviceId: string;
   platform: string;
-  user: string;
+  user: RecordId;
   expiredAt: Date | null;
   createdAt: Date;
 }
