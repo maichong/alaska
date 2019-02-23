@@ -175,7 +175,7 @@ export default class ApiExtension extends Extension {
         let hasExtApi = false;
         let hasRecordApi = false;
         _.forEach(info.apis, (api) => {
-          if (!hasExtApi && !hasRecordApi) {
+          if (!hasExtApi || !hasRecordApi) {
             _.forEach(api, (fn, key) => {
               if (key[0] === '_') {
                 hasRecordApi = true;
@@ -239,7 +239,7 @@ export default class ApiExtension extends Extension {
 
             let record = await model.findById(id).where(await model.createFiltersByContext(ctx)).session(ctx.dbSession);
             if (!record) {
-              ctx.throw(404);
+              ctx.throw(404, 'Record not found');
             }
             ctx.state.id = id;
             ctx.state.record = record;

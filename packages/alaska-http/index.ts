@@ -103,7 +103,7 @@ export default class HttpExtension extends Extension {
             if (ctx.state.jsonApi) {
               ctx.body = {
                 error: message,
-                code: error.code,
+                code: error.code || error.status,
                 debug: debugInfo
               };
             } else {

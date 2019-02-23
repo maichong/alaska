@@ -60,16 +60,10 @@ export async function create(ctx: Context) {
 /**
  * 用户取消订单
  */
-export async function cancel(ctx: Context) {
+export async function _cancel(ctx: Context) {
   if (!ctx.user) service.error(401);
-  let order: Order = ctx.state.order;
-  let body = ctx.state.body || ctx.request.body;
-  let orderId = body.order || ctx.request.body.order;
-  if (!orderId && !order) ctx.throw(400, 'order is required');
-  if (!order) {
-    order = await Order.findById(orderId).session(ctx.dbSession);
-    if (!order) service.error('Order not found');
-  }
+  let order: Order = ctx.state.record;
+
   if (!userService.hasAbility(ctx.user, 'alaska-order.Order.cancel', order)) service.error(403);
   await Cancel.run({ record: order }, { dbSession: ctx.dbSession });
 
@@ -82,19 +76,9 @@ export async function cancel(ctx: Context) {
  * 买家确认收货
  * @http-body {string} order 订单ID
  */
-export async function receive(ctx: Context) {
+export async function _receive(ctx: Context) {
   if (!ctx.user) service.error(401);
-  let body = ctx.state.body || ctx.request.body;
-  let orderId = body.order || ctx.throw(400, 'order is required');
-  let order: Order;
-
-  if (typeof orderId === 'object' && orderId instanceof Order) {
-    order = orderId;
-  } else {
-    order = await Order.findById(orderId).session(ctx.dbSession);
-    if (!order) service.error('Order not found');
-    if (order.state !== 500) service.error('Order state error');
-  }
+  let order: Order = ctx.state.record;
 
   if (!userService.hasAbility(ctx.user, 'alaska-order.Order.receive', order)) service.error(403);
   await Receive.run({ record: order }, { dbSession: ctx.dbSession });
@@ -110,26 +94,24 @@ export async function receive(ctx: Context) {
  * body.reason 退款原因
  * body.amount 退款金额
  */
-export async function refund(ctx: Context) {
+export async function _refund(ctx: Context) {
   if (!ctx.user) service.error(401);
-  let order: Order = ctx.state.order;
+  let order: Order = ctx.state.record;
+
+  if (!userService.hasAbility(ctx.user, 'alaska-order.Order.refund', order)) service.error(403);
+
   let body = ctx.state.body || ctx.request.body;
-  if ((!body.order && !order)) ctx.throw(400, 'order is required');
+
   let reason = body.reason || '';
   let amount = body.amount || 0;
   let quantity = body.quantity || 0;
   let orderGoods = body.orderGoods || '';
 
-  if (!order) {
-    order = await Order.findById(body.order).session(ctx.dbSession);
-    if (!order) service.error('Order not found');
-  }
   if (!amount) {
     amount = order.payed;
   }
   if (amount > order.payed) service.error('Invalid refund amount');
 
-  if (!userService.hasAbility(ctx.user, 'alaska-order.Order.refund', order)) service.error(403);
 
   await Refund.run({
     record: order,
