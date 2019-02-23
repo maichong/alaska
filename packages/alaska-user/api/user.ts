@@ -12,7 +12,7 @@ GET(info);
 PATCH(info);
 export async function info(ctx: Context) {
   let user = ctx.user;
-  if (!user) service.error(403);
+  if (!user) service.error(401);
 
   if (ctx.method === 'PATCH') {
     // 修改信息
@@ -35,7 +35,7 @@ export async function info(ctx: Context) {
  */
 async function bindTel(ctx: Context) {
   let user = ctx.user;
-  if (!user) service.error(403);
+  if (!user) service.error(401);
 
   let { tel } = ctx.state.body || ctx.request.body;
   if (!tel) service.error('tel is required');
@@ -55,7 +55,7 @@ exports['bind-tel'] = bindTel;
  */
 async function bindEmail(ctx: Context) {
   let user = ctx.user;
-  if (!user) service.error(403);
+  if (!user) service.error(401);
 
   let { email } = ctx.state.body || ctx.request.body;
   if (!email) service.error('email is required');
@@ -76,7 +76,7 @@ exports['bind-email'] = bindEmail;
  * @http-body {string} password
  */
 export async function passwd(ctx: Context) {
-  if (!ctx.user) service.error(403);
+  if (!ctx.user) service.error(401);
 
   let body = ctx.state.body || ctx.request.body as { password: string };
 

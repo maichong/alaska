@@ -7,7 +7,7 @@ import Create from '../sleds/Create';
 import service from '..';
 
 export async function create(ctx: Context) {
-  if (!ctx.user) service.error(403);
+  if (!ctx.user) service.error(401);
   let body = ctx.state.body || ctx.request.body;
   let goods: string = body.goods || ctx.request.body.goods;
   let sku: string = body.sku || ctx.request.body.sku;
@@ -24,6 +24,7 @@ export async function create(ctx: Context) {
 }
 
 export async function update(ctx: Context) {
+  if (!ctx.user) service.error(401);
   let id = ctx.state.id || ctx.params.id || ctx.throw(400);
   let body = ctx.state.body || ctx.request.body;
   let record = await CartGoods.findById(id).session(ctx.dbSession);
@@ -45,6 +46,7 @@ export async function update(ctx: Context) {
 }
 
 export async function list(ctx: Context, next: Function) {
+  if (!ctx.user) service.error(401);
   await next();
   const goodsMap: Map<string, Goods> = new Map();
   for (let data of ctx.body) {

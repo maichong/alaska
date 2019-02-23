@@ -552,7 +552,7 @@ export default class Model {
         _.forEach(fields, (any, key) => {
           if (key[0] === '_') return;
           if (!model._virtuals[key]) {
-            if (model._fields[key] && (model._fields[key].protected === true || !this.isSelected(key))) return;
+            if (model._fields[key] && (model._fields[key].protected === true || model._fields[key].private === true || !this.isSelected(key))) return;
             if (!model._fields[key] && (!model.relationships[key] || model.relationships[key].protected)) return;
           }
           if (fields[`_${key}`]) return;
