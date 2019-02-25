@@ -3,9 +3,10 @@ import { Model } from 'alaska-model';
 export default class City extends Model {
   static label = 'City';
   static icon = 'map-signs';
-  static defaultColumns = 'initial name isHot sort createdAt';
+  static defaultColumns = 'tel zip initial name isHot sort createdAt';
   static defaultSort = '-sort initial';
   static titleField = 'name';
+  static searchFields = 'name tel zip';
 
   static api = {
     paginate: 1,
@@ -20,6 +21,14 @@ export default class City extends Model {
     },
     initial: {
       label: 'Initial',
+      type: String
+    },
+    tel: {
+      label: 'Tel Code',
+      type: String
+    },
+    zip: {
+      label: 'Zip Code',
       type: String
     },
     isHot: {
@@ -39,6 +48,8 @@ export default class City extends Model {
 
   name: string;
   initial: string;
+  tel: string;
+  zip: string;
   isHot: boolean;
   sort: number;
   createdAt: Date;

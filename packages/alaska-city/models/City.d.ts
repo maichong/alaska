@@ -6,6 +6,8 @@ interface City extends CityFields { }
 export interface CityFields {
   name: string;
   initial: string;
+  tel: string;
+  zip: string;
   isHot: boolean;
   sort: number;
   createdAt: Date;
