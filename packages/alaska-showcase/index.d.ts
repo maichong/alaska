@@ -9,9 +9,9 @@ export class ShowcaseService extends Service {
   };
 }
 
-declare const skuService: ShowcaseService;
+declare const showcaseService: ShowcaseService;
 
-export default skuService;
+export default showcaseService;
 
 export type Showcase = Showcase;
 

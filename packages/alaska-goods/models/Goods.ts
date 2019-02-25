@@ -66,6 +66,20 @@ export default class Goods extends Model {
       multi: true,
       cell: ''
     },
+    shop: {
+      label: 'Shop',
+      type: 'relationship',
+      ref: 'alaska-shop.Shop',
+      optional: true,
+      index: true
+    },
+    brand: {
+      label: 'Brand',
+      type: 'relationship',
+      ref: 'alaska-brand.Brand',
+      optional: true,
+      index: true
+    },
     cat: {
       label: 'Category',
       type: 'category',
@@ -83,13 +97,6 @@ export default class Goods extends Model {
       multi: true,
       protected: true,
       hidden: true
-    },
-    brand: {
-      label: 'Brand',
-      type: 'relationship',
-      ref: 'alaska-brand.Brand',
-      optional: true,
-      index: true
     },
     newGoods: {
       label: 'Is New Goods',
