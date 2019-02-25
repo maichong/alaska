@@ -62,7 +62,6 @@ body {
 
 //form-group
 .form-control {
-  border: $border-width solid $border-color;
   color: $gray;
   &:focus {
     box-shadow: none;

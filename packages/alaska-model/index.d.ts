@@ -760,16 +760,27 @@ interface FieldBase {
   horizontal?: boolean;
   nolabel?: boolean;
   noexport?: boolean;
+  placeholder?: string;
   help?: string;
   cell?: string;
   filter?: string;
   after?: string;
-  match?: RegExp;
   codeMirrorOptions?: any;
   options?: any;
   checkbox?: boolean;
   switch?: boolean;
   filters?: Filters;
+  addonBefore?: string;
+  addonAfter?: string;
+  // text
+  trim?: boolean;
+  multiLine?: boolean;
+  lowercase?: boolean;
+  uppercase?: boolean;
+  maxlength?: number;
+  minlength?: number;
+  translate?: boolean;
+  match?: RegExp;
 }
 
 export interface FieldOption extends FieldBase {
