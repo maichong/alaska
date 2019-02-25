@@ -1,86 +1,86 @@
-$page-bg: #eaf0f5;
+$page-bg: #eaf0f5 !default;
 // Components
-$login-page-width: 37.5rem; // 600px
-$login-form-width: 16.25rem; //260px
-$login-logo-width: 18.75rem; //300px
-$loading-height: 3.75rem; //60px
+$login-page-width: 37.5rem !default; // 600px
+$login-form-width: 16.25rem !default; //260px
+$login-logo-width: 18.75rem !default; //300px
+$loading-height: 3.75rem !default; //60px
 // Border
-$border-color: #f0f0f0;
+$border-color: #f0f0f0 !default;
 // FontSize defalult
-$font-size-base:0.875rem;
+$font-size-base:0.875rem !default;
 //FontColor
-$body-color:#333;
+$body-color:#333 !default;
 //grid-space
-$grid-gutter-width:2rem;
+$grid-gutter-width:2rem !default;
 // Colors
-$blue: #049cdb;
-$cyan: #1dbfd7;
-$green: #11b410;
-$red: #d83451;
-$yellow: #f89a08;
-$active-color: #1abc9c;
-$dark-color: #232928;
-$white-color: #fff;
-$grag-color: #eee;
-$blue-color: #047fb4;
-$gray: #777;
-$gray-light: #aaa;
-$font-dark: #333;
-$bg-light: #f0f0f0;
-$list-hover-color: #f5f5f5;
-$quick-editor-alert-info-bg: #d9edf7;
-$quick-editor-alert-info-border: #bce8f1;
-$quick-editor-alert-info-color: #31708f;
+$blue: #049cdb !default;
+$cyan: #1dbfd7 !default;
+$green: #11b410 !default;
+$red: #d83451 !default;
+$yellow: #f89a08 !default;
+$active-color: #1abc9c !default;
+$dark-color: #232928 !default;
+$white-color: #fff !default;
+$grag-color: #eee !default;
+$blue-color: #047fb4 !default;
+$gray: #777 !default;
+$gray-light: #aaa !default;
+$font-dark: #333 !default;
+$bg-light: #f0f0f0 !default;
+$list-hover-color: #f5f5f5 !default;
+$quick-editor-alert-info-bg: #d9edf7 !default;
+$quick-editor-alert-info-border: #bce8f1 !default;
+$quick-editor-alert-info-color: #31708f !default;
 // Panels
-$panel-default-border: $border-color;
-$panel-default-heading-bg: #fff;
+$panel-default-border: $border-color !default;
+$panel-default-heading-bg: #fff !default;
 // Modals
-$modal-backdrop-bg: rgba(0, 0, 0, 0.5);
-$modal-content-border-color: $border-color;
-$modal-header-border-color: #f5f5f5;
-$modal-backdrop-opacity: 0.16;
+$modal-backdrop-bg: rgba(0, 0, 0, 0.5) !default;
+$modal-content-border-color: $border-color !default;
+$modal-header-border-color: #f5f5f5 !default;
+$modal-backdrop-opacity: 0.16 !default;
 // Forms
-$input-border: $border-color;
-$input-border-radius: 0;
+$input-border: $border-color !default;
+$input-border-radius: 0 !default;
 // Tables
-$table-border-color: $border-color;
+$table-border-color: $border-color !default;
 // Navbar
-$navbar-default-link-active-bg: $border-color;
-$navbar-default-link-hover-color: $blue;
+$navbar-default-link-active-bg: $border-color !default;
+$navbar-default-link-hover-color: $blue !default;
 // DropDowns
-$dropdown-divider-bg: $border-color;
-$navbar-default-toggle-icon-bar-bg: #fff;
-$navbar-default-toggle-border-color: #fff;
-$navbar-default-toggle-hover-bg: lighten($blue, 10%);
+$dropdown-divider-bg: $border-color !default;
+$navbar-default-toggle-icon-bar-bg: #fff !default;
+$navbar-default-toggle-border-color: #fff !default;
+$navbar-default-toggle-hover-bg: lighten($blue, 10%) !default;
 // Content
-$content-space: 0.5rem; //8px
-$content-space-xsmall: 0.25rem; //4px
-$content-space-small: 0.313rem; //5px
-$content-space-medium: 1rem; //16px
-$content-space-large: 1.25rem; //20px
-$padding-base-vertical: 0.375rem; //6px
-$padding-base-horizontal: 0.75rem; //12px
-$padding-field-view: 0.938rem; //15px
-$padding-widget: 1.063rem; //17px
+$content-space: 0.5rem !default; //8px
+$content-space-xsmall: 0.25rem !default; //4px
+$content-space-small: 0.313rem !default; //5px
+$content-space-medium: 1rem !default; //16px
+$content-space-large: 1.25rem !default; //20px
+$padding-base-vertical: 0.375rem !default; //6px
+$padding-base-horizontal: 0.75rem !default; //12px
+$padding-field-view: 0.938rem !default; //15px
+$padding-widget: 1.063rem !default; //17px
 // Menu
-$menu-width: 15rem; //240px
-$menu-icon-width: 2.813rem; //45px
+$menu-width: 15rem !default; //240px
+$menu-icon-width: 2.813rem !default; //45px
 // Header
-$header-background: $white-color;
-$header-height: 3rem; //48px
-$header-toggle-size: 1.25rem; //20px
-$header-avatar-size: 1.75rem; //28px
-$header-right: 0.625rem; //10px
-$header-img: 1.25rem; //20px
+$header-background: $white-color !default;
+$header-height: 3rem !default; //48px
+$header-toggle-size: 1.25rem !default; //20px
+$header-avatar-size: 1.75rem !default; //28px
+$header-right: 0.625rem !default; //10px
+$header-img: 1.25rem !default; //20px
 // Top Toolbar
-$top-toolbar-height: 2.625rem; //42px
+$top-toolbar-height: 2.625rem !default; //42px
 // Bottom Toolbar
-$bottom-toolbar-height: 3.25rem; //52px
+$bottom-toolbar-height: 3.25rem !default; //52px
 // Quick Editor
-$quick-editor-with: 25rem; //400px
-$quick-editor-large-with: 37.5rem; //600px
-$quick-editor-large-toggle: 75rem; //1200px
+$quick-editor-with: 25rem !default; //400px
+$quick-editor-large-with: 37.5rem !default; //600px
+$quick-editor-large-toggle: 75rem !default; //1200px
 // animation
-$animation-duration: .3s;
+$animation-duration: .3s !default;
 //error page
-$error-page-top: 3.125rem; //50px
+$error-page-top: 3.125rem !default; //50px
