@@ -29,7 +29,7 @@ export default class Goods extends Model {
   static defaultFilters = defaultFilters;
 
   static scopes = {
-    list: 'title pic brief newGoods hotGoods cat price discount discountStartAt discountEndAt inventory'
+    list: 'title pic brief recommend isHot cat price discount discountStartAt discountEndAt inventory'
   };
 
   static groups = {
@@ -97,11 +97,11 @@ export default class Goods extends Model {
       protected: true,
       hidden: true
     },
-    newGoods: {
-      label: 'Is New Goods',
+    recommend: {
+      label: 'Recommend',
       type: Boolean
     },
-    hotGoods: {
+    isHot: {
       label: 'Is Hot Goods',
       type: Boolean
     },
@@ -232,8 +232,8 @@ export default class Goods extends Model {
   cat: RecordId;
   cats: RecordId[];
   brand: RecordId;
-  newGoods: boolean;
-  hotGoods: boolean;
+  recommend: boolean;
+  isHot: boolean;
   seoTitle: string;
   seoKeywords: string;
   seoDescription: string;

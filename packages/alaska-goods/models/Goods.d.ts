@@ -28,8 +28,8 @@ export interface GoodsFields {
   cat: RecordId;
   cats: RecordId[];
   brand: RecordId;
-  newGoods: boolean;
-  hotGoods: boolean;
+  recommend: boolean;
+  isHot: boolean;
   seoTitle: string;
   seoKeywords: string;
   seoDescription: string;
