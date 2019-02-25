@@ -6,7 +6,6 @@ export default class Page extends Model {
   static defaultColumns = '_id title createdAt';
   static defaultSort = '-createdAt';
   static searchFields = 'title';
-  static listLimit = 100;
 
   static api = {
     list: 1,

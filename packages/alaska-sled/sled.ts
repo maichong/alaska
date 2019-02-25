@@ -55,6 +55,10 @@ export default class Sled<T, R> {
     let service: Service = this.service || this.main;
     if (ref.indexOf('.') > -1) {
       let [serviceId, sledName] = ref.split('.');
+      if (!serviceId) {
+        // ref -> '.SledName'
+        return this.main.sleds[sledName] || null;
+      }
       ref = sledName;
       service = this.main.allServices[serviceId];
       if (!service) return null;

@@ -55,6 +55,10 @@ export default class Model {
     let service: Service = this.service || this.main;
     if (ref.indexOf('.') > -1) {
       let [serviceId, modelName] = ref.split('.');
+      if (!serviceId) {
+        // ref -> '.ModelName'
+        return this.main.models[modelName] || null;
+      }
       ref = modelName;
       let serviceModule = this.main.modules.services[serviceId];
       if (!serviceModule) return null;

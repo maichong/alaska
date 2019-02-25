@@ -24,7 +24,6 @@ export default class Order extends Model {
   static searchFields = 'title';
   static nocreate = true;
   static noremove = true;
-  static listLimit = 100;
 
   static defaultFilters = defaultFilters;
 
