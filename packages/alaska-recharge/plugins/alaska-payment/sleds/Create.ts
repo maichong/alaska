@@ -9,8 +9,7 @@ export async function pre() {
   const currenciesMap = BALANCE.currenciesMap;
   let params = this.params;
   // balance | deposit
-  let recharge = params.recharge;
-  if (!recharge) return;
+  if (!params.recharge) return;
   let user = params.user || paymentService.error('Missing user info!');
   let type = params.type || paymentService.error('Missing payment type!');
   if (!paymentService.payments[type]) paymentService.error('Unknown payment type!');
@@ -20,12 +19,12 @@ export async function pre() {
   let deposit = params.deposit;
   let currencyOpt = BALANCE.defaultCurrency;
   // 如果充值目标为余额
-  if (recharge === 'balance') {
+  if (params.recharge === 'balance') {
     // 必须指定currency货币类型
     if (!currency) paymentService.error('Currency is required!');
     if (!currenciesMap.hasOwnProperty(currency)) paymentService.error('Unknown currency type!');
     currencyOpt = currenciesMap[currency];
-  } else if (recharge === 'deposit') {
+  } else if (params.recharge === 'deposit') {
     // 如果充值目标为储值卡，必须指定deposit储值卡ID
     const Deposit = Recharge.lookup('alaska-deposit.Deposit') as typeof DepositType;
     if (!Deposit) paymentService.error('Can not recharge to deposit card!');
@@ -40,12 +39,25 @@ export async function pre() {
   amount = _.round(amount, currencyOpt.precision);
   if (amount <= 0) paymentService.error('Invalid amount!');
 
-  let record = new Recharge({
+  let rechargeCurrency = currency;
+  let rechargeAmount = amount;
+  let rechargeOptions: Map<string, any> = params.rechargeOptions;
+  if (rechargeOptions) {
+    if (!(rechargeOptions instanceof Map)) {
+      throw new Error('rechargeOptions should be Map');
+    }
+    rechargeCurrency = rechargeOptions.get('currency') || currency;
+    if (currenciesMap.hasOwnProperty('rechargeCurrency')) paymentService.error('Invalid currency!');
+    rechargeAmount = rechargeOptions.get('amount') || amount;
+    if (amount <= 0) paymentService.error('Invalid recharge amount!');
+  }
+
+  let recharge = new Recharge({
     title: params.title || `Recharge-${amount}`,
     user,
-    target: recharge,
-    currency,
-    amount,
+    target: params.recharge, // balance / deposit
+    currency: rechargeCurrency,
+    amount: rechargeAmount,
     deposit
   });
 
@@ -53,14 +65,12 @@ export async function pre() {
     title: params.title || `Recharge-${amount}`,
     user,
     type,
+    currency,
     amount,
-    recharge: record.id
+    recharge: recharge.id
   });
 
-  payment.params = await paymentService.payments[type].createParams(payment);
-  await payment.save({ session: this.dbSession });
-
-  record.payment = payment.id;
-  await record.save({ session: this.dbSession });
+  recharge.payment = payment.id;
+  await recharge.save({ session: this.dbSession });
   params.payment = payment;
 }

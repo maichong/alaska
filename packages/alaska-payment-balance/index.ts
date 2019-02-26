@@ -9,6 +9,7 @@ export default class BalancePaymentPlugin extends PaymentPlugin {
     super(service);
     balanceService.getCurrenciesAsync().then((list) => {
       list.forEach((cur) => {
+        this.currencies.push(cur.value);
         service.payments[`balance:${cur.value}`] = this;
       });
     });
@@ -21,8 +22,9 @@ export default class BalancePaymentPlugin extends PaymentPlugin {
    */
   async createParams(payment: Payment): Promise<any> {
     const currency = payment.type.split(':')[1];
-    if (!currency) throw new Error('Unkown currency');
-    if (payment.currency && payment.currency !== currency) throw new Error('Currency not match');
+    if (!currency) throw new Error('Unkown currency!');
+    if (!this.currencies.includes(currency)) throw new Error('Unsupported currency!');
+    if (payment.currency && payment.currency !== currency) throw new Error('Currency not match!');
     let user: User;
     if (payment.populated('user')) {
       // @ts-ignore populated
@@ -49,6 +51,7 @@ export default class BalancePaymentPlugin extends PaymentPlugin {
   async refund(refund: Refund, payment: Payment): Promise<void> {
     const currency = refund.type.split(':')[1];
     if (!currency) throw new Error('Unkown currency');
+    if (!this.currencies.includes(currency)) throw new Error('Unsupported currency!');
     if (refund.currency && refund.currency !== currency) throw new Error('Currency not match');
     let user: User;
     if (refund.populated('user')) {

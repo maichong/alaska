@@ -20,10 +20,13 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
     this.config = config;
     for (let key of _.keys(config)) {
       let options: WeixinPaymentOptions = config[key];
-      ['channel', 'appid', 'secret', 'mch_id', 'pay_key', 'notify_url'].forEach((k) => {
+      ['channel', 'appid', 'secret', 'mch_id', 'pay_key', 'notify_url', 'currency'].forEach((k) => {
         // @ts-ignore index
         if (!options[k]) throw new Error(`Missing config [alaska-payment-weixin.${key}.${k}]`);
       });
+      if (!this.currencies.includes(options.currency)) {
+        this.currencies.push(options.currency);
+      }
     }
   }
 

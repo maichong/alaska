@@ -6,6 +6,10 @@ export interface WeixinPaymentOptions {
    */
   channel: 'jssdk' | 'app' | 'wxapp' | 'h5';
   /**
+   * 当前支付类型支持的货币
+   */
+  currency: string;
+  /**
    * APP ID
    */
   appid: string;
