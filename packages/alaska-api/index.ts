@@ -253,11 +253,8 @@ export default class ApiExtension extends Extension {
           return (ctx: Context, next) => {
             let modekKey = ctx.params.model;
             let model = info.models[modekKey];
-            if (!model) {
-              //404
-              return next();
-            }
             ctx.state.model = model;
+
             let middlewares: Middleware[] = [];
             if (ctx.params.id) {
               ctx.state.id = ctx.params.id;
@@ -268,13 +265,13 @@ export default class ApiExtension extends Extension {
               middlewares = middlewares.concat(info.apis[modekKey][action]);
             }
             // Model.api参数定义的中间件
-            if (model.api && model.api[action]) {
+            if (model && model.api && model.api[action]) {
               // @ts-ignore
               middlewares.push(defaultApiControllers[action]);
             }
 
             if (!middlewares.length) {
-              //404
+              // 404
               return next();
             }
             ctx.service = service;
