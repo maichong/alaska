@@ -1,6 +1,7 @@
 import * as mongodb from 'mongodb';
 import { RecordId, Model } from 'alaska-model';
 import { Context } from 'alaska-http';
+import { Image } from 'alaska-field-image';
 import OrderGoods from './OrderGoods';
 import OrderLog from './OrderLog';
 
@@ -15,7 +16,7 @@ export interface OrderFields {
   title: string;
   user: RecordId;
   type: any;
-  pic: Object;
+  pic: Image;
   goods: RecordId[];
   address: Object;
   currency: string;

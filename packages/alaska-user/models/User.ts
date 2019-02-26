@@ -1,5 +1,5 @@
 
-import { Model } from 'alaska-model';
+import { Model, RecordId } from 'alaska-model';
 import service from '..';
 
 export default class User extends Model {
@@ -99,7 +99,10 @@ export default class User extends Model {
   abilities: any[];
   createdAt: Date;
 
-  _clearCache: boolean;
+  __clearCache: boolean;
+
+  // for alaska dev
+  promoter: RecordId;
 
   preSave() {
     if (!this.createdAt) {
@@ -108,11 +111,11 @@ export default class User extends Model {
     if (!this.displayName) {
       this.displayName = this.username;
     }
-    this._clearCache = this.isModified('abilities') || this.isModified('roles');
+    this.__clearCache = this.isModified('abilities') || this.isModified('roles');
   }
 
   postSave() {
-    if (this._clearCache) {
+    if (this.__clearCache) {
       service.clearUserAbilitiesCache(this.id);
     }
   }

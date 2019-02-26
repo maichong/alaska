@@ -1,10 +1,10 @@
 import * as mongodb from 'mongodb';
-import { Model } from 'alaska-model';
-import User from 'alaska-user/models/User';
+import { Model, RecordId } from 'alaska-model';
 import balanceService from 'alaska-balance';
 import OrderLog from './OrderLog';
 import OrderGoods from './OrderGoods';
 import { Context } from 'alaska-http';
+import { Image } from 'alaska-field-image';
 import service from '..';
 
 function defaultFilters(ctx: Context) {
@@ -315,9 +315,9 @@ export default class Order extends Model {
 
   code: string;
   title: string;
-  user: User;
+  user: RecordId;
   type: any;
-  pic: Object;
+  pic: Image;
   goods: OrderGoods[];
   address: Object;
   currency: string;
