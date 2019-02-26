@@ -33,7 +33,7 @@ export default class BalancePaymentPlugin extends PaymentPlugin {
     if (!user) {
       throw new Error('Unknown user for payment');
     }
-    let balance = user.get(currency);
+    let balance = user.get(currency) || 0;
     if (balance < payment.amount) {
       this.service.error('Insufficient balance');
     }
