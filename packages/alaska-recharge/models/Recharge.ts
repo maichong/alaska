@@ -21,7 +21,7 @@ export default class Recharge extends Model {
             id: { $exists: false }
           },
           {
-            state: { $ne: 0 }
+            state: { $ne: 'pending' }
           }
         ]
       }
@@ -101,21 +101,16 @@ export default class Recharge extends Model {
     state: {
       label: 'State',
       type: 'select',
-      number: true,
-      switch: true,
-      default: 0,
+      default: 'pending',
       options: [{
         label: 'Pending',
-        value: 0,
-        color: 'info'
+        value: 'pending'
       }, {
         label: 'Success',
-        value: 1,
-        color: 'success'
+        value: 'success'
       }, {
         label: 'Failed',
-        value: -1,
-        color: 'danger'
+        value: 'failed'
       }]
     },
     createdAt: {
@@ -132,7 +127,7 @@ export default class Recharge extends Model {
   amount: number;
   type: string;
   payment: RecordId;
-  state: number;
+  state: 'pending' | 'success' | 'failed';
   createdAt: Date;
 
   preSave() {

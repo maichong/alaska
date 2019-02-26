@@ -34,7 +34,7 @@ export default class Balance extends Sled<BalanceParams, Commission> {
       commission.state = 'balanced';
       commission.balancedAt = new Date();
     } catch (error) {
-      commission.state = 'invalid';
+      commission.state = 'failed';
       commission.failure = error.message;
     }
     await commission.save({ session: this.dbSession });

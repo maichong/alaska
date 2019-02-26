@@ -81,17 +81,16 @@ export default class Payment extends Model {
     state: {
       label: 'State',
       type: 'select',
-      number: true,
-      default: 0,
+      default: 'pending',
       options: [{
         label: 'Pending',
-        value: 0
+        value: 'pending'
       }, {
         label: 'Success',
-        value: 1
+        value: 'success'
       }, {
         label: 'Failed',
-        value: -1
+        value: 'failed'
       }]
     },
     failure: {
@@ -110,7 +109,7 @@ export default class Payment extends Model {
   amount: number;
   type: string;
   params: any;
-  state: number;
+  state: 'pending' | 'success' | 'failed';
   failure: string;
   createdAt: Date;
 

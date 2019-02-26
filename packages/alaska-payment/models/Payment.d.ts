@@ -10,7 +10,7 @@ export interface PaymentFields {
   amount: number;
   type: string;
   params: any;
-  state: number;
+  state: 'pending' | 'success' | 'failed';
   failure: string;
   createdAt: Date;
 }

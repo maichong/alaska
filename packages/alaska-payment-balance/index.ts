@@ -41,9 +41,9 @@ export default class BalancePaymentPlugin extends PaymentPlugin {
     await user._[currency].income(-payment.amount, payment.title, 'payment');
 
     payment.currency = currency;
-    payment.state = 1;
+    payment.state = 'success';
 
-    return 1;
+    return 'success';
   }
 
   async refund(refund: Refund, payment: Payment): Promise<void> {
@@ -64,6 +64,6 @@ export default class BalancePaymentPlugin extends PaymentPlugin {
     await user._[currency].income(refund.amount, refund.title, 'refund');
 
     refund.currency = currency;
-    refund.state = 1;
+    refund.state = 'success';
   }
 }

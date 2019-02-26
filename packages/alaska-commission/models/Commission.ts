@@ -92,8 +92,8 @@ export default class Commission extends Model {
         label: 'Balanced',
         value: 'balanced'
       }, {
-        label: 'Invalid',
-        value: 'invlid'
+        label: 'Failed',
+        value: 'failed'
       }]
     },
     failure: {
@@ -118,7 +118,7 @@ export default class Commission extends Model {
   level: number;
   currency: string;
   amount: number;
-  state: 'pending' | 'balanced' | 'invalid';
+  state: 'pending' | 'balanced' | 'failed';
   failure: string;
   createdAt: Date;
   balancedAt: Date;

@@ -12,7 +12,7 @@ export interface RechargeFields {
   amount: number;
   type: string;
   payment: RecordId;
-  state: number;
+  state: 'pending' | 'success' | 'failed';
   createdAt: Date;
 }
 

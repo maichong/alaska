@@ -43,7 +43,7 @@ export default class AcceptRefund extends Sled<AcceptRefundParams, Order[]> {
           refund.currency = payment.currency;
           refund.type = payment.type;
           refund.amount = refundAmount;
-          refund.state = 0;
+          refund.state = 'pending';
           await paymentService.sleds.Refund.run({
             payment,
             refund

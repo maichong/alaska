@@ -7,9 +7,9 @@ import service, { RejectParams } from '..';
 export default class Reject extends Sled<RejectParams, Withdraw> {
   async exec(params: RejectParams): Promise<Withdraw> {
     let record: Withdraw = params.record;
-    if (record.state === 0) {
+    if (record.state === 'pending') {
       let reason = params.body.reason || service.error('Missing reject reason');
-      record.state = -1;
+      record.state = 'rejected';
       if (reason) {
         record.reason = reason;
       }
@@ -20,7 +20,7 @@ export default class Reject extends Sled<RejectParams, Withdraw> {
       if (user) {
         await (user._[record.currency].income as CreateIncome)(record.amount, 'Withdraw Rejected', 'withdraw_rejected', this.dbSession);
       }
-    } else if (record.state !== -1) {
+    } else if (record.state !== 'rejected') {
       service.error('State error');
     }
     return record;

@@ -10,7 +10,7 @@ export default class Complete extends Sled<CompleteParams, Recharge> {
   async exec(params: CompleteParams) {
     const currenciesMap = balanceService.currenciesMap;
     const record = params.record as Recharge;
-    if (record.state !== 0) service.error('Recharge record state error!');
+    if (record.state !== 'pending') service.error('Recharge record state error!');
 
     let income = new Income({
       title: record.title,
@@ -49,7 +49,7 @@ export default class Complete extends Sled<CompleteParams, Recharge> {
       service.error('Invalid recharge target!');
     }
 
-    record.state = 1;
+    record.state = 'success';
     await record.save({ session: this.dbSession });
     return record;
   }

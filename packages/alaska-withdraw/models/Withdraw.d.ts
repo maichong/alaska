@@ -10,7 +10,7 @@ export interface WithdrawFields {
   amount: number;
   note: string;
   createdAt: Date;
-  state: number;
+  state: 'pending' | 'accepted' | 'rejected';
   reason: string;
 }
 

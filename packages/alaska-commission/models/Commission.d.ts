@@ -12,7 +12,7 @@ export interface CommissionFields {
   level: number;
   currency: string;
   amount: number;
-  state: number;
+  state: 'pending' | 'balanced' | 'failed';
   failure: string;
   createdAt: Date;
   balancedAt: Date;

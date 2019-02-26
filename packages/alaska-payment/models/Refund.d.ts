@@ -10,7 +10,7 @@ export interface RefundFields {
   currency: string;
   amount: number;
   type: string;
-  state: number;
+  state: 'pending' | 'success' | 'failed';
   failure: string;
   createdAt: Date;
 }

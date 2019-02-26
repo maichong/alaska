@@ -78,17 +78,16 @@ export default class Withdraw extends Model {
     state: {
       label: 'State',
       type: 'select',
-      number: true,
-      default: 0,
+      default: 'pending',
       options: [{
         label: 'Pending',
-        value: 0
+        value: 'pending'
       }, {
         label: 'Accepted',
-        value: 1
+        value: 'accepted'
       }, {
         label: 'Rejected',
-        value: -1
+        value: 'rejected'
       }],
       static: true
     },
@@ -104,7 +103,7 @@ export default class Withdraw extends Model {
   amount: number;
   note: string;
   createdAt: Date;
-  state: number;
+  state: 'pending' | 'accepted' | 'rejected';
   reason: string;
 
   preSave() {
