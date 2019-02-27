@@ -1,10 +1,10 @@
-import { Model } from 'alaska-model';
+import { Model, RecordId } from 'alaska-model';
 
 export default class City extends Model {
   static label = 'City';
   static icon = 'map-signs';
-  static defaultColumns = 'tel zip initial name isHot sort createdAt';
-  static defaultSort = '-sort initial';
+  static defaultColumns = 'code initial name tel zip isHot parent level sort createdAt';
+  static defaultSort = 'initial code';
   static titleField = 'name';
   static searchFields = 'name tel zip';
 
@@ -14,6 +14,10 @@ export default class City extends Model {
   };
 
   static fields = {
+    code: {
+      label: 'Code',
+      type: String
+    },
     name: {
       label: 'Name',
       type: String,
@@ -35,6 +39,27 @@ export default class City extends Model {
       label: 'Is Hot',
       type: Boolean
     },
+    parent: {
+      label: 'Parent City',
+      type: 'relationship',
+      ref: 'City'
+    },
+    level: {
+      label: 'Level',
+      type: 'select',
+      default: 0,
+      number: true,
+      options: [{
+        label: 'Province',
+        value: 1
+      }, {
+        label: 'City',
+        value: 2
+      }, {
+        label: 'District',
+        value: 3
+      }]
+    },
     sort: {
       label: 'Sort',
       type: Number,
@@ -46,11 +71,14 @@ export default class City extends Model {
     }
   };
 
+  code: string;
   name: string;
   initial: string;
   tel: string;
   zip: string;
   isHot: boolean;
+  parent: RecordId;
+  level: number;
   sort: number;
   createdAt: Date;
 
