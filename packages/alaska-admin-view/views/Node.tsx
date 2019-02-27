@@ -4,10 +4,10 @@ import { NodeProps, views } from '..';
 
 export default class Node extends React.Component<NodeProps> {
   render() {
-    let { tag, children, wrapper, props, ...others } = this.props;
+    let { tag, children, wrapper, props, domRef, ...others } = this.props;
     if (tag !== false) {
       tag = tag || 'div';
-      children = React.createElement(tag, others, children);
+      children = React.createElement(tag, { ref: domRef, ...others }, children);
     }
 
     if (wrapper) {

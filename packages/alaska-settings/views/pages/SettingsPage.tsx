@@ -171,26 +171,30 @@ class SettingsPage extends React.Component<Props, State> {
     }
 
     return (
-      <div className="settings-page">
-        <div className="content-header pl-2">
-          <h4>{tr('Settings', 'alaska-settings')}</h4>
+      <div className="page settings-page">
+        <div className="page-inner">
+          <div className="toolbar">
+            <div className="toolbar-inner">
+              <div className="toolbar-title">{tr('Settings', 'alaska-settings')}</div>
+            </div>
+          </div>
+          <div className="form-horizontal">
+            {content}
+          </div>
+          <ActionBar>
+            <ActionGroup
+              model={model}
+              items={[{
+                key: 'save',
+                action: {
+                  title: 'Save',
+                  color: 'primary'
+                },
+                onClick: this.handleSave
+              }]}
+            />
+          </ActionBar>
         </div>
-        <div className="form-horizontal">
-          {content}
-        </div>
-        <ActionBar>
-          <ActionGroup
-            model={model}
-            items={[{
-              key: 'save',
-              action: {
-                title: 'Save',
-                color: 'primary'
-              },
-              onClick: this.handleSave
-            }]}
-          />
-        </ActionBar>
       </div>
     );
   }

@@ -1,12 +1,4 @@
 .editor-page {
-  position: fixed;
-  overflow: auto;
-  top: $header-height + $top-toolbar-height;
-  left: $menu-width;
-  bottom: $header-height + $content-space;
-  right: 0;
-  padding: $content-space;
-  padding-bottom: 20rem;
   .editor-tool-bar {
     height: $top-toolbar-height;
     position: fixed;

@@ -15,6 +15,7 @@ export default class FilterEditor extends React.Component<FilterEditorProps> {
 
   render() {
     const { model, value } = this.props;
+    if (_.isEmpty(value)) return null;
     return (
       <Node
         className="filter-editor form-horizontal"

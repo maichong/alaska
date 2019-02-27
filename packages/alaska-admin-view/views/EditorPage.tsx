@@ -161,6 +161,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     const { model, record, isNew } = this.state;
 
     let className = [
+      'page',
       'editor-page',
       `${model.serviceId}-${model.id}`,
       model.canCreate ? 'can-create' : 'no-create',
@@ -179,18 +180,20 @@ class EditorPage extends React.Component<Props, EditorPageState> {
         props={this.props}
         className={className}
       >
-        <EditorToolBar>
-          <Link
-            to={`/list/${model.serviceId}/${model.modelName}`}
-          >{tr(model.label, model.serviceId)}
-          </Link>&nbsp;{'>'}&nbsp;
+        <div className="page-inner editor-page-inner">
+          <EditorToolBar>
+            <Link
+              to={`/list/${model.serviceId}/${model.modelName}`}
+            >{tr(model.label, model.serviceId)}
+            </Link>&nbsp;{'>'}&nbsp;
           {editorTitle}
-        </EditorToolBar>
-        {content}
-        <EditorActionBar
-          model={model}
-          record={record}
-        />
+          </EditorToolBar>
+          {content}
+          <EditorActionBar
+            model={model}
+            record={record}
+          />
+        </div>
       </Node>
     );
   }

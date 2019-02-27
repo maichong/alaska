@@ -1,0 +1,47 @@
+// input 错误提示
+.is-invalid {
+  &:focus {
+    box-shadow: none !important;
+  }
+}
+
+.input-group {
+  .input-group-text {
+    color: $gray;
+    border-color: $border-color;
+    background-color: $grag-color;
+  }
+}
+
+.card {
+  border-color: $border-color;
+  box-shadow: 0 $border-width $border-width rgba(0, 0, 0, .05);
+  .card-heading {
+    padding: $content-space $content-space-medium;
+    margin: 0;
+    border-bottom: $border-width solid $border-color;
+  }
+  .card-body {
+    padding: $content-space-medium;
+    &.full {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+}
+
+.dropdown-menu {
+  line-height: $font-size-base;
+}
+
+@media(min-width: 576px) {
+  .card {
+    .card-body {
+      .row {
+        .col-sm-2 {
+          text-align: right;
+        }
+      }
+    }
+  }
+}

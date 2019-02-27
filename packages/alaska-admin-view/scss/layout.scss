@@ -1,0 +1,95 @@
+body,
+html {
+  background-color: $page-bg !important;
+  box-sizing: border-box; // font-size: 14px;
+}
+
+body {
+  position: relative;
+}
+
+.content {
+  margin-left: $menu-width;
+}
+
+.app.icon {
+  .content {
+    margin-left: $menu-icon-width;
+  }
+  .header,
+  .list-page-inner,
+  .list-toolbar,
+  .editor-toolbar,
+  .editor-page {
+    left: $menu-icon-width;
+  }
+  .copyright {
+    font-size: 10px;
+  }
+}
+
+.app.hidden {
+  .content {
+    margin-left: 0;
+  }
+  .header,
+  .list-page-inner,
+  .list-toolbar,
+  .editor-toolbar,
+  .editor-page {
+    left: 0;
+  }
+}
+
+.loading,
+.denied {
+  margin-top: 100px;
+  .loading-text,
+  .denied-text {
+    width: $login-logo-width;
+    height: $loading-height;
+    line-height: 70px;
+    background: url("img/loading.gif") left center no-repeat;
+    padding-left: 120px;
+    color: $font-dark;
+    font-size: 26px;
+    font-weight: 100;
+    margin: 0 auto;
+    letter-spacing: 4px;
+  }
+}
+
+.page {
+  position: fixed;
+  overflow: auto;
+  top: $header-height + $top-toolbar-height;
+  left: $menu-width;
+  bottom: $header-height + $content-space;
+  right: 0;
+  padding: $content-space;
+  padding-bottom: 16rem;
+}
+
+.page-inner {}
+
+.page.list-page {
+  &.with-editor {
+    right: $quick-editor-with;
+    .list-toolbar,
+    .action-bar {
+      right: $quick-editor-with;
+    }
+  }
+}
+
+@media (min-width: $quick-editor-large-toggle) {
+  .list-page-inner {
+    &.with-editor {
+      right: $quick-editor-large-with;
+      .list-toolbar,
+      .action-bar {
+        right: $quick-editor-large-with;
+      }
+    }
+  }
+}

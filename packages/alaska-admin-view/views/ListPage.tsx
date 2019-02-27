@@ -177,7 +177,7 @@ class ListPage extends React.Component<Props, ListPageState> {
   handleScroll = () => {
     const ref = this._ref;
     if (!ref) return;
-    if ((ref.scrollHeight - (ref.offsetHeight + ref.scrollTop)) < 50) {
+    if ((ref.scrollHeight - (ref.offsetHeight + ref.scrollTop)) < 200) {
       const { match, loadMore, settings, lists } = this.props;
       const { params } = match;
       let serviceModels: Service = settings.services[params.service];
@@ -260,6 +260,7 @@ class ListPage extends React.Component<Props, ListPageState> {
       return <LoadingPage />;
     }
     let className = [
+      'page',
       'list-page',
       `${model.serviceId}-${model.id}`,
       model.canCreate ? 'can-create' : 'no-create',
@@ -271,13 +272,14 @@ class ListPage extends React.Component<Props, ListPageState> {
         className={className}
         wrapper="ListPage"
         props={this.props}
+        onScroll={this.handleScroll}
+        // @ts-ignore
+        domRef={(r) => {
+          this._ref = r;
+        }}
       >
         <div
-          className={`list-page-inner${split ? ' with-editor' : ''}`}
-          onScroll={this.handleScroll}
-          ref={(r) => {
-            this._ref = r;
-          }}
+          className={`page-inner list-page-inner${split ? ' with-editor' : ''}`}
         >
           <ListToolbar
             model={model}

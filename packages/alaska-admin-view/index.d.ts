@@ -900,6 +900,7 @@ export interface NodeProps extends React.HTMLAttributes<any> {
   wrapper: string;
   props: any;
   children: React.ReactNode;
+  domRef?: any;
 }
 
 export interface QuickEditorProps {

@@ -42,7 +42,9 @@ $modal-backdrop-opacity: 0.16 !default;
 // Forms
 $input-border: $border-color !default;
 $input-border-radius: 0 !default;
+$input-focus-box-shadow: none !default;
 // Tables
+$table-cell-padding: 0.3rem !default;
 $table-border-color: $border-color !default;
 // Navbar
 $navbar-default-link-active-bg: $border-color !default;
