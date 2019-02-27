@@ -16,7 +16,7 @@ function defaultFilters(ctx: Context) {
 export default class Goods extends Model {
   static label = 'Goods';
   static icon = 'gift';
-  static defaultColumns = 'pic title cat cats price inventory activated sort createdAt';
+  static defaultColumns = 'pic title shop brand cat cats price discount volume inventory activated recommend isHot sort createdAt';
   static defaultSort = '-sort';
   static searchFields = 'title';
 
@@ -29,7 +29,7 @@ export default class Goods extends Model {
   static defaultFilters = defaultFilters;
 
   static scopes = {
-    list: 'title pic brief recommend isHot cat price discount discountStartAt discountEndAt inventory'
+    list: 'title shop brand pic brief recommend isHot cat price discount discountStartAt discountEndAt volume inventory'
   };
 
   static groups = {
@@ -57,7 +57,7 @@ export default class Goods extends Model {
     pic: {
       label: 'Main Picture',
       type: 'image',
-      hidden: true
+      view: ''
     },
     pics: {
       label: 'Pictures',

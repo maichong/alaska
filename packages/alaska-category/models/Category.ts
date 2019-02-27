@@ -138,8 +138,8 @@ export default class Category extends Model {
     }
 
     if (this.isNew) {
-      let old = await Category.findOne({ parent: this.parent, title: this.title });
-      if (old) service.error('Category title has already exists!');
+      let old = await Category.findOne({ parent: this.parent, title: this.title, group: this.group });
+      if (old) service.error('Category title has already exists');
     }
     this.__parentChanged = this.isNew || this.isModified('parent');
     this.__groupChanged = this.isModified('group');
