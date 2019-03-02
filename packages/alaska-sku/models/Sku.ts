@@ -1,6 +1,6 @@
 import * as mongodb from 'mongodb';
 import { RecordId, Model } from 'alaska-model';
-import { PropData } from 'alaska-property';
+import { PropData } from 'alaska-property/types';
 import { Image } from 'alaska-field-image';
 import Goods from 'alaska-goods/models/Goods';
 

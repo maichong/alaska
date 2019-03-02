@@ -1,10 +1,10 @@
-import { Model } from 'alaska-model';
+import { Model, RecordId } from 'alaska-model';
 
 declare class Address extends Model { }
 interface Address extends AddressFields { }
 
 export interface AddressFields {
-  user: string;
+  user: RecordId;
   name: string;
   tel: string;
   zip: string;

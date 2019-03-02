@@ -4,7 +4,7 @@ import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
 import { FieldViewProps, store, ErrorsObject } from 'alaska-admin-view';
 import Editor from 'alaska-admin-view/views/Editor';
-import { ShowcaseItem } from '..';
+import { ShowcaseItem } from '../types';
 
 interface State {
   actived: number;

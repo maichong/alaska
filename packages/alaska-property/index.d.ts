@@ -2,6 +2,7 @@ import { Service } from 'alaska';
 import { RecordId } from 'alaska-model';
 import Property from './models/Property';
 import PropertyValue from './models/PropertyValue';
+import { PropData } from './types';
 
 declare module 'alaska-goods/models/Goods' {
   export interface GoodsFields {
@@ -22,20 +23,3 @@ export class PropertyService extends Service {
 declare const propertyService: PropertyService;
 
 export default propertyService;
-
-/**
- * 数据库中props字段存储的数据类型
- * 比如 goods.props = PropData[]
- */
-export interface PropData {
-  id: string;
-  title: string;
-  sku?: boolean;
-  filter?: boolean;
-  values: PropValueData[];
-}
-
-export interface PropValueData {
-  id?: string;
-  title: string;
-}

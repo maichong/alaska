@@ -1,11 +1,11 @@
-import { Model } from 'alaska-model';
+import { Model, RecordId } from 'alaska-model';
 
 declare class Income extends Model { }
 interface Income extends IncomeFields { }
 
 export interface IncomeFields {
   title: string;
-  user: string;
+  user: RecordId;
   type: string;
   target: string;
   currency: string;

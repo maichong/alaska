@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import * as immutable from 'seamless-immutable';
 import { ObjectMap } from 'alaska';
 import { FieldViewProps, ImageData, query, views } from 'alaska-admin-view';
-import { PropData, PropValueData } from 'alaska-property';
+import { PropData, PropValueData } from 'alaska-property/types';
 
 interface PropMapData extends PropData {
   valueMap: ObjectMap<PropValueData>;

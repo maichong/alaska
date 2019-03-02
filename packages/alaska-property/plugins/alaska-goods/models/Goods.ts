@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { PropData } from 'alaska-property';
+import { PropData } from 'alaska-property/types';
 
 export default {
   groups: {

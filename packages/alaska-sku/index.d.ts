@@ -1,5 +1,4 @@
 import { Service } from 'alaska';
-import { PropData } from 'alaska-property';
 import Sku from './models/Sku';
 import { Image } from 'alaska-field-image';
 

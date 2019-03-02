@@ -186,7 +186,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
               to={`/list/${model.serviceId}/${model.modelName}`}
             >{tr(model.label, model.serviceId)}
             </Link>&nbsp;{'>'}&nbsp;
-          {editorTitle}
+            {editorTitle}
           </EditorToolBar>
           {content}
           <EditorActionBar

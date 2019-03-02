@@ -1,5 +1,5 @@
 import { Model } from 'alaska-model';
-import { ShowcaseItem } from '..';
+import { ShowcaseItem } from '../types';
 
 declare class Showcase extends Model { }
 interface Showcase extends ShowcaseFields { }

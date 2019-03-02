@@ -1,10 +1,11 @@
 import { RecordId, Model } from 'alaska-model';
+import { Image } from 'alaska-field-image';
 
 declare class OrderGoods extends Model { }
 interface OrderGoods extends OrderGoodsFields { }
 
 export interface OrderGoodsFields {
-  pic: Object;
+  pic: Image;
   title: string;
   order: RecordId;
   goods: RecordId;

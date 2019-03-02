@@ -7,7 +7,7 @@ import { query, FieldViewProps } from 'alaska-admin-view';
 import Select from '@samoyed/select';
 import CheckboxGroup from '@samoyed/checkbox-group';
 import Switch from '@samoyed/switch';
-import { PropData } from '..';
+import { PropData } from '../types';
 
 interface Props extends FieldViewProps {
   value: immutable.Immutable<PropData[]>;

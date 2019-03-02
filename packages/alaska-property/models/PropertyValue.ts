@@ -1,4 +1,4 @@
-import { Model } from 'alaska-model';
+import { Model, RecordId } from 'alaska-model';
 import Category from 'alaska-category/models/Category';
 import Property from './Property';
 
@@ -31,6 +31,7 @@ export default class PropertyValue extends Model {
       label: 'Categories',
       type: 'category',
       ref: Category,
+      multi: true,
       protected: true,
       disabled: 'common'
     },
@@ -52,8 +53,8 @@ export default class PropertyValue extends Model {
   };
 
   title: string;
-  prop: Object;
-  cats: Object;
+  prop: RecordId;
+  cats: RecordId;
   common: boolean;
   sort: number;
   createdAt: Date;

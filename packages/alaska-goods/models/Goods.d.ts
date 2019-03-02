@@ -33,7 +33,7 @@ export interface GoodsFields {
   seoTitle: string;
   seoKeywords: string;
   seoDescription: string;
-  currency: any;
+  currency: string;
   price: number;
   discount: number;
   discountStartAt: Date;

@@ -145,6 +145,6 @@ export interface MiddlewareGenerator<T extends MiddlewareOptions> {
 export interface Session {
   [key: string]: any;
   isNew: boolean;
-  toJSON(): Object;
+  toJSON(): any;
   isChanged(prev: string): boolean;
 }

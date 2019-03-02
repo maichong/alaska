@@ -1,4 +1,4 @@
-import { Model } from 'alaska-model';
+import { Model, RecordId } from 'alaska-model';
 import { Image } from 'alaska-field-image';
 
 declare class Property extends Model { }
@@ -9,9 +9,9 @@ export interface PropertyFields {
   icon: Image;
   pic: Image;
   desc: string;
-  parent: Object;
-  parents: Object[];
-  children: Object[];
+  parent: RecordId;
+  parents: RecordId[];
+  children: RecordId[];
   activated: boolean;
   sort: number;
   createdAt: Date;

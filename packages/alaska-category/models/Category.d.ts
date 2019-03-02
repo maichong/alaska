@@ -9,6 +9,7 @@ export interface CategoryFields {
   icon: Image;
   pic: Image;
   desc: string;
+  group: string;
   parent: RecordId;
   parents: RecordId[];
   children: RecordId[];

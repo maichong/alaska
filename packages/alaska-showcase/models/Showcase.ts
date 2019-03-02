@@ -1,7 +1,7 @@
 import { Model } from 'alaska-model';
 import { Context } from 'alaska-http';
 import * as moment from 'moment';
-import { ShowcaseItem } from '..';
+import { ShowcaseItem } from '../types';
 import ShowcaseItemModel from './ShowcaseItem';
 
 function defaultFilters(ctx: Context) {

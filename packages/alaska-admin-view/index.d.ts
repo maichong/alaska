@@ -253,8 +253,8 @@ export interface Model {
   canCreate: boolean;
   canUpdate: boolean;
   canRemove: boolean;
-  canUpdateRecord: (record: Object) => boolean;
-  canRemoveRecord: (record: Object) => boolean;
+  canUpdateRecord: (record: any) => boolean;
+  canRemoveRecord: (record: any) => boolean;
 }
 
 export interface ModelRelationship {

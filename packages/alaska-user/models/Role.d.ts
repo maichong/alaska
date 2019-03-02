@@ -7,7 +7,7 @@ interface Role extends RoleFields { }
 export interface RoleFields {
   id: string;
   title: string;
-  abilities: Object[];
+  abilities: string[];
   sort: number;
   createdAt: Date;
 }
