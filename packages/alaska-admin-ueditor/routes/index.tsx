@@ -42,7 +42,7 @@ export default function (router: Router) {
     if (action === 'config') {
       // 配置
       let ueditorImageDriver = adminService.config.get('ueditorImageDriver');
-      let imageService = adminService.main.allServices['alaska-image'] as ImageService;
+      let imageService = adminService.main.allServices.get('alaska-image') as ImageService;
       if (!imageService) return onError('Image service unavailable');
       let driverConfig = imageService.drivers[ueditorImageDriver];
       if (!driverConfig) return onError('Image driver unavailable');
@@ -56,7 +56,7 @@ export default function (router: Router) {
       };
       return;
     } else if (action === '') {
-      let imageService = adminService.main.allServices['alaska-image'] as ImageService;
+      let imageService = adminService.main.allServices.get('alaska-image') as ImageService;
       if (!imageService) return onError('Image service unavailable');
       let filters = await userService.createFilters(ctx.user, 'alaska-image.Image.read');
       if (filters === null) {
@@ -94,7 +94,7 @@ export default function (router: Router) {
     try {
       if (action === 'uploadimage') {
         let ueditorImageDriver = adminService.config.get('ueditorImageDriver');
-        let imageService = adminService.main.allServices['alaska-image'] as ImageService;
+        let imageService = adminService.main.allServices.get('alaska-image') as ImageService;
         if (!imageService) return onError('Image service unavailable');
         let image = await imageService.sleds.Create.run({ ctx, user: ctx.user, driver: ueditorImageDriver });
         ctx.body = {

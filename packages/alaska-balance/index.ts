@@ -1,4 +1,4 @@
-import { ObjectMap, Service, ServiceOptions } from 'alaska';
+import { Service, ServiceOptions } from 'alaska';
 import { Currency } from './';
 
 /**
@@ -6,7 +6,7 @@ import { Currency } from './';
  */
 class BalanceService extends Service {
   _currencies: Currency[];
-  _currenciesMap: ObjectMap<Currency>;
+  _currenciesMap: Map<string, Currency>;
   _defaultCurrency: Currency;
   _currenciesPromise: void | Promise<Currency[]>;
   _currenciesPromiseCallback: void | Function;
@@ -24,10 +24,10 @@ class BalanceService extends Service {
         throw new Error('alaska-balance service require currency settings.');
       }
       this._currencies = currencies;
-      this._currenciesMap = {};
+      this._currenciesMap = new Map();
       let currenciesMap = this._currenciesMap;
       currencies.forEach((c: Currency) => {
-        currenciesMap[c.value] = c;
+        currenciesMap.set(c.value, c);
         if (c.default) {
           this._defaultCurrency = c;
         }
@@ -51,7 +51,7 @@ class BalanceService extends Service {
     return this._currencies;
   }
 
-  get currenciesMap(): ObjectMap<Currency> {
+  get currenciesMap(): Map<string, Currency> {
     if (!this._currenciesMap) throw new Error('Can not access currenciesMap before load config!');
     return this._currenciesMap;
   }

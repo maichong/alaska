@@ -10,7 +10,7 @@ export default class BalancePaymentPlugin extends PaymentPlugin {
     balanceService.getCurrenciesAsync().then((list) => {
       list.forEach((cur) => {
         this.currencies.push(cur.value);
-        service.payments[`balance:${cur.value}`] = this;
+        service.payments.set(`balance:${cur.value}`, this);
       });
     });
   }

@@ -8,20 +8,14 @@ import { Model, ModelApi } from 'alaska-model';
 import { CustomApi } from '.';
 import * as defaultApiControllers from './api';
 
-interface ApiGroup {
-  [key: string]: Middleware | Middleware[];
-}
+type ApiGroup = Map<string, Middleware | Middleware[]>;
 
 interface ApiInfo {
-  models: {
-    [key: string]: typeof Model;
-  };
-  apis: {
-    [group: string]: ApiGroup;
-  };
+  models: Map<string, typeof Model>;
+  apis: Map<string, ApiGroup>;
 }
 
-const REST_ACTIONS = [
+const REST_ACTIONS = new Set([
   'count',
   'show',
   'list',
@@ -32,21 +26,20 @@ const REST_ACTIONS = [
   'update',
   'updateMulti',
   'watch'
-];
+]);
 
 export default class ApiExtension extends Extension {
   static after = ['alaska-model', 'alaska-http', 'alaska-routes'];
-  inited: string[];
+  inited: Set<string>;
   routers: Map<string, Router>;
-  apiInfos: {
-    [prefix: string]: ApiInfo;
-  };
+  // prefix -> ApiInfo
+  apiInfos: Map<string, ApiInfo>;
 
   constructor(main: MainService) {
     super(main);
-    this.inited = [];
+    this.inited = new Set();
     this.routers = new Map();
-    this.apiInfos = {};
+    this.apiInfos = new Map();
 
     _.forEach(main.modules.services, (s: ServiceModules) => {
       let service: Service = s.service;
@@ -86,13 +79,13 @@ export default class ApiExtension extends Extension {
         let apiPrefix = service.config.get('apiPrefix');
         if (apiPrefix === false) return; // 该Service 强制关闭了API
 
-        let info: ApiInfo = this.apiInfos[apiPrefix];
+        let info: ApiInfo = this.apiInfos.get(apiPrefix);
         if (!info) {
           info = {
-            models: {},
-            apis: {}
+            models: new Map(),
+            apis: new Map()
           };
-          this.apiInfos[apiPrefix] = info;
+          this.apiInfos.set(apiPrefix, info);
         }
 
         const models: Map<string, typeof Model> = new Map();
@@ -100,34 +93,34 @@ export default class ApiExtension extends Extension {
         _.forEach(service.models, (model) => {
           models.set(model.key, model);
           if (model.api && _.find(model.api, (level) => level > 0)) {
-            if (info.models[model.key]) {
-              throw new Error(`Init api failed, ${model.id} conflict to ${info.models[model.key].id}`);
+            if (info.models.has(model.key)) {
+              throw new Error(`Init api failed, ${model.id} conflict to ${info.models.get(model.key).id}`);
             }
-            info.models[model.key] = model;
+            info.models.set(model.key, model);
           }
         });
 
         function applyPlugin(api: CustomApi, group: string) {
-          if (!info.apis[group]) {
-            info.apis[group] = {};
+          if (!info.apis.has(group)) {
+            info.apis.set(group, new Map());
           }
-          let groupInfo = info.apis[group];
+          let groupInfo = info.apis.get(group);
           _.forEach(api, (fn, action) => {
             if (typeof fn !== 'function' || action.startsWith('__')) return;
             if (action[0] === '_') {
               // record action
               let model = models.get(group);
               if (!model) return;
-              info.models[group] = model;
+              info.models.set(group, model);
             }
-            if (groupInfo[action]) {
-              if (!Array.isArray(groupInfo[action])) {
+            if (groupInfo.has(action)) {
+              if (!Array.isArray(groupInfo.get(action))) {
                 // 转换为数组
-                groupInfo[action] = [<Middleware>groupInfo[action]];
+                groupInfo.set(action, [groupInfo.get(action) as Middleware]);
               }
-              groupInfo[action] = (<Middleware[]>groupInfo[action]).concat(fn);
+              groupInfo.set(action, (groupInfo.get(action) as Middleware[]).concat(fn));
             } else {
-              groupInfo[action] = fn;
+              groupInfo.set(action, fn);
             }
           });
         }
@@ -138,10 +131,9 @@ export default class ApiExtension extends Extension {
       })();
 
       // 最后，初始化子Service，这样，当前Service就可以覆盖子Service接口
-      for (let sid in service.services) {
-        if (this.inited.includes(sid)) continue;
-        this.inited.push(sid);
-        let sub = service.services[sid];
+      for (let [sid, sub] of service.services) {
+        if (this.inited.has(sid)) continue;
+        this.inited.add(sid);
         await sub.initApi();
       }
 
@@ -150,41 +142,37 @@ export default class ApiExtension extends Extension {
       // 由主Service 挂载接口
 
       // 将所有接口数组转为接口函数
-      _.forEach(this.apiInfos, (info) => {
-        _.forEach(info.apis, (apiGroup) => {
-          for (let action in apiGroup) {
-            if (Array.isArray(apiGroup[action])) {
-              let array = apiGroup[action] as Middleware[];
-              apiGroup[action] = compose(array);
-              for (let fn of array) {
-                if (fn._methods) {
-                  (apiGroup[action] as Middleware)._methods = fn._methods;
-                  break;
-                }
-              }
+      for (let info of this.apiInfos.values()) {
+        for (let apiGroup of info.apis.values()) {
+          for (let [action, middlewares] of apiGroup) {
+            if (Array.isArray(middlewares)) {
+              let fn: Middleware = compose(middlewares);
+              fn._methods = middlewares[0]._methods;
+              apiGroup.set(action, fn);
             }
           }
-        });
-      });
+        }
+      }
 
-      // 挂载
-      _.forEach(this.apiInfos, (info, apiPrefix) => {
+      for (let [apiPrefix, info] of this.apiInfos) {
         let router = this.getRouter(apiPrefix);
 
         // 判断是否存在扩展接口
         let hasExtApi = false;
         let hasRecordApi = false;
-        _.forEach(info.apis, (api) => {
+
+        for (let api of info.apis.values()) {
           if (!hasExtApi || !hasRecordApi) {
-            _.forEach(api, (fn, key) => {
+            for (let key of api.keys()) {
               if (key[0] === '_') {
                 hasRecordApi = true;
-              } else if (!REST_ACTIONS.includes(key)) {
+              } else if (!REST_ACTIONS.has(key)) {
                 hasExtApi = true;
               }
-            });
+            }
           }
-        });
+        }
+
         if (hasExtApi) {
           router.all('/:group/:action?', async (ctx: Context, next) => {
             let { group, action } = ctx.params;
@@ -192,20 +180,20 @@ export default class ApiExtension extends Extension {
               action = 'default';
             }
 
-            let apiGroup = info.apis[group];
+            let apiGroup = info.apis.get(group);
 
-            if (apiGroup && apiGroup[action] && action[0] !== '_') {
+            if (apiGroup && apiGroup.has(action) && action[0] !== '_') {
               if (action === 'default') {
                 // 如果 action 为 default，说明一定是 REST 接口，优先处理REST
                 await next();
                 if (ctx.body) {
                   return;
                 }
-              } else if (REST_ACTIONS.indexOf(action) > -1) {
+              } else if (REST_ACTIONS.has(action)) {
                 await next();
                 return;
               }
-              let middleware = apiGroup[action] as Middleware;
+              let middleware = apiGroup.get(action) as Middleware;
               // check motheds
               let methods = middleware._methods || { POST: true };
               // console.log(ctx.method, methods);
@@ -218,19 +206,20 @@ export default class ApiExtension extends Extension {
             await next();
           });
         }
+
         if (hasRecordApi) {
           router.all('/:group/:id/:action', async (ctx: Context, next) => {
             let { group, action, id } = ctx.params;
             let fnName = `_${action}`;
-            let model = info.models[group];
+            let model = info.models.get(group);
 
-            let apiGroup = info.apis[group];
-            if (!model || !apiGroup || typeof apiGroup[fnName] !== 'function') {
+            let apiGroup = info.apis.get(group);
+            if (!model || !apiGroup || typeof apiGroup.get(fnName) !== 'function') {
               await next();
               return;
             }
 
-            let middleware = apiGroup[fnName] as Middleware;
+            let middleware = apiGroup.get(fnName) as Middleware;
             // check motheds
             let methods = middleware._methods || { POST: true };
             // console.log(ctx.method, methods);
@@ -249,10 +238,11 @@ export default class ApiExtension extends Extension {
         }
 
         // 挂载Restful接口
+        // eslint-disable-next-line no-inner-declarations
         function restApi(action: keyof ModelApi): Middleware {
           return (ctx: Context, next) => {
-            let modekKey = ctx.params.model;
-            let model = info.models[modekKey];
+            let modelKey = ctx.params.model;
+            let model = info.models.get(modelKey);
             ctx.state.model = model;
 
             let middlewares: Middleware[] = [];
@@ -261,8 +251,9 @@ export default class ApiExtension extends Extension {
             }
 
             // api 目录下定义的中间件
-            if (info.apis[modekKey] && info.apis[modekKey][action]) {
-              middlewares = middlewares.concat(info.apis[modekKey][action]);
+            let apiGroup = info.apis.get(modelKey);
+            if (apiGroup && apiGroup.has(action)) {
+              middlewares = middlewares.concat(apiGroup.get(action));
             }
             // Model.api参数定义的中间件
             if (model && model.api && model.api[action]) {
@@ -281,6 +272,7 @@ export default class ApiExtension extends Extension {
             return compose(middlewares)(ctx, next);
           };
         }
+
         router.get('/:model/count', restApi('count'));
         router.get('/:model/paginate', restApi('paginate'));
         router.get('/:model/watch', restApi('watch'));
@@ -291,7 +283,8 @@ export default class ApiExtension extends Extension {
         router.patch('/:model', restApi('updateMulti'));
         router.del('/:model/:id', restApi('remove'));
         router.del('/:model', restApi('removeMulti'));
-      });
+      }
+
     });
   }
 }

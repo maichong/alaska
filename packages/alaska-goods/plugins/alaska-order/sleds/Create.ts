@@ -19,12 +19,12 @@ interface Params extends CreateParams {
 
 let skuService: SkuService;
 orderService.resolveConfig().then(() => {
-  skuService = orderService.main.allServices['alaska-sku'] as SkuService;
+  skuService = orderService.main.allServices.get('alaska-sku') as SkuService;
 });
 
 let cartService: CartService;
 orderService.resolveConfig().then(() => {
-  cartService = orderService.main.allServices['alaska-cart'] as CartService;
+  cartService = orderService.main.allServices.get('alaska-cart') as CartService;
 });
 
 export async function pre() {
@@ -86,7 +86,7 @@ export async function pre() {
     }
     // 商品库存不足
     if (!sku && item.quantity > goods.inventory) orderService.error('Inventory shortage');
-    let currency = currenciesMap[goods.currency] || balanceService.defaultCurrency;
+    let currency = currenciesMap.get(goods.currency) || balanceService.defaultCurrency;
     let precision = currency.precision || 0;
 
     item.total = _.round(item.quantity * (item.discount || item.price), precision);

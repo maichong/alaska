@@ -24,15 +24,9 @@ export default class Service {
   main: MainService;
   debug: Debugger.IDebugger;
   modules?: Modules;
-  extensions?: {
-    [id: string]: Extension;
-  };
-  plugins: {
-    [key: string]: Plugin;
-  };
-  services: {
-    [id: string]: ServiceType;
-  };
+  extensions?: Map<string, Extension>;
+  plugins: Map<string, Plugin>;
+  services: Map<string, ServiceType>;
   drivers: Set<Driver<any, any>>;
   _idleTimer?: NodeJS.Timer;
   _config: Config;
@@ -51,8 +45,8 @@ export default class Service {
     collie(this, 'ready');
     this.debug = Debugger(options.id);
     this.debug('constructor');
-    this.plugins = {};
-    this.services = {};
+    this.plugins = new Map();
+    this.services = new Map();
     this.drivers = new Set();
     this._configWatcher = [];
   }
@@ -135,8 +129,8 @@ export default class Service {
     }
 
     let main: MainService = this.main;
-    main.extensions = {};
-    main.allServices = {};
+    main.extensions = new Map();
+    main.allServices = new Map();
 
     let serviceModules: ObjectMap<ServiceModules> = modules.services;
 
@@ -150,7 +144,7 @@ export default class Service {
       service.main = main;
 
       service.config.apply(s.config);
-      main.allServices[sid] = service;
+      main.allServices.set(sid, service);
 
       // 应用插件配置
       _.forEach(s.plugins, (p: PluginModules) => {
@@ -169,7 +163,7 @@ export default class Service {
       _.forEach(service.config.get('services'), (cfg: ServiceConfig, subSid: string) => {
         let sub = serviceModules[subSid];
         if (!sub) return;
-        service.services[subSid] = sub.service;
+        service.services.set(subSid, sub.service);
       });
     });
 
@@ -182,7 +176,7 @@ export default class Service {
       _.forEach(Ext.after, createExt);
       this.debug('new extension', id);
       let ext = new Ext(main);
-      main.extensions[id] = ext;
+      main.extensions.set(id, ext);
       delete extensions[id];
     };
 
@@ -212,8 +206,8 @@ export default class Service {
   async init(): Promise<void> {
     this.debug('init');
     this.init = noop;
-    for (let id of _.keys(this.services)) {
-      await this.services[id].init();
+    for (let service of this.services.values()) {
+      await service.init();
     }
   }
 
@@ -223,14 +217,14 @@ export default class Service {
   async initPlugins(): Promise<void> {
     this.debug('initPlugins');
     this.initPlugins = noop;
-    for (let id of _.keys(this.services)) {
-      await this.services[id].initPlugins();
+    for (let service of this.services.values()) {
+      await service.initPlugins();
     }
     _.forEach(this.main.modules.services[this.id].plugins, (plugin, key) => {
       let PluginClass: typeof Plugin = plugin.plugin;
       if (PluginClass) {
         // @ts-ignore this is Service
-        this.plugins[key] = new PluginClass(this);
+        this.plugins.set(key, new PluginClass(this));
       }
     });
   }
@@ -241,8 +235,8 @@ export default class Service {
   async start(): Promise<void> {
     this.debug('start');
     this.start = noop;
-    for (let id of _.keys(this.services)) {
-      await this.services[id].start();
+    for (let service of this.services.values()) {
+      await service.start();
     }
   }
 
@@ -252,8 +246,8 @@ export default class Service {
   async ready(): Promise<void> {
     this.debug('ready');
     this.ready = noop;
-    for (let id of _.keys(this.services)) {
-      await this.services[id].ready();
+    for (let service of this.services.values()) {
+      await service.ready();
     }
   }
 

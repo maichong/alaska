@@ -1,5 +1,5 @@
 import * as nodemailer from 'nodemailer';
-import { Service, DriverOptions, Driver, ObjectMap } from 'alaska';
+import { Service, DriverOptions, Driver } from 'alaska';
 import Email from './models/Email';
 import User from 'alaska-user/models/User';
 import Send from './sleds/Send';
@@ -24,7 +24,7 @@ export class EmailService extends Service {
   sleds: {
     Send: typeof Send;
   };
-  drivers: ObjectMap<EmailDriver>;
+  drivers: Map<string, EmailDriver>;
 }
 
 declare const emailService: EmailService;

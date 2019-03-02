@@ -6,7 +6,7 @@ import service, { CreateParams } from 'alaska-cart';
 
 let skuService: SkuService;
 service.resolveConfig().then(() => {
-  skuService = service.main.allServices['alaska-sku'] as SkuService;
+  skuService = service.main.allServices.get('alaska-sku') as SkuService;
 });
 
 export default class Create extends Sled<CreateParams, CartGoods> {

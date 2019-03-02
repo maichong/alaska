@@ -7,7 +7,7 @@ import orderService from 'alaska-order';
 
 let skuService: SkuService;
 orderService.resolveConfig().then(() => {
-  skuService = orderService.main.allServices['alaska-sku'] as SkuService;
+  skuService = orderService.main.allServices.get('alaska-sku') as SkuService;
 });
 
 export async function post() {

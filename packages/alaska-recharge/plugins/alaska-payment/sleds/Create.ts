@@ -12,7 +12,7 @@ export async function pre() {
   if (!params.recharge) return;
   let user = params.user || paymentService.error('Missing user info!');
   let type = params.type || paymentService.error('Missing payment type!');
-  if (!paymentService.payments[type]) paymentService.error('Unknown payment type!');
+  if (!paymentService.payments.has(type)) paymentService.error('Unknown payment type!');
   let amount = parseFloat(params.amount) || paymentService.error('Missing payment amount!');
   if (amount <= 0) paymentService.error('Invalid amount!');
   let currency = params.currency || '';
@@ -23,7 +23,7 @@ export async function pre() {
     // 必须指定currency货币类型
     if (!currency) paymentService.error('Currency is required!');
     if (!currenciesMap.hasOwnProperty(currency)) paymentService.error('Unknown currency type!');
-    currencyOpt = currenciesMap[currency];
+    currencyOpt = currenciesMap.get('currency');
   } else if (params.recharge === 'deposit') {
     // 如果充值目标为储值卡，必须指定deposit储值卡ID
     const Deposit = Recharge.lookup('alaska-deposit.Deposit') as typeof DepositType;
@@ -31,7 +31,7 @@ export async function pre() {
     if (!deposit) paymentService.error('Deposit id is required!');
     let dep = await Deposit.findById(deposit).select('title').session(this.dbSession);
     if (!dep) paymentService.error('Deposit record not found!');
-    currencyOpt = currenciesMap[dep.currency];
+    currencyOpt = currenciesMap.get(dep.currency);
   } else {
     paymentService.error('Invalid recharge target!');
   }

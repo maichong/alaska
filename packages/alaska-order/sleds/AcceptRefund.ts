@@ -28,7 +28,7 @@ export default class AcceptRefund extends Sled<AcceptRefundParams, Order[]> {
       order.refundAmount = 0; // 重置退款申请总额
       order.refundQuantity = 0; // 重置退货申请总数量
 
-      const paymentService = orderService.main.allServices['alaska-payment'] as PaymentService;
+      const paymentService = orderService.main.allServices.get('alaska-payment') as PaymentService;
       // payment 退款
       if (refundAmount && paymentService) {
         const { Payment, Refund } = paymentService.models;

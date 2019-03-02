@@ -32,9 +32,9 @@ export default class RoutesExtension extends Extension {
 
         // 挂载子Service接口
         // TODO: 采用更加安全的算法
-        for (let id in service.services) {
+        for (let [id, sub] of service.services) {
           if (inited.includes(id)) continue;
-          await service.services[id].initRoutes();
+          await sub.initRoutes();
         }
       });
     });

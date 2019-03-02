@@ -4,7 +4,7 @@ import PaymentPlugin from './plugin';
 export { PaymentPlugin };
 
 class PaymentService extends Service {
-  payments = {};
+  payments = new Map();
 }
 
 export default new PaymentService({

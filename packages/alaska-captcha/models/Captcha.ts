@@ -53,7 +53,7 @@ export default class Captcha extends Model {
   email: string;
 
   static preRegister() {
-    if (this.main.allServices['alaska-sms']) {
+    if (this.main.allServices.get('alaska-sms')) {
       this.fields.type.options.push({
         label: 'SMS',
         value: 'sms'
@@ -72,7 +72,7 @@ export default class Captcha extends Model {
       }
     }
 
-    if (this.main.allServices['alaska-email']) {
+    if (this.main.allServices.get('alaska-email')) {
       this.fields.type.options.push({
         label: 'Email',
         value: 'email'

@@ -47,12 +47,9 @@ export default class TenpayPlugin extends PaymentPlugin {
 
   init(service: typeof PAYMENT) {
     this.service = service;
-    if (!service.plugins) {
-      service.plugins = {};
-    }
-    service.plugins.tenpay = this;
+    service.plugins.set('tenpay', this);
     ['jssdk', 'wxapp', 'native', 'app'].forEach((item) => {
-      service.payments[`tenpay:${item}`] = this;
+      service.payments.set(`tenpay:${item}`, this);
     });
 
     this.label = 'Tenpay';

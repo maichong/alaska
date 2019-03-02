@@ -42,8 +42,8 @@ export default class Send extends Sled<CaptchaParams, void> {
     CACHE.set(cacheKey, code, captcha.lifetime * 1000 || 1800 * 1000);
 
     if (captcha.type === 'sms' && captcha.sms
-      && service.main && service.main.allServices['alaska-sms']) {
-      let SMS = service.main.allServices['alaska-sms'] as SmsService;
+      && service.main && service.main.allServices.get('alaska-sms')) {
+      let SMS = service.main.allServices.get('alaska-sms') as SmsService;
       await SMS.sleds.Send.run({
         to,
         sms: captcha.sms,
@@ -51,8 +51,8 @@ export default class Send extends Sled<CaptchaParams, void> {
         values
       });
     } else if (captcha.type === 'email' && captcha.email
-      && service.main && service.main.allServices['alaska-email']) {
-      let EMAIL = service.main.allServices['alaska-email'] as EmailService;
+      && service.main && service.main.allServices.get('alaska-email')) {
+      let EMAIL = service.main.allServices.get('alaska-email') as EmailService;
       await EMAIL.sleds.Send.run({
         to,
         email: captcha.email,

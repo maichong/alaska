@@ -9,7 +9,7 @@ import imageService from '..';
  */
 export async function create(ctx: Context) {
   let ability = 'alaska-image.Image.create';
-  const userService = imageService.main.allServices['alaska-user'] as UserService;
+  const userService = imageService.main.allServices.get('alaska-user') as UserService;
   if (userService && !await userService.hasAbility(ctx.user, ability)) ctx.throw(ctx.user ? 403 : 401);
 
   let body = ctx.state.body || ctx.request.body || {};

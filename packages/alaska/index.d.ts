@@ -76,12 +76,12 @@ export class Service {
    * Plugin map
    * key -> Plugin
    */
-  plugins: ObjectMap<Plugin>;
+  plugins: Map<string, Plugin>;
   /**
    * Service map
    * id -> Service
    */
-  services: ObjectMap<Service>;
+  services: Map<string, Service>;
 
   constructor(options: ServiceOptions);
   /**
@@ -142,11 +142,11 @@ export interface MainService extends Service {
    * Extension map
    * id -> Extension
    */
-  extensions: ObjectMap<Extension>;
+  extensions: Map<string, Extension>;
   /**
    * 所有Service，services属性只包含当前的直接Service
    */
-  allServices: ObjectMap<Service>;
+  allServices: Map<string, Service>;
 }
 
 export class Plugin {

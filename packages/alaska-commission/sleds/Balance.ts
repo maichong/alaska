@@ -19,7 +19,7 @@ export default class Balance extends Sled<BalanceParams, Commission> {
         throw new Error('Can not find user!');
       }
 
-      let currency = balanceService.currenciesMap[commission.currency];
+      let currency = balanceService.currenciesMap.get(commission.currency);
       if (!currency) {
         throw new Error('Can not find currency!');
       }

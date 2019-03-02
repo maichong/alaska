@@ -60,7 +60,7 @@ export default class Sled<T, R> {
         return this.main.sleds[sledName] || null;
       }
       ref = sledName;
-      service = this.main.allServices[serviceId];
+      service = this.main.allServices.get(serviceId);
       if (!service) return null;
     }
     return service.sleds[ref] || null;

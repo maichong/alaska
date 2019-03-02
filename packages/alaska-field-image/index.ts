@@ -20,7 +20,7 @@ export default class ImageField extends Field {
   static viewOptions = ['multi', 'max', (options: AdminView.Field, field: ImageField) => {
     if (options.disabled === true) return;
     let main = field._model.service.main;
-    let imageService = main.allServices['alaska-image'] as ImageService;
+    let imageService = main.allServices.get('alaska-image') as ImageService;
     if (imageService) {
       let driver = field.driver || 'default';
       let driverConfig = imageService.drivers[driver];
@@ -52,7 +52,7 @@ export default class ImageField extends Field {
     const defaultValue = field.default || {};
 
     let main = field._model.service.main;
-    let imageService = main.allServices['alaska-image'] as ImageService;
+    let imageService = main.allServices.get('alaska-image') as ImageService;
     if (imageService) {
       let driver = field.driver || 'default';
       if (!imageService.drivers.hasOwnProperty(driver)) throw new Error('Image storage driver not found!');

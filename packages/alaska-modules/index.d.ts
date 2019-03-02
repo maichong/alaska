@@ -8,16 +8,10 @@ export class ModulesMetadata {
   modulesDirs: string[];
   config: ConfigData;
   main: ServiceMetadata;
-  libraries: {
-    [id: string]: LibraryMetadata;
-  };
-  extensions: {
-    [id: string]: ExtensionMetadata;
-  };
-  services: {
-    [id: string]: ServiceMetadata;
-  };
-  allServices: string[];
+  libraries: Map<string, LibraryMetadata>;
+  extensions: Map<string, ExtensionMetadata>;
+  services: Map<string, ServiceMetadata>;
+  allServices: Set<string>;
 
   pre: (event: keyof this, fn: Function) => void;
   post: (event: keyof this, fn: Function) => void;

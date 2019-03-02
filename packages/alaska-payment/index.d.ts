@@ -1,4 +1,4 @@
-import { Service, Plugin, ObjectMap } from 'alaska';
+import { Service, Plugin } from 'alaska';
 import User from 'alaska-user/models/User';
 import Order from 'alaska-order/models/Order';
 import Payment from './models/Payment';
@@ -68,7 +68,7 @@ export class PaymentService extends Service {
     Refund: typeof RefundSled;
   };
 
-  payments: ObjectMap<PaymentPlugin>;
+  payments: Map<string, PaymentPlugin>;
 }
 
 declare const paymentService: PaymentService;

@@ -29,16 +29,10 @@ class ModulesMetadata {
   modulesDirs: string[];
   config: ConfigData;
   main: ServiceMetadata;
-  libraries: {
-    [id: string]: LibraryMetadata;
-  };
-  extensions: {
-    [id: string]: ExtensionMetadata;
-  };
-  services: {
-    [id: string]: ServiceMetadata;
-  };
-  allServices: string[];
+  libraries: Map<string, LibraryMetadata>;
+  extensions: Map<string, ExtensionMetadata>;
+  services: Map<string, ServiceMetadata>;
+  allServices: Set<string>;
   pre: (event: string, fn: Function) => void;
   post: (event: string, fn: Function) => void;
 
@@ -48,10 +42,10 @@ class ModulesMetadata {
     this.configFileName = configFileName;
     this.modulesDirs = modulesDirs || ['node_modules'];
     this.config = _.cloneDeep(Config.defaultConfig);
-    this.libraries = {};
-    this.extensions = {};
-    this.services = {};
-    this.allServices = [];
+    this.libraries = new Map();
+    this.extensions = new Map();
+    this.services = new Map();
+    this.allServices = new Set();
     this.main = {
       id,
       path: '',
@@ -143,7 +137,7 @@ class ModulesMetadata {
       throw new Error(`Can not load extension ${meta.id}`);
     }
 
-    this.extensions[meta.id] = meta;
+    this.extensions.set(meta.id, meta);
 
     debug(`extension create loader: ${meta.id}`);
     const Loader: typeof LoaderClass = require(Path.join(meta.path, 'loader')).default;
@@ -158,9 +152,7 @@ class ModulesMetadata {
     debug('loadServices');
 
     _.forEach(this.config.services, (loadConfig: ServiceConfig, sid: string) => {
-      if (this.allServices.indexOf(sid) === -1) {
-        this.allServices.push(sid);
-      }
+      this.allServices.add(sid);
     });
 
     // 从主Service开始，递归加载子Service
@@ -199,7 +191,7 @@ class ModulesMetadata {
       meta.config = Config.applyData(_.cloneDeep(Config.defaultConfig), config);
     }
 
-    this.services[meta.id] = meta;
+    this.services.set(meta.id, meta);
 
     let loaderFile = Path.join(meta.path, 'loader');
     if (fs.existsSync(`${loaderFile}.ts`) || fs.existsSync(`${loaderFile}.js`)) {
@@ -211,17 +203,15 @@ class ModulesMetadata {
 
     _.forEach(meta.config.services, (loadConfig: ServiceConfig, sid: string) => {
       if (loadConfig.optional) return;
-      if (this.allServices.indexOf(sid) === -1) {
-        this.allServices.push(sid);
-      }
+      this.allServices.add(sid);
     });
 
     // 加载各个子Service
     for (let sid of _.keys(meta.config.services)) {
-      if (this.services[sid]) continue;
+      if (this.services.has(sid)) continue;
       let sConfig = meta.config.services[sid];
       // 可选Service
-      if (sConfig.optional && this.allServices.indexOf(sid) === -1) continue;
+      if (sConfig.optional && !this.allServices.has(sid)) continue;
       await this.loadService({
         id: sid,
         path: '',
@@ -253,7 +243,7 @@ class ModulesMetadata {
 
     // 先为子Service加载插件
     for (let sid of _.keys(service.config.services)) {
-      let sub: ServiceMetadata = this.services[sid];
+      let sub: ServiceMetadata = this.services.get(sid);
       if (!sub || sub.dismiss) continue;
       if (sub.loadedSubServicePlugins) continue;
       sub.loadedSubServicePlugins = true;
@@ -262,7 +252,7 @@ class ModulesMetadata {
 
     // 查询当前Service的plugins目录，加载插件
     for (let sid of _.keys(service.config.services)) {
-      let sub: ServiceMetadata = this.services[sid];
+      let sub: ServiceMetadata = this.services.get(sid);
       if (!sub || sub.dismiss) continue;
       // load
       let pluginDir = Path.join(service.path, 'plugins', sub.id);
@@ -301,7 +291,7 @@ class ModulesMetadata {
     if (service.config.services) {
       // 递归调用子Service
       for (let sid of _.keys(service.config.services)) {
-        let sub: ServiceMetadata = this.services[sid];
+        let sub: ServiceMetadata = this.services.get(sid);
         if (!sub || sub.dismiss) continue;
         if (sub.loadedServiceConfigPlugins) continue;
         sub.loadedServiceConfigPlugins = true;
@@ -411,7 +401,7 @@ class ModulesMetadata {
   async loadLibrary(meta: LibraryMetadata) {
     if (meta.dismiss) return;
     debug('loadLibrary', meta.id);
-    this.libraries[meta.id] = meta;
+    this.libraries.set(meta.id, meta);
   }
 
   async build(): Promise<ModuleTree> {
@@ -422,20 +412,18 @@ class ModulesMetadata {
     tree.extensions = new ModuleTree();
     tree.services = new ModuleTree();
 
-    for (let id of _.keys(this.libraries)) {
-      let meta = this.libraries[id];
+
+    for (let meta of this.libraries.values()) {
       if (meta.dismiss) continue;
       await this.buildLibrary(meta, tree);
     }
 
-    for (let id of _.keys(this.extensions)) {
-      let meta = this.extensions[id];
+    for (let meta of this.extensions.values()) {
       if (meta.dismiss) continue;
       await this.buildExtension(meta, tree);
     }
 
-    for (let id of _.keys(this.services)) {
-      let meta = this.services[id];
+    for (let [id, meta] of this.services) {
       if (meta.dismiss) continue;
       let service = new ModuleTree();
       service.id = id;

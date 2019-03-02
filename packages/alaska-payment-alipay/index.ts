@@ -22,10 +22,7 @@ export default class AlipayPaymentPlugin extends PaymentPlugin {
 
   init(service: typeof PAYMENT) {
     this.service = service;
-    if (!service.plugins) {
-      service.plugins = {};
-    }
-    service.plugins.alipay = this;
+    service.plugins.set('alipay', this);
 
     this.label = 'Alipay';
     let configTmp: AlipayConfig = service.config.get('alipay');

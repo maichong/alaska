@@ -1,4 +1,4 @@
-import { ObjectMap, Service } from 'alaska';
+import { Service } from 'alaska';
 import { Context } from 'alaska-http';
 import * as mongodb from 'mongodb';
 import User from 'alaska-user/models/User';
@@ -26,7 +26,7 @@ export class BalanceService extends Service {
   /**
    * 同步获取货币列表映射
    */
-  currenciesMap: ObjectMap<Currency>;
+  currenciesMap: Map<string, Currency>;
   /**
    * 同步获取默认货币，需要在配置加载后可用
    * 如果在JS声明阶段使用，请用异步方法 getDefaultCurrencyAsync()

@@ -4,7 +4,7 @@ import service from '..';
 
 export async function getCurrenciesAsync() {
   await service.resolveConfig();
-  let balanceService = service.main.allServices['alaska-balance'] as BalanceService;
+  let balanceService = service.main.allServices.get('alaska-balance') as BalanceService;
   if (balanceService) {
     return await balanceService.getCurrenciesAsync();
   }
@@ -13,7 +13,7 @@ export async function getCurrenciesAsync() {
 
 export async function getDefaultCurrencyAsync() {
   await service.resolveConfig();
-  let balanceService = service.main.allServices['alaska-balance'] as BalanceService;
+  let balanceService = service.main.allServices.get('alaska-balance') as BalanceService;
   if (balanceService) {
     return await balanceService.getDefaultCurrencyAsync();
   }

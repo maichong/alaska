@@ -23,7 +23,7 @@ export default function (router: Router) {
       if (data.return_code !== 'SUCCESS' || data.result_code !== 'SUCCESS') {
         return replay('not success');
       }
-      let success = await (paymentService.plugins.tenpay as TenpayPlugin).verify(data);
+      let success = await (paymentService.plugins.get('tenpay') as TenpayPlugin).verify(data);
       if (!success) {
         return replay('sign error');
       }

@@ -60,8 +60,7 @@ export default class SledExtension extends Extension {
     });
 
     main.pre('start', async () => {
-      for (let sid of Object.keys(main.modules.services)) {
-        let service: Service = main.modules.services[sid].service;
+      for (let [sid, service] of main.allServices) {
         let Init = service.sleds.Init;
         if (!Init) continue;
         debug(sid, 'Init');

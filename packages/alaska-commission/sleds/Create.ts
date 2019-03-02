@@ -29,8 +29,8 @@ export default class Create extends Sled<CreateParams, Commission[]> {
       }
       if (!rate) throw new Error('can not determine commission rate!');
       let currencyObject = defaultCurrency;
-      if (currency && currencies[currency]) {
-        currencyObject = currencies[currency];
+      if (currency && currencies.has(currency)) {
+        currencyObject = currencies.get(currency);
       }
       amount = _.round(rate * price, currencyObject.precision);
     }
