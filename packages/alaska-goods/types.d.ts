@@ -6,6 +6,7 @@ export interface Goods {
   pics: string[];
   cat: string;
   brand: string;
+  shop: string;
   recommend: boolean;
   isHot: boolean;
   seoTitle: string;

@@ -20,7 +20,6 @@ declare class Goods extends Model {
 interface Goods extends GoodsFields { }
 
 export interface GoodsFields {
-
   title: string;
   brief: string;
   pic: Image;
@@ -28,6 +27,7 @@ export interface GoodsFields {
   cat: RecordId;
   cats: RecordId[];
   brand: RecordId;
+  shop: RecordId;
   recommend: boolean;
   isHot: boolean;
   seoTitle: string;

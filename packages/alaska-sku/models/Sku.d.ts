@@ -21,10 +21,10 @@ declare class Sku extends Model {
 interface Sku extends SkuFields { }
 
 export interface SkuFields {
-
   key: string;
   pic: Image;
   goods: RecordId;
+  shop: RecordId;
   desc: string;
   price: number;
   discount: number;

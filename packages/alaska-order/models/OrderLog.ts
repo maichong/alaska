@@ -32,6 +32,13 @@ export default class OrderLog extends Model {
       ref: 'alaska-user.User',
       hidden: true
     },
+    shop: {
+      label: 'Shop',
+      type: 'relationship',
+      ref: 'alaska-shop.Shop',
+      optional: 'alaska-shop.Shop',
+      hidden: true
+    },
     state: {
       label: 'State',
       type: 'select',
@@ -67,6 +74,8 @@ export default class OrderLog extends Model {
 
   title: string;
   order: RecordId;
+  user: RecordId;
+  shop: RecordId;
   state: number;
   createdAt: Date;
 

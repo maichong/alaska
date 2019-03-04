@@ -140,6 +140,13 @@ export default class Order extends Model {
       required: true,
       index: true
     },
+    shop: {
+      label: 'Shop',
+      type: 'relationship',
+      ref: 'alaska-shop.Shop',
+      optional: 'alaska-shop.Shop',
+      index: true
+    },
     type: {
       label: 'Type',
       type: 'select',
@@ -321,6 +328,7 @@ export default class Order extends Model {
   code: string;
   title: string;
   user: RecordId;
+  shop: RecordId;
   type: any;
   pic: Image;
   goods: OrderGoods[];
@@ -411,7 +419,7 @@ export default class Order extends Model {
    * @returns {*}
    */
   createLog(title: string, dbSession?: mongodb.ClientSession): OrderLog {
-    let log = new OrderLog({ title, order: this, state: this.state, user: this.user });
+    let log = new OrderLog({ title, order: this, state: this.state, user: this.user, shop: this.shop });
     log.save({ session: dbSession });
     return log;
   }

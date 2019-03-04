@@ -238,6 +238,7 @@ export default class Goods extends Model {
   cat: RecordId;
   cats: RecordId[];
   brand: RecordId;
+  shop: RecordId;
   recommend: boolean;
   isHot: boolean;
   seoTitle: string;

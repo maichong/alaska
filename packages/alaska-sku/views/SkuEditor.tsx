@@ -3,8 +3,9 @@ import * as tr from 'grackle';
 import * as _ from 'lodash';
 import * as immutable from 'seamless-immutable';
 import { ObjectMap } from 'alaska';
-import { FieldViewProps, ImageData, query, views } from 'alaska-admin-view';
+import { FieldViewProps, ImageData, query, views, Record } from 'alaska-admin-view';
 import { PropData, PropValueData } from 'alaska-property/types';
+import { Goods } from 'alaska-goods/types';
 
 interface PropMapData extends PropData {
   valueMap: ObjectMap<PropValueData>;
@@ -16,6 +17,7 @@ interface SkuData {
   desc: string;
   pic?: ImageData;
   goods: string;
+  shop: string;
   price?: number;
   discount?: number;
   inventory?: number;
@@ -26,6 +28,7 @@ interface SkuData {
 
 interface Props extends FieldViewProps {
   value: immutable.Immutable<SkuData[]>;
+  record: immutable.Immutable<Record & Goods>;
 }
 
 interface State {
@@ -67,7 +70,7 @@ function valueToList(
   props: PropMapData[],
   propsMap: ObjectMap<PropMapData>,
   oldSkus: ObjectMap<SkuData>,
-  record: any
+  record: Goods & Record
 ): immutable.Immutable<SkuData[]> {
   value = value || immutable([]);
   if (!record._id || !props.length) return value;
@@ -140,6 +143,7 @@ function valueToList(
       key,
       desc: descItems.join(';'),
       goods: record._id,
+      shop: record.shop,
       props: skuProps
     });
     if (defaultPic && !sku.pic) {

@@ -33,10 +33,16 @@ export default {
       if (!record) {
         record = new Sku();
       }
+      record.set(sku);
       if (!isIdEqual(record, sku)) {
         sku._id = record._id;
       }
-      record.set(sku);
+      if (!isIdEqual(this._id, sku.goods)) {
+        sku.goods = this._id;
+      }
+      if (this.shop && !isIdEqual(this.shop, sku.shop)) {
+        sku.shop = this.shop;
+      }
       record.save({ session: dbSession });
       inventory += sku.inventory;
       volume += sku.volume;

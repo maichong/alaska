@@ -50,6 +50,8 @@ export async function pre() {
     let item = new OrderGoods({
       pic: goods.pic,
       goods: goods._id,
+      user: params.user._id,
+      shop: goods.shop,
       title: goods.title,
       currency: goods.currency,
       price: goods.price,

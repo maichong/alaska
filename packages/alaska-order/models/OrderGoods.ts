@@ -31,6 +31,18 @@ export default class OrderGoods extends Model {
       ref: 'Order',
       index: true
     },
+    user: {
+      label: 'User',
+      type: 'relationship',
+      ref: 'alaska-user.User'
+    },
+    shop: {
+      label: 'Shop',
+      type: 'relationship',
+      ref: 'alaska-shop.Shop',
+      optional: 'alaska-shop.Shop',
+      hidden: true
+    },
     goods: {
       label: 'Goods',
       type: 'relationship',
@@ -160,6 +172,8 @@ export default class OrderGoods extends Model {
   pic: Object;
   title: string;
   order: RecordId;
+  user: RecordId;
+  shop: RecordId;
   goods: RecordId;
   comment: RecordId;
   sku?: RecordId;

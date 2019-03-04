@@ -8,6 +8,8 @@ export interface OrderGoodsFields {
   pic: Image;
   title: string;
   order: RecordId;
+  user: RecordId;
+  shop: RecordId;
   goods: RecordId;
   sku?: RecordId;
   skuDesc: string;

@@ -5,6 +5,7 @@ export interface Sku {
   key: string;
   pic: string;
   goods: string;
+  shop: string;
   desc: string;
   price: number;
   discount: number;

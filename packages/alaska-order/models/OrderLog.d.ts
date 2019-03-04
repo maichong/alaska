@@ -6,6 +6,8 @@ interface OrderLog extends OrderLogFields { }
 export interface OrderLogFields {
   title: string;
   order: RecordId;
+  user: RecordId;
+  shop: RecordId;
   state: number;
   createdAt: Date;
 }

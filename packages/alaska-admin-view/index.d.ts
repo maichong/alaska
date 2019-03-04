@@ -387,6 +387,7 @@ export interface Service {
   prefix?: string | boolean;
 }
 
+// TODO: rename
 export interface Record {
   [path: string]: any;
   _id?: any;

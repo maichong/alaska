@@ -26,6 +26,13 @@ export default class Sku extends Model {
       ref: 'alaska-goods.Goods',
       index: true
     },
+    shop: {
+      label: 'Shop',
+      type: 'relationship',
+      ref: 'alaska-shop.Shop',
+      optional: 'alaska-shop.Shop',
+      hidden: true
+    },
     key: {
       // pid1:vid1;pid2:vid2
       label: 'KEY',
@@ -73,6 +80,7 @@ export default class Sku extends Model {
   key: string;
   pic: Image;
   goods: RecordId;
+  shop: RecordId;
   desc: string;
   price: number;
   discount: number;
