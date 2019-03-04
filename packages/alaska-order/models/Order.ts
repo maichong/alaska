@@ -246,6 +246,11 @@ export default class Order extends Model {
       type: Boolean,
       hidden: true
     },
+    commented: {
+      label: 'Commented',
+      type: Boolean,
+      optional: 'alaska-comment.Comment'
+    },
     state: {
       label: 'State',
       type: 'select',
@@ -366,6 +371,7 @@ export default class Order extends Model {
   refundTimeout: Date;
   userDeleted: boolean;
   adminDeleted: boolean;
+  commented: boolean;
 
   _logTotal: boolean;
   _logShipping: boolean;

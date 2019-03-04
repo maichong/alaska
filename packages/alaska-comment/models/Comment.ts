@@ -24,8 +24,8 @@ export default class Comment extends Model {
       type: 'select',
       required: true,
       options: [{
-        label: 'Default',
-        value: 'default'
+        label: 'Goods',
+        value: 'goods'
       }]
     },
     order: {
@@ -49,11 +49,23 @@ export default class Comment extends Model {
       type: 'relationship',
       ref: 'alaska-goods.Goods',
       optional: 'alaska-goods.Goods',
-      protected: true,
       hidden: '!goods'
     },
+    sku: {
+      label: 'Sku',
+      type: 'relationship',
+      ref: 'alaska-sku.Sku',
+      optional: 'alaska-sku.Sku',
+      hidden: '!sku'
+    },
+    skuDesc: {
+      label: 'Sku Desc',
+      type: String,
+      optional: 'alaska-sku.Sku',
+      hidden: true
+    },
     content: {
-      label: 'Title',
+      label: 'Content',
       type: String,
       required: true
     },
@@ -102,11 +114,16 @@ export default class Comment extends Model {
   order: RecordId;
   orderGoods: RecordId;
   goods: RecordId;
+  sku: RecordId;
+  skuDesc: string;
   reply: RecordId;
   parents: RecordId[];
   createdAt: Date;
 
   preSave() {
+    if (this.pics && this.pics.length) {
+      this.pic = this.pics[0];
+    }
     if (!this.createdAt) {
       this.createdAt = new Date();
     }

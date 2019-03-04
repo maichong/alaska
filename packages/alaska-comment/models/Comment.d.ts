@@ -12,6 +12,8 @@ export interface CommentFields {
   order: RecordId;
   orderGoods: RecordId;
   goods: RecordId;
+  sku: RecordId;
+  skuDesc: string;
   reply: RecordId;
   parents: RecordId[];
   createdAt: Date;

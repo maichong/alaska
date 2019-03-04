@@ -47,6 +47,7 @@ export interface OrderGoodsFields {
    * 上一次审核通过的退货数量
    */
   lastRefundQuantity: number;
+  comment: RecordId;
   createdAt: Date;
 }
 

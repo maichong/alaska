@@ -7,6 +7,8 @@ export interface Comment {
   order: string;
   orderGoods: string;
   goods: string;
+  sku: string;
+  skuDesc: string;
   reply: string;
   createdAt: string;
 }

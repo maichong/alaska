@@ -52,6 +52,7 @@ export interface Order {
   paymentTimeout: string;
   receiveTimeout: string;
   refundTimeout: string;
+  commented: boolean;
 }
 
 
@@ -99,6 +100,7 @@ export interface OrderGoods {
    * 上一次审核通过的退货数量
    */
   lastRefundQuantity: number;
+  comment: string;
   createdAt: string;
 }
 

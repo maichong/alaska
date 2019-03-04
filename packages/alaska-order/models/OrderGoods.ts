@@ -40,8 +40,8 @@ export default class OrderGoods extends Model {
     sku: {
       label: 'SKU',
       type: 'relationship',
-      ref: 'alaska-goods.Sku',
-      optional: 'alaska-goods.Sku'
+      ref: 'alaska-sku.Sku',
+      optional: 'alaska-sku.Sku'
     },
     skuKey: {
       label: 'SKU Key',
