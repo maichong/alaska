@@ -65,8 +65,10 @@ export default class Captcha extends Model {
           label: 'SMS Template',
           type: 'relationship',
           ref: 'alaska-sms.Sms',
-          depends: {
-            type: 'sms'
+          hidden: {
+            type: {
+              $ne: 'sms'
+            }
           }
         };
       }
@@ -84,8 +86,10 @@ export default class Captcha extends Model {
           label: 'Email Template',
           type: 'relationship',
           ref: 'alaska-email.Email',
-          depends: {
-            type: 'email'
+          hidden: {
+            type: {
+              $ne: 'email'
+            }
           }
         };
       }

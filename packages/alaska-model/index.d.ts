@@ -729,6 +729,7 @@ interface FieldBase {
   label?: string;
   plain?: FieldDataType;
   plainName?: string;
+  optional?: string;
   multi?: boolean;
   view?: string;
   defaultValue?: any;

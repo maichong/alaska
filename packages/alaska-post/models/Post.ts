@@ -35,7 +35,7 @@ export default class Post extends Model {
       label: 'Category',
       type: 'relationship',
       ref: 'alaska-category.Category',
-      optional: true,
+      optional: 'alaska-category.Category',
       filters: {
         group: 'post'
       }
@@ -44,7 +44,7 @@ export default class Post extends Model {
       label: 'Categories',
       type: 'relationship',
       ref: 'alaska-category.Category',
-      optional: true,
+      optional: 'alaska-category.Category',
       multi: true,
       hidden: true,
       private: true

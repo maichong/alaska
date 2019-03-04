@@ -61,7 +61,7 @@ export default class Feedback extends Model {
       label: 'User',
       type: 'relationship',
       ref: 'alaska-user.User',
-      optional: true
+      optional: 'alaska-user.User'
     },
     createdAt: {
       label: 'Created At',

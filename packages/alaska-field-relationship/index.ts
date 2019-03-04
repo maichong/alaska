@@ -28,7 +28,6 @@ export default class RelationshipField extends Field {
 
   // Model id
   model: string;
-  optional: boolean;
 
   /**
    * 初始化Schema
@@ -45,70 +44,55 @@ export default class RelationshipField extends Field {
       // ref有可能为null
       ref = model.lookup(ref);
 
-      if (!this.optional && !ref) {
+      if (!ref) {
         throw new Error(`${model.id}.fields.${this.path}.ref not found [${this.ref}]`);
       }
     }
 
     let options: ObjectMap<any> = {};
     let type: FieldDataType;
-    if (ref) {
-      // 找到了引用模型
-      if (plain) {
-        type = plain;
-      } else if (ref.fields._id) {
-        let idField = ref.fields._id;
-        let idType: string | FieldDataType | typeof Field | typeof Model = idField.type;
-        if (idField.plain) {
-          type = idField.plain;
-        } else if (idType) {
-          // eslint-disable-next-line
 
-          if (typeof idType === 'string') {
-            let fieldLib = `alaska-field-${idType}`;
-            let idFieldClass: typeof Field = main.modules.libraries[fieldLib];
-            if (!idFieldClass) {
-              throw new Error(`Field type '${fieldLib}' not found!`);
-            }
-            type = idFieldClass.plain;
-            this.filter = idFieldClass.prototype.filter;
-            if (idFieldClass.plainName) {
-              this.plainName = idFieldClass.plainName;
-            }
-          } else if (idType instanceof Field) {
-            type = (<typeof Field>idType).plain;
-            this.filter = (<typeof Field>idType).prototype.filter;
-            if (idType.plainName) {
-              this.plainName = idType.plainName;
-            }
-          } else {
-            type = <FieldDataType>idType;
+    if (plain) {
+      type = plain;
+    } else if (ref.fields._id) {
+      let idField = ref.fields._id;
+      let idType: string | FieldDataType | typeof Field | typeof Model = idField.type;
+      if (idField.plain) {
+        type = idField.plain;
+      } else if (idType) {
+        // eslint-disable-next-line
+
+        if (typeof idType === 'string') {
+          let fieldLib = `alaska-field-${idType}`;
+          let idFieldClass: typeof Field = main.modules.libraries[fieldLib];
+          if (!idFieldClass) {
+            throw new Error(`Field type '${fieldLib}' not found!`);
           }
-        }
-      }
-      if (!type) {
-        type = TypeObjectId;
-      }
-      options = {
-        type,
-        ref: ref.modelName
-      };
-
-      this.model = ref.id;
-    } else {
-      // 如果没有找到引用,说明是可选引用
-      this.hidden = true;
-      type = plain || TypeObjectId;
-      options.type = type;
-      if (typeof this.ref === 'string') {
-        let _ref: string = this.ref;
-        if (_ref.indexOf('.') > -1) {
-          this.model = this.ref;
+          type = idFieldClass.plain;
+          this.filter = idFieldClass.prototype.filter;
+          if (idFieldClass.plainName) {
+            this.plainName = idFieldClass.plainName;
+          }
+        } else if (idType instanceof Field) {
+          type = (<typeof Field>idType).plain;
+          this.filter = (<typeof Field>idType).prototype.filter;
+          if (idType.plainName) {
+            this.plainName = idType.plainName;
+          }
         } else {
-          this.model = `${service.id}.${this.ref}`;
+          type = <FieldDataType>idType;
         }
       }
     }
+    if (!type) {
+      type = TypeObjectId;
+    }
+    options = {
+      type,
+      ref: ref.modelName
+    };
+
+    this.model = ref.id;
 
     if (type === TypeObjectId && !this.plainName) {
       this.plainName = 'objectid';

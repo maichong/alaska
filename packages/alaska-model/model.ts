@@ -53,18 +53,21 @@ export default class Model {
    */
   static lookup(ref: string): typeof ModelType | null {
     let service: Service = this.service || this.main;
+    let model: typeof ModelType;
     if (ref.indexOf('.') > -1) {
       let [serviceId, modelName] = ref.split('.');
       if (!serviceId) {
         // ref -> '.ModelName'
-        return this.main.models[modelName] || null;
+        serviceId = this.main.id;
       }
-      ref = modelName;
       let serviceModule = this.main.modules.services[serviceId];
-      if (!serviceModule) return null;
-      service = serviceModule.service;
+      if (!serviceModule || !serviceModule.models) return null;
+      model = serviceModule.models[modelName] || null;
+    } else {
+      model = service.models[ref];
     }
-    return service.models[ref] || null;
+    if (model && model.classOfModel) return model;
+    return null;
   }
 
   /**
@@ -193,6 +196,10 @@ export default class Model {
     // @ts-ignore
     const model: typeof ModelType = this;
     const { modelName, service, schema } = model;
+    if (options.optional && typeof options.optional === 'string') {
+      let dep = this.lookup(options.optional);
+      if (!dep) return;
+    }
 
     if (!schema) throw new Error('Can not exec Model.addField() before register!');
     if (model._fields.hasOwnProperty(path)) throw new Error(`Field alread exists [${model.id}.fields.${path}]`);
@@ -599,6 +606,7 @@ export default class Model {
       });
 
       [
+        'classOfModel',
         'addField',
         'paginateByContext',
         'listByContext',

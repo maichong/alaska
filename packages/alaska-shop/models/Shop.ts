@@ -44,7 +44,7 @@ export default class Shop extends Model {
       label: 'Brand',
       type: 'relationship',
       ref: 'alaska-brand.Brand',
-      optional: true
+      optional: 'alaska-brand.Brand'
     },
     tel: {
       label: 'Tel',

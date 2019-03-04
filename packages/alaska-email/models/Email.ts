@@ -13,7 +13,9 @@ export default class Email extends Model {
       title: 'Test Send',
       sled: 'Test',
       style: 'success',
-      depends: 'testTo'
+      hidden: {
+        $ne: 'testTo'
+      }
     }
   };
 

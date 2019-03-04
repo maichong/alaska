@@ -26,7 +26,7 @@ export default class Image extends Model {
       label: 'User',
       type: 'relationship',
       ref: 'alaska-user.User',
-      optional: true
+      optional: 'alaska-user.User'
     },
     name: {
       label: 'Name',

@@ -73,7 +73,7 @@ export default class Income extends Model {
       label: 'Deposit',
       type: 'relationship',
       ref: 'alaska-deposit.Deposit',
-      optional: true,
+      optional: 'alaska-deposit.Deposit',
       disabled: '!isNew',
       hidden: {
         target: {

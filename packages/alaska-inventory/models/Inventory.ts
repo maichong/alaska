@@ -33,7 +33,7 @@ export default class Inventory extends Model {
       label: 'SKU',
       type: 'relationship',
       ref: 'alaska-sku.Sku',
-      optional: true
+      optional: 'alaska-sku.Sku'
     },
     type: {
       label: 'Type',

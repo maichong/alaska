@@ -161,12 +161,14 @@ class SettingsPage extends React.Component<Props, State> {
             onChange: (v: any) => this.handleChange(item._id, v)
           });
         });
-        content.push(<div className="card mb-3 mx-2" key={index}>
-          <div className="card-heading">{group.title}</div>
-          <div className="card-body">
-            <div className="form form-horizontal">{items}</div>
+        content.push(
+          <div className="card" key={index}>
+            <div className="card-heading">{group.title}</div>
+            <div className="card-body">
+              <div className="field-group-form form form-horizontal">{items}</div>
+            </div>
           </div>
-        </div>);
+        );
       });
     }
 
@@ -178,7 +180,7 @@ class SettingsPage extends React.Component<Props, State> {
               <div className="toolbar-title">{tr('Settings', 'alaska-settings')}</div>
             </div>
           </div>
-          <div className="form-horizontal">
+          <div className="editor">
             {content}
           </div>
           <ActionBar>

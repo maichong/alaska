@@ -69,14 +69,14 @@ export default class Goods extends Model {
       label: 'Shop',
       type: 'relationship',
       ref: 'alaska-shop.Shop',
-      optional: true,
+      optional: 'alaska-shop.Shop',
       index: true
     },
     brand: {
       label: 'Brand',
       type: 'relationship',
       ref: 'alaska-brand.Brand',
-      optional: true,
+      optional: 'alaska-brand.Brand',
       index: true
     },
     cat: {
@@ -206,6 +206,12 @@ export default class Goods extends Model {
     createdAt: {
       label: 'Created At',
       type: Date
+    },
+    commentCount: {
+      label: 'Comments Count',
+      type: Number,
+      default: 0,
+      optional: 'alaska-comment.Comment'
     },
     desc: {
       label: 'Description',

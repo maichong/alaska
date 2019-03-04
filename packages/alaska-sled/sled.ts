@@ -53,17 +53,21 @@ export default class Sled<T, R> {
    */
   static lookup(ref: string): typeof Sled | null {
     let service: Service = this.service || this.main;
+    let sled: typeof Sled;
     if (ref.indexOf('.') > -1) {
       let [serviceId, sledName] = ref.split('.');
       if (!serviceId) {
         // ref -> '.SledName'
-        return this.main.sleds[sledName] || null;
+        serviceId = this.main.id;
       }
-      ref = sledName;
-      service = this.main.allServices.get(serviceId);
-      if (!service) return null;
+      let serviceModule = this.main.modules.services[serviceId];
+      if (!serviceModule || !serviceModule.sleds) return null;
+      sled = serviceModule.sleds[sledName] || null;
+    } else {
+      sled = service.sleds[ref];
     }
-    return service.sleds[ref] || null;
+    if (sled && sled.classOfSled) return sled;
+    return null;
   }
 
   /**

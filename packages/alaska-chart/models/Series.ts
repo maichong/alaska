@@ -96,10 +96,7 @@ export default class Series extends Model {
         value: 'default'
       }, {
         label: 'Year',
-        value: 'year',
-        depends: {
-          type: 'time'
-        }
+        value: 'year'
       }, {
         label: 'Quarter',
         value: 'quarter'

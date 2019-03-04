@@ -86,7 +86,7 @@ export function* settingsSaga() {
           if (model.noupdate) return false;
           // TODO: URRC
           if (!model.abilities.update) return false;
-          // TODO: check action depends / hidden / super
+          // TODO: check action / hidden / super
           return true;
         };
         model.canRemoveRecord = function (record: Object) {
@@ -94,7 +94,7 @@ export function* settingsSaga() {
           if (model.noremove) return false;
           // TODO: URRC
           if (!model.abilities.remove) return false;
-          // TODO: check action depends / hidden / super
+          // TODO: check action hidden / super
           return true;
         };
       });

@@ -67,9 +67,11 @@ export default class Recharge extends Model {
       label: 'Deposit',
       type: 'relationship',
       ref: 'alaska-balance.Deposit',
-      optional: true,
-      depends: {
-        target: 'deposit'
+      optional: 'alaska-balance.Deposit',
+      hidden: {
+        target: {
+          $ne: 'deposit'
+        }
       },
       filters: {
         user: ':user' // 只显示当前用户Deposit列表

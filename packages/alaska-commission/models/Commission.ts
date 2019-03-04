@@ -56,8 +56,8 @@ export default class Commission extends Model {
       label: 'Order',
       type: 'relationship',
       ref: 'alaska-order.Order',
-      index: true,
-      optional: true
+      optional: 'alaska-order.Order',
+      index: true
     },
     main: {
       label: 'Main Commission',

@@ -35,13 +35,13 @@ export default class OrderGoods extends Model {
       label: 'Goods',
       type: 'relationship',
       ref: 'alaska-goods.Goods',
-      optional: true
+      optional: 'alaska-goods.Goods'
     },
     sku: {
       label: 'SKU',
       type: 'relationship',
       ref: 'alaska-goods.Sku',
-      optional: true
+      optional: 'alaska-goods.Sku'
     },
     skuKey: {
       label: 'SKU Key',
@@ -145,6 +145,12 @@ export default class OrderGoods extends Model {
       hidden: true,
       disabled: true
     },
+    comment: {
+      label: 'Comment',
+      type: 'relationship',
+      ref: 'alaska-comment.Comment',
+      optional: 'alaska-comment.Comment'
+    },
     createdAt: {
       label: 'Created At',
       type: Date
@@ -155,6 +161,7 @@ export default class OrderGoods extends Model {
   title: string;
   order: RecordId;
   goods: RecordId;
+  comment: RecordId;
   sku?: RecordId;
   skuKey: string;
   skuDesc: string;

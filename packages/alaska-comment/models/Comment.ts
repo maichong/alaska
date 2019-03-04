@@ -32,7 +32,7 @@ export default class Comment extends Model {
       label: 'Order',
       type: 'relationship',
       ref: 'alaska-order.Order',
-      optional: true,
+      optional: 'alaska-order.Order',
       protected: true,
       hidden: '!order'
     },
@@ -40,7 +40,7 @@ export default class Comment extends Model {
       label: 'Order Goods',
       type: 'relationship',
       ref: 'alaska-order.OrderGoods',
-      optional: true,
+      optional: 'alaska-order.OrderGoods',
       protected: true,
       hidden: '!orderGoods'
     },
@@ -48,7 +48,7 @@ export default class Comment extends Model {
       label: 'Goods',
       type: 'relationship',
       ref: 'alaska-goods.Goods',
-      optional: true,
+      optional: 'alaska-goods.Goods',
       protected: true,
       hidden: '!goods'
     },

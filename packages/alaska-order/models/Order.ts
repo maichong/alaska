@@ -278,7 +278,7 @@ export default class Order extends Model {
     failure: {
       label: 'Failure Reason',
       type: String,
-      depends: 'failure'
+      hidden: '!failure'
     },
     createdAt: {
       label: 'Created At',
