@@ -16,7 +16,7 @@
     "chalk": "^2.4.2",
     "commander": "^2.19.0",
     "download-github-repo": "^0.1.4",
-    "globby": "^9.0.0",
+    "globby": "^9.1.0",
     "mkdirp": "^0.5.1",
     "read-promise": "^1.0.2",
     "slash": "^2.0.0",

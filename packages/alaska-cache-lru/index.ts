@@ -1,4 +1,4 @@
-import * as LRU from 'lru-cache';
+import * as LRUCache from 'lru-cache';
 import * as Debugger from 'debug';
 import { Service } from 'alaska';
 import CacheDriver from 'alaska-cache';
@@ -6,13 +6,13 @@ import { LruCacheDriverOptions } from 'alaska-cache-lru';
 
 const debug = Debugger('alaska-cache-lru');
 
-export default class LruCacheDriver<T> extends CacheDriver<T, LruCacheDriverOptions, LRU.Cache<string, any>> {
+export default class LruCacheDriver<T> extends CacheDriver<T, LruCacheDriverOptions<T>, LRUCache<string, T>> {
   _maxAge: number;
 
-  constructor(options: LruCacheDriverOptions, service: Service) {
+  constructor(options: LruCacheDriverOptions<T>, service: Service) {
     super(options, service);
     this._maxAge = options.maxAge || 0;
-    this._driver = new LRU(options);
+    this._driver = new LRUCache(options);
   }
 
   /**
@@ -65,11 +65,13 @@ export default class LruCacheDriver<T> extends CacheDriver<T, LruCacheDriverOpti
    * @returns {Promise<number>}
    */
   inc(key: string): Promise<number> {
-    let value = this._driver.get(key);
+    // @ts-ignore T -> number
+    let value = this._driver.get(key) as number;
     if (!value) {
       value = 0;
     }
     value += 1;
+    // @ts-ignore number -> T
     this._driver.set(key, value);
     debug('inc', key, '=>', value);
     return Promise.resolve(value);
@@ -81,11 +83,13 @@ export default class LruCacheDriver<T> extends CacheDriver<T, LruCacheDriverOpti
    * @returns {Promise<number>}
    */
   dec(key: string): Promise<number> {
-    let value = this._driver.get(key);
+    // @ts-ignore T -> number
+    let value = this._driver.get(key) as number;
     if (!value) {
       value = 0;
     }
     value -= 1;
+    // @ts-ignore number -> T
     this._driver.set(key, value);
     debug('inc', key, '=>', value);
     return Promise.resolve(value);
