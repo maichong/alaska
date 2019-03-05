@@ -15,6 +15,7 @@ export interface RegisterSettings {
 
 export class SettingsService extends Service {
   register(data: RegisterSettings): Promise<Settings>;
+  getSync(id: string): any;
   get(id: string): Promise<any>;
   set(id: string, value: any): Promise<Settings>;
 }

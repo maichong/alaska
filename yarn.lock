@@ -1633,7 +1633,7 @@ ajv@^6.1.0, ajv@^6.5.5, ajv@^6.9.1:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-akita@^0.7.2, akita@^0.7.3:
+akita@^0.7.3:
   version "0.7.3"
   resolved "https://registry.yarnpkg.com/akita/-/akita-0.7.3.tgz#d3907b3ebd71dcea35ff95adcb362455ed5ad9a8"
   integrity sha512-wlQV0ACl0WJMEFrXxrDvzigCS1t7sH305f/ed3ybQ4Gm4hPoXd2t4Zzn8H6+B3017cIcOKNZa6jK6aDlO3RX+g==
@@ -4870,12 +4870,12 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-libwx@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/libwx/-/libwx-0.4.0.tgz#768e8b802166f7c8868273532b2cba30fc9bf3f5"
-  integrity sha512-D/qEa90VyuG/vgCilRP+CpG38ZczeU0lghLoEYtd0wxF/vcp/5GSuVkiWQopfuB7HAKbWFRuEoKpNQXiH7hzPQ==
+libwx@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/libwx/-/libwx-0.4.1.tgz#f989bfdab26c8a4587f9de427df5a875dd041b67"
+  integrity sha512-JK3irG/bZROGVR+nXYZxJOzTtMpJ45G87JIRBAJzPC/K788fcUNgpsbkow1hEWEvrgHdY76aQXQpkKxKSAFACQ==
   dependencies:
-    akita "^0.7.2"
+    akita "^0.7.3"
     lodash "^4.17.11"
     sha1 "^1.1.1"
     string-random "^0.1.3"

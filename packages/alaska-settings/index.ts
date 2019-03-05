@@ -3,6 +3,8 @@ import Settings from './models/Settings';
 import { RegisterSettings } from '.';
 
 export class SettingsService extends Service {
+  settings: Map<string, any> = new Map();
+
   /**
    * 注册新设置选项
    * @param data
@@ -49,6 +51,39 @@ export class SettingsService extends Service {
     record.value = value;
     await record.save();
     return record;
+  }
+
+  getSync(id: string): any {
+    return this.settings.get(id);
+  }
+
+  async postInit() {
+    let list = await Settings.find();
+    list.forEach((s) => {
+      this.settings.set(s.id, s.value);
+    });
+
+    this._watch();
+  }
+
+  _watch() {
+    let changeStream = Settings.watch([], {
+      fullDocument: 'updateLookup'
+    });
+
+    changeStream.on('change', async (change) => {
+      let doc = change.fullDocument;
+      switch (change.operationType) {
+        case 'insert':
+        case 'update':
+          this.settings.set(doc._id, doc.value);
+          break;
+      }
+    });
+
+    changeStream.on('close', () => {
+      this._watch();
+    });
   }
 }
 
