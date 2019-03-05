@@ -12,10 +12,14 @@ export async function create(ctx: Context) {
     let user = ctx.user || service.error(401);
     if (!userService.hasAbility(ctx.user, 'alaska-payment.Payment.create')) service.error(403);
     body.user = user;
+    body.ip = ctx.ip;
   } else {
     body = ctx.state.body || ctx.throw('Missing state.body when ignore authorization');
     if (!body.user) {
       body.user = ctx.user;
+    }
+    if (!body.ip) {
+      body.ip = ctx.ip;
     }
   }
 

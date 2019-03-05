@@ -13,6 +13,9 @@ export default class Create extends Sled<CreateParams, Payment> {
 
     if (!paymentService.payments.has(payment.type)) paymentService.error('Unknown payment type');
     payment.params = await paymentService.payments.get(payment.type).createParams(payment);
+    if (!payment.ip && params.ip) {
+      payment.ip = params.ip;
+    }
     await payment.save({ session: this.dbSession });
     return payment;
   }

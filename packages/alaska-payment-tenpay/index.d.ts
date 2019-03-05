@@ -19,5 +19,4 @@ export interface TenpayConfig {
 }
 
 export default class TenpayPlugin extends PaymentPlugin {
-  verify(data: ObjectMap<any>): boolean;
 }

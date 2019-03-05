@@ -12,6 +12,7 @@ export interface PaymentFields {
   params: any;
   state: 'pending' | 'success' | 'failed';
   failure: string;
+  callbackData: any;
   createdAt: Date;
 }
 

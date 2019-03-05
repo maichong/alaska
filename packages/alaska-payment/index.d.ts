@@ -14,13 +14,19 @@ export class PaymentPlugin extends Plugin {
   /**
    * 支付插件支持的货币列表
    */
-  currencies: string[];
+  currencies: Set<string>;
 
   /**
    * 创建支付参数，如果返回数字 'success'，代表支付已经完成，不需要客户端再做处理
    * @param {Payment} payment 支付记录
    */
   createParams(payment: Payment): Promise<'success' | any>;
+
+  /**
+   * 验证回调数据
+   * @param data 回调数据
+   */
+  verify(data: any, payment: Payment): Promise<boolean>;
 
   /**
    * 退款
@@ -33,6 +39,7 @@ export class PaymentPlugin extends Plugin {
 export interface CreateParams {
   user: User;
   type: string;
+  ip?: string;
   orders?: string[] | Order[];
   /**
    * 需要前置钩子中生成支付记录，不需要手动传入

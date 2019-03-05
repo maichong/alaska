@@ -1,5 +1,12 @@
 import { PaymentPlugin } from 'alaska-payment';
 
+declare module 'alaska-payment/models/Payment' {
+  export interface PaymentFields {
+    openid: string;
+    weixin_transaction_id: string;
+  }
+}
+
 export interface WeixinPaymentOptions {
   /**
    * 支付渠道
@@ -32,11 +39,55 @@ export interface WeixinPaymentOptions {
   /**
    * 签名方式
    */
-  sign_type?: 'md5' | 'sha256';
+  sign_type?: 'MD5' | 'SHA256';
 }
 
-export interface CallbackData {
-  [key: string]: any;
+export interface UnifiedOrderReq {
+  device_info?: string;
+  body: string;
+  detail?: string;
+  attach?: string;
+  out_trade_no: string;
+  fee_type?: string;
+  total_fee: number;
+  spbill_create_ip?: string;
+  time_start?: string;
+  time_expire?: string;
+  goods_tag?: string;
+  product_id?: string;
+  limit_pay?: string;
+  openid?: string;
+  receipt?: string;
+  scene_info?: {
+    id: string;
+    name: string;
+    area_code: string;
+    address: string;
+  };
+
+  // 以下不需要传
+  sign?: string;
+}
+
+export interface UnifiedOrderRes {
+  return_code: 'SUCCESS';
+  return_msg: 'OK';
+  appid: string;
+  mch_id: string;
+  nonce_str: string;
+  sign: string;
+  result_code: string;
+  prepay_id: string;
+  trade_type: string;
+}
+
+export interface PayParams {
+  appId?: string;
+  timeStamp: string;
+  nonceStr: string;
+  package: string;
+  signType: string;
+  paySign?: string;
 }
 
 export default class WeixinPaymentPlugin extends PaymentPlugin {

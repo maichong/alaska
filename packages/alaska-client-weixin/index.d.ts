@@ -18,6 +18,11 @@ export interface ConfigData {
    */
   autoRegiterUser?: boolean;
   /**
+   * 自动更新用户openid
+   * 当用户在其他微信上登录后，自动更新 user.openid 字段为新微信
+   */
+  autoUpdateOpenId?: boolean;
+  /**
    * 启用 unionid，代替 openid
    * 自动注册时，使用 unionid 作为 username
    * 并且，使用 unionid 字段作为用户查询字段

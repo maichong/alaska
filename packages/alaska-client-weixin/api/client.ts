@@ -95,6 +95,12 @@ export async function create(ctx: Context, next: Function) {
 
   if (client.user) {
     let user = await User.findById(client.user).session(ctx.dbSession);
+    let openidField = userFieldsMap.openid || 'openid';
+    let oldOpenId = user.get(openidField);
+    if (User._fields[openidField] && (!oldOpenId || (config.autoUpdateOpenId && oldOpenId !== deviceId))) {
+      user.set(openidField, deviceId);
+      await user.save({ session: ctx.dbSession });
+    }
     if (user) {
       data.user = user.data('info');
     }

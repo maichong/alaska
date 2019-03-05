@@ -20,13 +20,14 @@ export default function (router: Router) {
     let body = ctx.state.body || ctx.request.body;
     if (!body || body.trade_status !== 'TRADE_SUCCESS') return;
 
-    let success = await (paymentService.plugins.get('alipay') as AlipayPlugin).verify(body);
-
-    if (!success) return;
     let paymentId = body.out_trade_no;
 
     let payment = (await Payment.findById(paymentId).session(ctx.dbSession)) as PaymentAlipay;
     if (!payment) return;
+
+    let success = await (paymentService.plugins.get('alipay') as AlipayPlugin).verify(body, payment);
+
+    if (!success) return;
     payment.alipay_trade_no = body.trade_no;
     payment.alipay_buyer_email = body.buyer_email;
     try {

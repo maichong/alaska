@@ -23,14 +23,14 @@ export default function (router: Router) {
       if (data.return_code !== 'SUCCESS' || data.result_code !== 'SUCCESS') {
         return replay('not success');
       }
-      let success = await (paymentService.plugins.get('tenpay') as TenpayPlugin).verify(data);
-      if (!success) {
-        return replay('sign error');
-      }
       let paymentId = data.out_trade_no;
       let payment = (await Payment.findById(paymentId).session(this.dbSession)) as PaymentTenpay;
       if (!payment) {
         return replay('out_trade_no error');
+      }
+      let success = await (paymentService.plugins.get('tenpay') as TenpayPlugin).verify(data, payment);
+      if (!success) {
+        return replay('sign error');
       }
       if (payment.amount * 100 !== data.total_fee) {
         return replay('total_fee error');

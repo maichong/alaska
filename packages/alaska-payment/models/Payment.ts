@@ -73,6 +73,11 @@ export default class Payment extends Model {
       required: true,
       protected: true
     },
+    ip: {
+      label: 'IP',
+      type: String,
+      protected: true
+    },
     params: {
       label: 'Params',
       type: Object,
@@ -97,6 +102,11 @@ export default class Payment extends Model {
       label: 'Failure Reason',
       type: String
     },
+    callbackData: {
+      label: 'Callback Data',
+      type: Object,
+      protected: true
+    },
     createdAt: {
       label: 'Created At',
       type: Date
@@ -108,14 +118,18 @@ export default class Payment extends Model {
   currency: string;
   amount: number;
   type: string;
+  ip: string;
   params: any;
   state: 'pending' | 'success' | 'failed';
   failure: string;
+  callbackData: any;
   createdAt: Date;
 
   // for alaska dev
   orders: any[];
   recharge: RecordId;
+  openid: string;
+  weixin_transaction_id: string;
 
   preSave() {
     if (!this.createdAt) {

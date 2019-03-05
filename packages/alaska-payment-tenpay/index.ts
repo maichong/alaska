@@ -162,7 +162,7 @@ export default class TenpayPlugin extends PaymentPlugin {
     return { total_title, total_data, list_title, list_data };
   }
 
-  verify(params: ObjectMap<any>) {
+  async verify(params: any): Promise<any> {
     let sign = this._getSign(params);
     return params.sign === sign;
   }
