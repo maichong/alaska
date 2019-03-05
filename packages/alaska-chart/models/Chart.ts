@@ -106,7 +106,7 @@ export default class Chart extends Model {
       let model = Model.lookup(modelId);
       if (!model) continue;
 
-      if (ctx) {
+      if (ctx && !ctx.state.ignoreAuthorization) {
         let abliityFilters = await userService.createFilters(ctx.user, `${model.id}.read`);
         if (!abliityFilters) continue;
         let userFilters = await model.createFiltersByContext(ctx);

@@ -8,7 +8,9 @@ import service from '..';
 export default function (router: Router) {
   router.post('/action', async (ctx: Context) => {
     ctx.service = service;
-    if (!await userService.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
+    if (!ctx.state.ignoreAuthorization) {
+      if (!await userService.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
+    }
 
     const body: any = ctx.request.body;
     let records: Model[] = [];
@@ -29,14 +31,16 @@ export default function (router: Router) {
     const ability = action.ability || `${model.id}.${actionName}`;
 
     if (!recordsId.length) {
-      if (!await userService.hasAbility(ctx.user, ability)) service.error('Access Denied', 403);
+      if (!ctx.state.ignoreAuthorization && !await userService.hasAbility(ctx.user, ability)) service.error('Access Denied', 403);
     } else {
       records = await model.find({ _id: { $in: recordsId } }).session(ctx.dbSession);
       // 数目对不上，说明某个Record不存在
       if (recordsId.length !== records.length) service.error('Record not found!');
       // 验证权限
-      for (let record of records) {
-        if (!await userService.hasAbility(ctx.user, ability, record)) service.error('Access Denied', 403);
+      if (!ctx.state.ignoreAuthorization) {
+        for (let record of records) {
+          if (!await userService.hasAbility(ctx.user, ability, record)) service.error('Access Denied', 403);
+        }
       }
     }
     let result = await sled.run({

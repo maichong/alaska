@@ -21,7 +21,9 @@ interface ListQuery {
 export default function (router: Router) {
   router.get('/list', async (ctx: Context) => {
     ctx.service = service;
-    if (!await userService.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
+    if (!ctx.state.ignoreAuthorization) {
+      if (!await userService.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
+    }
 
     const modelId = ctx.query._model || service.error('Missing model!');
     const model = Model.lookup(modelId) || service.error('Model not found!');
@@ -29,8 +31,11 @@ export default function (router: Router) {
     // 验证 action 权限
     const ability = `${model.id}.read`;
 
-    let abilityFilters = await userService.createFilters(ctx.user, ability);
-    if (!abilityFilters) service.error('Access Denied', 403);
+    let abilityFilters;
+    if (!ctx.state.ignoreAuthorization) {
+      abilityFilters = await userService.createFilters(ctx.user, ability);
+      if (!abilityFilters) service.error('Access Denied', 403);
+    }
 
     let filters = mergeFilters(await model.createFiltersByContext(ctx), abilityFilters);
 

@@ -28,6 +28,7 @@ declare module 'alaska' {
 
 declare module 'alaska-http' {
   export interface ContextState {
+    model?: typeof Model;
     search?: string;
     filters?: Filters;
   }

@@ -7,39 +7,66 @@ import Create from '../sleds/Create';
 import service from '..';
 
 export async function create(ctx: Context) {
-  if (!ctx.user) service.error(401);
   let body = ctx.state.body || ctx.request.body;
-  let goods: string = body.goods || ctx.request.body.goods;
-  let sku: string = body.sku || ctx.request.body.sku;
-  let quantity: number = body.quantity || ctx.request.body.quantity;
-  if (!goods) service.error(400);
+
+  if (!ctx.state.ignoreAuthorization) {
+    if (!ctx.user) service.error(401);
+    body.user = ctx.user._id;
+  } else {
+    body = ctx.state.body || ctx.throw('Missing state.body when ignore authorization');
+    if (!body.user && ctx.user) {
+      body.user = ctx.user._id;
+    }
+  }
+
+  let goods: string = body.goods || service.error('goods is required!', 400);
+  let sku: string = body.sku;
+  let quantity: number = body.quantity;
+
   let record = await Create.run({
-    user: ctx.user._id, goods, sku, quantity
+    user: body.user || ctx.user._id, goods, sku, quantity
   }, { dbSession: ctx.dbSession });
+
   ctx.state.record = record;
   let data = record.data('create');
+
   // @ts-ignore
   data.inventory = record.inventory;
   ctx.body = data;
 }
 
 export async function update(ctx: Context) {
-  if (!ctx.user) service.error(401);
+  if (!ctx.state.ignoreAuthorization) {
+    if (!ctx.user) service.error(401);
+  }
+
   let id = ctx.state.id || ctx.params.id || ctx.throw(400);
+
   let body = ctx.state.body || ctx.request.body;
   let record = await CartGoods.findById(id).session(ctx.dbSession);
   if (!record) ctx.throw(404);
-  if (!await userService.hasAbility(ctx.user, 'alaska-cart.CartGoods.update', record)) ctx.throw(403);
+
+  if (!ctx.state.ignoreAuthorization) {
+    if (!await userService.hasAbility(ctx.user, 'alaska-cart.CartGoods.update', record)) ctx.throw(403);
+    body.user = ctx.user.id;
+  } else {
+    body = ctx.state.body || ctx.throw('Missing state.body when ignore authorization');
+    if (!body.user && ctx.user) {
+      body.user = ctx.user._id;
+    }
+  }
 
   record = await Create.run({
-    user: ctx.user._id,
+    user: body.user,
     goods: record.goods,
     sku: record.sku,
     quantity: body.quantity,
     replaceQuantity: true
   }, { dbSession: ctx.dbSession });
+
   ctx.state.record = record;
   let data = record.data('create');
+
   // @ts-ignore
   data.inventory = record.inventory;
   ctx.body = data;

@@ -16,8 +16,12 @@ export default class Create extends Sled<ActionSledParams, any> {
 
     // eslint-disable-next-line new-cap
     let record = new model(body);
+
     let ability = `${model.id}.create`;
-    if (!await userService.hasAbility(params.ctx.user, ability, record)) service.error('Access Denied', 403);
+    if (!params.ctx.state.ignoreAuthorization) {
+      if (!await userService.hasAbility(params.ctx.user, ability, record)) service.error('Access Denied', 403);
+    }
+
     await record.save({ session: this.dbSession });
 
     let json = record.toJSON();

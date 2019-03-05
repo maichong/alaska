@@ -9,6 +9,7 @@ import * as isSvg from 'is-svg';
 import * as fileType from 'file-type';
 import Image from '../models/Image';
 import service, { CreateParams } from '..';
+import { RecordId } from 'alaska-model';
 
 interface ImageInfo {
   width: number;
@@ -40,9 +41,12 @@ export default class Create extends Sled<CreateParams, Image> {
       name: params.name
     });
 
-    let user = params.user || params.admin;
+    let user = params.user;
+    if (!user && params.admin) {
+      user = params.admin._id as RecordId;
+    }
     if (user) {
-      image.user = user._id;
+      image.user = user;
     }
 
     let filePath: string;

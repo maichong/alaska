@@ -27,8 +27,11 @@ export default class Export extends Sled<ActionSledParams, any> {
 
     const ability = `${model.id}.export`;
 
-    let abilityFilters = await userService.createFilters(params.admin, ability);
-    if (!abilityFilters) service.error('Access Denied', 403);
+    let abilityFilters;
+    if (!ctx.state.ignoreAuthorization) {
+      abilityFilters = await userService.createFilters(params.admin, ability);
+      if (!abilityFilters) service.error('Access Denied', 403);
+    }
 
     let filters = mergeFilters(await model.createFiltersByContext(ctx), abilityFilters);
 

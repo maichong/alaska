@@ -5,6 +5,7 @@ import User from 'alaska-user/models/User';
 import Image from './models/Image';
 import Create from './sleds/Create';
 import { Context } from 'alaska-http';
+import { RecordId } from 'alaska-model';
 
 export class ImageService extends Service {
   drivers: ObjectMap<ImageDriverConfig>;
@@ -60,7 +61,7 @@ export interface CreateParams {
    */
   driver?: string;
   admin?: User;
-  user?: User;
+  user?: RecordId;
   ctx?: Context;
   file?: fs.ReadStream | string;
   data?: Buffer;

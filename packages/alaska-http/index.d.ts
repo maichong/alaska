@@ -67,6 +67,14 @@ export interface ContextState {
    * Current client locale
    */
   locale?: string;
+  /**
+   * 默认Restful接口忽略默认的URRC权限检查，由前置中间件自定义filters进行权限检查
+   */
+  ignoreAuthorization?: boolean;
+  /**
+   * Request Body
+   */
+  body?: any;
 }
 
 export interface AlaskaContext {
@@ -81,10 +89,6 @@ export interface AlaskaContext {
   session?: Session;
   sessionKey?: string;
   sessionId?: string;
-  /**
-   * User
-   */
-  user?: any;
   /**
    * Main Service
    */

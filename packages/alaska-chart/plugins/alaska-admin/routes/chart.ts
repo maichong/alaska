@@ -7,8 +7,10 @@ import { ChartOptions } from '../../..';
 export default function (router: Router) {
   // get chart list by place
   router.get('/chart', async (ctx: Context) => {
-    if (!ctx.user) ctx.throw(401);
-    if (!userService.hasAbility(ctx.user, 'admin')) ctx.throw(403);
+    if (!ctx.state.ignoreAuthorization) {
+      if (!ctx.user) ctx.throw(401);
+      if (!userService.hasAbility(ctx.user, 'admin')) ctx.throw(403);
+    }
     let place = ctx.query._place;
     let chart: ChartOptions = ctx.query._chart;
     if (!place && !chart) ctx.throw(400, '_place or _chart is required!');
@@ -29,8 +31,10 @@ export default function (router: Router) {
 
   // get chart
   router.get('/chart/:id', async (ctx: Context) => {
-    if (!ctx.user) ctx.throw(401);
-    if (!userService.hasAbility(ctx.user, 'admin')) ctx.throw(403);
+    if (!ctx.state.ignoreAuthorization) {
+      if (!ctx.user) ctx.throw(401);
+      if (!userService.hasAbility(ctx.user, 'admin')) ctx.throw(403);
+    }
     let chart = await Chart.findById(ctx.params.id);
     if (!chart) ctx.throw(404);
 

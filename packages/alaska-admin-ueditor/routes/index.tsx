@@ -58,9 +58,12 @@ export default function (router: Router) {
     } else if (action === '') {
       let imageService = adminService.main.allServices.get('alaska-image') as ImageService;
       if (!imageService) return onError('Image service unavailable');
-      let filters = await userService.createFilters(ctx.user, 'alaska-image.Image.read');
-      if (filters === null) {
-        return onError('Access denied');
+      let filters;
+      if (!ctx.state.ignoreAuthorization) {
+        filters = await userService.createFilters(ctx.user, 'alaska-image.Image.read');
+        if (filters === null) {
+          return onError('Access denied');
+        }
       }
       let start = parseInt(ctx.query.start) || 0;
       let limit = 20;
@@ -96,7 +99,7 @@ export default function (router: Router) {
         let ueditorImageDriver = adminService.config.get('ueditorImageDriver');
         let imageService = adminService.main.allServices.get('alaska-image') as ImageService;
         if (!imageService) return onError('Image service unavailable');
-        let image = await imageService.sleds.Create.run({ ctx, user: ctx.user, driver: ueditorImageDriver });
+        let image = await imageService.sleds.Create.run({ ctx, user: ctx.user._id, driver: ueditorImageDriver });
         ctx.body = {
           state: 'SUCCESS',
           url: image.url,

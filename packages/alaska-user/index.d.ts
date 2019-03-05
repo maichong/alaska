@@ -11,6 +11,12 @@ import Register from './sleds/Register';
 import RegisterAbility from './sleds/RegisterAbility';
 import RegisterRole from './sleds/RegisterRole';
 
+declare module 'alaska-http' {
+  export interface AlaskaContext {
+    user?: User;
+  }
+}
+
 declare module 'alaska' {
   interface ConfigData {
     autoLogin?: AutoLoginConfig;

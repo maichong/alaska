@@ -13,8 +13,10 @@ import Delete from '../sleds/Delete';
  * @http-body {Array<{goods:strng; sku: string; quantity?: number;}>} goods 订单商品列表
  */
 exports['pre-create'] = async function (ctx: Context) {
-  if (!ctx.user) service.error(401);
-  if (!userService.hasAbility(ctx.user, 'alaska-order.Order.create')) service.error(403);
+  if (!ctx.state.ignoreAuthorization) {
+    if (!ctx.user) service.error(401);
+    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.create')) service.error(403);
+  }
   let body = ctx.state.body || ctx.request.body;
   body.pre = true;
   body.user = ctx.user;
@@ -38,10 +40,19 @@ exports['pre-create'] = async function (ctx: Context) {
  * @http-body {Array<{goods:strng | sku: string}>} goods 订单商品列表
  */
 export async function create(ctx: Context) {
-  if (!ctx.user) service.error(401);
-  if (!userService.hasAbility(ctx.user, 'alaska-order.Order.create')) service.error(403);
   let body = ctx.state.body || ctx.request.body;
-  body.user = ctx.user;
+
+  if (!ctx.state.ignoreAuthorization) {
+    if (!ctx.user) service.error(401);
+    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.create')) service.error(403);
+    body.user = ctx.user;
+  } else {
+    body = ctx.state.body || ctx.throw('Missing state.body when ignore authorization');
+    if (!body.user) {
+      body.user = ctx.user;
+    }
+  }
+
   body.ctx = ctx;
 
   let orders = await Create.run(body, { dbSession: ctx.dbSession });
@@ -61,10 +72,13 @@ export async function create(ctx: Context) {
  * 用户取消订单
  */
 export async function _cancel(ctx: Context) {
-  if (!ctx.user) service.error(401);
   let order: Order = ctx.state.record;
 
-  if (!userService.hasAbility(ctx.user, 'alaska-order.Order.cancel', order)) service.error(403);
+  if (!ctx.state.ignoreAuthorization) {
+    if (!ctx.user) service.error(401);
+    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.cancel', order)) service.error(403);
+  }
+
   await Cancel.run({ record: order }, { dbSession: ctx.dbSession });
 
   let data = order.data();
@@ -77,10 +91,13 @@ export async function _cancel(ctx: Context) {
  * @http-body {string} order 订单ID
  */
 export async function _receive(ctx: Context) {
-  if (!ctx.user) service.error(401);
   let order: Order = ctx.state.record;
 
-  if (!userService.hasAbility(ctx.user, 'alaska-order.Order.receive', order)) service.error(403);
+  if (!ctx.state.ignoreAuthorization) {
+    if (!ctx.user) service.error(401);
+    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.receive', order)) service.error(403);
+  }
+
   await Receive.run({ record: order }, { dbSession: ctx.dbSession });
 
   let data = order.data();
@@ -95,10 +112,12 @@ export async function _receive(ctx: Context) {
  * body.amount 退款金额
  */
 export async function _refund(ctx: Context) {
-  if (!ctx.user) service.error(401);
   let order: Order = ctx.state.record;
 
-  if (!userService.hasAbility(ctx.user, 'alaska-order.Order.refund', order)) service.error(403);
+  if (!ctx.state.ignoreAuthorization) {
+    if (!ctx.user) service.error(401);
+    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.refund', order)) service.error(403);
+  }
 
   let body = ctx.state.body || ctx.request.body;
 
@@ -130,10 +149,14 @@ export async function _refund(ctx: Context) {
  * 用户删除订单
  */
 export async function remove(ctx: Context) {
-  if (!ctx.user) service.error(401);
+  if (!ctx.state.ignoreAuthorization) {
+    if (!ctx.user) service.error(401);
+  }
   let order = ctx.state.order || await Order.findById(ctx.state.id || ctx.params.id).where('user', ctx.user._id).session(ctx.dbSession);
   if (order) {
-    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.delete', order)) service.error(403);
+    if (!ctx.state.ignoreAuthorization) {
+      if (!userService.hasAbility(ctx.user, 'alaska-order.Order.delete', order)) service.error(403);
+    }
     await Delete.run({ record: order }, { dbSession: ctx.dbSession });
   }
   ctx.body = {};

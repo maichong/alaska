@@ -13,7 +13,9 @@ interface DetailsQuery {
 export default function (router: Router) {
   router.get('/details', async (ctx: Context) => {
     ctx.service = service;
-    if (!await userService.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
+    if (!ctx.state.ignoreAuthorization) {
+      if (!await userService.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
+    }
 
     const id = ctx.query._id || service.error('Missing id!');
     const modelId = ctx.query._model || service.error('Missing model!');
@@ -24,7 +26,9 @@ export default function (router: Router) {
 
     // 验证资源权限
     const ability = `${model.id}.read`;
-    if (!await userService.hasAbility(ctx.user, ability, record)) service.error('Access Denied', 403);
+    if (!ctx.state.ignoreAuthorization) {
+      if (!await userService.hasAbility(ctx.user, ability, record)) service.error('Access Denied', 403);
+    }
 
     let json = record.toJSON();
     await userService.trimPrivateField(json, ctx.user, model, record);

@@ -20,7 +20,7 @@ export async function count(ctx: Context) {
   const ability = `${model.id}.read`;
   let abilityFilters;
 
-  if (model.api.count > PUBLIC) {
+  if (!ctx.state.ignoreAuthorization && model.api.count > PUBLIC) {
     if (!userService) model.service.error(401);
     abilityFilters = await userService.createFilters(ctx.user, ability);
     if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
@@ -68,7 +68,7 @@ export async function paginate(ctx: Context) {
   const ability = `${model.id}.read`;
   let abilityFilters;
 
-  if (model.api.paginate > PUBLIC) {
+  if (!ctx.state.ignoreAuthorization && model.api.paginate > PUBLIC) {
     if (!userService) model.service.error(401);
     abilityFilters = await userService.createFilters(ctx.user, ability);
     if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
@@ -100,7 +100,7 @@ export async function list(ctx: Context) {
 
   const ability = `${model.id}.read`;
   let abilityFilters;
-  if (model.api.list > PUBLIC) {
+  if (!ctx.state.ignoreAuthorization && model.api.list > PUBLIC) {
     if (!userService) model.service.error(401);
     abilityFilters = await userService.createFilters(ctx.user, ability);
     if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
@@ -141,7 +141,7 @@ export async function show(ctx: Context) {
     //404
     return;
   }
-  if (model.api.show > PUBLIC && !await userService.hasAbility(ctx.user, ability, record)) {
+  if (!ctx.state.ignoreAuthorization && model.api.show > PUBLIC && !await userService.hasAbility(ctx.user, ability, record)) {
     model.service.error(ctx.user ? 403 : 401);
   }
 
@@ -171,7 +171,7 @@ export async function create(ctx: Context) {
     record._id = body.id;
   }
 
-  if (model.api.create > PUBLIC) {
+  if (!ctx.state.ignoreAuthorization && model.api.create > PUBLIC) {
     if (!userService) model.service.error(401);
     if (!await userService.hasAbility(ctx.user, ability, record)) {
       model.service.error(ctx.user ? 403 : 401);
@@ -200,7 +200,7 @@ export async function update(ctx: Context) {
     return;
   }
 
-  if (model.api.update > PUBLIC) {
+  if (!ctx.state.ignoreAuthorization && model.api.update > PUBLIC) {
     if (!userService) model.service.error(401);
     if (!await userService.hasAbility(ctx.user, ability, record)) {
       model.service.error(ctx.user ? 403 : 401);
@@ -239,7 +239,7 @@ export async function updateMulti(ctx: Context) {
   const ability = `${model.id}.update`;
   let abilityFilters;
 
-  if (model.api.updateMulti > PUBLIC) {
+  if (!ctx.state.ignoreAuthorization && model.api.updateMulti > PUBLIC) {
     if (!userService) model.service.error(401);
     abilityFilters = await userService.createFilters(ctx.user, ability);
     if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
@@ -278,7 +278,7 @@ export async function remove(ctx: Context) {
     return;
   }
 
-  if (model.api.update > PUBLIC) {
+  if (!ctx.state.ignoreAuthorization && model.api.update > PUBLIC) {
     if (!userService) model.service.error(401);
     if (!await userService.hasAbility(ctx.user, ability, record)) {
       model.service.error(ctx.user ? 403 : 401);
@@ -296,7 +296,7 @@ export async function removeMulti(ctx: Context) {
   const ability = `${model.id}.remove`;
   let abilityFilters;
 
-  if (model.api.updateMulti > PUBLIC) {
+  if (!ctx.state.ignoreAuthorization && model.api.updateMulti > PUBLIC) {
     if (!userService) model.service.error(401);
     abilityFilters = await userService.createFilters(ctx.user, ability);
     if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
@@ -342,7 +342,7 @@ export async function watch(ctx: Context) {
   const ability = `${model.id}.read`;
   let abilityFilters;
 
-  if (model.api.updateMulti > PUBLIC) {
+  if (!ctx.state.ignoreAuthorization && model.api.updateMulti > PUBLIC) {
     if (!userService) model.service.error(401);
     abilityFilters = await userService.createFilters(ctx.user, ability);
     if (!abilityFilters) model.service.error(ctx.user ? 403 : 401);
