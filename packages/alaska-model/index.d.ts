@@ -680,7 +680,7 @@ export interface ModelPopulation {
   /**
    * 关联的模型，此项不需要定义，启动后自动初始化
    */
-  model?: typeof Model;
+  _model?: typeof Model;
   /**
    * 接口中自动返回关联的 Population 数据
    */
@@ -689,13 +689,15 @@ export interface ModelPopulation {
    * 关联匹配过滤器
    */
   filters?: Object;
+  /** optional query options like sort, limit, etc */
+  options?: any;
   /**
    * 要查询的字段列表
    */
   select?: string;
   _select?: ModelFieldList;
   /**
-   * 只查询需要的字段
+   * 只查询需要的字段，默认为true
    */
   autoSelect?: boolean;
   /**

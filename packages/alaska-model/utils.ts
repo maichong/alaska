@@ -9,36 +9,61 @@ import * as mongoose from 'mongoose';
 export function processPopulation(query: Query<any>, pop: ModelPopulation, model: typeof Model, scopeKey: string): null | mongoose.ModelPopulateOptions {
   // 判断scope是否不需要返回此path
   if (model._scopes[scopeKey] && !model._scopes[scopeKey][pop.path]) return null;
-  let config = pop;
-  if (pop.autoSelect === false && pop.select) {
-    config = _.omit(pop, 'select');
-  } else if (pop.autoSelect !== false && pop.scopes && pop.scopes[scopeKey]) {
-    config = Object.assign({}, pop, {
-      select: pop.scopes[scopeKey]
-    });
+  let config: mongoose.ModelPopulateOptions = {
+    path: pop.path,
+    // @ts-ignore
+    model: pop._model,
+    select: pop._select,
+    match: pop.filters
+  };
+  if (pop.autoSelect === false && config.select) {
+    config = _.omit(config, 'select');
+  } else if (pop.autoSelect !== false && pop._scopes && pop._scopes[scopeKey]) {
+    config.select = pop._scopes[scopeKey];
   }
   query.populate(config);
   // @ts-ignore config 中存在 path
   return config;
 }
 
-export function processScope(fields: string | ModelFieldList, model: typeof Model): ModelFieldList {
+/**
+ * 处理 model.populations
+ */
+export function parsePopulation(p: ModelPopulation, model: typeof Model) {
+  if (p.select) {
+    p._select = parseFieldList(p.select, model);
+  }
+  p._scopes = {};
+  _.forEach(p.scopes, (s, scope) => {
+    p._scopes[scope] = parseFieldList(s, model);
+  });
+}
+
+/**
+ * 将 scope / select 设置的fields字符串列表，整理成Object
+ * @param fields
+ * @param model
+ */
+export function parseFieldList(fields: string | ModelFieldList, model: typeof Model): ModelFieldList {
   if (typeof fields === 'object') return fields;
   let keys: ModelFieldList = {};
   fields.split(' ').map((s) => s.trim()).filter((s) => s).forEach((s) => {
     if (s === '*') {
+      // 所有字段
       Object.keys(model.defaultScope).forEach((f) => {
         keys[f] = 1;
       });
     } else if (s[0] === '-') {
+      // 去除字段
       s = s.substr(1);
       if (!model.defaultScope[s] && !model.fields[s]) {
         throw new Error(`Can not find field ${model.id}.scopes.${s} when process scopes`);
       }
       delete keys[s];
     } else if (s[0] === ':') {
+      // Scope 引用
       s = s.substr(1);
-      let scope = model.scopes[s];
+      let scope = model._scopes[s];
       if (!scope) {
         throw new Error(`Can not find scope ${model.id}.scopes.${s} when process scopes`);
       }
@@ -48,6 +73,7 @@ export function processScope(fields: string | ModelFieldList, model: typeof Mode
         throw new Error(`Can not init scope, ${model.id}.scopes.${s} should be Object`);
       }
     } else if (s[0] === '_') {
+      // 需要查询数据库，但不返回
       s = s.substr(1);
       if (!model.fields[s]) {
         throw new Error(`Can not find field ${model.id}.scopes.${s} when process scopes`);

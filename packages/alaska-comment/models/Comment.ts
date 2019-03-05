@@ -7,6 +7,12 @@ export default class Comment extends Model {
   static defaultColumns = 'type user content createdAt';
   static defaultSort = '-createdAt';
 
+  static populations = {
+    user: {
+      select: ':tiny'
+    }
+  };
+
   static api = {
     paginate: 1,
     list: 1,

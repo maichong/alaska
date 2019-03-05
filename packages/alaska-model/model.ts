@@ -22,7 +22,7 @@ import {
   DocumentQuery
 } from 'alaska-model';
 import { Data, objectToData } from './data';
-import { processScope, bindMethods, deepClone, loadFieldConfig, processPopulation } from './utils';
+import { parsePopulation, parseFieldList, bindMethods, deepClone, loadFieldConfig, processPopulation } from './utils';
 
 function panic() {
   throw new Error('Can not call the function when Model has been initialized.');
@@ -387,7 +387,7 @@ export default class Model {
             throw new Error(`${service.id}.${modelName}.populations error, can not populate '${p.path}'`);
           }
           // @ts-ignore RelationshipField 存在 ref
-          p.model = model._fields[p.path].ref;
+          p._model = model._fields[p.path].ref;
           populations[p.path] = p;
           if (p.select || p.scopes || p.populations) {
             needRef = true;
@@ -400,6 +400,17 @@ export default class Model {
       }
 
       if (needRef) {
+        service.pre('start', () => {
+          _.forEach(model.populations, (p: ModelPopulation) => {
+            parsePopulation(p, p._model);
+            if (p.populations && p._model) {
+              _.forEach(p.populations, (item, k) => {
+                parsePopulation(item, p._model._fields[k].ref);
+              });
+            }
+          });
+        });
+
         // TODO:
         // service.pre('loadSleds', () => {
         //   _.forEach(model.populations, (p: ModelPopulation) => {
@@ -446,11 +457,11 @@ export default class Model {
 
       if (model.scopes) {
         if (model.scopes['*']) {
-          model.defaultScope = processScope(model.scopes['*'], model);
+          model.defaultScope = parseFieldList(model.scopes['*'], model);
         }
         _.forEach(model.scopes, (scopeConfig: string, scopeName: string) => {
           if (scopeName === '*') return;
-          model._scopes[scopeName] = processScope(scopeConfig, model);
+          model._scopes[scopeName] = parseFieldList(scopeConfig, model);
         });
       }
       if (!model._scopes.show) {
@@ -944,7 +955,7 @@ export default class Model {
     }
 
     // TODO: relationships
-    // TODO: populations
+    // TODO: 深层 populations
     let populations = [];
     _.forEach(model.populations, (pop) => {
       if (processPopulation(query, pop, model, scopeKey) && pop.populations) {
