@@ -13,13 +13,18 @@ import Delete from '../sleds/Delete';
  * @http-body {Array<{goods:strng; sku: string; quantity?: number;}>} goods 订单商品列表
  */
 exports['pre-create'] = async function (ctx: Context) {
+  let body = ctx.state.body || ctx.request.body;
   if (!ctx.state.ignoreAuthorization) {
     if (!ctx.user) service.error(401);
     if (!userService.hasAbility(ctx.user, 'alaska-order.Order.create')) service.error(403);
+    body.user = ctx.user;
+  } else {
+    body = ctx.state.body || ctx.throw('Missing state.body when ignore authorization');
+    if (!body.user) {
+      body.user = ctx.user;
+    }
   }
-  let body = ctx.state.body || ctx.request.body;
   body.pre = true;
-  body.user = ctx.user;
   body.ctx = ctx;
 
   let orders = await Create.run(body);
@@ -114,12 +119,15 @@ export async function _receive(ctx: Context) {
 export async function _refund(ctx: Context) {
   let order: Order = ctx.state.record;
 
+  let body = ctx.state.body || ctx.request.body;
+
   if (!ctx.state.ignoreAuthorization) {
     if (!ctx.user) service.error(401);
     if (!userService.hasAbility(ctx.user, 'alaska-order.Order.refund', order)) service.error(403);
+  } else {
+    body = ctx.state.body || ctx.throw('Missing state.body when ignore authorization');
   }
 
-  let body = ctx.state.body || ctx.request.body;
 
   let reason = body.reason || '';
   let amount = body.amount || 0;

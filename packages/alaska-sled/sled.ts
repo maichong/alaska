@@ -9,6 +9,14 @@ import LockDriver from 'alaska-lock';
 import { SledConfig, SledTask, SledMessage, SledOptions, SledHook } from '.';
 
 function sortHooks(a: SledHook, b: SledHook): number {
+  // a 在最前
+  if (a._before === '*') return -1;
+  // a 在最后
+  if (a._after === '*') return 1;
+  // b 在最前
+  if (b._before === '*') return 1;
+  // b 在最后
+  if (b._after === '*') return -1;
   // b 在 a 前
   if (a._id && b._before === a._id) return 1;
   // a 在 b 后
