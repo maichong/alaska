@@ -101,11 +101,13 @@ export default class OrderGoods extends Model {
     },
     price: {
       label: 'Price',
-      type: Number
+      type: Number,
+      format: '0,0.00'
     },
     discount: {
       label: 'Discount',
-      type: Number
+      type: Number,
+      format: '0,0.00'
     },
     quantity: {
       label: 'Quantity',
@@ -113,16 +115,19 @@ export default class OrderGoods extends Model {
     },
     shipping: {
       label: 'Shipping',
-      type: Number
+      type: Number,
+      format: '0,0.00'
     },
     total: {
       // total = (discount || price) * quantity
       label: 'Total Amount',
-      type: Number
+      type: Number,
+      format: '0,0.00'
     },
     refundedAmount: {
       label: 'Refunded Amount',
       type: Number,
+      format: '0,0.00',
       hidden: '!refundedAmount'
     },
     refundedQuantity: {
@@ -138,6 +143,7 @@ export default class OrderGoods extends Model {
     refundAmount: {
       label: 'Refund Amount',
       type: Number,
+      format: '0,0.00',
       hidden: '!refundAmount'
     },
     refundQuantity: {
@@ -148,6 +154,7 @@ export default class OrderGoods extends Model {
     lastRefundAmount: {
       label: 'Last Refund Amount',
       type: Number,
+      format: '0,0.00',
       hidden: true,
       disabled: true
     },

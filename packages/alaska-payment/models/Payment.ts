@@ -70,6 +70,7 @@ export default class Payment extends Model {
     amount: {
       label: 'Amount',
       type: Number,
+      format: '0,0.00',
       required: true,
       protected: true
     },

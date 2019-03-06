@@ -48,11 +48,13 @@ export default class Sku extends Model {
     price: {
       label: 'Price',
       type: Number,
+      format: '0,0.00',
       default: 0
     },
     discount: {
       label: 'Discount',
       type: Number,
+      format: '0,0.00',
       default: 0
     },
     inventory: {

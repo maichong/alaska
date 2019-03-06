@@ -187,23 +187,27 @@ export default class Order extends Model {
     total: {
       // 由各个OrderItem.total相加而得,不包含邮费
       label: 'Total Amount',
+      format: '0,0.00',
       type: Number
     },
     deduction: {
       // 抵扣金额
       label: 'Deduction',
       type: Number,
+      format: '0,0.00',
       default: 0
     },
     pay: {
       // 需要支付的金额 = total + shipping - deduction
       label: 'Pay Amount',
       type: Number,
+      format: '0,0.00',
       disabled: true
     },
     payed: {
       label: 'Payed Amount',
       type: Number,
+      format: '0,0.00',
       default: 0
     },
     deductionCurrency: {
@@ -217,6 +221,7 @@ export default class Order extends Model {
       // 抵扣的货币数量，可以与deduction不一致，允许积分和现金不等比
       label: 'Deduction Amount',
       type: Number,
+      format: '0,0.00',
       hidden: '!deductionAmount'
     },
     payment: {
@@ -230,6 +235,7 @@ export default class Order extends Model {
     refundedAmount: {
       label: 'Refunded Amount',
       type: Number,
+      format: '0,0.00',
       hidden: '!refundedAmount'
     },
     refundedQuantity: {
@@ -245,6 +251,7 @@ export default class Order extends Model {
     refundAmount: {
       label: 'Refund Amount',
       type: Number,
+      format: '0,0.00',
       hidden: '!refundAmount'
     },
     refundQuantity: {
@@ -255,6 +262,7 @@ export default class Order extends Model {
     lastRefundAmount: {
       label: 'Last Refund Amount',
       type: Number,
+      format: '0,0.00',
       hidden: true,
       disabled: true
     },
