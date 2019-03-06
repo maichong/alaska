@@ -9,7 +9,7 @@ export default function (router: Router) {
   /**
    * 创建记录
    */
-  router.all('/payment/notify/weixin', async (ctx: Context) => {
+  router.all('/notify/weixin', async (ctx: Context) => {
     ctx.set('Content-Type', 'text/xml');
 
     function failed(msg: string) {
