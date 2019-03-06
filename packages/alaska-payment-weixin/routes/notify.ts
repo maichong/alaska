@@ -24,7 +24,7 @@ export default function (router: Router) {
       }
 
       let paymentId = data.out_trade_no;
-      let payment = await Payment.findById(paymentId).session(this.dbSession);
+      let payment = await Payment.findById(paymentId).session(ctx.dbSession);
       if (!payment) return failed('out_trade_no error');
 
       if (payment.state !== 'pending') return failed('invalid state');
@@ -38,7 +38,7 @@ export default function (router: Router) {
       payment.callbackData = data;
       payment.weixin_transaction_id = data.transaction_id;
 
-      await Complete.run({ record: payment }, { dbSession: this.dbSession });
+      await Complete.run({ record: payment }, { dbSession: ctx.dbSession });
 
       ctx.body = data2xml({ return_code: 'SUCCESS', return_msg: 'OK' });
     } catch (err) {
