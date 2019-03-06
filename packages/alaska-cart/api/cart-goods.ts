@@ -23,7 +23,7 @@ export async function create(ctx: Context) {
   let sku: string = body.sku;
   let quantity: number = body.quantity;
 
-  let record = await Create.run({
+  let record: CartGoods = await Create.run({
     user: body.user || ctx.user._id, goods, sku, quantity
   }, { dbSession: ctx.dbSession });
 

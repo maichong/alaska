@@ -42,7 +42,7 @@ export default class Create extends Sled<CreateParams, CartGoods> {
 
     if (sku) {
       discount = discountValid ? sku.discount : 0;
-      filters.sku = skuId;
+      filters.sku = sku._id;
     }
 
     let record: CartGoods = await CartGoods.findOne(filters).session(this.dbSession);

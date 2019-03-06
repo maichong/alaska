@@ -51,8 +51,8 @@ export default class CartGoods extends Model {
     sku: {
       label: 'SKU',
       type: 'relationship',
-      ref: 'alaska-goods.Sku',
-      optional: 'alaska-goods.Sku',
+      ref: 'alaska-sku.Sku',
+      optional: 'alaska-sku.Sku',
       disabled: true
     },
     skuDesc: {
