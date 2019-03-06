@@ -36,10 +36,14 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
    * @param {Object} [data]
    * @returns {PayParams}
    */
-  async createParams(payment: Payment): Promise<PayParams> {
+  async createParams(payment: Payment): Promise<'success' | PayParams> {
     const options = this.configs.get(payment.type);
     if (!options) throw new Error('Unsupported payment type!');
     if (payment.currency && payment.currency !== options.currency) throw new Error('Currency not match!');
+
+    if (payment.amount === 0) {
+      return 'success';
+    }
 
     let openid: string = payment.openid;
     if (!openid) {
