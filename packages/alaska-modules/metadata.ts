@@ -257,7 +257,7 @@ class ModulesMetadata {
       // load
       let pluginDir = Path.join(service.path, 'plugins', sub.id);
       if (!isDirectory.sync(pluginDir)) continue;
-      let id = this.getRelativePath(pluginDir);
+      let id = service.id;
       if (sub.plugins[id]) continue;
       let meta: PluginMetadata = {
         id,
@@ -318,8 +318,11 @@ class ModulesMetadata {
       if (!dir) {
         throw new Error(`Can not find plugin "${key}" for service “${service.id}”`);
       }
-      let id = this.getRelativePath(dir);
-      if (service.plugins[dir]) continue;
+      let id = key;
+      if (key[0] === '.') {
+        id = this.getRelativePath(dir);
+      }
+      if (service.plugins[id]) continue;
       let meta: PluginMetadata = {
         id,
         path: dir,

@@ -26,6 +26,9 @@ export interface OrderFields {
   total: number;
   pay: number;
   payed: number;
+  deduction: number;
+  deductionCurrency: string;
+  deductionAmount: number;
   payment: string;
   /**
    * 订单已退款金额，总额

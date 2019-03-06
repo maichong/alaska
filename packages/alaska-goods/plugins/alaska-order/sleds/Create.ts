@@ -148,7 +148,7 @@ export async function post() {
       if (g.sku) {
         conditions.sku = g.sku;
       }
-      await CartGoods.remove(conditions).session(this.dbSession);
+      await CartGoods.deleteMany(conditions).session(this.dbSession);
     }
   }
 

@@ -389,32 +389,23 @@ export class Model {
 
   static hydrate<T>(this: { new(): T }, obj: any): T;
 
-
   static insertMany<T>(this: { new(): T }, docs: any[]): Promise<T[]>;
   static insertMany<T>(this: { new(): T }, docs: any[], options?: { ordered?: boolean; rawResult?: boolean } & mongoose.ModelOptions): Promise<T[]>;
   static insertMany<T>(this: { new(): T }, doc: any): Promise<T>;
   static insertMany<T>(this: { new(): T }, doc: any, options?: { ordered?: boolean; rawResult?: boolean } & mongoose.ModelOptions): Promise<T>;
 
-
-
   static init<T>(this: { new(): T }): Promise<T>;
   static register(): Promise<void>;
 
-
   static mapReduce<T, Key, Value>(this: { new(): T }, o: mongoose.ModelMapReduceOption<T, Key, Value>): Promise<any>;
-
 
   static populate<T>(this: { new(): T }, docs: any[], options: mongoose.ModelPopulateOptions | mongoose.ModelPopulateOptions[]): Promise<T[]>;
   static populate<T>(docs: any, options: mongoose.ModelPopulateOptions | mongoose.ModelPopulateOptions[]): Promise<T>;
 
-
-  static remove(conditions: any): Query<mongodb.WriteOpResult['result']>;
   static deleteOne(conditions: any): Query<mongodb.WriteOpResult['result']>;
   static deleteMany(conditions: any): Query<mongodb.WriteOpResult['result']>;
 
-
   static replaceOne(conditions: any, replacement: any): Query<any>;
-
 
   static update(conditions: any, doc: any): Query<any>;
   static update(conditions: any, doc: any, options: mongoose.ModelUpdateOptions): Query<any>;

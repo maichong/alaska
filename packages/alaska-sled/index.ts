@@ -1,11 +1,19 @@
 import * as _ from 'lodash';
 import { Extension, Service, MainService } from 'alaska';
 import { ServiceModules } from 'alaska-modules';
-import { SledGenerator, SledSettings, Sled as SledType } from '.';
+import { SledGenerator, SledSettings, Sled as SledType, SledHook } from '.';
 import Sled from './sled';
 import debug from './debug';
 
 export { Sled };
+
+export const BEFORE = function BEFORE(serviceId: string, hook: SledHook) {
+  hook._before = serviceId;
+};
+
+export const AFTER = function AFTER(serviceId: string, hook: SledHook) {
+  hook._after = serviceId;
+};
 
 function setSledDefaults(sled: typeof SledType, service: Service, name: string) {
   if (!sled.service) sled.service = service;
@@ -53,8 +61,14 @@ export default class SledExtension extends Extension {
           let sled: typeof Sled = service.sleds[name];
           if (!sled) throw new Error(`Can not apply sled settings, ${service.id}.${name} not found!`);
           let { pre, post } = settings as SledSettings;
-          if (pre) sled.pre(pre);
-          if (post) sled.post(post);
+          if (pre) {
+            if (!pre._id) pre._id = plugin.id;
+            sled.pre(pre);
+          }
+          if (post) {
+            if (!post._id) post._id = plugin.id;
+            sled.post(post);
+          }
         });
       });
     });

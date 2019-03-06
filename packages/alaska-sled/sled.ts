@@ -6,7 +6,21 @@ import { MainService, Service } from 'alaska';
 import QueueDriver from 'alaska-queue';
 import SubscribeDriver from 'alaska-subscribe';
 import LockDriver from 'alaska-lock';
-import { SledConfig, SledTask, SledMessage, SledOptions } from '.';
+import { SledConfig, SledTask, SledMessage, SledOptions, SledHook } from '.';
+
+function sortHooks(a: SledHook, b: SledHook): number {
+  // b 在 a 前
+  if (a._id && b._before === a._id) return 1;
+  // a 在 b 后
+  if (b._id && a._after === b._id) return 1;
+  // b 在 a 后
+  if (a._id && b._after === a._id) return -1;
+  // a 在 b 前
+  if (b._id && a._before === b._id) return -1;
+
+  // 不变
+  return 0;
+}
 
 export default class Sled<T, R> {
   static classOfSled: true = true;
@@ -14,8 +28,8 @@ export default class Sled<T, R> {
   static id: string;
   static main: MainService;
   static service: Service;
-  static _pre?: Function[];
-  static _post?: Function[];
+  static _pre?: SledHook[];
+  static _post?: SledHook[];
   static _config?: null | SledConfig;
 
   readonly instanceOfSled: true;
@@ -116,22 +130,24 @@ export default class Sled<T, R> {
    * 注册 Sled 前置钩子
    * @param fn
    */
-  static pre(fn: Function) {
+  static pre(fn: SledHook) {
     if (!this._pre) {
       this._pre = [];
     }
     this._pre.push(fn);
+    this._pre.sort(sortHooks);
   }
 
   /**
    * 注册 Sled 后置钩子
    * @param fn
    */
-  static post(fn: Function) {
+  static post(fn: SledHook) {
     if (!this._post) {
       this._post = [];
     }
     this._post.push(fn);
+    this._post.sort(sortHooks);
   }
 
   /**

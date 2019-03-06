@@ -1,5 +1,7 @@
 import * as _ from 'lodash';
 import { Sled } from 'alaska-sled';
+import balanceService, { CreateIncome } from 'alaska-balance';
+import User from 'alaska-user/models/User';
 import Order from '../models/Order';
 import service, { CancelParams } from '..';
 
@@ -14,13 +16,21 @@ export default class Cancel extends Sled<CancelParams, Order[]> {
     let records = _.size(params.records) ? params.records : [params.record];
     if (_.find(records, (o: Order) => ![200].includes(o.state))) service.error('Order state error');
 
+    let currenciesMap = balanceService.currenciesMap;
+
     for (let order of records) {
       order.state = 900;
       if (!order.failure) {
         order.failure = 'Canceled';
       }
       await order.save({ session: this.dbSession });
-      order.createLog('Order Canceled', this.dbSession);
+      order.createLog('Order canceled', this.dbSession);
+
+      // 退还抵扣的积分
+      if (order.deductionAmount && order.deductionCurrency && currenciesMap.has(order.deductionCurrency)) {
+        let user = await User.findById(order.user);
+        await (user._[order.deductionCurrency].income as CreateIncome)(order.deductionAmount, 'Order canceled', 'refund', this.dbSession);
+      }
     }
     return records;
   }

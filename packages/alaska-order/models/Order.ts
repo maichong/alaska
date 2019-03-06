@@ -179,24 +179,45 @@ export default class Order extends Model {
       default: balanceService.getDefaultCurrencyAsync().then((cur) => cur.value)
     },
     shipping: {
-      //邮费,不包含在total中,由各个OrderItem.shipping相加
+      // 邮费,不包含在total中,由各个OrderItem.shipping相加
       label: 'Shipping',
       type: Number,
       default: 0
     },
     total: {
-      //由各个OrderItem.total相加而得,不包含邮费
+      // 由各个OrderItem.total相加而得,不包含邮费
       label: 'Total Amount',
       type: Number
     },
+    deduction: {
+      // 抵扣金额
+      label: 'Deduction',
+      type: Number,
+      default: 0
+    },
     pay: {
+      // 需要支付的金额 = total + shipping - deduction
       label: 'Pay Amount',
-      type: Number
+      type: Number,
+      disabled: true
     },
     payed: {
       label: 'Payed Amount',
       type: Number,
       default: 0
+    },
+    deductionCurrency: {
+      // 抵扣的货币，比如积分
+      label: 'Deduction Currency',
+      type: 'select',
+      hidden: '!deductionCurrency',
+      options: balanceService.getCurrenciesAsync()
+    },
+    deductionAmount: {
+      // 抵扣的货币数量，可以与deduction不一致，允许积分和现金不等比
+      label: 'Deduction Amount',
+      type: Number,
+      hidden: '!deductionAmount'
     },
     payment: {
       label: 'Payment',
@@ -339,6 +360,9 @@ export default class Order extends Model {
   pay: number;
   payed: number;
   payment: string;
+  deduction: number;
+  deductionCurrency: string;
+  deductionAmount: number;
   /**
    * 订单已退款金额，总额
    */
@@ -383,6 +407,7 @@ export default class Order extends Model {
 
   _logTotal: boolean;
   _logShipping: boolean;
+  _logDeduction: boolean;
   _stateChanged: boolean;
 
   async preValidate() {
@@ -395,9 +420,10 @@ export default class Order extends Model {
   }
 
   preSave() {
-    this.pay = (this.total || 0) + (this.shipping || 0);
+    this.pay = (this.total || 0) + (this.shipping || 0) - (this.deduction || 0);
     this._logTotal = !this.isNew && this.isModified('total');
     this._logShipping = !this.isNew && this.isModified('shipping');
+    this._logDeduction = !this.isNew && this.isModified('deduction');
     this._stateChanged = this.isNew || this.isModified('state');
   }
 
@@ -407,6 +433,9 @@ export default class Order extends Model {
     }
     if (this._logShipping) {
       this.createLog('Modified shipping fee', this.$session());
+    }
+    if (this._logDeduction) {
+      this.createLog('Modified deduction', this.$session());
     }
     if (this._stateChanged && this.goods && this.goods.length) {
       await OrderGoods.updateMany({ order: this._id }, { state: this.state }).session(this.$session()).exec();

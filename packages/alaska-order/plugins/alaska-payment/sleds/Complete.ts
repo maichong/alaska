@@ -1,10 +1,11 @@
 import PayOrder from 'alaska-order/sleds/Pay';
 import Order from 'alaska-order/models/Order';
+import Payment from 'alaska-payment/models/Payment';
 import CompletePayment from 'alaska-payment/sleds/Complete';
 
 export async function pre() {
   const me = this as CompletePayment;
-  let record = me.params.record;
+  let record: Payment = me.params.record;
   if (!record.orders || !record.orders.length) return;
   for (let order of record.orders) {
     if (!order.save) {

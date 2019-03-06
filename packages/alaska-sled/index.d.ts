@@ -38,8 +38,15 @@ export interface SledGenerator {
 }
 
 export interface SledSettings {
-  pre?: Function;
-  post?: Function;
+  pre?: SledHook;
+  post?: SledHook;
+}
+
+export interface SledHook {
+  (...args: any[]): any;
+  _id?: string;
+  _before?: string;
+  _after?: string;
 }
 
 export interface SledConfig {
@@ -81,6 +88,9 @@ export interface SledOptions {
   dbSession?: null | mongodb.ClientSession;
 }
 
+export const BEFORE: (serviceId: string, hook: SledHook) => void;
+export const AFTER: (serviceId: string, hook: SledHook) => void;
+
 export class Sled<T, R> {
   static readonly classOfSled: true;
   static sledName: string;
@@ -107,8 +117,8 @@ export class Sled<T, R> {
    * @returns {any}
    */
   static runWithTransaction<T, R>(this: { new(params: T): Sled<T, R> }, params?: T): Promise<R>;
-  static pre(fn: Function): void;
-  static post(fn: Function): void;
+  static pre(fn: SledHook): void;
+  static post(fn: SledHook): void;
   /**
    * 从队列中读取一个Sled任务
    * @param {number} [timeout] 读取超时,单位毫秒,默认Infinity

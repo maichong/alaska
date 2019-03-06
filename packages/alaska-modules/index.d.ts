@@ -102,6 +102,7 @@ export interface ServiceModules {
 }
 
 export interface PluginModules {
+  id: string;
   config?: any;
   plugin?: typeof Plugin;
 }
