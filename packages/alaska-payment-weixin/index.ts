@@ -111,7 +111,7 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
         passphrase: options.mch_id
       }),
       body: req
-    });
+    }).text();
 
     let json = await xml2data(xml);
     if (json.return_msg && json.return_msg !== 'OK') {
