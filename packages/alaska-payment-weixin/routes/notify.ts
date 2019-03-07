@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Context, Router } from 'alaska-http';
 import paymentService from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
@@ -33,7 +34,7 @@ export default function (router: Router) {
 
       if (!await plugin.verify(data, payment)) return failed('sign error');
 
-      if (payment.amount * 100 !== data.total_fee) return failed('total_fee error');
+      if (_.round(payment.amount * 100) !== parseInt(data.total_fee)) return failed('total_fee error');
 
       payment.callbackData = data;
       payment.weixin_transaction_id = data.transaction_id;
