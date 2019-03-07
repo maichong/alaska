@@ -84,7 +84,7 @@ export function parseFieldList(fields: string | ModelFieldList, model: typeof Mo
       if (
         !model.defaultScope[s]
         && !model.fields[s]
-        && (!model.virtuals || !Object.getOwnPropertyDescriptor(model.virtuals, s).get)
+        && (!model.virtuals || !Object.getOwnPropertyDescriptor(model.virtuals, s) || !Object.getOwnPropertyDescriptor(model.virtuals, s).get)
       ) {
         throw new Error(`Can not find field ${model.id}.scopes.${s} when process scopes`);
       }

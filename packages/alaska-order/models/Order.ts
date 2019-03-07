@@ -459,7 +459,9 @@ export default class Order extends Model {
   }
 
   preSave() {
-    this.pay = (this.total || 0) + (this.shipping || 0) - (this.deduction || 0);
+    if (this.isNew) {
+      this.pay = (this.total || 0) + (this.shipping || 0) - (this.deduction || 0);
+    }
     this._logTotal = !this.isNew && this.isModified('total');
     this._logShipping = !this.isNew && this.isModified('shipping');
     this._logDeduction = !this.isNew && this.isModified('deduction');

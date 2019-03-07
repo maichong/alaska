@@ -42,9 +42,6 @@ export default class Income extends Model {
         label: 'Refund',
         value: 'refund'
       }, {
-        label: 'Spent',
-        value: 'spent'
-      }, {
         label: 'Recharge',
         value: 'recharge',
         optional: 'alaska-recharge.Recharge'
@@ -102,12 +99,14 @@ export default class Income extends Model {
     amount: {
       label: 'Amount',
       type: Number,
+      format: '0,0.00',
       disabled: '!isNew',
       default: 0
     },
     balance: {
       label: 'Balance',
       type: Number,
+      format: '0,0.00',
       disabled: '!isNew',
       default: 0
     },
