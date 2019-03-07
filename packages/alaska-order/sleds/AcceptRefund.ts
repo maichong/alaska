@@ -33,7 +33,7 @@ export default class AcceptRefund extends Sled<AcceptRefundParams, Order[]> {
       if (refundAmount && paymentService) {
         const { Payment, Refund } = paymentService.models;
         let payment = await Payment.findOne({
-          state: 1,
+          state: 'success',
           orders: order._id
         }).session(this.dbSession);
         if (payment) {
