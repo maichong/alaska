@@ -1,4 +1,4 @@
-import balanceService from 'alaska-balance';
+import balanceService, { CreateIncome } from 'alaska-balance';
 import User from 'alaska-user/models/User';
 import { PaymentService, PaymentPlugin } from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
@@ -30,7 +30,7 @@ export default class BalancePaymentPlugin extends PaymentPlugin {
       // @ts-ignore populated
       user = payment.user;
     } else {
-      user = await User.findById(payment.user);
+      user = await User.findById(payment.user).session(payment.$session());
     }
     if (!user) {
       throw new Error('Unknown user for payment');
@@ -40,7 +40,8 @@ export default class BalancePaymentPlugin extends PaymentPlugin {
       this.service.error('Insufficient balance');
     }
 
-    await user._[currency].income(-payment.amount, payment.title, 'payment');
+    // 支付、支出
+    await (user._[currency].income as CreateIncome)(-payment.amount, payment.title, 'payment', payment.$session());
 
     payment.currency = currency;
     payment.state = 'success';
@@ -64,7 +65,7 @@ export default class BalancePaymentPlugin extends PaymentPlugin {
       throw new Error('Unknown user for refund');
     }
 
-    await user._[currency].income(refund.amount, refund.title, 'refund');
+    await user._[currency].income(refund.amount, refund.title, 'refund', payment.$session() || refund.$session());
 
     refund.currency = currency;
     refund.state = 'success';

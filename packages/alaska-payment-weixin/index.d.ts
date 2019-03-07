@@ -7,6 +7,12 @@ declare module 'alaska-payment/models/Payment' {
   }
 }
 
+declare module 'alaska-payment/models/Refund' {
+  export interface RefundFields {
+    weixin_refund_id: string;
+  }
+}
+
 export interface WeixinPaymentOptions {
   /**
    * 支付渠道
@@ -40,6 +46,10 @@ export interface WeixinPaymentOptions {
    * 签名方式
    */
   sign_type?: 'MD5' | 'SHA256';
+  /**
+   * pfx 证书路径或内容
+   */
+  pfx?: string | Buffer;
 }
 
 export interface UnifiedOrderReq {

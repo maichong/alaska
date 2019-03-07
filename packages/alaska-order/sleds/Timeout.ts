@@ -29,6 +29,7 @@ export default class Timeout extends Sled<TimeoutParams, Order[]> {
       // 退还抵扣的积分
       if (order.deductionAmount && order.deductionCurrency && currenciesMap.has(order.deductionCurrency)) {
         let user = await User.findById(order.user);
+        // 返还、收入
         await (user._[order.deductionCurrency].income as CreateIncome)(order.deductionAmount, 'Order timeout', 'refund', this.dbSession);
       }
     }

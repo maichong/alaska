@@ -32,6 +32,7 @@ export default class Create extends Sled<CreateParams, WithdrawModel> {
     if (balance < amount) service.error('Insufficient balance');
 
     if (amount) {
+      // 提现、支出
       await (user._[currency.toString()].income as CreateIncome)(-amount, params.title || 'Withdraw', 'withdraw', this.dbSession);
     }
 

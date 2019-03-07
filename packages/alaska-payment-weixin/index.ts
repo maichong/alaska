@@ -1,8 +1,11 @@
 import * as _ from 'lodash';
+import * as fs from 'fs';
+import * as https from 'https';
 import * as stringRandom from 'string-random';
 import akita from 'akita';
 import PAYMENT, { PaymentPlugin } from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
+import Refund from 'alaska-payment/models/Refund';
 import User from 'alaska-user/models/User';
 import { md5, sha256, data2xml, xml2data, toQueryString } from './utils';
 import { WeixinPaymentOptions, UnifiedOrderReq, UnifiedOrderRes, PayParams } from '.';
@@ -24,6 +27,9 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
         // @ts-ignore index
         if (!options[k]) throw new Error(`Missing config [alaska-payment-weixin.${key}.${k}]`);
       });
+      if (options.pfx && typeof options.pfx === 'string') {
+        options.pfx = fs.readFileSync(options.pfx);
+      }
       this.currencies.add(options.currency);
       this.configs.set(`weixin:${key}`, options);
       service.payments.set(`weixin:${key}`, this);
@@ -76,6 +82,44 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
     if (!options) return false;
     let sign = this._getSign(data, options);
     return data.sign === sign;
+  }
+
+  async refund(refund: Refund, payment: Payment): Promise<void> {
+    const options = this.configs.get(payment.type);
+    if (!options) throw new Error('Unsupported payment type!');
+    if (!options.pfx) throw new Error('Weixin refund require pfx!');
+
+    let req = {
+      appid: options.appid,
+      mch_id: options.mch_id,
+      nonce_str: stringRandom(16),
+      sign_type: options.sign_type || 'MD5',
+      out_trade_no: payment.id,
+      out_refund_no: refund.id,
+      total_fee: payment.amount * 100 | 0,
+      refund_fee: refund.amount * 100 | 0,
+      op_user_id: options.mch_id,
+      // notify_url: options.notify_url
+    };
+
+    // @ts-ignore
+    req.sign = this._getSign(req, options);
+
+    let xml = await client.post('https://api.mch.weixin.qq.com/secapi/pay/refund', {
+      agent: new https.Agent({
+        pfx: options.pfx,
+        passphrase: options.mch_id
+      }),
+      body: req
+    });
+
+    let json = await xml2data(xml);
+    if (json.return_msg && json.return_msg !== 'OK') {
+      throw new Error(json.return_msg);
+    }
+
+    refund.weixin_refund_id = json.refund_id;
+    refund.state = 'success';
   }
 
   /**

@@ -29,6 +29,7 @@ export default class Balance extends Sled<BalanceParams, Commission> {
         throw new Error(`Can not find field User.${commission.currency}!`);
       }
 
+      // 佣金、收入
       await (user._[commission.currency].income as CreateIncome)(commission.amount, commission.title, 'commission', this.dbSession);
 
       commission.state = 'balanced';

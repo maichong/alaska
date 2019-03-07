@@ -18,6 +18,7 @@ export default class Reject extends Sled<RejectParams, Withdraw> {
 
       let user: User = await User.findById(record.user).session(this.dbSession);
       if (user) {
+        // 返还、收入
         await (user._[record.currency].income as CreateIncome)(record.amount, 'Withdraw Rejected', 'withdraw_rejected', this.dbSession);
       }
     } else if (record.state !== 'rejected') {

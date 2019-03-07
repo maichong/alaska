@@ -81,6 +81,7 @@ export default class Refund extends Model {
   state: 'pending' | 'success' | 'failed';
   failure: string;
   createdAt: Date;
+  weixin_refund_id: string;
 
   preSave() {
     if (!this.createdAt) {
