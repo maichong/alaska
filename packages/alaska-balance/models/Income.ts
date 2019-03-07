@@ -56,6 +56,10 @@ export default class Income extends Model {
         label: 'Withdraw Rejected',
         value: 'withdraw_rejected',
         optional: 'alaska-withdraw.Withdraw'
+      }, {
+        label: 'Commission',
+        value: 'commission',
+        optional: 'alaska-commission.Commission'
       }]
     },
     target: {
