@@ -110,7 +110,7 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
         pfx: options.pfx,
         passphrase: options.mch_id
       }),
-      body: req
+      body: data2xml(req)
     }).text();
 
     let json = await xml2data(xml);

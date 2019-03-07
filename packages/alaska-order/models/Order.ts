@@ -1,4 +1,6 @@
+import * as _ from 'lodash';
 import * as mongodb from 'mongodb';
+import { NormalError } from 'alaska';
 import { Model, RecordId } from 'alaska-model';
 import balanceService from 'alaska-balance';
 import OrderLog from './OrderLog';
@@ -445,6 +447,9 @@ export default class Order extends Model {
   _stateChanged: boolean;
 
   async preValidate() {
+    if (this.address && !_.isObject(this.address)) {
+      throw new NormalError('Address format error!');
+    }
     if (!this.createdAt) {
       this.createdAt = new Date();
     }
