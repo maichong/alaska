@@ -2,11 +2,24 @@ import * as _ from 'lodash';
 import * as collie from 'collie';
 import * as fs from 'fs';
 import * as Path from 'path';
+import * as slash from 'slash';
 import * as isDirectory from 'is-directory';
 import { ConfigData, Loader as LoaderClass, Config, ServiceConfig, PluginConfig } from 'alaska';
 import { Modules, LibraryMetadata, ExtensionMetadata, ServiceMetadata, PluginMetadata } from 'alaska-modules';
 import { ModuleTree, ModulePath, Module, ModuleType } from './tree';
 import debug from './debug';
+
+function pathJoin(...paths: string[]): string {
+  return slash(Path.join(...paths));
+}
+
+function pathResolve(...pathSegments: string[]): string {
+  return slash(Path.resolve(...pathSegments));
+}
+
+function pathRelative(from: string, to: string): string {
+  return slash(Path.relative(from, to));
+}
 
 /**
  * 创建项目模块信息
@@ -49,7 +62,7 @@ class ModulesMetadata {
     this.main = {
       id,
       path: '',
-      configFile: Path.join(dir, 'config', configFileName),
+      configFile: pathJoin(dir, 'config', configFileName),
       config: this.config,
       loadConfig: { dir },
       dismiss: false,
@@ -76,12 +89,12 @@ class ModulesMetadata {
 
   getRelativePath(path: string): string {
     let cwd = process.cwd();
-    let nodeModulesDir = Path.join(cwd, 'node_modules');
-    let p = Path.relative(nodeModulesDir, path);
+    let nodeModulesDir = pathJoin(cwd, 'node_modules');
+    let p = slash(pathRelative(nodeModulesDir, path));
     if (p[0] !== '.') {
       return p;
     }
-    p = Path.relative(this.dir, path);
+    p = slash(pathRelative(this.dir, path));
     if (p[0] !== '.') {
       p = `./${p}`;
     }
@@ -102,7 +115,7 @@ class ModulesMetadata {
    */
   async loadConfig() {
     debug('loadConfig');
-    let configFile = Path.join(this.dir, 'config', this.configFileName);
+    let configFile = pathJoin(this.dir, 'config', this.configFileName);
     Config.applyData(this.config, require(configFile).default);
   }
 
@@ -128,7 +141,7 @@ class ModulesMetadata {
       return;
     }
     if (!_.find(this.modulesDirs.concat([this.configFileName]), (mDir) => {
-      let path = Path.join(process.cwd(), mDir, meta.id);
+      let path = pathJoin(process.cwd(), mDir, meta.id);
       if (!isDirectory.sync(path)) return false;
       // 找到了扩展目录
       meta.path = path;
@@ -140,7 +153,7 @@ class ModulesMetadata {
     this.extensions.set(meta.id, meta);
 
     debug(`extension create loader: ${meta.id}`);
-    const Loader: typeof LoaderClass = require(Path.join(meta.path, 'loader')).default;
+    const Loader: typeof LoaderClass = require(pathJoin(meta.path, 'loader')).default;
     // @ts-ignore 忽略：插件扩展后导致 this 类型不兼容
     meta.loader = new Loader(this, extConfig);
   }
@@ -169,11 +182,11 @@ class ModulesMetadata {
         if (Path.isAbsolute(meta.loadConfig.dir)) {
           meta.path = meta.loadConfig.dir;
         } else {
-          meta.path = Path.join(this.dir, 'config/', meta.loadConfig.dir);
+          meta.path = pathJoin(this.dir, 'config', meta.loadConfig.dir);
         }
       } else {
         _.find(this.modulesDirs, (dir) => {
-          let path = Path.join(process.cwd(), dir, meta.id);
+          let path = pathJoin(process.cwd(), dir, meta.id);
           if (!isDirectory.sync(path)) return false;
           meta.path = path;
           return true;
@@ -183,7 +196,7 @@ class ModulesMetadata {
     if (!meta.path) throw new Error(`Service not found: ${meta.id}`);
     if (!isDirectory.sync(meta.path)) throw new Error(`Service not exists: ${meta.id}, ${meta.path}`);
     if (!meta.configFile) {
-      meta.configFile = Path.join(meta.path, 'config', meta.id);
+      meta.configFile = pathJoin(meta.path, 'config', meta.id);
     }
     if (!meta.config) {
       let config = require(meta.configFile).default;
@@ -193,7 +206,7 @@ class ModulesMetadata {
 
     this.services.set(meta.id, meta);
 
-    let loaderFile = Path.join(meta.path, 'loader');
+    let loaderFile = pathJoin(meta.path, 'loader');
     if (fs.existsSync(`${loaderFile}.ts`) || fs.existsSync(`${loaderFile}.js`)) {
       debug(`service create loader: ${meta.id}`);
       const Loader: typeof LoaderClass = require(loaderFile).default;
@@ -255,7 +268,7 @@ class ModulesMetadata {
       let sub: ServiceMetadata = this.services.get(sid);
       if (!sub || sub.dismiss) continue;
       // load
-      let pluginDir = Path.join(service.path, 'plugins', sub.id);
+      let pluginDir = pathJoin(service.path, 'plugins', sub.id);
       if (!isDirectory.sync(pluginDir)) continue;
       let id = service.id;
       if (sub.plugins[id]) continue;
@@ -272,12 +285,12 @@ class ModulesMetadata {
 
     // 如果为开发模式，警告无用的 plugins/xx 目录
     if (process.env.NODE_ENV === 'development') {
-      let pluginsDir = Path.join(service.path, 'plugins');
+      let pluginsDir = pathJoin(service.path, 'plugins');
       if (!isDirectory.sync(pluginsDir)) return;
       fs.readdirSync(pluginsDir).forEach((name) => {
         if (name[0] === '.') return;
         if (service.config.services[name]) return;
-        console.warn(`WARN: Sub service not found for plugin ${Path.relative(process.cwd(), Path.join(pluginsDir, name))}`);
+        console.warn(`WARN: Sub service not found for plugin ${pathRelative(process.cwd(), pathJoin(pluginsDir, name))}`);
       });
     }
   }
@@ -304,10 +317,10 @@ class ModulesMetadata {
       let pluginConfig: PluginConfig = service.config.plugins[key];
       let dir = pluginConfig.dir;
       if (dir) {
-        dir = Path.join(service.path, 'config', dir);
+        dir = pathJoin(service.path, 'config', dir);
       } else {
         _.find(this.modulesDirs, (mDir) => {
-          let path = Path.join(process.cwd(), mDir, key);
+          let path = pathJoin(process.cwd(), mDir, key);
           if (isDirectory.sync(path)) {
             dir = path;
             return true;
@@ -330,7 +343,7 @@ class ModulesMetadata {
       };
       await this.loadServicePlugin(service, meta);
       if (!meta.dismiss) {
-        service.plugins[dir] = meta;
+        service.plugins[id] = meta;
       }
     }
   }
@@ -349,7 +362,7 @@ class ModulesMetadata {
     }
     // 如果前置钩子中已经设置了配置文件，允许前置钩子动态修改配置文件路径
     if (!plugin.configFile) {
-      let configPath = Path.join(plugin.path, 'config');
+      let configPath = pathJoin(plugin.path, 'config');
       try {
         let config = require(configPath).default;
         plugin.configFile = configPath;
@@ -375,7 +388,7 @@ class ModulesMetadata {
         if (libraries.indexOf(lib) > -1) {
           let meta: LibraryMetadata = {
             id: lib,
-            path: Path.join(process.cwd(), mDir, lib),
+            path: pathJoin(process.cwd(), mDir, lib),
             type: '',
             dismiss: false
           };
@@ -383,14 +396,14 @@ class ModulesMetadata {
           continue;
         }
         try {
-          let pkgPath = Path.join(mDir, lib, 'package.json');
+          let pkgPath = pathJoin(mDir, lib, 'package.json');
           let content = fs.readFileSync(pkgPath, 'utf8');
           let json = JSON.parse(content);
 
           if (json.alaska && ['core', 'extension', 'service', 'view', 'cli'].indexOf(json.alaska) === -1) {
             let meta: LibraryMetadata = {
               id: lib,
-              path: Path.join(process.cwd(), mDir, lib),
+              path: pathJoin(process.cwd(), mDir, lib),
               type: json.alaska,
               dismiss: false
             };
@@ -496,7 +509,7 @@ class ModulesMetadata {
         return lib;
       } else if (value instanceof ModulePath) {
         // module path
-        return Path.resolve(this.dir, value.path);
+        return pathResolve(this.dir, value.path);
       } else if (Array.isArray(value)) {
         return value.map(convent);
       } else if (value && typeof value === 'object') {
@@ -533,7 +546,7 @@ class ModulesMetadata {
         return requirePath(value.path, value.type);
       } else if (value instanceof ModulePath) {
         // module path
-        return Path.resolve(this.dir, value.path);
+        return pathResolve(this.dir, value.path);
       } else if (Array.isArray(value)) {
         return `[\n${value.map(convent).join(',\n')}]`;
       } else if (value && typeof value === 'object') {
