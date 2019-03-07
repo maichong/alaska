@@ -1,5 +1,6 @@
 export default {
   Goods: '商品',
+  'Goods List': '商品列表',
   Pictures: '图片',
   'Main Picture': '主图',
   Recommend: '推荐',

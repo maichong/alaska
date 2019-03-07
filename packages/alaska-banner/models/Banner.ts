@@ -49,6 +49,18 @@ export default class Banner extends Model {
       options: [{
         label: 'URL',
         value: 'url'
+      }, {
+        label: 'Goods',
+        value: 'goods',
+        optional: 'alaska-goods.Goods'
+      }, {
+        label: 'Goods List',
+        value: 'goods-list',
+        optional: 'alaska-goods.Goods'
+      }, {
+        label: 'Post',
+        value: 'post',
+        optional: 'alaska-post.Post'
       }]
     },
     url: {
@@ -57,6 +69,49 @@ export default class Banner extends Model {
       hidden: {
         action: {
           $ne: 'url'
+        }
+      }
+    },
+    post: {
+      label: 'Post',
+      type: 'relationship',
+      ref: 'alaska-post.Post',
+      optional: 'alaska-post.Post',
+      hidden: {
+        action: {
+          $ne: 'post'
+        }
+      }
+    },
+    goods: {
+      label: 'Goods',
+      type: 'relationship',
+      ref: 'alaska-goods.Goods',
+      optional: 'alaska-goods.Goods',
+      hidden: {
+        action: {
+          $ne: 'goods'
+        }
+      }
+    },
+    category: {
+      label: 'Category',
+      type: 'relationship',
+      ref: 'alaska-category.Category',
+      optional: 'alaska-category.Category',
+      hidden: {
+        action: {
+          $ne: 'goods-list'
+        }
+      }
+    },
+    search: {
+      label: '搜索词',
+      type: String,
+      after: 'action',
+      hidden: {
+        action: {
+          $ne: 'goods-list'
         }
       }
     },

@@ -66,14 +66,13 @@ export default class Property extends Model {
       index: true,
       required: true,
       options: [{
-        label: 'Default',
-        value: 'default'
-      }, {
         label: 'Goods',
-        value: 'goods'
+        value: 'goods',
+        optional: 'alaska-goods.Goods'
       }, {
         label: 'Post',
-        value: 'post'
+        value: 'post',
+        optional: 'alaska-post.Post'
       }]
     },
     cats: {

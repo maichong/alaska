@@ -60,7 +60,8 @@ export default class Order extends Model {
 
   static actions = {
     confirm: {
-      title: 'Confirm',
+      title: 'Confirm Order',
+      icon: 'check',
       color: 'success',
       sled: 'Confirm',
       hidden: {
@@ -70,7 +71,8 @@ export default class Order extends Model {
       }
     },
     reject: {
-      title: 'Reject',
+      title: 'Reject Order',
+      icon: 'ban',
       color: 'danger',
       sled: 'Reject',
       confirm: 'Confirm to reject the order?',
@@ -82,6 +84,7 @@ export default class Order extends Model {
     },
     ship: {
       title: 'Ship',
+      icon: 'truck',
       color: 'success',
       sled: 'Ship',
       hidden: {
@@ -92,6 +95,7 @@ export default class Order extends Model {
     },
     acceptRefund: {
       title: 'Accept Refund',
+      icon: 'check',
       color: 'warning',
       confirm: 'Confirm to accept refund?',
       sled: 'AcceptRefund',
@@ -103,6 +107,7 @@ export default class Order extends Model {
     },
     rejectRefund: {
       title: 'Reject Refund',
+      icon: 'times',
       color: 'danger',
       confirm: 'Confirm to reject refund?',
       sled: 'RejectRefund',
@@ -114,6 +119,7 @@ export default class Order extends Model {
     },
     delete: {
       title: 'Delete',
+      icon: 'trash-o',
       color: 'danger',
       confirm: 'Confirm to delete the order?',
       sled: 'Delete',
@@ -227,10 +233,7 @@ export default class Order extends Model {
     payment: {
       label: 'Payment',
       type: 'select',
-      options: [{
-        label: 'Balance',
-        value: 'balance'
-      }]
+      options: [] as any[]
     },
     refundedAmount: {
       label: 'Refunded Amount',
@@ -413,6 +416,8 @@ export default class Order extends Model {
   adminDeleted: boolean;
   commented: boolean;
 
+  // for alaska dev
+  needConfirm: boolean;
   _logTotal: boolean;
   _logShipping: boolean;
   _logDeduction: boolean;

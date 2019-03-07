@@ -46,13 +46,16 @@ export default class Income extends Model {
         value: 'spent'
       }, {
         label: 'Recharge',
-        value: 'recharge'
+        value: 'recharge',
+        optional: 'alaska-recharge.Recharge'
       }, {
         label: 'Withdraw',
-        value: 'withdraw'
+        value: 'withdraw',
+        optional: 'alaska-withdraw.Withdraw'
       }, {
         label: 'Withdraw Rejected',
-        value: 'withdraw_rejected'
+        value: 'withdraw_rejected',
+        optional: 'alaska-withdraw.Withdraw'
       }]
     },
     target: {

@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import { Sled } from 'alaska-sled';
+import settingsService from 'alaska-settings';
 import Order from '../models/Order';
 import service, { PayParams } from '..';
 
@@ -14,8 +15,14 @@ export default class Pay extends Sled<PayParams, Order[]> {
     let records = _.size(params.records) ? params.records : [params.record];
     if (_.find(records, (o: Order) => ![200].includes(o.state))) service.error('Order state error');
 
+    let needConfirm = await settingsService.get('order.needConfirm');
+
     for (let order of records) {
-      order.state = 300;
+      let confirm: boolean = order.needConfirm;
+      if (typeof confirm === 'undefined') {
+        confirm = needConfirm;
+      }
+      order.state = confirm ? 300 : 400;
       order.paymentTimeout = null;
       await order.save({ session: this.dbSession });
       order.createLog('Order payed', this.dbSession);

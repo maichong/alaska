@@ -31,7 +31,8 @@ export default class Comment extends Model {
       required: true,
       options: [{
         label: 'Goods',
-        value: 'goods'
+        value: 'goods',
+        optional: 'alaska-goods.Goods'
       }]
     },
     order: {

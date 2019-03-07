@@ -38,6 +38,13 @@ export default class Init extends Sled<any, void> {
         addonAfter: 'Second'
       }
     });
+    settingsService.register({
+      id: 'order.needConfirm',
+      title: 'Need Confirm',
+      service: service.id,
+      group: 'Order',
+      type: 'CheckboxFieldView'
+    });
 
     RegisterAbility.run({
       id: 'alaska-order.Order.cancel:user',
