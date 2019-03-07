@@ -174,9 +174,30 @@ export default class Order extends Model {
       multi: true,
       disabled: true
     },
+    delivery: {
+      label: 'Delivery',
+      type: 'select',
+      switch: true,
+      default: 'express',
+      options: [{
+        label: 'None',
+        value: 'none'
+      }, {
+        label: 'Express',
+        value: 'express'
+      }, {
+        label: 'Self Help',
+        value: 'self'
+      }]
+    },
     address: {
       label: 'Address',
-      type: Object
+      type: Object,
+      hidden: {
+        delivery: {
+          $ne: 'express'
+        }
+      }
     },
     currency: {
       label: 'Currency',
