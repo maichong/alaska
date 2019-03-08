@@ -6,6 +6,8 @@ import orderService, { CreateParams } from 'alaska-order';
 import Order from 'alaska-order/models/Order';
 import OrderGoods from 'alaska-order/models/OrderGoods';
 import { CartService } from 'alaska-cart';
+import AddressType from 'alaska-address/models/Address';
+import { NormalError } from 'alaska';
 
 interface GoodsParams {
   goods: string;
@@ -36,6 +38,13 @@ export async function pre() {
   }
   params.records = params.records || [];
   let orders: Order[] = params.records;
+  let address = params.address;
+  if (address && !_.isPlainObject(address)) {
+    const Address = Order.lookup('alaska-address.Address') as typeof AddressType;
+    address = await Address.findById(address).where('user', params.user._id);
+    if (!address) throw new NormalError('Address not found');
+    address = address.data();
+  }
 
   // 生成 OrderGoods 列表
   let orderItems: OrderGoods[] = [];
@@ -111,7 +120,7 @@ export async function pre() {
         state: 200
       });
       item.order = order._id;
-      order.address = params.address;
+      order.address = address;
       order.goods = [item];
       orders.push(order);
     }

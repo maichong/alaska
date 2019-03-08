@@ -83,7 +83,7 @@ export interface CreateParams {
    */
   pre: boolean;
   user: User;
-  address?: Address;
+  address?: Address | RecordId;
   record?: Order;
   records?: Order[];
 }
