@@ -118,7 +118,7 @@ export default handleActions({
     // @ts-ignore
     const payload: LoadListFailurePayload = action.payload;
     let list: AnyRecordList = state[payload.model] || EMPTY_LIST;
-    return state.set(payload.model, list.merge({ error: payload.error.message, fetching: false }));
+    return state.set(payload.model, list.merge({ error: payload.error, fetching: false }));
   },
   APPLY_DETAILS: (state, action) => {
     // @ts-ignore

@@ -22,6 +22,7 @@ export default class Create extends Sled<CreateParams, Order[]> {
         if (paymentTimeout && order.state === 200 && !order.paymentTimeout) {
           order.paymentTimeout = moment().add(paymentTimeout, 's').toDate();
         }
+        order.quantity = order.goods.length;
         await order.save({ session: this.dbSession });
         order.createLog('Order created', this.dbSession);
       }

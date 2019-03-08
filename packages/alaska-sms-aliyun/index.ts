@@ -1,4 +1,4 @@
-import { Driver, Service } from 'alaska';
+import { Service } from 'alaska';
 import * as ini from 'ini';
 import * as moment from 'moment';
 import akita from 'akita';
@@ -28,7 +28,7 @@ export default class SmsAliyunDriver<T> extends SmsDriver<T, SmsAliyunOptions, n
     if (!config.params) {
       config.params = {};
     }
-    let object: {[key: string]: any} = {
+    let object: { [key: string]: any } = {
       RegionId: 'cn-hangzhou',
       Action: 'SendSms',
       SignName: this.options.SignName,

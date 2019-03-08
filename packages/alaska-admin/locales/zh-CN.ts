@@ -114,4 +114,5 @@ export default {
   'No item': '没有项目',
   'Confirm to remove the item?': '确定要删除数据项目吗？',
   'Confirm logout?': '确认注销吗？',
+  'Failed to fetch': '网络错误',
 };

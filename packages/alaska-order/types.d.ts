@@ -11,6 +11,7 @@ export interface Order {
   address: Address;
   currency: string;
   shipping: number;
+  quantity: number;
   total: number;
   pay: number;
   payed: number;

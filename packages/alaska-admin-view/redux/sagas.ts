@@ -13,7 +13,7 @@ export default function* rootSaga() {
     takeLatest(LOGIN, loginSaga),
     takeLatest(LOGOUT, logoutSaga),
     takeEvery(LOAD_DETAILS, detailsSaga),
-    takeLatest(LOAD_LIST, listSaga),
+    takeEvery(LOAD_LIST, listSaga),
     takeLatest(LOAD_MORE, moreSaga),
     takeEvery(ACTION_REQUEST, actionSaga)
   ]);

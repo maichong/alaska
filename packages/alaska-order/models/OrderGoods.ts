@@ -93,6 +93,10 @@ export default class OrderGoods extends Model {
         value: 900
       }]
     },
+    quantity: {
+      label: 'Quantity',
+      type: Number
+    },
     currency: {
       label: 'Currency',
       type: 'select',
@@ -108,10 +112,6 @@ export default class OrderGoods extends Model {
       label: 'Discount',
       type: Number,
       format: '0,0.00'
-    },
-    quantity: {
-      label: 'Quantity',
-      type: Number
     },
     shipping: {
       label: 'Shipping',

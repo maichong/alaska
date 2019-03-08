@@ -50,17 +50,32 @@ class List extends React.Component<Props> {
   renderEmpty() {
     const { model, list } = this.props;
     if (!list || list.fetching) return null;
+    let error = list.error;
+    let title = 'No records';
+    let desc: React.ReactNode;
+    if (error) {
+      title = error.message;
+      desc = error.stack;
+      // @ts-ignore code 有可能存在
+      if (error.code) {
+        // @ts-ignore code 有可能存在
+        desc = `Code: ${error.code} ${desc}`;
+      }
+    } else {
+      // 没有记录
+      desc = <>
+        {tr('No records found.', model.serviceId)}&nbsp;&nbsp;
+        {
+          model.nocreate === true ? null : <Link to={`/edit/${model.serviceId}/${model.modelName}/_new`}>
+            {tr('Create', model.serviceId)}
+          </Link>
+        }
+      </>;
+    }
     return (
       <div className="error-info">
-        <div className="error-title">{tr('No records', model.serviceId)}</div>
-        <div className="error-desc">
-          {tr('No records found.', model.serviceId)}&nbsp;&nbsp;
-          {
-            model.nocreate === true ? null : <Link to={`/edit/${model.serviceId}/${model.modelName}/_new`}>
-              {tr('Create', model.serviceId)}
-            </Link>
-          }
-        </div>
+        <div className="error-title">{tr(title, model.serviceId)}</div>
+        <div className="error-desc">{desc}</div>
       </div>
     );
   }

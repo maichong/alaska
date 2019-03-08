@@ -39,7 +39,7 @@ export default class Send extends Sled<SendParams, void> {
 
     if (!driver) {
       if (sms && sms.driver) {
-        driver = service.driversMap[sms.driver];
+        driver = service.driversMap.get(sms.driver);
       }
       if (!driver) {
         driver = service.defaultDriver;

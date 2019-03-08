@@ -4,11 +4,9 @@ import { SelectOption } from '@samoyed/types';
 import { SmsDriver } from '.';
 
 class SmsService extends Service {
-  driversOptions: SelectOption[];
-  defaultDriver: void | SmsDriver<any, any>;
-  driversMap: {
-    [key: string]: SmsDriver<any, any>;
-  };
+  driversOptions: SelectOption[] = [];
+  defaultDriver: void | SmsDriver;
+  driversMap: Map<string, SmsDriver> = new Map();
   _optionsPromise: Promise<SelectOption[]>;
   _optionsPromiseCallback: void | Function;
 
@@ -17,21 +15,21 @@ class SmsService extends Service {
     if (!drivers || !Object.keys(drivers).length) {
       throw new Error('No sms driver found');
     }
-    let driversOptions: { label: string; value: number }[] = [];
-    let defaultDriver: SmsDriver<any, any>;
-    let driversMap: { [key: number]: SmsDriver<any, any> } = {};
-    _.forEach(drivers, (options, key: number) => {
+    let driversOptions = this.driversOptions;
+    let defaultDriver: SmsDriver;
+    let driversMap = this.driversMap;
+    _.forEach(drivers, (options, key: string) => {
       let label: string = options.label || key;
       driversOptions.push({ label, value: key });
-      let driver;
+      let driver: SmsDriver;
       if (_.isFunction(options.send)) {
         //已经实例化的driver
         driver = options;
       } else {
-        driver = this.createDriver(options);
+        driver = this.createDriver(options) as SmsDriver;
       }
-      driversMap[key] = driver;
-      if (!defaultDriver || driver.default) {
+      driversMap.set(key, driver);
+      if (!defaultDriver || options.default) {
         defaultDriver = driver;
       }
     });

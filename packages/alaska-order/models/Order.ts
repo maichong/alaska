@@ -201,6 +201,10 @@ export default class Order extends Model {
         }
       }
     },
+    quantity: {
+      label: 'Quantity',
+      type: Number
+    },
     currency: {
       label: 'Currency',
       type: 'select',
@@ -388,6 +392,7 @@ export default class Order extends Model {
   pic: Image;
   goods: OrderGoods[];
   address: Object;
+  quantity: number;
   currency: string;
   shipping: number;
   total: number;

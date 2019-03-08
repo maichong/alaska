@@ -32,9 +32,7 @@ export class SmsService extends Service {
   };
   driversOptions: SelectOption[];
   defaultDriver: void | SmsDriver<any, any>;
-  driversMap: {
-    [key: string]: SmsDriver<any, any>;
-  };
+  driversMap: Map<string, SmsDriver<any, any>>;
 
   getDriverOptionsAsync(): Promise<SelectOption[]>
 }
