@@ -8,6 +8,7 @@ export default {
   None: '无',
   Express: '快递',
   'Self Help': '自提',
+  'Buyer Message': '买家留言',
   Price: '价格',
   Discount: '打折',
   Quantity: '数量',

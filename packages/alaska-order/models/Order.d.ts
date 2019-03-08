@@ -21,6 +21,8 @@ export interface OrderFields {
   pic: Image;
   goods: RecordId[];
   address: Address;
+  delivery: 'express' | 'self' | string;
+  message: string;
   currency: string;
   shipping: number;
   total: number;

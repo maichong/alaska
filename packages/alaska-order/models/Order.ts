@@ -7,6 +7,7 @@ import OrderLog from './OrderLog';
 import OrderGoods from './OrderGoods';
 import { Context } from 'alaska-http';
 import { Image } from 'alaska-field-image';
+import { Address } from 'alaska-address/types';
 import service from '..';
 
 function defaultFilters(ctx: Context) {
@@ -201,6 +202,11 @@ export default class Order extends Model {
         }
       }
     },
+    message: {
+      label: 'Buyer Message',
+      type: String,
+      multi: true
+    },
     quantity: {
       label: 'Quantity',
       type: Number
@@ -391,7 +397,9 @@ export default class Order extends Model {
   type: any;
   pic: Image;
   goods: OrderGoods[];
-  address: Object;
+  address: Address;
+  delivery: 'express' | 'self' | string;
+  message: string;
   quantity: number;
   currency: string;
   shipping: number;

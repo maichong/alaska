@@ -9,6 +9,8 @@ export interface Order {
   pic: string;
   goods: string[];
   address: Address;
+  delivery: 'express' | 'self' | string;
+  message: string;
   currency: string;
   shipping: number;
   quantity: number;

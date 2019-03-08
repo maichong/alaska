@@ -83,6 +83,14 @@ export interface CreateParams {
    */
   pre: boolean;
   user: User;
+  /**
+   * 配送方式
+   */
+  delivery?: 'express' | 'self' | string;
+  /**
+   * 买家留言
+   */
+  message?: string;
   address?: Address | RecordId;
   record?: Order;
   records?: Order[];

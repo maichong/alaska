@@ -117,10 +117,12 @@ export async function pre() {
         pic: item.pic,
         user: params.user._id,
         currency: item.currency,
-        state: 200
+        state: 200,
+        delivery: params.delivery,
+        message: params.message,
       });
       item.order = order._id;
-      order.address = address;
+      order.address = address as any;
       order.goods = [item];
       orders.push(order);
     }
