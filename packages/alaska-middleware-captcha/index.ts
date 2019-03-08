@@ -34,11 +34,11 @@ export default function (options: CaptchaMiddlewareOptions, main: MainService): 
     let to: string = stateBody[params.to] || requestBody[params.to];
     let code = stateBody[params.captcha || 'captcha'] || requestBody[params.captcha || 'captcha'];
     if (!to || !code) {
-      captchaService.error('Invalid captcha');
+      captchaService.error('Invalid captcha', 400);
     }
     let success = await Verify.run({ to, code });
     if (!success) {
-      captchaService.error('Invalid captcha');
+      captchaService.error('Invalid captcha', 400);
     }
     await next();
   };
