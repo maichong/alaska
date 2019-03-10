@@ -54,7 +54,7 @@ export default class CategoryFieldView extends React.Component<FieldViewProps, S
     let { field } = this.props;
     relationQuery({
       model: field.model,
-      filters: this.state.filters
+      filters: _.assign({ _limit: 10000 }, this.state.filters)
     }).then((relation) => {
       let options = _.map(relation.results, (val) => ({
         label: val[field.modelTitleField] || val.title || val._id,

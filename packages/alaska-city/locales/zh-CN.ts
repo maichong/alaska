@@ -1,5 +1,8 @@
 export default {
   City: '城市',
+  Level: '等级',
+  Province: '省份',
+  District: '区县',
   Code: '编码',
   Initial: '首字母',
   'Is Hot': '热门',

@@ -12,12 +12,18 @@ export default class ActionView extends React.Component<ActionViewProps> {
   };
 
   handleClick = () => {
-    const { onClick, link } = this.props;
+    let { onClick, link, record } = this.props;
     if (onClick) {
       onClick();
       return;
     }
     if (link) {
+      link = link.replace(/\{([a-z0-9_]+)\}/ig, (all, word) => {
+        if (record.hasOwnProperty(word)) {
+          return record[word];
+        }
+        return '';
+      });
       this.context.router.history.push(link);
     }
   };

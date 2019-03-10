@@ -68,6 +68,9 @@ body {
   right: 0;
   padding: $content-space;
   padding-bottom: 16rem;
+  &.no-toolbar {
+    top: $header-height;
+  }
 }
 
 .page-inner {}

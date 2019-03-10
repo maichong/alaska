@@ -762,14 +762,11 @@ export interface EditorActionsProps {
   record: immutable.Immutable<Record>;
 }
 
-export interface EditorPageProps {
-  match: {
-    params: {
-      service: string;
-      model: string;
-      id: string;
-    };
-  };
+export interface EditorPageProps extends RouterProps<{
+  service: string;
+  model: string;
+  id: string;
+}> {
 }
 
 export interface EditorToolbarProps {

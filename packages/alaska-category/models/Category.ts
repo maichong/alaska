@@ -56,10 +56,12 @@ export default class Category extends Model {
         value: 'default'
       }, {
         label: 'Goods',
-        value: 'goods'
+        value: 'goods',
+        optional: 'alaska-goods.Goods'
       }, {
         label: 'Post',
-        value: 'post'
+        value: 'post',
+        optional: 'alaska-post.Post'
       }]
     },
     parent: {

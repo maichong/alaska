@@ -1,5 +1,6 @@
 export default {
   Chart: '图表',
+  Place: '位置',
   'Chart Title': '图表标题',
   Series: '数据列',
   'Series Title': '数据列标题',

@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
 import * as React from 'react';
+import * as qs from 'qs';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -15,6 +16,7 @@ import * as detailsRedux from '../redux/details';
 import { ObjectMap } from 'alaska';
 import checkAbility from '../utils/check-ability';
 import {
+  User,
   EditorPageProps,
   Model,
   StoreState,
@@ -30,6 +32,7 @@ interface Props extends EditorPageProps {
   details: DetailsState;
   models: ObjectMap<Model>;
   loadDetails: Function;
+  user: User;
 }
 
 interface EditorPageState {
@@ -80,13 +83,27 @@ class EditorPage extends React.Component<Props, EditorPageState> {
         || prevState.record.id || // 从编辑页面跳转到了新建页面
         (prevState.model && prevState.model.id !== model.id) // 从另外一个模型的新建页面跳转而来
       ) {
-        let defatuls: any = { isNew: true };
+        let init: any = { isNew: true };
         _.forEach(model.fields, (field, key) => {
           if (typeof field.default !== 'undefined') {
-            defatuls[key] = field.default;
+            init[key] = field.default;
           }
         });
-        nextState.record = immutable(defatuls);
+
+        const { location, user } = nextProps;
+        let queryString = (location.search || '').substr(1);
+        let query = qs.parse(queryString) || {};
+        _.forEach(query, (v, k) => {
+          if (k[0] === '_') return;
+          if (v === 'NOW' && model.fields[k] && model.fields[k].plainName === 'date') {
+            v = new Date();
+          } else if (v === 'SELF' && model.fields[k] && model.fields[k].model === 'alaska-user.User') {
+            v = user.id;
+          }
+          init[k] = v;
+        })
+
+        nextState.record = immutable(init);
       }
     } else {
       // 编辑
@@ -239,7 +256,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
 }
 
 export default connect(
-  ({ details, settings, action }: StoreState) => ({ details, models: settings.models, action }),
+  ({ details, settings, action }: StoreState) => ({ details, models: settings.models, action, user: settings.user }),
   (dispatch) => bindActionCreators({
     loadDetails: detailsRedux.loadDetails
   }, dispatch)
