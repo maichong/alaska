@@ -7,7 +7,7 @@ import { Sku } from 'alaska-sku';
 import { Image } from 'alaska-field-image';
 
 function defaultFilters(ctx: Context) {
-  if (ctx.service.id === 'alaska-admin') return null;
+  if (ctx.shop || ctx.service.id === 'alaska-admin') return null;
   return {
     activated: true
   };

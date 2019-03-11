@@ -79,7 +79,7 @@ export interface URRC {
    * @param {any} user 一定存在，{}空对象代表访客
    * @returns {null | Filters | Promise<null | Filters>}
    */
-  filter(user: any): Filters | Promise<Filters>;
+  filter(user: any): null | Filters | Promise<null | Filters>;
 }
 
 export interface URRCGenerator {
