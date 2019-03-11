@@ -5,8 +5,8 @@ import Property from './Property';
 export default class PropertyValue extends Model {
   static label = 'Property Values';
   static icon = 'square';
-  static defaultColumns = 'title prop common sort createdAt';
-  static defaultSort = '-sort -createdAt';
+  static defaultColumns = 'title prop common shop shared sort createdAt';
+  static defaultSort = 'prop -sort -createdAt';
 
   static api = {
     paginate: 1,
@@ -33,12 +33,24 @@ export default class PropertyValue extends Model {
       ref: Category,
       multi: true,
       protected: true,
-      disabled: 'common'
+      hidden: 'common'
     },
     common: {
       label: 'Common',
       default: true,
       type: Boolean
+    },
+    shop: {
+      label: 'Shop',
+      type: 'relationship',
+      ref: 'alaska-shop.Shop',
+      optional: 'alaska-shop.Shop'
+    },
+    shared: {
+      label: 'Shared',
+      type: Boolean,
+      default: true,
+      hidden: '!shop'
     },
     sort: {
       label: 'Sort',
@@ -56,6 +68,8 @@ export default class PropertyValue extends Model {
   prop: RecordId;
   cats: RecordId;
   common: boolean;
+  shop: RecordId;
+  shared: boolean;
   sort: number;
   createdAt: Date;
 
@@ -63,10 +77,19 @@ export default class PropertyValue extends Model {
     if (!this.createdAt) {
       this.createdAt = new Date();
     }
-    let count = await PropertyValue.countDocuments({
+    let filters: any = {
       prop: this.prop,
       title: this.title
-    }).where('_id').ne(this._id);
+    };
+    if (this.shared) {
+      filters.shared = true;
+    } else if (this.shop) {
+      filters.$or = [
+        { shop: this.shop },
+        { shared: true }
+      ];
+    }
+    let count = await PropertyValue.countDocuments(filters).where('_id').ne(this._id);
     if (count) {
       throw new Error('Reduplicate prop value title');
     }

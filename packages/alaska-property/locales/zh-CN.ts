@@ -7,6 +7,7 @@ export default {
   'Add categories': '添加分类',
   'Common property': '通用属性',
   'Common': '通用',
+  'Shared': '共享',
   'Available for all categories': '所有分类可用',
   'No properties found': '没有可用属性',
   Required: '必选属性',

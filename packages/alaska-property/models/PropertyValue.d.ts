@@ -8,6 +8,8 @@ export interface PropertyValueFields {
   prop: RecordId;
   cats: RecordId[];
   common: boolean;
+  shop: RecordId;
+  shared: boolean;
   sort: number;
   createdAt: Date;
 }
