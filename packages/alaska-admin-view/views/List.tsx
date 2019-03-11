@@ -18,7 +18,6 @@ interface Props extends ListProps {
 
 class List extends React.Component<Props> {
   filters?: Filters;
-  search?: string;
   sort?: string;
 
   componentDidMount() {
@@ -26,24 +25,23 @@ class List extends React.Component<Props> {
   }
 
   componentDidUpdate() {
-    let { filters, search, sort, list } = this.props;
-    if (!list || sort !== this.sort || search !== this.search || !_.isEqual(filters, this.filters)) {
+    let { filters, sort, list } = this.props;
+    if (!list || sort !== this.sort || !_.isEqual(filters, this.filters)) {
       this.loadRecords();
     }
   }
 
   loadRecords = () => {
-    let { filters, search, sort, model, loadList, list } = this.props;
+    let { filters, sort, model, loadList, list } = this.props;
     if (!model || (list && list.fetching)) return;
     this.filters = filters;
-    this.search = search;
     this.sort = sort;
     loadList({
       model: model.id,
       page: 1,
       sort: sort,
-      filters,
-      search
+      filters: _.omit(filters, '_search'),
+      search: filters._search as string
     });
   };
 

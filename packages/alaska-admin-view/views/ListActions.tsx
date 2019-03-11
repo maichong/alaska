@@ -54,7 +54,7 @@ class ListActions extends React.Component<Props, ListActionsState> {
   }
 
   handleAction = async (action: string) => {
-    const { model, selected, sort, filters, actionRequest, search } = this.props;
+    const { model, selected, sort, filters, actionRequest } = this.props;
 
     const config: ModelAction = model.actions[action];
     if (!config) return;
@@ -80,9 +80,9 @@ class ListActions extends React.Component<Props, ListActionsState> {
           model: model.id,
           records: selecteds,
           action,
-          search: search || '',
+          search: (filters._search as string) || '',
           sort,
-          filters,
+          filters: _.omit(filters, '_search'),
           body: {}
         });
         this.setState({ request });
@@ -115,13 +115,12 @@ class ListActions extends React.Component<Props, ListActionsState> {
   }
 
   handleExport = () => {
-    const { model, selected, sort, filters, search } = this.props;
+    const { model, selected, sort, filters } = this.props;
     let selecteds = _.map(selected, (item) => item._id);
     let query = _.assign({
       _model: `${model.serviceId}.${model.modelName}`,
       _records: selecteds,
       _action: 'export',
-      _search: search || '',
       _sort: sort || ''
     }, filters);
     let queryStr = qs.stringify(query);

@@ -217,7 +217,7 @@ export type LoginState = immutable.Immutable<{
   error: Error | null;
 }>;
 
-// admin前端定义，和alaska-model后端不同
+// admin前端定义，和alaska-model后端有所不同
 export interface Model {
   label: string;
   modelName: string;
@@ -233,8 +233,8 @@ export interface Model {
 
   titleField: string;
   defaultSort: string;
-  defaultColumns: string[];
-  searchFields: string[];
+  defaultColumns: string;
+  filterFields: string;
   groups: {
     [key: string]: FieldGroup;
   };
@@ -558,17 +558,17 @@ export interface Tool extends React.Component<ToolProps> { }
 
 // FilterView interface
 export interface FilterViewProps {
-  disabled: boolean;
-  errorText: string;
   className: string;
   model: Model;
-  field: Field;
-  value: Filter;
+  field?: Field;
+  options: any;
+  filters: Filters;
+  value: Filter | void;
   onChange: (v: Filter) => void;
-  onClose: () => void;
+  onSearch: () => void;
 }
 
-export interface FilterView extends React.Component<FilterViewProps> { }
+export class FilterView extends React.Component<FilterViewProps> { }
 
 // CellView interface
 export interface CellViewProps {
@@ -601,7 +601,7 @@ export interface ListViewProps {
   search?: string;
   filters?: Filters;
   sort?: string;
-  columns?: string[];
+  columns?: string;
   selected?: immutable.Immutable<Record[]>;
   onSort?: Function;
   onSelect?: Function;
@@ -641,7 +641,7 @@ export interface CardView extends React.Component<CardViewProps> {
 export interface PreViewProps {
   model: Model;
   record: immutable.Immutable<Record>;
-  columns?: string[];
+  columns?: string;
 }
 
 export interface PreView extends React.Component<PreViewProps> { }
@@ -690,7 +690,7 @@ export interface BodyProps {
 
 export interface ColumnsToolProps {
   model: Model;
-  columns?: string[];
+  columns?: string;
   onChange: Function;
 }
 
@@ -705,7 +705,7 @@ export interface DashboardProps {
 
 export interface DataTableProps {
   model: Model;
-  columns?: string[];
+  columns?: string;
   selected?: immutable.Immutable<Record[]>;
   records: immutable.Immutable<Record[]>;
   activated?: immutable.Immutable<Record>;
@@ -718,7 +718,7 @@ export interface DataTableProps {
 export interface DataTableHeaderProps {
   model: Model;
   sort?: string;
-  columns?: string[];
+  columns?: string;
   select: boolean;
   onSelect: Function;
   onSort: Function;
@@ -727,7 +727,7 @@ export interface DataTableHeaderProps {
 export interface DataTableRowProps {
   model: Model;
   record: immutable.Immutable<Record>;
-  columns?: string[];
+  columns?: string;
   onActive?: Function;
   active?: boolean;
   selected?: boolean;
@@ -787,6 +787,7 @@ export interface FieldGroupProps extends FieldGroup {
 export interface FilterEditorProps {
   model: Model;
   value: Filters;
+  fields?: string;
   onChange: Function;
 }
 
@@ -802,10 +803,9 @@ export interface ListProps {
   };
   activated?: immutable.Immutable<Record> | null;
   model: Model;
-  search?: string;
   filters?: Filters;
   sort?: string;
-  columns?: string[];
+  columns?: string;
   selected?: immutable.Immutable<Record[]>;
   onSort?: Function;
   onSelect?: Function;
@@ -817,8 +817,6 @@ export interface ListActionBarProps {
   filters: Filters;
   records: immutable.Immutable<Record[]>;
   selected: immutable.Immutable<Record[]>;
-  search: string;
-  onSearch: Function;
   sort?: string;
 }
 
@@ -828,7 +826,6 @@ export interface ListActionsProps {
   records: immutable.Immutable<Record[]>;
   selected: immutable.Immutable<Record[]>;
   sort?: string;
-  search?: string;
 }
 
 export interface ListPageProps {
@@ -838,17 +835,11 @@ export interface ListToolbarProps {
   model: Model;
   options?: any;
   filters?: Filter;
-  columns?: string[];
+  columns?: string;
   split?: boolean;
   onChangeColumns: Function;
   onFilters: Function;
   onSplit: Function;
-}
-
-export interface FiltersToolProps extends ToolProps {
-  model: Model;
-  filters?: Filter;
-  onChange: Function;
 }
 
 export interface LoadingPageProps {
@@ -933,6 +924,7 @@ export interface SearchFieldProps {
   value: string;
   placeholder: string;
   onChange: Function;
+  onSearch: Function;
 }
 
 export interface SidebarProps {

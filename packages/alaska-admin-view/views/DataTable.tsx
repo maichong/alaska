@@ -75,9 +75,9 @@ export default class DataTable extends React.Component<DataTableProps, DataTable
       sort, onSort, onActive, onSelect
     } = this.props;
     let { selectAll, selectList } = this.state;
-    columns = columns || model.defaultColumns || [];
-    if (!columns || !columns.length) {
-      columns = Object.keys(model.fields);
+    columns = columns || model.defaultColumns;
+    if (!columns) {
+      columns = Object.keys(model.fields).join(' ');
     }
     return (
       <Node

@@ -54,7 +54,7 @@ class DataTableRow extends React.Component<Props> {
             : null
         }
         {
-          columns.map((key: string) => {
+          columns.split(' ').map((key: string) => {
             let field: Field = model.fields[key];
             if (!field || field.hidden === true || !field.cell) return null;
             if (field.super && !superMode) return null;

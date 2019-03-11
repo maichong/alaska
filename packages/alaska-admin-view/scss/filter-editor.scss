@@ -1,71 +1,16 @@
 .filter-editor {
-  margin-bottom: $content-space;
+  background: #fff;
+  padding: $content-space;
+  padding-top: 0;
+  margin: 0 0 $content-space 0;
+  &>div {
+    margin-top: $content-space;
+  }
   .field-filter {
-    position: relative;
-    margin: 0 $padding-field-view;
-    padding: $content-space 0;
-    &.error {
-      background: rgba(255, 0, 0, 0.1) !important;
-    }
-  }
-  .form-inline {
-    .form-group,
-    &>.form-control {
-      margin: 0 $content-space-small;
-    }
-    input.form-control {
-      width: 5.625rem; // 90px;
-      padding: {
-        left: $content-space-xsmall;
-        right: $content-space-xsmall;
-      }
-      text-align: center;
-      color: $gray;
-      border-radius: $input-border-radius;
-      border: $input-border-width $input-border-color solid;
-      &:focus {
-        border: 1px $input-focus-border-color solid;
-        box-shadow: $input-focus-box-shadow;
-      }
-    }
-    .btn {
-      line-height: 1.25rem; // 20px;
-      outline: none;
-      border: $border-width $border-color solid;
-      margin-left: -$border-width;
-      border-radius: 0;
-      &.btn-light {
-        background-color: $white-color;
-        &:hover {
-          background-color: $bg-light;
-        }
-        &:focus,
-        &:active {
-          outline: none;
-          box-shadow: inset 3px $border-width 5px rgba(0, 0, 0, 0.1);
-          background-color: #ddd;
-          border: $border-width $border-color solid;
-        }
-      }
-      &.btn-success {
-        color: $white-color;
-        background-color: $green;
-        &:focus,
-        &:active {
-          outline: none;
-          box-shadow: none;
-          border: $border-width $border-color solid;
-        }
-      }
-    }
-  }
-  .field-filter-close {
-    position: absolute;
-    right: 0.625rem; // 10px;
-    top: 0.5rem; // 8px;
-    line-height: 1.25rem; // 20px;
-    i {
-      color: $blue;
+    margin-right: $content-space;
+    padding: 0;
+    label {
+      margin-bottom: 0;
     }
   }
 }

@@ -19,6 +19,7 @@ export default class Goods extends Model {
   static defaultColumns = 'pic title shop brand cat cats price discount volume inventory activated recommend isHot sort createdAt';
   static defaultSort = '-sort';
   static searchFields = 'title';
+  static filterFields = 'price?range cat shop brand recommend isHot activated @search';
 
   static api = {
     paginate: 1,

@@ -75,11 +75,12 @@ export interface ModelSettings {
   noremove?: boolean;
   noexport?: boolean;
   titleField?: string;
-  searchFields?: string | string[];
+  searchFields?: string;
+  filterFields?: string;
   listLimit?: number;
   defaultLimit?: number;
   defaultSort?: string;
-  defaultColumns?: string | string[];
+  defaultColumns?: string;
   defaultFilters?: null | Filters | FiltersGenerator;
   defaultScope?: ModelFieldList;
   scopes?: ObjectMap<string>;
@@ -89,7 +90,7 @@ export interface ModelSettings {
   preView?: string;
   editorView?: string;
   filterEditorView?: string;
-  schemaOptions?: {};
+  schemaOptions?: any;
   actions?: ObjectMap<ModelAction>;
   api?: ModelApi;
   relationships?: ObjectMap<ModelRelationship>;
@@ -151,7 +152,8 @@ export class Model {
   static noremove?: boolean;
   static noexport?: boolean;
   static titleField: string;
-  static searchFields: string | string[];
+  static searchFields: string;
+  static filterFields: string;
   /**
    * 不分页列表接口数据量限制，如果数据量过大，为了安全和性能做限制
    */
@@ -161,7 +163,7 @@ export class Model {
    */
   static defaultLimit: number;
   static defaultSort: string;
-  static defaultColumns: string | string[];
+  static defaultColumns: string;
   static defaultFilters: null | Filters | FiltersGenerator;
   static defaultScope: ModelFieldList;
   static scopes: ObjectMap<string>;
@@ -837,6 +839,7 @@ export type FieldViewOption = string | FieldViewOptionGenerator | FieldViewOptio
 export type FilterValue = string | number | boolean | RegExp | Date | mongodb.ObjectId;
 
 export type FilterObject = {
+  $regex?: string;
   $eq?: FilterValue;
   $ne?: FilterValue;
   $gt?: FilterValue;

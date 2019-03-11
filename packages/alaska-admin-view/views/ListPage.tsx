@@ -17,7 +17,7 @@ import LoadingPage from './LoadingPage';
 import * as listsRedux from '../redux/lists';
 import {
   ListPageProps, ListsState, StoreState, Record, Model, Settings,
-  Service, RouterProps
+  Service, RouterProps, views
 } from '..';
 import { getStorage, setStorage } from '../utils/storage';
 
@@ -39,9 +39,8 @@ interface ListPageState {
   selected: immutable.Immutable<Record[]>;
   options: ListPageOptions;
   sort: string;
-  search: string;
   filters: Filters;
-  columns: string[];
+  columns: string;
   split: boolean;
 }
 
@@ -68,9 +67,8 @@ class ListPage extends React.Component<Props, ListPageState> {
       selected: immutable([]),
       options: {},
       sort: '',
-      search: '',
       filters: {},
-      columns: [],
+      columns: '',
       split: getStorage('split')
     };
   }
@@ -110,9 +108,9 @@ class ListPage extends React.Component<Props, ListPageState> {
 
     let searchString = (props.location.search || '').substr(1);
     let query = qs.parse(searchString) || {};
-    let columns = (query._columns || '').split('-').filter((a: string) => a);
-    if (columns.length <= 0 && nextState.model) {
-      columns = nextState.model.defaultColumns || [];
+    let columns = (query._columns || '').replace(/,/g, ' ');
+    if (!columns && nextState.model) {
+      columns = nextState.model.defaultColumns;
     }
     if (!_.isEqual(columns, this.state.columns)) {
       nextState.columns = columns;
@@ -126,15 +124,13 @@ class ListPage extends React.Component<Props, ListPageState> {
     let filters = {} as Filters;
     let options = {} as ListPageOptions;
     _.mapKeys(queryObject, (v: any, k: string) => {
-      if (k[0] === '_') {
+      if (k !== '_search' && k[0] === '_') {
         k = k.substr(1);
         options[k] = v;
         return;
       }
       filters[k] = v;
     });
-    nextState.search = options.search || '';
-    delete options.search;
     if (!_.isEqual(options, this.state.options)) {
       nextState.options = options;
     }
@@ -147,14 +143,14 @@ class ListPage extends React.Component<Props, ListPageState> {
   updateQuery() {
     let query: { [key: string]: any } = {};
     const {
-      model, filters, sort, options, columns, search
+      model, filters, sort, options, columns
     } = this.state;
     if (!model) return;
     if (sort && sort !== model.defaultSort) {
       query._sort = sort;
     }
-    if (columns.length && !_.isEqual(columns, model.defaultColumns)) {
-      query._columns = columns.join('-');
+    if (columns != model.defaultColumns) {
+      query._columns = columns.replace(/ /g, ',');
     }
     let optionsTemp = {};
     if (options && _.size(options)) {
@@ -167,9 +163,6 @@ class ListPage extends React.Component<Props, ListPageState> {
       });
     }
     _.assign(query, filters, optionsTemp);
-    if (search) {
-      query._search = search;
-    }
     let { pathname } = this.props.location;
     this.context.router.history.replace({ pathname, search: `?${qs.stringify(query, { encode: false })}` });
   }
@@ -200,12 +193,6 @@ class ListPage extends React.Component<Props, ListPageState> {
     });
   };
 
-  handleSearch = (search: string) => {
-    this.setState({ search }, () => {
-      this.updateQuery();
-    });
-  };
-
   handleFilters = (filters: Filters) => {
     this.setState({ filters }, () => {
       this.updateQuery();
@@ -217,7 +204,7 @@ class ListPage extends React.Component<Props, ListPageState> {
     setStorage('split', split);
   };
 
-  handleColumns = (columns: string[]) => {
+  handleColumns = (columns: string) => {
     this.setState({ columns }, () => {
       this.updateQuery();
     });
@@ -253,7 +240,6 @@ class ListPage extends React.Component<Props, ListPageState> {
       split,
       recordTotal,
       records,
-      search,
       activated
     } = this.state;
     if (!model) {
@@ -267,6 +253,12 @@ class ListPage extends React.Component<Props, ListPageState> {
       model.canUpdate ? 'can-update' : 'no-update',
       model.canRemove ? 'can-remove' : 'no-remove',
     ].join(' ');
+
+    let FilterEditorView = FilterEditor;
+    if (model.filterEditorView && views.components.hasOwnProperty(model.filterEditorView)) {
+      // @ts-ignore
+      FilterEditorView = views.components[model.filterEditorView];
+    }
     return (
       <Node
         className={className}
@@ -299,12 +291,11 @@ class ListPage extends React.Component<Props, ListPageState> {
                 </span>
               )}
           </ListToolbar>
-          {!options.nofilters && <FilterEditor model={model} value={filters} onChange={this.handleFilters} />}
+          {!options.nofilters && <FilterEditorView model={model} value={filters} onChange={this.handleFilters} />}
           <List
             options={options}
             model={model}
             filters={filters}
-            search={search}
             sort={sort}
             columns={columns}
             selected={selected}
@@ -316,11 +307,9 @@ class ListPage extends React.Component<Props, ListPageState> {
           <ListActionBar
             model={model}
             filters={filters}
-            search={search}
             sort={sort}
             records={records}
             selected={selected}
-            onSearch={this.handleSearch}
           />
         </div>
         <QuickEditor

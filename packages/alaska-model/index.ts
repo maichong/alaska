@@ -20,6 +20,7 @@ function setModelDefaults(model: typeof ModelType, service: Service, name: strin
     label: model.modelName,
     titleField: 'title',
     searchFields: '',
+    filterFields: '',
     defaultSort: '',
     defaultColumns: '',
     defaultFilters: null,

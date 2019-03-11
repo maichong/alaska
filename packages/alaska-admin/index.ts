@@ -46,8 +46,8 @@ class AdminService extends Service {
 
           titleField: m.titleField,
           defaultSort: m.defaultSort,
-          defaultColumns: m.defaultColumns as string[],
-          searchFields: m.searchFields as string[],
+          defaultColumns: m.defaultColumns,
+          filterFields: m.filterFields,
           // @ts-ignore 初始数据可能不完善
           groups: _.mapValues(m.groups, (group) => _.assign({ horizontal }, group)),
           // @ts-ignore 前后端类型定义不太一致

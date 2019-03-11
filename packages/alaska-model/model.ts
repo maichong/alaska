@@ -435,24 +435,8 @@ export default class Model {
         // });
       }
 
-      if (!model.defaultColumns) {
-        model.defaultColumns = ['_id'];
-        if (model.titleField && model._fields[model.titleField]) {
-          model.defaultColumns.push(model.titleField);
-        }
-        if (model._fields.createdAt) {
-          model.defaultColumns.push('createdAt');
-        }
-      } else if (typeof model.defaultColumns === 'string') {
-        model.defaultColumns = model.defaultColumns.split(' ').filter((f: string) => f);
-      }
-
       if (model.searchFields) {
-        if (typeof model.searchFields === 'string') {
-          model.searchFields = model.searchFields.split(' ').filter((k: string) => k && model._fields[k]);
-        }
-      } else {
-        model.searchFields = [];
+        model.searchFields = model.searchFields.split(' ').filter((k: string) => k && model._fields[k]).join(' ');
       }
 
       if (model.scopes) {
@@ -749,6 +733,10 @@ export default class Model {
         // @ts-ignore
         let object: FilterObject = value;
         let filter: FilterObject = {};
+        if (object.$regex) {
+          result[path] = new RegExp(escape(object.$regex), 'i');
+          return;
+        }
         ['$gt', '$gte', '$ne', '$eq', '$lt', '$lte'].forEach((op: keyof FilterObject) => {
           let v = object[op];
           if (typeof v !== 'undefined') {

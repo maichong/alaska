@@ -59,26 +59,6 @@
 }
 
 @media(max-width: 460px) {
-  .action-bar {
-    .search-field {
-      display: none;
-    }
-  }
-  .action-bar.search-mode {
-    .action-bar-form .fa-search {
-      display: none;
-    }
-    .search-field {
-      display: block;
-      max-width: inherit;
-    }
-    .list-actions {
-      display: none;
-    }
-    .cancel-search {
-      display: block;
-    }
-  }
   .action-group {
     .btn.with-icon {
       .action-title {

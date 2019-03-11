@@ -28,20 +28,21 @@ class ColumnsTool extends React.Component<Props, ColumnsToolState> {
 
   handleSelect = (key: string) => {
     let { model, columns, onChange } = this.props;
-    if (!columns.length) {
+    if (!columns) {
       columns = model.defaultColumns;
     }
-    if (columns.indexOf(key) > -1) {
-      columns = _.without(columns, key);
+    let array = columns.split(' ');
+    if (array.indexOf(key) > -1) {
+      array = _.without(array, key);
     } else {
-      columns = _.map(model.fields, (field) => {
-        if (field.path === key || columns.indexOf(field.path) > -1) {
+      array = _.map(model.fields, (field) => {
+        if (field.path === key || array.indexOf(field.path) > -1) {
           return field.path;
         }
         return '';
       }).filter(_.identity);
     }
-    onChange(columns);
+    onChange(array.join(' '));
   };
 
   render() {

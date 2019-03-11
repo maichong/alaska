@@ -35,7 +35,7 @@ class DataTableHeader extends React.Component<Props> {
               : null
           }
           {
-            columns.map((key: string) => {
+            columns.split(' ').map((key: string) => {
               let sortIcon = null;
               let handleClick;
               let field: Field = model.fields[key];
