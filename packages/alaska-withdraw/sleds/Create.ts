@@ -22,7 +22,7 @@ export default class Create extends Sled<CreateParams, WithdrawModel> {
 
     let currency = params.currency || balanceService.defaultCurrency.value;
 
-    if (!balanceService.currenciesMap.get('currency')) service.error('Unknown currency');
+    if (!balanceService.currenciesMap.get(currency)) service.error('Unknown currency');
 
     let amount = Math.abs(params.amount) || service.error('Invalid amount');
 
