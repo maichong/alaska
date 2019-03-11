@@ -114,7 +114,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
       if (error) {
         errors = errors.set(key, error);
       } else if (errors[key]) {
-        error = errors.without(key);
+        errors = errors.without(key);
       }
     } else {
       this.errorCheckers[key] = false;

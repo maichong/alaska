@@ -18,13 +18,24 @@ export default class SubdocFieldView extends React.Component<FieldViewProps, Sta
     };
   }
 
-  handleChange = (newValue: immutable.Immutable<Record>, error: immutable.Immutable<ErrorsObject>) => {
-    let { value, field, onChange } = this.props;
+  handleChange = (newValue: immutable.Immutable<Record>, e: immutable.Immutable<ErrorsObject>) => {
+    let { value, field, onChange, error } = this.props;
     let { actived } = this.state;
     if (field.multi) {
       if (!value) value = [];
       if (!_.isArray(value) && _.isObject(value)) value = [value];
       value = immutable(value).set(actived, newValue);
+      if (e) {
+        // @ts-ignore
+        error = immutable(error || []).set(actived, e);
+        // @ts-ignore
+      } else if (error && error[actived]) {
+        // @ts-ignore
+        error = error.set(actived, undefined);
+        if (!_.find(error as object, (e) => !!e)) {
+          error = null;
+        }
+      }
       onChange(value, error || null);
     } else {
       onChange(newValue, error || null);
@@ -32,20 +43,33 @@ export default class SubdocFieldView extends React.Component<FieldViewProps, Sta
   };
 
   handleRemove = async () => {
-    let { value, onChange, model } = this.props;
+    let { value, onChange, model, error } = this.props;
     let { actived } = this.state;
     if (!await confirm(tr('Confirm to remove the item?', model.serviceId))) return;
     value = value.flatMap((item: any, index: number) => (index === actived ? [] : [item]));
-    onChange(value);
+    if (error) {
+      let hasError = false;
+      // @ts-ignore
+      error = immutable.flatMap(error, (v: any, k: number) => {
+        if (k === actived) return [];
+        if (v) hasError = true;
+        return [v];
+      });
+      if (!hasError) error = null;
+    }
     if (actived > value.length - 1) {
-      this.setState({ actived: value.length - 1 });
+      this.setState({ actived: value.length - 1 }, () => {
+        onChange(value, error || null);
+      });
+    } else {
+      onChange(value, error || null);
     }
   };
 
   handleAdd = () => {
-    let { value, onChange } = this.props;
+    let { value, onChange, error } = this.props;
     value = immutable(value || []).concat({});
-    onChange(value);
+    onChange(value, error || null);
     this.setState({ actived: value.length - 1 });
   };
 
@@ -112,6 +136,8 @@ export default class SubdocFieldView extends React.Component<FieldViewProps, Sta
         </div>;
       }
       value = value[actived] || {};
+      // @ts-ignore
+      error = (error || [])[actived] || null;
     }
 
     if (!form && refModel) {

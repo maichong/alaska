@@ -49,7 +49,6 @@ export default class Series extends Model {
       type: 'select',
       switch: true,
       default: 'grid',
-      required: true,
       options: [{
         label: 'Grid',
         value: 'grid'
