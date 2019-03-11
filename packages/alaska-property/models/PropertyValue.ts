@@ -1,6 +1,7 @@
 import { Model, RecordId } from 'alaska-model';
 import Category from 'alaska-category/models/Category';
 import Property from './Property';
+import service from '..';
 
 export default class PropertyValue extends Model {
   static label = 'Property Values';
@@ -20,7 +21,7 @@ export default class PropertyValue extends Model {
       ref: Property,
       index: true,
       required: true,
-      fixed: 'id'
+      fixed: '!isNew'
     },
     title: {
       label: 'Title',
@@ -77,10 +78,18 @@ export default class PropertyValue extends Model {
     if (!this.createdAt) {
       this.createdAt = new Date();
     }
+    if (!this.shop) {
+      this.shared = true;
+    }
+
+    let prop = await Property.findById(this.prop);
+    if (!prop) service.error('Property not exist!');
+
     let filters: any = {
       prop: this.prop,
       title: this.title
     };
+
     if (this.shared) {
       filters.shared = true;
     } else if (this.shop) {
@@ -91,7 +100,7 @@ export default class PropertyValue extends Model {
     }
     let count = await PropertyValue.countDocuments(filters).where('_id').ne(this._id);
     if (count) {
-      throw new Error('Reduplicate prop value title');
+      service.error('Reduplicate prop value title');
     }
   }
 
