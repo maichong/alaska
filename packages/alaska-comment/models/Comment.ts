@@ -56,14 +56,21 @@ export default class Comment extends Model {
       type: 'relationship',
       ref: 'alaska-goods.Goods',
       optional: 'alaska-goods.Goods',
-      hidden: '!goods'
+      hidden: {
+        type: { $ne: 'goods' }
+      }
     },
     sku: {
       label: 'Sku',
       type: 'relationship',
       ref: 'alaska-sku.Sku',
       optional: 'alaska-sku.Sku',
-      hidden: '!sku'
+      filters: {
+        goods: ':goods'
+      },
+      hidden: {
+        type: { $ne: 'goods' }
+      }
     },
     skuDesc: {
       label: 'Sku Desc',

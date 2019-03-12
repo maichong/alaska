@@ -227,7 +227,7 @@ export default class Goods extends Model {
   static virtuals = {
     get discountValid() {
       let now = new Date();
-      return this.discount > 0 && (!this.discountStartAt || this.discountStartAt < now) && (!this.discountEndAt || this.discountEndAt > now);
+      return (!this.discountStartAt || this.discountStartAt < now) && (!this.discountEndAt || this.discountEndAt > now);
     }
   };
 
