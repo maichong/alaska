@@ -8,6 +8,7 @@ export default class Post extends Model {
   static defaultColumns = 'pic title cat user createdAt';
   static defaultSort = '-createdAt';
   static searchFields = 'title summary';
+  static filterFields = 'recommend user createdAt?range @search';
   static autoSelect = false;
 
   static api = {

@@ -69,13 +69,11 @@ export default class RelationshipField extends Field {
             throw new Error(`Field type '${fieldLib}' not found!`);
           }
           type = idFieldClass.plain;
-          this.filter = idFieldClass.prototype.filter;
           if (idFieldClass.plainName) {
             this.plainName = idFieldClass.plainName;
           }
         } else if (idType instanceof Field) {
           type = (<typeof Field>idType).plain;
-          this.filter = (<typeof Field>idType).prototype.filter;
           if (idType.plainName) {
             this.plainName = idType.plainName;
           }

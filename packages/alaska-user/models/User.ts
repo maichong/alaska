@@ -7,7 +7,8 @@ export default class User extends Model {
   static icon = 'user';
   static titleField = 'displayName';
   static defaultColumns = 'avatar username email roles createdAt';
-  static searchFields = 'username email';
+  static searchFields = 'username tel displayName email';
+  static filterFields = 'roles createdAt?range @search';
   static defaultSort = '-createdAt';
   static noremove = true;
 

@@ -698,7 +698,7 @@ export default class Model {
     let result: Filters = {};
     // @ts-ignore
     let model: typeof ModelType = this;
-    if (search && model.searchFields.length) {
+    if (search && model.searchFields) {
       let searchFilters: Filters[] = [];
       let exp: RegExp;
       let keywords = search.split(' ');
@@ -707,7 +707,7 @@ export default class Model {
       } else {
         exp = new RegExp(escape(search), 'i');
       }
-      _.forEach(model.searchFields, (key) => {
+      _.forEach(model.searchFields.split(' '), (key) => {
         searchFilters.push({
           [key]: exp
         });

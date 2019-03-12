@@ -7,6 +7,7 @@ export default class Income extends Model {
   static defaultColumns = 'title user type target deposit currency amount balance createdAt';
   static defaultSort = '-createdAt';
   static searchFields = 'title';
+  static filterFields = 'user type?nolabel&switch target?nolabel deposit currency?nolabel&switch amount?range createdAt?range';
 
   static api = {
     paginate: 2,
@@ -64,13 +65,14 @@ export default class Income extends Model {
       type: 'select',
       disabled: '!isNew',
       default: 'balance',
-      checkbox: true,
+      switch: true,
       options: [{
         label: 'Balance',
         value: 'balance'
       }, {
         label: 'Deposit',
-        value: 'deposit'
+        value: 'deposit',
+        optional: 'alaska-deposit.Deposit'
       }]
     },
     deposit: {

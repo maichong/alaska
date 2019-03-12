@@ -149,7 +149,7 @@ class ListPage extends React.Component<Props, ListPageState> {
     if (sort && sort !== model.defaultSort) {
       query._sort = sort;
     }
-    if (columns != model.defaultColumns) {
+    if (columns !== model.defaultColumns) {
       query._columns = columns.replace(/ /g, ',');
     }
     let optionsTemp = {};

@@ -1,8 +1,9 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { FilterViewProps } from 'alaska-admin-view';
+import { NumberFilterOptions } from '..';
 
-export default class NumberFieldFilter extends React.Component<FilterViewProps> {
+export default class NumberFieldFilter extends React.Component<FilterViewProps<NumberFilterOptions>> {
   handleChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
     let v = event.target.value;
     let { value, options, onChange } = this.props;
@@ -27,39 +28,59 @@ export default class NumberFieldFilter extends React.Component<FilterViewProps> 
 
   render() {
     let { className, field, value, options } = this.props;
-    let v1: string = value as string;
-    let v2: string;
-    let size = 2;
-    if (options.range) {
-      size = 3;
-      value = value || {};
-      if (typeof value !== 'object') value = {};
+    let value1: string = value as string;
+    let value2: string;
+
+    if (value && typeof value === 'object') {
       // @ts-ignore
-      v1 = value.$gte;
+      value1 = value.$gte;
       // @ts-ignore
-      v2 = value.$lte;
+      value2 = value.$lte;
     }
-    return (
-      <div className={`${className} number-field-filter col-sm-${size}`}>
-        <div className="input-group">
-          <div className="input-group-prepend">
-            <div className="input-group-text">{field.label}</div>
-          </div>
-          <input
-            type="text"
-            className="form-control"
-            onChange={this.handleChange1}
-            value={v1}
-          />
-          {
-            options.range && <input
-              type="text"
-              className="form-control"
-              onChange={this.handleChange2}
-              value={v2}
-            />
-          }
+
+    let style: any = {
+      maxWidth: options.maxWidth || '200px'
+    };
+
+    if (options.width) {
+      style.width = options.width;
+    } else {
+      let col = 2;
+      if (options.range) {
+        col = 3;
+      }
+      className += ` col-${options.col || col}`;
+    }
+
+    let el = <>
+      <input
+        type="text"
+        className="form-control"
+        onChange={this.handleChange1}
+        value={value1}
+      />
+      {
+        options.range && <input
+          type="text"
+          className="form-control"
+          onChange={this.handleChange2}
+          value={value2}
+        />
+      }
+    </>;
+
+    if (!options.nolabel) {
+      el = <div className="input-group">
+        <div className="input-group-prepend">
+          <div className="input-group-text">{field.label}</div>
         </div>
+        {el}
+      </div>;
+    }
+
+    return (
+      <div style={style} className={`${className} number-field-filter ${options.className || ''}`}>
+        {el}
       </div>
     );
   }

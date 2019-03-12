@@ -6,7 +6,7 @@ import Node from './Node';
 import SearchField from './SearchField';
 import { FilterEditorProps, FilterView, views } from '..';
 
-const flex = <div className="flex-fill" />;
+const flex = <div className="flex-1" />;
 
 interface State {
   _value?: any;
@@ -51,7 +51,7 @@ export default class FilterEditor extends React.Component<FilterEditorProps, Sta
 
     let filters = _.assign({}, this.state.filters);
 
-    _.map(fields.split(' '), (f, index) => {
+    _.map(fields.split(' '), (f) => {
       let [prefix] = f.split('?');
       let [path, view = ''] = prefix.split('@');
       if (view === 'search') {
@@ -78,7 +78,7 @@ export default class FilterEditor extends React.Component<FilterEditorProps, Sta
         props={this.props}
       >
         {
-          _.map(fields.split(' '), (f, index) => {
+          _.map(fields.split(' '), (f) => {
             let [prefix, queryString] = f.split('?');
             let options = queryString ? qs.parse(queryString) : {};
             _.forEach(options, (v, k) => {
@@ -94,7 +94,7 @@ export default class FilterEditor extends React.Component<FilterEditorProps, Sta
               return <SearchField
                 key="@search"
                 // @ts-ignore
-                value={filters._search}
+                value={filters._search || ''}
                 placeholder={tr('Search...')}
                 onChange={(v: any) => this.handleChange('_search', v)}
                 onSearch={this.handleSearch}
@@ -106,6 +106,9 @@ export default class FilterEditor extends React.Component<FilterEditorProps, Sta
               View = views.components[view];
             } else if (field && field.filter) {
               View = views.components[field.filter];
+              if (!View) {
+                console.warn(`Missing filter view ${field.filter}`);
+              }
             }
             if (!View) return null;
             let className = `${model.id}-${field.path}-filter field-filter`;
@@ -114,6 +117,14 @@ export default class FilterEditor extends React.Component<FilterEditorProps, Sta
               fieldCfg = _.assign({}, field, {
                 label: tr(field.label, model.serviceId)
               });
+            }
+
+            if (options.width && /^\d+$/.test(options.width)) {
+              options.width += 'px';
+            }
+
+            if (options.maxWidth && /^\d+$/.test(options.maxWidth)) {
+              options.maxWidth += 'px';
             }
 
             return (
@@ -133,9 +144,9 @@ export default class FilterEditor extends React.Component<FilterEditorProps, Sta
           })
         }
 
-        <div className="flex-fill text-right">
-          <button className="btn btn-success" onClick={this.handleSearch}>{tr('Search')}</button>
-          <button className="btn btn-outline-secondary ml-1" onClick={this.handleClear}>{tr('Reset')}</button>
+        <div className="flex-fill text-right filter-btns">
+          <button className="btn btn-success filter-btn-search" onClick={this.handleSearch}>{tr('Search')}</button>
+          <button className="btn btn-outline-secondary filter-btn-reset ml-1" onClick={this.handleClear}>{tr('Reset')}</button>
         </div>
       </Node>
     );

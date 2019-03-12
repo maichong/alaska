@@ -1,122 +1,85 @@
 import * as React from 'react';
-import { FilterViewProps, Field } from 'alaska-admin-view';
-import { Filter, FilterValue, FilterObject } from 'alaska-model';
 import * as tr from 'grackle';
+import * as _ from 'lodash';
+import { FilterViewProps, Field } from 'alaska-admin-view';
 import Select from '@samoyed/select';
 import CheckboxGroup from '@samoyed/checkbox-group';
 import Switch from '@samoyed/switch';
-import { SelectValue, SelectOption } from '@samoyed/types';
+import { SelectOption } from '@samoyed/types';
+import { SelectFilterOptions } from '..';
 
 type TypeView = Select | CheckboxGroup | Switch | any;
 
-interface FilterState {
-  value: any;
-  inverse: boolean;
-  error: boolean;
-}
-
-interface FilterProps extends FilterViewProps {
+interface FilterProps extends FilterViewProps<SelectFilterOptions> {
   field: Field & { checkbox: boolean; switch: boolean };
 }
 
-// 1 等于
-enum Modes { 'eq' = 1, 'ne' }
-
-export default class SelectFieldFilter extends React.Component<FilterProps, FilterState> {
-  constructor(props: FilterProps) {
-    super(props);
-    let propsValue: Filter = props.value || {};
-    let mode: Modes = Modes.eq;
-    let value: FilterValue = '';
-    let inverse: boolean = false;
-    if (propsValue && typeof propsValue === 'object') {
-      let condition: FilterObject = propsValue as FilterObject;
-      if (condition.$eq) {
-        value = condition.$eq.toString();
-      } else if (condition.$ne) {
-        value = condition.$ne.toString();
-        inverse = true;
-      }
+export default class SelectFieldFilter extends React.Component<FilterProps> {
+  tr(options: SelectOption[]): SelectOption[] {
+    if (this.props.field.translate === false) {
+      return options;
     }
-    let error = false;
-    if (!value) {
-      error = true;
-    }
-    this.state = {
-      value: value,
-      inverse,
-      error: error
-    };
+    return _.map(options, (opt) => _.assign({}, opt, { label: tr(opt.label) }));
   }
-
-  tr(opt: SelectOption): SelectOption {
-    if (this.props.field.translate === false || !tr) {
-      return opt;
-    }
-    return Object.assign({}, opt, {
-      label: tr(opt.label)
-    });
-  }
-
-  handleInverse = () => {
-    this.setState({ inverse: !this.state.inverse }, () => this.handleBlur());
-  };
-
-  handleChange = (value: SelectValue) => {
-    this.setState({ value }, () => this.handleBlur());
-  };
-
-  handleBlur = () => {
-    let { value, inverse } = this.state;
-    if (typeof value === 'undefined') {
-      this.setState({ error: true });
-      return;
-    }
-    this.setState({ error: false });
-    let tag = '$eq';
-    if (inverse) {
-      tag = '$ne';
-    }
-    this.props.onChange({ [tag]: value });
-  };
 
   render() {
-    let { className, field, onClose } = this.props;
-    const { value, inverse, error } = this.state;
-    const buttonClassName = 'btn btn-default';
-    const buttonClassNameActive = `${buttonClassName} btn-success`;
-    className += ` select-field-filter align-items-center${error ? ' error' : ''}`;
-    let viewClassName = 'Select';
+    let { className, field, value, onChange, options } = this.props;
+    if (_.size(field.options) < 2) return null;
+
+    let style: any = {
+      maxWidth: options.maxWidth || '300px'
+    };
+
+    if (options.width) {
+      style.width = options.width;
+    }
+
+    let viewClassName = 'select flex-fill';
     let View: TypeView = Select;
+    let col = '3';
     if (field.checkbox) {
-      viewClassName = 'Checkbox';
       View = CheckboxGroup;
     } else if (field.switch) {
-      viewClassName = 'Switch';
       View = Switch;
     }
-    return (
-      <div className={className}>
-        <label className="col-2 col-form-label text-right">{field.label}</label>
-        <div className="form-inline col-10">
-          <div className="form-group" style={{ minWidth: 230 }}>
-            <View
-              clearable={true}
-              placeholder="请选择过滤条件"
-              multi={false}
-              className={viewClassName}
-              options={field.options}
-              value={value}
-              onChange={this.handleChange}
-            />
-          </div>
-          <a
-            className={inverse ? buttonClassNameActive : buttonClassName}
-            onClick={this.handleInverse}
-          >{tr('inverse')}
-          </a>
+
+    if (options.checkbox) {
+      View = CheckboxGroup;
+    } else if (options.switch) {
+      View = Switch;
+    } else if (options.select) {
+      View = Select;
+    }
+
+    if (View === CheckboxGroup || View === Switch) {
+      col = 'auto';
+      delete options.width;
+    }
+
+    if (!options.width) {
+      className += ` col-${options.col || col}`;
+    }
+
+    let el = <View
+      clearable={true}
+      multi={false}
+      className={viewClassName}
+      options={this.tr(field.options)}
+      value={value}
+      onChange={(v: any) => onChange(v || undefined)}
+    />;
+
+    if (!options.nolabel) {
+      el = <div className="input-group">
+        <div className="input-group-prepend">
+          <div className="input-group-text">{field.label}</div>
         </div>
-        <a className="btn field-filter-close" onClick={onClose}><i className="fa fa-close" /></a>
+        {el}
+      </div>;
+    }
+    return (
+      <div className={`${className} select-field-filter ${options.className || ''}`}>
+        {el}
       </div>
     );
   }

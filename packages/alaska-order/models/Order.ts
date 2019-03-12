@@ -27,6 +27,7 @@ export default class Order extends Model {
   static searchFields = 'title';
   static nocreate = true;
   static noremove = true;
+  static filterFields = 'type?switch&nolabel state?switch&nolabel shop user total?range @search';
 
   static defaultFilters = defaultFilters;
 

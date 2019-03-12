@@ -32,7 +32,7 @@ export default class SubdocFieldView extends React.Component<FieldViewProps, Sta
       } else if (error && error[actived]) {
         // @ts-ignore
         error = error.set(actived, undefined);
-        if (!_.find(error as object, (e) => !!e)) {
+        if (!_.find(error as object, (x) => !!x)) {
           error = null;
         }
       }

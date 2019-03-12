@@ -557,11 +557,11 @@ export interface ToolProps {
 export interface Tool extends React.Component<ToolProps> { }
 
 // FilterView interface
-export interface FilterViewProps {
+export interface FilterViewProps<T=FilterFieldOptions> {
   className: string;
   model: Model;
   field?: Field;
-  options: any;
+  options: T;
   filters: Filters;
   value: Filter | void;
   onChange: (v: Filter) => void;
@@ -569,6 +569,14 @@ export interface FilterViewProps {
 }
 
 export class FilterView extends React.Component<FilterViewProps> { }
+
+export interface FilterFieldOptions {
+  nolabel?: boolean;
+  col?: string;
+  width?: string;
+  maxWidth?: string;
+  className?: string;
+}
 
 // CellView interface
 export interface CellViewProps {

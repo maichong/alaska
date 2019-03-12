@@ -13,6 +13,8 @@ export default class Sku extends Model {
   static noremove = true;
   static nocreate = true;
   static titleField = 'desc';
+  static searchFields = 'desc';
+  static filterFields = 'goods shop price?range inventory?range volume?range @search';
 
   static fields = {
     pic: {

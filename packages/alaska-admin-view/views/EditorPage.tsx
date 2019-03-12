@@ -101,7 +101,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
             v = user.id;
           }
           init[k] = v;
-        })
+        });
 
         nextState.record = immutable(init);
       }

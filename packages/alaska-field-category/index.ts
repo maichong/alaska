@@ -15,7 +15,7 @@ export default class CategoryField extends RelationshipField {
   static defaultOptions = {
     cell: 'RelationshipFieldCell',
     view: 'CategoryFieldView',
-    filter: 'CategoryFieldFilter',
+    filter: 'RelationshipFieldFilter',
     defaultValue: ''
   };
 }
