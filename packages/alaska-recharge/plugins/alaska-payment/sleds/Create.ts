@@ -22,8 +22,8 @@ export async function pre() {
   if (params.recharge === 'balance') {
     // 必须指定currency货币类型
     if (!currency) paymentService.error('Currency is required!');
-    if (!currenciesMap.hasOwnProperty(currency)) paymentService.error('Unknown currency type!');
-    currencyOpt = currenciesMap.get('currency');
+    if (!currenciesMap.has(currency)) paymentService.error('Unknown currency type!');
+    currencyOpt = currenciesMap.get(currency);
   } else if (params.recharge === 'deposit') {
     // 如果充值目标为储值卡，必须指定deposit储值卡ID
     const Deposit = Recharge.lookup('alaska-deposit.Deposit') as typeof DepositType;
@@ -47,7 +47,7 @@ export async function pre() {
       throw new Error('rechargeOptions should be Map');
     }
     rechargeCurrency = rechargeOptions.get('currency') || currency;
-    if (currenciesMap.hasOwnProperty('rechargeCurrency')) paymentService.error('Invalid currency!');
+    if (!currenciesMap.has(rechargeCurrency)) paymentService.error('Invalid currency!');
     rechargeAmount = rechargeOptions.get('amount') || amount;
     if (amount <= 0) paymentService.error('Invalid recharge amount!');
   }

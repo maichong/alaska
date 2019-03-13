@@ -22,7 +22,7 @@ export default class Complete extends Sled<CompleteParams, Recharge> {
     });
     if (record.target === 'balance') {
       let currency = record.currency;
-      let currencyOpt = currenciesMap.get('currency');
+      let currencyOpt = currenciesMap.get(currency);
       if (!currencyOpt || !currencyOpt.value) {
         service.error('Unknown currency!');
       }
