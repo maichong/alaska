@@ -2,7 +2,8 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
-import { FieldViewProps, store, ErrorsObject } from 'alaska-admin-view';
+import { FieldViewProps, store } from 'alaska-admin-view';
+import { ErrorsMap } from '@samoyed/types';
 import Editor from 'alaska-admin-view/views/Editor';
 import { ShowcaseItem } from '../types';
 
@@ -18,7 +19,7 @@ export default class ShowcaseEditor extends React.Component<FieldViewProps, Stat
     };
   }
 
-  handleChange = (item: immutable.Immutable<ShowcaseItem>, error: immutable.Immutable<ErrorsObject>) => {
+  handleChange = (item: immutable.Immutable<ShowcaseItem>, error: immutable.Immutable<ErrorsMap>) => {
     let { value, onChange } = this.props;
     let { actived } = this.state;
     value = immutable(value || []).set(actived, item);
@@ -97,7 +98,7 @@ export default class ShowcaseEditor extends React.Component<FieldViewProps, Stat
         embedded
         model={store.getState().settings.models['alaska-showcase.ShowcaseItem']}
         record={immutable(items[actived] || {})}
-        errors={error as immutable.Immutable<ErrorsObject>}
+        errors={error as immutable.Immutable<ErrorsMap>}
         onChange={this.handleChange}
         disabled={disabled}
       />;

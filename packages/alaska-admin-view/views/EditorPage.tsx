@@ -6,6 +6,7 @@ import * as qs from 'qs';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { ErrorsMap } from '@samoyed/types';
 import Node from './Node';
 import EditorToolBar from './EditorToolbar';
 import Relationship from './Relationship';
@@ -23,8 +24,7 @@ import {
   DetailsState,
   Record,
   ModelRelationship,
-  ActionState,
-  ErrorsObject
+  ActionState
 } from '..';
 
 interface Props extends EditorPageProps {
@@ -39,7 +39,7 @@ interface EditorPageState {
   model: Model | null;
   _record?: immutable.Immutable<Record> | null;
   record: immutable.Immutable<Record> | null;
-  errors: immutable.Immutable<ErrorsObject> | null;
+  errors: immutable.Immutable<ErrorsMap> | null;
   isNew: boolean;
   id: string;
   _action: ActionState;
@@ -149,7 +149,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     }
   }
 
-  handleChange = (record: immutable.Immutable<Record>, errors: immutable.Immutable<ErrorsObject>) => {
+  handleChange = (record: immutable.Immutable<Record>, errors: immutable.Immutable<ErrorsMap>) => {
     this.setState({ record, errors });
   }
 

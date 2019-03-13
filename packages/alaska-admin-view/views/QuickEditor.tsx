@@ -5,9 +5,10 @@ import * as immutable from 'seamless-immutable';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import toast from '@samoyed/toast';
+import { ErrorsMap } from '@samoyed/types';
 import Node from './Node';
 import Editor from './Editor';
-import { QuickEditorProps, Record, StoreState, ActionState, ErrorsObject } from '..';
+import { QuickEditorProps, Record, StoreState, ActionState } from '..';
 import * as ActionRedux from '../redux/action';
 import QuickEditorActionBar from './QuickEditorActionBar';
 import QuickEditorTitleBar from './QuickEditorTitleBar';
@@ -16,7 +17,7 @@ import checkAbility, { hasAbility } from '../utils/check-ability';
 interface QuickEditorState {
   mode: Mode;
   record: immutable.Immutable<Record>;
-  errors: immutable.Immutable<ErrorsObject> | null;
+  errors: immutable.Immutable<ErrorsMap> | null;
   updateError: boolean;
 }
 
@@ -82,7 +83,7 @@ class QuickEditor extends React.Component<Props, QuickEditorState> {
     return true;
   };
 
-  handleChange = (record: immutable.Immutable<Record>, errors: immutable.Immutable<ErrorsObject>) => {
+  handleChange = (record: immutable.Immutable<Record>, errors: immutable.Immutable<ErrorsMap>) => {
     this.setState({ record, errors });
   }
 

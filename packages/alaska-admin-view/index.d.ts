@@ -7,7 +7,7 @@ import { ModelAction, Filter, Filters, AbilityCheckGate } from 'alaska-model';
 import { Store as ReduxStore } from 'redux';
 import { Saga, Task } from '@redux-saga/types';
 import { DependsQueryExpression } from 'check-depends';
-import { Colors, SelectOption } from '@samoyed/types';
+import { Colors, SelectOption, ErrorsMap, Errors } from '@samoyed/types';
 import { LangGroup } from 'alaska-locale';
 
 // exports
@@ -19,6 +19,14 @@ export function removeStorage(key: string): void;
 export function query(options: QueryOptions): Promise<QueryCache>;
 
 export function setViews(views: Partial<Views>): void;
+
+export function hasAbility(ability: string, record?: any): boolean;
+export function checkAbility(
+  conditions: DependsQueryExpression | AbilityCheckGate[],
+  record?: any
+): boolean;
+
+export function execAction(payload: ActionRequestPayload): Promise<any>;
 
 export const api: Client;
 
@@ -114,6 +122,7 @@ export interface ActionRequestPayload {
   sort?: string;
   filters?: any;
   body?: any;
+  callback?: (error: Error | null, result?: any) => void;
 }
 
 // details
@@ -745,18 +754,12 @@ export interface DataTableRowProps {
 export interface DeniedPageProps {
 }
 
-export interface ErrorsObject {
-  [key: string]: null | string | string[] | ErrorsObject | ErrorsObject[];
-}
-
-export type Errors = null | string | string[] | immutable.Immutable<ErrorsObject> | immutable.Immutable<ErrorsObject[]>;
-
 export interface EditorProps {
   embedded?: boolean;
   model: Model;
   record: immutable.Immutable<Record>;
-  errors: immutable.Immutable<ErrorsObject> | null;
-  onChange: (data: any, errors: ErrorsObject | null) => any;
+  errors: immutable.Immutable<ErrorsMap> | null;
+  onChange: (data: any, errors: ErrorsMap | null) => any;
   disabled?: boolean;
 }
 
@@ -787,7 +790,7 @@ export interface FieldGroupProps extends FieldGroup {
   embedded?: boolean;
   model: Model;
   record: immutable.Immutable<Record>;
-  errors: immutable.Immutable<ErrorsObject>;
+  errors: immutable.Immutable<ErrorsMap>;
   fields: Field[];
   onFieldChange: Function;
 }
@@ -908,7 +911,7 @@ export interface QuickEditorProps {
 }
 
 export interface QuickEditorActionBarProps {
-  errors: immutable.Immutable<ErrorsObject> | null;
+  errors: immutable.Immutable<ErrorsMap> | null;
   canEdit: boolean;
   saveText: string;
   onSave: Function;

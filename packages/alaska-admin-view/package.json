@@ -17,10 +17,10 @@
   "dependencies": {
     "@samoyed/checkbox": "^0.4.0",
     "@samoyed/modal": "^0.4.1",
-    "@samoyed/select": "^0.4.2",
+    "@samoyed/select": "^0.4.3",
     "@samoyed/toast": "^0.4.0",
     "@samoyed/tooltip-wrapper": "^0.4.1",
-    "@samoyed/types": "^0.4.0",
+    "@samoyed/types": "^0.4.3",
     "@types/history": "^4.7.2",
     "@types/react-dom": "^16.8.2",
     "@types/react-redux": "7.0.1",

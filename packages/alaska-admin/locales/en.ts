@@ -12,5 +12,6 @@ export default {
   'confirm remove selected records': 'Would you confirm to remove all of the selected records? The records can not recovery after removed!',
   QUICK_EDIT: 'Edit ( {item} )',
   QUICK_EDIT_MULTI: 'Edit ( {item} ) and so on {count} records, the nonblank field while apply to multiple records',
-  SAVE_MULTI_RECORDS: 'Save {count} records'
+  SAVE_MULTI_RECORDS: 'Save {count} records',
+  CREATE_NEW_PROPERTY_VALUE: 'Create new {property}: {value}',
 };

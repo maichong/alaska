@@ -13,7 +13,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "@samoyed/switch": "^0.4.0",
+    "@samoyed/switch": "^0.4.3",
     "@samoyed/checkbox-group": "^0.4.0",
     "alaska-field-select": "^0.13.2"
   }

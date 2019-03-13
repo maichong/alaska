@@ -21,4 +21,5 @@ export default {
   'Create Property Values': '创建属性值',
   'Please input property value': '请输入属性值',
   'Property Group': '属性集合',
+  CREATE_NEW_PROPERTY_VALUE: '创建新的 {property}：{value}',
 };

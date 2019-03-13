@@ -2,10 +2,11 @@ import * as _ from 'lodash';
 import * as React from 'react';
 import * as tr from 'grackle';
 import * as classnames from 'classnames';
+import { Errors } from '@samoyed/types';
 import Node from './Node';
 import { connect } from 'react-redux';
 import checkAbility from '../utils/check-ability';
-import { FieldGroupProps, Settings, StoreState, views, Errors } from '..';
+import { FieldGroupProps, Settings, StoreState, views } from '..';
 
 interface Props extends FieldGroupProps {
   settings: Settings;

@@ -2,8 +2,9 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
+import { ErrorsMap } from '@samoyed/types';
 import { confirm } from '@samoyed/modal';
-import { FieldViewProps, store, Record, ErrorsObject } from 'alaska-admin-view';
+import { FieldViewProps, store, Record } from 'alaska-admin-view';
 import Editor from 'alaska-admin-view/views/Editor';
 
 interface State {
@@ -18,7 +19,7 @@ export default class SubdocFieldView extends React.Component<FieldViewProps, Sta
     };
   }
 
-  handleChange = (newValue: immutable.Immutable<Record>, e: immutable.Immutable<ErrorsObject>) => {
+  handleChange = (newValue: immutable.Immutable<Record>, e: immutable.Immutable<ErrorsMap>) => {
     let { value, field, onChange, error } = this.props;
     let { actived } = this.state;
     if (field.multi) {
@@ -145,7 +146,7 @@ export default class SubdocFieldView extends React.Component<FieldViewProps, Sta
         embedded
         model={refModel}
         record={immutable(value)}
-        errors={error as immutable.Immutable<ErrorsObject>}
+        errors={error as immutable.Immutable<ErrorsMap>}
         onChange={this.handleChange}
         disabled={disabled}
       />;

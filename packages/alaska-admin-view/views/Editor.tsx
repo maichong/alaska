@@ -3,12 +3,13 @@ import * as _ from 'lodash';
 import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
 import * as React from 'react';
+import { ErrorsMap } from '@samoyed/types';
 import Node from './Node';
-import { EditorProps, FieldGroupProps, ErrorsObject } from '..';
+import { EditorProps, FieldGroupProps } from '..';
 import FieldGroup from './FieldGroup';
 import { hasAbility } from '../utils/check-ability';
 
-type Errors = immutable.Immutable<ErrorsObject>;
+type Errors = immutable.Immutable<ErrorsMap>;
 
 interface EditorState {
   _record?: any;
@@ -80,7 +81,7 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
     }
   }
 
-  _getErrors(errors: immutable.Immutable<ErrorsObject> | null): Errors | null {
+  _getErrors(errors: immutable.Immutable<ErrorsMap> | null): Errors | null {
     let { model, record } = this.props;
     errors = errors || immutable({});
     _.forEach(model.fields, (field, key) => {

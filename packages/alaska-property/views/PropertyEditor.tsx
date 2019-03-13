@@ -3,7 +3,8 @@ import * as _ from 'lodash';
 import * as tr from 'grackle';
 import * as immutable from 'seamless-immutable';
 import { ObjectMap } from 'alaska';
-import { query, FieldViewProps } from 'alaska-admin-view';
+import { store, query, FieldViewProps, hasAbility, execAction } from 'alaska-admin-view';
+import { clearQueryCache } from 'alaska-admin-view/redux/queryCaches';
 import Select from '@samoyed/select';
 import CheckboxGroup from '@samoyed/checkbox-group';
 import Switch from '@samoyed/switch';
@@ -38,6 +39,17 @@ interface PropertyRecord {
   values: Array<{ _id: string; title: string; }>;
   options: Array<{ value: string; label: string }>;
   valueMap: ObjectMap<{ _id: string; title: string; }>;
+}
+
+function parseProp(prop: immutable.Immutable<PropertyRecord>): immutable.Immutable<PropertyRecord> {
+  let options: any[] = [];
+  let valueMap: any = {};
+  _.forEach(prop.values, (v) => {
+    let value = immutable({ label: v.title, value: v._id });
+    options.push(value);
+    valueMap[v._id] = v;
+  });
+  return prop.merge({ options, valueMap });
 }
 
 export default class PropertyEditor extends React.Component<Props, State> {
@@ -83,16 +95,7 @@ export default class PropertyEditor extends React.Component<Props, State> {
       filters: this.state.filters,
       populations: ['values']
     }).then((res) => {
-      let props = res.results.map((prop: immutable.Immutable<PropertyRecord>) => {
-        let options: any[] = [];
-        let valueMap: any = {};
-        _.forEach(prop.values, (v) => {
-          let value = immutable({ label: v.title, value: v._id });
-          options.push(value);
-          valueMap[v._id] = v;
-        });
-        return prop.merge({ options, valueMap });
-      });
+      let props = res.results.map(parseProp);
       this.setState({
         props: immutable(props)
       });
@@ -123,7 +126,7 @@ export default class PropertyEditor extends React.Component<Props, State> {
 
     let me = this;
 
-    let list = _.map(props, (p) => {
+    let list = _.map(props, (p: PropertyRecord) => {
       if (!valueMap[p._id]) {
         valueMap[p._id] = immutable({
           id: p._id,
@@ -133,6 +136,8 @@ export default class PropertyEditor extends React.Component<Props, State> {
           values: []
         });
       }
+
+      let canCreatePropertyValue = p.sku && hasAbility('alaska-property.PropertyValue.create');
 
       function handleChange(v: any) {
         if (!p.multi) {
@@ -144,6 +149,32 @@ export default class PropertyEditor extends React.Component<Props, State> {
         });
         valueMap[p._id] = valueMap[p._id].set('values', values);
         me.setState({ valueMap }, me.handleChange);
+      }
+
+      async function handleCreate(title: string) {
+        let value = await execAction({
+          model: 'alaska-property.PropertyValue',
+          action: 'create',
+          request: title,
+          body: {
+            prop: p._id,
+            title
+          }
+        });
+
+        // 清理查询缓存
+        store.dispatch(clearQueryCache({ model: 'alaska-property.Property' }));
+
+        let newProps = props.flatMap((prop: immutable.Immutable<PropertyRecord>) => {
+          if (prop._id !== p._id) return [prop];
+          prop = prop.set('values', prop.values.concat(value));
+          prop = parseProp(prop);
+          return [prop];
+        });
+        let values = immutable(valueMap[p._id].values || []);
+        values = values.concat({ id: value._id, title: value.title });
+        valueMap[p._id] = valueMap[p._id].set('values', values);
+        me.setState({ props: newProps, valueMap }, me.handleChange);
       }
 
       let value: string | string[] = '';
@@ -184,6 +215,10 @@ export default class PropertyEditor extends React.Component<Props, State> {
         View = Switch;
       }
 
+      if (canCreatePropertyValue) {
+        View = Select;
+      }
+
       return (<div className="form-group" key={p._id}>
         <label className="control-label col-xs-2">{p.title}</label>
         <div className="col-xs-10">
@@ -191,9 +226,11 @@ export default class PropertyEditor extends React.Component<Props, State> {
             value={value}
             multi={p.multi}
             options={p.options}
-            allowCreate={p.input}
+            allowCreate={p.input || canCreatePropertyValue}
             disabled={disabled}
             onChange={handleChange}
+            onCreateOption={handleCreate}
+            formatCreateLabel={(str) => tr('CREATE_NEW_PROPERTY_VALUE', { property: p.title, value: str })}
           />
           <div><small className="form-text text-muted">{helpElement}</small></div>
         </div>

@@ -112,7 +112,8 @@ export default class Property extends Model {
     },
     input: {
       label: 'Allow input',
-      type: Boolean
+      type: Boolean,
+      disabled: 'sku'
     },
     checkbox: {
       label: 'Checkbox View',
@@ -189,6 +190,7 @@ export default class Property extends Model {
     if (this.sku) {
       this.required = true;
       this.multi = true;
+      this.input = false;
     }
     if (this.input) {
       this.checkbox = false;

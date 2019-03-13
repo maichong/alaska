@@ -10,8 +10,8 @@ const warning: ObjectMap<boolean> = {};
 
 /**
  * 检查当前用户是否拥有指定 ability
- * @param ability
- * @param record
+ * @param {string} ability
+ * @param {object} [record]
  */
 export function hasAbility(ability: string, record?: any): boolean {
   if (ability === 'every') return true;

@@ -103,7 +103,6 @@ export default class MultiLevelSelect extends React.Component<Props, State> {
         {
           _.map(levels, (level, index) => (<div className="col-sm-4" key={index}>
             <Select
-              className="Select"
               disabled={disabled}
               options={level.options}
               value={level.value}

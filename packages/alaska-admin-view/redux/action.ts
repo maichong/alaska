@@ -7,6 +7,7 @@ import { applyDetails, batchApplyDetails } from './details';
 import { clearList } from './lists';
 import { clearQueryCache } from './queryCaches';
 import { ActionState, ActionRequestPayload } from '..';
+import store from '.';
 
 export const ACTION_REQUEST = 'ACTION_REQUEST';
 export const ACTION_SUCCESS = 'ACTION_SUCCESS';
@@ -30,6 +31,18 @@ const INITIAL_STATE: ActionState = immutable({
 export const actionRequest = createAction<ActionRequestPayload>(ACTION_REQUEST);
 export const actionSuccess = createAction<any>(ACTION_SUCCESS);
 export const actionFailure = createAction<Error>(ACTION_FAILURE);
+export function execAction(payload: ActionRequestPayload): Promise<any> {
+  return new Promise((resolve, reject) => {
+    payload.callback = function (error: Error | null, result: any) {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    };
+    store.dispatch(actionRequest(payload));
+  });
+}
 
 export default handleActions({
   ACTION_REQUEST: (state, action) => {
@@ -47,7 +60,7 @@ export default handleActions({
   }
 }, INITIAL_STATE);
 
-export function* actionSaga({ payload }: Action<any>) {
+export function* actionSaga({ payload }: Action<ActionRequestPayload>) {
   let result = [];
   try {
     result = yield api.post('/action',
@@ -62,24 +75,32 @@ export function* actionSaga({ payload }: Action<any>) {
         body: payload.body || {}
       });
     yield put(actionSuccess(result));
+
+    if (payload.action === 'create' || payload.action === 'remove') {
+      // 新建，需要清空列表
+      yield put(clearList({ model: payload.model }));
+      yield put(clearQueryCache({ model: payload.model }));
+    } else if (payload.action === 'update') {
+      yield put(clearQueryCache({ model: payload.model }));
+      if (Array.isArray(result)) {
+        // 同时保存了多条记录
+        let list: any = result.map((data) => ({ model: payload.model, data: _.assign(data, { id: data._id, _rev: Date.now() }) }));
+        yield put(batchApplyDetails(list));
+      } else {
+        // 只保存了一条记录
+        result.id = result._id;
+        result._rev = Date.now();
+        yield put(applyDetails(payload.model, result));
+      }
+    }
+    if (payload.callback) {
+      payload.callback(null, result);
+    }
   } catch (e) {
     yield put(actionFailure(e));
-  }
-  if (payload.action === 'create' || payload.action === 'remove') {
-    // 新建，需要清空列表
-    yield put(clearList({ model: payload.model }));
-    yield put(clearQueryCache({ model: payload.model }));
-  } else if (payload.action === 'update') {
-    yield put(clearQueryCache({ model: payload.model }));
-    if (Array.isArray(result)) {
-      // 同时保存了多条记录
-      let list: any = result.map((data) => ({ model: payload.model, data: _.assign(data, { id: data._id, _rev: Date.now() }) }));
-      yield put(batchApplyDetails(list));
-    } else {
-      // 只保存了一条记录
-      result.id = result._id;
-      result._rev = Date.now();
-      yield put(applyDetails(payload.model, result));
+    if (payload.callback) {
+      payload.callback(e);
     }
   }
+
 }
