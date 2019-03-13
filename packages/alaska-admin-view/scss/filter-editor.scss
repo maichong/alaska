@@ -12,5 +12,11 @@
     label {
       margin-bottom: 0;
     }
+    .input-group-prepend {
+      .input-group-text {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+      }
+    }
   }
 }

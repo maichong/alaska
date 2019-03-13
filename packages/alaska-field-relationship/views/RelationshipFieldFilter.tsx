@@ -64,7 +64,7 @@ export default class RelationshipFieldFilter extends React.Component<FilterViewP
     }
 
     let el = <Select
-      className="select flex-1"
+      className="flex-1"
       options={selectOptions}
       onInputChange={this.handleSearch}
       // @ts-ignore

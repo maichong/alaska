@@ -34,7 +34,7 @@ export default class SelectFieldFilter extends React.Component<FilterProps> {
       style.width = options.width;
     }
 
-    let viewClassName = 'select flex-fill';
+    let viewClassName = 'flex-fill';
     let View: TypeView = Select;
     let col = '3';
     if (field.checkbox) {
