@@ -81,7 +81,7 @@ export default class Export extends Sled<ActionSledParams, any> {
       return caches[key];
     }
     setImmediate(() => {
-      stream.write(`${titles.map((title) => JSON.stringify(title)).join(',')}\n`);
+      stream.write(`\ufeff${titles.map(escapeText).join(',')}\n`);
       query.cursor()
         .eachAsync(async (record: Model) => {
           let data = [];
