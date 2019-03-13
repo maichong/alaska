@@ -811,12 +811,13 @@
   resolved "https://registry.yarnpkg.com/@redux-saga/types/-/types-1.0.2.tgz#1d94f02800b094753f9271c206a26c2a06ca14ee"
   integrity sha512-8/qcMh15507AnXJ3lBeuhsdFwnWQqnp68EpUuHlYPixJ5vjVmls7/Jq48cnUlrZI8Jd9U1jkhfCl0gaT5KMgVw==
 
-"@samoyed/checkbox-group@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@samoyed/checkbox-group/-/checkbox-group-0.4.0.tgz#ea7f7aa6b0e4138e8120044debca88aa65e6ff34"
-  integrity sha512-hohL44LYfvQVIRANYc/C52XACrQ2qCHnvQxAUa4wsoENqWgvD+fKGKbBZjTvaqv0krhRq0p2qrW3Kf3mCqhNag==
+"@samoyed/checkbox-group@^0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@samoyed/checkbox-group/-/checkbox-group-0.4.4.tgz#2188a4227c90cf1b30757e1f49962500b7ba9b41"
+  integrity sha512-gPe1rjtHwNWtpMT8tkRtVNxOp4ubTAl8Nf96zTVbFw/GL9n8gFvDPjkLkTtcQbAUcvzUFqtttaDs75+Ju2kxTQ==
   dependencies:
     "@samoyed/checkbox" "^0.4.0"
+    classnames "^2.2.6"
 
 "@samoyed/checkbox@^0.4.0":
   version "0.4.0"
@@ -838,18 +839,21 @@
     grackle "^0.2.0"
     string-random "^0.1.3"
 
-"@samoyed/select@^0.4.3":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@samoyed/select/-/select-0.4.3.tgz#114569ed45faa1944f21d0ee3acdeaa61179ef3c"
-  integrity sha512-myLo0DZKqrprrcMhR3QcixZ3EmCNaLtL7TUJpovc4M8dQVKDm3O8OuG/+OZAoFI3RYqXtOTFJdyBrFmnyAldzA==
+"@samoyed/select@^0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@samoyed/select/-/select-0.4.4.tgz#dac9275081e7cbbaee7977977ceadc9e1d6acde5"
+  integrity sha512-S7xu21ofQ0IRc09BgA7XnHlw+6iwHd24M1J49LvkqYxke+qATYYMc26Uoyf9GUIgOWbLqe6E87jtOKLhUdYr2w==
   dependencies:
+    classnames "^2.2.6"
     grackle "^0.2.0"
     react-select "^2.4.2"
 
-"@samoyed/switch@^0.4.3":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@samoyed/switch/-/switch-0.4.3.tgz#467fdfbddca095eb51f2881e819881495d3a4b93"
-  integrity sha512-a5s4YFn1lZLQlth4ucWdnyW6C/Lx3BJ7Pll/nUbTR399zkZGevEmlhcoYueAlAQKdfK4GX7yVNwroErBw3UX1g==
+"@samoyed/switch@^0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@samoyed/switch/-/switch-0.4.4.tgz#c01ec765c08b07a58efde0f65fb84ebb212306db"
+  integrity sha512-J3Y5H0ROvGRiy/Q2Glgq+erBSEDiODj7pvWnOMVjpm+ulX+vSz+aPSotU5AdjKiVxejCfh1beO5yyESTgQOwpg==
+  dependencies:
+    classnames "^2.2.6"
 
 "@samoyed/toast@^0.4.0":
   version "0.4.0"

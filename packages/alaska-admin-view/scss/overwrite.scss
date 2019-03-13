@@ -13,6 +13,58 @@
   }
 }
 
+.select {
+  .select__control {
+    border-color: $input-border-color;
+    border-width: $input-border-width;
+    box-shadow: none;
+    font-size: $input-font-size;
+    min-height: 0;
+    border-radius: $input-border-radius;
+    padding-bottom: 0.3px;
+    &:hover,
+    &.select__control--is-focused {
+      border-color: $input-focus-border-color;
+    }
+  }
+  .select__value-container {
+    line-height: $input-line-height;
+    padding: $input-padding-y $input-padding-x;
+    &>div:last-child {
+      // input box
+      margin: 0;
+      padding: 0;
+    }
+  }
+  .select__indicator {
+    padding: 0;
+  }
+  .select__menu {
+    margin-top: 2px;
+    border-radius: $input-border-radius;
+  }
+  .select__menu-list {
+    padding: 0;
+  }
+  .select__option {
+    font-size: $input-font-size;
+    line-height: $input-line-height;
+    padding: $input-padding-y $input-padding-x;
+  }
+  .select__option--is-focused {
+    background: lighten($primary, 40%);
+  }
+  .select__option--is-selected {
+    background: $primary;
+  }
+  .select__multi-value {
+    margin: -2px 4px -2px 0;
+  }
+  .select__multi-value__label {
+    padding: 2px 0 2px 6px;
+  }
+}
+
 .card {
   border-color: $border-color;
   box-shadow: 0 $border-width $border-width rgba(0, 0, 0, .05);
