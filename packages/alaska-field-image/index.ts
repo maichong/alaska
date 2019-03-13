@@ -81,8 +81,21 @@ export default class ImageField extends Field {
 
     let options = {
       type: new mongoose.Schema(paths),
-      set(value: Image | string) {
-        if (typeof value === 'string') return { _id: new ObjectId(), url: value };
+      set(value: Image | string | string[] | Image[]) {
+        if (typeof value === 'string') {
+          if (field.multi) {
+            return [{ _id: new ObjectId(), url: value }];
+          }
+          return { _id: new ObjectId(), url: value };
+        }
+        if (Array.isArray(value) && field.multi) {
+          return (value as Array<Image | string>).map((img: Image | string) => {
+            if (typeof img === 'string') {
+              return { _id: new ObjectId(), url: img };
+            }
+            return img;
+          });
+        }
         return value;
       }
     };
