@@ -766,7 +766,7 @@ export default class Model {
           result[path] = filter;
         }
       } else {
-        let filter = field.parse(value);
+        let filter = field.parseFilter(value);
         if (filter !== null) {
           // @ts-ignore
           result[path] = filter;

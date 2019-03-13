@@ -820,6 +820,7 @@ export class Field {
   initSchema(): void;
   viewOptions(): AdminView.Field;
   init(): void;
+  parseFilter(value: any): null | any;
   parse(value: any): null | any;
 }
 

@@ -27,6 +27,40 @@ export default class DatetimeField extends Field {
     });
   }
 
+  parseFilter(value: any): any {
+    let str = String(value);
+    if (/^\d+$/.test(str)) {
+      if (str.length === 4) {
+        let date = moment(`${str}0201`);
+        if (date.isValid()) {
+          return {
+            $gte: date.startOf('year'),
+            $lte: date.endOf('year')
+          };
+        }
+      }
+      if (str.length === 6) {
+        let date = moment(`${str}02`);
+        if (date.isValid()) {
+          return {
+            $gte: date.startOf('month'),
+            $lte: date.endOf('month')
+          };
+        }
+      }
+      if (str.length === 8) {
+        let date = moment(str);
+        if (date.isValid()) {
+          return {
+            $gte: date.startOf('day').toISOString(),
+            $lte: date.endOf('day').toISOString()
+          };
+        }
+      }
+    }
+    return this.parse(value);
+  }
+
   parse(value: any): null | moment.Moment {
     let v = moment(value);
     return v.isValid() ? v : null;

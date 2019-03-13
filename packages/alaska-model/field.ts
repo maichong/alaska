@@ -220,6 +220,14 @@ export default class Field {
   }
 
   /**
+   * 格式化过滤参数，返回null代表无效
+   * @param value
+   */
+  parseFilter(value: any): null | any {
+    return this.parse(value);
+  }
+
+  /**
    * 格式化值，将值格式化为MongoDB支持的类型，返回null代表无效值
    * @param value
    */
