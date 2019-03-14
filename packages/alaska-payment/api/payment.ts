@@ -25,7 +25,7 @@ export async function create(ctx: Context) {
 
   let payment = await Create.run(body, { dbSession: ctx.dbSession });
 
-  if (payment.state === 'success') {
+  if (payment.params === 'success') {
     await Complete.run({ record: payment }, { dbSession: ctx.dbSession });
   }
 
