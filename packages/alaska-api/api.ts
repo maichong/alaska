@@ -381,8 +381,7 @@ export async function watch(ctx: Context) {
     if (!object) {
       let data = change.fullDocument || change.documentKey;
       if (!data) return;
-      // eslint-disable-next-line
-      let record = new model(data);
+      let record = model.hydrate(data);
       object = record.data();
 
       if (userService) {

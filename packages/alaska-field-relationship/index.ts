@@ -6,40 +6,6 @@ import * as events from 'events';
 const TypeObjectId = mongoose.Schema.Types.ObjectId;
 const { ObjectId } = mongoose.Types;
 
-function watchDefault(ref: typeof Model, field: RelationshipField) {
-  function change(value: any) {
-    if (!RelationshipField._defaults.has(ref.id) || String(value) !== RelationshipField._defaults.get(ref.id)) {
-      RelationshipField._defaults.set(ref.id, value);
-      RelationshipField._defaultsWatcher.get(ref.id).emit('change', value);
-    }
-  }
-  ref.findOne().sort(`-${field.defaultField}`).then((record) => {
-    if (record) {
-      change(record._id);
-    }
-  });
-
-  // watch
-  let $match: any = {};
-  $match[`fullDocument.${field.defaultField}`] = true;
-  let changeStream = ref.watch([{ $match }], {
-    fullDocument: 'updateLookup'
-  });
-
-  changeStream.on('change', async (change) => {
-    let doc = change.fullDocument;
-    if (['insert', 'update'].includes(change.operationType) && doc && doc[field.defaultField]) {
-      change(doc._id);
-    }
-  });
-
-  changeStream.on('close', () => {
-    setTimeout(() => {
-      watchDefault(ref, field);
-    }, 2000);
-  });
-}
-
 export default class RelationshipField extends Field {
   static fieldName = 'Relationship';
   static plain = TypeObjectId;
@@ -63,6 +29,46 @@ export default class RelationshipField extends Field {
 
   static _defaults = new Map();
   static _defaultsWatcher = new Map();
+
+  static watchDefault(ref: typeof Model, defaultField: string): { record: Model, watcher: events.EventEmitter } {
+    let watcher = this._defaultsWatcher.get(ref.id);
+    if (!watcher) {
+      watcher = new events.EventEmitter();
+
+      function watch() {
+        ref.findOne().sort(`-${defaultField}`).then((record) => {
+          if (record) {
+            RelationshipField._defaults.set(ref.id, record);
+            watcher.emit('change', record);
+          }
+        });
+        let $match: any = {};
+        $match[`fullDocument.${defaultField}`] = true;
+        let changeStream = ref.watch([{ $match }], {
+          fullDocument: 'updateLookup'
+        });
+        changeStream.on('change', async (change) => {
+          let doc = change.fullDocument;
+          if (['insert', 'update'].includes(change.operationType) && doc && doc[defaultField]) {
+            let record = ref.hydrate(doc);
+            RelationshipField._defaults.set(ref.id, record);
+            watcher.emit('change', record);
+          }
+        });
+        changeStream.on('close', () => {
+          setTimeout(watch, 2000);
+        });
+      }
+
+      if (ref.registered) {
+        watch();
+      } else {
+        ref.post('register', watch);
+      }
+    }
+
+    return { record: this._defaults.get(ref.id), watcher };
+  };
 
   // Model id
   model: string;
@@ -166,22 +172,12 @@ export default class RelationshipField extends Field {
       options.default = function () {
         return RelationshipField._defaults.get(field.model);
       };
-      let watcher = RelationshipField._defaultsWatcher.get(field.model);
-      if (!watcher) {
-        watcher = new events.EventEmitter();
-        RelationshipField._defaultsWatcher.set(field.model, watcher);
-        if (ref.registered) {
-          // 已注册
-          watchDefault(ref, field);
-        } else {
-          // 未注册
-          ref.post('register', () => {
-            watchDefault(ref, field);
-          });
-        }
+      let { record, watcher } = RelationshipField.watchDefault(ref, field.defaultField);
+      if (record) {
+        field.default = record._id;
       }
-      watcher.on('change', (value: any) => {
-        field.default = value;
+      watcher.on('change', (record: Model) => {
+        field.default = record._id;
       });
     }
 

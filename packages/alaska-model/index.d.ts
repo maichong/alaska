@@ -202,10 +202,7 @@ export class Model {
   static paginate<T>(this: { new(): T }, conditions?: any): PaginateQuery<T>;
   static paginateByContext<T>(this: { new(): T }, ctx: Context, state?: ContextState): PaginateQuery<T>;
   static listByContext<T>(this: { new(): T }, ctx: Context, state?: ContextState): DocumentQuery<T[], T>;
-  static showByContext<T>(this: { new(): T }, ctx: Context, state?: ContextState): DocumentQuery<T | null, T>
-  static fromObject<T>(this: { new(): T }, data: any): T;
-  static fromObjectArray<T>(this: { new(): T }, array: any[]): T[];
-  static toObjectArray(array: Model[]): any[];
+  static showByContext<T>(this: { new(): T }, ctx: Context, state?: ContextState): DocumentQuery<T | null, T>;
 
   // Mongoose Model
   static watch(pipeline?: any[], options?: mongodb.ChangeStreamOptions & { session?: mongoose.ClientSession }): mongodb.ChangeStream;

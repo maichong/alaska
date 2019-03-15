@@ -609,10 +609,7 @@ export default class Model {
         'showByContext',
         'createFilters',
         'createFiltersByContext',
-        'paginate',
-        'fromObject',
-        'fromObjectArray',
-        'toObjectArray'
+        'paginate'
       ].forEach((key) => {
         // @ts-ignore
         model[key] = Model[key];
@@ -1092,39 +1089,6 @@ export default class Model {
     });
 
     return query;
-  }
-
-  /**
-   * 将object数据转为Model对象
-   * @param {Object} data
-   * @returns {Model}
-   */
-  static fromObject(data: any): ModelType {
-    if (data && data.instanceOfModel) {
-      return data;
-    }
-    // @ts-ignore
-    let record: ModelType = new this(null, null, true);
-    record.init(data);
-    return record;
-  }
-
-  /**
-   * 将object数据转为Model对象
-   * @param {Array} array
-   * @returns {Model[]}
-   */
-  static fromObjectArray(array: any[]): ModelType[] {
-    return array.map((data) => this.fromObject(data));
-  }
-
-  /**
-   * 将模型数组转为plain object数组
-   * @param {[Model]} array
-   * @returns {[Object]}
-   */
-  static toObjectArray(array: ModelType[]): any[] {
-    return _.map(array, (record) => record.toObject());
   }
 
   // eslint-disable-next-line
