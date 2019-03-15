@@ -291,7 +291,7 @@ export default class TenpayPlugin extends PaymentPlugin {
    * @param {Object} [data]
    * @returns {any}
    */
-  async createParams(payment: PaymentTenpay): Promise<ObjectMap<any>> {
+  async createParams(payment: PaymentTenpay): Promise<string> {
     const [, channel] = payment.type.split(':');
     let trade_type = this._getTradeType(channel);
     let params = Object.assign({}, this._config, {
@@ -305,13 +305,13 @@ export default class TenpayPlugin extends PaymentPlugin {
       case 'MWEB':
         return await this.unifiedOrder(params);
       case 'APP':
-        return await this.getAppParams(params);
+        return JSON.stringify(await this.getAppParams(params));
       default:
         if (!payment.openid) {
           throw new Error('openid is required');
         }
         params = Object.assign({}, params, { openid: payment.openid });
-        return this.getPayParams(params);
+        return JSON.stringify(this.getPayParams(params));
     }
   }
 

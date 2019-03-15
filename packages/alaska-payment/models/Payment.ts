@@ -81,7 +81,7 @@ export default class Payment extends Model {
     },
     params: {
       label: 'Params',
-      type: Object,
+      type: String,
       required: true
     },
     state: {

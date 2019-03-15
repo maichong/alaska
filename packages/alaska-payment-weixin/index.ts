@@ -42,7 +42,7 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
    * @param {Object} [data]
    * @returns {PayParams}
    */
-  async createParams(payment: Payment): Promise<'success' | PayParams> {
+  async createParams(payment: Payment): Promise<string> {
     const options = this.configs.get(payment.type);
     if (!options) throw new Error('Unsupported payment type!');
     if (payment.currency && payment.currency !== options.currency) throw new Error('Currency not match!');
@@ -71,7 +71,7 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
       total_fee: _.round(payment.amount * 100),
     }, options);
 
-    return this._getPayParamsByPrepay(order, options);
+    return JSON.stringify(this._getPayParamsByPrepay(order, options));
   }
 
   /**
@@ -85,6 +85,11 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
   }
 
   async refund(refund: Refund, payment: Payment): Promise<void> {
+    if (refund.amount === 0) {
+      // 退款金额为0，直接成功
+      refund.state = 'success';
+      return;
+    }
     const options = this.configs.get(payment.type);
     if (!options) throw new Error('Unsupported payment type!');
     if (!options.pfx) throw new Error('Weixin refund require pfx!');

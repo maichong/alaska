@@ -20,7 +20,7 @@ export class PaymentPlugin extends Plugin {
    * 创建支付参数，如果返回数字 'success'，代表支付已经完成，不需要客户端再做处理
    * @param {Payment} payment 支付记录
    */
-  createParams(payment: Payment): Promise<'success' | any>;
+  createParams(payment: Payment): Promise<string>;
 
   /**
    * 验证回调数据

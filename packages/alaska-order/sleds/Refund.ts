@@ -24,7 +24,10 @@ export default class Refund extends Sled<RefundParams, Order> {
     let refundQuantity: number = Number(params.quantity || _.get(params, 'body.refundQuantity') || 0);
     if (Number.isNaN(refundQuantity) || refundQuantity < 0 || refundQuantity !== _.round(refundQuantity)) service.error('invalid quantity');
 
-    let refundAmount: number = Number(params.amount || _.get(params, 'body.refundAmount') || 0) || service.error('refund amount is required');
+    let refundAmount: number = Number(params.amount || _.get(params, 'body.refundAmount') || 0);
+    if (order.payed !== 0 && refundAmount === 0) {
+      service.error('refund amount is required');
+    }
     let currency = balanceService.currenciesMap.get(order.currency) || balanceService.defaultCurrency;
     // 检查金额是否有多余小数
     if (Number.isNaN(refundAmount) || refundAmount <= 0 || refundAmount !== _.round(refundAmount, currency.precision)) service.error('invalid amount');
