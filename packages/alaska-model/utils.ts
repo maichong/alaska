@@ -146,6 +146,27 @@ export function mergeFilters(...filters: Filters[]): Filters {
   return result;
 }
 
+
+/**
+ * 将普通Filters转换为Aggregation Match
+ * @param {object} filters
+ */
+export function filtersToMatch(filters: any): any {
+  let match: any = {};
+  for (let key of Object.keys(filters)) {
+    let nkey = key;
+    if (nkey[0] !== '$') {
+      nkey = `fullDocument.${key}`;
+    }
+    let value = filters[key];
+    if (_.isPlainObject(value)) {
+      value = filtersToMatch(value);
+    }
+    match[nkey] = value;
+  }
+  return match;
+}
+
 /**
  * 深度克隆对象
  * @param {Object} target 目标对象

@@ -6,10 +6,16 @@ import { Filters, Model, RecordId } from '.';
 export function mergeFilters(...filters: Filters[]): Filters | null;
 
 /**
+ * 将普通Filters转换为Aggregation Match
+ * @param {object} filters
+ */
+export function filtersToMatch(filters: any): any;
+
+/**
  * 深度克隆对象
- * @param {Object} target 目标对象
- * @param {Object} src 原始对象
- * @returns {Object}
+ * @param {object} target 目标对象
+ * @param {object} src 原始对象
+ * @returns {object}
  */
 export function deepClone<T extends any>(target: T, src: T): T;
 

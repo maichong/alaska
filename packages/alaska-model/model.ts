@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import * as collie from 'collie';
+import * as events from 'events';
 import * as mongoose from 'mongoose';
 import * as escape from 'escape-string-regexp';
 import { MainService, Service, ObjectMap } from 'alaska';
@@ -22,10 +23,15 @@ import {
   DocumentQuery
 } from 'alaska-model';
 import { Data, objectToData } from './data';
-import { parsePopulation, parseFieldList, bindMethods, deepClone, loadFieldConfig, processPopulation } from './utils';
+import { parsePopulation, parseFieldList, bindMethods, deepClone, loadFieldConfig, processPopulation, filtersToMatch } from './utils';
 
 function panic() {
   throw new Error('Can not call the function when Model has been registered.');
+}
+
+interface WatcherItem {
+  filters: any;
+  watcher: events.EventEmitter;
 }
 
 export default class Model {
@@ -47,6 +53,8 @@ export default class Model {
    * field path -> underscore name -> Function
    */
   static _underscore: ObjectMap<ObjectMap<Function>>;
+
+  static _watchers: WatcherItem[];
 
   /**
    * 查找模型类
@@ -609,7 +617,8 @@ export default class Model {
         'showByContext',
         'createFilters',
         'createFiltersByContext',
-        'paginate'
+        'paginate',
+        'getWatcher',
       ].forEach((key) => {
         // @ts-ignore
         model[key] = Model[key];
@@ -1089,6 +1098,45 @@ export default class Model {
     });
 
     return query;
+  }
+
+  static getWatcher(filters?: any): events.EventEmitter {
+    if (!this._watchers) {
+      this._watchers = [];
+    }
+    filters = filters || {};
+    let item = _.find(this._watchers, (item) => _.isEqual(item.filters, filters));
+    if (item) return item.watcher;
+
+    // @ts-ignore
+    const model: typeof ModelType = this;
+    let watcher = new events.EventEmitter();
+
+    this._watchers.push({ filters, watcher });
+
+    function watch() {
+      let changeStream = model.watch([{ $match: filtersToMatch(filters) }], {
+        fullDocument: 'updateLookup'
+      });
+      changeStream.on('change', async (change) => {
+        let doc = change.fullDocument;
+        if (['insert', 'update'].includes(change.operationType) && doc) {
+          let record = model.hydrate(doc);
+          watcher.emit('change', record);
+        }
+      });
+      changeStream.on('close', () => {
+        setTimeout(watch, 100);
+      });
+    }
+
+    if (model.registered) {
+      watch();
+    } else {
+      model.post('register', watch);
+    }
+
+    return watcher;
   }
 
   // eslint-disable-next-line

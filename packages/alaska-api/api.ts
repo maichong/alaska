@@ -3,7 +3,7 @@ import * as stream from 'stream';
 import { Context } from 'alaska-http';
 import { PUBLIC, Service } from 'alaska';
 import { Model } from 'alaska-model';
-import { mergeFilters } from 'alaska-model/utils';
+import { mergeFilters, filtersToMatch } from 'alaska-model/utils';
 import { UserService } from 'alaska-user';
 import { } from 'koa-bodyparser';
 
@@ -310,26 +310,6 @@ export async function removeMulti(ctx: Context) {
   ctx.body = {
     removed: res.n
   };
-}
-
-/**
- * 将普通Filters转换为Aggregation Match
- * @param filters
- */
-function filtersToMatch(filters: any): any {
-  let match: any = {};
-  for (let key of Object.keys(filters)) {
-    let nkey = key;
-    if (nkey[0] !== '$') {
-      nkey = `fullDocument.${key}`;
-    }
-    let value = filters[key];
-    if (_.isPlainObject(value)) {
-      value = filtersToMatch(value);
-    }
-    match[nkey] = value;
-  }
-  return match;
 }
 
 /**

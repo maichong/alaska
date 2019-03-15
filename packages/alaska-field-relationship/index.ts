@@ -33,38 +33,14 @@ export default class RelationshipField extends Field {
   static watchDefault(ref: typeof Model, defaultField: string): { record: Model, watcher: events.EventEmitter } {
     let watcher = this._defaultsWatcher.get(ref.id);
     if (!watcher) {
-      watcher = new events.EventEmitter();
+      watcher = ref.getWatcher({ [defaultField]: true });
 
-      function watch() {
-        ref.findOne().sort(`-${defaultField}`).then((record) => {
-          if (record) {
-            RelationshipField._defaults.set(ref.id, record);
-            watcher.emit('change', record);
-          }
-        });
-        let $match: any = {};
-        $match[`fullDocument.${defaultField}`] = true;
-        let changeStream = ref.watch([{ $match }], {
-          fullDocument: 'updateLookup'
-        });
-        changeStream.on('change', async (change) => {
-          let doc = change.fullDocument;
-          if (['insert', 'update'].includes(change.operationType) && doc && doc[defaultField]) {
-            let record = ref.hydrate(doc);
-            RelationshipField._defaults.set(ref.id, record);
-            watcher.emit('change', record);
-          }
-        });
-        changeStream.on('close', () => {
-          setTimeout(watch, 2000);
-        });
-      }
-
-      if (ref.registered) {
-        watch();
-      } else {
-        ref.post('register', watch);
-      }
+      ref.findOne().sort(`-${defaultField}`).then((record) => {
+        if (record) {
+          watcher.emit('change', record);
+          RelationshipField._defaults.set(ref.id, record);
+        }
+      });
     }
 
     return { record: this._defaults.get(ref.id), watcher };

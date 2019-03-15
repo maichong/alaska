@@ -2,6 +2,7 @@
 import * as mongodb from 'mongodb';
 import * as mongoose from 'mongoose';
 import * as stream from 'stream';
+import * as events from 'events';
 import * as AdminView from 'alaska-admin-view';
 import { MainService, Service, Extension, ObjectMap } from 'alaska';
 import { Context, ContextState } from 'alaska-http';
@@ -203,6 +204,7 @@ export class Model {
   static paginateByContext<T>(this: { new(): T }, ctx: Context, state?: ContextState): PaginateQuery<T>;
   static listByContext<T>(this: { new(): T }, ctx: Context, state?: ContextState): DocumentQuery<T[], T>;
   static showByContext<T>(this: { new(): T }, ctx: Context, state?: ContextState): DocumentQuery<T | null, T>;
+  static getWatcher(filters?: any): events.EventEmitter;
 
   // Mongoose Model
   static watch(pipeline?: any[], options?: mongodb.ChangeStreamOptions & { session?: mongoose.ClientSession }): mongodb.ChangeStream;
@@ -778,6 +780,11 @@ interface FieldBase {
   match?: RegExp;
   // relationshiop
   defaultField?: string;
+  // number
+  precision?: number | null;
+  // money
+  currency?: string;
+  currencyField?: string;
 }
 
 export interface FieldOption extends FieldBase {
