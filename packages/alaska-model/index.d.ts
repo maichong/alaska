@@ -131,6 +131,7 @@ export class Model {
   /** Registered discriminators for this model. */
   static discriminators: any;
 
+  static registered: boolean;
   static classOfModel: true;
   static modelName: string;
   static key: string;
@@ -778,6 +779,8 @@ interface FieldBase {
   minlength?: number;
   translate?: boolean;
   match?: RegExp;
+  // relationshiop
+  defaultField?: string;
 }
 
 export interface FieldOption extends FieldBase {

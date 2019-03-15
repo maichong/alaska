@@ -25,7 +25,7 @@ import { Data, objectToData } from './data';
 import { parsePopulation, parseFieldList, bindMethods, deepClone, loadFieldConfig, processPopulation } from './utils';
 
 function panic() {
-  throw new Error('Can not call the function when Model has been initialized.');
+  throw new Error('Can not call the function when Model has been registered.');
 }
 
 export default class Model {
@@ -35,6 +35,7 @@ export default class Model {
   static id: string;
   static main: MainService;
   static service: Service;
+  static registered = false;
 
   // action name -> Function[]
   static _pre: ObjectMap<Function[]>;
@@ -679,7 +680,7 @@ export default class Model {
       model.post = panic;
       delete this._pre;
       delete this._post;
-
+      this.registered = true;
     } catch (e) {
       console.error(`${model.id}.register failed!`);
       throw e;

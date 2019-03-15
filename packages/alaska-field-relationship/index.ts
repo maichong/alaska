@@ -1,9 +1,44 @@
 import { ObjectMap } from 'alaska';
 import { Model, Field, FieldDataType } from 'alaska-model';
 import * as mongoose from 'mongoose';
+import * as events from 'events';
 
 const TypeObjectId = mongoose.Schema.Types.ObjectId;
 const { ObjectId } = mongoose.Types;
+
+function watchDefault(ref: typeof Model, field: RelationshipField) {
+  function change(value: any) {
+    if (!RelationshipField._defaults.has(ref.id) || String(value) !== RelationshipField._defaults.get(ref.id)) {
+      RelationshipField._defaults.set(ref.id, value);
+      RelationshipField._defaultsWatcher.get(ref.id).emit('change', value);
+    }
+  }
+  ref.findOne().sort(`-${field.defaultField}`).then((record) => {
+    if (record) {
+      change(record._id);
+    }
+  });
+
+  // watch
+  let $match: any = {};
+  $match[`fullDocument.${field.defaultField}`] = true;
+  let changeStream = ref.watch([{ $match }], {
+    fullDocument: 'updateLookup'
+  });
+
+  changeStream.on('change', async (change) => {
+    let doc = change.fullDocument;
+    if (['insert', 'update'].includes(change.operationType) && doc && doc[field.defaultField]) {
+      change(doc._id);
+    }
+  });
+
+  changeStream.on('close', () => {
+    setTimeout(() => {
+      watchDefault(ref, field);
+    }, 2000);
+  });
+}
 
 export default class RelationshipField extends Field {
   static fieldName = 'Relationship';
@@ -26,6 +61,9 @@ export default class RelationshipField extends Field {
     defaultValue: ''
   };
 
+  static _defaults = new Map();
+  static _defaultsWatcher = new Map();
+
   // Model id
   model: string;
 
@@ -33,8 +71,9 @@ export default class RelationshipField extends Field {
    * 初始化Schema
    */
   initSchema() {
-    const schema = this._schema;
-    const model = this._model;
+    const field = this;
+    const schema = field._schema;
+    const model = field._model;
     const service = model.service;
     const main = service.main;
     let { plain, ref } = this;
@@ -45,7 +84,7 @@ export default class RelationshipField extends Field {
       ref = model.lookup(ref);
 
       if (!ref) {
-        throw new Error(`${model.id}.fields.${this.path}.ref not found [${this.ref}]`);
+        throw new Error(`${model.id}.fields.${field.path}.ref not found [${field.ref}]`);
       }
     }
 
@@ -70,12 +109,12 @@ export default class RelationshipField extends Field {
           }
           type = idFieldClass.plain;
           if (idFieldClass.plainName) {
-            this.plainName = idFieldClass.plainName;
+            field.plainName = idFieldClass.plainName;
           }
         } else if (idType instanceof Field) {
           type = (<typeof Field>idType).plain;
           if (idType.plainName) {
-            this.plainName = idType.plainName;
+            field.plainName = idType.plainName;
           }
         } else {
           type = <FieldDataType>idType;
@@ -90,10 +129,10 @@ export default class RelationshipField extends Field {
       ref: ref.modelName
     };
 
-    this.model = ref.id;
+    field.model = ref.id;
 
-    if (type === TypeObjectId && !this.plainName) {
-      this.plainName = 'objectid';
+    if (type === TypeObjectId && !field.plainName) {
+      field.plainName = 'objectid';
     }
 
     options.set = (value: any) => {
@@ -123,9 +162,32 @@ export default class RelationshipField extends Field {
       }
     });
 
-    this.ref = ref;
-    this.plain = type;
-    schema.path(this.path, this.multi ? [options] : options);
+    if (!options.default && field.defaultField) {
+      options.default = function () {
+        return RelationshipField._defaults.get(field.model);
+      };
+      let watcher = RelationshipField._defaultsWatcher.get(field.model);
+      if (!watcher) {
+        watcher = new events.EventEmitter();
+        RelationshipField._defaultsWatcher.set(field.model, watcher);
+        if (ref.registered) {
+          // 已注册
+          watchDefault(ref, field);
+        } else {
+          // 未注册
+          ref.post('register', () => {
+            watchDefault(ref, field);
+          });
+        }
+      }
+      watcher.on('change', (value: any) => {
+        field.default = value;
+      });
+    }
+
+    field.ref = ref;
+    field.plain = type;
+    schema.path(field.path, field.multi ? [options] : options);
   }
 
   parse(value: any): any {
