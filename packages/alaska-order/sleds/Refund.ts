@@ -30,7 +30,7 @@ export default class Refund extends Sled<RefundParams, Order> {
     }
     let currency = balanceService.currenciesMap.get(order.currency) || balanceService.defaultCurrency;
     // 检查金额是否有多余小数
-    if (Number.isNaN(refundAmount) || refundAmount <= 0 || refundAmount !== _.round(refundAmount, currency.precision)) service.error('invalid amount');
+    if (Number.isNaN(refundAmount) || refundAmount < 0 || refundAmount !== _.round(refundAmount, currency.precision)) service.error('invalid amount');
 
     if (refundAmount + (order.refundAmount || 0) + (order.refundedAmount || 0) > order.payed) service.error('refund amount can not greater than payed amount');
 
