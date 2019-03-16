@@ -19,11 +19,17 @@ class CurrencyService extends Service {
     Currency.find().then((list: Currency[]) => {
       list.forEach((record) => {
         this.currencies.set(record.id, record);
+        if (record.isDefault) {
+          this._currency = record;
+        }
       });
     });
 
     Currency.getWatcher().on('change', (record: Currency) => {
       this.currencies.set(record.id, record);
+      if (record.isDefault) {
+        this._currency = record;
+      }
     });
   }
 }
