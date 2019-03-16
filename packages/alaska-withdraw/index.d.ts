@@ -11,11 +11,10 @@ import Reject from './sleds/Reject';
 
 export interface CreateParams {
   ctx: Context;
-  withdraw?: Withdraw;
+  user: User;
+  account: string;
   title?: string;
   note?: string;
-  user: User;
-  currency?: string;
   amount: number;
 }
 

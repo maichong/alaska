@@ -58,6 +58,14 @@ export default class Service {
     });
   }
 
+  static lookup(id: string): ServiceType | null {
+    return _main.allServices.get(id) || null;
+  }
+
+  lookup(id: string): ServiceType | null {
+    return this.main.allServices.get(id) || null;
+  }
+
   isMain(): boolean {
     // @ts-ignore
     return this.main === this;

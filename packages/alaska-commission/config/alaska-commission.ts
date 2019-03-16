@@ -1,7 +1,7 @@
 export default {
   services: {
     'alaska-user': {},
-    'alaska-balance': {}
+    'alaska-income': {}
   },
   //佣金比例设置,例如 [ 0.2, 0.05 ] 则给一级提佣20%,给二级提佣5%
   commissionRates: [],

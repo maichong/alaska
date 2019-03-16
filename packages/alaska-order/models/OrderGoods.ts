@@ -1,5 +1,4 @@
 import { RecordId, Model } from 'alaska-model';
-import balanceService from 'alaska-balance';
 
 export default class OrderGoods extends Model {
   static label = 'Order Item';
@@ -40,20 +39,20 @@ export default class OrderGoods extends Model {
       label: 'Shop',
       type: 'relationship',
       ref: 'alaska-shop.Shop',
-      optional: 'alaska-shop.Shop',
+      optional: 'alaska-shop',
       hidden: true
     },
     goods: {
       label: 'Goods',
       type: 'relationship',
       ref: 'alaska-goods.Goods',
-      optional: 'alaska-goods.Goods'
+      optional: 'alaska-goods'
     },
     sku: {
       label: 'SKU',
       type: 'relationship',
       ref: 'alaska-sku.Sku',
-      optional: 'alaska-sku.Sku'
+      optional: 'alaska-sku'
     },
     skuKey: {
       label: 'SKU Key',
@@ -99,9 +98,10 @@ export default class OrderGoods extends Model {
     },
     currency: {
       label: 'Currency',
-      type: 'select',
-      options: balanceService.getCurrenciesAsync(),
-      default: balanceService.getDefaultCurrencyAsync().then((cur) => cur.value)
+      type: 'relationship',
+      ref: 'alaska-currency.Currency',
+      optional: 'alaska-currency',
+      switch: true,
     },
     price: {
       label: 'Price',
@@ -168,7 +168,7 @@ export default class OrderGoods extends Model {
       label: 'Comment',
       type: 'relationship',
       ref: 'alaska-comment.Comment',
-      optional: 'alaska-comment.Comment'
+      optional: 'alaska-comment'
     },
     createdAt: {
       label: 'Created At',

@@ -13,6 +13,7 @@ export default {
   State: '状态',
   Pending: '未处理',
   User: '用户',
+  Account: '账户',
   Service: '服务',
   Type: '类型',
   Activated: '激活',

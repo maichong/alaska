@@ -19,6 +19,7 @@ export interface Order {
   payed: number;
   deduction: number;
   deductionCurrency: string;
+  deductionAccount: string;
   deductionAmount: number;
   payment: string;
   /**

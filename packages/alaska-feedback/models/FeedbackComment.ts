@@ -19,7 +19,7 @@ export default class FeedbackComment extends Model {
       label: 'User',
       type: 'relationship',
       ref: 'alaska-user.User',
-      optional: 'alaska-user.User'
+      optional: 'alaska-user'
     },
     fromAdmin: {
       label: 'From Admin',

@@ -32,14 +32,14 @@ export default class Comment extends Model {
       options: [{
         label: 'Goods',
         value: 'goods',
-        optional: 'alaska-goods.Goods'
+        optional: 'alaska-goods'
       }]
     },
     order: {
       label: 'Order',
       type: 'relationship',
       ref: 'alaska-order.Order',
-      optional: 'alaska-order.Order',
+      optional: 'alaska-order',
       protected: true,
       hidden: '!order'
     },
@@ -47,7 +47,7 @@ export default class Comment extends Model {
       label: 'Order Goods',
       type: 'relationship',
       ref: 'alaska-order.OrderGoods',
-      optional: 'alaska-order.OrderGoods',
+      optional: 'alaska-order',
       protected: true,
       hidden: '!orderGoods'
     },
@@ -55,7 +55,7 @@ export default class Comment extends Model {
       label: 'Goods',
       type: 'relationship',
       ref: 'alaska-goods.Goods',
-      optional: 'alaska-goods.Goods',
+      optional: 'alaska-goods',
       hidden: {
         type: { $ne: 'goods' }
       }
@@ -64,7 +64,7 @@ export default class Comment extends Model {
       label: 'Sku',
       type: 'relationship',
       ref: 'alaska-sku.Sku',
-      optional: 'alaska-sku.Sku',
+      optional: 'alaska-sku',
       filters: {
         goods: ':goods'
       },
@@ -75,7 +75,7 @@ export default class Comment extends Model {
     skuDesc: {
       label: 'Sku Desc',
       type: String,
-      optional: 'alaska-sku.Sku',
+      optional: 'alaska-sku',
       hidden: true
     },
     content: {

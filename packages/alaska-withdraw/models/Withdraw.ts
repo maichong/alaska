@@ -1,6 +1,5 @@
 import { Model } from 'alaska-model';
 import User from 'alaska-user/models/User';
-import balanceService from 'alaska-balance';
 
 export default class Withdraw extends Model {
   static label = 'Withdraw';
@@ -61,10 +60,16 @@ export default class Withdraw extends Model {
     },
     currency: {
       label: 'Currency',
-      type: 'select',
-      options: balanceService.getCurrenciesAsync(),
-      default: balanceService.getDefaultCurrencyAsync().then((cur) => cur.value),
+      type: 'relationship',
+      ref: 'alaska-currency.Currency',
+      optional: 'alaska-currency',
+      switch: true,
       static: true
+    },
+    account: {
+      label: 'Account',
+      type: 'select:account',
+      required: true
     },
     amount: {
       label: 'Amount',
@@ -108,6 +113,7 @@ export default class Withdraw extends Model {
   title: string;
   user: User;
   currency: string;
+  account: string;
   amount: number;
   note: string;
   createdAt: Date;

@@ -20,15 +20,15 @@ export default class ShowcaseItem extends Model {
       }, {
         label: 'Goods',
         value: 'goods',
-        optional: 'alaska-goods.Goods'
+        optional: 'alaska-goods'
       }, {
         label: 'Goods List',
         value: 'goods-list',
-        optional: 'alaska-goods.Goods'
+        optional: 'alaska-goods'
       }, {
         label: 'Post',
         value: 'post',
-        optional: 'alaska-post.Post'
+        optional: 'alaska-post'
       }]
     },
     url: {
@@ -44,7 +44,7 @@ export default class ShowcaseItem extends Model {
       label: 'Post',
       type: 'relationship',
       ref: 'alaska-post.Post',
-      optional: 'alaska-post.Post',
+      optional: 'alaska-post',
       hidden: {
         action: {
           $ne: 'post'
@@ -55,7 +55,7 @@ export default class ShowcaseItem extends Model {
       label: 'Goods',
       type: 'relationship',
       ref: 'alaska-goods.Goods',
-      optional: 'alaska-goods.Goods',
+      optional: 'alaska-goods',
       hidden: {
         action: {
           $ne: 'goods'
@@ -66,7 +66,7 @@ export default class ShowcaseItem extends Model {
       label: 'Category',
       type: 'relationship',
       ref: 'alaska-category.Category',
-      optional: 'alaska-category.Category',
+      optional: 'alaska-category',
       hidden: {
         action: {
           $ne: 'goods-list'

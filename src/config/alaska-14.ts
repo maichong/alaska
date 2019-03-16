@@ -50,7 +50,7 @@ export default <ConfigData>{
     'alaska-admin': {},
     'alaska-payment': {},
     'alaska-address': {},
-    'alaska-balance': {},
+    'alaska-income': {},
     'alaska-banner': {},
     'alaska-help': {},
     'alaska-page': {},

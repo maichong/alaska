@@ -1,5 +1,6 @@
 
 import { Model, RecordId } from 'alaska-model';
+import { Image } from 'alaska-field-image';
 import service from '..';
 
 export default class User extends Model {
@@ -95,7 +96,7 @@ export default class User extends Model {
   tel: string;
   displayName: string;
   password: string;
-  avatar: Object;
+  avatar: Image;
   roles: any[];
   abilities: any[];
   createdAt: Date;

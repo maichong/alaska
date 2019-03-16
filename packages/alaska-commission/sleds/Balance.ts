@@ -1,43 +1,30 @@
 import { Sled } from 'alaska-sled';
-import balanceService, { CreateIncome } from 'alaska-balance';
 import User from 'alaska-user/models/User';
+import CreateIncome from 'alaska-income/sleds/Create';
 import Commission from '../models/Commission';
 import { BalanceParams } from '..';
 
 export default class Balance extends Sled<BalanceParams, Commission> {
   async exec(params: BalanceParams): Promise<Commission> {
-    let commission = params.record;
+    let commission = params.record as Commission;
 
-    if (commission.state === 'balanced') {
+    if (commission.state !== 'pending') {
       return commission;
     }
 
-    try {
-      let user = await User.findById(commission.user);
+    let user = await User.findById(commission.user).session(this.dbSession);
+    if (!user) throw new Error('Can not find user!');
 
-      if (!user) {
-        throw new Error('Can not find user!');
-      }
+    await CreateIncome.run({
+      user,
+      title: commission.title,
+      account: commission.account,
+      amount: commission.amount,
+      type: 'commission'
+    }, { dbSession: this.dbSession });
+    commission.state = 'balanced';
+    commission.balancedAt = new Date();
 
-      let currency = balanceService.currenciesMap.get(commission.currency);
-      if (!currency) {
-        throw new Error('Can not find currency!');
-      }
-
-      // @ts-ignore index
-      if (!User.fields[commission.currency]) {
-        throw new Error(`Can not find field User.${commission.currency}!`);
-      }
-
-      // 佣金、收入
-      await (user._[commission.currency].income as CreateIncome)(commission.amount, commission.title, 'commission', this.dbSession);
-
-      commission.state = 'balanced';
-      commission.balancedAt = new Date();
-    } catch (error) {
-      commission.state = 'failed';
-      commission.failure = error.message;
-    }
     await commission.save({ session: this.dbSession });
     return commission;
   }

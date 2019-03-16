@@ -32,7 +32,7 @@ export default class Sku extends Model {
       label: 'Shop',
       type: 'relationship',
       ref: 'alaska-shop.Shop',
-      optional: 'alaska-shop.Shop',
+      optional: 'alaska-shop',
       hidden: true
     },
     key: {

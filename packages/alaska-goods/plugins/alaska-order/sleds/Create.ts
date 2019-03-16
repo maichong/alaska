@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import balanceService from 'alaska-balance';
 import Goods from 'alaska-goods/models/Goods';
 import { SkuService, Sku } from 'alaska-sku';
 import orderService, { CreateParams } from 'alaska-order';
@@ -30,7 +29,6 @@ orderService.resolveConfig().then(() => {
 });
 
 export async function pre() {
-  const currenciesMap = balanceService.currenciesMap;
   let params: Params = this.params;
   let gids = params.goods;
   if (!gids || !gids.length) {
@@ -97,10 +95,8 @@ export async function pre() {
     }
     // 商品库存不足
     if (!sku && item.quantity > goods.inventory) orderService.error('Inventory shortage');
-    let currency = currenciesMap.get(goods.currency) || balanceService.defaultCurrency;
-    let precision = currency.precision || 0;
 
-    item.total = _.round(item.quantity * (item.discount || item.price), precision);
+    item.total = item.quantity * (item.discount || item.price);
     orderItems.push(item);
   }
 

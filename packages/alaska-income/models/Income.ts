@@ -1,5 +1,4 @@
 import { Model } from 'alaska-model';
-import service from '..';
 
 export default class Income extends Model {
   static label = 'Income Record';
@@ -45,41 +44,51 @@ export default class Income extends Model {
       }, {
         label: 'Recharge',
         value: 'recharge',
-        optional: 'alaska-recharge.Recharge'
+        optional: 'alaska-recharge'
       }, {
         label: 'Withdraw',
         value: 'withdraw',
-        optional: 'alaska-withdraw.Withdraw'
+        optional: 'alaska-withdraw'
       }, {
         label: 'Withdraw Rejected',
         value: 'withdraw_rejected',
-        optional: 'alaska-withdraw.Withdraw'
+        optional: 'alaska-withdraw'
       }, {
         label: 'Commission',
         value: 'commission',
-        optional: 'alaska-commission.Commission'
+        optional: 'alaska-commission'
       }]
     },
     target: {
       label: 'Target',
       type: 'select',
       disabled: '!isNew',
-      default: 'balance',
+      default: 'account',
       switch: true,
       options: [{
-        label: 'Balance',
-        value: 'balance'
+        label: 'Account',
+        value: 'account'
       }, {
         label: 'Deposit',
         value: 'deposit',
-        optional: 'alaska-deposit.Deposit'
+        optional: 'alaska-deposit'
       }]
+    },
+    account: {
+      label: 'Account',
+      type: 'select:account',
+      disabled: '!isNew',
+      hidden: {
+        target: {
+          $ne: 'account'
+        }
+      },
     },
     deposit: {
       label: 'Deposit',
       type: 'relationship',
       ref: 'alaska-deposit.Deposit',
-      optional: 'alaska-deposit.Deposit',
+      optional: 'alaska-deposit',
       disabled: '!isNew',
       hidden: {
         target: {
@@ -92,11 +101,10 @@ export default class Income extends Model {
     },
     currency: {
       label: 'Currency',
-      type: 'select',
       disabled: '!isNew',
-      switch: true,
-      options: service.getCurrenciesAsync(),
-      default: service.getDefaultCurrencyAsync().then((cur) => cur.value)
+      type: 'relationship',
+      ref: 'alaska-currency.Currency',
+      optional: 'alaska-currency'
     },
     amount: {
       label: 'Amount',
@@ -123,6 +131,7 @@ export default class Income extends Model {
   user: string;
   type: string;
   target: string;
+  account: string;
   currency: string;
   deposit: string;
   amount: number;

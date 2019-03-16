@@ -1,8 +1,8 @@
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Sled } from 'alaska-sled';
+import { CurrencyService } from 'alaska-currency';
 import settingsService from 'alaska-settings';
-import balanceService from 'alaska-balance';
 import Order from '../models/Order';
 import service, { RefundParams } from '..';
 import OrderGoods from '../models/OrderGoods';
@@ -28,9 +28,14 @@ export default class Refund extends Sled<RefundParams, Order> {
     if (order.payed !== 0 && refundAmount === 0) {
       service.error('refund amount is required');
     }
-    let currency = balanceService.currenciesMap.get(order.currency) || balanceService.defaultCurrency;
+    let precision = 2;
+    let currencyService = service.lookup('alaska-currency') as CurrencyService;
+    if (currencyService) {
+      let currency = currencyService.currencies.get(order.currency) || currencyService.defaultCurrency;
+      precision = currency.precision;
+    }
     // 检查金额是否有多余小数
-    if (Number.isNaN(refundAmount) || refundAmount < 0 || refundAmount !== _.round(refundAmount, currency.precision)) service.error('invalid amount');
+    if (Number.isNaN(refundAmount) || refundAmount < 0 || refundAmount !== _.round(refundAmount, precision)) service.error('invalid amount');
 
     if (refundAmount + (order.refundAmount || 0) + (order.refundedAmount || 0) > order.payed) service.error('refund amount can not greater than payed amount');
 

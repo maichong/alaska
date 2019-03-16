@@ -1,4 +1,3 @@
-import { Service } from 'alaska';
 import * as ini from 'ini';
 import * as moment from 'moment';
 import akita from 'akita';
@@ -9,11 +8,6 @@ import { SmsAliyunOptions } from '.';
 const api = akita.resolve('aliyun-sms-driver');
 
 export default class SmsAliyunDriver<T> extends SmsDriver<T, SmsAliyunOptions, null> {
-
-  constructor(options: SmsAliyunOptions, service: Service) {
-    super(options, service);
-  }
-
   /**
    * @param {string} to
    * @param {string} message

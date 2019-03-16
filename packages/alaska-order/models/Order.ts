@@ -2,7 +2,6 @@ import * as _ from 'lodash';
 import * as mongodb from 'mongodb';
 import { NormalError } from 'alaska';
 import { Model, RecordId } from 'alaska-model';
-import balanceService from 'alaska-balance';
 import OrderLog from './OrderLog';
 import OrderGoods from './OrderGoods';
 import { Context } from 'alaska-http';
@@ -154,7 +153,7 @@ export default class Order extends Model {
       label: 'Shop',
       type: 'relationship',
       ref: 'alaska-shop.Shop',
-      optional: 'alaska-shop.Shop',
+      optional: 'alaska-shop',
       index: true
     },
     type: {
@@ -214,9 +213,11 @@ export default class Order extends Model {
     },
     currency: {
       label: 'Currency',
-      type: 'select',
-      options: balanceService.getCurrenciesAsync(),
-      default: balanceService.getDefaultCurrencyAsync().then((cur) => cur.value)
+      type: 'relationship',
+      ref: 'alaska-currency.Currency',
+      optional: 'alaska-currency',
+      defaultField: 'isDefault',
+      switch: true,
     },
     shipping: {
       // 邮费,不包含在total中,由各个OrderItem.shipping相加
@@ -253,9 +254,15 @@ export default class Order extends Model {
     deductionCurrency: {
       // 抵扣的货币，比如积分
       label: 'Deduction Currency',
-      type: 'select',
       hidden: '!deductionCurrency',
-      options: balanceService.getCurrenciesAsync()
+      type: 'relationship',
+      ref: 'alaska-currency.Currency',
+      optional: 'alaska-currency',
+      switch: true,
+    },
+    deductionAccount: {
+      label: 'Account',
+      type: 'select:account'
     },
     deductionAmount: {
       // 抵扣的货币数量，可以与deduction不一致，允许积分和现金不等比
@@ -322,7 +329,7 @@ export default class Order extends Model {
     commented: {
       label: 'Commented',
       type: Boolean,
-      optional: 'alaska-comment.Comment'
+      optional: 'alaska-comment'
     },
     state: {
       label: 'State',
@@ -410,6 +417,7 @@ export default class Order extends Model {
   payment: string;
   deduction: number;
   deductionCurrency: string;
+  deductionAccount: string;
   deductionAmount: number;
   /**
    * 订单已退款金额，总额

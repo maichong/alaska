@@ -71,6 +71,7 @@ export class Service {
   readonly debug: IDebugger;
   readonly main: MainService;
   static resolveMain(): Promise<MainService>;
+  static lookup(id: string): Service | null;
 
   /**
    * Plugin map
@@ -96,6 +97,7 @@ export class Service {
    * 判断是否是主Service
    */
   isMain(): boolean;
+  lookup(id: string): Service | null;
   /**
    * 创建一个驱动对象
    */

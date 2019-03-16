@@ -45,7 +45,7 @@ export default class PropertyValue extends Model {
       label: 'Shop',
       type: 'relationship',
       ref: 'alaska-shop.Shop',
-      optional: 'alaska-shop.Shop'
+      optional: 'alaska-shop'
     },
     shared: {
       label: 'Shared',

@@ -1,7 +1,7 @@
 {
-  "name": "alaska-payment-balance",
+  "name": "alaska-payment-account",
   "version": "0.13.2",
-  "description": "Alaska balance payment plugin",
+  "description": "Alaska account balance payment plugin",
   "keywords": [
     "alaska",
     "alaska-payment",
@@ -11,10 +11,11 @@
   "alaska-plugin": "alaska-payment",
   "main": "index.js",
   "types": "index.d.ts",
-  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-payment-balance",
+  "repository": "https://github.com/maichong/alaska/tree/master/src/alaska-payment-account",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "peerDependencies": {
+    "alaska-income": "^0.13.2",
     "alaska-payment": "^0.13.2"
   }
 }

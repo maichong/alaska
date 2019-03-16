@@ -1,5 +1,5 @@
 import { RecordId, Model } from 'alaska-model';
-import Payment, { getCurrenciesAsync, getDefaultCurrencyAsync } from './Payment';
+import Payment from './Payment';
 
 export default class Refund extends Model {
   static label = 'Refund';
@@ -36,9 +36,11 @@ export default class Refund extends Model {
     },
     currency: {
       label: 'Currency',
-      type: 'select',
-      options: getCurrenciesAsync(),
-      default: getDefaultCurrencyAsync().then((cur) => cur.value)
+      type: 'relationship',
+      ref: 'alaska-currency.Currency',
+      optional: 'alaska-currency',
+      defaultField: 'isDefault',
+      switch: true,
     },
     amount: {
       label: 'Amount',

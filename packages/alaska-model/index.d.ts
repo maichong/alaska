@@ -785,6 +785,8 @@ interface FieldBase {
   // money
   currency?: string;
   currencyField?: string;
+  allowRecharge?: boolean;
+  allowWithdraw?: boolean;
 }
 
 export interface FieldOption extends FieldBase {

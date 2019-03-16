@@ -1,5 +1,4 @@
 import { Model, RecordId } from 'alaska-model';
-import balanceService from 'alaska-balance';
 
 export default class Commission extends Model {
   static label = 'Commission';
@@ -56,7 +55,7 @@ export default class Commission extends Model {
       label: 'Order',
       type: 'relationship',
       ref: 'alaska-order.Order',
-      optional: 'alaska-order.Order',
+      optional: 'alaska-order',
       index: true
     },
     main: {
@@ -71,9 +70,14 @@ export default class Commission extends Model {
     },
     currency: {
       label: 'Currency',
-      type: 'select',
-      options: balanceService.getCurrenciesAsync(),
-      default: balanceService.getDefaultCurrencyAsync().then((cur) => cur.value)
+      type: 'relationship',
+      ref: 'alaska-currency.Currency',
+      optional: 'alaska-currency'
+    },
+    account: {
+      label: 'Account',
+      type: 'select:account',
+      required: true
     },
     amount: {
       label: 'Amount',
@@ -118,6 +122,7 @@ export default class Commission extends Model {
   main: RecordId;
   level: number;
   currency: string;
+  account: string;
   amount: number;
   state: 'pending' | 'balanced' | 'failed';
   failure: string;

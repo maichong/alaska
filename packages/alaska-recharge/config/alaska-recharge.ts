@@ -1,6 +1,6 @@
 export default {
   services: {
-    'alaska-balance': {},
+    'alaska-income': {},
     'alaska-payment': {}
   }
 };

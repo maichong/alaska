@@ -1,24 +1,4 @@
 import { RecordId, Model } from 'alaska-model';
-import { BalanceService } from 'alaska-balance';
-import service from '..';
-
-export async function getCurrenciesAsync() {
-  await service.resolveConfig();
-  let balanceService = service.main.allServices.get('alaska-balance') as BalanceService;
-  if (balanceService) {
-    return await balanceService.getCurrenciesAsync();
-  }
-  return [];
-}
-
-export async function getDefaultCurrencyAsync() {
-  await service.resolveConfig();
-  let balanceService = service.main.allServices.get('alaska-balance') as BalanceService;
-  if (balanceService) {
-    return await balanceService.getDefaultCurrencyAsync();
-  }
-  return { value: '' };
-}
 
 export default class Payment extends Model {
   static label = 'Payment Logs';
@@ -63,9 +43,11 @@ export default class Payment extends Model {
     },
     currency: {
       label: 'Currency',
-      type: 'select',
-      options: getCurrenciesAsync(),
-      default: getDefaultCurrencyAsync().then((cur) => cur.value)
+      type: 'relationship',
+      ref: 'alaska-currency.Currency',
+      optional: 'alaska-currency',
+      defaultField: 'isDefault',
+      switch: true,
     },
     amount: {
       label: 'Amount',

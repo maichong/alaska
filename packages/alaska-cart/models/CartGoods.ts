@@ -1,5 +1,4 @@
 import { RecordId, Model } from 'alaska-model';
-import balanceService from 'alaska-balance';
 
 export default class CartGoods extends Model {
   static label = 'Cart Goods';
@@ -52,7 +51,7 @@ export default class CartGoods extends Model {
       label: 'SKU',
       type: 'relationship',
       ref: 'alaska-sku.Sku',
-      optional: 'alaska-sku.Sku',
+      optional: 'alaska-sku',
       disabled: true
     },
     skuDesc: {
@@ -69,10 +68,11 @@ export default class CartGoods extends Model {
     },
     currency: {
       label: 'Currency',
-      type: 'select',
-      options: balanceService.getCurrenciesAsync(),
-      default: balanceService.getDefaultCurrencyAsync().then((cur) => cur.value),
-      disabled: true,
+      type: 'relationship',
+      ref: 'alaska-currency.Currency',
+      optional: 'alaska-currency',
+      defaultField: 'isDefault',
+      switch: true,
       group: 'price'
     },
     price: {

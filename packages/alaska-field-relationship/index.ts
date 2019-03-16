@@ -30,7 +30,10 @@ export default class RelationshipField extends Field {
   static _defaults = new Map();
   static _defaultsWatcher = new Map();
 
-  static watchDefault(ref: typeof Model, defaultField: string): { record: Model, watcher: events.EventEmitter } {
+  // Model id
+  model: string;
+
+  static watchDefault(ref: typeof Model, defaultField: string): { record: Model; watcher: events.EventEmitter } {
     let watcher = this._defaultsWatcher.get(ref.id);
     if (!watcher) {
       watcher = ref.getWatcher({ [defaultField]: true });
@@ -44,10 +47,7 @@ export default class RelationshipField extends Field {
     }
 
     return { record: this._defaults.get(ref.id), watcher };
-  };
-
-  // Model id
-  model: string;
+  }
 
   /**
    * 初始化Schema
@@ -152,8 +152,8 @@ export default class RelationshipField extends Field {
       if (record) {
         field.default = record._id;
       }
-      watcher.on('change', (record: Model) => {
-        field.default = record._id;
+      watcher.on('change', (d: Model) => {
+        field.default = d._id;
       });
     }
 

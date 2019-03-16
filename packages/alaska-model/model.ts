@@ -206,7 +206,7 @@ export default class Model {
     const model: typeof ModelType = this;
     const { modelName, service, schema } = model;
     if (options.optional && typeof options.optional === 'string') {
-      let dep = this.lookup(options.optional);
+      let dep = Service.lookup(options.optional);
       if (!dep) return;
     }
 
@@ -248,6 +248,7 @@ export default class Model {
       if (options.type && typeof options.type === 'string') {
         fieldTypeName = options.type;
       }
+      fieldTypeName = fieldTypeName.split(':')[0];
       FieldClass = service.main.modules.libraries[fieldTypeName];
       if (!FieldClass) {
         throw new Error(`Field type '${fieldTypeName}' not found!`);
@@ -1105,7 +1106,7 @@ export default class Model {
       this._watchers = [];
     }
     filters = filters || {};
-    let item = _.find(this._watchers, (item) => _.isEqual(item.filters, filters));
+    let item = _.find(this._watchers, (w) => _.isEqual(w.filters, filters));
     if (item) return item.watcher;
 
     // @ts-ignore

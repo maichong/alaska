@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as https from 'https';
 import * as stringRandom from 'string-random';
 import akita from 'akita';
-import PAYMENT, { PaymentPlugin } from 'alaska-payment';
+import { PaymentPlugin, PaymentService } from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 import Refund from 'alaska-payment/models/Refund';
 import User from 'alaska-user/models/User';
@@ -13,13 +13,12 @@ import { WeixinPaymentOptions, UnifiedOrderReq, UnifiedOrderRes, PayParams } fro
 const client = akita.create({});
 
 export default class WeixinPaymentPlugin extends PaymentPlugin {
-  service: typeof PAYMENT;
   configs: Map<string, WeixinPaymentOptions>;
 
-  constructor(service: typeof PAYMENT) {
+  constructor(service: PaymentService) {
     super(service);
     let config = service.main.config.get('alaska-payment-weixin') || service.error('Missing config [alaska-payment-weixin]');
-    if (_.isEmpty(config)) throw new Error('no weixin payment channel found');
+    if (_.isEmpty(config)) throw new Error('No weixin payment channel found!');
     this.configs = new Map();
     for (let key of _.keys(config)) {
       let options: WeixinPaymentOptions = config[key];

@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { Sled } from 'alaska-sled';
-import balanceService from 'alaska-balance';
+import { CurrencyService } from 'alaska-currency';
 import User from 'alaska-user/models/User';
 import service, { CreateParams } from '..';
 import Commission from '../models/Commission';
@@ -8,16 +8,23 @@ import Commission from '../models/Commission';
 export default class Create extends Sled<CreateParams, Commission[]> {
   async exec(p: CreateParams): Promise<Commission[]> {
     let {
-      user, title, currency, order, contributor, amount, price, rate, level, main
+      user, account, title, order, contributor, amount, price, rate, level, main
     } = p;
     if (!user) throw new Error('user is required for create commission!');
+    if (!User._fields.hasOwnProperty(account)) throw new Error(`account "${account}" not found!`);
 
+    let currency = User._fields[account].currency;
+    let precision = User._fields[account].precision;
     const commissionRates = service.config.get('commissionRates');
-    const currencies = balanceService.currenciesMap;
-    const defaultCurrency = balanceService.defaultCurrency;
+    const currencyService = service.lookup('alaska-currency') as CurrencyService;
+    if (currencyService) {
+      currency = currency || currencyService.defaultCurrencyId;
+      if (!currencyService.currencies.has(currency)) throw new Error(`currency "${currency}" not found!`);
+      precision = currencyService.currencies.get(currency).precision;
+    }
+
 
     level = level || 1;
-    currency = currency || (order && order.currency) || '';
     title = title || (order && order.title) || '';
     contributor = contributor || (order && order.user) || null;
     price = price || (order && order.payed) || 0;
@@ -28,15 +35,16 @@ export default class Create extends Sled<CreateParams, Commission[]> {
         rate = commissionRates[level - 1];
       }
       if (!rate) throw new Error('can not determine commission rate!');
-      let currencyObject = defaultCurrency;
-      if (currency && currencies.has(currency)) {
-        currencyObject = currencies.get(currency);
+      amount = rate * price;
+      if (typeof precision === 'number') {
+        amount = _.round(amount, precision);
       }
-      amount = _.round(rate * price, currencyObject.precision);
     }
+
     let commission = new Commission({
       user,
       title,
+      account,
       currency,
       amount,
       contributor,
@@ -66,7 +74,7 @@ export default class Create extends Sled<CreateParams, Commission[]> {
           rate: 0,
           title,
           order,
-          currency,
+          account,
           main: main || commission._id
         }, { dbSession: this.dbSession });
         results.push(...list);

@@ -8,6 +8,7 @@ export interface Commission {
   main: string;
   level: number;
   currency: string;
+  account: string;
   amount: number;
   state: 'pending' | 'balanced' | 'failed';
   failure: string;

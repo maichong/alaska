@@ -1,9 +1,6 @@
 import * as _ from 'lodash';
 import * as moment from 'moment';
-import * as mongodb from 'mongodb';
 import { Model } from 'alaska-model';
-import balanceService from 'alaska-balance';
-import Income from 'alaska-balance/models/Income';
 
 export default class Deposit extends Model {
   static label = 'Deposit';
@@ -33,10 +30,11 @@ export default class Deposit extends Model {
     },
     currency: {
       label: 'Currency',
-      type: 'select',
+      type: 'relationship',
+      ref: 'alaska-currency.Currency',
+      optional: 'alaska-currency',
+      defaultField: 'isDefault',
       switch: true,
-      options: balanceService.getCurrenciesAsync(),
-      default: balanceService.getDefaultCurrencyAsync().then((cur) => cur.value)
     },
     amount: {
       label: 'Amount',
@@ -72,28 +70,8 @@ export default class Deposit extends Model {
       this.createdAt = new Date();
     }
     if (!this.expiredAt) {
+      // TODO: 可设置过期时间
       this.expiredAt = moment().add('1', 'months').toDate();
     }
-  }
-
-  async income(amount: number, title: string, type?: string, dbSession?: mongodb.ClientSession): Promise<Income> {
-    let c = balanceService.currenciesMap.get(this.currency) || balanceService.defaultCurrency;
-    let balance = (this.balance + amount) || 0;
-    balance = _.round(balance, c.precision);
-
-    this.balance = balance;
-    let income = new Income({
-      type,
-      title,
-      amount,
-      balance,
-      currency: this.currency || c.value,
-      user: this.user,
-      target: 'deposit',
-      deposit: this.id
-    });
-    await income.save({ session: dbSession });
-    await this.save({ session: dbSession });
-    return income;
   }
 }

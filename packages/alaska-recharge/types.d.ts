@@ -12,3 +12,16 @@ export interface Recharge {
   state: 'pending' | 'success' | 'failed';
   createdAt: string;
 }
+
+export interface RechargeRuleFields {
+  payment: string;
+  target: 'account' | 'deposit';
+  rechargeAccount: string;
+  type: 'rate' | 'amount';
+  paymentCurrency: string;
+  paymentAmount: number;
+  rechargeCurrency: string;
+  rechargeAmount: number;
+  rate: number;
+  createdAt: string;
+}

@@ -1,7 +1,6 @@
 import * as mongodb from 'mongodb';
 import { RecordId, Model } from 'alaska-model';
 import { Context } from 'alaska-http';
-import balanceService from 'alaska-balance';
 import Category from 'alaska-category/models/Category';
 import { Sku } from 'alaska-sku';
 import { Image } from 'alaska-field-image';
@@ -70,14 +69,14 @@ export default class Goods extends Model {
       label: 'Shop',
       type: 'relationship',
       ref: 'alaska-shop.Shop',
-      optional: 'alaska-shop.Shop',
+      optional: 'alaska-shop',
       index: true
     },
     brand: {
       label: 'Brand',
       type: 'relationship',
       ref: 'alaska-brand.Brand',
-      optional: 'alaska-brand.Brand',
+      optional: 'alaska-brand',
       index: true
     },
     cat: {
@@ -128,17 +127,16 @@ export default class Goods extends Model {
     },
     currency: {
       label: 'Currency',
-      type: 'select',
+      type: 'relationship',
+      ref: 'alaska-currency.Currency',
+      optional: 'alaska-currency',
+      defaultField: 'isDefault',
       switch: true,
-      options: balanceService.getCurrenciesAsync(),
-      default: balanceService.getDefaultCurrencyAsync().then((cur) => cur.value),
       group: 'price'
     },
     price: {
       label: 'Price',
-      type: Number,
-      default: 0,
-      format: '0.00',
+      type: 'money',
       group: 'price',
       disabled: {
         'skus.length': {
@@ -212,7 +210,7 @@ export default class Goods extends Model {
       label: 'Comments Count',
       type: Number,
       default: 0,
-      optional: 'alaska-comment.Comment'
+      optional: 'alaska-comment'
     },
     desc: {
       label: 'Description',

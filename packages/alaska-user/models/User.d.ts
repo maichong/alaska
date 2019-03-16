@@ -16,7 +16,7 @@ export interface UserFields {
   abilities: string[];
   createdAt: Date;
 
-  auth(candidate: string): boolean;
+  auth(candidate: string): Promise<boolean>;
 }
 
 export default User;

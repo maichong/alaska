@@ -15,7 +15,7 @@ export default class SelectField extends Field {
   boolean: boolean;
 
   initSchema() {
-    this.options = _.filter(this.options, (opt) => (!opt.optional || !!this._model.lookup(opt.optional)));
+    this.options = _.filter(this.options, (opt) => (!opt.optional || !!this._model.service.lookup(opt.optional)));
     let schema = this._schema;
     if (this.number) {
       this.plain = Number;

@@ -36,6 +36,10 @@ export interface CreateParams {
    */
   contributor?: RecordId;
   /**
+   * 余额账户
+   */
+  account: string;
+  /**
    * 佣金金额
    * amount 或 price+rate 或 price+(level+commissionRates设置) 必须
    */
@@ -52,10 +56,6 @@ export interface CreateParams {
    * 主佣金
    */
   main?: RecordId;
-  /**
-   * 货币类型，默认为 order.currency
-   */
-  currency?: string;
   /**
    * 订单价格，默认为 order.payed
    */

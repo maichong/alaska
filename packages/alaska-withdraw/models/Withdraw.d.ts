@@ -7,6 +7,7 @@ export interface WithdrawFields {
   title: string;
   user: string;
   currency: string;
+  account: string;
   amount: number;
   note: string;
   createdAt: Date;

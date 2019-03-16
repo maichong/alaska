@@ -6,8 +6,9 @@ interface Recharge extends RechargeFields { }
 export interface RechargeFields {
   title: string;
   user: RecordId;
-  target: 'balance' | 'deposit';
+  target: 'account' | 'deposit';
   currency: string;
+  account: string;
   deposit: RecordId;
   amount: number;
   type: string;

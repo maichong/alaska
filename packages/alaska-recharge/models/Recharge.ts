@@ -1,5 +1,4 @@
 import { Model, RecordId } from 'alaska-model';
-import balanceService from 'alaska-balance';
 
 export default class Recharge extends Model {
   static label = 'Recharge Record';
@@ -44,30 +43,33 @@ export default class Recharge extends Model {
     target: {
       label: 'Target',
       type: 'select',
-      default: 'balance',
+      default: 'account',
       required: true,
-      checkbox: true,
+      switch: true,
       options: [{
-        label: 'Balance',
-        value: 'balance'
+        label: 'Account',
+        value: 'account'
       }, {
         label: 'Deposit',
-        value: 'deposit'
+        value: 'deposit',
+        optional: 'alaska-deposit'
       }]
     },
-    currency: {
-      label: 'Currency',
-      type: 'select',
-      required: true,
-      checkbox: true,
-      options: balanceService.getCurrenciesAsync(),
-      default: balanceService.getDefaultCurrencyAsync().then((cur) => cur.value)
+    account: {
+      label: 'Account',
+      type: 'select:account',
+      disabled: '!isNew',
+      hidden: {
+        target: {
+          $ne: 'account'
+        }
+      },
     },
     deposit: {
       label: 'Deposit',
       type: 'relationship',
-      ref: 'alaska-balance.Deposit',
-      optional: 'alaska-balance.Deposit',
+      ref: 'alaska-deposit.Deposit',
+      optional: 'alaska-deposit',
       hidden: {
         target: {
           $ne: 'deposit'
@@ -76,6 +78,15 @@ export default class Recharge extends Model {
       filters: {
         user: ':user' // 只显示当前用户Deposit列表
       }
+    },
+    currency: {
+      label: 'Currency',
+      type: 'relationship',
+      ref: 'alaska-currency.Currency',
+      optional: 'alaska-currency',
+      defaultField: 'isDefault',
+      switch: true,
+      required: true,
     },
     amount: {
       label: 'Amount',
@@ -123,8 +134,9 @@ export default class Recharge extends Model {
 
   title: string;
   user: RecordId;
-  target: 'balance' | 'deposit';
+  target: 'account' | 'deposit';
   currency: string;
+  account: string;
   deposit: RecordId;
   amount: number;
   type: string;

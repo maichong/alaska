@@ -1,5 +1,5 @@
 import { Service, ServiceConfig, ConfigData, Extension, Loader, Config, Plugin } from 'alaska';
-import { ModuleTree } from 'alaska-modules/tree';
+import { ModuleTree } from './tree';
 
 export class ModulesMetadata {
   id: string;

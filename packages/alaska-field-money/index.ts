@@ -9,7 +9,7 @@ export default class MoneyField extends NumberField {
     cell: 'NumberFieldCell',
     view: 'NumberFieldView',
     filter: 'NumberFieldFilter',
-    format: '0,0.0000',
+    format: '0,0.00',
     default: 0,
   };
 
@@ -42,13 +42,15 @@ export default class MoneyField extends NumberField {
 
       let currencyField = field.currencyField || 'currency';
       let currencyId = record.get(currencyField) || field.currency;
-      let precision = 0;
+      let precision = field.precision;
       let currency = currencyService.currencies.get(currencyId);
       if (currency) {
         precision = currency.precision;
       }
-      let newValue = _.round(value, precision);
-      record.set(field.path, newValue);
+      if (typeof precision === 'number') {
+        let newValue = _.round(value, precision);
+        record.set(field.path, newValue);
+      }
       next();
     });
   }

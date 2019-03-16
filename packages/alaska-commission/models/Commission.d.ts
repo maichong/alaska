@@ -11,6 +11,7 @@ export interface CommissionFields {
   main: RecordId;
   level: number;
   currency: string;
+  account: string;
   amount: number;
   state: 'pending' | 'balanced' | 'failed';
   failure: string;

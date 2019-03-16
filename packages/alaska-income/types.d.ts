@@ -6,6 +6,7 @@ export interface Income {
   type: string;
   target: string;
   currency: string;
+  account: string;
   deposit: string;
   amount: number;
   balance: number;
