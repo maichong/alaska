@@ -36,6 +36,9 @@ export default class Income extends Model {
         label: 'Unknown',
         value: ''
       }, {
+        label: 'Award',
+        value: 'award'
+      }, {
         label: 'Payment',
         value: 'payment'
       }, {

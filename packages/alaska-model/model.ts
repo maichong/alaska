@@ -334,11 +334,11 @@ export default class Model {
         model._virtuals = {};
         if (model.virtuals) {
           Object.keys(model.virtuals).forEach((path) => {
-            model._virtuals[path] = 1;
             let descriptor = Object.getOwnPropertyDescriptor(model.virtuals, path);
             if (descriptor.get) {
               model.defaultScope[path] = 1;
               schema.virtual(path).get(descriptor.get);
+              model._virtuals[path] = 1;
             }
             if (descriptor.set) {
               schema.virtual(path).set(descriptor.set);

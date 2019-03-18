@@ -3,7 +3,7 @@ export interface Recharge {
   id: string;
   title: string;
   user: string;
-  target: 'balance' | 'deposit';
+  target: 'account' | 'deposit';
   currency: string;
   deposit: string;
   amount: number;

@@ -17,7 +17,7 @@ export default class Create extends Sled<CreateParams, Income> {
     let currency: string;
     let depositRecord;
     let balance: number;
-    let target = 'balance';
+    let target = 'account';
 
     if (deposit) {
       target = 'deposit';
