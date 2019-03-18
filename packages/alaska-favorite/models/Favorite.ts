@@ -43,6 +43,7 @@ export default class Favorite extends Model {
       label: 'Goods',
       type: 'relationship',
       ref: 'alaska-goods.Goods',
+      optional: 'alaska-goods',
       hidden: {
         type: { $ne: 'alaska-goods.Goods' }
       }
