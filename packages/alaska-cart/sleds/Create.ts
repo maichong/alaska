@@ -66,6 +66,7 @@ export default class Create extends Sled<CreateParams, CartGoods> {
     }
     record.pic = sku && sku.pic ? sku.pic : goods.pic;
     record.title = goods.title;
+    record.shop = goods.shop;
     record.currency = goods.currency;
     record.price = sku ? sku.price : goods.price;
     record.discount = discount;

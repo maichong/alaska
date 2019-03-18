@@ -11,6 +11,7 @@ export interface CartGoodsFields {
   sku: RecordId;
   skuDesc: string;
   user: RecordId;
+  shop: RecordId;
   currency: string;
   price: number;
   discount: number;

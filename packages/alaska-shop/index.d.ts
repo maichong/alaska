@@ -1,5 +1,5 @@
 import { Service } from 'alaska';
-import { PropData } from 'alaska-property';
+import { PropData } from 'alaska-property/types';
 import Shop from './models/Shop';
 import { Image } from 'alaska-field-image';
 

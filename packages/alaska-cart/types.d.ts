@@ -6,6 +6,7 @@ export interface CartGoods {
   sku: string;
   skuDesc: string;
   user: string;
+  shop: string;
   currency: string;
   price: number;
   discount: number;

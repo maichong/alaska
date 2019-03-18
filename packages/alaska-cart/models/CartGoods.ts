@@ -3,7 +3,7 @@ import { RecordId, Model } from 'alaska-model';
 export default class CartGoods extends Model {
   static label = 'Cart Goods';
   static icon = 'shopping-cart';
-  static defaultColumns = 'pic title user goods price sku createdAt';
+  static defaultColumns = 'pic title user shop goods price sku createdAt';
   static filterFields = 'user goods createdAt?range';
   static defaultSort = '-sort';
   static defaultLimit = 100;
@@ -67,6 +67,12 @@ export default class CartGoods extends Model {
       disabled: true,
       index: true
     },
+    shop: {
+      label: 'Shop',
+      type: 'relationship',
+      ref: 'alaska-shop.Shop',
+      disabled: true
+    },
     currency: {
       label: 'Currency',
       type: 'relationship',
@@ -104,6 +110,7 @@ export default class CartGoods extends Model {
   sku: RecordId;
   skuDesc: string;
   user: RecordId;
+  shop: RecordId;
   currency: string;
   price: number;
   discount: number;
