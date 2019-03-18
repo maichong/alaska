@@ -4,6 +4,7 @@ export default class Inventory extends Model {
   static label = 'Inventory History';
   static icon = 'truck';
   static defaultColumns = 'goods sku type quantity inventory desc createdAt';
+  static filterFields = 'sku type createdAt';
   static defaultSort = '-createdAt';
   static nocreate = true;
   static noupdate = true;

@@ -5,6 +5,7 @@ export default class Refund extends Model {
   static label = 'Refund';
   static icon = 'undo';
   static defaultColumns = 'title user payment order type amount state createdAt';
+  static filterFields = 'state?switch&nolabel user createdAt?range';
   static defaultSort = '-createdAt';
   static nocreate = true;
   static noupdate = true;

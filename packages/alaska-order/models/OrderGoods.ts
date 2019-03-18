@@ -4,6 +4,8 @@ export default class OrderGoods extends Model {
   static label = 'Order Item';
   static icon = 'list-ol';
   static defaultColumns = 'title order goods skuDesc price discount total quantity createdAt';
+  static titleField = 'order goods user @search';
+  static searchFields = '@title';
   static defaultSort = '-sort';
   static nocreate = true;
   static noupdate = true;

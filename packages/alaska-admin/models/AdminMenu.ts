@@ -14,6 +14,7 @@ export default class AdminMenu extends Model {
   static icon = 'bars';
   static titleField = 'label';
   static defaultColumns = 'icon label type nav parent sort service link ability super activated';
+  static filterFields = 'type?switch&nolabel @parent @search';
   static defaultSort = '-sort';
   static searchFields = '_id label link parent';
   static defaultFilters = defaultFilters;

@@ -7,6 +7,7 @@ export default class Event extends Model {
   static titleField = 'title';
   static searchFields = 'title';
   static defaultColumns = 'pic title user type top parent read createdAt';
+  static filterFields = 'top user from type createdAt?range';
   static defaultSort = '-createdAt';
 
   static populations = {

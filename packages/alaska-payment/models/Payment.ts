@@ -4,6 +4,7 @@ export default class Payment extends Model {
   static label = 'Payment Logs';
   static icon = 'money';
   static defaultColumns = 'title user type amount state createdAt';
+  static filterFields = 'state?switch&nolabel currency?switch user amount?range';
   static defaultSort = '-createdAt';
   static nocreate = true;
   static noupdate = true;

@@ -16,6 +16,8 @@ export default class Settings extends Model {
   static icon = 'cogs';
   static defaultSort = 'group service';
   static defaultColumns = '_id title group service';
+  static filterFields = '@search';
+  static searchFields = '_id title group help';
   static cache = 600; //缓存10分钟
   static defaultFilters = defaultFilters;
 

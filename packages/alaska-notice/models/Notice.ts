@@ -4,6 +4,7 @@ export default class Notice extends Model {
   static label = 'Notice';
   static icon = 'bullhorn';
   static defaultColumns = 'title top createdAt';
+  static filterFields = 'top createdAt?range @search';
   static defaultSort = '-top -createdAt';
 
   static api = {

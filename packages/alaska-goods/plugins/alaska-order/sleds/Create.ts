@@ -72,7 +72,8 @@ export async function pre() {
     if (g.sku) {
       // 如果选择了SKU
       sku = await skuService.models.Sku.findById(g.sku).where('goods', goods._id).session(this.dbSession);
-      if (!sku || !sku.inventory) orderService.error('Goods have been sold out');
+      if (!sku) orderService.error('Sku not found');
+      if (!sku.inventory) orderService.error('Goods have been sold out');
       if (!_.find(goods.skus, (s) => s.key === sku.key)) orderService.error('Goods have been sold out');
       item.price = sku.price;
       item.discount = discountValid ? sku.discount : 0;

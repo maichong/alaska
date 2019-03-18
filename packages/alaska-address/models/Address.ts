@@ -5,6 +5,7 @@ export default class Address extends Model {
   static icon = 'map-marker';
   static titleField = 'name';
   static defaultColumns = 'user name tel province city district street detail isDefault';
+  static filterFields = 'user createdAt?range @search';
   static defaultSort = '-createdAt';
 
   static api = {

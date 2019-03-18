@@ -7,6 +7,8 @@ export default class PropertyValue extends Model {
   static label = 'Property Values';
   static icon = 'square';
   static defaultColumns = 'title prop common shop shared sort createdAt';
+  static filterFields = 'shared prop shop @search';
+  static searchFields = 'title';
   static defaultSort = 'prop -sort -createdAt';
 
   static api = {

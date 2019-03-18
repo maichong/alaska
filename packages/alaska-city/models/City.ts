@@ -4,9 +4,10 @@ export default class City extends Model {
   static label = 'City';
   static icon = 'map-signs';
   static defaultColumns = 'code initial name tel zip isHot parent level sort createdAt';
+  static filterFields = 'level?switch&nolabel @search';
   static defaultSort = 'initial code';
   static titleField = 'name';
-  static searchFields = 'name tel zip';
+  static searchFields = 'code name tel zip';
 
   static api = {
     paginate: 1,

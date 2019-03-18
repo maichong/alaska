@@ -34,8 +34,8 @@ export default class DatetimeField extends Field {
         let date = moment(`${str}0201`);
         if (date.isValid()) {
           return {
-            $gte: date.startOf('year'),
-            $lte: date.endOf('year')
+            $gte: date.startOf('year').toISOString(),
+            $lte: date.endOf('year').toISOString()
           };
         }
       }
@@ -43,8 +43,8 @@ export default class DatetimeField extends Field {
         let date = moment(`${str}02`);
         if (date.isValid()) {
           return {
-            $gte: date.startOf('month'),
-            $lte: date.endOf('month')
+            $gte: date.startOf('month').toISOString(),
+            $lte: date.endOf('month').toISOString()
           };
         }
       }

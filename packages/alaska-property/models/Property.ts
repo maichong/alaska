@@ -20,8 +20,9 @@ export default class Property extends Model {
   static label = 'Properties';
   static icon = 'th';
   static defaultColumns = 'title group common required multi sku filter input activated sort createdAt';
+  static filterFields = 'group?switch&nolabel common sku cats @search';
   static defaultSort = '-sort';
-  static searchFields = 'title';
+  static searchFields = 'title help';
   static defaultFilters = defaultFilters;
 
   static api = {

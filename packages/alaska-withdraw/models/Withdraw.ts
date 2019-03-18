@@ -6,6 +6,7 @@ export default class Withdraw extends Model {
   static icon = 'share-square';
   static titleField = 'title';
   static defaultColumns = 'title user currency amount state createdAt';
+  static filterFields = 'state?switch&nolabel user amount?range createdAt?range';
   static defaultSort = '-createdAt';
 
   static nocreate = true;

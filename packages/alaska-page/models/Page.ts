@@ -4,8 +4,9 @@ export default class Page extends Model {
   static label = 'Page';
   static icon = 'file-text';
   static defaultColumns = '_id title createdAt';
+  static filterFields = 'createdAt?range @search';
   static defaultSort = '-createdAt';
-  static searchFields = 'title';
+  static searchFields = '_id title';
 
   static api = {
     list: 1,

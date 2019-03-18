@@ -4,6 +4,7 @@ export default class OrderLog extends Model {
   static label = 'Order Log';
   static icon = 'hourglass-2';
   static defaultColumns = 'title order state createdAt';
+  static filterFields = 'state?switch&nolabel order createdAt?range';
   static defaultSort = '-createdAt';
   static nocreate = true;
   static noupdate = true;

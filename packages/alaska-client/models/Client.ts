@@ -8,6 +8,7 @@ export default class Client extends Model {
   static icon = 'mobile';
   static titleField = 'token';
   static defaultColumns = '_id user platform deviceId token createdAt expiredAt';
+  static filterFields = '@search createdAt?swtich expiredAt?switch';
   static defaultSort = '_id';
 
   static api = {

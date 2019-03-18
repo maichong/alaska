@@ -7,6 +7,7 @@ export default class Role extends Model {
   static icon = 'users';
   static defaultSort = '-sort';
   static defaultColumns = '_id title sort createdAt';
+  static filterFields = '@search';
   static searchFields = 'title';
 
   static fields = {

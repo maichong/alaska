@@ -5,6 +5,7 @@ export default class Ability extends Model {
   static label = 'Ability';
   static icon = 'unlock-alt';
   static defaultColumns = '_id title createdAt';
+  static filterFields = '@search';
   static searchFields = '_id title';
   static defaultSort = '_id';
 

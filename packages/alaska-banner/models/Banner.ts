@@ -16,6 +16,8 @@ export default class Banner extends Model {
   static icon = 'picture-o';
   static defaultSort = '-sort';
   static defaultColumns = 'pic title position sort clicks activated startAt endAt';
+  static filterFields = 'activated place?nolabel action?switch&nolabel @search';
+  static searchFields = 'title';
   static defaultFilters = defaultFilters;
   static api = {
     list: 1

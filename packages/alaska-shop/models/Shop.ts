@@ -13,8 +13,9 @@ export default class Shop extends Model {
   static label = 'Shop';
   static icon = 'home';
   static defaultColumns = 'logo title user tel brand activated createdAt';
+  static filterFields = 'user brand @search';
   static defaultSort = '-createdAt';
-  static searchFields = 'title';
+  static searchFields = 'title tel desc';
 
   static defaultFilters = defaultFilters;
 

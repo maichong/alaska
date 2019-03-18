@@ -4,6 +4,7 @@ export default class CartGoods extends Model {
   static label = 'Cart Goods';
   static icon = 'shopping-cart';
   static defaultColumns = 'pic title user goods price sku createdAt';
+  static filterFields = 'user goods createdAt?range';
   static defaultSort = '-sort';
   static defaultLimit = 100;
   static nocreate = true;
