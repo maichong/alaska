@@ -12,5 +12,7 @@
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-goods",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "alaska-field-money": "^0.13.2"
+  }
 }

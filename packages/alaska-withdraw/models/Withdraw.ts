@@ -73,7 +73,7 @@ export default class Withdraw extends Model {
     },
     amount: {
       label: 'Amount',
-      type: Number,
+      type: 'money',
       required: true,
       static: true
     },

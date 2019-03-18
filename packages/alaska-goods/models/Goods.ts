@@ -146,9 +146,7 @@ export default class Goods extends Model {
     },
     discount: {
       label: 'Discount',
-      type: Number,
-      default: 0,
-      format: '0.00',
+      type: 'money',
       help: '0 for no discount',
       group: 'price',
       disabled: {
@@ -169,8 +167,7 @@ export default class Goods extends Model {
     },
     shipping: {
       label: 'Shipping',
-      type: Number,
-      format: '0.00',
+      type: 'money',
       group: 'price',
       default: 0
     },

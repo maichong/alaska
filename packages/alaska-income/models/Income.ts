@@ -108,17 +108,13 @@ export default class Income extends Model {
     },
     amount: {
       label: 'Amount',
-      type: Number,
-      format: '0,0.00',
-      disabled: '!isNew',
-      default: 0
+      type: 'money',
+      disabled: '!isNew'
     },
     balance: {
       label: 'Balance',
-      type: Number,
-      format: '0,0.00',
-      disabled: '!isNew',
-      default: 0
+      type: 'money',
+      disabled: '!isNew'
     },
     createdAt: {
       label: 'Created At',

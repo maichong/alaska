@@ -38,13 +38,11 @@ export default class Deposit extends Model {
     },
     amount: {
       label: 'Amount',
-      type: Number,
-      default: 0
+      type: 'money'
     },
     balance: {
       label: 'Balance',
-      type: Number,
-      default: 0
+      type: 'money'
     },
     createdAt: {
       label: 'Created At',

@@ -13,5 +13,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
+    "alaska-field-money": "^0.13.2"
   }
 }

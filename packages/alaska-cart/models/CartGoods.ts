@@ -77,17 +77,13 @@ export default class CartGoods extends Model {
     },
     price: {
       label: 'Price',
-      type: Number,
-      default: 0,
-      disabled: true,
-      format: '0.00'
+      type: 'money',
+      disabled: true
     },
     discount: {
       label: 'Discount',
-      type: Number,
-      default: 0,
-      disabled: true,
-      format: '0.00'
+      type: 'money',
+      disabled: true
     },
     quantity: {
       label: 'Quantity',
