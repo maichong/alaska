@@ -71,6 +71,7 @@ export default class CartGoods extends Model {
       label: 'Shop',
       type: 'relationship',
       ref: 'alaska-shop.Shop',
+      optional: 'alaska-shop',
       disabled: true
     },
     currency: {
