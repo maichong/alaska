@@ -1,5 +1,7 @@
 export default {
   Captcha: '验证码',
+  Anonymous: '匿名',
+  'User field': '用户字段',
   'SMS Template': '短信模板',
   'Email Template': 'Email模板',
   Length: '长度',

@@ -5,7 +5,7 @@ export default class Captcha extends Model {
   static label = 'Captcha';
   static icon = 'lock';
   static titleField = 'title';
-  static defaultColumns = '_id title type length sms email';
+  static defaultColumns = '_id title anonymous type length sms email lifetime';
   static defaultSort = '_id';
 
   static fields = {
@@ -18,11 +18,50 @@ export default class Captcha extends Model {
       type: String,
       required: true
     },
+    anonymous: {
+      label: 'Anonymous',
+      type: Boolean
+    },
+    userField: {
+      label: 'User field',
+      type: String,
+      hidden: 'anonymous'
+    },
     type: {
       label: 'Type',
       type: 'select',
       default: 'sms',
-      options: [] as Array<{ label: string; value: string }>,
+      options: [{
+        label: 'SMS',
+        value: 'sms',
+        optional: 'alaska-sms'
+      }, {
+        label: 'Email',
+        value: 'email',
+        optional: 'alaska-sms'
+      }]
+    },
+    sms: {
+      label: 'SMS Template',
+      type: 'relationship',
+      ref: 'alaska-sms.Sms',
+      optional: 'alaska-sms',
+      hidden: {
+        type: {
+          $ne: 'sms'
+        }
+      }
+    },
+    email: {
+      label: 'Email Template',
+      type: 'relationship',
+      ref: 'alaska-email.Email',
+      optional: 'alaska-email',
+      hidden: {
+        type: {
+          $ne: 'email'
+        }
+      }
     },
     characters: {
       label: 'Characters',
@@ -42,59 +81,16 @@ export default class Captcha extends Model {
     }
   };
 
-  _id: string | number | Object | any;
   title: string;
+  anonymous: boolean;
+  userField: string;
+  sms: string;
+  email: string;
   type: string;
   characters: string;
   length: number;
   lifetime: number;
   createdAt: Date;
-  sms: string;
-  email: string;
-
-  static preRegister() {
-    if (this.main.allServices.get('alaska-sms')) {
-      this.fields.type.options.push({
-        label: 'SMS',
-        value: 'sms'
-      });
-      // @ts-ignore 动态加载
-      if (!this.fields.sms) {
-        // @ts-ignore 动态加载
-        this.fields.sms = {
-          label: 'SMS Template',
-          type: 'relationship',
-          ref: 'alaska-sms.Sms',
-          hidden: {
-            type: {
-              $ne: 'sms'
-            }
-          }
-        };
-      }
-    }
-
-    if (this.main.allServices.get('alaska-email')) {
-      this.fields.type.options.push({
-        label: 'Email',
-        value: 'email'
-      });
-      // @ts-ignore 动态加载
-      if (!this.fields.email) {
-        // @ts-ignore 动态加载
-        this.fields.email = {
-          label: 'Email Template',
-          type: 'relationship',
-          ref: 'alaska-email.Email',
-          hidden: {
-            type: {
-              $ne: 'email'
-            }
-          }
-        };
-      }
-    }
-  }
 
   preSave() {
     if (!this.createdAt) {
@@ -102,5 +98,6 @@ export default class Captcha extends Model {
     }
     if (this.type === 'sms' && !this.sms) service.error('Please select a sms template');
     if (this.type === 'email' && !this.email) service.error('Please select a email template');
+    if (!this.anonymous && !this.userField) service.error('userField is required');
   }
 }

@@ -14,6 +14,10 @@ export default function (options: CaptchaMiddlewareOptions, main: MainService): 
   // 获取keys为paths
   let paths = _.keys(options.paths);
   if (!paths.length) throw new Error('CaptchaService middleware \'paths\' can not empty');
+  _.forEach(options.paths, (info, path) => {
+    if (!info.id) throw new Error(`Missing config [middlewares.alaska-middleware-captcha.paths[${path}].id]`);
+    if (!info.to) throw new Error(`Missing config [middlewares.alaska-middleware-captcha.paths[${path}].to]`);
+  });
   return async function (ctx: Context, next: Function): Promise<void> {
     if (!main.allServices.get('alaska-captcha')) {
       await next();
@@ -26,17 +30,14 @@ export default function (options: CaptchaMiddlewareOptions, main: MainService): 
     }
     ctx.state.jsonApi = true;
     let params = options.paths[path]; // 配置参数
-    if (!params || !params.to || typeof params.to !== 'string') {
-      throw new Error('CaptchaService middleware \'to\' of paths error');
-    }
     let stateBody = ctx.state.body || {};
     let requestBody: any = ctx.request.body || {};
     let to: string = stateBody[params.to] || requestBody[params.to];
     let code = stateBody[params.captcha || 'captcha'] || requestBody[params.captcha || 'captcha'];
-    if (!to || !code) {
+    if (!code) {
       captchaService.error('Invalid captcha', 400);
     }
-    let success = await Verify.run({ to, code });
+    let success = await Verify.run({ id: params.id, to, code, user: ctx.user });
     if (!success) {
       captchaService.error('Invalid captcha', 400);
     }

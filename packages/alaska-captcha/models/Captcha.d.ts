@@ -5,13 +5,15 @@ interface Captcha extends CaptchaFields { }
 
 export interface CaptchaFields {
   title: string;
+  anonymous: boolean;
+  userField: string;
+  sms: string;
+  email: string;
   type: string;
   characters: string;
   length: number;
   lifetime: number;
   createdAt: Date;
-  sms: string;
-  email: string;
 }
 
 export default Captcha;

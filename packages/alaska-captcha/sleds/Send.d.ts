@@ -1,5 +1,5 @@
 import { Sled } from 'alaska-sled';
-import { CaptchaParams } from '..';
+import { SendParams } from '..';
 
-export default class Send extends Sled<CaptchaParams, void> {
+export default class Send extends Sled<SendParams, void> {
 }
