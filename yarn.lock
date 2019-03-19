@@ -839,10 +839,10 @@
     grackle "^0.2.0"
     string-random "^0.1.3"
 
-"@samoyed/select@^0.4.4":
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/@samoyed/select/-/select-0.4.4.tgz#dac9275081e7cbbaee7977977ceadc9e1d6acde5"
-  integrity sha512-S7xu21ofQ0IRc09BgA7XnHlw+6iwHd24M1J49LvkqYxke+qATYYMc26Uoyf9GUIgOWbLqe6E87jtOKLhUdYr2w==
+"@samoyed/select@^0.4.5":
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/@samoyed/select/-/select-0.4.5.tgz#ace3dfde2fb12888787f02330f4fe5cb2df4c27a"
+  integrity sha512-maHqeGJbVZLLASYFS9MSvyOTVM8PDdTqGRk3TQIegs6szpnmV8s/lRl9FuxAkcT1hSQOUk5uGHwqrCvl/3E1FQ==
   dependencies:
     classnames "^2.2.6"
     grackle "^0.2.0"

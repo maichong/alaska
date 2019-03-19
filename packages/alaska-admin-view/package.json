@@ -17,7 +17,7 @@
   "dependencies": {
     "@samoyed/checkbox": "^0.4.0",
     "@samoyed/modal": "^0.4.1",
-    "@samoyed/select": "^0.4.4",
+    "@samoyed/select": "^0.4.5",
     "@samoyed/toast": "^0.4.0",
     "@samoyed/tooltip-wrapper": "^0.4.1",
     "@samoyed/types": "^0.4.3",

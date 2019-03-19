@@ -33,7 +33,7 @@
     "@samoyed/checkbox": "^0.4.0",
     "@samoyed/checkbox-group": "^0.4.4",
     "@samoyed/modal": "^0.4.1",
-    "@samoyed/select": "^0.4.4",
+    "@samoyed/select": "^0.4.5",
     "@samoyed/switch": "^0.4.4",
     "@samoyed/toast": "^0.4.0",
     "@samoyed/tooltip-wrapper": "^0.4.1",

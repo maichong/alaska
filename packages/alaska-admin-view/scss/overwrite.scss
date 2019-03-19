@@ -30,9 +30,10 @@
   .select__value-container {
     line-height: $input-line-height;
     padding: $input-padding-y $input-padding-x;
+    margin: -2px;
     &>div:last-child {
       // input box
-      margin: 0;
+      margin: 1px;
       padding: 0;
     }
   }
@@ -59,10 +60,10 @@
     background: $primary;
   }
   .select__multi-value {
-    margin: -2px 4px -2px 0;
+    margin: 2px 4px 2px 0;
   }
   .select__multi-value__label {
-    padding: 2px 0 2px 6px;
+    padding: 0 0 0 6px;
   }
 }
 

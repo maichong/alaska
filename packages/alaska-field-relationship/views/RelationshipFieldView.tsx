@@ -15,17 +15,16 @@ function getOptionValue(opt: any) {
 }
 
 interface State {
-  options?: SelectOption[];
+  defaultOptions: SelectOption[];
   filters: any;
-  search: string;
 }
 
 export default class RelationshipFieldView extends React.Component<FieldViewProps, State> {
   constructor(props: FieldViewProps) {
     super(props);
     this.state = {
-      filters: {},
-      search: ''
+      defaultOptions: [],
+      filters: {}
     };
   }
 
@@ -39,7 +38,7 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
       return res;
     }, {});
     if (!_.isEqual(filters, prevState.filters)) {
-      return { filters, options: null };
+      return { filters };
     }
     return null;
   }
@@ -50,34 +49,28 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
   }
 
   componentDidMount() {
-    this.init();
+    this.handleSearch('', (defaultOptions: SelectOption[]) => {
+      this.setState({ defaultOptions });
+    });
   }
 
-  componentDidUpdate() {
-    this.init();
-  }
-
-  init() {
-    if (this.state.options) return;
+  handleSearch = (keyword: string, callback: Function) => {
     const { field } = this.props;
-    const { filters, search } = this.state;
+    const { filters } = this.state;
     if (!field || !field.model) return;
     relationQuery({
       model: field.model,
-      search,
-      filters
+      search: keyword,
+      // TODO: 优化性能
+      filters: _.assign({}, filters, { _limit: keyword ? 20 : 1000 })
     }).then((relation) => {
       let options = _.map(relation.results, (val) => ({
         label: val[field.modelTitleField] || val.title || val._id,
         value: val._id
       }));
-      this.setState({ options });
+      callback(options);
     });
   }
-
-  handleInput = (keyword: string) => {
-    this.setState({ search: keyword, options: null });
-  };
 
   handleChange = (value: any) => {
     if (this.props.onChange) {
@@ -97,7 +90,7 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
     let {
       className, field, value, disabled, error
     } = this.props;
-    const { options } = this.state;
+    const { defaultOptions } = this.state;
     let { help } = field;
     let viewClassName = 'relationship-select';
     let View: any = Select;
@@ -120,12 +113,12 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
     if (field.fixed) {
       let [refServiceId, refModelName] = field.model.split('.');
       let opts: any = [];
-      if (options) {
+      if (defaultOptions) {
         if (typeof value === 'string') {
           value = [value];
         }
         _.forEach(value, (v) => {
-          let opt: any = _.find(options, (o) => o.value === v);
+          let opt: any = _.find(defaultOptions, (o) => o.value === v);
           opts.push(opt || { value: v, label: v });
         });
       }
@@ -148,8 +141,8 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
           value={value}
           disabled={disabled}
           onChange={this.handleChange}
-          options={options || []}
-          onInputChange={this.handleInput}
+          defaultOptions={defaultOptions}
+          loadOptions={this.handleSearch}
         />
       );
     }

@@ -29,6 +29,7 @@ export default function (options: QueryOptions): Promise<QueryCache> {
   }).then((result) => {
     result.model = options.model;
     result.filters = filters;
+    result.search = search;
     result.populations = options.populations;
     result.time = Date.now();
     result = immutable(result);
