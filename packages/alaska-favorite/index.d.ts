@@ -1,6 +1,5 @@
 import { Service } from 'alaska';
-import { RecordId } from 'alaska-model';
-import User from 'alaska-user/models/User';
+import { RecordId, Model } from 'alaska-model';
 import { Image } from 'alaska-field-image';
 import Favorite from './models/Favorite';
 import Create from './sleds/Create';
@@ -12,23 +11,25 @@ export class FavoriteService extends Service {
   sleds: {
     Create: typeof Create;
   };
+  types: Map<string, typeof Model>;
 }
 
 declare const favoriteService: FavoriteService;
 
 export default favoriteService;
 
-export type Create = Create;
-
 /**
  * 创建收藏
  */
 export interface CreateParams {
-  [key: string]: any;
-  user: User;
-  type: string;//收藏类型
-  goods?: string;
-  path?: string; //目标类型对应的字段，例如商品path：goods
+  user: RecordId;
+  type: string;
   title?: string;
-  pic?: Image;
+  pic?: Image | string;
+  // 收藏类型
+  goods?: RecordId;
+  shop?: RecordId;
+  brand?: RecordId;
+  post?: RecordId;
+  [key: string]: any;
 }

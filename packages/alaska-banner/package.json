@@ -11,5 +11,8 @@
   "types": "index.d.ts",
   "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-banner",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "alaska-field-image": "^0.13.2"
+  }
 }

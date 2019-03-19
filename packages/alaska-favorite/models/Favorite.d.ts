@@ -9,7 +9,10 @@ export interface FavoriteFields {
   pic: Image;
   user: RecordId;
   type: string;
-  goods?: RecordId;
+  goods: RecordId;
+  shop: RecordId;
+  brand: RecordId;
+  post: RecordId;
   createdAt: Date;
 }
 

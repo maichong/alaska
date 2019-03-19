@@ -9,9 +9,7 @@ import { } from 'koa-bodyparser';
 
 let userService: UserService;
 Service.resolveMain().then((main) => {
-  if (!main.modules.services['alaska-user']) return;
-  // @ts-ignore
-  userService = main.modules.services['alaska-user'].service;
+  userService = main.lookup('alaska-user') as UserService;
 });
 
 export async function count(ctx: Context) {

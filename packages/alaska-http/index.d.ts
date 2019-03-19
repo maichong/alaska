@@ -64,6 +64,10 @@ export interface ContextState {
    */
   jsonApi?: boolean;
   /**
+   * Restful api action name
+   */
+  apiAction?: string;
+  /**
    * Current client locale
    */
   locale?: string;

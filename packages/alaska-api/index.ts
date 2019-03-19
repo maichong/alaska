@@ -200,6 +200,7 @@ export default class ApiExtension extends Extension {
               // @ts-ignore index
               if (methods[ctx.method] !== true) ctx.throw(405);
               ctx.service = service;
+              ctx.state.apiAction = action;
               await middleware(ctx, next);
               return;
             }
@@ -244,6 +245,7 @@ export default class ApiExtension extends Extension {
             let modelKey = ctx.params.model;
             let model = info.models.get(modelKey);
             ctx.state.model = model;
+            ctx.state.apiAction = action;
 
             let middlewares: Middleware[] = [];
             if (ctx.params.id) {

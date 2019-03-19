@@ -1,17 +1,14 @@
-import { Context, GET } from 'alaska-http';
-import { Model } from 'alaska-model';
+import { Context } from 'alaska-http';
+import userService from 'alaska-user';
+import Favorite from '../models/Favorite';
 import Create from '../sleds/Create';
-import service from '../';
+import service from '..';
 
-
-export async function create(ctx: Context, next: Function) {
+export async function create(ctx: Context) {
   if (!ctx.user) service.error(403);
   let body = ctx.state.body || ctx.request.body;
-  //TODO: 只针对商品收藏 再优化吧
-  ctx.body = await Create.run({
-    user: ctx.user,
-    type: body.type || 'alaska-goods.Goods',
-    goods: body.goods,
-    path: body.path || 'goods'
-  });
+  let record = await Create.run(Object.assign({}, body, { user: ctx.user._id }));
+  let data = record.data();
+  userService.trimProtectedField(data, ctx.user, Favorite, record);
+  ctx.body = data;
 }

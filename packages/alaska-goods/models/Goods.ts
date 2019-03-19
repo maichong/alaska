@@ -6,7 +6,7 @@ import { Sku } from 'alaska-sku';
 import { Image } from 'alaska-field-image';
 
 function defaultFilters(ctx: Context) {
-  if (ctx.shop || ctx.service.id === 'alaska-admin') return null;
+  if (ctx.shop || ctx.service.id === 'alaska-admin' || ctx.state.apiAction === 'show') return null;
   return {
     activated: true
   };
@@ -23,7 +23,10 @@ export default class Goods extends Model {
   static api = {
     paginate: 1,
     list: 1,
-    show: 1
+    show: 1,
+    create: 2,
+    update: 2,
+    remove: 2
   };
 
   static defaultFilters = defaultFilters;

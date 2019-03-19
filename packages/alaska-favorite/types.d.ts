@@ -4,6 +4,9 @@ export interface Favorite {
   type: string;
   title: string;
   pic: string;
-  goods?: string;
-  createdAt: Date;
+  goods: string;
+  shop: string;
+  brand: string;
+  post: string;
+  createdAt: string;
 }
