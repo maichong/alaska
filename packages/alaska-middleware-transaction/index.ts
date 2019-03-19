@@ -84,7 +84,6 @@ export default function (options: TransactionMiddlewareOptions) {
       await ctx.dbSession.commitTransaction();
     } catch (error) {
       // 提交错误，回滚
-      await ctx.dbSession.abortTransaction();
       ctx.body = null;
       ctx.throw(503); // 系统繁忙
     }

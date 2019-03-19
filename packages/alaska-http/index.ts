@@ -86,7 +86,14 @@ export default class HttpExtension extends Extension {
           if (ctx.status === 404 && !ctx.body) main.error(404);
         } catch (error) {
           let expose = error.expose || error instanceof NormalError || false;
-          let message = expose ? error.message : 'Internal Server Error';
+          let code = error.code || error.status;
+          let message = 'Internal Server Error';
+          if (code === 503) {
+            message = 'Service Unavailable';
+          }
+          if (expose) {
+            message = error.message;
+          }
           if (ctx.locale) {
             message = tr.locale(ctx.locale)(message);
           }
@@ -103,7 +110,7 @@ export default class HttpExtension extends Extension {
             if (ctx.state.jsonApi) {
               ctx.body = {
                 error: message,
-                code: error.code || error.status,
+                code,
                 debug: debugInfo
               };
             } else {
