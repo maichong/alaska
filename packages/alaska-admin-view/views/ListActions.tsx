@@ -2,10 +2,12 @@ import * as _ from 'lodash';
 import * as React from 'react';
 import * as qs from 'qs';
 import * as tr from 'grackle';
+import * as H from 'history';
 import { ObjectMap } from 'alaska';
 import { ModelAction } from 'alaska-model';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router';
 import toast from '@samoyed/toast';
 import { confirm } from '@samoyed/modal';
 import { ListActionsProps, StoreState, Settings, ActionState, ActionRequestPayload, Record } from '..';
@@ -26,6 +28,10 @@ interface ActionMap {
 }
 
 interface Props extends ListActionsProps {
+  history: H.History;
+  location: H.Location<any>;
+  match: any;
+  staticContext?: any;
   settings?: Settings;
   superMode: boolean;
   locale: string;
@@ -134,7 +140,7 @@ class ListActions extends React.Component<Props, ListActionsState> {
 
   render() {
     const {
-      model, records, selected, superMode, settings
+      model, records, selected, superMode, history
     } = this.props;
 
     const { actions } = model;
@@ -230,6 +236,7 @@ class ListActions extends React.Component<Props, ListActionsState> {
     return (
       <div className="list-actions">
         <ActionGroup
+          history={history}
           items={actionList}
           model={model}
           selected={selected}
@@ -244,4 +251,4 @@ export default connect(
   ({ settings, action }: StoreState) =>
     ({ superMode: settings.superMode, locale: settings.locale, action, settings }),
   (dispatch) => bindActionCreators({ actionRequest: ActionRedux.actionRequest }, dispatch)
-)(ListActions);
+)(withRouter(ListActions));

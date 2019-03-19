@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Checkbox from '@samoyed/checkbox';
 import Node from './Node';
@@ -10,12 +9,6 @@ interface Props extends DataTableRowProps {
 }
 
 class DataTableRow extends React.Component<Props> {
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
-  context: any;
-
   handleChange = () => {
     let { record, onSelect, selected } = this.props;
     if (onSelect) {
@@ -24,8 +17,8 @@ class DataTableRow extends React.Component<Props> {
   }
 
   handleDoubleClick = () => {
-    let { model, record } = this.props;
-    this.context.router.history.push(`/edit/${model.serviceId}/${model.modelName}/${record._id}`);
+    let { model, record, history } = this.props;
+    history.push(`/edit/${model.serviceId}/${model.modelName}/${record._id}`);
   }
 
   render() {

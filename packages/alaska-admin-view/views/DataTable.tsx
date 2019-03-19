@@ -1,6 +1,8 @@
 import * as _ from 'lodash';
 import * as immutable from 'seamless-immutable';
 import * as React from 'react';
+import * as H from 'history';
+import { withRouter } from 'react-router';
 import Node from './Node';
 import DataTableHeader from './DataTableHeader';
 import DataTableRow from './DataTableRow';
@@ -13,8 +15,15 @@ interface DataTableState {
   selectList: string[];
 }
 
-export default class DataTable extends React.Component<DataTableProps, DataTableState> {
-  constructor(props: DataTableProps) {
+interface Props extends DataTableProps {
+  history: H.History;
+  location: H.Location<any>;
+  match: any;
+  staticContext?: any;
+}
+
+class DataTable extends React.Component<Props, DataTableState> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       _selected: props.selected,
@@ -24,7 +33,7 @@ export default class DataTable extends React.Component<DataTableProps, DataTable
     };
   }
 
-  static getDerivedStateFromProps(nextProps: DataTableProps, prevState: DataTableState) {
+  static getDerivedStateFromProps(nextProps: Props, prevState: DataTableState) {
     let { selected, records } = nextProps;
     if (_.isEqual(prevState._selected, selected) || _.isEqual(prevState._records, records)) {
       let selectList = [];
@@ -72,7 +81,7 @@ export default class DataTable extends React.Component<DataTableProps, DataTable
   render() {
     let {
       model, columns, records, activated,
-      sort, onSort, onActive, onSelect
+      sort, onSort, onActive, onSelect, history
     } = this.props;
     let { selectAll, selectList } = this.state;
     columns = columns || model.defaultColumns;
@@ -98,6 +107,7 @@ export default class DataTable extends React.Component<DataTableProps, DataTable
           {
             records.map((item: immutable.Immutable<Record>) => (<DataTableRow
               key={item._id}
+              history={history}
               model={model}
               columns={columns}
               record={item}
@@ -112,3 +122,5 @@ export default class DataTable extends React.Component<DataTableProps, DataTable
     );
   }
 }
+
+export default withRouter(DataTable);

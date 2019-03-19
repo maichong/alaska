@@ -133,7 +133,7 @@ class SettingsPage extends React.Component<Props, State> {
   };
 
   render() {
-    const { settings } = this.props;
+    const { settings, history } = this.props;
     const { lists } = this.props;
     const { values, groups, fields } = this.state;
     const model = settings.models[MODEL_ID];
@@ -185,6 +185,7 @@ class SettingsPage extends React.Component<Props, State> {
           </div>
           <ActionBar>
             <ActionGroup
+              history={history}
               model={model}
               items={[{
                 key: 'save',

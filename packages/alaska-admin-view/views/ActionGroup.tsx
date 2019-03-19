@@ -7,7 +7,7 @@ import Node from './Node';
 export default class ActionGroup extends React.Component<ActionGroupProps> {
   render() {
     const {
-      items, editor, model, record, records, selected
+      items, editor, model, record, records, selected, history
     } = this.props;
     return (
       <Node
@@ -21,6 +21,7 @@ export default class ActionGroup extends React.Component<ActionGroupProps> {
             return (
               <ActionView
                 key={item.key}
+                history={history}
                 editor={editor}
                 action={action}
                 record={record}

@@ -681,6 +681,7 @@ export interface ActionItem {
 
 // Props
 export interface ActionGroupProps {
+  history: H.History;
   items: ActionItem[];
   model: Model;
   editor?: boolean;
@@ -693,6 +694,7 @@ export interface ActionGroupProps {
 export interface ActionViewProps {
   model: Model;
   action: ModelAction;
+  history: H.History;
   onClick?: Function;
   link: string;
   disabled?: boolean;
@@ -742,6 +744,7 @@ export interface DataTableHeaderProps {
 }
 
 export interface DataTableRowProps {
+  history: H.History;
   model: Model;
   record: immutable.Immutable<Record>;
   columns?: string;

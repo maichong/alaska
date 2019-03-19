@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import * as tr from 'grackle';
 import * as classnames from 'classnames';
 import TooltipWrapper from '@samoyed/tooltip-wrapper';
@@ -7,10 +6,6 @@ import checkAbility from '../utils/check-ability';
 import { ActionViewProps, views } from '..';
 
 export default class ActionView extends React.Component<ActionViewProps> {
-  static contextTypes = {
-    router: PropTypes.object
-  };
-
   handleClick = () => {
     let { onClick, link, record } = this.props;
     if (onClick) {
@@ -24,7 +19,7 @@ export default class ActionView extends React.Component<ActionViewProps> {
         }
         return '';
       });
-      this.context.router.history.push(link);
+      this.props.history.push(link);
     }
   };
 

@@ -1,10 +1,11 @@
 import * as _ from 'lodash';
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import * as tr from 'grackle';
+import * as H from 'history';
 import { ModelAction } from 'alaska-model';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router';
 import { confirm } from '@samoyed/modal';
 import toast from '@samoyed/toast';
 import { ObjectMap } from 'alaska';
@@ -27,17 +28,16 @@ interface EditorActionsState {
 }
 
 interface Props extends EditorActionsProps {
+  history: H.History;
+  location: H.Location<any>;
+  match: any;
+  staticContext?: any;
   superMode: boolean;
   actionRequest: (req: ActionRequestPayload) => any;
   action: ActionState;
 }
 
 class EditorActions extends React.Component<Props, EditorActionsState> {
-  static contextTypes = {
-    router: PropTypes.object
-  };
-
-  context: any;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -71,7 +71,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
   handleAdd = () => {
     const { model } = this.props;
     let url = `/edit/${model.serviceId}/${model.modelName}/_new`;
-    this.context.router.history.replace(url);
+    this.props.history.replace(url);
   };
 
   handleAction = async (action: string) => {
@@ -123,12 +123,12 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
 
   render() {
     const {
-      model, record, superMode
+      model, record, superMode, history
     } = this.props;
 
     let redirect = this.state.redirect;
     if (redirect) {
-      this.context.router.history.replace(redirect);
+      history.replace(redirect);
     }
 
     const { actions } = model;
@@ -228,6 +228,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
       <div className="editor-actions">
         <ActionGroup
           editor
+          history={history}
           items={actionList}
           model={model}
           record={record}
@@ -240,4 +241,4 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
 export default connect(
   ({ settings, action }: StoreState) => ({ superMode: settings.superMode, action }),
   (dispatch) => bindActionCreators({ actionRequest: ActionRedux.actionRequest }, dispatch)
-)(EditorActions);
+)(withRouter(EditorActions));

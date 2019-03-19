@@ -45,12 +45,6 @@ interface ListPageState {
 }
 
 class ListPage extends React.Component<Props, ListPageState> {
-  static contextTypes = {
-    router: PropTypes.object
-  };
-
-  context: any;
-
   _ref?: {
     scrollHeight: number;
     offsetHeight: number;
@@ -164,7 +158,7 @@ class ListPage extends React.Component<Props, ListPageState> {
     }
     _.assign(query, filters, optionsTemp);
     let { pathname } = this.props.location;
-    this.context.router.history.replace({ pathname, search: `?${qs.stringify(query, { encode: false })}` });
+    this.props.history.replace({ pathname, search: `?${qs.stringify(query, { encode: false })}` });
   }
 
   handleScroll = () => {
