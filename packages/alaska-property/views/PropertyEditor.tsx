@@ -230,7 +230,7 @@ export default class PropertyEditor extends React.Component<Props, State> {
             disabled={disabled}
             onChange={handleChange}
             onCreateOption={handleCreate}
-            formatCreateLabel={(str) => tr('CREATE_NEW_PROPERTY_VALUE', { property: p.title, value: str })}
+            formatCreateLabel={(str: string) => tr('CREATE_NEW_PROPERTY_VALUE', { property: p.title, value: str })}
           />
           <div><small className="form-text text-muted">{helpElement}</small></div>
         </div>

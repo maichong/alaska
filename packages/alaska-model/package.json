@@ -14,6 +14,6 @@
   "license": "MIT",
   "dependencies": {
     "is-promise": "^2.1.0",
-    "mongoose": "^5.4.17"
+    "mongoose": "^5.4.19"
   }
 }

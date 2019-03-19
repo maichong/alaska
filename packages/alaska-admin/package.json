@@ -21,7 +21,7 @@
     "check-depends": "^0.5.2",
     "collie": "^0.3.0",
     "grackle": "^0.2.0",
-    "hasha": "^3.0.0",
+    "hasha": "^4.0.1",
     "through": "^2.3.8"
   }
 }

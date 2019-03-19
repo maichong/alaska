@@ -12,23 +12,25 @@ export async function list(ctx: Context) {
   const shopMap: Map<string, [Shop | null, any[]]> = new Map();
   const goodsMap: Map<string, Goods> = new Map();
   for (let data of goods) {
-    let info = shopMap.get(data.shop || '');
+    let shopId = String(data.shop || '');
+    let goodsId = String(data.goods);
+    let info = shopMap.get(shopId || '');
     if (!info) {
       let shop;
       if (data.shop) {
         shop = await Shop.findById(data.shop);
       }
       info = [shop, [data]];
-      shopMap.set(data.shop || '', info);
+      shopMap.set(shopId, info);
     } else {
       info[1].push(data);
     }
 
-    let g = goodsMap.get(data.goods);
+    let g = goodsMap.get(goodsId);
     if (!g) {
       g = await Goods.findById(data.goods);
       if (!g) continue;
-      goodsMap.set(data.goods, g);
+      goodsMap.set(goodsId, g);
     }
     data.inventory = g.inventory;
     if (data.sku) {

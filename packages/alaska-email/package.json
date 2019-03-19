@@ -14,6 +14,6 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
-    "nunjucks": "^3.1.7"
+    "nunjucks": "^3.2.0"
   }
 }

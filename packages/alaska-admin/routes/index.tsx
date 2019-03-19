@@ -38,6 +38,7 @@ export default function (router: Router) {
 
     if (!jsHash && !resourceVersion) {
       try {
+        // @ts-ignore hasha 定义有误
         jsHash = hasha(fs.readFileSync(`public/admin/app${min}.js`), {
           algorithm: 'md5'
         }).substr(0, 8);
@@ -47,6 +48,7 @@ export default function (router: Router) {
     }
     if (!cssHash && !resourceVersion) {
       try {
+        // @ts-ignore hasha 定义有误
         cssHash = hasha(fs.readFileSync(`public/admin/app.css`), {
           algorithm: 'md5'
         }).substr(0, 8);
