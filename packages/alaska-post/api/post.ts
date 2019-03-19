@@ -6,7 +6,7 @@ export async function show(ctx: Context, next: Function) {
   if (ctx.user && ctx.body && ctx.body.id) {
     let Favorite = Model.lookup('alaska-favorite.Favorite');
     if (Favorite) {
-      ctx.body.favored = !!(await Favorite.findOne({ user: ctx.user._id, type: 'post', post: ctx.body.id }).select('post'));
+      ctx.body.favorite = (await Favorite.findOne({ user: ctx.user._id, type: 'post', post: ctx.body.id }).select('_id') || { id: '' }).id;
     }
   }
 }
