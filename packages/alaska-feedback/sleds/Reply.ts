@@ -16,9 +16,9 @@ export default class Reply extends Sled<ActionSledParams, Feedback> {
     if (params.admin) {
       comment.fromAdmin = true;
     }
-    await comment.save();
+    await comment.save({ session: this.dbSession });
     record.lastComment = comment._id;
-    await record.save();
+    await record.save({ session: this.dbSession });
     return record;
   }
 }

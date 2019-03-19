@@ -144,7 +144,7 @@ export default class Create extends Sled<CreateParams, Image> {
       image.thumbUrl += driverConfig.thumbSuffix.replace('{EXT}', image.ext);
     }
 
-    await image.save();
+    await image.save({ session: this.dbSession });
 
     return image;
   }

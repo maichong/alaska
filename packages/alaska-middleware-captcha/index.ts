@@ -37,7 +37,7 @@ export default function (options: CaptchaMiddlewareOptions, main: MainService): 
     if (!code) {
       captchaService.error('Invalid captcha', 400);
     }
-    let success = await Verify.run({ id: params.id, to, code, user: ctx.user });
+    let success = await Verify.run({ id: params.id, to, code, user: ctx.user }, { dbSession: ctx.dbSession });
     if (!success) {
       captchaService.error('Invalid captcha', 400);
     }

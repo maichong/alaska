@@ -14,7 +14,7 @@ export default class Test extends Sled<Params, Email> {
       email: record,
       to: params.body.testTo,
       values: params.body.testData
-    });
+    }, { dbSession: this.dbSession });
     return record;
   }
 }

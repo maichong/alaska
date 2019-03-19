@@ -16,11 +16,11 @@ export default class Create extends Sled<CreateParams, Favorite> {
     let Model = service.types.get(type);
     if (Model) {
       // 去重
-      let fav = await Favorite.findOne({ user, type, [type]: params[type] });
+      let fav = await Favorite.findOne({ user, type, [type]: params[type] }).session(this.dbSession);
       if (fav) return fav;
     }
     if (!pic || !title && Model) {
-      let record = await Model.findById(params[type]);
+      let record = await Model.findById(params[type]).session(this.dbSession);
       if (!record) service.error(`Favorite target not found`);
       if (!title) {
         let titleField: string = Model.titleField || '';
@@ -40,7 +40,7 @@ export default class Create extends Sled<CreateParams, Favorite> {
       }
     }
     let record = new Favorite(params);
-    await record.save();
+    await record.save({ session: this.dbSession });
     return record;
   }
 }

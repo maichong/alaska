@@ -27,7 +27,7 @@ exports['pre-create'] = async function (ctx: Context) {
   body.pre = true;
   body.ctx = ctx;
 
-  let orders = await Create.run(body);
+  let orders = await Create.run(body, { dbSession: ctx.dbSession });
 
   let results = [];
   for (let order of orders) {

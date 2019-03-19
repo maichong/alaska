@@ -10,14 +10,14 @@ export default function (router: Router) {
     const body: any = ctx.request.body || {};
     let username = body.username || service.error('Username is required');
     let password = body.password || service.error('Password is required');
-    let user = await Login.run({ ctx, username, password });
+    let user = await Login.run({ ctx, username, password }, { dbSession: ctx.dbSession });
     let authorized = await userService.hasAbility(user, 'admin');
     ctx.body = Object.assign({ authorized }, user.data());
   });
 
   router.get('/logout', async (ctx) => {
     ctx.service = service;
-    await Logout.run({ ctx });
+    await Logout.run({ ctx }, { dbSession: ctx.dbSession });
     ctx.body = {};
   });
 }

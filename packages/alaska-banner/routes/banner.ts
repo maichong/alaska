@@ -13,8 +13,7 @@ export default function (router: Router) {
       await next();
       return;
     }
-    banner.clicks += 1;
-    banner.save();
+    await Banner.findByIdAndUpdate(banner._id, { $inc: { clicks: 1 } });
     ctx.redirect(banner.url);
   });
 }

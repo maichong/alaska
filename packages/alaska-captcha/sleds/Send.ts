@@ -22,7 +22,7 @@ export default class Send extends Sled<SendParams, void> {
     let user = params.user;
     let locale = params.locale;
     let values = params.values || {};
-    let captcha = await Captcha.findById(id);
+    let captcha = await Captcha.findById(id).session(this.dbSession);
     if (!captcha) service.error('Unknown captcha');
 
     if (captcha.anonymous && !to) throw new Error('to is required for send captcha!');
@@ -47,7 +47,7 @@ export default class Send extends Sled<SendParams, void> {
         sms: captcha.sms,
         locale,
         values
-      });
+      }, { dbSession: this.dbSession });
     } else if (captcha.type === 'email' && captcha.email
       && service.main && service.main.allServices.get('alaska-email')) {
       let EMAIL = service.main.allServices.get('alaska-email') as EmailService;
@@ -56,7 +56,7 @@ export default class Send extends Sled<SendParams, void> {
         email: captcha.email,
         locale,
         values
-      });
+      }, { dbSession: this.dbSession });
     } else {
       throw new Error('unsupported captcha type');
     }

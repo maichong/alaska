@@ -70,7 +70,7 @@ export default function (options: UserMiddlewareOptions, main: MainService): Mid
           let index = code.indexOf(':');
           let username = code.substr(0, index);
           let password = code.substr(index + 1);
-          ctx.user = await Login.run({ username, password, remember: false, channel: 'basic-auth' });
+          ctx.user = await Login.run({ username, password, remember: false, channel: 'basic-auth' }, { dbSession: ctx.dbSession });
         } else {
           throw new Error('invalid authorization');
         }
