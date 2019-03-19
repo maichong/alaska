@@ -113,6 +113,7 @@ export async function pre() {
         type: 'goods',
         pic: item.pic,
         user: params.user._id,
+        shop: item.shop,
         currency: item.currency,
         state: 200,
         delivery: params.delivery,

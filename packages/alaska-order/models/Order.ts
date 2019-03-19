@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import * as mongodb from 'mongodb';
 import { NormalError } from 'alaska';
 import { Model, RecordId } from 'alaska-model';
+import { isIdEqual } from 'alaska-model/utils';
 import OrderLog from './OrderLog';
 import OrderGoods from './OrderGoods';
 import { Context } from 'alaska-http';
@@ -512,6 +513,9 @@ export default class Order extends Model {
    * @returns {boolean}
    */
   canAppendGoods(goods: OrderGoods): boolean {
-    return !!goods;
+    if (this.shop) {
+      return isIdEqual(this.shop, goods.shop);
+    }
+    return !goods.shop;
   }
 }

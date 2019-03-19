@@ -26,7 +26,7 @@ export async function create(ctx: Context) {
     ctx,
     user: body.user,
     driver: body.driver,
-  }, { dbSession: this.dbSession });
+  }, { dbSession: ctx.dbSession });
 
   ctx.body = image.data();
 }

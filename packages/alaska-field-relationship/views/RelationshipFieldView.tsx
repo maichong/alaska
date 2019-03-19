@@ -141,6 +141,7 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
           value={value}
           disabled={disabled}
           onChange={this.handleChange}
+          options={defaultOptions}
           defaultOptions={defaultOptions}
           loadOptions={this.handleSearch}
         />

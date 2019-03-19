@@ -51,7 +51,7 @@ export default function (router: Router) {
       record: records[0],
       body: body
     }, { dbSession: ctx.dbSession });
-    if (result) {
+    if (typeof result !== 'undefined') {
       ctx.body = result;
     }
   });
