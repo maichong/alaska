@@ -303,6 +303,7 @@ export async function removeMulti(ctx: Context) {
   ctx.body = {};
   let filters = await model.createFiltersByContext(ctx);
 
+  // TODO: 判断 pre/post remove hooks
   let res = await model.deleteMany(mergeFilters(filters, abilityFilters)).session(ctx.dbSession);
 
   ctx.body = {

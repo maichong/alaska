@@ -27,6 +27,7 @@ export default class CartGoods extends Model {
     list: 2,
     create: 2,
     remove: 2,
+    removeMulti: 2,
     update: 2
   };
 
