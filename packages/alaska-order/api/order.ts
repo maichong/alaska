@@ -28,11 +28,21 @@ exports['pre-create'] = async function (ctx: Context) {
   body.ctx = ctx;
 
   let orders = await Create.run(body, { dbSession: ctx.dbSession });
-
+  let defaultAddress = null;
+  const Address = Order.lookup('alaska-address.Address');
+  if (Address && !body.address) {
+    let address = await Address.findOne({ user: body.user }).sort('-isDefault -createdAt');
+    if (address) {
+      defaultAddress = address.data();
+    }
+  }
   let results = [];
   for (let order of orders) {
     let data = order.data();
     await userService.trimProtectedField(data, ctx.user, Order, order);
+    if (!data.address) {
+      data.address = defaultAddress;
+    }
     results.push(data);
   }
   ctx.body = {

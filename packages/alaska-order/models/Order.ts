@@ -22,7 +22,7 @@ function defaultFilters(ctx: Context) {
 export default class Order extends Model {
   static label = 'Order';
   static icon = 'file-text-o';
-  static defaultColumns = 'code pic title user total payed refundedAmount state createdAt';
+  static defaultColumns = 'pic code title user shop total payed refundedAmount state createdAt';
   static defaultSort = '-createdAt';
   static searchFields = 'title';
   static nocreate = true;

@@ -67,9 +67,9 @@ export default class Model {
       let [serviceId, modelName] = ref.split('.');
       if (!serviceId) {
         // ref -> '.ModelName'
-        serviceId = this.main.id;
+        serviceId = service.main.id;
       }
-      let serviceModule = this.main.modules.services[serviceId];
+      let serviceModule = service.main.modules.services[serviceId];
       if (!serviceModule || !serviceModule.models) return null;
       model = serviceModule.models[modelName] || null;
     } else {
@@ -611,6 +611,7 @@ export default class Model {
       });
 
       [
+        'lookup',
         'classOfModel',
         'addField',
         'paginateByContext',
