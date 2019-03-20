@@ -24,6 +24,7 @@ export default class Pay extends Sled<PayParams, Order[]> {
       }
       order.state = confirm ? 300 : 400;
       order.paymentTimeout = null;
+      order.payedAt = new Date();
       await order.save({ session: this.dbSession });
       order.createLog('Order payed', this.dbSession);
     }

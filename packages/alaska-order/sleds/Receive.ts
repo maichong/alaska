@@ -18,6 +18,7 @@ export default class Receive extends Sled<ReceiveParams, Order[]> {
       order.state = 600;
       order.receiveTimeout = null;
       order.closed = true;
+      order.receivedAt = new Date();
       await order.save({ session: this.dbSession });
       order.createLog('Order received', this.dbSession);
     }

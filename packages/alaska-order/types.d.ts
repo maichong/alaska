@@ -57,6 +57,8 @@ export interface Order {
   state: number;
   failure: string;
   createdAt: string;
+  payedAt: string;
+  receivedAt: string;
   paymentTimeout: string;
   receiveTimeout: string;
   refundTimeout: string;

@@ -40,6 +40,8 @@ export default {
   'Refunded Amount': '已退金额',
   'Refunded Quantity': '已退货数量',
   Shipped: '已发货',
+  'Payed At': '付款时间',
+  'Received At': '收货时间',
   'Payment Timeout': '支付超时',
   'Receive Timeout': '收货超时',
   'Refund Timeout': '退款超时',

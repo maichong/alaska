@@ -375,10 +375,20 @@ export default class Order extends Model {
       label: 'Created At',
       type: Date
     },
+    payedAt: {
+      label: 'Payed At',
+      type: Date,
+      hidden: '!payedAt'
+    },
     paymentTimeout: {
       label: 'Payment Timeout',
       type: Date,
       hidden: '!paymentTimeout'
+    },
+    receivedAt: {
+      label: 'Received At',
+      type: Date,
+      hidden: '!receivedAt'
     },
     receiveTimeout: {
       label: 'Receive Timeout',
@@ -461,6 +471,8 @@ export default class Order extends Model {
   state: number;
   failure: string;
   createdAt: Date;
+  payedAt: Date;
+  receivedAt: Date;
   paymentTimeout: Date;
   receiveTimeout: Date;
   refundTimeout: Date;

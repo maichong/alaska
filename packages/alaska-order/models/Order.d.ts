@@ -68,6 +68,8 @@ export interface OrderFields {
   state: number;
   failure: string;
   createdAt: Date;
+  payedAt: Date;
+  receivedAt: Date;
   paymentTimeout: Date;
   receiveTimeout: Date;
   refundTimeout: Date;
