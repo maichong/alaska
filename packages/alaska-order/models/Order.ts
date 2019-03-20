@@ -47,6 +47,10 @@ export default class Order extends Model {
     goods: {
       auto: true,
       path: 'goods'
+    },
+    shop: {
+      auto: true,
+      path: 'shop'
     }
   };
 

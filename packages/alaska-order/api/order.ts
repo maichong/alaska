@@ -30,6 +30,7 @@ exports['pre-create'] = async function (ctx: Context) {
   let orders = await Create.run(body, { dbSession: ctx.dbSession });
   let defaultAddress = null;
   const Address = Order.lookup('alaska-address.Address');
+  const Shop = Order.lookup('alaska-shop.Shop');
   if (Address && !body.address) {
     let address = await Address.findOne({ user: body.user }).sort('-isDefault -createdAt');
     if (address) {
@@ -42,6 +43,12 @@ exports['pre-create'] = async function (ctx: Context) {
     await userService.trimProtectedField(data, ctx.user, Order, order);
     if (!data.address) {
       data.address = defaultAddress;
+    }
+    if (Shop && order.shop) {
+      let shop = await Shop.findById(order.shop);
+      if (shop) {
+        data.shop = shop.data();
+      }
     }
     results.push(data);
   }
@@ -72,9 +79,16 @@ export async function create(ctx: Context) {
 
   let orders = await Create.run(body, { dbSession: ctx.dbSession });
 
+  const Shop = Order.lookup('alaska-shop.Shop');
   let results = [];
   for (let order of orders) {
     let data = order.data();
+    if (Shop && order.shop) {
+      let shop = await Shop.findById(order.shop);
+      if (shop) {
+        data.shop = shop.data();
+      }
+    }
     await userService.trimProtectedField(data, ctx.user, Order, order);
     results.push(data);
   }
