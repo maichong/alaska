@@ -7,6 +7,7 @@ export interface Order {
   user: string;
   type: string;
   pic: string;
+  store: string;
   goods: string[];
   address: Address;
   delivery: 'express' | 'self' | string;
@@ -68,6 +69,8 @@ export interface OrderGoods {
   pic: string;
   title: string;
   order: string;
+  store: string;
+  shop: string;
   goods: string;
   sku?: string;
   skuDesc: string;

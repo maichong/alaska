@@ -16,6 +16,7 @@ export interface OrderFields {
   code: string;
   title: string;
   user: RecordId;
+  store: string;
   shop: RecordId;
   type: string;
   pic: Image;

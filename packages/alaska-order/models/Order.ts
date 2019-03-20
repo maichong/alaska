@@ -150,6 +150,17 @@ export default class Order extends Model {
       required: true,
       index: true
     },
+    store: {
+      label: 'Store',
+      type: 'select:store',
+      disabled: '!isNew',
+      switch: true,
+      default: 'default',
+      options: [{
+        label: 'Default',
+        value: 'default'
+      }]
+    },
     shop: {
       label: 'Shop',
       type: 'relationship',
@@ -392,6 +403,7 @@ export default class Order extends Model {
   code: string;
   title: string;
   user: RecordId;
+  store: string;
   shop: RecordId;
   type: any;
   pic: Image;

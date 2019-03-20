@@ -37,6 +37,17 @@ export default class OrderGoods extends Model {
       type: 'relationship',
       ref: 'alaska-user.User'
     },
+    store: {
+      label: 'Store',
+      type: 'select:store',
+      disabled: '!isNew',
+      switch: true,
+      default: 'default',
+      options: [{
+        label: 'Default',
+        value: 'default'
+      }]
+    },
     shop: {
       label: 'Shop',
       type: 'relationship',
@@ -175,6 +186,7 @@ export default class OrderGoods extends Model {
   title: string;
   order: RecordId;
   user: RecordId;
+  store: string;
   shop: RecordId;
   goods: RecordId;
   comment: RecordId;

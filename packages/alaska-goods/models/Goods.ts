@@ -68,6 +68,17 @@ export default class Goods extends Model {
       multi: true,
       cell: ''
     },
+    store: {
+      label: 'Store',
+      type: 'select:store',
+      disabled: '!isNew',
+      switch: true,
+      default: 'default',
+      options: [{
+        label: 'Default',
+        value: 'default'
+      }]
+    },
     shop: {
       label: 'Shop',
       type: 'relationship',
@@ -234,6 +245,7 @@ export default class Goods extends Model {
   brief: string;
   pic: Image;
   pics: Image[];
+  store: string;
   cat: RecordId;
   cats: RecordId[];
   brand: RecordId;

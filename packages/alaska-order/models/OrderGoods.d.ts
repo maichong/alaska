@@ -9,6 +9,7 @@ export interface OrderGoodsFields {
   title: string;
   order: RecordId;
   user: RecordId;
+  store: string;
   shop: RecordId;
   goods: RecordId;
   sku?: RecordId;

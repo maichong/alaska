@@ -24,6 +24,7 @@ export interface GoodsFields {
   brief: string;
   pic: Image;
   pics: Image[];
+  store: string;
   cat: RecordId;
   cats: RecordId[];
   brand: RecordId;

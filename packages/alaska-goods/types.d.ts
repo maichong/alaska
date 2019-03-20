@@ -4,6 +4,7 @@ export interface Goods {
   brief: string;
   pic: string;
   pics: string[];
+  store: string;
   cat: string;
   brand: string;
   shop: string;
