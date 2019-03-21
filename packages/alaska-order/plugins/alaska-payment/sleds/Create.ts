@@ -18,6 +18,7 @@ export async function pre() {
     type,
     orders: []
   });
+  let currency = '';
   for (let order of orders) {
     if (typeof order === 'string') {
       order = await Order.findById(order).where('user', user._id).session(me.dbSession);
@@ -27,6 +28,11 @@ export async function pre() {
       }
     }
     payment.orders.push(order._id);
+    if (orders.length && currency && currency !== order.currency) throw new Error('Currency conflict!');
+    if (order.currency) {
+      currency = order.currency;
+      payment.currency = currency;
+    }
     amount += order.pay;
     if (!payment.title) {
       payment.title = order.title;
