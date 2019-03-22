@@ -263,7 +263,7 @@ export async function _ship(ctx: Context) {
 /**
  * 商家端接受退款
  */
-exports['accept-refund'] = async function (ctx: Context) {
+exports['_accept-refund'] = async function (ctx: Context) {
   let order: Order = ctx.state.record;
 
   if (!ctx.state.ignoreAuthorization) {
@@ -281,7 +281,7 @@ exports['accept-refund'] = async function (ctx: Context) {
 /**
  * 商家端拒绝退款
  */
-exports['reject-refund'] = async function (ctx: Context) {
+exports['_reject-refund'] = async function (ctx: Context) {
   let order: Order = ctx.state.record;
 
   if (!ctx.state.ignoreAuthorization) {
