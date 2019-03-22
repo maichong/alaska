@@ -78,7 +78,7 @@ export interface CreateParams {
    * Commission 扩展字段
    */
   fields?: {
-    [key: string]: any
+    [key: string]: any;
   };
 }
 

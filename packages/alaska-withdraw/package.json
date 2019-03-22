@@ -15,6 +15,7 @@
   "dependencies": {
     "alaska-field-money": "^0.13.2",
     "alaska-income": "^0.13.2",
+    "alaska-payment": "^0.13.2",
     "alaska-user": "^0.13.2"
   }
 }

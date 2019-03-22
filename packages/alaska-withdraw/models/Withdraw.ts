@@ -59,6 +59,12 @@ export default class Withdraw extends Model {
       required: true,
       static: true
     },
+    type: {
+      label: 'Payment Type',
+      type: 'select',
+      options: [] as any[],
+      required: true
+    },
     currency: {
       label: 'Currency',
       type: 'relationship',
@@ -77,6 +83,26 @@ export default class Withdraw extends Model {
       type: 'money',
       required: true,
       static: true
+    },
+    ip: {
+      label: 'IP',
+      type: String,
+      protected: true
+    },
+    openid: {
+      label: 'Weixin OpenID',
+      type: String,
+      disabled: true,
+    },
+    alipay: {
+      label: 'Alipay',
+      type: String,
+      disabled: true,
+    },
+    realName: {
+      label: 'Real Name',
+      type: String,
+      disabled: true,
     },
     note: {
       label: 'Note',
@@ -116,6 +142,8 @@ export default class Withdraw extends Model {
   currency: string;
   account: string;
   amount: number;
+  type: string;
+  ip: string;
   note: string;
   createdAt: Date;
   state: 'pending' | 'accepted' | 'rejected';

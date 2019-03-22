@@ -9,6 +9,8 @@ export interface WithdrawFields {
   currency: string;
   account: string;
   amount: number;
+  type: string;
+  ip: string;
   note: string;
   createdAt: Date;
   state: 'pending' | 'accepted' | 'rejected';

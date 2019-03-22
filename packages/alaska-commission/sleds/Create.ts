@@ -83,7 +83,7 @@ export default class Create extends Sled<CreateParams, Commission[]> {
     if (fields) {
       _.forEach(fields, (v, k) => {
         commission.set(k, v);
-      })
+      });
     }
 
     await commission.save({ session: this.dbSession });

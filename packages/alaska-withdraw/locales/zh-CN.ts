@@ -13,5 +13,8 @@ export default {
   'Withdraw Rejected': '提现拒绝',
   'Insufficient balance': '余额不足',
   state: '状态',
+  'Weixin OpenID': '微信OpenID',
+  Alipay: '支付宝',
+  'Real Name': '实名',
   Target: '目标'
 };

@@ -15,10 +15,12 @@ export interface CreateParams {
   account: string;
   title?: string;
   note?: string;
+  type: string;
+  openid?: string;
+  realName?: string;
+  alipay?: string;
+  ip: string;
   amount: number;
-  fields?: {
-    [key: string]: any;
-  };
 }
 
 export interface AcceptParams extends ActionSledParams {

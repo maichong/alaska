@@ -8,10 +8,14 @@ export async function create(ctx: Context) {
     if (!ctx.user) ctx.throw(401);
     body.user = ctx.user;
     delete body.fields;
+    body.ip = ctx.ip;
   } else {
     body = ctx.state.body || ctx.throw('Missing state.body when ignore authorization');
     if (!body.user) {
       body.user = ctx.user;
+    }
+    if (!body.ip) {
+      body.ip = ctx.ip;
     }
   }
 
