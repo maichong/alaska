@@ -1,17 +1,30 @@
-import { Model, Filters } from 'alaska-model';
+import * as _ from 'lodash';
+import { Model, Filters, RecordId } from 'alaska-model';
 import { Context } from 'alaska-http';
 import Category from 'alaska-category/models/Category';
-import service from '../';
+import service from '..';
 
-function defaultFilters(ctx: Context, filters: Filters) {
+async function defaultFilters(ctx: Context, filters: Filters) {
   if (!filters || !filters.cats) return null;
   let cats = filters.cats;
   delete filters.cats;
+
+  let catIndex: RecordId[] = [];
+  let records = await Category.find({
+    _id: { $in: cats }
+  }).select('parents');
+  records.forEach((cat) => {
+    catIndex.push(cat._id);
+    _.forEach(cat.parents, (p) => {
+      catIndex.push(p);
+    });
+  });
+
   return {
     $or: [{
       common: true
     }, {
-      cats
+      cats: { $in: catIndex }
     }]
   };
 }
@@ -168,7 +181,7 @@ export default class Property extends Model {
   };
 
   title: string;
-  cats: Object[];
+  cats: RecordId[];
   common: boolean;
   required: boolean;
   multi: boolean;
