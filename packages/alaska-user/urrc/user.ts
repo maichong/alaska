@@ -1,8 +1,10 @@
+import { isIdEqual } from 'alaska-model/utils';
+
 export default function (options?: any) {
   let field = (options && options.user) || 'user';
   return {
     check(user: any, record: any): boolean {
-      return record[field] && String(record[field]) === String(user.id);
+      return isIdEqual(record[field], user.id);
     },
     filter(user: any) {
       return {
