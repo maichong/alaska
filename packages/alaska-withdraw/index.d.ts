@@ -16,6 +16,9 @@ export interface CreateParams {
   title?: string;
   note?: string;
   amount: number;
+  fields?: {
+    [key: string]: any;
+  };
 }
 
 export interface AcceptParams extends ActionSledParams {

@@ -9,7 +9,7 @@ import Balance from './Balance';
 export default class Create extends Sled<CreateParams, Commission[]> {
   async exec(p: CreateParams): Promise<Commission[]> {
     let {
-      user, account, title, order, contributor, amount, price, rate, level, main
+      user, account, title, order, contributor, amount, price, rate, level, main, fields
     } = p;
     if (!user) throw new Error('user is required for create commission!');
     if (!User._fields.hasOwnProperty(account)) throw new Error(`account "${account}" not found!`);
@@ -79,6 +79,12 @@ export default class Create extends Sled<CreateParams, Commission[]> {
       level,
       main
     });
+
+    if (fields) {
+      _.forEach(fields, (v, k) => {
+        commission.set(k, v);
+      })
+    }
 
     await commission.save({ session: this.dbSession });
 

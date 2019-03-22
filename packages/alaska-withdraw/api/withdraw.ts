@@ -7,6 +7,7 @@ export async function create(ctx: Context) {
   if (!ctx.state.ignoreAuthorization) {
     if (!ctx.user) ctx.throw(401);
     body.user = ctx.user;
+    delete body.fields;
   } else {
     body = ctx.state.body || ctx.throw('Missing state.body when ignore authorization');
     if (!body.user) {

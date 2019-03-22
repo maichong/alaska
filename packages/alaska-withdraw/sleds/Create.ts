@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Sled } from 'alaska-sled';
 import User from 'alaska-user/models/User';
 import CreateIncome from 'alaska-income/sleds/Create';
@@ -34,6 +35,13 @@ export default class Create extends Sled<CreateParams, Withdraw> {
       account,
       amount
     });
+
+    if (params.fields) {
+      _.forEach(params.fields, (v, k) => {
+        withdraw.set(k, v);
+      })
+    }
+
     await withdraw.save({ session: this.dbSession });
     return withdraw;
   }
