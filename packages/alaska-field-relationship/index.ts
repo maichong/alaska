@@ -24,7 +24,6 @@ export default class RelationshipField extends Field {
     cell: 'RelationshipFieldCell',
     view: 'RelationshipFieldView',
     filter: 'RelationshipFieldFilter',
-    defaultValue: ''
   };
 
   static _defaults = new Map();

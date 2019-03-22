@@ -7,6 +7,11 @@ import Receive from '../sleds/Receive';
 import Refund from '../sleds/Refund';
 import Cancel from '../sleds/Cancel';
 import Delete from '../sleds/Delete';
+import Confirm from '../sleds/Confirm';
+import Reject from '../sleds/Reject';
+import Ship from '../sleds/Ship';
+import AcceptRefund from '../sleds/AcceptRefund';
+import RejectRefund from '../sleds/RejectRefund';
 
 /**
  * 买家预创建订单
@@ -194,9 +199,99 @@ export async function remove(ctx: Context) {
   ctx.body = {};
 }
 
-// TODO: 商家端 confirm
-// TODO: 商家端 reject
-// TODO: 商家端 ship
-// TODO: 商家端 refund-accept
-// TODO: 商家端 refund-reject
+/**
+ * 商家确认订单
+ */
+export async function _confirm(ctx: Context) {
+  let order: Order = ctx.state.record;
 
+  if (!ctx.state.ignoreAuthorization) {
+    if (!ctx.user) service.error(401);
+    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.confirm', order)) service.error(403);
+  }
+
+  await Confirm.run({ record: order }, { dbSession: ctx.dbSession });
+
+  let data = order.data();
+  await userService.trimProtectedField(data, ctx.user, Order, order);
+  ctx.body = data;
+}
+
+/**
+ * 商家拒绝订单
+ */
+export async function _reject(ctx: Context) {
+  let order: Order = ctx.state.record;
+
+  if (!ctx.state.ignoreAuthorization) {
+    if (!ctx.user) service.error(401);
+    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.reject', order)) service.error(403);
+  }
+
+  await Reject.run({ record: order }, { dbSession: ctx.dbSession });
+
+  let data = order.data();
+  await userService.trimProtectedField(data, ctx.user, Order, order);
+  ctx.body = data;
+}
+
+/**
+ * 商家发货
+ */
+export async function _ship(ctx: Context) {
+  let order: Order = ctx.state.record;
+
+  let body = ctx.state.body || ctx.request.body;
+
+  if (!ctx.state.ignoreAuthorization) {
+    if (!ctx.user) service.error(401);
+    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.ship', order)) service.error(403);
+  } else {
+    body = ctx.state.body || ctx.throw('Missing state.body when ignore authorization');
+  }
+
+  let expressCompany = body.expressCompany || '';
+  let expressCode = body.expressCode || '';
+
+  await Ship.run({ record: order, expressCompany, expressCode }, { dbSession: ctx.dbSession });
+
+  let data = order.data();
+  await userService.trimProtectedField(data, ctx.user, Order, order);
+  ctx.body = data;
+}
+
+/**
+ * 商家端接受退款
+ */
+exports['accept-refund'] = async function (ctx: Context) {
+  let order: Order = ctx.state.record;
+
+  if (!ctx.state.ignoreAuthorization) {
+    if (!ctx.user) service.error(401);
+    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.acceptRefund', order)) service.error(403);
+  }
+
+  await AcceptRefund.run({ record: order }, { dbSession: ctx.dbSession });
+
+  let data = order.data();
+  await userService.trimProtectedField(data, ctx.user, Order, order);
+  ctx.body = data;
+};
+
+/**
+ * 商家端拒绝退款
+ */
+exports['reject-refund'] = async function (ctx: Context) {
+  let order: Order = ctx.state.record;
+
+  if (!ctx.state.ignoreAuthorization) {
+    if (!ctx.user) service.error(401);
+    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.rejectRefund', order)) service.error(403);
+  }
+
+  await RejectRefund.run({ record: order }, { dbSession: ctx.dbSession });
+
+  let data = order.data();
+  await userService.trimProtectedField(data, ctx.user, Order, order);
+  ctx.body = data;
+};

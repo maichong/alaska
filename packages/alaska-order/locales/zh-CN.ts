@@ -8,6 +8,7 @@ export default {
   None: '无',
   Express: '快递',
   'Self Help': '自提',
+  'Express Code': '快递单号',
   'Buyer Message': '买家留言',
   Price: '价格',
   Discount: '打折',
@@ -69,5 +70,7 @@ export default {
   'Confirm to accept refund?': '确定要接受退款吗？',
   'Confirm to reject refund?': '确定要拒绝退款吗？',
   'Confirm to reject the order?': '确定要拒绝订单吗？',
-  'Do you confirm the order?': '确定要删除订单吗？'
+  'Do you confirm the order?': '确定要删除订单吗？',
+  'Express company is required': '快递公司必选',
+  'Express code is required': '快递单号必选',
 };

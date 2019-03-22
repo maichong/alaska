@@ -11,6 +11,8 @@ export interface Order {
   goods: string[];
   address: Address;
   delivery: 'express' | 'self' | string;
+  expressCompany: string;
+  expressCode: string;
   message: string;
   currency: string;
   shipping: number;

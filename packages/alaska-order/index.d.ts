@@ -118,6 +118,12 @@ export interface ConfirmParams {
 export interface ShipParams {
   record?: Order;
   records?: Order[];
+  expressCompany?: string;
+  expressCode?: string;
+  body?: {
+    expressCompany?: string;
+    expressCode?: string;
+  };
 }
 
 /**

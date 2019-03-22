@@ -60,6 +60,10 @@ export default class Banner extends Model {
         value: 'goods-list',
         optional: 'alaska-goods'
       }, {
+        label: 'Shop',
+        value: 'shop',
+        optional: 'alaska-shop'
+      }, {
         label: 'Post',
         value: 'post',
         optional: 'alaska-post'
@@ -82,6 +86,17 @@ export default class Banner extends Model {
       hidden: {
         action: {
           $ne: 'post'
+        }
+      }
+    },
+    shop: {
+      label: 'Shop',
+      type: 'relationship',
+      ref: 'alaska-shop.Shop',
+      optional: 'alaska-shop',
+      hidden: {
+        action: {
+          $ne: 'shop'
         }
       }
     },

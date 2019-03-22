@@ -16,6 +16,5 @@ export default class CategoryField extends RelationshipField {
     cell: 'RelationshipFieldCell',
     view: 'CategoryFieldView',
     filter: 'RelationshipFieldFilter',
-    defaultValue: ''
   };
 }

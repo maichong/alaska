@@ -23,6 +23,8 @@ export interface OrderFields {
   goods: RecordId[];
   address: Address;
   delivery: 'express' | 'self' | string;
+  expressCompany: string;
+  expressCode: string;
   message: string;
   currency: string;
   shipping: number;

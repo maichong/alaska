@@ -51,11 +51,15 @@ export default class Order extends Model {
     shop: {
       auto: true,
       path: 'shop'
+    },
+    expressCompany: {
+      auto: true,
+      path: 'expressCompany'
     }
   };
 
   static scopes = {
-    // list: '*'
+    // list: '* -expressCompany'
   };
 
   static api = {
@@ -208,6 +212,22 @@ export default class Order extends Model {
         label: 'Self Help',
         value: 'self'
       }]
+    },
+    expressCompany: {
+      label: 'Express Company',
+      type: 'relationship',
+      ref: 'alaska-express-company.ExpressCompany',
+      optional: 'alaska-express-company',
+      hidden: {
+        delivery: { $ne: 'express' }
+      }
+    },
+    expressCode: {
+      label: 'Express Code',
+      type: String,
+      hidden: {
+        delivery: { $ne: 'express' }
+      }
     },
     address: {
       label: 'Address',
@@ -424,6 +444,8 @@ export default class Order extends Model {
   goods: OrderGoods[];
   address: Address;
   delivery: 'express' | 'self' | string;
+  expressCompany: string;
+  expressCode: string;
   message: string;
   quantity: number;
   currency: string;

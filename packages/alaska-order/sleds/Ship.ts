@@ -16,7 +16,27 @@ export default class Ship extends Sled<ShipParams, Order[]> {
     let records = _.size(params.records) ? params.records : [params.record];
     if (_.find(records, (o: Order) => ![300, 400].includes(o.state))) service.error('Order state error');
 
+    let expressCompany = params.expressCompany || _.get(params, 'body.expressCompany');
+    let expressCode = params.expressCode || _.get(params, 'body.expressCode');
+    const expressCompanyService = service.lookup('alaska-express-company');
+
     for (let order of records) {
+      if (expressCompany) {
+        order.expressCompany = expressCompany;
+      }
+      if (expressCode) {
+        order.expressCode = expressCode;
+      }
+      if (expressCompanyService) {
+        if (!order.expressCompany) {
+          if (!expressCompany) service.error('Express company is required');
+          order.expressCompany = expressCompany;
+        }
+        if (!order.expressCode) {
+          if (!expressCode) service.error('Express code is required');
+          order.expressCode = expressCode;
+        }
+      }
       order.state = 500;
       if (!order.receiveTimeout) {
         let receiveTimeout = await settingsService.get('order.receiveTimeout');

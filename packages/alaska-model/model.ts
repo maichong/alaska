@@ -394,6 +394,7 @@ export default class Model {
           }
           let field: Field = model._fields[p.path];
           if (!field) {
+            if (model.fields[p.path] && model.fields[p.path].optional) return;
             throw new Error(`${service.id}.${modelName}.populations error, can not populate '${p.path}'`);
           }
           // @ts-ignore RelationshipField 存在 ref
