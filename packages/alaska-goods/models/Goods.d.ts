@@ -40,6 +40,7 @@ export interface GoodsFields {
   discountStartAt: Date;
   discountEndAt: Date;
   shipping: number;
+  shippingShareLimit: number;
   inventory: number;
   volume: number;
   sort: number;

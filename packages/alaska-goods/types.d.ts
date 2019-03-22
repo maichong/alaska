@@ -20,6 +20,7 @@ export interface Goods {
   discountEndAt: string;
   discountValid: boolean;
   shipping: number;
+  shippingShareLimit: number;
   inventory: number;
   volume: number;
   sort: number;

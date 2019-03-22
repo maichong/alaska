@@ -20,4 +20,6 @@ export default {
   'Goods have been sold out': '商品已售完',
   'Goods is not activated': '商品已下架',
   'Inventory shortage': '库存不足',
+  'Shipping Share Limit': '运费共享限制',
+  shippingShareLimit_help: '为0不限制（不累加、只收一份运费），否则每购买x件收取一份运费',
 };

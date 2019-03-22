@@ -185,6 +185,15 @@ export default class Goods extends Model {
       group: 'price',
       default: 0
     },
+    shippingShareLimit: {
+      label: 'Shipping Share Limit',
+      type: Number,
+      precision: 0,
+      default: 1,
+      group: 'price',
+      hidden: '!shipping',
+      help: 'shippingShareLimit_help'
+    },
     inventory: {
       label: 'Inventory',
       type: Number,
@@ -261,6 +270,7 @@ export default class Goods extends Model {
   discountStartAt: Date;
   discountEndAt: Date;
   shipping: number;
+  shippingShareLimit: number;
   inventory: number;
   volume: number;
   sort: number;
