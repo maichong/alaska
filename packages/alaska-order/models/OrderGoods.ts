@@ -143,6 +143,11 @@ export default class OrderGoods extends Model {
       type: Number,
       hidden: '!refundedQuantity'
     },
+    refundExpressCode: {
+      label: 'Refund Express Code',
+      type: String,
+      hidden: '!refundExpressCode'
+    },
     refundReason: {
       label: 'Refund Reason',
       type: String,
@@ -200,6 +205,7 @@ export default class OrderGoods extends Model {
   quantity: number;
   shipping: number;
   total: number;
+  refundExpressCode: string;
   /**
    * 订单已退款金额，总额
    */

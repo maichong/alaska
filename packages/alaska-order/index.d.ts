@@ -177,6 +177,7 @@ export interface TimeoutParams {
 export interface RefundParams {
   record?: Order;
   orderGoods?: RecordId;
+  expressCode?: string;
   reason?: string;
   amount?: number;
   quantity?: number;

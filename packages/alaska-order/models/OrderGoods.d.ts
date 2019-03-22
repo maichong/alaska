@@ -22,6 +22,7 @@ export interface OrderGoodsFields {
   quantity: number;
   shipping: number;
   total: number;
+  refundExpressCode: string;
   /**
    * 订单已退款金额，总额
    */

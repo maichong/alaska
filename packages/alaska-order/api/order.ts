@@ -158,6 +158,7 @@ export async function _refund(ctx: Context) {
   }
 
 
+  let expressCode = body.expressCode || '';
   let reason = body.reason || '';
   let amount = body.amount || 0;
   let quantity = body.quantity || 0;
@@ -171,6 +172,7 @@ export async function _refund(ctx: Context) {
 
   await Refund.run({
     record: order,
+    expressCode,
     orderGoods,
     reason,
     amount,

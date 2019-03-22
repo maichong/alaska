@@ -64,6 +64,7 @@ export default {
   'Confirm Order': '确认订单',
   'Reject Order': '拒绝订单',
   Ship: '发货',
+  'Refund Express Code': '退货运单号',
   'Refund Reason': '退款原因',
   'Accept Refund': '接受退款',
   'Reject Refund': '拒绝退款',

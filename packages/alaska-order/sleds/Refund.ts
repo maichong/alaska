@@ -20,6 +20,7 @@ export default class Refund extends Sled<RefundParams, Order> {
     if (order.state === 800) return order;
     if (![400, 500, 600, 800].includes(order.state)) service.error('Order state error');
 
+    let refundExpressCode = params.expressCode || _.get(params, 'body.refundExpressCode') || '';
     let refundReason = params.reason || _.get(params, 'body.refundReason') || '';
     let refundQuantity: number = Number(params.quantity || _.get(params, 'body.refundQuantity') || 0);
     if (Number.isNaN(refundQuantity) || refundQuantity < 0 || refundQuantity !== _.round(refundQuantity)) service.error('invalid quantity');
@@ -45,6 +46,7 @@ export default class Refund extends Sled<RefundParams, Order> {
       }).session(this.dbSession);
       if (!goods) service.error('Order goods not found');
       if (goods.refundAmount) service.error('The goods of the order already applied refund');
+      goods.refundExpressCode = refundExpressCode;
       goods.refundReason = refundReason;
       goods.refundAmount = refundAmount;
       goods.refundQuantity = refundQuantity;
@@ -56,6 +58,7 @@ export default class Refund extends Sled<RefundParams, Order> {
         order.refundTimeout = moment().add(refundTimeout, 's').toDate();
       }
     }
+    order.refundExpressCode = refundExpressCode;
     order.refundReason = refundReason;
     order.refundAmount = refundAmount + (order.refundAmount || 0);
     order.refundQuantity = refundQuantity + (order.refundQuantity || 0);

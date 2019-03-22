@@ -36,6 +36,7 @@ export interface OrderFields {
   deductionAccount: string;
   deductionAmount: number;
   payment: string;
+  refundExpressCode: string;
   /**
    * 订单已退款金额，总额
    */
