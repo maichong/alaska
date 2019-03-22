@@ -42,6 +42,32 @@ export default class Create extends Sled<CreateParams, Commission[]> {
       }
     }
 
+    // 记录自己给上家贡献的佣金总额
+    let userRecord: User;
+    // @ts-ignore
+    if (user.save) {
+      userRecord = user as User;
+    } else {
+      userRecord = await User.findById(user).session(this.dbSession);
+      if (!userRecord) throw new Error('User record not found!');
+    }
+    userRecord.commissionAmount += amount;
+    await userRecord.save({ session: this.dbSession });
+
+    // 记录上家获取到的佣金总额
+    let contributorUser: User;
+    // @ts-ignore
+    if (contributor && contributor.save) {
+      contributorUser = contributor as User;
+    } else if (contributor) {
+      contributorUser = await User.findById(contributor).session(this.dbSession);
+    }
+
+    if (contributorUser) {
+      contributorUser.promoterCommissionAmount += amount;
+      await contributorUser.save({ session: this.dbSession });
+    }
+
     let commission = new Commission({
       user,
       title,
@@ -76,7 +102,7 @@ export default class Create extends Sled<CreateParams, Commission[]> {
           level: level + 1,
           amount: 0,
           price,
-          contributor,
+          contributor: contributorUser || contributor,
           rate: 0,
           title,
           order,

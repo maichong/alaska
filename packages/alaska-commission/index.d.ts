@@ -9,6 +9,8 @@ import Balance from './sleds/Balance';
 declare module 'alaska-user/models/User' {
   export interface UserFields {
     promoter: RecordId;
+    promoterCommissionAmount: number;
+    commissionAmount: number;
   }
 }
 
@@ -34,7 +36,7 @@ export interface CreateParams {
   /**
    * 贡献者ID（下线），默认为 order.user
    */
-  contributor?: RecordId;
+  contributor?: RecordId | User;
   /**
    * 余额账户
    */
@@ -72,6 +74,12 @@ export interface CreateParams {
    * 立即结算
    */
   balance?: boolean;
+  /**
+   * Commission 扩展字段
+   */
+  fields?: {
+    [key: string]: any
+  };
 }
 
 export interface BalanceParams {

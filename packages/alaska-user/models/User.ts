@@ -105,6 +105,8 @@ export default class User extends Model {
 
   // for alaska dev
   promoter: RecordId;
+  promoterCommissionAmount: number;
+  commissionAmount: number;
 
   preSave() {
     if (!this.createdAt) {

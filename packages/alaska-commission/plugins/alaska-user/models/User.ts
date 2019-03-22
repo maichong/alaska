@@ -8,6 +8,16 @@ export default {
       disabled: [{
         ability: 'alaska-user.User.update'
       }]
-    }
+    },
+    promoterCommissionAmount: {
+      label: 'Promoter Commission',
+      type: 'money',
+      disabled: true
+    },
+    commissionAmount: {
+      label: 'Commission',
+      type: 'money',
+      disabled: true
+    },
   }
 };

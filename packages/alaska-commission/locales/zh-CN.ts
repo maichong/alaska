@@ -4,6 +4,7 @@ export default {
   Amount: '金额',
   Commission: '佣金',
   'Main Commission': '主佣金',
+  'Promoter Commission': '上家获得佣金',
   Level: '等级',
   'Balanced At': '结算时间',
   Pending: '进行中',
