@@ -94,6 +94,7 @@ export interface UnifiedOrderRes {
 export interface PayParams {
   appId?: string;
   timeStamp: string;
+  timestamp?: string;
   nonceStr: string;
   package: string;
   signType: string;

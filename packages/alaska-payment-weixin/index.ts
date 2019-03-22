@@ -188,7 +188,9 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
     };
     pkg.paySign = this._getSign(pkg, options);
     delete pkg.appId;
-    // pkg.timestamp = pkg.timeStamp;
+    if (options.channel === 'jssdk') {
+      pkg.timestamp = pkg.timeStamp;
+    }
     return pkg;
   }
 
