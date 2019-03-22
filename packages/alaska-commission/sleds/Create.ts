@@ -4,6 +4,7 @@ import { CurrencyService } from 'alaska-currency';
 import User from 'alaska-user/models/User';
 import service, { CreateParams } from '..';
 import Commission from '../models/Commission';
+import Balance from './Balance';
 
 export default class Create extends Sled<CreateParams, Commission[]> {
   async exec(p: CreateParams): Promise<Commission[]> {
@@ -54,6 +55,11 @@ export default class Create extends Sled<CreateParams, Commission[]> {
     });
 
     await commission.save({ session: this.dbSession });
+
+    if (p.balance) {
+      // 立即结算
+      await Balance.run({ record: commission }, { dbSession: this.dbSession });
+    }
 
     let results = [commission];
     if (commissionRates.length > level && price) {

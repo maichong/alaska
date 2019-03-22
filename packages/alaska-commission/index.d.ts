@@ -68,6 +68,10 @@ export interface CreateParams {
    * 佣金级别
    */
   level?: number;
+  /**
+   * 立即结算
+   */
+  balance?: boolean;
 }
 
 export interface BalanceParams {
