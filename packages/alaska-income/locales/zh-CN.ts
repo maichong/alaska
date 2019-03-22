@@ -3,4 +3,5 @@ export default {
   Balance: '余额',
   Target: '目标',
   Award: '奖励',
+  Sell: '销售',
 };

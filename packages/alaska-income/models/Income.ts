@@ -60,6 +60,9 @@ export default class Income extends Model {
         label: 'Commission',
         value: 'commission',
         optional: 'alaska-commission'
+      }, {
+        label: 'Sell',
+        value: 'sell'
       }]
     },
     target: {
