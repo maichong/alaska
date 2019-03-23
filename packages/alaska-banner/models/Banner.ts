@@ -113,7 +113,7 @@ export default class Banner extends Model {
     },
     category: {
       label: 'Category',
-      type: 'relationship',
+      type: 'category',
       ref: 'alaska-category.Category',
       optional: 'alaska-category',
       hidden: {
