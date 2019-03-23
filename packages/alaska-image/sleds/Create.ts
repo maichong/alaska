@@ -149,7 +149,7 @@ export default class Create extends Sled<CreateParams, Image> {
 
     if (driverConfig.adapter === 'fsd-oss') {
       // 阿里云 OSS 刚刚上传成功的图片有可能暂时无法访问
-      await delay(500);
+      await delay(1000);
     }
 
     return image;

@@ -16,8 +16,6 @@ export default class Refund extends Sled<RefundParams, Order> {
     if (this.result) return this.result; // 在前置插件中已经处理
     let order = params.record;
     if (!order) throw new Error('record is required');
-    // 已经完成退款申请
-    if (order.state === 800) return order;
     if (![400, 500, 600, 800].includes(order.state)) service.error('Order state error');
 
     let refundExpressCode = params.expressCode || _.get(params, 'body.refundExpressCode') || '';
@@ -41,7 +39,7 @@ export default class Refund extends Sled<RefundParams, Order> {
     if (refundAmount + (order.refundAmount || 0) + (order.refundedAmount || 0) > order.payed) service.error('refund amount can not greater than payed amount');
 
     if (params.orderGoods) {
-      let goods = await OrderGoods.findById(params.orderGoods, {
+      let goods = await OrderGoods.findById(params.orderGoods).where({
         order: order._id
       }).session(this.dbSession);
       if (!goods) service.error('Order goods not found');
