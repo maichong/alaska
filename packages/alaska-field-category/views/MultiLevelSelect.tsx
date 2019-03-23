@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 type Props = {
   options: Object[];
   onChange: Function;
+  onRemove?: () => void;
   value: any;
   disabled?: boolean;
 };
@@ -96,13 +97,14 @@ export default class MultiLevelSelect extends React.Component<Props, State> {
   };
 
   render() {
-    const { disabled } = this.props;
+    const { disabled, onRemove } = this.props;
     const { levels } = this.state;
     return (
       <div className="row multi-level-select">
         {
           _.map(levels, (level, index) => (<div className="col-sm-4" key={index}>
             <Select
+              clearable={!disabled}
               disabled={disabled}
               options={level.options}
               value={level.value}
@@ -110,6 +112,7 @@ export default class MultiLevelSelect extends React.Component<Props, State> {
             />
           </div>))
         }
+        {!disabled && onRemove && <button className="btn btn-sm btn-outline-danger" onClick={onRemove}><i className="fa fa-times" /></button>}
       </div>
     );
   }

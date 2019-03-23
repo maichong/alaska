@@ -102,6 +102,14 @@ export default class CategoryFieldView extends React.Component<FieldViewProps, S
     onChange(values);
   };
 
+  handleRemove = (index: number) => {
+    const { onChange, value } = this.props;
+    onChange(immutable(value).flatMap((v: any, k: number) => {
+      if (k === index) return [];
+      return [v];
+    }));
+  };
+
   render() {
     let {
       className, field, value, disabled, error, model
@@ -124,12 +132,13 @@ export default class CategoryFieldView extends React.Component<FieldViewProps, S
         value={v || ''}
         disabled={disabled}
         onChange={(val: any) => this.handleChange(index, val)}
+        onRemove={() => this.handleRemove(index)}
         options={this.state.options}
       />));
       if (!disabled) {
-        inputElement.push(<div className={`btn btn-success ${value.length > 0 ? 'mt-2' : ''}`} key="add" onClick={this.handleAdd}>
+        inputElement.push(<button className={`btn btn-success ${value.length > 0 ? 'mt-2' : ''}`} key="add" onClick={this.handleAdd}>
           <i className="fa fa-plus" /> {tr('Add categories', model.serviceId)}
-        </div>);
+        </button>);
       }
     } else {
       inputElement = (
