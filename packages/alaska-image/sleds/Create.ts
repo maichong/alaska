@@ -5,6 +5,7 @@ import * as util from 'util';
 import * as moment from 'moment';
 import * as imageSize from 'image-size';
 import * as isStream from 'is-stream';
+import delay from 'delay';
 import isSvg from 'is-svg';
 import fileType from 'file-type';
 import Image from '../models/Image';
@@ -145,6 +146,11 @@ export default class Create extends Sled<CreateParams, Image> {
     }
 
     await image.save({ session: this.dbSession });
+
+    if (driverConfig.adapter === 'fsd-oss') {
+      // 阿里云 OSS 刚刚上传成功的图片有可能暂时无法访问
+      await delay(500);
+    }
 
     return image;
   }

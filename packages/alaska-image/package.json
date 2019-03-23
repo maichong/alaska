@@ -13,6 +13,7 @@
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
   "dependencies": {
+    "delay": "^4.1.0",
     "file-type": "^10.9.0",
     "fsd": "^0.4.2",
     "image-size": "^0.7.2",
