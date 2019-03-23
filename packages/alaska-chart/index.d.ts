@@ -74,7 +74,7 @@ export interface SeriesOptions {
   type: 'line' | 'bar' | 'pie' | 'scatter' | 'effectScatter' | 'radar' | 'heatmap' | 'map' | 'funnel' | 'gauge';
   coordinateSystem?: 'grid' | 'polar' | 'geo';
   keyAxisType: 'time' | 'cycle' | 'category' | 'value';
-  keyParser: 'year' | 'quarter' | 'month' | 'week' | 'day' | 'hour' | string;
+  keyParser: 'default' | 'year' | 'quarter' | 'month' | 'week' | 'day' | 'hour' | string;
   valueParser?: 'count' | 'sum' | 'average' | 'min' | 'max' | string;
   source: string;
   keyAxis: string;

@@ -54,6 +54,14 @@ export default class RelationshipFieldView extends React.Component<FieldViewProp
     });
   }
 
+  componentDidUpdate(nextProps: FieldViewProps, state: State) {
+    if (!_.isEqual(this.state.filters, state.filters)) {
+      this.handleSearch('', (defaultOptions: SelectOption[]) => {
+        this.setState({ defaultOptions });
+      });
+    }
+  }
+
   handleSearch = (keyword: string, callback: Function) => {
     const { field } = this.props;
     const { filters } = this.state;
