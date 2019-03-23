@@ -21,6 +21,7 @@ export default class Goods extends Model {
   static filterFields = 'cat shop brand price?range recommend activated @search';
 
   static api = {
+    count: 1,
     paginate: 1,
     list: 1,
     show: 1,

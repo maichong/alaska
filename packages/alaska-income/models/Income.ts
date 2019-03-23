@@ -9,6 +9,7 @@ export default class Income extends Model {
   static filterFields = 'user type?nolabel&switch target?nolabel deposit currency?nolabel&switch amount?range createdAt?range';
 
   static api = {
+    count: 2,
     paginate: 2,
     show: 2
   };
