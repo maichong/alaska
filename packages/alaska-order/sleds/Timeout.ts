@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import { Sled } from 'alaska-sled';
-import { CurrencyService } from 'alaska-currency';
 import { IncomeService } from 'alaska-income';
 import User from 'alaska-user/models/User';
 import Order from '../models/Order';
@@ -17,7 +16,6 @@ export default class Timeout extends Sled<TimeoutParams, Order[]> {
     let records = _.size(params.records) ? params.records : [params.record];
     if (_.find(records, (o: Order) => ![200].includes(o.state))) service.error('Order state error');
 
-    const currencyService = service.lookup('alaska-currency') as CurrencyService;
     const incomeService = service.lookup('alaska-income') as IncomeService;
 
     for (let order of records) {
@@ -29,7 +27,7 @@ export default class Timeout extends Sled<TimeoutParams, Order[]> {
       order.createLog('Order timeout', this.dbSession);
 
       // 退还抵扣的积分
-      if (currencyService && incomeService && order.deductionAmount && order.deductionCurrency && currencyService.currencies.has(order.deductionCurrency)) {
+      if (incomeService && order.deductionAmount && order.deductionAccount) {
         let user = await User.findById(order.user).session(this.dbSession);
         // 返还、收入
         await incomeService.sleds.Create.run({
