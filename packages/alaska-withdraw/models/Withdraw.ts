@@ -62,8 +62,7 @@ export default class Withdraw extends Model {
     type: {
       label: 'Payment Type',
       type: 'select:payment',
-      options: [] as any[],
-      required: true
+      options: [] as any[]
     },
     currency: {
       label: 'Currency',
