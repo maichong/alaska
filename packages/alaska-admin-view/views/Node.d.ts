@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { NodeProps } from '..';
 
-export default class Node extends React.Component<NodeProps> {
-}
+type Node = React.FunctionComponent<NodeProps>;
+
+export default Node;

@@ -9,13 +9,12 @@ import { bindActionCreators } from 'redux';
 import { ErrorsMap } from '@samoyed/types';
 import Node from './Node';
 import EditorToolBar from './EditorToolbar';
-import Relationship from './Relationship';
+import RelationshipPage from './RelationshipPage';
 import EditorActionBar from './EditorActionBar';
 import Editor from './Editor';
 import LoadingPage from './LoadingPage';
 import * as detailsRedux from '../redux/details';
 import { ObjectMap } from 'alaska';
-import checkAbility from '../utils/check-ability';
 import {
   User,
   EditorPageProps,
@@ -23,7 +22,6 @@ import {
   StoreState,
   DetailsState,
   Record,
-  ModelRelationship,
   ActionState
 } from '..';
 
@@ -43,6 +41,7 @@ interface EditorPageState {
   isNew: boolean;
   id: string;
   _action: ActionState;
+  tab: string;
 }
 
 class EditorPage extends React.Component<Props, EditorPageState> {
@@ -56,7 +55,8 @@ class EditorPage extends React.Component<Props, EditorPageState> {
       model: null,
       record: null,
       errors: null,
-      isNew: true
+      isNew: true,
+      tab: ''
     };
   }
 
@@ -153,29 +153,12 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     this.setState({ record, errors });
   }
 
-  lookupModel(modelRef: string): Model | null {
-    let { models, match } = this.props;
-    let modelId = modelRef.indexOf('.') > -1 ? modelRef : `${match.params.service}.${modelRef}`;
-    return models[modelId] || null;
+  handleTab = (t: string) => {
+    this.setState({ tab: t });
   }
 
-  renderRelationships() {
-    const { isNew, id, model, record } = this.state;
-    if (isNew) return null;
-    return _(model.relationships)
-      .filter((rel) => !checkAbility(rel.hidden, record))
-      .map((r: ModelRelationship, key: string) => (<Relationship
-        key={key}
-        from={id}
-        path={r.path}
-        model={this.lookupModel(r.ref)}
-        title={r.title}
-      />))
-      .value();
-  }
-
-  renderLayout(content: React.ReactNode) {
-    const { model, record, isNew } = this.state;
+  renderLayout(content: React.ReactNode, hasActionBar: boolean) {
+    const { model, record, isNew, tab } = this.state;
 
     let className = [
       'page',
@@ -198,7 +181,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
         className={className}
       >
         <div className="page-inner editor-page-inner">
-          <EditorToolBar>
+          <EditorToolBar model={model} record={record} tab={tab} onChangeTab={this.handleTab}>
             <Link
               to={`/list/${model.serviceId}/${model.modelName}`}
             >{tr(model.label, model.serviceId)}
@@ -206,10 +189,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
             {editorTitle}
           </EditorToolBar>
           {content}
-          <EditorActionBar
-            model={model}
-            record={record}
-          />
+          {hasActionBar && <EditorActionBar model={model} record={record} />}
         </div>
       </Node>
     );
@@ -232,26 +212,29 @@ class EditorPage extends React.Component<Props, EditorPageState> {
   }
 
   render() {
-    const { model, record, errors } = this.state;
+    const { model, record, errors, tab, isNew } = this.state;
     if (!model) {
       return <LoadingPage />;
     }
 
     if (!record) {
-      return this.renderLayout(<LoadingPage />);
+      return this.renderLayout(<LoadingPage />, false);
     }
 
     let el;
+    let relationship;
     if (record && record._error) {
       el = this.renderError();
     } else {
-      el = <div>
-        <Editor model={model} record={record} errors={errors} onChange={this.handleChange} />
-        {this.renderRelationships()}
-      </div>;
+      relationship = !isNew && tab && _.find(model.relationships, (r) => r.key === tab);
+      if (relationship) {
+        el = <RelationshipPage model={model} relationship={relationship} record={record} />;
+      } else {
+        el = <Editor model={model} record={record} errors={errors} onChange={this.handleChange} />;
+      }
     }
 
-    return this.renderLayout(el);
+    return this.renderLayout(el, !relationship);
   }
 }
 

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import * as shallowEqualWithout from 'shallow-equal-without';
 import * as DateTime from 'react-datetime';
 import * as moment from 'moment';

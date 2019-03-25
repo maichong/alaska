@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import { DocumentProps } from 'alaska-react';
 
 function onlyReactElement(
@@ -70,16 +69,6 @@ function unique() {
 }
 
 export default class Document extends React.Component<DocumentProps> {
-  static childContextTypes = {
-    _ssr: PropTypes.bool
-  }
-
-  getChildContext() {
-    return {
-      _ssr: true
-    };
-  }
-
   render() {
     const { ctx, heads, foots, children } = this.props;
     const { state } = ctx;

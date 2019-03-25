@@ -19,6 +19,14 @@ export default class Shop extends Model {
 
   static defaultFilters = defaultFilters;
 
+  static relationships = {
+    orders: {
+      ref: 'alaska-order.Order',
+      optional: 'alaska-order',
+      path: 'shop'
+    }
+  };
+
   static api = {
     paginate: 1,
     list: 1,

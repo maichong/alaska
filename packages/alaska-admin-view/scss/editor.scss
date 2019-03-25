@@ -9,6 +9,21 @@
     border-bottom: solid $border-width $border-color;
     z-index: 100;
   }
+  .editor-tabs {
+    display: flex;
+    flex-direction: row;
+    margin-right: $content-space;
+    .editor-tab {
+      height: $top-toolbar-height;
+      line-height: $top-toolbar-height;
+      margin-left: $content-space;
+      color: $link-color;
+      cursor: pointer;
+      &.active {
+        border-bottom: 2px solid $link-color;
+      }
+    }
+  }
   .editor-action-bar {
     .editor-actions {
       .btn {

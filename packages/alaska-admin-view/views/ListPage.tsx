@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import * as immutable from 'seamless-immutable';
 import * as tr from 'grackle';
 import * as qs from 'qs';

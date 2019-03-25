@@ -125,7 +125,6 @@ export default class Banner extends Model {
     search: {
       label: '搜索词',
       type: String,
-      after: 'action',
       hidden: {
         action: {
           $ne: 'goods-list'

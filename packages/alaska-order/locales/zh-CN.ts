@@ -37,6 +37,7 @@ export default {
   'Total Amount': '总金额',
   'Pay Amount': '支付金额',
   'Payed Amount': '已支付',
+  'Refund Quantity': '退货数量',
   'Refund Amount': '退款金额',
   'Refunded Amount': '已退金额',
   'Refunded Quantity': '已退货数量',

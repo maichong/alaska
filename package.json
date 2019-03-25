@@ -124,7 +124,6 @@
     "@types/mongoose": "^5.3.23",
     "@types/node": "*",
     "@types/numeral": "0.0.25",
-    "@types/prop-types": "^15.7.0",
     "@types/qs": "^6.5.2",
     "@types/react": "*",
     "@types/react-dom": "^16.8.2",

@@ -17,7 +17,7 @@ declare module 'alaska' {
 declare module 'alaska-http' {
   export interface ContextState {
     superMode?: boolean;
-    adminApi?:string;
+    adminApi?: string;
   }
 }
 

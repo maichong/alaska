@@ -784,6 +784,18 @@ export interface EditorPageProps extends RouterProps<{
 }
 
 export interface EditorToolbarProps {
+  model: Model;
+  record: immutable.Immutable<Record>;
+  children?: any;
+  tab: string;
+  onChangeTab: (value: string) => void;
+}
+
+export interface EditorTabsProps {
+  model: Model;
+  record: immutable.Immutable<Record>;
+  value: string;
+  onChange: (value: string) => void;
 }
 
 export interface ErrorPageProps {
@@ -812,7 +824,7 @@ export interface HomePageProps {
 }
 
 export interface ListProps {
-  options: {
+  options?: {
     [key: string]: any;
   };
   activated?: immutable.Immutable<Record> | null;
@@ -899,7 +911,7 @@ export interface NavItemProps {
 }
 
 export interface NodeProps extends React.HTMLAttributes<any> {
-  tag?: string | false;
+  tag?: React.FunctionComponent<any> | React.ComponentClass<any> | string | false;
   wrapper: string;
   props: any;
   children: React.ReactNode;
@@ -932,6 +944,20 @@ export interface RelationshipProps {
   path: string;
   from: string;
   filters?: Filters;
+}
+
+export interface RelationshipPageProps {
+  model: Model;
+  relationship: ModelRelationship;
+  record: immutable.Immutable<Record>;
+}
+
+export interface RelationshipTabProps {
+  model: Model;
+  relationship: ModelRelationship;
+  active: boolean;
+  record: immutable.Immutable<Record>;
+  onClick: () => void;
 }
 
 export interface SearchFieldProps {

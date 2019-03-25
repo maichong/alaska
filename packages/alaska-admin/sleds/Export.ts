@@ -116,7 +116,11 @@ export default class Export extends Sled<ActionSledParams, any> {
                 value = optionsMap[value] || value;
               }
             } else if (field.type.fieldName === 'Datetime') {
-              value = moment(value).format(field.format);
+              if (value) {
+                value = moment(value).format(field.format);
+              } else {
+                value = '';
+              }
             } else if (record._ && record._[key] && record._[key].data) {
               value = record._[key].data();
             }

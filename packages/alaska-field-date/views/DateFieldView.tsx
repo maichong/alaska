@@ -1,21 +1,10 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import * as shallowEqualWithout from 'shallow-equal-without';
 import * as DateTime from 'react-datetime';
 import * as moment from 'moment';
 import { FieldViewProps } from 'alaska-admin-view';
 
 export default class DateFieldView extends React.Component<FieldViewProps> {
-  static contextTypes = {
-    settings: PropTypes.object
-  };
-
-  context: any;
-
-  componentDidMount() {
-    moment.locale(this.context.settings.locale);
-  }
-
   shouldComponentUpdate(props: FieldViewProps) {
     return !shallowEqualWithout(props, this.props, 'record', 'onChange', 'model');
   }
