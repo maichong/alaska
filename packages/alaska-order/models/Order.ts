@@ -429,13 +429,11 @@ export default class Order extends Model {
     userDeleted: {
       label: 'User Deleted',
       type: Boolean,
-      protected: true,
       hidden: true
     },
     adminDeleted: {
       label: 'Admin Deleted',
       type: Boolean,
-      private: true,
       hidden: true
     }
   };
