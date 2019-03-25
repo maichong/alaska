@@ -64,9 +64,9 @@ export default function (router: Router) {
 
     ctx.body = <>
       <Head>
-        test
         <title>{service.config.get('dashboardTitle')}</title>
         <meta name="viewport" content="initial-scale=0.8,maximum-scale=0.8,user-scalable=no" />
+        <meta name="renderer" content="webkit" />
         <style>{CSS}</style>
         <link rel="stylesheet" type="text/css" href={Path.join(prefix, `/app.css?${resourceVersion || cssHash}`)} />
         <script dangerouslySetInnerHTML={{ __html: `var PREFIX='${prefix}';` }}></script>
