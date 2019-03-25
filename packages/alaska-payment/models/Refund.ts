@@ -31,7 +31,7 @@ export default class Refund extends Model {
     },
     type: {
       label: 'Payment Type',
-      type: 'select',
+      type: 'select:payment',
       options: [] as any[],
       required: true
     },

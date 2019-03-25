@@ -96,7 +96,7 @@ export default class Recharge extends Model {
     },
     type: {
       label: 'Payment Type',
-      type: 'select',
+      type: 'select:payment',
       checkbox: true,
       default: 'manual',
       options: [{

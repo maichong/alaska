@@ -9,7 +9,7 @@ export default class RechargeRule extends Model {
   static fields = {
     payment: {
       label: 'Payment Type',
-      type: String,
+      type: 'select:payment',
       required: true
     },
     target: {

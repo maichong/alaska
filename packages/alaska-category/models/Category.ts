@@ -12,7 +12,6 @@ export default class Category extends Model {
   static defaultSort = 'parent -sort';
   static searchFields = 'title';
   static filterFields = 'group?switch parent activated @search';
-
   static api = {
     list: 1,
     paginate: 1
@@ -24,6 +23,11 @@ export default class Category extends Model {
       path: 'parent',
       title: 'Sub Categories',
       protected: true
+    },
+    goods: {
+      ref: 'alaska-goods.Goods',
+      optional: 'alaska-goods',
+      path: 'cats'
     }
   };
 

@@ -360,9 +360,11 @@ export default class Model {
         let relationships: ObjectMap<ModelRelationship> = {};
         if (model.relationships) {
           _.forEach(model.relationships, (r: ModelRelationship, key: string) => {
+            if (r.optional && !service.lookup(r.optional)) return;
             let Ref: string | typeof ModelType = r.ref || service.error(`${model.id}.relationships.${key}.ref is undefined`);
             if (typeof Ref === 'string') {
               Ref = model.lookup(<string>r.ref);
+              if (!Ref) service.error(`${model.id}.relationships.${key}.ref not found!`);
             }
             r.key = key;
             r.ref = Ref;

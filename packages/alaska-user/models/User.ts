@@ -18,6 +18,49 @@ export default class User extends Model {
     info: '*'
   };
 
+  static relationships = {
+    incomes: {
+      optional: 'alaska-income',
+      ref: 'alaska-income.Income',
+      path: 'user'
+    },
+    commissions: {
+      optional: 'alaska-commission',
+      ref: 'alaska-commission.Commission',
+      path: 'user'
+    },
+    withdraws: {
+      optional: 'alaska-withdraw',
+      ref: 'alaska-withdraw.Withdraw',
+      path: 'user'
+    },
+    addresses: {
+      optional: 'alaska-address',
+      ref: 'alaska-address.Address',
+      path: 'user'
+    },
+    orders: {
+      optional: 'alaska-order',
+      ref: 'alaska-order.Order',
+      path: 'user'
+    },
+    carts: {
+      optional: 'alaska-cart',
+      ref: 'alaska-cart.CartGoods',
+      path: 'user'
+    },
+    favorite: {
+      optional: 'alaska-favorite',
+      ref: 'alaska-favorite.Favorite',
+      path: 'user'
+    },
+    events: {
+      optional: 'alaska-event',
+      ref: 'alaska-event.Event',
+      path: 'user'
+    },
+  };
+
   static fields = {
     username: {
       label: 'Username',

@@ -56,7 +56,7 @@ export default class RelationshipTab extends React.Component<RelationshipTabProp
         props={this.props}
         onClick={onClick}
       >
-        {tr(title, model.serviceId)} <small>{total}</small>
+        {tr(title, model.serviceId)}<small>{total}</small>
       </Node>
     );
   }

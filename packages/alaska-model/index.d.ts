@@ -663,6 +663,7 @@ export interface ModelRelationship {
   populations?: ObjectMap<ModelPopulation>;
   protected?: boolean;
   hidden?: DependsQueryExpression | AbilityCheckGate[];
+  optional?: string;
 }
 
 export interface ModelPopulation {
@@ -778,7 +779,7 @@ interface FieldBase {
   minlength?: number;
   translate?: boolean;
   match?: RegExp;
-  // relationshiop
+  // relationship
   defaultField?: string;
   // number
   precision?: number | null;

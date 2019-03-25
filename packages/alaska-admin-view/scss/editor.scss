@@ -19,6 +19,9 @@
       margin-left: $content-space;
       color: $link-color;
       cursor: pointer;
+      &:hover {
+        border-bottom: 2px solid #aaa;
+      }
       &.active {
         border-bottom: 2px solid $link-color;
       }
