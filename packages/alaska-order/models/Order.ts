@@ -11,6 +11,7 @@ import { Address } from 'alaska-address/types';
 import service from '..';
 
 function defaultFilters(ctx: Context) {
+  if (ctx.state.apiAction === 'show' || ctx.state.adminApi === 'details') return null;
   let field = ctx.service.id === 'alaska-admin' ? 'adminDeleted' : 'userDeleted';
   return {
     [field]: {

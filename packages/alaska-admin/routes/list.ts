@@ -20,6 +20,7 @@ interface ListQuery {
 
 export default function (router: Router) {
   router.get('/list', async (ctx: Context) => {
+    ctx.state.adminApi = 'list';
     ctx.service = service;
     if (!ctx.state.ignoreAuthorization) {
       if (!await userService.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);

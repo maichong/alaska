@@ -6,6 +6,7 @@ import service from '..';
 
 export default function (router: Router) {
   router.post('/login', async (ctx: Context) => {
+    ctx.state.adminApi = 'login';
     ctx.service = service;
     const body: any = ctx.request.body || {};
     let username = body.username || service.error('Username is required');
@@ -16,6 +17,7 @@ export default function (router: Router) {
   });
 
   router.get('/logout', async (ctx) => {
+    ctx.state.adminApi = 'logout';
     ctx.service = service;
     await Logout.run({ ctx }, { dbSession: ctx.dbSession });
     ctx.body = {};

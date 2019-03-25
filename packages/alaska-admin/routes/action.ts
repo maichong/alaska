@@ -8,6 +8,7 @@ import service from '..';
 export default function (router: Router) {
   router.post('/action', async (ctx: Context) => {
     ctx.service = service;
+    ctx.state.adminApi = 'action';
     if (!ctx.state.ignoreAuthorization) {
       if (!await userService.hasAbility(ctx.user, 'admin')) service.error('Access Denied', 403);
     }
