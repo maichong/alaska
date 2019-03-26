@@ -19,6 +19,7 @@ export default class Create extends Sled<CreateParams, Payment> {
       payment.ip = '127.0.0.1';
     }
     payment.$session(this.dbSession);
+    await payment.save({ session: this.dbSession });
     payment.params = await paymentService.payments.get(payment.type).createParams(payment);
     await payment.save({ session: this.dbSession });
     return payment;

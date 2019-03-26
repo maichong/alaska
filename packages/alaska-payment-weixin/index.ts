@@ -7,7 +7,7 @@ import { PaymentPlugin, PaymentService } from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 import Refund from 'alaska-payment/models/Refund';
 import User from 'alaska-user/models/User';
-import { md5, sha256, data2xml, xml2data, toQueryString } from './utils';
+import { md5, sha256, data2xml, xml2data, toQueryString, substr } from './utils';
 import { WeixinPaymentOptions, UnifiedOrderReq, UnifiedOrderRes, PayParams, AppPayParams } from '.';
 
 const client = akita.create({});
@@ -64,7 +64,7 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
 
     let order = await this.unifiedorder({
       openid,
-      body: payment.title,
+      body: substr(payment.title, 128),
       out_trade_no: payment.id,
       spbill_create_ip: payment.ip,
       total_fee: _.round(payment.amount * 100),
@@ -193,7 +193,7 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
         partnerId: options.mch_id,
         prepayId: data.prepay_id,
         package: 'Sign=WXPay',
-        nonceStr: req.nonceStr,
+        nonceStr: req.noncestr,
         timeStamp: req.timestamp,
         sign: this._getSign(req, options)
       }
