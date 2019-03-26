@@ -62,7 +62,7 @@ export function xml2data(xml: string | Buffer): Promise<any> {
 export function substr(str: string, length: number) {
   let result = '';
   let len = 0;
-  for (let i = 0; i <= str.length; i++) {
+  for (let i = 0; i < str.length; i++) {
     let code = str.charCodeAt(i);
     if (code >= 0 && code <= 128) {
       len += 1
