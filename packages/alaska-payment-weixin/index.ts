@@ -8,7 +8,7 @@ import Payment from 'alaska-payment/models/Payment';
 import Refund from 'alaska-payment/models/Refund';
 import User from 'alaska-user/models/User';
 import { md5, sha256, data2xml, xml2data, toQueryString } from './utils';
-import { WeixinPaymentOptions, UnifiedOrderReq, UnifiedOrderRes, PayParams } from '.';
+import { WeixinPaymentOptions, UnifiedOrderReq, UnifiedOrderRes, PayParams, AppPayParams } from '.';
 
 const client = akita.create({});
 
@@ -178,20 +178,41 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
     return json;
   }
 
-  _getPayParamsByPrepay(data: UnifiedOrderRes, options: WeixinPaymentOptions): PayParams {
-    let pkg: PayParams = {
+  _getPayParamsByPrepay(data: UnifiedOrderRes, options: WeixinPaymentOptions): PayParams | AppPayParams {
+    if (options.channel === 'app') {
+      let req: any = {
+        appid: options.appid,
+        noncestr: stringRandom(),
+        package: 'Sign=WXPay',
+        partnerid: options.mch_id,
+        prepayid: data.prepay_id,
+        timestamp: Date.now() / 1000 | 0
+      };
+      return {
+        appId: options.appid,
+        partnerId: options.mch_id,
+        prepayId: data.prepay_id,
+        package: 'Sign=WXPay',
+        nonceStr: req.nonceStr,
+        timeStamp: req.timestamp,
+        sign: this._getSign(req, options)
+      }
+    }
+
+    let params: PayParams;
+    params = {
       appId: data.appid,
       timeStamp: String((Date.now() / 1000 | 0)),
       nonceStr: stringRandom(),
       package: `prepay_id=${data.prepay_id}`,
       signType: options.sign_type || 'MD5'
     };
-    pkg.paySign = this._getSign(pkg, options);
-    delete pkg.appId;
+    params.paySign = this._getSign(params, options);
+    delete params.appId;
     if (options.channel === 'jssdk') {
-      pkg.timestamp = pkg.timeStamp;
+      params.timestamp = params.timeStamp;
     }
-    return pkg;
+    return params;
   }
 
   _getTradeType(channel: string): string {

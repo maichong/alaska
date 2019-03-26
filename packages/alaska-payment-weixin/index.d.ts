@@ -91,6 +91,16 @@ export interface UnifiedOrderRes {
   trade_type: string;
 }
 
+export interface AppPayParams {
+  appId: string;
+  partnerId: string;
+  prepayId: string;
+  package: 'Sign=WXPay';
+  nonceStr: string;
+  timeStamp: number;
+  sign: string;
+}
+
 export interface PayParams {
   appId?: string;
   timeStamp: string;

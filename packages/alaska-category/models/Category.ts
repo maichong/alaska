@@ -11,7 +11,7 @@ export default class Category extends Model {
   static defaultColumns = '_id group parent title icon pic activated sort createdAt';
   static defaultSort = 'parent -sort';
   static searchFields = 'title';
-  static filterFields = 'group?switch parent activated @search';
+  static filterFields = 'group?switch&nolabel parent activated @search';
   static api = {
     list: 1,
     paginate: 1
