@@ -1,0 +1,76 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const pathToRegexp = require("path-to-regexp");
+function default_1(options) {
+    const ignoreMethods = options.ignoreMethods || [];
+    let ignores = null;
+    function convert(input) {
+        if (typeof input === 'string') {
+            ignores.push(pathToRegexp(input));
+        }
+        else if (input instanceof RegExp || typeof input === 'function') {
+            ignores.push(input);
+        }
+        else {
+            throw new Error(`Invalid transaction ignore option: ${String(input)}`);
+        }
+    }
+    if (options.ignore) {
+        ignores = [];
+        if (Array.isArray(options.ignore)) {
+            options.ignore.forEach(convert);
+        }
+        else {
+            convert(options.ignore);
+        }
+    }
+    return async function transactionMiddleware(ctx, next) {
+        function initSession() {
+            if (ignoreMethods.includes(ctx.method)) {
+                return false;
+            }
+            if (ignores) {
+                for (let reg of ignores) {
+                    if ((reg instanceof RegExp && reg.test(ctx.path))
+                        || (typeof reg === 'function' && reg(ctx.path, ctx))) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        if (initSession()) {
+            ctx.dbSession = await ctx.service.db.startSession();
+            await ctx.dbSession.startTransaction();
+        }
+        try {
+            await next();
+        }
+        catch (error) {
+            if (!ctx.dbSession)
+                throw error;
+            if (ctx.dbSession.inTransaction()) {
+                await ctx.dbSession.abortTransaction();
+            }
+            if (error.errorLabels && error.errorLabels.indexOf('TransientTransactionError') >= 0) {
+                ctx.body = null;
+                ctx.throw(503);
+            }
+            else {
+                throw error;
+            }
+        }
+        if (!ctx.dbSession)
+            return;
+        if (!ctx.dbSession.inTransaction())
+            return;
+        try {
+            await ctx.dbSession.commitTransaction();
+        }
+        catch (error) {
+            ctx.body = null;
+            ctx.throw(503);
+        }
+    };
+}
+exports.default = default_1;

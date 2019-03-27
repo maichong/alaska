@@ -65,12 +65,12 @@ export function substr(str: string, length: number) {
   for (let i = 0; i < str.length; i++) {
     let code = str.charCodeAt(i);
     if (code >= 0 && code <= 128) {
-      len += 1
+      len += 1;
     } else {
       len += 2;
     }
     if (len + 3 > length) {
-      return result + '...';
+      return `${result}...`;
     }
     result += str[i];
   }

@@ -196,7 +196,7 @@ export default class WeixinPaymentPlugin extends PaymentPlugin {
         nonceStr: req.noncestr,
         timeStamp: req.timestamp,
         sign: this._getSign(req, options)
-      }
+      };
     }
 
     let params: PayParams;

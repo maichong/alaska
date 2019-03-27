@@ -1,0 +1,27 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = {
+    Goods: '商品',
+    'Goods List': '商品列表',
+    Pictures: '图片',
+    'Main Picture': '主图',
+    Recommend: '推荐',
+    'Is Hot Goods': '热门商品',
+    Brief: '摘要',
+    Activated: '上架',
+    Price: '价格',
+    Discount: '打折价',
+    '0 for no discount': '为0不打折',
+    'Discount Start': '打折开始',
+    'Discount End': '打折结束',
+    Shipping: '运费',
+    Inventory: '库存',
+    Volume: '销量',
+    Initial: '首字母',
+    'Goods not found': '商品未找到',
+    'Goods have been sold out': '商品已售完',
+    'Goods is not activated': '商品已下架',
+    'Inventory shortage': '库存不足',
+    'Shipping Share Limit': '运费共享限制',
+    shippingShareLimit_help: '为0不限制（不累加、只收一份运费），否则每购买x件收取一份运费',
+};

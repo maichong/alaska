@@ -4,8 +4,6 @@ node_modules
 temp/
 package-lock.json
 .history
-packages/**/*.js
-!packages/alaska-admin-ueditor/ueditor/**/*.js
 dist
 backup
 public
