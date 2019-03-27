@@ -46,8 +46,6 @@ export async function pre() {
 
   // 生成 OrderGoods 列表
   let orderItems: OrderGoods[] = [];
-
-  let quantityByGoods: Map<string, number> = new Map();
   let goodsMap: Map<string, Goods> = new Map();
 
   for (let g of gids) {
@@ -57,10 +55,6 @@ export async function pre() {
     if (!goods.activated) orderService.error('Goods is not activated');
 
     goodsMap.set(goods.id, goods);
-    // @ts-ignore parseInt number
-    let quantity = parseInt(g.quantity) || 1;
-    let qty = quantityByGoods.get(goods.id) || 0;
-    quantityByGoods.set(goods.id, qty + quantity);
 
     let discountValid = goods.discountValid;
     let item = new OrderGoods({
@@ -74,7 +68,8 @@ export async function pre() {
       price: goods.price,
       shipping: goods.shipping || 0,
       discount: discountValid ? goods.discount : 0,
-      quantity
+      // @ts-ignore parseInt number
+      quantity: parseInt(g.quantity) || 1
     });
 
     let sku: Sku;
@@ -143,6 +138,15 @@ export async function pre() {
     if (order.type !== 'goods') return;
     let shipping = 0;
     let total = 0;
+
+    let quantityByGoods: Map<string, number> = new Map();
+
+    for (let item of order.goods) {
+      // @ts-ignore parseInt number
+      let quantity = parseInt(item.quantity) || 1;
+      let qty = quantityByGoods.get(item.id) || 0;
+      quantityByGoods.set(String(item.goods), qty + quantity);
+    }
 
     for (let [goodsId, qty] of quantityByGoods) {
       let goods = goodsMap.get(goodsId);
