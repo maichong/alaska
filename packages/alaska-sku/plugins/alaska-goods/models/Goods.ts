@@ -45,6 +45,14 @@ export default {
       }
 
       record.set(sku);
+
+      let pic = sku.pic;
+      if (!pic || (typeof pic === 'object' && !pic.user)) {
+        pic = this.pic;
+        sku.pic = pic;
+      }
+      record.set('pic', pic);
+
       record.save({ session: dbSession });
       inventory += sku.inventory;
       volume += sku.volume;
