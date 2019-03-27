@@ -259,27 +259,32 @@ export default class Order extends Model {
     shipping: {
       // 邮费,不包含在total中,由各个OrderItem.shipping相加
       label: 'Shipping',
-      type: 'money'
+      type: 'money',
+      min: 0
     },
     total: {
       // 由各个OrderItem.total相加而得,不包含邮费
       label: 'Total Amount',
-      type: 'money'
+      type: 'money',
+      min: 0
     },
     deduction: {
       // 抵扣金额
       label: 'Deduction',
-      type: 'money'
+      type: 'money',
+      min: 0
     },
     pay: {
       // 需要支付的金额 = total + shipping - deduction
       label: 'Pay Amount',
       type: 'money',
+      min: 0,
       disabled: true
     },
     payed: {
       label: 'Payed Amount',
-      type: 'money'
+      type: 'money',
+      min: 0
     },
     deductionCurrency: {
       // 抵扣的货币，比如积分
@@ -299,7 +304,8 @@ export default class Order extends Model {
       label: 'Deduction Amount',
       type: 'money',
       currencyField: 'deductionCurrency',
-      hidden: '!deductionAmount'
+      hidden: '!deductionAmount',
+      min: 0
     },
     payment: {
       label: 'Payment',
@@ -309,11 +315,13 @@ export default class Order extends Model {
     refundedAmount: {
       label: 'Refunded Amount',
       type: 'money',
+      min: 0,
       hidden: '!refundedAmount'
     },
     refundedQuantity: {
       label: 'Refunded Quantity',
       type: Number,
+      min: 0,
       hidden: '!refundedQuantity'
     },
     refundExpressCode: {
@@ -329,22 +337,26 @@ export default class Order extends Model {
     refundAmount: {
       label: 'Refund Amount',
       type: 'money',
+      min: 0,
       hidden: '!refundAmount'
     },
     refundQuantity: {
       label: 'Refund Quantity',
       type: Number,
+      min: 0,
       hidden: '!refundQuantity'
     },
     lastRefundAmount: {
       label: 'Last Refund Amount',
       type: 'money',
+      min: 0,
       hidden: true,
       disabled: true
     },
     lastRefundQuantity: {
       label: 'Last Refund Quantity',
       type: Number,
+      min: 0,
       hidden: true,
       disabled: true
     },

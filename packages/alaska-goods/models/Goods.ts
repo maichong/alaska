@@ -153,6 +153,7 @@ export default class Goods extends Model {
       label: 'Price',
       type: 'money',
       group: 'price',
+      min: 0,
       disabled: {
         'skus.length': {
           $gt: 0
@@ -164,6 +165,7 @@ export default class Goods extends Model {
       type: 'money',
       help: '0 for no discount',
       group: 'price',
+      min: 0,
       disabled: {
         'skus.length': {
           $gt: 0
@@ -184,12 +186,14 @@ export default class Goods extends Model {
       label: 'Shipping',
       type: 'money',
       group: 'price',
+      min: 0,
       default: 0
     },
     shippingShareLimit: {
       label: 'Shipping Share Limit',
       type: Number,
       precision: 0,
+      min: 0,
       default: 1,
       group: 'price',
       hidden: '!shipping',
@@ -198,6 +202,7 @@ export default class Goods extends Model {
     inventory: {
       label: 'Inventory',
       type: Number,
+      min: 0,
       default: 0,
       group: 'inventory',
       disabled: {
@@ -210,6 +215,7 @@ export default class Goods extends Model {
       label: 'Volume',
       type: Number,
       default: 0,
+      min: 0,
       group: 'inventory',
       disabled: {
         'skus.length': {
@@ -231,6 +237,7 @@ export default class Goods extends Model {
       label: 'Comments Count',
       type: Number,
       default: 0,
+      min: 0,
       optional: 'alaska-comment'
     },
     desc: {

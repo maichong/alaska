@@ -62,6 +62,12 @@ export default class NumberFieldView extends React.Component<FieldViewProps, Sta
     if (_.isNaN(unfomarted)) {
       unfomarted = 0;
     }
+    if (typeof field.min === 'number' && field.min > unfomarted) {
+      unfomarted = field.min;
+    }
+    if (typeof field.max === 'number' && field.max < unfomarted) {
+      unfomarted = field.max;
+    }
     if (field.format) {
       this.setState({ display: numeral(unfomarted).format(field.format) });
     } else {

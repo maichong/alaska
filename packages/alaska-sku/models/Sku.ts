@@ -49,21 +49,25 @@ export default class Sku extends Model {
     },
     price: {
       label: 'Price',
-      type: 'money'
+      type: 'money',
+      min: 0
     },
     discount: {
       label: 'Discount',
-      type: 'money'
+      type: 'money',
+      min: 0
     },
     inventory: {
       label: 'Inventory',
       type: Number,
+      min: 0,
       default: 0
     },
     volume: {
       label: 'Volume',
       type: Number,
       default: 0,
+      min: 0,
       protected: true
     },
     props: {

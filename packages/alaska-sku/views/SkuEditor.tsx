@@ -189,7 +189,7 @@ class SkuItem extends React.Component<SkuItemProps, SkuItemState> {
     const { opened } = this.state;
     let thumbUrl = '';
     if (value.pic) {
-      thumbUrl = value.pic.thumbUrl;
+      thumbUrl = value.pic.thumbUrl || value.pic.url;
     }
     let CreateInventoryModal = views.components['CreateInventoryModal'];
     let inventoryBtn;
