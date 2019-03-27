@@ -79,30 +79,50 @@ export default class ImageField extends Field {
     addPath('width', Number);
     addPath('height', Number);
 
-    let options = {
-      type: new mongoose.Schema(paths),
-      set(value: Image | string | string[] | Image[]) {
-        if (typeof value === 'string') {
-          if (field.multi) {
-            return [{ _id: new ObjectId(), url: value }];
-          }
-          return { _id: new ObjectId(), url: value };
-        }
-        if (Array.isArray(value) && field.multi) {
-          return (value as Array<Image | string>).map((img: Image | string) => {
-            if (typeof img === 'string') {
-              return { _id: new ObjectId(), url: img };
-            }
-            return img;
-          });
-        }
-        return value;
-      }
-    };
+    let imageSchema = new mongoose.Schema(paths);
 
-    schema.add({
-      [field.path]: field.multi ? [options] : options,
-    }, '');
+    function stringToImage(value: string) {
+      let matchs = String(value).match(/([a-f0-9]{24})/);
+      let id = matchs ? matchs[1] : null;
+      return { _id: new ObjectId(id), url: value };
+    }
+
+    if (field.multi) {
+      schema.add({
+        [field.path]: {
+          type: [imageSchema],
+          set(value: Image | string | string[] | Image[]) {
+            if (typeof value === 'string') {
+              return [stringToImage(value)];
+            }
+            if (Array.isArray(value)) {
+              return (value as Array<Image | string>).map((img: Image | string) => {
+                if (typeof img === 'string') {
+                  return stringToImage(img);
+                }
+                return img;
+              });
+            }
+            return value;
+          }
+        }
+      });
+    } else {
+      schema.add({
+        [field.path]: {
+          type: imageSchema,
+          set(value: Image | string | string[] | Image[]) {
+            if (Array.isArray(value)) {
+              value = value[0] || null;
+            }
+            if (typeof value === 'string') {
+              return stringToImage(value);
+            }
+            return value;
+          }
+        }
+      }, '');
+    }
 
     this.underscoreMethod('data', function () {
       const value = this.get(field.path);
