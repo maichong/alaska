@@ -90,7 +90,9 @@ export async function pre() {
       item.skuKey = sku.key;
       item.skuDesc = sku.desc;
       if (sku.pic) {
-        item.pic = sku.pic;
+        if (typeof sku.pic === 'string' || sku.pic.url) {
+          item.pic = sku.pic;
+        }
       }
       // SKU 库存不足
       if (item.quantity > sku.inventory) orderService.error('Inventory shortage');

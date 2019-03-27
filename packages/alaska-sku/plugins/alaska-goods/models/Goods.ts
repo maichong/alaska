@@ -28,6 +28,10 @@ export default {
     let price = 0;
     let discount = 0;
     this.discount = 0;
+    let defaultPic = this.pic;
+    if (!defaultPic || (typeof defaultPic === 'object' && !defaultPic.url) && this.pics) {
+      defaultPic = this.pics[0];
+    }
     for (let sku of this.skus) {
       let record = skusMap[sku.key];
       if (!record) {
@@ -47,8 +51,8 @@ export default {
       record.set(sku);
 
       let pic = sku.pic;
-      if (!pic || (typeof pic === 'object' && !pic.user)) {
-        pic = this.pic;
+      if (!pic || (typeof pic === 'object' && !pic.url)) {
+        pic = defaultPic;
         sku.pic = pic;
       }
       record.set('pic', pic);

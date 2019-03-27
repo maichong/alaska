@@ -64,7 +64,12 @@ export default class Create extends Sled<CreateParams, CartGoods> {
       // 最大库存
       record.quantity = inventory;
     }
-    record.pic = sku && sku.pic ? sku.pic : goods.pic;
+    record.pic = goods.pic;
+    if (sku && sku.pic) {
+      if (typeof sku.pic === 'string' || sku.pic.url) {
+        record.pic = sku.pic;
+      }
+    }
     record.title = goods.title;
     record.shop = goods.shop;
     record.currency = goods.currency;
