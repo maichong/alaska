@@ -1,9 +1,10 @@
 import { ObjectMap } from 'alaska';
 import { Field } from 'alaska-model';
 import * as mongoose from 'mongoose';
-import { Image } from '.';
 import * as AdminView from 'alaska-admin-view';
 import { ImageService } from 'alaska-image';
+import ImageModel from 'alaska-image/models/Image';
+import { Image } from '.';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -129,32 +130,16 @@ export default class ImageField extends Field {
     }
 
     if (imageService) {
-      schema.pre('validate', async function (next: Function) {
-        let record = this;
-        let value = record.get(field.path);
-        if (!value || !value._id || value.thumbUrl || value.name) {
+      imageSchema.pre('validate', async function (next: Function) {
+        // @ts-ignore
+        let doc: ImageModel = this;
+        if (!doc._id || !doc.url || doc.name || doc.thumbUrl) {
           next();
           return;
         }
-        if (field.multi) {
-          for (let img of value) {
-            if (!img._id || img.thumbUrl || img.name) continue;
-            let image = await imageService.getImage(value._id);
-            if (image && image.url === value.url) {
-              img.set(image.toObject());
-              this.markModified(field.path);
-            }
-          }
-        } else {
-          if (!value._id || value.thumbUrl || value.name) {
-            next();
-            return;
-          }
-          let image = await imageService.getImage(value._id);
-          if (image && image.url === value.url) {
-            value.set(image.toObject());
-            // this.markModified(field.path);
-          }
+        let img = await imageService.getImage(doc._id);
+        if (img && img.url === doc.url) {
+          doc.set(img.toObject());
         }
         next();
       });

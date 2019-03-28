@@ -3,6 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = {
     cache: {
         type: 'alaska-cache-lru',
-        max: 1000
+        max: 2000
     }
 };

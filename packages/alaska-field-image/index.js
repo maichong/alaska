@@ -81,33 +81,15 @@ class ImageField extends alaska_model_1.Field {
             }, '');
         }
         if (imageService) {
-            schema.pre('validate', async function (next) {
-                let record = this;
-                let value = record.get(field.path);
-                if (!value || !value._id || value.thumbUrl || value.name) {
+            imageSchema.pre('validate', async function (next) {
+                let doc = this;
+                if (!doc._id || !doc.url || doc.name || doc.thumbUrl) {
                     next();
                     return;
                 }
-                if (field.multi) {
-                    for (let img of value) {
-                        if (!img._id || img.thumbUrl || img.name)
-                            continue;
-                        let image = await imageService.getImage(value._id);
-                        if (image && image.url === value.url) {
-                            img.set(image.toObject());
-                            this.markModified(field.path);
-                        }
-                    }
-                }
-                else {
-                    if (!value._id || value.thumbUrl || value.name) {
-                        next();
-                        return;
-                    }
-                    let image = await imageService.getImage(value._id);
-                    if (image && image.url === value.url) {
-                        value.set(image.toObject());
-                    }
+                let img = await imageService.getImage(doc._id);
+                if (img && img.url === doc.url) {
+                    doc.set(img.toObject());
                 }
                 next();
             });

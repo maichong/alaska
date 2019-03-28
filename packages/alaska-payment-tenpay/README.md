@@ -9,7 +9,7 @@ Tenpay plugin for alaska.
 // config/alaska-payment.js
 import path from 'path';
 
-export defualt {
+export default {
   plugins: ['alaska-payment-tenpay'],
   tenpay: {
     appid: '公众号ID',

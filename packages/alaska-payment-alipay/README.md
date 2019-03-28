@@ -9,7 +9,7 @@ Alipay plugin for alaska.
 // config/alaska-payment.js
 import * as Path from 'path';
 
-export defualt {
+export default {
   plugins: ['alaska-payment-alipay'],
   alipay: {
     partner: '2088000000000000',
