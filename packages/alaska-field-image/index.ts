@@ -19,8 +19,8 @@ export default class ImageField extends Field {
 
   static viewOptions = ['multi', 'max', (options: AdminView.Field, field: ImageField) => {
     if (options.disabled === true) return;
-    let main = field._model.service.main;
-    let imageService = main.allServices.get('alaska-image') as ImageService;
+    let service = field._model.service;
+    let imageService = service.lookup('alaska-image') as ImageService;
     if (imageService) {
       let driver = field.driver || 'default';
       let driverConfig = imageService.drivers[driver];
@@ -51,8 +51,7 @@ export default class ImageField extends Field {
     const schema = this._schema;
     const defaultValue = field.default || {};
 
-    let main = field._model.service.main;
-    let imageService = main.allServices.get('alaska-image') as ImageService;
+    const imageService = field._model.service.lookup('alaska-image') as ImageService;
     if (imageService) {
       let driver = field.driver || 'default';
       if (!imageService.drivers.hasOwnProperty(driver)) throw new Error('Image storage driver not found!');
@@ -116,12 +115,49 @@ export default class ImageField extends Field {
               value = value[0] || null;
             }
             if (typeof value === 'string') {
-              return stringToImage(value);
+              // @ts-ignore
+              value = stringToImage(value);
             }
-            return value;
+            // @ts-ignore
+            if (value && typeof value === 'object' && value._doc) value = value._doc;
+            if (!this[field.path]) return value;
+            this[field.path].set(value);
+            return this[field.path];
           }
         }
       }, '');
+    }
+
+    if (imageService) {
+      schema.pre('validate', async function (next: Function) {
+        let record = this;
+        let value = record.get(field.path);
+        if (!value || !value._id || value.thumbUrl || value.name) {
+          next();
+          return;
+        }
+        if (field.multi) {
+          for (let img of value) {
+            if (!img._id || img.thumbUrl || img.name) continue;
+            let image = await imageService.getImage(value._id);
+            if (image && image.url === value.url) {
+              img.set(image.toObject());
+              this.markModified(field.path);
+            }
+          }
+        } else {
+          if (!value._id || value.thumbUrl || value.name) {
+            next();
+            return;
+          }
+          let image = await imageService.getImage(value._id);
+          if (image && image.url === value.url) {
+            value.set(image.toObject());
+            // this.markModified(field.path);
+          }
+        }
+        next();
+      });
     }
 
     this.underscoreMethod('data', function () {

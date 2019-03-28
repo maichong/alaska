@@ -6,7 +6,7 @@ async function create(ctx) {
     let body = ctx.state.body || ctx.request.body || {};
     if (!ctx.state.ignoreAuthorization) {
         let ability = 'alaska-image.Image.create';
-        const userService = __1.default.main.allServices.get('alaska-user');
+        const userService = __1.default.lookup('alaska-user');
         if (userService && !await userService.hasAbility(ctx.user, ability))
             ctx.throw(ctx.user ? 403 : 401);
         body.user = ctx.user._id;

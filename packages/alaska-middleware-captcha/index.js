@@ -18,7 +18,7 @@ function default_1(options, main) {
             throw new Error(`Missing config [middlewares.alaska-middleware-captcha.paths[${path}].to]`);
     });
     return async function (ctx, next) {
-        if (!main.allServices.get('alaska-captcha')) {
+        if (!main.lookup('alaska-captcha')) {
             await next();
             return;
         }

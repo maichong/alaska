@@ -36,7 +36,7 @@ class Service {
         return _main.allServices.get(id) || null;
     }
     lookup(id) {
-        return this.main.allServices.get(id) || null;
+        return _main.allServices.get(id) || null;
     }
     isMain() {
         return this.main === this;

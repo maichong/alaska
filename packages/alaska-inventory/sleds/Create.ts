@@ -8,7 +8,7 @@ import { SkuService, Sku } from 'alaska-sku';
 
 let skuService: SkuService;
 service.resolveConfig().then(() => {
-  skuService = service.main.allServices.get('alaska-sku') as SkuService;
+  skuService = service.lookup('alaska-sku') as SkuService;
 });
 
 async function doInput(body: ParamsBody, session: mongodb.ClientSession): Promise<Inventory> {

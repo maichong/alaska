@@ -26,20 +26,18 @@ class Send extends alaska_sled_1.Sled {
         values.code = code;
         let cacheKey = `captcha:${id}:${to}`;
         CACHE.set(cacheKey, code, captcha.lifetime * 1000 || 1800 * 1000);
-        if (captcha.type === 'sms' && captcha.sms
-            && __1.default.main && __1.default.main.allServices.get('alaska-sms')) {
-            let SMS = __1.default.main.allServices.get('alaska-sms');
-            await SMS.sleds.Send.run({
+        const smsService = __1.default.lookup('alaska-sms');
+        const emailService = __1.default.lookup('alaska-email');
+        if (captcha.type === 'sms' && captcha.sms && smsService) {
+            await smsService.sleds.Send.run({
                 to,
                 sms: captcha.sms,
                 locale,
                 values
             }, { dbSession: this.dbSession });
         }
-        else if (captcha.type === 'email' && captcha.email
-            && __1.default.main && __1.default.main.allServices.get('alaska-email')) {
-            let EMAIL = __1.default.main.allServices.get('alaska-email');
-            await EMAIL.sleds.Send.run({
+        else if (captcha.type === 'email' && captcha.email && emailService) {
+            await emailService.sleds.Send.run({
                 to,
                 email: captcha.email,
                 locale,

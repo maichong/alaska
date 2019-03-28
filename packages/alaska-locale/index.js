@@ -73,7 +73,7 @@ class LocaleExtension extends alaska_1.Extension {
                 });
             });
         }
-        const adminService = main.allServices.get('alaska-admin');
+        const adminService = main.lookup('alaska-admin');
         if (adminService) {
             adminService.pre('settings', (settings) => {
                 _.forEach(main.modules.services, (s) => {

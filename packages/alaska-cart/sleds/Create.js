@@ -6,7 +6,7 @@ const CartGoods_1 = require("../models/CartGoods");
 const alaska_cart_1 = require("alaska-cart");
 let skuService;
 alaska_cart_1.default.resolveConfig().then(() => {
-    skuService = alaska_cart_1.default.main.allServices.get('alaska-sku');
+    skuService = alaska_cart_1.default.lookup('alaska-sku');
 });
 class Create extends alaska_sled_1.Sled {
     async exec(params) {

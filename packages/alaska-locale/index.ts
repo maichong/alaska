@@ -91,7 +91,7 @@ export default class LocaleExtension extends Extension {
       });
     }
 
-    const adminService = main.allServices.get('alaska-admin') as AdminService;
+    const adminService = main.lookup('alaska-admin') as AdminService;
     if (adminService) {
       adminService.pre('settings', (settings: Settings) => {
         _.forEach(main.modules.services, (s: ServiceModules) => {

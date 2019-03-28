@@ -20,12 +20,12 @@ interface Params extends CreateParams {
 
 let skuService: SkuService;
 orderService.resolveConfig().then(() => {
-  skuService = orderService.main.allServices.get('alaska-sku') as SkuService;
+  skuService = orderService.lookup('alaska-sku') as SkuService;
 });
 
 let cartService: CartService;
 orderService.resolveConfig().then(() => {
-  cartService = orderService.main.allServices.get('alaska-cart') as CartService;
+  cartService = orderService.lookup('alaska-cart') as CartService;
 });
 
 export async function pre() {

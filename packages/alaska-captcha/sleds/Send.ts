@@ -39,19 +39,18 @@ export default class Send extends Sled<SendParams, void> {
     let cacheKey = `captcha:${id}:${to}`;
     CACHE.set(cacheKey, code, captcha.lifetime * 1000 || 1800 * 1000);
 
-    if (captcha.type === 'sms' && captcha.sms
-      && service.main && service.main.allServices.get('alaska-sms')) {
-      let SMS = service.main.allServices.get('alaska-sms') as SmsService;
-      await SMS.sleds.Send.run({
+    const smsService = service.lookup('alaska-sms') as SmsService;
+    const emailService = service.lookup('alaska-email') as EmailService;
+
+    if (captcha.type === 'sms' && captcha.sms && smsService) {
+      await smsService.sleds.Send.run({
         to,
         sms: captcha.sms,
         locale,
         values
       }, { dbSession: this.dbSession });
-    } else if (captcha.type === 'email' && captcha.email
-      && service.main && service.main.allServices.get('alaska-email')) {
-      let EMAIL = service.main.allServices.get('alaska-email') as EmailService;
-      await EMAIL.sleds.Send.run({
+    } else if (captcha.type === 'email' && captcha.email && emailService) {
+      await emailService.sleds.Send.run({
         to,
         email: captcha.email,
         locale,

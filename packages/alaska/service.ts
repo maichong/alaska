@@ -63,7 +63,7 @@ export default class Service {
   }
 
   lookup(id: string): ServiceType | null {
-    return this.main.allServices.get(id) || null;
+    return _main.allServices.get(id) || null;
   }
 
   isMain(): boolean {

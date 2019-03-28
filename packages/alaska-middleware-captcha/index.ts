@@ -19,7 +19,7 @@ export default function (options: CaptchaMiddlewareOptions, main: MainService): 
     if (!info.to) throw new Error(`Missing config [middlewares.alaska-middleware-captcha.paths[${path}].to]`);
   });
   return async function (ctx: Context, next: Function): Promise<void> {
-    if (!main.allServices.get('alaska-captcha')) {
+    if (!main.lookup('alaska-captcha')) {
       await next();
       return;
     }

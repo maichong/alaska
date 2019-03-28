@@ -6,7 +6,7 @@ const alaska_field_number_1 = require("alaska-field-number");
 class MoneyField extends alaska_field_number_1.default {
     init() {
         const field = this;
-        const currencyService = field._model.service.main.allServices.get('alaska-currency');
+        const currencyService = field._model.service.lookup('alaska-currency');
         if (!currencyService) {
             alaska_field_number_1.default.prototype.init.call(this);
             return;

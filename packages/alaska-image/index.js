@@ -1,13 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const alaska_1 = require("alaska");
 const _ = require("lodash");
 const FSD = require("fsd");
+const alaska_1 = require("alaska");
+const Image_1 = require("./models/Image");
 class ImageService extends alaska_1.Service {
     constructor(options) {
         super(options);
         this.drivers = {};
         this.resolveConfig().then(() => {
+            this.cache = this.createDriver(this.config.get('cache'));
             try {
                 let configs = this.config.get('drivers');
                 if (!configs)
@@ -37,6 +39,22 @@ class ImageService extends alaska_1.Service {
                 process.exit(1);
             }
         });
+    }
+    async getImage(id) {
+        let idStr = String(id);
+        let cache = await this.cache.get(idStr);
+        if (cache === false)
+            return null;
+        if (cache)
+            return cache;
+        try {
+            cache = await Image_1.default.findById(id);
+        }
+        catch (e) { }
+        if (!cache)
+            cache = false;
+        this.cache.set(idStr, cache);
+        return cache ? cache : null;
     }
 }
 exports.default = new ImageService({

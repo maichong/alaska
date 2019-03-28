@@ -18,7 +18,7 @@ class Create extends alaska_sled_1.Sled {
         let target = 'account';
         if (deposit) {
             target = 'deposit';
-            let depositService = __1.default.main.allServices.get('alaska-deposit');
+            let depositService = __1.default.lookup('alaska-deposit');
             if (!depositService)
                 throw new Error('Deposit service not found!');
             depositRecord = await depositService.models.Deposit.findById(deposit).where({ user: user._id }).session(this.dbSession);
@@ -35,7 +35,7 @@ class Create extends alaska_sled_1.Sled {
             currency = User_1.default._fields[account].currency;
             balance = (user.get(account) + amount) || 0;
         }
-        let currencyService = __1.default.main.allServices.get('alaska-currency');
+        let currencyService = __1.default.lookup('alaska-currency');
         if (currencyService) {
             if (!currency)
                 currency = currencyService.defaultCurrencyId;

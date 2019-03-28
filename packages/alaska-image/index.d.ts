@@ -15,6 +15,8 @@ export class ImageService extends Service {
   sleds: {
     Create: typeof Create;
   };
+
+  getImage(id: RecordId): Promise<Image | null>;
 }
 
 declare const imageService: ImageService;

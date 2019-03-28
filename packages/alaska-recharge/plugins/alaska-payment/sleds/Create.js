@@ -20,7 +20,7 @@ async function pre() {
         alaska_payment_1.default.error('Invalid amount!');
     let account = params.account || '';
     let deposit = params.deposit;
-    let currencyService = alaska_payment_1.default.main.allServices.get('alaska-currency');
+    let currencyService = alaska_payment_1.default.lookup('alaska-currency');
     let depositRecord;
     let rechargePrecision;
     let rechargeCurrency;

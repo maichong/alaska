@@ -13,8 +13,7 @@ class ImageLinkField extends alaska_field_image_1.default {
             this.plain = String;
             this.plainName = 'string';
         }
-        let main = field._model.service.main;
-        let imageService = main.allServices.get('alaska-image');
+        let imageService = field._model.service.lookup('alaska-image');
         if (imageService) {
             let driver = field.driver || 'default';
             if (!imageService.drivers.hasOwnProperty(driver))

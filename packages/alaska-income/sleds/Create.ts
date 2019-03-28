@@ -21,7 +21,7 @@ export default class Create extends Sled<CreateParams, Income> {
 
     if (deposit) {
       target = 'deposit';
-      let depositService = service.main.allServices.get('alaska-deposit') as DepositService;
+      let depositService = service.lookup('alaska-deposit') as DepositService;
       if (!depositService) throw new Error('Deposit service not found!');
       depositRecord = await depositService.models.Deposit.findById(deposit).where({ user: user._id }).session(this.dbSession);
       if (!depositRecord) throw new Error('Deposit not found!');
@@ -34,7 +34,7 @@ export default class Create extends Sled<CreateParams, Income> {
       balance = (user.get(account) + amount) || 0;
     }
 
-    let currencyService = service.main.allServices.get('alaska-currency') as CurrencyService;
+    let currencyService = service.lookup('alaska-currency') as CurrencyService;
     if (currencyService) {
       if (!currency) currency = currencyService.defaultCurrencyId;
       let c = currencyService.currencies.get(currency);

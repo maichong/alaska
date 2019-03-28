@@ -15,7 +15,7 @@ export default class MoneyField extends NumberField {
 
   init() {
     const field = this;
-    const currencyService = field._model.service.main.allServices.get('alaska-currency') as CurrencyService;
+    const currencyService = field._model.service.lookup('alaska-currency') as CurrencyService;
     if (!currencyService) {
       // 没有安装货币服务
       NumberField.prototype.init.call(this);

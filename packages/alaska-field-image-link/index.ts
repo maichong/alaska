@@ -16,8 +16,7 @@ export default class ImageLinkField extends ImageField {
       this.plainName = 'string';
     }
 
-    let main = field._model.service.main;
-    let imageService = main.allServices.get('alaska-image') as ImageService;
+    let imageService = field._model.service.lookup('alaska-image') as ImageService;
     if (imageService) {
       let driver = field.driver || 'default';
       if (!imageService.drivers.hasOwnProperty(driver)) throw new Error('Image storage driver not found!');

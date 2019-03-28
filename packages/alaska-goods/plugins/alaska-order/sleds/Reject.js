@@ -5,7 +5,7 @@ const OrderGoods_1 = require("alaska-order/models/OrderGoods");
 const alaska_order_1 = require("alaska-order");
 let skuService;
 alaska_order_1.default.resolveConfig().then(() => {
-    skuService = alaska_order_1.default.main.allServices.get('alaska-sku');
+    skuService = alaska_order_1.default.lookup('alaska-sku');
 });
 async function post() {
     let orders = this.result;

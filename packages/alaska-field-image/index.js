@@ -8,8 +8,7 @@ class ImageField extends alaska_model_1.Field {
         const field = this;
         const schema = this._schema;
         const defaultValue = field.default || {};
-        let main = field._model.service.main;
-        let imageService = main.allServices.get('alaska-image');
+        const imageService = field._model.service.lookup('alaska-image');
         if (imageService) {
             let driver = field.driver || 'default';
             if (!imageService.drivers.hasOwnProperty(driver))
@@ -69,12 +68,49 @@ class ImageField extends alaska_model_1.Field {
                             value = value[0] || null;
                         }
                         if (typeof value === 'string') {
-                            return stringToImage(value);
+                            value = stringToImage(value);
                         }
-                        return value;
+                        if (value && typeof value === 'object' && value._doc)
+                            value = value._doc;
+                        if (!this[field.path])
+                            return value;
+                        this[field.path].set(value);
+                        return this[field.path];
                     }
                 }
             }, '');
+        }
+        if (imageService) {
+            schema.pre('validate', async function (next) {
+                let record = this;
+                let value = record.get(field.path);
+                if (!value || !value._id || value.thumbUrl || value.name) {
+                    next();
+                    return;
+                }
+                if (field.multi) {
+                    for (let img of value) {
+                        if (!img._id || img.thumbUrl || img.name)
+                            continue;
+                        let image = await imageService.getImage(value._id);
+                        if (image && image.url === value.url) {
+                            img.set(image.toObject());
+                            this.markModified(field.path);
+                        }
+                    }
+                }
+                else {
+                    if (!value._id || value.thumbUrl || value.name) {
+                        next();
+                        return;
+                    }
+                    let image = await imageService.getImage(value._id);
+                    if (image && image.url === value.url) {
+                        value.set(image.toObject());
+                    }
+                }
+                next();
+            });
         }
         this.underscoreMethod('data', function () {
             const value = this.get(field.path);
@@ -91,8 +127,8 @@ ImageField.plain = mongoose.Schema.Types.Mixed;
 ImageField.viewOptions = ['multi', 'max', (options, field) => {
         if (options.disabled === true)
             return;
-        let main = field._model.service.main;
-        let imageService = main.allServices.get('alaska-image');
+        let service = field._model.service;
+        let imageService = service.lookup('alaska-image');
         if (imageService) {
             let driver = field.driver || 'default';
             let driverConfig = imageService.drivers[driver];

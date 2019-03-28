@@ -8,11 +8,11 @@ const OrderGoods_1 = require("alaska-order/models/OrderGoods");
 const alaska_1 = require("alaska");
 let skuService;
 alaska_order_1.default.resolveConfig().then(() => {
-    skuService = alaska_order_1.default.main.allServices.get('alaska-sku');
+    skuService = alaska_order_1.default.lookup('alaska-sku');
 });
 let cartService;
 alaska_order_1.default.resolveConfig().then(() => {
-    cartService = alaska_order_1.default.main.allServices.get('alaska-cart');
+    cartService = alaska_order_1.default.lookup('alaska-cart');
 });
 async function pre() {
     let params = this.params;

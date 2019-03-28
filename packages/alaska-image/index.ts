@@ -1,16 +1,21 @@
-import { Service, ObjectMap, ServiceOptions } from 'alaska';
 import * as _ from 'lodash';
 import * as FSD from 'fsd';
+import { Service, ObjectMap, ServiceOptions } from 'alaska';
+import { RecordId } from 'alaska-model';
+import LruCacheDriver from 'alaska-cache-lru';
+import Image from './models/Image';
 import { ImageDriverConfig } from '.';
 
 class ImageService extends Service {
   drivers: ObjectMap<ImageDriverConfig>;
+  cache: LruCacheDriver<Image | false>;
 
   constructor(options: ServiceOptions) {
     super(options);
     this.drivers = {};
 
     this.resolveConfig().then(() => {
+      this.cache = this.createDriver(this.config.get('cache')) as LruCacheDriver<Image | false>;
       try {
         let configs: ObjectMap<ImageDriverConfig> = this.config.get('drivers');
         if (!configs) throw new Error('Missing config [alaska-image:drivers]');
@@ -36,6 +41,19 @@ class ImageService extends Service {
         process.exit(1);
       }
     });
+  }
+
+  async getImage(id: RecordId): Promise<Image | null> {
+    let idStr = String(id);
+    let cache: Image | false = await this.cache.get(idStr);
+    if (cache === false) return null;
+    if (cache) return cache;
+    try {
+      cache = await Image.findById(id);
+    } catch (e) { }
+    if (!cache) cache = false;
+    this.cache.set(idStr, cache);
+    return cache ? cache : null;
   }
 }
 

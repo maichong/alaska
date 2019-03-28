@@ -7,7 +7,7 @@ const Inventory_1 = require("../models/Inventory");
 const __1 = require("..");
 let skuService;
 __1.default.resolveConfig().then(() => {
-    skuService = __1.default.main.allServices.get('alaska-sku');
+    skuService = __1.default.lookup('alaska-sku');
 });
 async function doInput(body, session) {
     let record = new Inventory_1.default({

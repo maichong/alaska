@@ -33,6 +33,9 @@ exports.default = {
         let defaultPic = this.pic;
         if (!defaultPic || (typeof defaultPic === 'object' && !defaultPic.url) && this.pics) {
             defaultPic = this.pics[0];
+            if (defaultPic && defaultPic.toObject) {
+                defaultPic = defaultPic.toObject();
+            }
         }
         for (let sku of this.skus) {
             let record = skusMap[sku.key];
