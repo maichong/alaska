@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const alaska_model_1 = require("alaska-model");
-const mongoose = require("mongoose");
 class GeoField extends alaska_model_1.Field {
     init() {
         this.set = function (value) {
@@ -30,7 +29,7 @@ class GeoField extends alaska_model_1.Field {
 }
 GeoField.fieldName = 'Geo';
 GeoField.plainName = 'geo';
-GeoField.plain = mongoose.Schema.Types.Array;
+GeoField.plain = Array;
 GeoField.defaultOptions = {
     index: '2dsphere',
     coordinate: 'wgs84',

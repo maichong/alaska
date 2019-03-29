@@ -1,10 +1,10 @@
 import { Field } from 'alaska-model';
-import * as mongoose from 'mongoose';
+// import * as mongoose from 'mongoose';
 
 export default class GeoField extends Field {
   static fieldName = 'Geo';
   static plainName = 'geo';
-  static plain = mongoose.Schema.Types.Array;
+  static plain = Array;
   static defaultOptions = {
     index: '2dsphere',
     coordinate: 'wgs84',
