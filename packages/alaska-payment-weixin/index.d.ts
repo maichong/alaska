@@ -1,3 +1,4 @@
+import { PluginConfig } from 'alaska';
 import { PaymentPlugin } from 'alaska-payment';
 
 declare module 'alaska-payment/models/Payment' {
@@ -13,7 +14,7 @@ declare module 'alaska-payment/models/Refund' {
   }
 }
 
-export interface WeixinPaymentOptions {
+export interface WeixinPaymentConfig {
   /**
    * 支付渠道
    */
@@ -111,5 +112,11 @@ export interface PayParams {
   paySign?: string;
 }
 
-export default class WeixinPaymentPlugin extends PaymentPlugin {
+export interface WeixinPaymentPluginConfig extends PluginConfig {
+  channels: {
+    [channel: string]: WeixinPaymentConfig;
+  };
+}
+
+export default class WeixinPaymentPlugin extends PaymentPlugin<WeixinPaymentPluginConfig> {
 }

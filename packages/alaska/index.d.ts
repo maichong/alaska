@@ -12,6 +12,7 @@ export interface ExtensionConfig {
 
 export interface PluginConfig {
   dir?: string;
+  [key: string]: any;
 }
 
 export interface ConfigData {
@@ -151,12 +152,13 @@ export interface MainService extends Service {
   allServices: Map<string, Service>;
 }
 
-export class Plugin {
+export class Plugin<T extends PluginConfig = any>{
   static readonly classOfPlugin: true;
   readonly instanceOfPlugin: true;
   service: Service;
+  config: T;
 
-  constructor(service: Service);
+  constructor(config: T, service: Service);
 }
 
 export class Extension {

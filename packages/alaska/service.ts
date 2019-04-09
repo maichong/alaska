@@ -231,8 +231,9 @@ export default class Service {
     _.forEach(this.main.modules.services[this.id].plugins, (plugin, key) => {
       let PluginClass: typeof Plugin = plugin.plugin;
       if (PluginClass) {
+        let pluginConfig = plugin.id.startsWith('.') ? {} : this.config.get(`plugins.${plugin.id}`) || {};
         // @ts-ignore this is Service
-        this.plugins.set(key, new PluginClass(this));
+        this.plugins.set(key, new PluginClass(pluginConfig, this));
       }
     });
   }

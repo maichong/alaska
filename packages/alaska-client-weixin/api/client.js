@@ -15,8 +15,8 @@ async function create(ctx, next) {
     let wx = alaska_client_1.default.wxPlatforms[platform];
     if (!wx || !wx.getAccessToken)
         alaska_client_1.default.error('invalid platform!');
-    let configMap = alaska_client_1.default.main.config.get('alaska-client-weixin');
-    let config = configMap[platform];
+    let platforms = alaska_client_1.default.plugins.get('alaska-client-weixin').config.platforms;
+    let config = platforms[platform];
     if (!config)
         alaska_client_1.default.error('invalid platform!');
     let userFieldsMap = config.userFieldsMap || {};

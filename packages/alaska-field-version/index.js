@@ -7,7 +7,7 @@ class VersionField extends alaska_field_number_1.default {
         let schema = this._schema;
         let model = this._model;
         if (!field.cache)
-            throw new Error('Missing config [alaska-field-version.cache]');
+            throw new Error('Missing config [/alaska-field-version.cache]');
         let cacheDriver = model.service.createDriver(field.cache);
         let key = field.key || `${model.modelName}.${field.path}`;
         schema.pre('save', function (next) {

@@ -18,11 +18,11 @@ class ImageService extends Service {
       this.cache = this.createDriver(this.config.get('cache')) as LruCacheDriver<Image | false>;
       try {
         let configs: ObjectMap<ImageDriverConfig> = this.config.get('drivers');
-        if (!configs) throw new Error('Missing config [alaska-image:drivers]');
+        if (!configs) throw new Error('Missing config [alaska-image/drivers]');
         for (let key of _.keys(configs)) {
           let config = _.assign({}, configs[key]);
-          if (!config.adapter) throw new Error(`Missing config [alaska-image:drivers.${key}.adapter]`);
-          if (!config.adapterOptions) throw new Error(`Missing config [alaska-image:drivers.${key}.adapterOptions]`);
+          if (!config.adapter) throw new Error(`Missing config [alaska-image/drivers.${key}.adapter]`);
+          if (!config.adapterOptions) throw new Error(`Missing config [alaska-image/drivers.${key}.adapterOptions]`);
           let Adapter = this.main.modules.libraries[config.adapter] || this.error(`Missing adapter library [${config.adapter}]!`);
           config.fsd = FSD({ adapter: new Adapter(config.adapterOptions) });
           if (!config.allowed) {

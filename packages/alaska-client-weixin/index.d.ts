@@ -1,4 +1,4 @@
-import { Plugin } from 'alaska';
+import { Plugin, ObjectMap, PluginConfig } from 'alaska';
 import { Weixin } from 'libwx';
 
 declare module 'alaska-client' {
@@ -9,7 +9,7 @@ declare module 'alaska-client' {
   }
 }
 
-export interface ConfigData {
+export interface WeixinClientConfig {
   channel: 'jssdk' | 'app' | 'wxapp';
   appid: string;
   secret: string;
@@ -47,5 +47,11 @@ export interface ConfigData {
   };
 }
 
-export default class WeixinClientPlugin extends Plugin {
+export interface WeixinClientPluginConfig extends PluginConfig {
+  platforms: {
+    [platform: string]: WeixinClientConfig;
+  };
+}
+
+export default class WeixinClientPlugin extends Plugin<WeixinClientPluginConfig> {
 }

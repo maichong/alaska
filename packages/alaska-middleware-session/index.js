@@ -6,7 +6,7 @@ const session_1 = require("./session");
 function default_1(options, main) {
     const storeOpts = options.store;
     if (!storeOpts)
-        throw new Error('Missing config [middlewares.alaska-middleware-session.store]');
+        throw new Error('Missing config [/middlewares.alaska-middleware-session.store]');
     const cookieOpts = options.cookie || {};
     const key = cookieOpts.key || 'alaska.sid';
     const Store = main.modules.libraries[storeOpts.type];

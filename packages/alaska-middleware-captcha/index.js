@@ -13,9 +13,9 @@ function default_1(options, main) {
         throw new Error('CaptchaService middleware \'paths\' can not empty');
     _.forEach(options.paths, (info, path) => {
         if (!info.id)
-            throw new Error(`Missing config [middlewares.alaska-middleware-captcha.paths[${path}].id]`);
+            throw new Error(`Missing config [/middlewares.alaska-middleware-captcha.paths[${path}].id]`);
         if (!info.to)
-            throw new Error(`Missing config [middlewares.alaska-middleware-captcha.paths[${path}].to]`);
+            throw new Error(`Missing config [/middlewares.alaska-middleware-captcha.paths[${path}].to]`);
     });
     return async function (ctx, next) {
         if (!main.lookup('alaska-captcha')) {

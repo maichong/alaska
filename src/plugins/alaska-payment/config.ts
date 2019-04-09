@@ -2,14 +2,20 @@ import * as Path from 'path';
 
 export default {
   plugins: {
-    'alaska-payment-alipay': {}
-  },
-  alipay: {
-    partner: '2088000000000000',
-    seller_id: '2088000000000000',
-    rsa_private_key: Path.join(__dirname, 'private_key.pem'),
-    rsa_public_key: Path.join(__dirname, 'public_key.pem'),
-    notify_url: 'http://your.host/payment/api/notify/alipay',
-    return_url: 'http://your.host/payed'
+    'alaska-payment-alipay': {
+      channels: {
+        app: {
+          channel: 'app',
+          app_id: '',
+          currency: 'balance',
+          private_key: 'assets/alipay_private_key.pem',
+          alipay_public_key: 'assets/alipay_public_key.pem',
+          notify_url: 'http://your.deamon/payment/notify/alipay',
+          biz_content: {
+            timeout_express: '30m'
+          }
+        }
+      }
+    },
   }
 };

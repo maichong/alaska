@@ -14,7 +14,7 @@ class EmailService extends Service {
   preInit() {
     let drivers = this.config.get('drivers');
     if (_.isEmpty(drivers)) {
-      throw new Error('Missing config [alaska-email:drivers]');
+      throw new Error('Missing config [alaska-email/drivers]');
     }
     let driversOptions: SelectOption[] = [];
     _.forEach(drivers, (config: EamilDriverOptions, key: string) => {

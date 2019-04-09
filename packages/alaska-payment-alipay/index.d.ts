@@ -1,3 +1,4 @@
+import { PluginConfig } from 'alaska';
 import { PaymentPlugin } from 'alaska-payment';
 
 declare module 'alaska-payment/models/Payment' {
@@ -16,7 +17,7 @@ declare module 'alaska-payment/models/Refund' {
   }
 }
 
-export interface AlipayPaymentOptions {
+export interface AlipayPaymentConfig {
   /**
    * 支付渠道
    */
@@ -92,5 +93,11 @@ export interface CallbackData {
   sign?: string;
 }
 
-export default class AlipayPaymentPlugin extends PaymentPlugin {
+export interface AlipayPaymentPluginConfig extends PluginConfig {
+  channels: {
+    [channel: string]: AlipayPaymentConfig;
+  }
+}
+
+export default class AlipayPaymentPlugin extends PaymentPlugin<AlipayPaymentPluginConfig> {
 }

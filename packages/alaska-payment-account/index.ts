@@ -5,20 +5,21 @@ import { CurrencyService } from 'alaska-currency';
 import { PaymentService, PaymentPlugin } from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 import Refund from 'alaska-payment/models/Refund';
+import { AccountPaymentPluginConfig } from '.';
 
 interface AccountPaymentOptions {
   account: string;
 }
 
-export default class AccountPaymentPlugin extends PaymentPlugin {
+export default class AccountPaymentPlugin extends PaymentPlugin<AccountPaymentPluginConfig> {
   configs: Map<string, AccountPaymentOptions>;
 
-  constructor(service: PaymentService) {
-    super(service);
-    let config = service.main.config.get('alaska-payment-account') || service.error('Missing config [alaska-payment-account]');
-    if (_.isEmpty(config)) throw new Error('No weixin payment channel found!');
+  constructor(pluginConfig: AccountPaymentPluginConfig, service: PaymentService) {
+    super(pluginConfig, service);
+    if (_.isEmpty(pluginConfig.channels)) throw new Error(`Missing config [alaska-payment/plugins.alaska-payment-account.channels]`);
+
     this.configs = new Map();
-    for (let account of _.keys(config)) {
+    for (let account of _.keys(pluginConfig.channels)) {
       let options: AccountPaymentOptions = {
         account
       };

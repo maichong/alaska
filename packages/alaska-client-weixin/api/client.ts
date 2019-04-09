@@ -4,7 +4,7 @@ import Register from 'alaska-user/sleds/Register';
 import User from 'alaska-user/models/User';
 import Client from 'alaska-client/models/Client';
 import { Context } from 'alaska-http';
-import { ConfigData } from '..';
+import { WeixinClientConfig } from '..';
 
 /**
  * 注册设备接口的前置中间件，需要将 wxCode 转换为 deviceId
@@ -19,8 +19,8 @@ export async function create(ctx: Context, next: Function) {
   let wx = clientService.wxPlatforms[platform];
   if (!wx || !wx.getAccessToken) clientService.error('invalid platform!');
 
-  let configMap: ObjectMap<ConfigData> = clientService.main.config.get('alaska-client-weixin');
-  let config = configMap[platform];
+  let platforms: ObjectMap<WeixinClientConfig> = clientService.plugins.get('alaska-client-weixin').config.platforms;
+  let config = platforms[platform];
   if (!config) clientService.error('invalid platform!');
   let userFieldsMap = config.userFieldsMap || {} as typeof config.userFieldsMap;
 

@@ -5,13 +5,12 @@ const User_1 = require("alaska-user/models/User");
 const Create_1 = require("alaska-income/sleds/Create");
 const alaska_payment_1 = require("alaska-payment");
 class AccountPaymentPlugin extends alaska_payment_1.PaymentPlugin {
-    constructor(service) {
-        super(service);
-        let config = service.main.config.get('alaska-payment-account') || service.error('Missing config [alaska-payment-account]');
-        if (_.isEmpty(config))
-            throw new Error('No weixin payment channel found!');
+    constructor(pluginConfig, service) {
+        super(pluginConfig, service);
+        if (_.isEmpty(pluginConfig.channels))
+            throw new Error(`Missing config [alaska-payment/plugins.alaska-payment-account.channels]`);
         this.configs = new Map();
-        for (let account of _.keys(config)) {
+        for (let account of _.keys(pluginConfig.channels)) {
             let options = {
                 account
             };

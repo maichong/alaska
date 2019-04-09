@@ -1,22 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const _ = require("lodash");
 const alaska_1 = require("alaska");
 const User_1 = require("alaska-user/models/User");
 const libwx_1 = require("libwx");
 class WeixinClientPlugin extends alaska_1.Plugin {
-    constructor(service) {
-        super(service);
+    constructor(pluginConfig, service) {
+        super(pluginConfig, service);
         service.wxPlatforms = {};
+        if (_.isEmpty(pluginConfig.platforms))
+            throw new Error(`Missing config [alaska-client/plugins.alaska-client-weixin.platforms]`);
         service.pre('start', () => {
-            let configMap = service.main.config.get('alaska-client-weixin');
-            if (!configMap)
-                throw new Error('Missing config [alaska-client-weixin]');
-            for (let key of Object.keys(configMap)) {
-                let config = configMap[key];
+            for (let key of Object.keys(pluginConfig.platforms)) {
+                let config = pluginConfig.platforms[key];
                 if (!config.appid)
-                    throw new Error(`Missing config [alaska-client-weixin.${key}.appid]`);
+                    throw new Error(`Missing config [alaska-client/plugins.alaska-client-weixin.${key}.appid]`);
                 if (!config.secret)
-                    throw new Error(`Missing config [alaska-client-weixin.${key}.secret]`);
+                    throw new Error(`Missing config [alaska-client/plugins.alaska-client-weixin.${key}.secret]`);
                 let userFieldsMap = config.userFieldsMap || {};
                 if (config.useUnionid) {
                     let unionid = userFieldsMap.unionid || 'unionid';

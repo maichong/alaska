@@ -2,8 +2,6 @@ import { Context, Router } from 'alaska-http';
 import paymentService from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
 import Complete from 'alaska-payment/sleds/Complete';
-import { Sled } from 'alaska-sled';
-import AlipayPlugin from 'alaska-payment-alipay';
 
 export default function (router: Router) {
   /**

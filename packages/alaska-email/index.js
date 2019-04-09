@@ -13,7 +13,7 @@ class EmailService extends alaska_1.Service {
     preInit() {
         let drivers = this.config.get('drivers');
         if (_.isEmpty(drivers)) {
-            throw new Error('Missing config [alaska-email:drivers]');
+            throw new Error('Missing config [alaska-email/drivers]');
         }
         let driversOptions = [];
         _.forEach(drivers, (config, key) => {

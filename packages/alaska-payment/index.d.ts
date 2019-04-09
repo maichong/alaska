@@ -7,7 +7,7 @@ import Create from './sleds/Create';
 import Complete from './sleds/Complete';
 import RefundSled from './sleds/Refund';
 
-export class PaymentPlugin extends Plugin {
+export class PaymentPlugin<O = any> extends Plugin<O> {
   static readonly classOfPaymentPlugin: true;
   readonly instanceOfPaymentPlugin: true;
 

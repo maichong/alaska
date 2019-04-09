@@ -165,7 +165,8 @@ class Service {
         _.forEach(this.main.modules.services[this.id].plugins, (plugin, key) => {
             let PluginClass = plugin.plugin;
             if (PluginClass) {
-                this.plugins.set(key, new PluginClass(this));
+                let pluginConfig = plugin.id.startsWith('.') ? {} : this.config.get(`plugins.${plugin.id}`) || {};
+                this.plugins.set(key, new PluginClass(pluginConfig, this));
             }
         });
     }

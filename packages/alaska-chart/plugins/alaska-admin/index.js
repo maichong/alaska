@@ -4,8 +4,8 @@ const _ = require("lodash");
 const alaska_1 = require("alaska");
 const __1 = require("../..");
 class ChartPlugin extends alaska_1.Plugin {
-    constructor(service) {
-        super(service);
+    constructor(options, service) {
+        super(options, service);
         service.post('settings', (res, settings) => {
             let model = _.get(settings, 'services.alaska-chart.models.Series');
             if (model) {

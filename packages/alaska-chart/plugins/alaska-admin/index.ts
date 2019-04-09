@@ -5,8 +5,8 @@ import * as AdminView from 'alaska-admin-view';
 import chartService from '../..';
 
 export default class ChartPlugin extends Plugin {
-  constructor(service: AdminService) {
-    super(service);
+  constructor(options: any, service: AdminService) {
+    super(options, service);
 
     service.post('settings', (res: void, settings: AdminView.Settings) => {
       let model = _.get(settings, 'services.alaska-chart.models.Series');

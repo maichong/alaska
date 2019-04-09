@@ -1,12 +1,14 @@
-import { Service } from '.';
+import { Service, PluginConfig } from '.';
 
-export default class Plugin {
+export default class Plugin<T extends PluginConfig = any> {
   static readonly classOfPlugin = true;
   readonly instanceOfPlugin: true;
   service: Service;
+  options: T;
 
-  constructor(service: Service) {
-    this.service = service;
+  constructor(config: T, service: Service) {
     this.instanceOfPlugin = true;
+    this.service = service;
+    this.options = config;
   }
 }

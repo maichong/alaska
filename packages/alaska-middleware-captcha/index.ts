@@ -15,8 +15,8 @@ export default function (options: CaptchaMiddlewareOptions, main: MainService): 
   let paths = _.keys(options.paths);
   if (!paths.length) throw new Error('CaptchaService middleware \'paths\' can not empty');
   _.forEach(options.paths, (info, path) => {
-    if (!info.id) throw new Error(`Missing config [middlewares.alaska-middleware-captcha.paths[${path}].id]`);
-    if (!info.to) throw new Error(`Missing config [middlewares.alaska-middleware-captcha.paths[${path}].to]`);
+    if (!info.id) throw new Error(`Missing config [/middlewares.alaska-middleware-captcha.paths[${path}].id]`);
+    if (!info.to) throw new Error(`Missing config [/middlewares.alaska-middleware-captcha.paths[${path}].to]`);
   });
   return async function (ctx: Context, next: Function): Promise<void> {
     if (!main.lookup('alaska-captcha')) {

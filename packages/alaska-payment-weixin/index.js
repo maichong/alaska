@@ -10,30 +10,29 @@ const User_1 = require("alaska-user/models/User");
 const utils_1 = require("./utils");
 const client = akita_1.default.create({});
 class WeixinPaymentPlugin extends alaska_payment_1.PaymentPlugin {
-    constructor(service) {
-        super(service);
-        let config = service.main.config.get('alaska-payment-weixin') || service.error('Missing config [alaska-payment-weixin]');
-        if (_.isEmpty(config))
-            throw new Error('No weixin payment channel found!');
+    constructor(pluginConfig, service) {
+        super(pluginConfig, service);
+        if (_.isEmpty(pluginConfig.channels))
+            throw new Error(`Missing config [alaska-payment/plugins.alaska-payment-weixin.channels]`);
         this.configs = new Map();
-        for (let key of _.keys(config)) {
-            let options = config[key];
+        for (let key of _.keys(pluginConfig.channels)) {
+            let config = pluginConfig.channels[key];
             ['channel', 'appid', 'secret', 'mch_id', 'pay_key', 'notify_url'].forEach((k) => {
-                if (!options[k])
-                    throw new Error(`Missing config [alaska-payment-weixin.${key}.${k}]`);
+                if (!config[k])
+                    throw new Error(`Missing config [/alaska-payment-weixin.${key}.${k}]`);
             });
-            if (options.pfx && typeof options.pfx === 'string') {
-                options.pfx = fs.readFileSync(options.pfx);
+            if (config.pfx && typeof config.pfx === 'string') {
+                config.pfx = fs.readFileSync(config.pfx);
             }
-            this.configs.set(`weixin:${key}`, options);
+            this.configs.set(`weixin:${key}`, config);
             service.payments.set(`weixin:${key}`, this);
         }
     }
     async createParams(payment) {
-        const options = this.configs.get(payment.type);
-        if (!options)
+        const config = this.configs.get(payment.type);
+        if (!config)
             throw new Error('Unsupported payment type!');
-        if (payment.currency && options.currency && payment.currency !== options.currency)
+        if (payment.currency && config.currency && payment.currency !== config.currency)
             throw new Error('Currency not match!');
         if (payment.amount === 0) {
             return 'success';
@@ -54,14 +53,14 @@ class WeixinPaymentPlugin extends alaska_payment_1.PaymentPlugin {
             out_trade_no: payment.id,
             spbill_create_ip: payment.ip,
             total_fee: _.round(payment.amount * 100),
-        }, options);
-        return JSON.stringify(this._getPayParamsByPrepay(order, options));
+        }, config);
+        return JSON.stringify(this._getPayParamsByPrepay(order, config));
     }
     async verify(data, payment) {
-        const options = this.configs.get(payment.type);
-        if (!options)
+        const config = this.configs.get(payment.type);
+        if (!config)
             return false;
-        let sign = this._getSign(data, options);
+        let sign = this._getSign(data, config);
         return data.sign === sign;
     }
     async refund(refund, payment) {
@@ -69,27 +68,27 @@ class WeixinPaymentPlugin extends alaska_payment_1.PaymentPlugin {
             refund.state = 'success';
             return;
         }
-        const options = this.configs.get(payment.type);
-        if (!options)
+        const config = this.configs.get(payment.type);
+        if (!config)
             throw new Error('Unsupported payment type!');
-        if (!options.pfx)
+        if (!config.pfx)
             throw new Error('Weixin refund require pfx!');
         let req = {
-            appid: options.appid,
-            mch_id: options.mch_id,
+            appid: config.appid,
+            mch_id: config.mch_id,
             nonce_str: stringRandom(16),
-            sign_type: options.sign_type || 'MD5',
+            sign_type: config.sign_type || 'MD5',
             out_trade_no: payment.id,
             out_refund_no: refund.id,
             total_fee: payment.amount * 100 | 0,
             refund_fee: refund.amount * 100 | 0,
-            op_user_id: options.mch_id,
+            op_user_id: config.mch_id,
         };
-        req.sign = this._getSign(req, options);
+        req.sign = this._getSign(req, config);
         let xml = await client.post('https://api.mch.weixin.qq.com/secapi/pay/refund', {
             agent: new https.Agent({
-                pfx: options.pfx,
-                passphrase: options.mch_id
+                pfx: config.pfx,
+                passphrase: config.mch_id
             }),
             body: utils_1.data2xml(req)
         }).text();
@@ -100,30 +99,30 @@ class WeixinPaymentPlugin extends alaska_payment_1.PaymentPlugin {
         refund.weixin_refund_id = json.refund_id;
         refund.state = 'success';
     }
-    async orderquery(orderId, options) {
+    async orderquery(orderId, config) {
         let data = {
-            appid: options.appid,
-            mch_id: options.mch_id,
+            appid: config.appid,
+            mch_id: config.mch_id,
             nonce_str: stringRandom(),
             out_trade_no: orderId
         };
-        data.sign = this._getSign(data, options);
+        data.sign = this._getSign(data, config);
         let xml = utils_1.data2xml(data);
         let result = await client.post('https://api.mch.weixin.qq.com/pay/orderquery', {
             body: xml
         }).text();
         return await utils_1.xml2data(result);
     }
-    async unifiedorder(data, options) {
+    async unifiedorder(data, config) {
         _.defaults(data, {
-            appid: options.appid,
-            mch_id: options.mch_id,
+            appid: config.appid,
+            mch_id: config.mch_id,
             nonce_str: stringRandom(),
-            notify_url: options.notify_url,
-            trade_type: this._getTradeType(options.channel),
+            notify_url: config.notify_url,
+            trade_type: this._getTradeType(config.channel),
             spbill_create_ip: data.spbill_create_ip || '127.0.0.1'
         });
-        data.sign = this._getSign(data, options);
+        data.sign = this._getSign(data, config);
         let xml = utils_1.data2xml(data);
         let result = await client.post('https://api.mch.weixin.qq.com/pay/unifiedorder', {
             body: xml
@@ -134,24 +133,24 @@ class WeixinPaymentPlugin extends alaska_payment_1.PaymentPlugin {
         }
         return json;
     }
-    _getPayParamsByPrepay(data, options) {
-        if (options.channel === 'app') {
+    _getPayParamsByPrepay(data, config) {
+        if (config.channel === 'app') {
             let req = {
-                appid: options.appid,
+                appid: config.appid,
                 noncestr: stringRandom(),
                 package: 'Sign=WXPay',
-                partnerid: options.mch_id,
+                partnerid: config.mch_id,
                 prepayid: data.prepay_id,
                 timestamp: Date.now() / 1000 | 0
             };
             return {
-                appId: options.appid,
-                partnerId: options.mch_id,
+                appId: config.appid,
+                partnerId: config.mch_id,
                 prepayId: data.prepay_id,
                 package: 'Sign=WXPay',
                 nonceStr: req.noncestr,
                 timeStamp: req.timestamp,
-                sign: this._getSign(req, options)
+                sign: this._getSign(req, config)
             };
         }
         let params;
@@ -160,11 +159,11 @@ class WeixinPaymentPlugin extends alaska_payment_1.PaymentPlugin {
             timeStamp: String((Date.now() / 1000 | 0)),
             nonceStr: stringRandom(),
             package: `prepay_id=${data.prepay_id}`,
-            signType: options.sign_type || 'MD5'
+            signType: config.sign_type || 'MD5'
         };
-        params.paySign = this._getSign(params, options);
+        params.paySign = this._getSign(params, config);
         delete params.appId;
-        if (options.channel === 'jssdk') {
+        if (config.channel === 'jssdk') {
             params.timestamp = params.timeStamp;
         }
         return params;
@@ -184,10 +183,10 @@ class WeixinPaymentPlugin extends alaska_payment_1.PaymentPlugin {
                 throw new Error(`Unsupported payment channel ${channel}`);
         }
     }
-    _getSign(data, options) {
-        let str = `${utils_1.toQueryString(data)}&key=${options.pay_key}`;
-        if (options.sign_type === 'SHA256') {
-            return utils_1.sha256(str, options.pay_key).toUpperCase();
+    _getSign(data, config) {
+        let str = `${utils_1.toQueryString(data)}&key=${config.pay_key}`;
+        if (config.sign_type === 'SHA256') {
+            return utils_1.sha256(str, config.pay_key).toUpperCase();
         }
         return utils_1.md5(str).toUpperCase();
     }
