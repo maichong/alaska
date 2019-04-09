@@ -93,6 +93,11 @@ export default class Withdraw extends Model {
       type: String,
       disabled: true,
     },
+    alipayId: {
+      label: 'Alipay ID',
+      type: String,
+      disabled: true,
+    },
     alipay: {
       label: 'Alipay',
       type: String,
@@ -103,8 +108,8 @@ export default class Withdraw extends Model {
       type: String,
       disabled: true,
     },
-    note: {
-      label: 'Note',
+    remark: {
+      label: 'Remark',
       type: String,
       multiLine: true,
       static: true
@@ -143,7 +148,7 @@ export default class Withdraw extends Model {
   amount: number;
   type: string;
   ip: string;
-  note: string;
+  remark: string;
   createdAt: Date;
   state: 'pending' | 'accepted' | 'rejected';
   reason: string;

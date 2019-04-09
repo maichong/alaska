@@ -98,6 +98,11 @@ Withdraw.fields = {
         type: String,
         disabled: true,
     },
+    alipayId: {
+        label: 'Alipay ID',
+        type: String,
+        disabled: true,
+    },
     alipay: {
         label: 'Alipay',
         type: String,
@@ -108,8 +113,8 @@ Withdraw.fields = {
         type: String,
         disabled: true,
     },
-    note: {
-        label: 'Note',
+    remark: {
+        label: 'Remark',
         type: String,
         multiLine: true,
         static: true

@@ -14,6 +14,7 @@ export default {
   'Insufficient balance': '余额不足',
   state: '状态',
   'Weixin OpenID': '微信OpenID',
+  'Alipay ID': '支付宝ID',
   Alipay: '支付宝',
   'Real Name': '实名',
   Target: '目标'

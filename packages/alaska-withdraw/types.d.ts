@@ -8,7 +8,7 @@ export interface Withdraw {
   amount: number;
   type: string;
   ip: string;
-  note: string;
+  remark: string;
   createdAt: string;
   state: 'pending' | 'accepted' | 'rejected';
   reason: string;

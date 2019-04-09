@@ -14,7 +14,7 @@ export interface CreateParams {
   user: User;
   account: string;
   title?: string;
-  note?: string;
+  remark?: string;
   type: string;
   openid?: string;
   realName?: string;

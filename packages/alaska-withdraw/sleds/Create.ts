@@ -28,7 +28,7 @@ export default class Create extends Sled<CreateParams, Withdraw> {
 
     let withdraw = new Withdraw({
       title: params.title,
-      note: params.note,
+      remark: params.remark,
       type: params.type,
       user: user._id,
       openid: params.openid,

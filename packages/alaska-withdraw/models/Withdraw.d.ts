@@ -11,7 +11,7 @@ export interface WithdrawFields {
   amount: number;
   type: string;
   ip: string;
-  note: string;
+  remark: string;
   createdAt: Date;
   state: 'pending' | 'accepted' | 'rejected';
   reason: string;

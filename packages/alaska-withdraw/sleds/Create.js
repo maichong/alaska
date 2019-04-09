@@ -26,7 +26,7 @@ class Create extends alaska_sled_1.Sled {
         }, { dbSession: this.dbSession });
         let withdraw = new Withdraw_1.default({
             title: params.title,
-            note: params.note,
+            remark: params.remark,
             type: params.type,
             user: user._id,
             openid: params.openid,
