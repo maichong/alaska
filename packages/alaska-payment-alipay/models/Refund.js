@@ -11,16 +11,6 @@ exports.default = {
             label: 'Alipay Trade No',
             type: String,
             protected: true
-        },
-        alipay_buyer_id: {
-            label: 'Alipay Buyer ID',
-            type: String,
-            protected: true
-        },
-        alipay_buyer_logon_id: {
-            label: 'Alipay Buyer',
-            type: String,
-            protected: true
-        },
+        }
     }
 };

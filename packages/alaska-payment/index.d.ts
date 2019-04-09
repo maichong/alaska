@@ -12,11 +12,6 @@ export class PaymentPlugin extends Plugin {
   readonly instanceOfPaymentPlugin: true;
 
   /**
-   * 支付插件支持的货币列表
-   */
-  currencies: Set<string>;
-
-  /**
    * 创建支付参数，如果返回数字 'success'，代表支付已经完成，不需要客户端再做处理
    * @param {Payment} payment 支付记录
    */

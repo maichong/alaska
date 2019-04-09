@@ -1,19 +1,15 @@
 import { Context, Router } from 'alaska-http';
 import paymentService from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
+import Complete from 'alaska-payment/sleds/Complete';
 import { Sled } from 'alaska-sled';
 import AlipayPlugin from 'alaska-payment-alipay';
-
-interface PaymentAlipay extends Payment {
-  alipay_trade_no: string;
-  alipay_buyer_email: string;
-}
 
 export default function (router: Router) {
   /**
    * 创建记录
    */
-  router.all('/alipay', async (ctx: Context) => {
+  router.post('/notify/alipay', async (ctx: Context) => {
     ctx.status = 400;
     ctx.body = 'ERR';
     if (ctx.method !== 'POST') return;
@@ -22,24 +18,23 @@ export default function (router: Router) {
 
     let paymentId = body.out_trade_no;
 
-    let payment = (await Payment.findById(paymentId).session(ctx.dbSession)) as PaymentAlipay;
+    let payment = (await Payment.findById(paymentId).session(ctx.dbSession)) as Payment;
     if (!payment) return;
 
-    let success = await (paymentService.plugins.get('alipay') as AlipayPlugin).verify(body, payment);
+    if (payment.state !== 'pending') return;
 
-    if (!success) return;
+    let plugin = paymentService.payments.get(payment.type);
+
+    if (!await plugin.verify(body, payment)) return;
+
+    payment.callbackData = body;
     payment.alipay_trade_no = body.trade_no;
-    payment.alipay_buyer_email = body.buyer_email;
-    try {
-      let sledId = `${paymentService.id}.Complete`;
-      const Complete = Sled.lookup(sledId) || paymentService.error('Complete sled not found!');
-      await Complete.run({ payment }, { dbSession: this.dbSession });
-      ctx.body = 'OK';
-      ctx.status = 200;
-    } catch (error) {
-      console.error(error.stack);
-      ctx.status = 500;
-      ctx.body = 'ERR';
-    }
+    payment.alipay_buyer_id = body.buyer_id;
+    payment.alipay_buyer_logon_id = body.buyer_logon_id;
+
+    await Complete.run({ record: payment }, { dbSession: ctx.dbSession });
+
+    ctx.body = 'OK';
+    ctx.status = 200;
   });
 }

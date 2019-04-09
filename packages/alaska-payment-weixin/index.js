@@ -18,14 +18,13 @@ class WeixinPaymentPlugin extends alaska_payment_1.PaymentPlugin {
         this.configs = new Map();
         for (let key of _.keys(config)) {
             let options = config[key];
-            ['channel', 'appid', 'secret', 'mch_id', 'pay_key', 'notify_url', 'currency'].forEach((k) => {
+            ['channel', 'appid', 'secret', 'mch_id', 'pay_key', 'notify_url'].forEach((k) => {
                 if (!options[k])
                     throw new Error(`Missing config [alaska-payment-weixin.${key}.${k}]`);
             });
             if (options.pfx && typeof options.pfx === 'string') {
                 options.pfx = fs.readFileSync(options.pfx);
             }
-            this.currencies.add(options.currency);
             this.configs.set(`weixin:${key}`, options);
             service.payments.set(`weixin:${key}`, this);
         }
@@ -34,7 +33,7 @@ class WeixinPaymentPlugin extends alaska_payment_1.PaymentPlugin {
         const options = this.configs.get(payment.type);
         if (!options)
             throw new Error('Unsupported payment type!');
-        if (payment.currency && payment.currency !== options.currency)
+        if (payment.currency && options.currency && payment.currency !== options.currency)
             throw new Error('Currency not match!');
         if (payment.amount === 0) {
             return 'success';

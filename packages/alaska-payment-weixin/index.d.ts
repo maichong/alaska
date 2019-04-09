@@ -21,7 +21,7 @@ export interface WeixinPaymentOptions {
   /**
    * 当前支付类型支持的货币
    */
-  currency: string;
+  currency?: string;
   /**
    * APP ID
    */

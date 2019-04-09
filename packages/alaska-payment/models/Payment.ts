@@ -113,6 +113,11 @@ export default class Payment extends Model {
   openid: string;
   weixin_transaction_id: string;
 
+  alipay_biz_content: any;
+  alipay_trade_no: string;
+  alipay_buyer_id: string;
+  alipay_buyer_logon_id: string;
+
   preSave() {
     if (!this.createdAt) {
       this.createdAt = new Date();

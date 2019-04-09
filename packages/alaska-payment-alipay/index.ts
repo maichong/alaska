@@ -1,56 +1,42 @@
 import * as _ from 'lodash';
 import * as fs from 'fs';
 import * as crypto from 'crypto';
-import PAYMENT, { PaymentPlugin } from 'alaska-payment';
+import * as moment from 'moment';
+import akita from 'akita';
+import { PaymentService, PaymentPlugin } from 'alaska-payment';
 import Payment from 'alaska-payment/models/Payment';
+import Refund from 'alaska-payment/models/Refund';
 import { ObjectMap } from 'alaska';
-import { AlipayConfig, CallbackData } from '.';
+import { substr } from './utils';
+import { AlipayPaymentOptions, CallbackData } from '.';
 
-const GATEWAY = 'https://mapi.alipay.com/gateway.do?';
+const client = akita.create({});
+const GATEWAY = 'https://openapi.alipay.com/gateway.do';
 
 export default class AlipayPaymentPlugin extends PaymentPlugin {
-  service: typeof PAYMENT;
-  label: string;
-  _config: AlipayConfig;
-  rsa_private_key: Buffer | string;
-  rsa_public_key: Buffer | string;
+  service: PaymentService;
+  configs: Map<string, AlipayPaymentOptions>;
 
-  constructor(service: typeof PAYMENT) {
+  constructor(service: PaymentService) {
     super(service);
-    this.init(service);
-  }
+    let config = service.main.config.get('alaska-payment-alipay') || service.error('Missing config [alaska-payment-alipay]');
 
-  init(service: typeof PAYMENT) {
-    this.service = service;
-    service.plugins.set('alipay', this);
-
-    this.label = 'Alipay';
-    let configTmp: AlipayConfig = service.config.get('alipay');
-    if (!configTmp) {
-      throw new Error('Alipay config not found');
+    this.configs = new Map();
+    for (let key of _.keys(config)) {
+      let options: AlipayPaymentOptions = config[key];
+      ['channel', 'app_id', 'private_key', 'alipay_public_key', 'notify_url'].forEach((k) => {
+        // @ts-ignore index
+        if (!options[k]) throw new Error(`Missing config [alaska-payment-alipay.${key}.${k}]`);
+      });
+      if (typeof options.private_key === 'string') {
+        options.private_key = fs.readFileSync(options.private_key);
+      }
+      if (typeof options.alipay_public_key === 'string') {
+        options.alipay_public_key = fs.readFileSync(options.alipay_public_key);
+      }
+      this.configs.set(`alipay:${key}`, options);
+      service.payments.set(`alipay:${key}`, this);
     }
-
-    this._config = configTmp;
-    this._config = Object.assign({
-      partner: '',
-      seller_id: '',
-      notify_url: '',
-      return_url: '',
-      service: 'create_direct_pay_by_user',
-      payment_type: '1',
-      _input_charset: 'utf-8',
-      it_b_pay: '1d',
-      sign_type: 'RSA'
-    }, this._config);
-    let rsa_private_key = this._config.rsa_private_key;
-    if (!rsa_private_key) throw new Error('rsa_private_key not found');
-    delete this._config.rsa_private_key;
-    this.rsa_private_key = fs.readFileSync(rsa_private_key) || '';
-
-    let rsa_public_key = this._config.rsa_public_key;
-    if (!rsa_public_key) throw new Error('rsa_public_key not found');
-    this.rsa_public_key = fs.readFileSync(rsa_public_key) || '';
-    delete this._config.rsa_public_key;
   }
 
   /**
@@ -60,26 +46,118 @@ export default class AlipayPaymentPlugin extends PaymentPlugin {
    * @returns {any}
    */
   async createParams(payment: Payment): Promise<string> {
-    let params: ObjectMap<any> = Object.assign({}, this._config, {
-      subject: payment.title,
-      out_trade_no: payment._id,
-      total_fee: payment.amount
-    });
+    const options = this.configs.get(payment.type);
+    if (!options) throw new Error('Unsupported payment type!');
+    if (payment.currency && options.currency && payment.currency !== options.currency) throw new Error('Currency not match!');
+
+    if (payment.amount === 0) {
+      return 'success';
+    }
+
+    let params: any = {
+      app_id: options.app_id,
+      method: '',
+      charset: 'utf-8',
+      sign_type: options.sign_type || 'RSA2',
+      timestamp: moment().format('YYYY-MM-DD HH:mm:ss'),
+      version: '1.0',
+      notify_url: options.notify_url,
+      biz_content: {
+        subject: substr(payment.title, 256),
+        out_trade_no: payment.id,
+        total_amount: payment.amount,
+        product_code: ''
+      }
+    }
+
+    switch (options.channel) {
+      case 'app':
+        params.method = 'alipay.trade.app.pay';
+        params.biz_content.product_code = 'QUICK_MSECURITY_PAY';
+        break;
+      case 'web':
+        params.method = 'alipay.trade.page.pay';
+        if (options.return_url) {
+          params.return_url = options.return_url;
+        }
+        params.biz_content.product_code = 'FAST_INSTANT_TRADE_PAY';
+        params.biz_content.qr_pay_mode = '2';
+        break;
+      default:
+        throw new Error('Unsupported alipay channel');
+    }
+
+    params.biz_content = _.assign(params.biz_content, options.biz_content, payment.alipay_biz_content);
+
     let link = this.createQueryString(this.paramsFilter(params));
 
-    let signer = crypto.createSign('RSA-SHA1');
+    let signer = crypto.createSign(options.sign_type === 'RSA' ? 'RSA-SHA1' : 'RSA-SHA256');
     signer.update(link, 'utf8');
-    params.sign = signer.sign(this.rsa_private_key.toString(), 'base64');
+    params.sign = signer.sign(options.private_key, 'base64');
 
-    return GATEWAY + this.createQueryStringUrlencode(params);
+    let payParams = this.createQueryStringUrlencode(params);
+
+    if (options.channel === 'app') {
+      // app
+      return payParams;
+    }
+    // web
+    return GATEWAY + '?' + payParams
   }
 
-  async verify(data: CallbackData) {
+  async verify(data: CallbackData, payment: Payment): Promise<boolean> {
+    const options = this.configs.get(payment.type);
+    if (!options) return false;
     let filtered = this.paramsFilter(data);
+    delete filtered.sign_type;
     let link = this.createQueryString(filtered);
-    let verify = crypto.createVerify('RSA-SHA1');
+    let verify = crypto.createVerify(options.sign_type === 'RSA' ? 'RSA-SHA1' : 'RSA-SHA256');
     verify.update(link, 'utf8');
-    return verify.verify(this.rsa_public_key, data.sign, 'base64');
+    return verify.verify(options.alipay_public_key, data.sign, 'base64');
+  }
+
+
+  async refund(refund: Refund, payment: Payment): Promise<void> {
+    if (refund.amount === 0) {
+      // 退款金额为0，直接成功
+      refund.state = 'success';
+      return;
+    }
+    const options = this.configs.get(payment.type);
+    if (!options) throw new Error('Unsupported payment type!');
+
+    let params: any = {
+      app_id: options.app_id,
+      method: 'alipay.trade.refund',
+      charset: 'utf-8',
+      sign_type: options.sign_type || 'RSA2',
+      timestamp: moment().format('YYYY-MM-DD HH:mm:ss'),
+      version: '1.0',
+      notify_url: options.notify_url,
+      biz_content: _.assign({
+        out_trade_no: payment.id,
+        refund_amount: refund.amount,
+        out_request_no: refund.id,
+      }, options.biz_content, refund.alipay_biz_content)
+    }
+
+    let link = this.createQueryString(this.paramsFilter(params));
+
+    let signer = crypto.createSign(options.sign_type === 'RSA' ? 'RSA-SHA1' : 'RSA-SHA256');
+    signer.update(link, 'utf8');
+    params.sign = signer.sign(options.private_key, 'base64');
+
+    let { alipay_trade_refund_response: res } = await client.post(GATEWAY, {
+      body: params
+    });
+
+    if (res.msg === 'Success') {
+      refund.alipay_trade_no = res.trade_no;
+      refund.state = 'success';
+    } else {
+      refund.state = 'failed';
+      refund.failure = res.sub_code;
+    }
   }
 
   /**
@@ -87,9 +165,9 @@ export default class AlipayPaymentPlugin extends PaymentPlugin {
   * @param params 签名参数组
   * @return {object} 去掉空值与签名参数后的新签名参数组
   */
-  paramsFilter(params: ObjectMap<any>): Object {
+  private paramsFilter(params: ObjectMap<any>): ObjectMap<any> {
     return _.reduce(params, (result: ObjectMap<any>, value, key) => {
-      if (value && key !== 'sign' && key !== 'sign_type') {
+      if (value && key !== 'sign') {
         result[key] = value;
       }
       return result;
@@ -101,11 +179,23 @@ export default class AlipayPaymentPlugin extends PaymentPlugin {
    * @param params
    * @returns {string}
    */
-  createQueryString(params: ObjectMap<any>): string {
-    return Object.keys(params).sort().map((key) => `${key}=${params[key]}`).join('&');
+  private createQueryString(params: ObjectMap<any>): string {
+    return _.keys(params).sort().map((key) => {
+      let value = params[key];
+      if (_.isPlainObject(value)) {
+        value = JSON.stringify(value);
+      }
+      return `${key}=${value}`;
+    }).join('&');
   }
 
-  createQueryStringUrlencode(params: ObjectMap<any>): string {
-    return Object.keys(params).sort().map((key) => `${key}=${encodeURIComponent(params[key])}`).join('&');
+  private createQueryStringUrlencode(params: ObjectMap<any>): string {
+    return _.keys(params).sort().map((key) => {
+      let value = params[key];
+      if (_.isPlainObject(value)) {
+        value = JSON.stringify(value);
+      }
+      return `${key}=${encodeURIComponent(value)}`
+    }).join('&');
   }
 }

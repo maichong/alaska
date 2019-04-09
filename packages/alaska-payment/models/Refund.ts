@@ -84,7 +84,11 @@ export default class Refund extends Model {
   state: 'pending' | 'success' | 'failed';
   failure: string;
   createdAt: Date;
+
+  // for alaska dev
   weixin_refund_id: string;
+  alipay_biz_content: any;
+  alipay_trade_no: string;
 
   preSave() {
     if (!this.createdAt) {

@@ -5,7 +5,6 @@ class PaymentPlugin extends alaska_1.Plugin {
     constructor() {
         super(...arguments);
         this.instanceOfPaymentPlugin = true;
-        this.currencies = new Set();
     }
 }
 PaymentPlugin.classOfPaymentPlugin = true;
