@@ -66,7 +66,14 @@ async function paginate(ctx) {
     }
     const scope = ctx.state.scope || ctx.query._scope || 'list';
     let filters = await model.createFiltersByContext(ctx);
-    let res = await model.paginateByContext(ctx, { scope, filters: utils_1.mergeFilters(filters, abilityFilters) });
+    let res = await model.paginateByContext(ctx, {
+        scope,
+        filters: utils_1.mergeFilters(filters, abilityFilters),
+        search: ctx.state.search || ctx.query._search,
+        limit: ctx.state.limit || ctx.query._limit,
+        page: ctx.state.page || ctx.query._page,
+        sort: ctx.state.sort || ctx.query._sort,
+    });
     ctx.state.paginateResults = res;
     let results = [];
     for (let record of res.results) {
@@ -94,7 +101,14 @@ async function list(ctx) {
     }
     const scope = ctx.state.scope || ctx.query._scope || 'list';
     let filters = await model.createFiltersByContext(ctx);
-    let res = await model.listByContext(ctx, { scope, filters: utils_1.mergeFilters(filters, abilityFilters) });
+    let res = await model.listByContext(ctx, {
+        scope,
+        filters: utils_1.mergeFilters(filters, abilityFilters),
+        search: ctx.state.search || ctx.query._search,
+        limit: ctx.state.limit || ctx.query._limit,
+        page: ctx.state.page || ctx.query._page,
+        sort: ctx.state.sort || ctx.query._sort,
+    });
     ctx.state.listResults = res;
     let results = [];
     for (let record of res) {
