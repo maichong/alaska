@@ -96,7 +96,7 @@ export interface CallbackData {
 export interface AlipayPaymentPluginConfig extends PluginConfig {
   channels: {
     [channel: string]: AlipayPaymentConfig;
-  }
+  };
 }
 
 export default class AlipayPaymentPlugin extends PaymentPlugin<AlipayPaymentPluginConfig> {

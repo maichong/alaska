@@ -152,7 +152,7 @@ export interface MainService extends Service {
   allServices: Map<string, Service>;
 }
 
-export class Plugin<T extends PluginConfig = any>{
+export class Plugin<T extends PluginConfig = any> {
   static readonly classOfPlugin: true;
   readonly instanceOfPlugin: true;
   service: Service;

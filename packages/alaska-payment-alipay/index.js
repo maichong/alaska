@@ -80,7 +80,7 @@ class AlipayPaymentPlugin extends alaska_payment_1.PaymentPlugin {
         if (config.channel === 'app') {
             return payParams;
         }
-        return GATEWAY + '?' + payParams;
+        return `${GATEWAY}?${payParams}`;
     }
     async verify(data, payment) {
         const config = this.configs.get(payment.type);

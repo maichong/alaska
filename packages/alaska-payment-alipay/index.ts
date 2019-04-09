@@ -68,7 +68,7 @@ export default class AlipayPaymentPlugin extends PaymentPlugin<AlipayPaymentPlug
         total_amount: payment.amount,
         product_code: ''
       }
-    }
+    };
 
     switch (config.channel) {
       case 'app':
@@ -102,7 +102,7 @@ export default class AlipayPaymentPlugin extends PaymentPlugin<AlipayPaymentPlug
       return payParams;
     }
     // web
-    return GATEWAY + '?' + payParams
+    return `${GATEWAY}?${payParams}`;
   }
 
   async verify(data: CallbackData, payment: Payment): Promise<boolean> {
@@ -139,7 +139,7 @@ export default class AlipayPaymentPlugin extends PaymentPlugin<AlipayPaymentPlug
         refund_amount: refund.amount,
         out_request_no: refund.id,
       }, config.biz_content, refund.alipay_biz_content)
-    }
+    };
 
     let link = this.createQueryString(this.paramsFilter(params));
 
@@ -195,7 +195,7 @@ export default class AlipayPaymentPlugin extends PaymentPlugin<AlipayPaymentPlug
       if (_.isPlainObject(value)) {
         value = JSON.stringify(value);
       }
-      return `${key}=${encodeURIComponent(value)}`
+      return `${key}=${encodeURIComponent(value)}`;
     }).join('&');
   }
 }

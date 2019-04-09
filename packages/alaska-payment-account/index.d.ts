@@ -3,7 +3,7 @@ import { PaymentPlugin } from 'alaska-payment';
 
 export interface AccountPaymentPluginConfig extends PluginConfig {
   channels: {
-    [channel: string]: {}
+    [channel: string]: {};
   };
 }
 
