@@ -1,7 +1,7 @@
 import { Driver } from 'alaska';
-import { CacheDriverOptions } from '.';
+import { CacheDriverConfig } from '.';
 
-export default class CacheDriver<T, O extends CacheDriverOptions, D> extends Driver<O, D> {
+export default class CacheDriver<T, C extends CacheDriverConfig, D> extends Driver<C, D> {
   static readonly classOfCacheDriver = true;
   readonly instanceOfCacheDriver = true;
 }

@@ -1,5 +1,5 @@
 import * as nodemailer from 'nodemailer';
-import { Service, DriverOptions, Driver } from 'alaska';
+import { Service, DriverConfig, Driver } from 'alaska';
 import Email from './models/Email';
 import User from 'alaska-user/models/User';
 import Send from './sleds/Send';
@@ -31,11 +31,11 @@ declare const emailService: EmailService;
 
 export default emailService;
 
-export interface EamilDriverOptions extends DriverOptions {
+export interface EamilDriverConfig extends DriverConfig {
   label: string;
 }
 
-export class EmailDriver<T=any, O extends EamilDriverOptions=any, D=any> extends Driver<O, D> {
+export class EmailDriver<T=any, C extends EamilDriverConfig=any, D=any> extends Driver<C, D> {
   static readonly classOfEmailDriver = true;
   readonly instanceOfEmailDriver = true;
 

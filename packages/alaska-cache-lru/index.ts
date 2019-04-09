@@ -2,17 +2,17 @@ import * as LRUCache from 'lru-cache';
 import * as Debugger from 'debug';
 import { Service } from 'alaska';
 import CacheDriver from 'alaska-cache';
-import { LruCacheDriverOptions } from 'alaska-cache-lru';
+import { LruCacheDriverConfig } from 'alaska-cache-lru';
 
 const debug = Debugger('alaska-cache-lru');
 
-export default class LruCacheDriver<T> extends CacheDriver<T, LruCacheDriverOptions<T>, LRUCache<string, T>> {
+export default class LruCacheDriver<T> extends CacheDriver<T, LruCacheDriverConfig<T>, LRUCache<string, T>> {
   _maxAge: number;
 
-  constructor(options: LruCacheDriverOptions<T>, service: Service) {
-    super(options, service);
-    this._maxAge = options.maxAge || 0;
-    this._driver = new LRUCache(options);
+  constructor(config: LruCacheDriverConfig<T>, service: Service) {
+    super(config, service);
+    this._maxAge = config.maxAge || 0;
+    this._driver = new LRUCache(config);
   }
 
   /**

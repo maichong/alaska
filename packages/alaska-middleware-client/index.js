@@ -2,16 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Client_1 = require("alaska-client/models/Client");
 const User_1 = require("alaska-user/models/User");
-function default_1(options, main) {
-    options = options || {};
+function default_1(config, main) {
+    config = config || {};
     return async function clientMiddleware(ctx, next) {
         if (!ctx.client) {
             let token = '';
-            if (options.getToken) {
-                token = options.getToken(ctx);
+            if (config.getToken) {
+                token = config.getToken(ctx);
             }
             else {
-                token = ctx.headers[options.tokenHeader || 'client-token'];
+                token = ctx.headers[config.tokenHeader || 'client-token'];
             }
             if (token) {
                 let client = await Client_1.default.findOne({ token }).session(ctx.dbSession);
@@ -19,8 +19,8 @@ function default_1(options, main) {
                     await client.remove();
                     client = null;
                 }
-                if (options.extendTime && client && client.expiredAt < new Date(Date.now() + options.extendTime)) {
-                    client.expiredAt = new Date(client.expiredAt.getTime() + options.extendTime);
+                if (config.extendTime && client && client.expiredAt < new Date(Date.now() + config.extendTime)) {
+                    client.expiredAt = new Date(client.expiredAt.getTime() + config.extendTime);
                     await client.save({ session: ctx.dbSession });
                 }
                 if (client) {

@@ -40,7 +40,7 @@ Sms.fields = {
     driver: {
         label: 'Driver',
         type: 'select',
-        options: __1.default.getDriverOptionsAsync()
+        options: __1.default.getDriverConfigAsync()
     },
     content: {
         label: 'Content',

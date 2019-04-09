@@ -1,12 +1,12 @@
-import CacheDriver, { LockDriverOptions } from 'alaska-lock';
+import CacheDriver, { LockDriverConfig } from 'alaska-lock';
 import { ClientOpts, RedisClient } from 'redis';
 import * as Redlock from 'redlock';
 
 type ServerConfig = string | ClientOpts;
 
-export interface RedisLockDriverOptions extends LockDriverOptions {
+export interface RedisLockDriverConfig extends LockDriverConfig {
   servers: ServerConfig | ServerConfig[];
 }
 
-export default class RedisLockDriver extends CacheDriver<RedisLockDriverOptions, Redlock> {
+export default class RedisLockDriver extends CacheDriver<RedisLockDriverConfig, Redlock> {
 }

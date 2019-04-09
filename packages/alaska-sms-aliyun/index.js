@@ -17,13 +17,13 @@ class SmsAliyunDriver extends driver_1.default {
         let object = {
             RegionId: 'cn-hangzhou',
             Action: 'SendSms',
-            SignName: config.SignName || this.options.SignName,
+            SignName: config.SignName || this.config.SignName,
             TemplateCode: config.TemplateCode,
             PhoneNumbers: to,
             TemplateParam: JSON.stringify(config.params),
             Format: 'JSON',
             Version: '2017-05-25',
-            AccessKeyId: config.AccessKeyId || this.options.AccessKeyId,
+            AccessKeyId: config.AccessKeyId || this.config.AccessKeyId,
             SignatureMethod: 'HMAC-SHA1',
             Timestamp: moment().toISOString(),
             SignatureVersion: '1.0',
@@ -34,7 +34,7 @@ class SmsAliyunDriver extends driver_1.default {
             .map((key) => (`${encodeURIComponent(key)}=${encodeURIComponent(object[key])}`))
             .join('&');
         let stringToSign = `POST&%2F&${encodeURIComponent(params)}`;
-        let hmac = crypto.createHmac('sha1', `${config.AccessKeySecret || this.options.AccessKeySecret}&`);
+        let hmac = crypto.createHmac('sha1', `${config.AccessKeySecret || this.config.AccessKeySecret}&`);
         hmac.update(Buffer.from(stringToSign, 'utf-8'));
         let sign = hmac.digest('base64');
         return await api.post('http://dysmsapi.aliyuncs.com/', {

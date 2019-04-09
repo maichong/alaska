@@ -1,7 +1,7 @@
 import { Driver } from 'alaska';
-import { SubscribeDriverOptions } from '.';
+import { SubscribeDriverConfig } from '.';
 
-export default class SubscribeDriver<T, O extends SubscribeDriverOptions, D> extends Driver<O, D> {
+export default class SubscribeDriver<T, C extends SubscribeDriverConfig, D> extends Driver<C, D> {
   static readonly classOfSubscribeDriver = true;
   readonly instanceOfSubscribeDriver = true;
 }

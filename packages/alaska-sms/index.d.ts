@@ -1,4 +1,4 @@
-import { Service, Driver, DriverOptions } from 'alaska';
+import { Service, Driver, DriverConfig } from 'alaska';
 import { SelectOption } from '@samoyed/types';
 import Sms from './models/Sms';
 import Send from './sleds/Send';
@@ -12,11 +12,11 @@ export interface SendParams {
   values: { [key: string]: any }; //短信内容中填充的数据
 }
 
-export interface SmsDriverOptions extends DriverOptions {
+export interface SmsDriverConfig extends DriverConfig {
   label: string; //驱动显示名称
 }
 
-export class SmsDriver<T=any, O extends SmsDriverOptions=any, D=any> extends Driver<O, D> {
+export class SmsDriver<T=any, C extends SmsDriverConfig=any, D=any> extends Driver<C, D> {
   static readonly classOfSmsDriver: true;
   readonly instanceOfSmsDriver: true;
 
@@ -34,7 +34,7 @@ export class SmsService extends Service {
   defaultDriver: void | SmsDriver<any, any>;
   driversMap: Map<string, SmsDriver<any, any>>;
 
-  getDriverOptionsAsync(): Promise<SelectOption[]>
+  getDriverConfigAsync(): Promise<SelectOption[]>
 }
 
 declare const smsService: SmsService;

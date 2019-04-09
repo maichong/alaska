@@ -1,7 +1,7 @@
 import * as Debugger from 'debug';
 import { Service } from 'alaska';
 import QueueDriver from 'alaska-queue';
-import { ArrayQueueDriverOptions, ArrayQueueDriverType } from 'alaska-queue-array';
+import { ArrayQueueDriverConfig, ArrayQueueDriverType } from 'alaska-queue-array';
 
 const debug = Debugger('alaska-queue-redis');
 
@@ -15,13 +15,13 @@ function sleep(seconds: number): Promise<void> {
   });
 }
 
-export default class RedisQueueDriver<T> extends QueueDriver<T, ArrayQueueDriverOptions, ArrayQueueDriverType<T>> {
+export default class RedisQueueDriver<T> extends QueueDriver<T, ArrayQueueDriverConfig, ArrayQueueDriverType<T>> {
   _key: string;
   _free: boolean;
 
-  constructor(options: ArrayQueueDriverOptions, service: Service) {
-    super(options, service);
-    this._key = options.key;
+  constructor(config: ArrayQueueDriverConfig, service: Service) {
+    super(config, service);
+    this._key = config.key;
     this._free = false;
     if (!queues[this._key]) {
       queues[this._key] = [];

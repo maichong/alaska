@@ -3,36 +3,36 @@ import { Service } from 'alaska';
 import * as redis from 'redis';
 import * as Redlock from 'redlock';
 import LockDriver from 'alaska-lock';
-import { RedisLockDriverOptions } from '.';
+import { RedisLockDriverConfig } from '.';
 
 const debug = Debugger('alaska-lock-redis');
 
-export default class RedisLockDriver extends LockDriver<RedisLockDriverOptions, Redlock> {
+export default class RedisLockDriver extends LockDriver<RedisLockDriverConfig, Redlock> {
   _lock: Redlock.Lock;
   _value: string | null;
 
-  constructor(options: RedisLockDriverOptions, service: Service) {
-    super(options, service);
+  constructor(config: RedisLockDriverConfig, service: Service) {
+    super(config, service);
     let servers = [];
-    if (options.servers instanceof Array) {
-      servers = options.servers.map((server: string) => redis.createClient(server));
+    if (config.servers instanceof Array) {
+      servers = config.servers.map((server: string) => redis.createClient(server));
     } else {
-      servers.push(redis.createClient(<string>options.servers));
+      servers.push(redis.createClient(<string>config.servers));
     }
 
-    if (!options.retryCount) options.retryCount = 10;
-    if (!options.retryDelay) options.retryDelay = 200;
+    if (!config.retryCount) config.retryCount = 10;
+    if (!config.retryDelay) config.retryDelay = 200;
 
-    this._driver = new Redlock(servers, options);
+    this._driver = new Redlock(servers, config);
   }
 
   async lock(ttl?: number): Promise<void> {
-    let resource = this.options.resource;
+    let resource = this.config.resource;
     debug('lock', resource);
     if (!resource) {
       throw new Error('Missing resource for lock');
     }
-    ttl = ttl || this.options.ttl || 2000;
+    ttl = ttl || this.config.ttl || 2000;
     let lock = await this._driver.lock(resource, ttl);
     this._lock = lock;
     this._value = lock.value;
@@ -40,15 +40,15 @@ export default class RedisLockDriver extends LockDriver<RedisLockDriverOptions, 
   }
 
   async extend(ttl?: number): Promise<void> {
-    debug('extend', this.options.resource, this._value);
-    ttl = ttl || this.options.ttl || 2000;
+    debug('extend', this.config.resource, this._value);
+    ttl = ttl || this.config.ttl || 2000;
     let lock = await this._lock.extend(ttl);
     this._lock = lock;
     this._value = lock.value;
   }
 
   async unlock(): Promise<void> {
-    debug('unlock', this.options.resource, this._value);
+    debug('unlock', this.config.resource, this._value);
     await this._lock.unlock();
     this._value = null;
   }

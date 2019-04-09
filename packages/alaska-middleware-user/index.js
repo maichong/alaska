@@ -4,7 +4,7 @@ const alaska_1 = require("alaska");
 const User_1 = require("alaska-user/models/User");
 const Login_1 = require("alaska-user/sleds/Login");
 const encryption_1 = require("alaska-user/encryption");
-function default_1(options, main) {
+function default_1(config, main) {
     let key = main.config.get('autoLogin.key');
     let secret = main.config.get('autoLogin.secret');
     let encryption;
@@ -57,7 +57,7 @@ function default_1(options, main) {
                 }
             }
         }
-        if (!ctx.user && options.enableBasicAuth && ctx.headers.authorization) {
+        if (!ctx.user && config.enableBasicAuth && ctx.headers.authorization) {
             try {
                 let [type, code] = ctx.headers.authorization.split(' ');
                 if (type === 'Basic' && code) {

@@ -1,6 +1,6 @@
-import { Driver, DriverOptions } from 'alaska';
+import { Driver, DriverConfig } from 'alaska';
 
-export interface LockDriverOptions extends DriverOptions {
+export interface LockDriverConfig extends DriverConfig {
   resource: string;
   /**
    * 重试次数，默认 10
@@ -16,7 +16,7 @@ export interface LockDriverOptions extends DriverOptions {
   ttl?: number;
 }
 
-export default class LockDriver<O extends LockDriverOptions=any, D=any> extends Driver<O, D> {
+export default class LockDriver<C extends LockDriverConfig=any, D=any> extends Driver<C, D> {
   static readonly classOfLockDriver: true;
   readonly instanceOfLockDriver: true;
   readonly locked: boolean;

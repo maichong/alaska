@@ -38,7 +38,7 @@ class SmsService extends alaska_1.Service {
             this._optionsPromiseCallback(driversOptions);
         }
     }
-    getDriverOptionsAsync() {
+    getDriverConfigAsync() {
         if (!this._optionsPromise) {
             this._optionsPromise = new Promise((resolve) => {
                 if (this.driversOptions) {

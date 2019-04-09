@@ -1,10 +1,10 @@
-import { Driver, DriverOptions } from 'alaska';
+import { Driver, DriverConfig } from 'alaska';
 
-export interface SubscribeDriverOptions extends DriverOptions {
+export interface SubscribeDriverConfig extends DriverConfig {
   channel: string;
 }
 
-export default class SubscribeDriver<T, O extends SubscribeDriverOptions=any, D=any> extends Driver<O, D> {
+export default class SubscribeDriver<T, C extends SubscribeDriverConfig=any, D=any> extends Driver<C, D> {
   static readonly classOfSubscribeDriver: true;
   readonly instanceOfSubscribeDriver: true;
 

@@ -12,9 +12,9 @@ function sleep(seconds) {
     });
 }
 class RedisQueueDriver extends alaska_queue_1.default {
-    constructor(options, service) {
-        super(options, service);
-        this._key = options.key;
+    constructor(config, service) {
+        super(config, service);
+        this._key = config.key;
         this._free = false;
         if (!queues[this._key]) {
             queues[this._key] = [];

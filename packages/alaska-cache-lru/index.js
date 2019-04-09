@@ -5,10 +5,10 @@ const Debugger = require("debug");
 const alaska_cache_1 = require("alaska-cache");
 const debug = Debugger('alaska-cache-lru');
 class LruCacheDriver extends alaska_cache_1.default {
-    constructor(options, service) {
-        super(options, service);
-        this._maxAge = options.maxAge || 0;
-        this._driver = new LRUCache(options);
+    constructor(config, service) {
+        super(config, service);
+        this._maxAge = config.maxAge || 0;
+        this._driver = new LRUCache(config);
     }
     set(key, value, lifetime) {
         debug('set', key, '=>', value, '(', typeof lifetime !== 'undefined' ? lifetime : `{${this._maxAge}}`, ')');

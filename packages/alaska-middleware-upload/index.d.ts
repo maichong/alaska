@@ -1,5 +1,5 @@
 import { ObjectMap } from 'alaska';
-import { MiddlewareGenerator, MiddlewareOptions } from 'alaska-http';
+import { MiddlewareGenerator, MiddlewareConfig } from 'alaska-http';
 import { ReadStream } from 'fs';
 
 declare module 'alaska-http' {
@@ -17,9 +17,9 @@ export interface UploadFile extends ReadStream {
   mimeType: string;
 }
 
-export interface UploadMiddlewareOptions extends MiddlewareOptions {
+export interface UploadMiddlewareConfig extends MiddlewareConfig {
 }
 
-declare const uploadMiddleware: MiddlewareGenerator<UploadMiddlewareOptions>;
+declare const uploadMiddleware: MiddlewareGenerator<UploadMiddlewareConfig>;
 
 export default uploadMiddleware;

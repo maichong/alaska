@@ -5,10 +5,10 @@ const Debugger = require("debug");
 const alaska_queue_1 = require("alaska-queue");
 const debug = Debugger('alaska-queue-redis');
 class RedisQueueDriver extends alaska_queue_1.default {
-    constructor(options, service) {
-        super(options, service);
-        this._key = options.key;
-        this._driver = redis.createClient(options);
+    constructor(config, service) {
+        super(config, service);
+        this._key = config.key;
+        this._driver = redis.createClient(config);
     }
     push(item) {
         debug('push', item);

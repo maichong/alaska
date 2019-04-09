@@ -1,7 +1,7 @@
 
-import { SmsDriver, SmsDriverOptions } from 'alaska-sms';
+import { SmsDriver, SmsDriverConfig } from 'alaska-sms';
 
-export interface SmsTestOptions extends SmsDriverOptions {
+export interface SmsTestOptions extends SmsDriverConfig {
 
 }
 

@@ -7,21 +7,21 @@ const delay_1 = require("delay");
 const debug = Debugger('alaska-lock-memory');
 const locks = new Map();
 class MemoryLockDriver extends alaska_lock_1.default {
-    constructor(options, service) {
-        super(options, service);
+    constructor(config, service) {
+        super(config, service);
         this._driver = locks;
         this.id = '';
     }
     lock(ttl) {
         if (this.locked || this.id)
             return Promise.reject(new Error('Aready locked'));
-        let retryCount = this.options.retryCount || 10;
-        let retryDelay = this.options.retryDelay || 200;
-        let resource = this.options.resource;
+        let retryCount = this.config.retryCount || 10;
+        let retryDelay = this.config.retryDelay || 200;
+        let resource = this.config.resource;
         if (!resource) {
             throw new Error('Missing resource for lock');
         }
-        ttl = ttl || this.options.ttl || 2000;
+        ttl = ttl || this.config.ttl || 2000;
         let id = random();
         this.id = id;
         let me = this;
@@ -59,11 +59,11 @@ class MemoryLockDriver extends alaska_lock_1.default {
     extend(ttl) {
         if (!this.locked)
             return Promise.reject(new Error('Extend lock failed, not locked yet.'));
-        let resource = this.options.resource;
+        let resource = this.config.resource;
         let item = locks.get(resource);
         if (!item || item.id !== this.id)
             return Promise.reject(new Error('Extend lock failed.'));
-        ttl = ttl || this.options.ttl || 2000;
+        ttl = ttl || this.config.ttl || 2000;
         clearTimeout(item.timer);
         item.expiredAt += ttl;
         let me = this;
@@ -82,7 +82,7 @@ class MemoryLockDriver extends alaska_lock_1.default {
     unlock() {
         if (!this.locked)
             return Promise.resolve();
-        let resource = this.options.resource;
+        let resource = this.config.resource;
         let item = locks.get(resource);
         let id = this.id;
         this.id = '';

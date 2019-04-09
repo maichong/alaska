@@ -1,11 +1,11 @@
 import * as Cookies from 'cookies';
-import { MiddlewareGenerator, MiddlewareOptions } from 'alaska-http';
+import { MiddlewareGenerator, MiddlewareConfig } from 'alaska-http';
 
-export interface PromoterMiddlewareOptions extends MiddlewareOptions {
+export interface PromoterMiddlewareConfig extends MiddlewareConfig {
   queryKey?: string;
   cookieOptions?: Cookies.SetOption;
 }
 
-declare const PromoterMiddleware: MiddlewareGenerator<PromoterMiddlewareOptions>;
+declare const PromoterMiddleware: MiddlewareGenerator<PromoterMiddlewareConfig>;
 
 export default PromoterMiddleware;

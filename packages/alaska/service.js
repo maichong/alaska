@@ -41,11 +41,11 @@ class Service {
     isMain() {
         return this.main === this;
     }
-    createDriver(options) {
+    createDriver(config) {
         let driver;
-        if (options.recycled) {
+        if (config.recycled) {
             for (let d of this.drivers) {
-                if (d.type === options.type && d.idle && _.isEqual(options, d.options)) {
+                if (d.type === config.type && d.idle && _.isEqual(config, d.config)) {
                     driver = d;
                     break;
                 }
@@ -55,11 +55,11 @@ class Service {
             }
         }
         if (!driver) {
-            const DriverClass = this.main.modules.libraries[options.type];
+            const DriverClass = this.main.modules.libraries[config.type];
             if (!DriverClass)
-                throw new Error(`Can not find driver ${options.type}`);
-            driver = new DriverClass(options, this);
-            if (options.recycled) {
+                throw new Error(`Can not find driver ${config.type}`);
+            driver = new DriverClass(config, this);
+            if (config.recycled) {
                 this.drivers.add(driver);
                 if (!this._idleTimer) {
                     this._idleTimer = global.setInterval(() => this._destroyIdleDrivers(), 60 * 1000);

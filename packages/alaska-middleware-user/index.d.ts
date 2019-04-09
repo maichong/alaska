@@ -1,9 +1,9 @@
-import { MiddlewareGenerator, MiddlewareOptions } from 'alaska-http';
+import { MiddlewareGenerator, MiddlewareConfig } from 'alaska-http';
 
-export interface UserMiddlewareOptions extends MiddlewareOptions {
+export interface UserMiddlewareConfig extends MiddlewareConfig {
   enableBasicAuth?: boolean;
 }
 
-declare const userMiddleware: MiddlewareGenerator<UserMiddlewareOptions>;
+declare const userMiddleware: MiddlewareGenerator<UserMiddlewareConfig>;
 
 export default userMiddleware;

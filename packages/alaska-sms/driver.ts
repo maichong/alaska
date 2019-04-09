@@ -1,7 +1,7 @@
 import { Driver } from 'alaska';
-import { SmsDriverOptions } from '.';
+import { SmsDriverConfig } from '.';
 
-export default class SmsDriver<T, O extends SmsDriverOptions, D> extends Driver<O, D> {
+export default class SmsDriver<T, C extends SmsDriverConfig, D> extends Driver<C, D> {
   static readonly classOfSmsDriver = true;
   readonly instanceOfSmsDriver = true;
 }

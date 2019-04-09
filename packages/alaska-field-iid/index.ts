@@ -1,5 +1,5 @@
 import NumberField from 'alaska-field-number';
-import CacheDriver, { CacheDriverOptions } from 'alaska-cache';
+import CacheDriver, { CacheDriverConfig } from 'alaska-cache';
 
 export default class IIDField extends NumberField {
   static fieldName = 'iid';
@@ -9,7 +9,7 @@ export default class IIDField extends NumberField {
     filter: 'NumberFieldFilter',
   };
 
-  cache: CacheDriverOptions;
+  cache: CacheDriverConfig;
   key: string;
 
   init() {

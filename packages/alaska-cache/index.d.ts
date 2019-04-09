@@ -1,10 +1,10 @@
-import { Driver, DriverOptions } from 'alaska';
+import { Driver, DriverConfig } from 'alaska';
 
-export interface CacheDriverOptions extends DriverOptions {
+export interface CacheDriverConfig extends DriverConfig {
   maxAge?: number;
 }
 
-export default class CacheDriver<T, O extends CacheDriverOptions=any, D=any> extends Driver<O, D> {
+export default class CacheDriver<T, C extends CacheDriverConfig=any, D=any> extends Driver<C, D> {
   static readonly classOfCacheDriver: true;
   readonly instanceOfCacheDriver: true;
 

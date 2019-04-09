@@ -3,11 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const random = require("string-random");
 const pathToRegexp = require("path-to-regexp");
 const session_1 = require("./session");
-function default_1(options, main) {
-    const storeOpts = options.store;
+function default_1(config, main) {
+    const storeOpts = config.store;
     if (!storeOpts)
         throw new Error('Missing config [/middlewares.alaska-middleware-session.store]');
-    const cookieOpts = options.cookie || {};
+    const cookieOpts = config.cookie || {};
     const key = cookieOpts.key || 'alaska.sid';
     const Store = main.modules.libraries[storeOpts.type];
     if (!Store)
@@ -25,13 +25,13 @@ function default_1(options, main) {
             throw new Error(`Invalid session ignore option: ${String(input)}`);
         }
     }
-    if (options.ignore) {
+    if (config.ignore) {
         ignore = [];
-        if (Array.isArray(options.ignore)) {
-            options.ignore.forEach(convert);
+        if (Array.isArray(config.ignore)) {
+            config.ignore.forEach(convert);
         }
         else {
-            convert(options.ignore);
+            convert(config.ignore);
         }
     }
     return async function sessionMiddleware(ctx, next) {
@@ -46,8 +46,8 @@ function default_1(options, main) {
         }
         ctx.sessionKey = key;
         let sid = '';
-        if (cookieOpts && options.getSessionId) {
-            ctx.sessionId = options.getSessionId(ctx, key, cookieOpts);
+        if (cookieOpts && config.getSessionId) {
+            ctx.sessionId = config.getSessionId(ctx, key, cookieOpts);
             sid = ctx.sessionId;
         }
         else {
@@ -62,8 +62,8 @@ function default_1(options, main) {
         else {
             ctx.sessionId = random(24);
             sid = ctx.sessionId;
-            if (cookieOpts && options.setSessionId) {
-                options.setSessionId(ctx, key, sid, cookieOpts);
+            if (cookieOpts && config.setSessionId) {
+                config.setSessionId(ctx, key, sid, cookieOpts);
             }
             else {
                 ctx.cookies.set(key, sid, cookieOpts);
@@ -107,8 +107,8 @@ function default_1(options, main) {
         let jsonString = JSON.stringify(json);
         function onNext() {
             if (session === false) {
-                if (cookieOpts && options.setSessionId) {
-                    options.setSessionId(ctx, key, '', cookieOpts);
+                if (cookieOpts && config.setSessionId) {
+                    config.setSessionId(ctx, key, '', cookieOpts);
                 }
                 else {
                     ctx.cookies.set(key, '', cookieOpts);

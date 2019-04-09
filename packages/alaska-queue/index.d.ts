@@ -1,10 +1,10 @@
-import { Driver, DriverOptions } from 'alaska';
+import { Driver, DriverConfig } from 'alaska';
 
-export interface QueueDriverOptions extends DriverOptions {
+export interface QueueDriverConfig extends DriverConfig {
   key: string;
 }
 
-export default class QueueDriver<T, O extends QueueDriverOptions=any, D=any> extends Driver<O, D> {
+export default class QueueDriver<T, C extends QueueDriverConfig=any, D=any> extends Driver<C, D> {
   static readonly classOfQueueDriver: true;
   readonly instanceOfQueueDriver: true;
 

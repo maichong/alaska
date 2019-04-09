@@ -2,11 +2,11 @@ import * as redis from 'redis';
 import * as Debugger from 'debug';
 import { Service } from 'alaska';
 import SubscribeDriver from 'alaska-subscribe';
-import { RedisSubscribeDriverOptions } from 'alaska-subscribe-redis';
+import { RedisSubscribeDriverConfig } from 'alaska-subscribe-redis';
 
 const debug = Debugger('alaska-subscribe-redis');
 
-export default class RedisSubscribeDriver<T> extends SubscribeDriver<T, RedisSubscribeDriverOptions, redis.RedisClient> {
+export default class RedisSubscribeDriver<T> extends SubscribeDriver<T, RedisSubscribeDriverConfig, redis.RedisClient> {
   channel: string;
   _driver: redis.RedisClient;
   _subscribed: boolean;
@@ -14,10 +14,10 @@ export default class RedisSubscribeDriver<T> extends SubscribeDriver<T, RedisSub
   _messages: Object[];
   _onMessage: Function | null;
   _listener: any;
-  constructor(options: RedisSubscribeDriverOptions, service: Service) {
-    super(options, service);
-    this.channel = options.channel;
-    this._driver = redis.createClient(options);
+  constructor(config: RedisSubscribeDriverConfig, service: Service) {
+    super(config, service);
+    this.channel = config.channel;
+    this._driver = redis.createClient(config);
     this._subscribed = false;
     this._messages = [];
     this._onMessage = null;//message callback

@@ -41,7 +41,7 @@ class SmsService extends Service {
     }
   }
 
-  getDriverOptionsAsync(): Promise<SelectOption[]> {
+  getDriverConfigAsync(): Promise<SelectOption[]> {
     if (!this._optionsPromise) {
       this._optionsPromise = new Promise((resolve) => {
         if (this.driversOptions) {

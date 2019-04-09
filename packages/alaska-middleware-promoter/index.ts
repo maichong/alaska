@@ -1,11 +1,11 @@
 import { MainService } from 'alaska';
 import { Context } from 'alaska-http';
 import { Middleware } from 'koa';
-import { PromoterMiddlewareOptions } from '.';
+import { PromoterMiddlewareConfig } from '.';
 
-export default function (options: PromoterMiddlewareOptions, main: MainService): Middleware {
-  let queryKey = options.queryKey || 'p';
-  let cookieOptions = options.cookieOptions;
+export default function (config: PromoterMiddlewareConfig, main: MainService): Middleware {
+  let queryKey = config.queryKey || 'p';
+  let cookieOptions = config.cookieOptions;
   return function promoterMiddleware(ctx: Context, next: Function): Function {
     let promoter = ctx.query[queryKey];
     if (promoter) {

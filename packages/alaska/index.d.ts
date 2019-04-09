@@ -102,7 +102,7 @@ export class Service {
   /**
    * 创建一个驱动对象
    */
-  createDriver(options: DriverOptions): Driver<any, any>;
+  createDriver(config: DriverConfig): Driver<any, any>;
   /**
    * 获取配置，并确保配置信息已经完成初始化
    * @returns {Promise<Config>}
@@ -179,7 +179,7 @@ declare class Loader {
   constructor(metadata: ModulesMetadata, extConfig: ExtensionConfig);
 }
 
-export interface DriverOptions {
+export interface DriverConfig {
   /**
    * 驱动库名称
    */
@@ -190,17 +190,17 @@ export interface DriverOptions {
   recycled?: boolean;
 }
 
-export class Driver<O extends DriverOptions, D> {
+export class Driver<C extends DriverConfig, D> {
   static readonly classOfDriver: true;
   readonly instanceOfDriver: true;
   type: string;
   service: Service;
-  options: O;
+  config: C;
   recycled: boolean;
   idle: null | Date;
   protected _driver: D;
 
-  constructor(options: O, service: Service);
+  constructor(config: C, service: Service);
 
   /**
    * 获取底层驱动

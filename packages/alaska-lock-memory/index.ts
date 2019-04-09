@@ -3,29 +3,29 @@ import { Service } from 'alaska';
 import LockDriver from 'alaska-lock';
 import * as random from 'string-random';
 import delay from 'delay';
-import { MemoryLockDriverOptions, LockMap } from '.';
+import { MemoryLockDriverConfig, LockMap } from '.';
 
 const debug = Debugger('alaska-lock-memory');
 const locks: LockMap = new Map();
 
-export default class MemoryLockDriver extends LockDriver<MemoryLockDriverOptions, LockMap> {
+export default class MemoryLockDriver extends LockDriver<MemoryLockDriverConfig, LockMap> {
   id: string;
 
-  constructor(options: MemoryLockDriverOptions, service: Service) {
-    super(options, service);
+  constructor(config: MemoryLockDriverConfig, service: Service) {
+    super(config, service);
     this._driver = locks;
     this.id = '';
   }
 
   lock(ttl?: number): Promise<void> {
     if (this.locked || this.id) return Promise.reject(new Error('Aready locked'));
-    let retryCount = this.options.retryCount || 10;
-    let retryDelay = this.options.retryDelay || 200;
-    let resource = this.options.resource;
+    let retryCount = this.config.retryCount || 10;
+    let retryDelay = this.config.retryDelay || 200;
+    let resource = this.config.resource;
     if (!resource) {
       throw new Error('Missing resource for lock');
     }
-    ttl = ttl || this.options.ttl || 2000;
+    ttl = ttl || this.config.ttl || 2000;
     let id = random();
     this.id = id;
     let me = this;
@@ -68,10 +68,10 @@ export default class MemoryLockDriver extends LockDriver<MemoryLockDriverOptions
 
   extend(ttl?: number): Promise<void> {
     if (!this.locked) return Promise.reject(new Error('Extend lock failed, not locked yet.'));
-    let resource = this.options.resource;
+    let resource = this.config.resource;
     let item = locks.get(resource);
     if (!item || item.id !== this.id) return Promise.reject(new Error('Extend lock failed.'));
-    ttl = ttl || this.options.ttl || 2000;
+    ttl = ttl || this.config.ttl || 2000;
     clearTimeout(item.timer);
     item.expiredAt += ttl;
     let me = this;
@@ -91,7 +91,7 @@ export default class MemoryLockDriver extends LockDriver<MemoryLockDriverOptions
 
   unlock(): Promise<void> {
     if (!this.locked) return Promise.resolve();
-    let resource = this.options.resource;
+    let resource = this.config.resource;
     let item = locks.get(resource);
     let id = this.id;
     this.id = '';

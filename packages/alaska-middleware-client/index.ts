@@ -4,17 +4,17 @@ import User from 'alaska-user/models/User';
 import { Context } from 'alaska-http';
 import { Middleware } from 'koa';
 import { } from 'alaska-client';
-import { ClientMiddlewareOptions } from '.';
+import { ClientMiddlewareConfig } from '.';
 
-export default function (options: ClientMiddlewareOptions, main: MainService): Middleware {
-  options = options || {};
+export default function (config: ClientMiddlewareConfig, main: MainService): Middleware {
+  config = config || {};
   return async function clientMiddleware(ctx: Context, next): Promise<void> {
     if (!ctx.client) {
       let token = '';
-      if (options.getToken) {
-        token = options.getToken(ctx);
+      if (config.getToken) {
+        token = config.getToken(ctx);
       } else {
-        token = ctx.headers[options.tokenHeader || 'client-token'];
+        token = ctx.headers[config.tokenHeader || 'client-token'];
       }
       if (token) {
         let client = await Client.findOne({ token }).session(ctx.dbSession);
@@ -25,8 +25,8 @@ export default function (options: ClientMiddlewareOptions, main: MainService): M
           client = null;
         }
 
-        if (options.extendTime && client && client.expiredAt < new Date(Date.now() + options.extendTime)) {
-          client.expiredAt = new Date(client.expiredAt.getTime() + options.extendTime);
+        if (config.extendTime && client && client.expiredAt < new Date(Date.now() + config.extendTime)) {
+          client.expiredAt = new Date(client.expiredAt.getTime() + config.extendTime);
           await client.save({ session: ctx.dbSession });
         }
 

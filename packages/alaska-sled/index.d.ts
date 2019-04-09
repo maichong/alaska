@@ -1,7 +1,7 @@
 import { MainService, Service, Extension, ObjectMap } from 'alaska';
-import QueueDriver, { QueueDriverOptions } from 'alaska-queue';
-import SubscribeDriver, { SubscribeDriverOptions } from 'alaska-subscribe';
-import LockDriver, { LockDriverOptions } from 'alaska-lock';
+import QueueDriver, { QueueDriverConfig } from 'alaska-queue';
+import SubscribeDriver, { SubscribeDriverConfig } from 'alaska-subscribe';
+import LockDriver, { LockDriverConfig } from 'alaska-lock';
 import * as mongodb from 'mongodb';
 
 declare module 'alaska' {
@@ -50,9 +50,9 @@ export interface SledHook {
 }
 
 export interface SledConfig {
-  queue?: QueueDriverOptions;
-  subscribe?: SubscribeDriverOptions;
-  lock?: LockDriverOptions;
+  queue?: QueueDriverConfig;
+  subscribe?: SubscribeDriverConfig;
+  lock?: LockDriverConfig;
 }
 
 export interface SledTask<T, R> {

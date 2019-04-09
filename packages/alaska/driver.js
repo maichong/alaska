@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Driver {
-    constructor(options, service) {
-        this.type = options.type;
+    constructor(config, service) {
+        this.type = config.type;
         this.service = service;
-        this.options = options;
+        this.config = config;
         this.instanceOfDriver = true;
-        this.recycled = options.recycled || false;
+        this.recycled = config.recycled || false;
         this._driver = null;
         this.idle = null;
     }

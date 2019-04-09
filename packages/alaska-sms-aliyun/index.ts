@@ -22,13 +22,13 @@ export default class SmsAliyunDriver<T> extends SmsDriver<T, SmsAliyunOptions, n
     let object: { [key: string]: any } = {
       RegionId: 'cn-hangzhou',
       Action: 'SendSms',
-      SignName: config.SignName || this.options.SignName,
+      SignName: config.SignName || this.config.SignName,
       TemplateCode: config.TemplateCode,
       PhoneNumbers: to,
       TemplateParam: JSON.stringify(config.params), //不能包含中文,只能[0-9][A-Z][a-z]
       Format: 'JSON',
       Version: '2017-05-25',
-      AccessKeyId: config.AccessKeyId || this.options.AccessKeyId,
+      AccessKeyId: config.AccessKeyId || this.config.AccessKeyId,
       SignatureMethod: 'HMAC-SHA1',
       Timestamp: moment().toISOString(),
       SignatureVersion: '1.0',
@@ -42,7 +42,7 @@ export default class SmsAliyunDriver<T> extends SmsDriver<T, SmsAliyunOptions, n
 
     let stringToSign = `POST&%2F&${encodeURIComponent(params)}`;
 
-    let hmac = crypto.createHmac('sha1', `${config.AccessKeySecret || this.options.AccessKeySecret}&`);
+    let hmac = crypto.createHmac('sha1', `${config.AccessKeySecret || this.config.AccessKeySecret}&`);
 
     hmac.update(Buffer.from(stringToSign, 'utf-8'));
 

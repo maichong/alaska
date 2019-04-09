@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function default_1(options, main) {
-    let queryKey = options.queryKey || 'p';
-    let cookieOptions = options.cookieOptions;
+function default_1(config, main) {
+    let queryKey = config.queryKey || 'p';
+    let cookieOptions = config.cookieOptions;
     return function promoterMiddleware(ctx, next) {
         let promoter = ctx.query[queryKey];
         if (promoter) {

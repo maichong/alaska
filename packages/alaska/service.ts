@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import * as Debugger from 'debug';
 import * as collie from 'collie';
 import * as statuses from 'statuses';
-import { ServiceOptions, Extension, Plugin, MainService, Service as ServiceType, ServiceConfig, ObjectMap, DriverOptions } from '.';
+import { ServiceOptions, Extension, Plugin, MainService, Service as ServiceType, ServiceConfig, ObjectMap, DriverConfig } from '.';
 import { Modules, ServiceModules, PluginModules } from 'alaska-modules';
 import Config from './config';
 import { NormalError } from './errors';
@@ -71,11 +71,11 @@ export default class Service {
     return this.main === this;
   }
 
-  createDriver(options: DriverOptions): Driver<any, any> {
+  createDriver(config: DriverConfig): Driver<any, any> {
     let driver: Driver<any, any>;
-    if (options.recycled) {
+    if (config.recycled) {
       for (let d of this.drivers) {
-        if (d.type === options.type && d.idle && _.isEqual(options, d.options)) {
+        if (d.type === config.type && d.idle && _.isEqual(config, d.config)) {
           driver = d;
           break;
         }
@@ -85,11 +85,11 @@ export default class Service {
       }
     }
     if (!driver) {
-      const DriverClass: typeof Driver = this.main.modules.libraries[options.type];
-      if (!DriverClass) throw new Error(`Can not find driver ${options.type}`);
+      const DriverClass: typeof Driver = this.main.modules.libraries[config.type];
+      if (!DriverClass) throw new Error(`Can not find driver ${config.type}`);
       // @ts-ignore this 和 Service 类型兼容
-      driver = new DriverClass(options, this);
-      if (options.recycled) {
+      driver = new DriverClass(config, this);
+      if (config.recycled) {
         this.drivers.add(driver);
         if (!this._idleTimer) {
           this._idleTimer = global.setInterval(() => this._destroyIdleDrivers(), 60 * 1000);

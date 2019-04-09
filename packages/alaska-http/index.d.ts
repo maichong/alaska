@@ -17,7 +17,7 @@ declare module 'alaska' {
 
   export interface ConfigData {
     middlewares?: {
-      [id: string]: MiddlewareOptions;
+      [id: string]: MiddlewareConfig;
     };
     'alaska-http'?: {
       listen?: number | string | ListenOptions;
@@ -141,13 +141,13 @@ export const DELETE: MethodDecorator;
 export const OPTIONS: MethodDecorator;
 export const HEAD: MethodDecorator;
 
-export interface MiddlewareOptions {
+export interface MiddlewareConfig {
   [key: string]: any;
   sort?: number;
 }
 
-export interface MiddlewareGenerator<T extends MiddlewareOptions> {
-  (options: T, main: MainService): Koa.Middleware;
+export interface MiddlewareGenerator<T extends MiddlewareConfig> {
+  (config: T, main: MainService): Koa.Middleware;
 }
 
 export interface Session {

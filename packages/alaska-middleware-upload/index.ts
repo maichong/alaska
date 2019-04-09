@@ -1,12 +1,12 @@
 import { Context } from 'alaska-http';
-import { UploadMiddlewareOptions, UploadFile } from '.';
+import { UploadMiddlewareConfig, UploadFile } from '.';
 const asyncBusboy = require('async-busboy');
 
-export default function (options: UploadMiddlewareOptions): Function {
+export default function (config: UploadMiddlewareConfig): Function {
   return async function (ctx: Context, next: Function) {
     if (typeof ctx.files === 'undefined' && ctx.request.is('multipart/*')) {
       ctx.files = {};
-      const res: any = await asyncBusboy(ctx.req, options);
+      const res: any = await asyncBusboy(ctx.req, config);
       const files = res.files;
       const fields = res.fields;
       ctx.files = {};

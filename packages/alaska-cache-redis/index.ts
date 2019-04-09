@@ -2,17 +2,17 @@ import * as redis from 'redis';
 import * as Debugger from 'debug';
 import { Service } from 'alaska';
 import CacheDriver from 'alaska-cache';
-import { RedisCacheDriverOptions } from 'alaska-cache-redis';
+import { RedisCacheDriverConfig } from 'alaska-cache-redis';
 
 const debug = Debugger('alaska-cache-redis');
 
-export default class RedisCacheDriver<T> extends CacheDriver<T, RedisCacheDriverOptions, redis.RedisClient> {
+export default class RedisCacheDriver<T> extends CacheDriver<T, RedisCacheDriverConfig, redis.RedisClient> {
   _maxAge: number;
 
-  constructor(options: RedisCacheDriverOptions, service: Service) {
-    super(options, service);
-    this._maxAge = options.maxAge || 0;
-    this._driver = redis.createClient(options);
+  constructor(config: RedisCacheDriverConfig, service: Service) {
+    super(config, service);
+    this._maxAge = config.maxAge || 0;
+    this._driver = redis.createClient(config);
   }
 
   /**

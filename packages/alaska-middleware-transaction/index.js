@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const pathToRegexp = require("path-to-regexp");
-function default_1(options) {
-    const ignoreMethods = options.ignoreMethods || [];
+function default_1(config) {
+    const ignoreMethods = config.ignoreMethods || [];
     let ignores = null;
     function convert(input) {
         if (typeof input === 'string') {
@@ -15,13 +15,13 @@ function default_1(options) {
             throw new Error(`Invalid transaction ignore option: ${String(input)}`);
         }
     }
-    if (options.ignore) {
+    if (config.ignore) {
         ignores = [];
-        if (Array.isArray(options.ignore)) {
-            options.ignore.forEach(convert);
+        if (Array.isArray(config.ignore)) {
+            config.ignore.forEach(convert);
         }
         else {
-            convert(options.ignore);
+            convert(config.ignore);
         }
     }
     return async function transactionMiddleware(ctx, next) {

@@ -1,8 +1,8 @@
-import QueueDriver, { QueueDriverOptions } from 'alaska-queue';
+import QueueDriver, { QueueDriverConfig } from 'alaska-queue';
 import { ClientOpts, RedisClient } from 'redis';
 
-export interface RedisQueueDriverOptions extends QueueDriverOptions, ClientOpts {
+export interface RedisQueueDriverConfig extends QueueDriverConfig, ClientOpts {
 }
 
-export default class RedisQueueDriver<T> extends QueueDriver<T, RedisQueueDriverOptions, RedisClient> {
+export default class RedisQueueDriver<T> extends QueueDriver<T, RedisQueueDriverConfig, RedisClient> {
 }

@@ -4,16 +4,16 @@ import * as random from 'string-random';
 import * as pathToRegexp from 'path-to-regexp';
 import Session from './session';
 import {
-  SessionMiddlewareOptions,
+  SessionMiddlewareConfig,
   CustomIgnoreFunction,
   IngoreRule
 } from '.';
 import CacheDriver from 'alaska-cache';
 
-export default function (options: SessionMiddlewareOptions, main: MainService) {
-  const storeOpts = options.store;
+export default function (config: SessionMiddlewareConfig, main: MainService) {
+  const storeOpts = config.store;
   if (!storeOpts) throw new Error('Missing config [/middlewares.alaska-middleware-session.store]');
-  const cookieOpts = options.cookie || {};
+  const cookieOpts = config.cookie || {};
   const key: string = cookieOpts.key || 'alaska.sid';
   const Store: typeof CacheDriver = main.modules.libraries[storeOpts.type];
   if (!Store) throw new Error(`Session store driver '${storeOpts.type}' not found!`);
@@ -30,12 +30,12 @@ export default function (options: SessionMiddlewareOptions, main: MainService) {
     }
   }
 
-  if (options.ignore) {
+  if (config.ignore) {
     ignore = [];
-    if (Array.isArray(options.ignore)) {
-      options.ignore.forEach(convert);
+    if (Array.isArray(config.ignore)) {
+      config.ignore.forEach(convert);
     } else {
-      convert(options.ignore);
+      convert(config.ignore);
     }
   }
 
@@ -54,8 +54,8 @@ export default function (options: SessionMiddlewareOptions, main: MainService) {
     }
     ctx.sessionKey = key;
     let sid = '';
-    if (cookieOpts && options.getSessionId) {
-      ctx.sessionId = options.getSessionId(ctx, key, cookieOpts);
+    if (cookieOpts && config.getSessionId) {
+      ctx.sessionId = config.getSessionId(ctx, key, cookieOpts);
       sid = ctx.sessionId;
     } else {
       // @ts-ignore
@@ -70,8 +70,8 @@ export default function (options: SessionMiddlewareOptions, main: MainService) {
     } else {
       ctx.sessionId = random(24);
       sid = ctx.sessionId;
-      if (cookieOpts && options.setSessionId) {
-        options.setSessionId(ctx, key, sid, cookieOpts);
+      if (cookieOpts && config.setSessionId) {
+        config.setSessionId(ctx, key, sid, cookieOpts);
       } else {
         ctx.cookies.set(key, sid, cookieOpts);
       }
@@ -115,8 +115,8 @@ export default function (options: SessionMiddlewareOptions, main: MainService) {
     function onNext() {
       if (session === false) {
         // 清除Session
-        if (cookieOpts && options.setSessionId) {
-          options.setSessionId(ctx, key, '', cookieOpts);
+        if (cookieOpts && config.setSessionId) {
+          config.setSessionId(ctx, key, '', cookieOpts);
         } else {
           ctx.cookies.set(key, '', cookieOpts);
         }

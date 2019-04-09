@@ -1,15 +1,13 @@
 import { MainService, NormalError } from 'alaska';
-import {
-  UserMiddlewareOptions,
-} from 'alaska-middleware-user';
 import User from 'alaska-user/models/User';
 import Login from 'alaska-user/sleds/Login';
 import Encryption from 'alaska-user/encryption';
 import { Context } from 'alaska-http';
 import { } from 'alaska-middleware-session';
 import { Middleware } from 'koa';
+import { UserMiddlewareConfig } from '.';
 
-export default function (options: UserMiddlewareOptions, main: MainService): Middleware {
+export default function (config: UserMiddlewareConfig, main: MainService): Middleware {
   let key: string = main.config.get('autoLogin.key');
   let secret: string = main.config.get('autoLogin.secret');
   let encryption: Encryption;
@@ -62,7 +60,7 @@ export default function (options: UserMiddlewareOptions, main: MainService): Mid
         }
       }
     }
-    if (!ctx.user && options.enableBasicAuth && ctx.headers.authorization) {
+    if (!ctx.user && config.enableBasicAuth && ctx.headers.authorization) {
       try {
         let [type, code] = ctx.headers.authorization.split(' ');
         if (type === 'Basic' && code) {

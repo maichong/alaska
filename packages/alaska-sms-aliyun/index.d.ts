@@ -1,7 +1,7 @@
-import { Driver, DriverOptions } from 'alaska';
-import { SmsDriver, SmsDriverOptions } from 'alaska-sms';
+import { Driver, DriverConfig } from 'alaska';
+import { SmsDriver, SmsDriverConfig } from 'alaska-sms';
 
-export interface SmsAliyunOptions extends SmsDriverOptions {
+export interface SmsAliyunOptions extends SmsDriverConfig {
   AccessKeyId: string;
   AccessKeySecret: string;
   SignName: string;

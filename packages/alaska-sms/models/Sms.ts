@@ -21,7 +21,7 @@ export default class Sms extends Model {
     driver: {
       label: 'Driver',
       type: 'select',
-      options: service.getDriverOptionsAsync()
+      options: service.getDriverConfigAsync()
     },
     content: {
       label: 'Content',

@@ -1,8 +1,8 @@
-import { MiddlewareGenerator, MiddlewareOptions, Context } from 'alaska-http';
+import { MiddlewareGenerator, MiddlewareConfig, Context } from 'alaska-http';
 
-export interface AkitaMiddlewareOptions extends MiddlewareOptions {
+export interface AkitaMiddlewareConfig extends MiddlewareConfig {
 }
 
-declare const akitaMiddleware: MiddlewareGenerator<AkitaMiddlewareOptions>;
+declare const akitaMiddleware: MiddlewareGenerator<AkitaMiddlewareConfig>;
 
 export default akitaMiddleware;

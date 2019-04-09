@@ -1,5 +1,5 @@
 import * as Cookies from 'cookies';
-import { Context, MiddlewareGenerator, MiddlewareOptions } from 'alaska-http';
+import { Context, MiddlewareGenerator, MiddlewareConfig } from 'alaska-http';
 
 export interface CookiesOptions extends Cookies.SetOption {
   key?: string;
@@ -11,7 +11,7 @@ export interface CustomIgnoreFunction {
 
 export type IngoreRule = RegExp | string | CustomIgnoreFunction;
 
-export interface SessionMiddlewareOptions extends MiddlewareOptions {
+export interface SessionMiddlewareConfig extends MiddlewareConfig {
   store: any;
   cookie: CookiesOptions;
   // 自定义获取Session Id函数
@@ -21,6 +21,6 @@ export interface SessionMiddlewareOptions extends MiddlewareOptions {
   ignore?: IngoreRule | IngoreRule[];
 }
 
-declare const sessionMiddleware: MiddlewareGenerator<SessionMiddlewareOptions>;
+declare const sessionMiddleware: MiddlewareGenerator<SessionMiddlewareConfig>;
 
 export default sessionMiddleware;

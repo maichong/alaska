@@ -1,13 +1,13 @@
 import { Context } from 'alaska-http';
 import * as pathToRegexp from 'path-to-regexp';
 import {
-  TransactionMiddlewareOptions,
+  TransactionMiddlewareConfig,
   CustomIgnoreFunction,
   IngoreRule
 } from '.';
 
-export default function (options: TransactionMiddlewareOptions) {
-  const ignoreMethods = options.ignoreMethods || [];
+export default function (config: TransactionMiddlewareConfig) {
+  const ignoreMethods = config.ignoreMethods || [];
   let ignores: Array<RegExp | CustomIgnoreFunction> = null;
 
   function convert(input: IngoreRule) {
@@ -20,12 +20,12 @@ export default function (options: TransactionMiddlewareOptions) {
     }
   }
 
-  if (options.ignore) {
+  if (config.ignore) {
     ignores = [];
-    if (Array.isArray(options.ignore)) {
-      options.ignore.forEach(convert);
+    if (Array.isArray(config.ignore)) {
+      config.ignore.forEach(convert);
     } else {
-      convert(options.ignore);
+      convert(config.ignore);
     }
   }
 

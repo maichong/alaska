@@ -1,4 +1,4 @@
-import { Service, Driver, DriverOptions } from 'alaska';
+import { Service, Driver, DriverConfig } from 'alaska';
 import { Context } from 'alaska-http';
 import CacheDriver from 'alaska-cache';
 import User from 'alaska-user/models/User';

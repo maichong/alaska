@@ -5,16 +5,16 @@ import captchaService from 'alaska-captcha';
 import Verify from 'alaska-captcha/sleds/Verify';
 import { Context } from 'alaska-http';
 import { Middleware } from 'koa';
-import { CaptchaMiddlewareOptions } from '.';
+import { CaptchaMiddlewareConfig } from '.';
 
-export default function (options: CaptchaMiddlewareOptions, main: MainService): Middleware {
-  if (!options || !options.paths || !_.isObject(options.paths)) {
+export default function (config: CaptchaMiddlewareConfig, main: MainService): Middleware {
+  if (!config || !config.paths || !_.isObject(config.paths)) {
     throw new Error('CaptchaService middleware \'paths\' error');
   }
   // 获取keys为paths
-  let paths = _.keys(options.paths);
+  let paths = _.keys(config.paths);
   if (!paths.length) throw new Error('CaptchaService middleware \'paths\' can not empty');
-  _.forEach(options.paths, (info, path) => {
+  _.forEach(config.paths, (info, path) => {
     if (!info.id) throw new Error(`Missing config [/middlewares.alaska-middleware-captcha.paths[${path}].id]`);
     if (!info.to) throw new Error(`Missing config [/middlewares.alaska-middleware-captcha.paths[${path}].to]`);
   });
@@ -29,7 +29,7 @@ export default function (options: CaptchaMiddlewareOptions, main: MainService): 
       return;
     }
     ctx.state.jsonApi = true;
-    let params = options.paths[path]; // 配置参数
+    let params = config.paths[path]; // 配置参数
     let stateBody = ctx.state.body || {};
     let requestBody: any = ctx.request.body || {};
     let to: string = stateBody[params.to] || requestBody[params.to];

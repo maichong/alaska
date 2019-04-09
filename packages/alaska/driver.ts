@@ -1,21 +1,21 @@
-import { Service, DriverOptions } from '.';
+import { Service, DriverConfig } from '.';
 
-export default class Driver<O extends DriverOptions, D> {
+export default class Driver<C extends DriverConfig, D> {
   static readonly classOfDriver = true;
   readonly instanceOfDriver: true;
   type: string;
   service: Service;
-  options: O;
+  config: C;
   recycled: boolean;
   idle: null | Date;
   _driver: D;
 
-  constructor(options: O, service: Service) {
-    this.type = options.type;
+  constructor(config: C, service: Service) {
+    this.type = config.type;
     this.service = service;
-    this.options = options;
+    this.config = config;
     this.instanceOfDriver = true;
-    this.recycled = options.recycled || false;
+    this.recycled = config.recycled || false;
     this._driver = null;
     this.idle = null;
   }

@@ -1,8 +1,8 @@
-import CacheDriver, { CacheDriverOptions } from 'alaska-cache';
+import CacheDriver, { CacheDriverConfig } from 'alaska-cache';
 import { ClientOpts, RedisClient } from 'redis';
 
-export interface RedisCacheDriverOptions extends CacheDriverOptions, ClientOpts {
+export interface RedisCacheDriverConfig extends CacheDriverConfig, ClientOpts {
 }
 
-export default class RedisCacheDriver<T> extends CacheDriver<T, RedisCacheDriverOptions, RedisClient> {
+export default class RedisCacheDriver<T> extends CacheDriver<T, RedisCacheDriverConfig, RedisClient> {
 }

@@ -1,6 +1,6 @@
-import CacheDriver, { LockDriverOptions } from 'alaska-lock';
+import CacheDriver, { LockDriverConfig } from 'alaska-lock';
 
-export interface MemoryLockDriverOptions extends LockDriverOptions {
+export interface MemoryLockDriverConfig extends LockDriverConfig {
 }
 
 export interface Lock {
@@ -11,5 +11,5 @@ export interface Lock {
 
 export type LockMap = Map<string, Lock>;
 
-export default class MemoryLockDriver extends CacheDriver<MemoryLockDriverOptions, LockMap> {
+export default class MemoryLockDriver extends CacheDriver<MemoryLockDriverConfig, LockMap> {
 }

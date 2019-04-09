@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const asyncBusboy = require('async-busboy');
-function default_1(options) {
+function default_1(config) {
     return async function (ctx, next) {
         if (typeof ctx.files === 'undefined' && ctx.request.is('multipart/*')) {
             ctx.files = {};
-            const res = await asyncBusboy(ctx.req, options);
+            const res = await asyncBusboy(ctx.req, config);
             const files = res.files;
             const fields = res.fields;
             ctx.files = {};

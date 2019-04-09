@@ -4,14 +4,14 @@ const _ = require("lodash");
 const minimatch = require("minimatch");
 const alaska_captcha_1 = require("alaska-captcha");
 const Verify_1 = require("alaska-captcha/sleds/Verify");
-function default_1(options, main) {
-    if (!options || !options.paths || !_.isObject(options.paths)) {
+function default_1(config, main) {
+    if (!config || !config.paths || !_.isObject(config.paths)) {
         throw new Error('CaptchaService middleware \'paths\' error');
     }
-    let paths = _.keys(options.paths);
+    let paths = _.keys(config.paths);
     if (!paths.length)
         throw new Error('CaptchaService middleware \'paths\' can not empty');
-    _.forEach(options.paths, (info, path) => {
+    _.forEach(config.paths, (info, path) => {
         if (!info.id)
             throw new Error(`Missing config [/middlewares.alaska-middleware-captcha.paths[${path}].id]`);
         if (!info.to)
@@ -28,7 +28,7 @@ function default_1(options, main) {
             return;
         }
         ctx.state.jsonApi = true;
-        let params = options.paths[path];
+        let params = config.paths[path];
         let stateBody = ctx.state.body || {};
         let requestBody = ctx.request.body || {};
         let to = stateBody[params.to] || requestBody[params.to];

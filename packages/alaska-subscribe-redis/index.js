@@ -5,10 +5,10 @@ const Debugger = require("debug");
 const alaska_subscribe_1 = require("alaska-subscribe");
 const debug = Debugger('alaska-subscribe-redis');
 class RedisSubscribeDriver extends alaska_subscribe_1.default {
-    constructor(options, service) {
-        super(options, service);
-        this.channel = options.channel;
-        this._driver = redis.createClient(options);
+    constructor(config, service) {
+        super(config, service);
+        this.channel = config.channel;
+        this._driver = redis.createClient(config);
         this._subscribed = false;
         this._messages = [];
         this._onMessage = null;

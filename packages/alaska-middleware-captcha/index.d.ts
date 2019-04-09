@@ -1,6 +1,6 @@
-import { MiddlewareGenerator, MiddlewareOptions } from 'alaska-http';
+import { MiddlewareGenerator, MiddlewareConfig } from 'alaska-http';
 
-export interface CaptchaMiddlewareOptions extends MiddlewareOptions {
+export interface CaptchaMiddlewareConfig extends MiddlewareConfig {
   paths: {
     [path: string]: {
       id: string;
@@ -10,6 +10,6 @@ export interface CaptchaMiddlewareOptions extends MiddlewareOptions {
   };
 }
 
-declare const captchaMiddleware: MiddlewareGenerator<CaptchaMiddlewareOptions>;
+declare const captchaMiddleware: MiddlewareGenerator<CaptchaMiddlewareConfig>;
 
 export default captchaMiddleware;

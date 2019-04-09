@@ -4,34 +4,34 @@ import * as Debugger from 'debug';
 import { Service } from 'alaska';
 import CacheDriver from 'alaska-cache';
 import * as _ from 'lodash';
-import { MongoCacheDriverOptions } from 'alaska-cache-mongo';
+import { MongoCacheDriverConfig } from 'alaska-cache-mongo';
 
 const debug = Debugger('alaska-cache-mongo');
 
-export default class MongoCacheDriver<T> extends CacheDriver<T, MongoCacheDriverOptions, mongodb.Collection> {
+export default class MongoCacheDriver<T> extends CacheDriver<T, MongoCacheDriverConfig, mongodb.Collection> {
   _maxAge: number;
   _connecting: Promise<mongodb.MongoClient>;
   _client: mongodb.MongoClient;
   _pruneTimer: NodeJS.Timer;
 
-  constructor(options: MongoCacheDriverOptions, service: Service) {
-    super(options, service);
-    this._maxAge = options.maxAge || 0;
-    let info = url.parse(options.uri);
+  constructor(config: MongoCacheDriverConfig, service: Service) {
+    super(config, service);
+    this._maxAge = config.maxAge || 0;
+    let info = url.parse(config.uri);
     if (!info.path) {
       throw new Error('mongodb uri error');
     }
 
-    let mongoOpts: mongodb.MongoClientOptions = _.omit(options, 'id', 'uri', 'type', 'collection', 'maxAge');
+    let mongoOpts: mongodb.MongoClientOptions = _.omit(config, 'id', 'uri', 'type', 'collection', 'maxAge');
     mongoOpts.useNewUrlParser = true;
     mongoOpts.autoReconnect = true;
 
-    this._connecting = mongodb.MongoClient.connect(options.uri, mongoOpts);
+    this._connecting = mongodb.MongoClient.connect(config.uri, mongoOpts);
     this._connecting.then((client: mongodb.MongoClient) => {
       let db = client.db(info.path.substr(1));
       this._client = client;
       this._connecting = null;
-      this._driver = db.collection(options.collection || 'mongo_cache');
+      this._driver = db.collection(config.collection || 'mongo_cache');
       this._driver.createIndex('expiredAt', {
         background: true
       });

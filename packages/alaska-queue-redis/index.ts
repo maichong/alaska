@@ -2,19 +2,19 @@ import * as redis from 'redis';
 import * as Debugger from 'debug';
 import { Service } from 'alaska';
 import QueueDriver from 'alaska-queue';
-import { RedisQueueDriverOptions } from 'alaska-queue-redis';
+import { RedisQueueDriverConfig } from 'alaska-queue-redis';
 
 const debug = Debugger('alaska-queue-redis');
 
 type popMethod = 'lpop' | 'blpop';
 
-export default class RedisQueueDriver<T> extends QueueDriver<T, RedisQueueDriverOptions, redis.RedisClient> {
+export default class RedisQueueDriver<T> extends QueueDriver<T, RedisQueueDriverConfig, redis.RedisClient> {
   _key: string;
 
-  constructor(options: RedisQueueDriverOptions, service: Service) {
-    super(options, service);
-    this._key = options.key;
-    this._driver = redis.createClient(options);
+  constructor(config: RedisQueueDriverConfig, service: Service) {
+    super(config, service);
+    this._key = config.key;
+    this._driver = redis.createClient(config);
   }
 
   /**
