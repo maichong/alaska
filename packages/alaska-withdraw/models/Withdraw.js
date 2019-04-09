@@ -25,11 +25,9 @@ Withdraw.api = {
     paginate: 2
 };
 Withdraw.actions = {
-    update: {
-        hidden: true
-    },
     accept: {
         title: 'Accept',
+        icon: 'check',
         sled: 'Accept',
         color: 'success',
         disabled: {
@@ -41,6 +39,7 @@ Withdraw.actions = {
     },
     reject: {
         title: 'Reject',
+        icon: 'times',
         sled: 'Reject',
         color: 'danger',
         disabled: {
@@ -66,7 +65,7 @@ Withdraw.fields = {
     },
     type: {
         label: 'Payment Type',
-        type: 'select:payment',
+        type: 'select',
         options: []
     },
     currency: {
@@ -118,6 +117,10 @@ Withdraw.fields = {
         type: String,
         multiLine: true,
         static: true
+    },
+    alipayOrderId: {
+        label: 'Alipay Order ID',
+        type: String
     },
     createdAt: {
         label: 'Created At',

@@ -137,8 +137,8 @@ class Service {
             delete extensions[id];
         };
         _.keys(extensions).forEach(createExt);
-        await this.init();
         await this.initPlugins();
+        await this.init();
         await this.start();
         await this.ready();
     }

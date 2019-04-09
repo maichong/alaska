@@ -13,9 +13,12 @@ export default {
   'Withdraw Rejected': '提现拒绝',
   'Insufficient balance': '余额不足',
   state: '状态',
+  Remark: '备注',
   'Weixin OpenID': '微信OpenID',
   'Alipay ID': '支付宝ID',
+  'Alipay Order ID': '支付宝单号',
   Alipay: '支付宝',
   'Real Name': '实名',
-  Target: '目标'
+  Target: '目标',
+  'Withdraw plugin not found': '提现插件没有找到',
 };

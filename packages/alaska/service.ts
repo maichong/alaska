@@ -191,8 +191,8 @@ export default class Service {
     _.keys(extensions).forEach(createExt);
 
     // 初始化、启动、就绪
-    await this.init();
     await this.initPlugins();
+    await this.init();
     await this.start();
     await this.ready();
   }

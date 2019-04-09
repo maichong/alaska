@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Model } from 'alaska-model';
 import User from 'alaska-user/models/User';
 
@@ -19,11 +20,9 @@ export default class Withdraw extends Model {
   };
 
   static actions = {
-    update: {
-      hidden: true
-    },
     accept: {
       title: 'Accept',
+      icon: 'check',
       sled: 'Accept',
       color: 'success',
       disabled: {
@@ -35,6 +34,7 @@ export default class Withdraw extends Model {
     },
     reject: {
       title: 'Reject',
+      icon: 'times',
       sled: 'Reject',
       color: 'danger',
       disabled: {
@@ -61,7 +61,7 @@ export default class Withdraw extends Model {
     },
     type: {
       label: 'Payment Type',
-      type: 'select:payment',
+      type: 'select',
       options: [] as any[]
     },
     currency: {
@@ -114,6 +114,10 @@ export default class Withdraw extends Model {
       multiLine: true,
       static: true
     },
+    alipayOrderId: {
+      label: 'Alipay Order ID',
+      type: String
+    },
     createdAt: {
       label: 'Created At',
       type: Date,
@@ -148,6 +152,11 @@ export default class Withdraw extends Model {
   amount: number;
   type: string;
   ip: string;
+  openid: string;
+  alipay: string;
+  alipayId: string;
+  realName: string;
+  alipayOrderId: string;
   remark: string;
   createdAt: Date;
   state: 'pending' | 'accepted' | 'rejected';

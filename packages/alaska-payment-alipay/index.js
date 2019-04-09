@@ -34,7 +34,7 @@ class AlipayPaymentPlugin extends alaska_payment_1.PaymentPlugin {
     async createParams(payment) {
         const config = this.configs.get(payment.type);
         if (!config)
-            throw new Error('Unsupported payment type!');
+            throw new Error('Unsupported alipay payment type!');
         if (payment.currency && config.currency && payment.currency !== config.currency)
             throw new Error('Currency not match!');
         if (payment.amount === 0) {
@@ -72,9 +72,9 @@ class AlipayPaymentPlugin extends alaska_payment_1.PaymentPlugin {
                 throw new Error('Unsupported alipay payment platform');
         }
         params.biz_content = _.assign(params.biz_content, config.biz_content, payment.alipayBizContent);
-        let link = this.createQueryString(this.paramsFilter(params));
+        let queryString = this.createQueryString(this.paramsFilter(params));
         let signer = crypto.createSign(config.sign_type === 'RSA' ? 'RSA-SHA1' : 'RSA-SHA256');
-        signer.update(link, 'utf8');
+        signer.update(queryString, 'utf8');
         params.sign = signer.sign(config.private_key, 'base64');
         let payParams = this.createQueryStringUrlencode(params);
         if (config.platform === 'app') {
@@ -88,9 +88,9 @@ class AlipayPaymentPlugin extends alaska_payment_1.PaymentPlugin {
             return false;
         let filtered = this.paramsFilter(data);
         delete filtered.sign_type;
-        let link = this.createQueryString(filtered);
+        let queryString = this.createQueryString(filtered);
         let verify = crypto.createVerify(config.sign_type === 'RSA' ? 'RSA-SHA1' : 'RSA-SHA256');
-        verify.update(link, 'utf8');
+        verify.update(queryString, 'utf8');
         return verify.verify(config.alipay_public_key, data.sign, 'base64');
     }
     async refund(refund, payment) {
@@ -115,13 +115,12 @@ class AlipayPaymentPlugin extends alaska_payment_1.PaymentPlugin {
                 out_request_no: refund.id,
             }, config.biz_content, refund.alipayBizContent)
         };
-        let link = this.createQueryString(this.paramsFilter(params));
+        let queryString = this.createQueryString(this.paramsFilter(params));
         let signer = crypto.createSign(config.sign_type === 'RSA' ? 'RSA-SHA1' : 'RSA-SHA256');
-        signer.update(link, 'utf8');
+        signer.update(queryString, 'utf8');
         params.sign = signer.sign(config.private_key, 'base64');
-        let { alipay_trade_refund_response: res } = await client.post(GATEWAY, {
-            body: params
-        });
+        let url = GATEWAY + '?' + this.createQueryStringUrlencode(params);
+        let { alipay_trade_refund_response: res } = await client.post(url);
         if (res.msg === 'Success') {
             refund.alipayTradeNo = res.trade_no;
             refund.state = 'success';
