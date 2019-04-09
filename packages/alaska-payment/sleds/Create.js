@@ -10,7 +10,7 @@ class Create extends alaska_sled_1.Sled {
         if (!payment) {
             __1.default.error('Can not create any payment');
         }
-        if (!__1.default.payments.has(payment.type))
+        if (!__1.default.paymentPlugins.has(payment.type))
             __1.default.error('Unknown payment type');
         if (!payment.ip && params.ip) {
             payment.ip = params.ip;
@@ -20,7 +20,7 @@ class Create extends alaska_sled_1.Sled {
         }
         payment.$session(this.dbSession);
         await payment.save({ session: this.dbSession });
-        payment.params = await __1.default.payments.get(payment.type).createParams(payment);
+        payment.params = await __1.default.paymentPlugins.get(payment.type).createParams(payment);
         await payment.save({ session: this.dbSession });
         return payment;
     }

@@ -6,7 +6,7 @@ exports.PaymentPlugin = plugin_1.default;
 class PaymentService extends alaska_1.Service {
     constructor() {
         super(...arguments);
-        this.payments = new Map();
+        this.paymentPlugins = new Map();
     }
 }
 exports.default = new PaymentService({

@@ -3,25 +3,25 @@ import { PaymentPlugin } from 'alaska-payment';
 
 declare module 'alaska-payment/models/Payment' {
   export interface PaymentFields {
-    alipay_biz_content: any;
-    alipay_trade_no: string;
-    alipay_buyer_id: string;
-    alipay_buyer_logon_id: string;
+    alipayBizContent: any;
+    alipayTradeNo: string;
+    alipayBuyerId: string;
+    alipayBuyerLogonId: string;
   }
 }
 
 declare module 'alaska-payment/models/Refund' {
   export interface RefundFields {
-    alipay_biz_content: any;
-    alipay_trade_no: string;
+    alipayBizContent: any;
+    alipayTradeNo: string;
   }
 }
 
 export interface AlipayPaymentConfig {
   /**
-   * 支付渠道
+   * 支付平台
    */
-  channel: 'web' | 'app';
+  platform: 'web' | 'app';
   /**
    * 当前支付类型支持的货币
    */
@@ -46,7 +46,15 @@ export interface AlipayPaymentConfig {
    * 支付回调地址
    */
   notify_url: string;
+  /**
+   * 支付成功后页面跳转地址
+   */
   return_url?: string;
+  /**
+   * 支付接口业务参数
+   * https://docs.open.alipay.com/api_1/alipay.trade.page.pay/
+   * https://docs.open.alipay.com/204/105465/
+   */
   biz_content?: {
     /**
      * 该笔订单允许的最晚付款时间，逾期将关闭交易。

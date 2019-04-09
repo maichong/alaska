@@ -4,21 +4,21 @@ import { PaymentPlugin } from 'alaska-payment';
 declare module 'alaska-payment/models/Payment' {
   export interface PaymentFields {
     openid: string;
-    weixin_transaction_id: string;
+    weixinTransactionId: string;
   }
 }
 
 declare module 'alaska-payment/models/Refund' {
   export interface RefundFields {
-    weixin_refund_id: string;
+    weixinRefundId: string;
   }
 }
 
 export interface WeixinPaymentConfig {
   /**
-   * 支付渠道
+   * 支付平台
    */
-  channel: 'jssdk' | 'app' | 'wxapp' | 'h5';
+  platform: 'jssdk' | 'app' | 'wxapp' | 'h5';
   /**
    * 当前支付类型支持的货币
    */

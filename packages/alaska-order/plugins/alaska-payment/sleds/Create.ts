@@ -10,7 +10,7 @@ export async function pre() {
   if (params.payment || !orders || !Array.isArray(orders) || !orders.length) return;
   let user = params.user || paymentService.error('Missing user info');
   let type = params.type || paymentService.error('Missing payment type');
-  if (!paymentService.payments.has(type)) paymentService.error('Unknown payment type');
+  if (!paymentService.paymentPlugins.has(type)) paymentService.error('Unknown payment type');
 
   let amount = 0;
   let payment = new Payment({

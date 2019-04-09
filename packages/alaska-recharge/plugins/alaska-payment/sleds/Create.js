@@ -13,7 +13,7 @@ async function pre() {
         return;
     let user = params.user || alaska_payment_1.default.error('Missing user info!');
     let type = params.type || alaska_payment_1.default.error('Missing payment type!');
-    if (!alaska_payment_1.default.payments.has(type))
+    if (!alaska_payment_1.default.paymentPlugins.has(type))
         alaska_payment_1.default.error('Unknown payment type!');
     let paymentAmount = parseFloat(params.amount) || alaska_payment_1.default.error('Missing payment amount!');
     if (paymentAmount <= 0)

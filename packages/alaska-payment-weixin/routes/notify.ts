@@ -30,14 +30,14 @@ export default function (router: Router) {
 
       if (payment.state !== 'pending') return failed('invalid state');
 
-      let plugin = paymentService.payments.get(payment.type);
+      let plugin = paymentService.paymentPlugins.get(payment.type);
 
       if (!await plugin.verify(data, payment)) return failed('sign error');
 
       if (_.round(payment.amount * 100) !== parseInt(data.total_fee)) return failed('total_fee error');
 
       payment.callbackData = data;
-      payment.weixin_transaction_id = data.transaction_id;
+      payment.weixinTransactionId = data.transaction_id;
 
       await Complete.run({ record: payment }, { dbSession: ctx.dbSession });
 

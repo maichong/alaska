@@ -15,7 +15,7 @@ class AccountPaymentPlugin extends alaska_payment_1.PaymentPlugin {
                 account
             };
             this.configs.set(`account:${account}`, options);
-            service.payments.set(`account:${account}`, this);
+            service.paymentPlugins.set(`account:${account}`, this);
         }
     }
     async createParams(payment) {

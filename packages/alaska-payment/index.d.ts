@@ -7,7 +7,7 @@ import Create from './sleds/Create';
 import Complete from './sleds/Complete';
 import RefundSled from './sleds/Refund';
 
-export class PaymentPlugin<O = any> extends Plugin<O> {
+export class PaymentPlugin<C = any> extends Plugin<C> {
   static readonly classOfPaymentPlugin: true;
   readonly instanceOfPaymentPlugin: true;
 
@@ -70,7 +70,7 @@ export class PaymentService extends Service {
     Refund: typeof RefundSled;
   };
 
-  payments: Map<string, PaymentPlugin>;
+  paymentPlugins: Map<string, PaymentPlugin>;
 }
 
 declare const paymentService: PaymentService;

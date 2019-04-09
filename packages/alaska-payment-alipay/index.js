@@ -17,7 +17,7 @@ class AlipayPaymentPlugin extends alaska_payment_1.PaymentPlugin {
         this.configs = new Map();
         for (let key of _.keys(pluginConfig.channels)) {
             let config = pluginConfig.channels[key];
-            ['channel', 'app_id', 'private_key', 'alipay_public_key', 'notify_url'].forEach((k) => {
+            ['platform', 'app_id', 'private_key', 'alipay_public_key', 'notify_url'].forEach((k) => {
                 if (!config[k])
                     throw new Error(`Missing config [alaska-payment/plugins.alaska-payment-alipay.${key}.${k}]`);
             });
@@ -28,7 +28,7 @@ class AlipayPaymentPlugin extends alaska_payment_1.PaymentPlugin {
                 config.alipay_public_key = fs.readFileSync(config.alipay_public_key);
             }
             this.configs.set(`alipay:${key}`, config);
-            service.payments.set(`alipay:${key}`, this);
+            service.paymentPlugins.set(`alipay:${key}`, this);
         }
     }
     async createParams(payment) {
@@ -55,7 +55,7 @@ class AlipayPaymentPlugin extends alaska_payment_1.PaymentPlugin {
                 product_code: ''
             }
         };
-        switch (config.channel) {
+        switch (config.platform) {
             case 'app':
                 params.method = 'alipay.trade.app.pay';
                 params.biz_content.product_code = 'QUICK_MSECURITY_PAY';
@@ -69,15 +69,15 @@ class AlipayPaymentPlugin extends alaska_payment_1.PaymentPlugin {
                 params.biz_content.qr_pay_mode = '2';
                 break;
             default:
-                throw new Error('Unsupported alipay channel');
+                throw new Error('Unsupported alipay payment platform');
         }
-        params.biz_content = _.assign(params.biz_content, config.biz_content, payment.alipay_biz_content);
+        params.biz_content = _.assign(params.biz_content, config.biz_content, payment.alipayBizContent);
         let link = this.createQueryString(this.paramsFilter(params));
         let signer = crypto.createSign(config.sign_type === 'RSA' ? 'RSA-SHA1' : 'RSA-SHA256');
         signer.update(link, 'utf8');
         params.sign = signer.sign(config.private_key, 'base64');
         let payParams = this.createQueryStringUrlencode(params);
-        if (config.channel === 'app') {
+        if (config.platform === 'app') {
             return payParams;
         }
         return `${GATEWAY}?${payParams}`;
@@ -113,7 +113,7 @@ class AlipayPaymentPlugin extends alaska_payment_1.PaymentPlugin {
                 out_trade_no: payment.id,
                 refund_amount: refund.amount,
                 out_request_no: refund.id,
-            }, config.biz_content, refund.alipay_biz_content)
+            }, config.biz_content, refund.alipayBizContent)
         };
         let link = this.createQueryString(this.paramsFilter(params));
         let signer = crypto.createSign(config.sign_type === 'RSA' ? 'RSA-SHA1' : 'RSA-SHA256');
@@ -123,7 +123,7 @@ class AlipayPaymentPlugin extends alaska_payment_1.PaymentPlugin {
             body: params
         });
         if (res.msg === 'Success') {
-            refund.alipay_trade_no = res.trade_no;
+            refund.alipayTradeNo = res.trade_no;
             refund.state = 'success';
         }
         else {

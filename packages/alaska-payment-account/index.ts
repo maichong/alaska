@@ -24,7 +24,7 @@ export default class AccountPaymentPlugin extends PaymentPlugin<AccountPaymentPl
         account
       };
       this.configs.set(`account:${account}`, options);
-      service.payments.set(`account:${account}`, this);
+      service.paymentPlugins.set(`account:${account}`, this);
     }
   }
 

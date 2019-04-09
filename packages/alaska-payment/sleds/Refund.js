@@ -10,9 +10,9 @@ class Refund extends alaska_sled_1.Sled {
         if (!refund) {
             this.service.error('Can not create any refund');
         }
-        if (!__1.default.payments.has(refund.type))
+        if (!__1.default.paymentPlugins.has(refund.type))
             __1.default.error('Unknown payment type');
-        await __1.default.payments.get(refund.type).refund(refund, params.payment);
+        await __1.default.paymentPlugins.get(refund.type).refund(refund, params.payment);
         await refund.save({ session: this.dbSession });
         return refund;
     }

@@ -14,7 +14,7 @@ export async function pre() {
   if (!params.recharge) return;
   let user = params.user || paymentService.error('Missing user info!');
   let type = params.type || paymentService.error('Missing payment type!');
-  if (!paymentService.payments.has(type)) paymentService.error('Unknown payment type!');
+  if (!paymentService.paymentPlugins.has(type)) paymentService.error('Unknown payment type!');
   let paymentAmount = parseFloat(params.amount) || paymentService.error('Missing payment amount!');
   if (paymentAmount <= 0) paymentService.error('Invalid amount!');
   let account = params.account || '';

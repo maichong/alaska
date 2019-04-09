@@ -24,13 +24,13 @@ function default_1(router) {
                 return failed('out_trade_no error');
             if (payment.state !== 'pending')
                 return failed('invalid state');
-            let plugin = alaska_payment_1.default.payments.get(payment.type);
+            let plugin = alaska_payment_1.default.paymentPlugins.get(payment.type);
             if (!await plugin.verify(data, payment))
                 return failed('sign error');
             if (_.round(payment.amount * 100) !== parseInt(data.total_fee))
                 return failed('total_fee error');
             payment.callbackData = data;
-            payment.weixin_transaction_id = data.transaction_id;
+            payment.weixinTransactionId = data.transaction_id;
             await Complete_1.default.run({ record: payment }, { dbSession: ctx.dbSession });
             ctx.body = utils_1.data2xml({ return_code: 'SUCCESS', return_msg: 'OK' });
         }

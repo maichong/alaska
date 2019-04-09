@@ -23,7 +23,7 @@ export default class WeixinPaymentPlugin extends PaymentPlugin<WeixinPaymentPlug
 
     for (let key of _.keys(pluginConfig.channels)) {
       let config: WeixinPaymentConfig = pluginConfig.channels[key];
-      ['channel', 'appid', 'secret', 'mch_id', 'pay_key', 'notify_url'].forEach((k) => {
+      ['platform', 'appid', 'secret', 'mch_id', 'pay_key', 'notify_url'].forEach((k) => {
         // @ts-ignore index
         if (!config[k]) throw new Error(`Missing config [/alaska-payment-weixin.${key}.${k}]`);
       });
@@ -31,7 +31,7 @@ export default class WeixinPaymentPlugin extends PaymentPlugin<WeixinPaymentPlug
         config.pfx = fs.readFileSync(config.pfx);
       }
       this.configs.set(`weixin:${key}`, config);
-      service.payments.set(`weixin:${key}`, this);
+      service.paymentPlugins.set(`weixin:${key}`, this);
     }
   }
 
@@ -122,7 +122,7 @@ export default class WeixinPaymentPlugin extends PaymentPlugin<WeixinPaymentPlug
       throw new Error(json.return_msg);
     }
 
-    refund.weixin_refund_id = json.refund_id;
+    refund.weixinRefundId = json.refund_id;
     refund.state = 'success';
   }
 
@@ -158,7 +158,7 @@ export default class WeixinPaymentPlugin extends PaymentPlugin<WeixinPaymentPlug
       mch_id: config.mch_id,
       nonce_str: stringRandom(),
       notify_url: config.notify_url,
-      trade_type: this._getTradeType(config.channel),
+      trade_type: this._getTradeType(config.platform),
       spbill_create_ip: data.spbill_create_ip || '127.0.0.1'
     });
 
@@ -179,7 +179,7 @@ export default class WeixinPaymentPlugin extends PaymentPlugin<WeixinPaymentPlug
   }
 
   _getPayParamsByPrepay(data: UnifiedOrderRes, config: WeixinPaymentConfig): PayParams | AppPayParams {
-    if (config.channel === 'app') {
+    if (config.platform === 'app') {
       let req: any = {
         appid: config.appid,
         noncestr: stringRandom(),
@@ -209,14 +209,14 @@ export default class WeixinPaymentPlugin extends PaymentPlugin<WeixinPaymentPlug
     };
     params.paySign = this._getSign(params, config);
     delete params.appId;
-    if (config.channel === 'jssdk') {
+    if (config.platform === 'jssdk') {
       params.timestamp = params.timeStamp;
     }
     return params;
   }
 
-  _getTradeType(channel: string): string {
-    switch (channel) {
+  _getTradeType(platform: string): string {
+    switch (platform) {
       case 'jssdk':
       case 'wxapp':
         return 'JSAPI';
@@ -227,7 +227,7 @@ export default class WeixinPaymentPlugin extends PaymentPlugin<WeixinPaymentPlug
       case 'h5':
         return 'MWEB';
       default:
-        throw new Error(`Unsupported payment channel ${channel}`);
+        throw new Error(`Unsupported weixin payment platform ${platform}`);
     }
   }
 

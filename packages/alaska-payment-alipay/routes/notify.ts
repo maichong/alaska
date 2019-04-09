@@ -21,14 +21,14 @@ export default function (router: Router) {
 
     if (payment.state !== 'pending') return;
 
-    let plugin = paymentService.payments.get(payment.type);
+    let plugin = paymentService.paymentPlugins.get(payment.type);
 
     if (!await plugin.verify(body, payment)) return;
 
     payment.callbackData = body;
-    payment.alipay_trade_no = body.trade_no;
-    payment.alipay_buyer_id = body.buyer_id;
-    payment.alipay_buyer_logon_id = body.buyer_logon_id;
+    payment.alipayTradeNo = body.trade_no;
+    payment.alipayBuyerId = body.buyer_id;
+    payment.alipayBuyerLogonId = body.buyer_logon_id;
 
     await Complete.run({ record: payment }, { dbSession: ctx.dbSession });
 

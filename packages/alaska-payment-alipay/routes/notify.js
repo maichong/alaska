@@ -18,13 +18,13 @@ function default_1(router) {
             return;
         if (payment.state !== 'pending')
             return;
-        let plugin = alaska_payment_1.default.payments.get(payment.type);
+        let plugin = alaska_payment_1.default.paymentPlugins.get(payment.type);
         if (!await plugin.verify(body, payment))
             return;
         payment.callbackData = body;
-        payment.alipay_trade_no = body.trade_no;
-        payment.alipay_buyer_id = body.buyer_id;
-        payment.alipay_buyer_logon_id = body.buyer_logon_id;
+        payment.alipayTradeNo = body.trade_no;
+        payment.alipayBuyerId = body.buyer_id;
+        payment.alipayBuyerLogonId = body.buyer_logon_id;
         await Complete_1.default.run({ record: payment }, { dbSession: ctx.dbSession });
         ctx.body = 'OK';
         ctx.status = 200;

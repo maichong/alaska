@@ -24,7 +24,7 @@ export default class AlipayPaymentPlugin extends PaymentPlugin<AlipayPaymentPlug
     this.configs = new Map();
     for (let key of _.keys(pluginConfig.channels)) {
       let config: AlipayPaymentConfig = pluginConfig.channels[key];
-      ['channel', 'app_id', 'private_key', 'alipay_public_key', 'notify_url'].forEach((k) => {
+      ['platform', 'app_id', 'private_key', 'alipay_public_key', 'notify_url'].forEach((k) => {
         // @ts-ignore index
         if (!config[k]) throw new Error(`Missing config [alaska-payment/plugins.alaska-payment-alipay.${key}.${k}]`);
       });
@@ -35,7 +35,7 @@ export default class AlipayPaymentPlugin extends PaymentPlugin<AlipayPaymentPlug
         config.alipay_public_key = fs.readFileSync(config.alipay_public_key);
       }
       this.configs.set(`alipay:${key}`, config);
-      service.payments.set(`alipay:${key}`, this);
+      service.paymentPlugins.set(`alipay:${key}`, this);
     }
   }
 
@@ -70,7 +70,7 @@ export default class AlipayPaymentPlugin extends PaymentPlugin<AlipayPaymentPlug
       }
     };
 
-    switch (config.channel) {
+    switch (config.platform) {
       case 'app':
         params.method = 'alipay.trade.app.pay';
         params.biz_content.product_code = 'QUICK_MSECURITY_PAY';
@@ -84,10 +84,10 @@ export default class AlipayPaymentPlugin extends PaymentPlugin<AlipayPaymentPlug
         params.biz_content.qr_pay_mode = '2';
         break;
       default:
-        throw new Error('Unsupported alipay channel');
+        throw new Error('Unsupported alipay payment platform');
     }
 
-    params.biz_content = _.assign(params.biz_content, config.biz_content, payment.alipay_biz_content);
+    params.biz_content = _.assign(params.biz_content, config.biz_content, payment.alipayBizContent);
 
     let link = this.createQueryString(this.paramsFilter(params));
 
@@ -97,7 +97,7 @@ export default class AlipayPaymentPlugin extends PaymentPlugin<AlipayPaymentPlug
 
     let payParams = this.createQueryStringUrlencode(params);
 
-    if (config.channel === 'app') {
+    if (config.platform === 'app') {
       // app
       return payParams;
     }
@@ -138,7 +138,7 @@ export default class AlipayPaymentPlugin extends PaymentPlugin<AlipayPaymentPlug
         out_trade_no: payment.id,
         refund_amount: refund.amount,
         out_request_no: refund.id,
-      }, config.biz_content, refund.alipay_biz_content)
+      }, config.biz_content, refund.alipayBizContent)
     };
 
     let link = this.createQueryString(this.paramsFilter(params));
@@ -152,7 +152,7 @@ export default class AlipayPaymentPlugin extends PaymentPlugin<AlipayPaymentPlug
     });
 
     if (res.msg === 'Success') {
-      refund.alipay_trade_no = res.trade_no;
+      refund.alipayTradeNo = res.trade_no;
       refund.state = 'success';
     } else {
       refund.state = 'failed';

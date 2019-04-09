@@ -86,9 +86,9 @@ export default class Refund extends Model {
   createdAt: Date;
 
   // for alaska dev
-  weixin_refund_id: string;
-  alipay_biz_content: any;
-  alipay_trade_no: string;
+  weixinRefundId: string;
+  alipayBizContent: any;
+  alipayTradeNo: string;
 
   preSave() {
     if (!this.createdAt) {

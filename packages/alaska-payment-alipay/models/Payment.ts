@@ -1,23 +1,23 @@
 
 export default {
   fields: {
-    alipay_biz_content: {
+    alipayBizContent: {
       label: 'Alipay Biz Content',
       type: Object,
       protected: true
     },
-    alipay_trade_no: {
+    alipayTradeNo: {
       label: 'Alipay Trade No',
       type: String,
       protected: true
     },
-    alipay_buyer_id: {
-      label: 'Alipay Buyer ID',
+    alipayBuyerId: {
+      label: 'Alipay ID',
       type: String,
       protected: true
     },
-    alipay_buyer_logon_id: {
-      label: 'Alipay Buyer',
+    alipayBuyerLogonId: {
+      label: 'Alipay',
       type: String,
       protected: true
     },

@@ -111,12 +111,12 @@ export default class Payment extends Model {
   orders: any[];
   recharge: RecordId;
   openid: string;
-  weixin_transaction_id: string;
+  weixinTransactionId: string;
 
-  alipay_biz_content: any;
-  alipay_trade_no: string;
-  alipay_buyer_id: string;
-  alipay_buyer_logon_id: string;
+  alipayBizContent: any;
+  alipayTradeNo: string;
+  alipayBuyerId: string;
+  alipayBuyerLogonId: string;
 
   preSave() {
     if (!this.createdAt) {
