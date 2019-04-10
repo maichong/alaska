@@ -75,6 +75,9 @@ class Create extends alaska_sled_1.Sled {
         }
         if (!driverConfig.allowed.includes(image.ext))
             __1.default.error('Invalid image format');
+        if (image.ext && !image.name) {
+            image.name = `${image.id}.${image.ext}`;
+        }
         if (data) {
             image.size = data.length;
         }

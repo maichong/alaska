@@ -86,6 +86,10 @@ export default class Create extends Sled<CreateParams, Image> {
 
     if (!driverConfig.allowed.includes(image.ext)) service.error('Invalid image format');
 
+    if (image.ext && !image.name) {
+      image.name = `${image.id}.${image.ext}`;
+    }
+
     if (data) {
       image.size = data.length;
     }
