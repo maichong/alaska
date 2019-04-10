@@ -119,7 +119,7 @@ class AlipayPaymentPlugin extends alaska_payment_1.PaymentPlugin {
         let signer = crypto.createSign(config.sign_type === 'RSA' ? 'RSA-SHA1' : 'RSA-SHA256');
         signer.update(queryString, 'utf8');
         params.sign = signer.sign(config.private_key, 'base64');
-        let url = GATEWAY + '?' + this.createQueryStringUrlencode(params);
+        let url = `${GATEWAY}?${this.createQueryStringUrlencode(params)}`;
         let { alipay_trade_refund_response: res } = await client.post(url);
         if (res.msg === 'Success') {
             refund.alipayTradeNo = res.trade_no;

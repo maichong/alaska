@@ -147,7 +147,7 @@ export default class AlipayPaymentPlugin extends PaymentPlugin<AlipayPaymentPlug
     signer.update(queryString, 'utf8');
     params.sign = signer.sign(config.private_key, 'base64');
 
-    let url = GATEWAY + '?' + this.createQueryStringUrlencode(params);
+    let url = `${GATEWAY}?${this.createQueryStringUrlencode(params)}`;
 
     let { alipay_trade_refund_response: res } = await client.post(url);
 

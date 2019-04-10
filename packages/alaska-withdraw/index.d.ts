@@ -10,7 +10,6 @@ import Reject from './sleds/Reject';
 export class WithdrawPlugin<C = any> extends Plugin<C> {
   static readonly classOfWithdrawPlugin: true;
   readonly instanceOfWithdrawPlugin: true;
-  label: string;
   /**
    * 退款
    * @param {Withdraw} withdraw 提现记录

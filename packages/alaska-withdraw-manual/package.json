@@ -1,0 +1,21 @@
+{
+  "name": "alaska-withdraw-manual",
+  "version": "0.13.2",
+  "description": "Alipay withdraw plugin for alaska.",
+  "keywords": [
+    "alaska",
+    "alaska-withdraw",
+    "alaska-withdraw-plugin"
+  ],
+  "alaska": "plugin",
+  "alaska-plugin": "alaska-withdraw",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-withdraw-manual",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "alaska-withdraw": "^0.13.2"
+  }
+}

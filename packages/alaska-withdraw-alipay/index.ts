@@ -19,7 +19,6 @@ export default class AlipayWithdrawPlugin extends WithdrawPlugin<AlipayWithdrawP
     super(pluginConfig, service);
     if (_.isEmpty(pluginConfig.channels)) throw new Error(`Missing config [alaska-withdraw/plugins.alaska-withdraw-alipay.channels]`);
 
-    this.label = 'Alipay';
     this.configs = new Map();
     for (let key of _.keys(pluginConfig.channels)) {
       let config: AlipayWithdrawConfig = pluginConfig.channels[key];
@@ -72,7 +71,7 @@ export default class AlipayWithdrawPlugin extends WithdrawPlugin<AlipayWithdrawP
     signer.update(queryString, 'utf8');
     params.sign = signer.sign(config.private_key, 'base64');
 
-    let url = GATEWAY + '?' + this.createQueryStringUrlencode(params);
+    let url = `${GATEWAY}?${this.createQueryStringUrlencode(params)}`;
 
     let { alipay_fund_trans_toaccount_transfer_response: res } = await client.post(url);
 
