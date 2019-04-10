@@ -62,12 +62,37 @@ export interface CreateParams {
    * 存储驱动，默认default
    */
   driver?: string;
+  /**
+   * 后台管理员用户，alaska-admin后台上传时存在
+   */
   admin?: User;
+  /**
+   * 图片用户ID
+   */
   user?: RecordId;
-  ctx?: Context;
-  file?: fs.ReadStream | string;
-  data?: Buffer;
+  /**
+   * 文件名，如不存在，则尝试从文件路径中获取
+   */
   name?: string;
+  /**
+   * 文件Buffer数据
+   * data/file/ctx 三者选其一
+   */
+  data?: Buffer;
+  /**
+   * 文件路径或读取流
+   * data/file/ctx 三者选其一
+   */
+  file?: fs.ReadStream | string;
+  /**
+   * HTTP Context
+   * 如果data/file参数都不存在，则首先尝试读取 ctx.files，其次尝试读取 ctx.request.body 中的base64数据
+   * data/file/ctx 三者选其一
+   */
+  ctx?: Context;
+  /**
+   * 仅供 alaska-admin 后台创建用
+   */
   body?: {
     driver?: string;
   };

@@ -24,7 +24,7 @@ const imageSizeAsync: (path: string) => Promise<ImageInfo> = util.promisify(imag
 
 export default class Create extends Sled<CreateParams, Image> {
   async exec(params: CreateParams): Promise<Image> {
-    let { driver, body, ctx, file, data } = params;
+    let { driver, body, ctx, file, data, name } = params;
     body = body || {};
     driver = driver || body.driver || 'default';
     if (!service.drivers.hasOwnProperty(driver)) {
@@ -33,14 +33,18 @@ export default class Create extends Sled<CreateParams, Image> {
     let driverConfig = service.drivers[driver];
     if (!file && !data) {
       if (!ctx) service.error('image file is required');
-      if (!ctx.files || !ctx.files.file) service.error('upload file is required');
-      // @ts-ignore ctx.files.file 只允许单个文件，不能是数组
-      file = ctx.files.file;
+      if (ctx.files && ctx.files.file) {
+        // @ts-ignore ctx.files.file 只允许单个文件，不能是数组
+        file = ctx.files.file;
+      } else if (ctx.request.body && ctx.request.body.data && typeof ctx.request.body.data === 'string') {
+        data = Buffer.from(ctx.request.body.data, 'base64');
+        name = name || ctx.request.body.name;
+      } else {
+        service.error('upload file is required');
+      }
     }
 
-    let image = new Image({
-      name: params.name
-    });
+    let image = new Image({ name });
 
     let user = params.user;
     if (!user && params.admin) {
@@ -51,15 +55,17 @@ export default class Create extends Sled<CreateParams, Image> {
     }
 
     let filePath: string;
-    if (typeof file === 'string') {
-      filePath = file;
-      file = fs.createReadStream(file);
-    } else if (isStream.readable(file)) {
-      // @ts-ignore 如果是上传文件，那么存在 file.path
-      filePath = file.path;
-      if (!image.name) {
-        // @ts-ignore 如果是上传文件，那么存在 file.filename
-        image.name = file.filename;
+    if (!data) {
+      if (typeof file === 'string') {
+        filePath = file;
+        file = fs.createReadStream(file);
+      } else if (isStream.readable(file)) {
+        // @ts-ignore 如果是上传文件，那么存在 file.path
+        filePath = file.path;
+        if (!image.name) {
+          // @ts-ignore 如果是上传文件，那么存在 file.filename
+          image.name = file.filename;
+        }
       }
     }
     if (!image.name && filePath) {

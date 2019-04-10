@@ -16,7 +16,7 @@ const stat = util.promisify(fs.stat);
 const imageSizeAsync = util.promisify(imageSize);
 class Create extends alaska_sled_1.Sled {
     async exec(params) {
-        let { driver, body, ctx, file, data } = params;
+        let { driver, body, ctx, file, data, name } = params;
         body = body || {};
         driver = driver || body.driver || 'default';
         if (!__1.default.drivers.hasOwnProperty(driver)) {
@@ -26,13 +26,18 @@ class Create extends alaska_sled_1.Sled {
         if (!file && !data) {
             if (!ctx)
                 __1.default.error('image file is required');
-            if (!ctx.files || !ctx.files.file)
+            if (ctx.files && ctx.files.file) {
+                file = ctx.files.file;
+            }
+            else if (ctx.request.body && ctx.request.body.data && typeof ctx.request.body.data === 'string') {
+                data = Buffer.from(ctx.request.body.data, 'base64');
+                name = name || ctx.request.body.name;
+            }
+            else {
                 __1.default.error('upload file is required');
-            file = ctx.files.file;
+            }
         }
-        let image = new Image_1.default({
-            name: params.name
-        });
+        let image = new Image_1.default({ name });
         let user = params.user;
         if (!user && params.admin) {
             user = params.admin._id;
@@ -41,14 +46,16 @@ class Create extends alaska_sled_1.Sled {
             image.user = user;
         }
         let filePath;
-        if (typeof file === 'string') {
-            filePath = file;
-            file = fs.createReadStream(file);
-        }
-        else if (isStream.readable(file)) {
-            filePath = file.path;
-            if (!image.name) {
-                image.name = file.filename;
+        if (!data) {
+            if (typeof file === 'string') {
+                filePath = file;
+                file = fs.createReadStream(file);
+            }
+            else if (isStream.readable(file)) {
+                filePath = file.path;
+                if (!image.name) {
+                    image.name = file.filename;
+                }
             }
         }
         if (!image.name && filePath) {
