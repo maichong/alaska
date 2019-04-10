@@ -57,6 +57,7 @@ export default class Create extends Sled<CreateParams, Income> {
     }
 
     let income = new Income({
+      account,
       type,
       title,
       amount,

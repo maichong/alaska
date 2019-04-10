@@ -57,6 +57,7 @@ class Create extends alaska_sled_1.Sled {
             await user.save({ session: this.dbSession });
         }
         let income = new Income_1.default({
+            account,
             type,
             title,
             amount,
