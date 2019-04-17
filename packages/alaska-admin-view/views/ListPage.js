@@ -95,14 +95,15 @@ class ListPage extends React.Component {
         this.init(nextProps);
     }
     init(props) {
-        const { match, lists, settings } = props;
+        const { match, lists, settings, user } = props;
         const { params } = match;
         let nextState = {};
         let serviceModels = settings.services[params.service];
         nextState.records = immutable([]);
         nextState.recordTotal = 0;
+        let model;
         if (serviceModels && serviceModels.models) {
-            let model = serviceModels.models[params.model] || null;
+            model = serviceModels.models[params.model] || null;
             let list;
             if (model) {
                 list = lists[model.id];
@@ -138,6 +139,9 @@ class ListPage extends React.Component {
                 k = k.substr(1);
                 options[k] = v;
                 return;
+            }
+            if ((v === 'SELF' && model && model.fields[k] && model.fields[k].model === 'alaska-user.User')) {
+                v = user.id;
             }
             filters[k] = v;
         });
@@ -209,7 +213,9 @@ class ListPage extends React.Component {
     }
 }
 exports.default = react_redux_1.connect((state) => ({
-    lists: state.lists, settings: state.settings
+    lists: state.lists,
+    settings: state.settings,
+    user: state.user,
 }), (dispatch) => redux_1.bindActionCreators({
     loadMore: listsRedux.loadMore
 }, dispatch))(ListPage);
