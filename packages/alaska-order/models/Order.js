@@ -278,6 +278,18 @@ Order.fields = {
         type: String,
         multi: true
     },
+    coupon: {
+        label: 'Coupon',
+        type: 'relationship',
+        ref: 'alaska-coupon.Coupon',
+        optional: 'alaska-coupon'
+    },
+    couponTemplate: {
+        label: 'Coupon Template',
+        type: 'relationship',
+        ref: 'alaska-coupon.CouponTemplate',
+        optional: 'alaska-coupon'
+    },
     quantity: {
         label: 'Quantity',
         type: Number
