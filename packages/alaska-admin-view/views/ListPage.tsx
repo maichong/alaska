@@ -15,7 +15,7 @@ import QuickEditor from './QuickEditor';
 import LoadingPage from './LoadingPage';
 import * as listsRedux from '../redux/lists';
 import {
-  ListPageProps, ListsState, StoreState, Record, Model, Settings,
+  ListPageProps, ListsState, StoreState, Record, Model, Settings, UserState,
   Service, RouterProps, views
 } from '..';
 import { getStorage, setStorage } from '../utils/storage';
@@ -23,6 +23,7 @@ import { getStorage, setStorage } from '../utils/storage';
 interface Props extends ListPageProps, RouterProps<{ service: string; model: string; }> {
   settings: Settings;
   lists: ListsState;
+  user: UserState;
   loadMore: Function;
 }
 
@@ -75,15 +76,16 @@ class ListPage extends React.Component<Props, ListPageState> {
   }
 
   init(props: Props) {
-    const { match, lists, settings } = props;
+    const { match, lists, settings, user } = props;
     const { params } = match;
     let nextState = {} as ListPageState;
 
     let serviceModels: Service = settings.services[params.service];
     nextState.records = immutable([]);
     nextState.recordTotal = 0;
+    let model: Model;
     if (serviceModels && serviceModels.models) {
-      let model = serviceModels.models[params.model] || null;
+      model = serviceModels.models[params.model] || null;
       let list;
       if (model) {
         list = lists[model.id];
@@ -121,6 +123,9 @@ class ListPage extends React.Component<Props, ListPageState> {
         k = k.substr(1);
         options[k] = v;
         return;
+      }
+      if ((v === 'SELF' && model && model.fields[k] && model.fields[k].model === 'alaska-user.User')) {
+        v = user.id;
       }
       filters[k] = v;
     });
@@ -318,7 +323,9 @@ class ListPage extends React.Component<Props, ListPageState> {
 
 export default connect(
   (state: StoreState) => ({
-    lists: state.lists, settings: state.settings
+    lists: state.lists,
+    settings: state.settings,
+    user: state.user,
   }),
   (dispatch) => bindActionCreators({
     loadMore: listsRedux.loadMore
