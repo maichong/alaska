@@ -15,8 +15,8 @@ export default class WeixinClientPlugin extends Plugin<WeixinClientPluginConfig>
     service.pre('start', () => {
       for (let key of Object.keys(pluginConfig.platforms)) {
         let config: WeixinClientConfig = pluginConfig.platforms[key];
-        if (!config.appid) throw new Error(`Missing config [alaska-client/plugins.alaska-client-weixin.${key}.appid]`);
-        if (!config.secret) throw new Error(`Missing config [alaska-client/plugins.alaska-client-weixin.${key}.secret]`);
+        if (!config.appid) throw new Error(`Missing config [alaska-client/plugins.alaska-client-weixin.platforms.${key}.appid]`);
+        if (!config.secret) throw new Error(`Missing config [alaska-client/plugins.alaska-client-weixin.platforms.${key}.secret]`);
 
         let userFieldsMap = config.userFieldsMap || {} as typeof config.userFieldsMap;
         if (config.useUnionid) {
