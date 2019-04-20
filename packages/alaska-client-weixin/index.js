@@ -14,9 +14,9 @@ class WeixinClientPlugin extends alaska_1.Plugin {
             for (let key of Object.keys(pluginConfig.platforms)) {
                 let config = pluginConfig.platforms[key];
                 if (!config.appid)
-                    throw new Error(`Missing config [alaska-client/plugins.alaska-client-weixin.${key}.appid]`);
+                    throw new Error(`Missing config [alaska-client/plugins.alaska-client-weixin.platforms.${key}.appid]`);
                 if (!config.secret)
-                    throw new Error(`Missing config [alaska-client/plugins.alaska-client-weixin.${key}.secret]`);
+                    throw new Error(`Missing config [alaska-client/plugins.alaska-client-weixin.platforms.${key}.secret]`);
                 let userFieldsMap = config.userFieldsMap || {};
                 if (config.useUnionid) {
                     let unionid = userFieldsMap.unionid || 'unionid';

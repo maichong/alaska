@@ -4,7 +4,7 @@ class Plugin {
     constructor(config, service) {
         this.instanceOfPlugin = true;
         this.service = service;
-        this.options = config;
+        this.config = config;
     }
 }
 Plugin.classOfPlugin = true;
