@@ -15,6 +15,7 @@ const EditorActionBar_1 = require("./EditorActionBar");
 const Editor_1 = require("./Editor");
 const LoadingPage_1 = require("./LoadingPage");
 const detailsRedux = require("../redux/details");
+const __1 = require("..");
 class EditorPage extends React.Component {
     constructor(props) {
         super(props);
@@ -161,7 +162,15 @@ class EditorPage extends React.Component {
         else {
             relationship = !isNew && tab && _.find(model.relationships, (r) => r.key === tab);
             if (relationship) {
-                el = React.createElement(RelationshipPage_1.default, { model: model, relationship: relationship, record: record });
+                let View;
+                if (relationship.view) {
+                    View = __1.views.components[relationship.view];
+                    if (!View) {
+                        console.error(`Missing relationship view : ${relationship.view}`);
+                    }
+                }
+                View = View || RelationshipPage_1.default;
+                el = React.createElement(View, { model: model, relationship: relationship, record: record });
             }
             else {
                 el = React.createElement(Editor_1.default, { model: model, record: record, errors: errors, onChange: this.handleChange });

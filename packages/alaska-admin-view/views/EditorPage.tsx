@@ -22,7 +22,9 @@ import {
   StoreState,
   DetailsState,
   Record,
-  ActionState
+  ActionState,
+  views,
+  RelationshipPageProps
 } from '..';
 
 interface Props extends EditorPageProps {
@@ -228,7 +230,15 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     } else {
       relationship = !isNew && tab && _.find(model.relationships, (r) => r.key === tab);
       if (relationship) {
-        el = <RelationshipPage model={model} relationship={relationship} record={record} />;
+        let View;
+        if (relationship.view) {
+          View = views.components[relationship.view] as React.ComponentClass<RelationshipPageProps>;
+          if (!View) {
+            console.error(`Missing relationship view : ${relationship.view}`);
+          }
+        }
+        View = View || RelationshipPage;
+        el = <View model={model} relationship={relationship} record={record} />;
       } else {
         el = <Editor model={model} record={record} errors={errors} onChange={this.handleChange} />;
       }

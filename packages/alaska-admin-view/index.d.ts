@@ -274,6 +274,7 @@ export interface ModelRelationship {
   private?: boolean;
   populations?: any;
   hidden?: DependsQueryExpression | AbilityCheckGate[];
+  view?: string;
 }
 
 export interface FieldGroup {
@@ -566,7 +567,7 @@ export interface ToolProps {
 export interface Tool extends React.Component<ToolProps> { }
 
 // FilterView interface
-export interface FilterViewProps<T=FilterFieldOptions> {
+export interface FilterViewProps<T = FilterFieldOptions> {
   className: string;
   model: Model;
   field?: Field;

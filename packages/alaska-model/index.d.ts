@@ -664,6 +664,7 @@ export interface ModelRelationship {
   protected?: boolean;
   hidden?: DependsQueryExpression | AbilityCheckGate[];
   optional?: string;
+  view?: string;
 }
 
 export interface ModelPopulation {
