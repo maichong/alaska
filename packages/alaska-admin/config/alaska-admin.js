@@ -7,5 +7,6 @@ exports.default = {
     dashboardTitle: 'Alaska admin dashboard',
     ueditor: {},
     ueditorImageDriver: 'default',
+    ueditorFileDriver: 'default',
     resourceVersion: '',
 };

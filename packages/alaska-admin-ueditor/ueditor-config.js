@@ -118,7 +118,7 @@ exports.default = {
             'help'
         ]
     ],
-    whitList: {
+    whiteList: {
         a: ['target', 'href', 'title', 'class', 'style'],
         abbr: ['title', 'class', 'style'],
         address: ['class', 'style'],

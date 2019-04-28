@@ -3,6 +3,7 @@ import * as Path from 'path';
 import * as _ from 'lodash';
 import { Context, Router } from 'alaska-http';
 import { ImageService } from 'alaska-image';
+import { FileService } from 'alaska-file';
 import adminService from 'alaska-admin';
 import userService from 'alaska-user';
 import { UEditorConfig } from '..';
@@ -42,21 +43,41 @@ export default function (router: Router) {
     if (action === 'config') {
       // 配置
       let ueditorImageDriver = adminService.config.get('ueditorImageDriver');
-      let imageService = adminService.main.allServices.get('alaska-image') as ImageService;
+      let imageService = adminService.lookup('alaska-image') as ImageService;
       if (!imageService) return onError('Image service unavailable');
-      let driverConfig = imageService.drivers[ueditorImageDriver];
-      if (!driverConfig) return onError('Image driver unavailable');
+      let imageDriverConfig = imageService.drivers[ueditorImageDriver];
+      if (!imageDriverConfig) return onError('Image driver unavailable');
 
-      ctx.body = {
+      let config: any = {
         imagePath: '',
         imageFieldName: 'file',
-        imageMaxSize: driverConfig.maxSize,
-        imageAllowFiles: driverConfig.allowed.map((ext) => `.${ext}`),
+        imageMaxSize: imageDriverConfig.maxSize,
+        imageAllowFiles: imageDriverConfig.allowed.map((ext) => `.${ext}`),
         imageManagerUrlPrefix: ''
       };
+
+      let fileService = adminService.lookup('alaska-file') as FileService;
+      let ueditorFileDriver = adminService.config.get('ueditorFileDriver');
+      if (fileService) {
+        let fileDriverConfig = fileService.drivers[ueditorFileDriver];
+        if (!fileDriverConfig) return onError('File driver unavailable');
+        // video
+        config.videoFieldName = 'file';
+        config.videoMaxSize = fileDriverConfig.maxSize;
+        config.videoAllowFiles = fileDriverConfig.allowed.map((ext) => `.${ext}`);
+
+        // file
+        config.fileFieldName = 'file';
+        config.fileMaxSize = fileDriverConfig.maxSize;
+        config.fileAllowFiles = fileDriverConfig.allowed.map((ext) => `.${ext}`);
+      }
+
+      ctx.body = config;
+
+
       return;
     } else if (action === '') {
-      let imageService = adminService.main.allServices.get('alaska-image') as ImageService;
+      let imageService = adminService.lookup('alaska-image') as ImageService;
       if (!imageService) return onError('Image service unavailable');
       let filters;
       if (!ctx.state.ignoreAuthorization) {
@@ -97,7 +118,7 @@ export default function (router: Router) {
     try {
       if (action === 'uploadimage') {
         let ueditorImageDriver = adminService.config.get('ueditorImageDriver');
-        let imageService = adminService.main.allServices.get('alaska-image') as ImageService;
+        let imageService = adminService.lookup('alaska-image') as ImageService;
         if (!imageService) return onError('Image service unavailable');
         let image = await imageService.sleds.Create.run({ ctx, user: ctx.user._id, driver: ueditorImageDriver });
         ctx.body = {
@@ -105,6 +126,18 @@ export default function (router: Router) {
           url: image.url,
           title: image.name,
           original: image.name
+        };
+        return;
+      } else if (action === 'uploadvideo' || action === 'uploadfile') {
+        let ueditorFileDriver = adminService.config.get('ueditorFileDriver');
+        let fileService = adminService.lookup('alaska-file') as FileService;
+        if (!fileService) return onError('File service unavailable');
+        let file = await fileService.sleds.Create.run({ ctx, user: ctx.user._id, driver: ueditorFileDriver });
+        ctx.body = {
+          state: 'SUCCESS',
+          url: file.url,
+          title: file.name,
+          original: file.name
         };
         return;
       }
