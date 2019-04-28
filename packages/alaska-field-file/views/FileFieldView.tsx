@@ -1,16 +1,17 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import * as shallowEqualWithout from 'shallow-equal-without';
-import { FieldViewProps, api } from 'alaska-admin-view';
 import * as tr from 'grackle';
+import * as prettyBytes from 'pretty-bytes';
+import { FieldViewProps, api } from 'alaska-admin-view';
 
 type State = {
   max: number;
   error: string;
 };
 
-export default class ImageFieldView extends React.Component<FieldViewProps, State> {
-  imageInput: any;
+export default class FileFieldView extends React.Component<FieldViewProps, State> {
+  fileInput: any;
   uploadQueue: File[];
   currentTask: File;
 
@@ -34,9 +35,9 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
     if (!file) return;
     this.currentTask = file;
     try {
-      let image = await api.post('/action', {
+      let record = await api.post('/action', {
         query: {
-          _model: 'alaska-image.Image',
+          _model: 'alaska-file.File',
           _action: 'create'
         },
         body: {
@@ -44,7 +45,7 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
           file
         }
       });
-      let item = field.plainName === 'mixed' ? image : image.url;
+      let item = field.plainName === 'mixed' ? record : record.url;
       let { value, onChange } = this.props;
       if (field.multi) {
         value = (value || []).concat(item);
@@ -61,7 +62,7 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
     }
   }
 
-  handleAddImage = () => {
+  handleAddFile = () => {
     let { field, value } = this.props;
     let { multi } = field;
     if (value) {
@@ -78,24 +79,21 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
       error: ''
     };
 
-    _.forEach(this.imageInput.files, (file: File) => {
+    _.forEach(this.fileInput.files, (file: File) => {
       if (value.length >= this.state.max || !file) return;
-      let matchs = file.name.match(/\.(\w+)$/);
-      if (!matchs) {
-        nextState.error = 'Invalid image format';
-        return;
-      }
-      let ext = matchs[1].replace('jpeg', 'jpg').toLowerCase();
-      if ((field.allowed || ['jpg', 'png']).indexOf(ext) < 0) {
-        nextState.error = 'Invalid image format';
-        return;
-      }
 
       if (file.size && file.size > field.maxSize) {
-        nextState.error = 'Image exceeds the allowed size';
+        nextState.error = 'File exceeds the allowed size';
         return;
       }
 
+      if (field.allowed && field.allowed.length) {
+        let filename = file.name.toLocaleLowerCase();
+        if (!_.find(field.allowed, (ext) => filename.endsWith(`.${ext}`))) {
+          nextState.error = 'Invalid file format';
+          return;
+        }
+      }
       this.uploadQueue.push(file);
     });
     this.setState(nextState);
@@ -128,24 +126,18 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
     let items: React.ReactNode[] = [];
     let readonly = disabled || field.fixed;
     _.forEach(value, (item, index) => {
-      let url = '';
+      let file = item;
       if (typeof item === 'string') {
-        let matchs = item.match(/\.(\w+)$/i);
-        url = item + ((field.thumbSuffix || '').replace('{EXT}', matchs ? matchs[1] : '') || '');
-      } else {
-        url = item.thumbUrl || item.url + ((field.thumbSuffix || '').replace('{EXT}', item.ext || '') || '');
+        file = { url: item };
       }
       items.push((
-        <div key={index} className="image-field-item">
-          <img alt="" src={url} />
+        <div key={index} className="file-field-item">
+          {file.name && <b>{file.name}</b>}
+          {file.size && <span>{prettyBytes(file.size)}</span>}
+          <a target="_blank" href={file.url}>{tr('Download')}</a>
           {
-            readonly ? null : (
-              <button
-                className="btn btn-link btn-block"
-                disabled={disabled}
-                onClick={() => this.handleRemoveItem(item)}
-              >{tr('Remove')}</button>
-            )
+            // eslint-disable-next-line no-script-url
+            readonly ? null : <a href="javascript:void(0)" onClick={() => this.handleRemoveItem(item)}>{tr('Remove')}</a>
           }
         </div>
       ));
@@ -154,16 +146,15 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
       // 还未超出
       if (!readonly) {
         items.push((
-          <div className="image-field-item image-field-add" key="add">
-            <i className="fa fa-plus-square-o" />
+          <div className="file-field-add" key="add">
+            <div className="btn btn-success"><i className="fa fa-cloud-upload" /> {tr('Upload')}</div>
             <input
               ref={(r) => {
-                this.imageInput = r;
+                this.fileInput = r;
               }}
               multiple={field.multi}
-              accept="image/png;image/jpg;"
               type="file"
-              onChange={this.handleAddImage}
+              onChange={this.handleAddFile}
             />
           </div>
         ));
@@ -172,14 +163,14 @@ export default class ImageFieldView extends React.Component<FieldViewProps, Stat
 
     if (!items.length && readonly) {
       items.push((
-        <div className="image-field-item image-field-add" key="add">
-          <i className="fa fa-picture-o" />
+        <div className="file-field-add" key="add">
+          <i className="fa fa-cloud-upload" />
         </div>
       ));
     }
 
     let { help } = field;
-    className += ' image-field';
+    className += ' file-field';
     error = error || errorText as string;
     if (error) {
       className += ' is-invalid';

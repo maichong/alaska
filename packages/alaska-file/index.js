@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require("lodash");
 const FSD = require("fsd");
 const alaska_1 = require("alaska");
-const Image_1 = require("./models/Image");
-class ImageService extends alaska_1.Service {
+const File_1 = require("./models/File");
+class FileService extends alaska_1.Service {
     constructor(options) {
         super(options);
         this.drivers = {};
@@ -13,23 +13,23 @@ class ImageService extends alaska_1.Service {
                 this.cache = this.createDriver(this.config.get('cache'));
                 let configs = this.config.get('drivers');
                 if (!configs)
-                    throw new Error('Missing config [alaska-image/drivers]');
+                    throw new Error('Missing config [alaska-file/drivers]');
                 for (let key of _.keys(configs)) {
                     let config = _.assign({}, configs[key]);
                     if (!config.adapter)
-                        throw new Error(`Missing config [alaska-image/drivers.${key}.adapter]`);
+                        throw new Error(`Missing config [alaska-file/drivers.${key}.adapter]`);
                     if (!config.adapterOptions)
-                        throw new Error(`Missing config [alaska-image/drivers.${key}.adapterOptions]`);
+                        throw new Error(`Missing config [alaska-file/drivers.${key}.adapterOptions]`);
                     let Adapter = this.main.modules.libraries[config.adapter] || this.error(`Missing adapter library [${config.adapter}]!`);
                     config.fsd = FSD({ adapter: new Adapter(config.adapterOptions) });
                     if (!config.allowed) {
-                        config.allowed = ['jpg', 'png', 'webp', 'gif', 'svg'];
+                        config.allowed = [];
                     }
                     if (typeof config.pathFormat === 'undefined') {
                         config.pathFormat = '/YYYY/MM/DD/{ID}.{EXT}';
                     }
                     if (!config.maxSize) {
-                        config.maxSize = 5242880;
+                        config.maxSize = 10485760;
                     }
                     this.drivers[key] = config;
                 }
@@ -40,7 +40,7 @@ class ImageService extends alaska_1.Service {
             }
         });
     }
-    async getImage(id) {
+    async getFile(id) {
         let idStr = String(id);
         let cache = await this.cache.get(idStr);
         if (cache === false)
@@ -48,7 +48,7 @@ class ImageService extends alaska_1.Service {
         if (cache)
             return cache;
         try {
-            cache = await Image_1.default.findById(id);
+            cache = await File_1.default.findById(id);
         }
         catch (e) { }
         if (!cache)
@@ -57,6 +57,6 @@ class ImageService extends alaska_1.Service {
         return cache ? cache : null;
     }
 }
-exports.default = new ImageService({
-    id: 'alaska-image'
+exports.default = new FileService({
+    id: 'alaska-file'
 });

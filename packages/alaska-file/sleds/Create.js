@@ -5,27 +5,23 @@ const Path = require("path");
 const fs = require("fs");
 const util = require("util");
 const moment = require("moment");
-const imageSize = require("image-size");
 const isStream = require("is-stream");
-const delay_1 = require("delay");
-const is_svg_1 = require("is-svg");
 const file_type_1 = require("file-type");
-const Image_1 = require("../models/Image");
+const File_1 = require("../models/File");
 const __1 = require("..");
 const stat = util.promisify(fs.stat);
-const imageSizeAsync = util.promisify(imageSize);
 class Create extends alaska_sled_1.Sled {
     async exec(params) {
         let { driver, body, ctx, file, data, name } = params;
         body = body || {};
         driver = driver || body.driver || 'default';
         if (!__1.default.drivers.hasOwnProperty(driver)) {
-            __1.default.error('Image storage driver not found!');
+            __1.default.error('File storage driver not found!');
         }
         let driverConfig = __1.default.drivers[driver];
         if (!file && !data) {
             if (!ctx)
-                __1.default.error('image file is required');
+                __1.default.error('file is required');
             if (ctx.files && ctx.files.file) {
                 if (Array.isArray(ctx.files.file)) {
                     __1.default.error('Only a single file was allowed!');
@@ -42,13 +38,13 @@ class Create extends alaska_sled_1.Sled {
                 __1.default.error('upload file is required');
             }
         }
-        let image = new Image_1.default({ name });
+        let record = new File_1.default({ name });
         let user = params.user;
         if (!user && params.admin) {
             user = params.admin._id;
         }
         if (user) {
-            image.user = user;
+            record.user = user;
         }
         let filePath;
         if (!data) {
@@ -58,62 +54,44 @@ class Create extends alaska_sled_1.Sled {
             }
             else if (isStream.readable(file)) {
                 filePath = file.path;
-                if (!image.name) {
-                    image.name = file.filename;
+                if (!record.name) {
+                    record.name = file.filename;
                 }
             }
         }
-        if (!image.name && filePath) {
-            image.name = Path.basename(filePath);
+        if (!record.name && filePath) {
+            record.name = Path.basename(filePath);
         }
-        if (image.name) {
-            image.ext = Path.extname(image.name).toLowerCase().replace('.', '').replace('jpeg', 'jpg');
+        if (record.name) {
+            record.ext = Path.extname(record.name).toLowerCase().replace('.', '');
         }
-        if (data && !image.ext) {
+        if (data && !record.ext) {
             let info = file_type_1.default(data);
             if (info.ext) {
-                image.ext = info.ext;
-            }
-            else if (is_svg_1.default(data)) {
-                image.ext = 'svg';
+                record.ext = info.ext;
             }
         }
-        if (!driverConfig.allowed.includes(image.ext))
-            __1.default.error('Invalid image format');
-        if (image.ext && !image.name) {
-            image.name = `${image.id}.${image.ext}`;
+        if (driverConfig.allowed && driverConfig.allowed.length && !driverConfig.allowed.includes(record.ext))
+            __1.default.error('Invalid file format');
+        if (record.ext && !record.name) {
+            record.name = `${record.id}.${record.ext}`;
         }
         if (data) {
-            image.size = data.length;
+            record.size = data.length;
         }
-        if (!image.size && filePath) {
+        if (!record.size && filePath) {
             let info = await stat(filePath);
-            image.size = info.size;
+            record.size = info.size;
         }
-        if (image.size && image.size > driverConfig.maxSize)
-            __1.default.error('Image exceeds the allowed size');
-        try {
-            if (data) {
-                let { width, height } = imageSize(data);
-                image.width = width;
-                image.height = height;
-            }
-            else if (filePath) {
-                let { width, height } = await imageSizeAsync(filePath);
-                image.width = width;
-                image.height = height;
-            }
-        }
-        catch (e) {
-            console.error(e);
-        }
+        if (record.size && record.size > driverConfig.maxSize)
+            __1.default.error('File exceeds the allowed size');
         let replacement = {
-            ID: image.id,
-            EXT: image.ext || '',
-            NAME: image.name || `${image.id}.${image.ext}`
+            ID: record.id,
+            EXT: record.ext || '',
+            NAME: record.name || `${record.id}.${record.ext}`
         };
         let pathFormat = driverConfig.pathFormat;
-        image.path = moment().format(pathFormat.replace(/\{(EXT|ID|NAME)\[?(\d*),?(\d*)\]?\}/g, (all, holder, start, length) => {
+        record.path = moment().format(pathFormat.replace(/\{(EXT|ID|NAME)\[?(\d*),?(\d*)\]?\}/g, (all, holder, start, length) => {
             if (length && !start) {
                 start = 0;
             }
@@ -128,7 +106,7 @@ class Create extends alaska_sled_1.Sled {
             }
             return `[${word.substr(start, length)}]`;
         }));
-        let fsd = driverConfig.fsd(image.path);
+        let fsd = driverConfig.fsd(record.path);
         if (fsd.needEnsureDir) {
             let dir = driverConfig.fsd(fsd.dir);
             if (!await dir.exists()) {
@@ -136,16 +114,9 @@ class Create extends alaska_sled_1.Sled {
             }
         }
         await fsd.write(data || file);
-        image.url = await fsd.createUrl();
-        image.thumbUrl = image.url;
-        if (driverConfig.thumbSuffix) {
-            image.thumbUrl += driverConfig.thumbSuffix.replace('{EXT}', image.ext);
-        }
-        await image.save({ session: this.dbSession });
-        if (driverConfig.adapter === 'fsd-oss') {
-            await delay_1.default(1000);
-        }
-        return image;
+        record.url = await fsd.createUrl();
+        await record.save({ session: this.dbSession });
+        return record;
     }
 }
 exports.default = Create;

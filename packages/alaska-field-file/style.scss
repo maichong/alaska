@@ -1,0 +1,29 @@
+.file-field {
+  .file-field-item {
+    line-height: 2rem;
+  }
+  b,
+  span,
+  a {
+    margin-right: 0.5rem;
+  }
+  input,
+  .btn,
+  .file-field-add {
+    display: block;
+    height: 2rem;
+    cursor: pointer;
+  }
+  .btn {
+    position: absolute;
+    z-index: 0;
+  }
+  input {
+    opacity: 0;
+    position: absolute;
+    z-index: 1;
+  }
+  &::after {
+    clear: both;
+  }
+}

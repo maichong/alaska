@@ -74,6 +74,9 @@ Settings.fields = {
             }, {
                 label: 'Image',
                 value: 'ImageFieldView'
+            }, {
+                label: 'File',
+                value: 'FileFieldView'
             }]
     },
     super: {

@@ -76,6 +76,9 @@ export default class Settings extends Model {
       }, {
         label: 'Image',
         value: 'ImageFieldView'
+      }, {
+        label: 'File',
+        value: 'FileFieldView'
       }]
     },
     super: {

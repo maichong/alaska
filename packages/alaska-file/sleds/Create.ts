@@ -3,36 +3,25 @@ import * as Path from 'path';
 import * as fs from 'fs';
 import * as util from 'util';
 import * as moment from 'moment';
-import * as imageSize from 'image-size';
 import * as isStream from 'is-stream';
-import delay from 'delay';
-import isSvg from 'is-svg';
 import fileType from 'file-type';
-import Image from '../models/Image';
+import File from '../models/File';
 import service, { CreateParams } from '..';
 import { RecordId } from 'alaska-model';
 
-interface ImageInfo {
-  width: number;
-  height: number;
-  type: string;
-}
-
 const stat = util.promisify(fs.stat);
-// @ts-ignore
-const imageSizeAsync: (path: string) => Promise<ImageInfo> = util.promisify(imageSize);
 
-export default class Create extends Sled<CreateParams, Image> {
-  async exec(params: CreateParams): Promise<Image> {
+export default class Create extends Sled<CreateParams, File> {
+  async exec(params: CreateParams): Promise<File> {
     let { driver, body, ctx, file, data, name } = params;
     body = body || {};
     driver = driver || body.driver || 'default';
     if (!service.drivers.hasOwnProperty(driver)) {
-      service.error('Image storage driver not found!');
+      service.error('File storage driver not found!');
     }
     let driverConfig = service.drivers[driver];
     if (!file && !data) {
-      if (!ctx) service.error('image file is required');
+      if (!ctx) service.error('file is required');
       if (ctx.files && ctx.files.file) {
         if (Array.isArray(ctx.files.file)) {
           // ctx.files.file 只允许单个文件，不能是数组
@@ -48,14 +37,14 @@ export default class Create extends Sled<CreateParams, Image> {
       }
     }
 
-    let image = new Image({ name });
+    let record = new File({ name });
 
     let user = params.user;
     if (!user && params.admin) {
       user = params.admin._id as RecordId;
     }
     if (user) {
-      image.user = user;
+      record.user = user;
     }
 
     let filePath: string;
@@ -66,67 +55,51 @@ export default class Create extends Sled<CreateParams, Image> {
       } else if (isStream.readable(file)) {
         // @ts-ignore 如果是上传文件，那么存在 file.path
         filePath = file.path;
-        if (!image.name) {
+        if (!record.name) {
           // @ts-ignore 如果是上传文件，那么存在 file.filename
-          image.name = file.filename;
+          record.name = file.filename;
         }
       }
     }
-    if (!image.name && filePath) {
-      image.name = Path.basename(filePath);
+    if (!record.name && filePath) {
+      record.name = Path.basename(filePath);
     }
 
-    if (image.name) {
-      image.ext = Path.extname(image.name).toLowerCase().replace('.', '').replace('jpeg', 'jpg');
+    if (record.name) {
+      record.ext = Path.extname(record.name).toLowerCase().replace('.', '');
     }
-    if (data && !image.ext) {
+    if (data && !record.ext) {
       let info = fileType(data);
       if (info.ext) {
-        image.ext = info.ext;
-      } else if (isSvg(data)) {
-        image.ext = 'svg';
+        record.ext = info.ext;
       }
     }
 
-    if (!driverConfig.allowed.includes(image.ext)) service.error('Invalid image format');
+    if (driverConfig.allowed && driverConfig.allowed.length && !driverConfig.allowed.includes(record.ext)) service.error('Invalid file format');
 
-    if (image.ext && !image.name) {
-      image.name = `${image.id}.${image.ext}`;
+    if (record.ext && !record.name) {
+      record.name = `${record.id}.${record.ext}`;
     }
 
     if (data) {
-      image.size = data.length;
+      record.size = data.length;
     }
-    if (!image.size && filePath) {
+    if (!record.size && filePath) {
       let info = await stat(filePath);
-      image.size = info.size;
+      record.size = info.size;
     }
 
-    if (image.size && image.size > driverConfig.maxSize) service.error('Image exceeds the allowed size');
-
-    try {
-      if (data) {
-        let { width, height } = imageSize(data);
-        image.width = width;
-        image.height = height;
-      } else if (filePath) {
-        let { width, height } = await imageSizeAsync(filePath);
-        image.width = width;
-        image.height = height;
-      }
-    } catch (e) {
-      console.error(e);
-    }
+    if (record.size && record.size > driverConfig.maxSize) service.error('File exceeds the allowed size');
 
     let replacement = {
-      ID: image.id,
-      EXT: image.ext || '',
-      NAME: image.name || `${image.id}.${image.ext}`
+      ID: record.id,
+      EXT: record.ext || '',
+      NAME: record.name || `${record.id}.${record.ext}`
     };
 
     let pathFormat = driverConfig.pathFormat;
 
-    image.path = moment().format(pathFormat.replace(/\{(EXT|ID|NAME)\[?(\d*),?(\d*)\]?\}/g, (all, holder, start, length) => {
+    record.path = moment().format(pathFormat.replace(/\{(EXT|ID|NAME)\[?(\d*),?(\d*)\]?\}/g, (all, holder, start, length) => {
       if (length && !start) {
         start = 0;
       }
@@ -143,7 +116,7 @@ export default class Create extends Sled<CreateParams, Image> {
       return `[${word.substr(start, length)}]`;
     }));
 
-    let fsd = driverConfig.fsd(image.path);
+    let fsd = driverConfig.fsd(record.path);
     if (fsd.needEnsureDir) {
       let dir = driverConfig.fsd(fsd.dir);
       if (!await dir.exists()) {
@@ -152,20 +125,10 @@ export default class Create extends Sled<CreateParams, Image> {
     }
     await fsd.write(data || file);
 
-    image.url = await fsd.createUrl();
-    image.thumbUrl = image.url;
+    record.url = await fsd.createUrl();
 
-    if (driverConfig.thumbSuffix) {
-      image.thumbUrl += driverConfig.thumbSuffix.replace('{EXT}', image.ext);
-    }
+    await record.save({ session: this.dbSession });
 
-    await image.save({ session: this.dbSession });
-
-    if (driverConfig.adapter === 'fsd-oss') {
-      // 阿里云 OSS 刚刚上传成功的图片有可能暂时无法访问
-      await delay(1000);
-    }
-
-    return image;
+    return record;
   }
 }

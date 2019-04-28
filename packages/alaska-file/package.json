@@ -1,0 +1,21 @@
+{
+  "name": "alaska-file",
+  "version": "0.13.2",
+  "description": "Alaska file service",
+  "keywords": [
+    "alaska",
+    "alaska-service"
+  ],
+  "alaska": "service",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-file",
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "dependencies": {
+    "alaska-cache-lru": "^0.13.2",
+    "file-type": "^10.9.0",
+    "fsd": "^0.4.2",
+    "is-stream": "^1.1.0"
+  }
+}

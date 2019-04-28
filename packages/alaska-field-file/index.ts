@@ -2,9 +2,9 @@ import { ObjectMap } from 'alaska';
 import { Field } from 'alaska-model';
 import * as mongoose from 'mongoose';
 import * as AdminView from 'alaska-admin-view';
-import { ImageService } from 'alaska-image';
-import ImageModel from 'alaska-image/models/Image';
-import { Image } from '.';
+import { FileService } from 'alaska-file';
+import FileModel from 'alaska-file/models/File';
+import { File } from '.';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -13,35 +13,34 @@ interface PathOptions {
   default: any;
 }
 
-export default class ImageField extends Field {
-  static fieldName = 'Image';
+export default class FileField extends Field {
+  static fieldName = 'File';
   static plainName = 'mixed';
   static plain = mongoose.Schema.Types.Mixed;
 
-  static viewOptions = ['multi', 'max', (options: AdminView.Field, field: ImageField) => {
+  static viewOptions = ['multi', 'max', (options: AdminView.Field, field: FileField) => {
     if (options.disabled === true) return;
     let service = field._model.service;
-    let imageService = service.lookup('alaska-image') as ImageService;
-    if (imageService) {
+    let fileService = service.lookup('alaska-file') as FileService;
+    if (fileService) {
       let driver = field.driver || 'default';
-      let driverConfig = imageService.drivers[driver];
+      let driverConfig = fileService.drivers[driver];
       if (driverConfig) {
         options.allowed = driverConfig.allowed;
         options.maxSize = driverConfig.maxSize;
-        options.thumbSuffix = driverConfig.thumbSuffix;
         options.driver = driver;
         return;
       }
     }
-    // 没有找到 alaska-image Service，无法上传图片
+    // 没有找到 alaska-file Service，无法上传图片
     options.disabled = true;
     return;
   }];
 
   static defaultOptions = {
     max: 1000,
-    cell: 'ImageFieldCell',
-    view: 'ImageFieldView'
+    cell: 'FileFieldCell',
+    view: 'FileFieldView'
   };
 
   max: number;
@@ -52,10 +51,10 @@ export default class ImageField extends Field {
     const schema = this._schema;
     const defaultValue = field.default || {};
 
-    const imageService = field._model.service.lookup('alaska-image') as ImageService;
-    if (imageService) {
+    const fileService = field._model.service.lookup('alaska-file') as FileService;
+    if (fileService) {
       let driver = field.driver || 'default';
-      if (!imageService.drivers.hasOwnProperty(driver)) throw new Error('Image storage driver not found!');
+      if (!fileService.drivers.hasOwnProperty(driver)) throw new Error('File storage driver not found!');
     }
 
     const paths: ObjectMap<PathOptions> = {};
@@ -73,15 +72,12 @@ export default class ImageField extends Field {
     addPath('ext', String);
     addPath('path', String);
     addPath('url', String);
-    addPath('thumbUrl', String);
     addPath('name', String);
     addPath('size', Number);
-    addPath('width', Number);
-    addPath('height', Number);
 
-    let imageSchema = new mongoose.Schema(paths);
+    let fileSchema = new mongoose.Schema(paths);
 
-    function stringToImage(value: string) {
+    function stringToFile(value: string) {
       let matchs = String(value).match(/([a-f0-9]{24})/);
       let id = matchs ? matchs[1] : null;
       return { _id: new ObjectId(id), url: value };
@@ -90,15 +86,15 @@ export default class ImageField extends Field {
     if (field.multi) {
       schema.add({
         [field.path]: {
-          type: [imageSchema],
-          set(value: Image | string | string[] | Image[]) {
+          type: [fileSchema],
+          set(value: File | string | string[] | File[]) {
             if (typeof value === 'string') {
-              return [stringToImage(value)];
+              return [stringToFile(value)];
             }
             if (Array.isArray(value)) {
-              return (value as Array<Image | string>).map((img: Image | string) => {
+              return (value as Array<File | string>).map((img: File | string) => {
                 if (typeof img === 'string') {
-                  return stringToImage(img);
+                  return stringToFile(img);
                 }
                 return img;
               });
@@ -110,14 +106,14 @@ export default class ImageField extends Field {
     } else {
       schema.add({
         [field.path]: {
-          type: imageSchema,
-          set(value: Image | string | string[] | Image[]) {
+          type: fileSchema,
+          set(value: File | string | string[] | File[]) {
             if (Array.isArray(value)) {
               value = value[0] || null;
             }
             if (typeof value === 'string') {
               // @ts-ignore
-              value = stringToImage(value);
+              value = stringToFile(value);
             }
             // @ts-ignore
             if (value && typeof value === 'object' && value._doc) value = value._doc;
@@ -129,18 +125,18 @@ export default class ImageField extends Field {
       }, '');
     }
 
-    if (imageService) {
-      imageSchema.pre('validate', async function (next: Function) {
+    if (fileService) {
+      fileSchema.pre('validate', async function (next: Function) {
         // @ts-ignore
-        let doc: ImageModel = this;
-        if (!doc._id || !doc.url || doc.name || doc.thumbUrl) {
+        let doc: FileModel = this;
+        if (!doc._id || !doc.url || doc.name) {
           next();
           return;
         }
         // 有 id、url，但是没有名字大小等信息，尝试补全信息
-        let img = await imageService.getImage(doc._id);
-        if (img && img.url === doc.url) {
-          doc.set(img.toObject());
+        let file = await fileService.getFile(doc._id);
+        if (file && file.url === doc.url) {
+          doc.set(file.toObject());
         }
         next();
       });
@@ -151,7 +147,7 @@ export default class ImageField extends Field {
       if (!field.multi) {
         return value && value.url ? value.url : '';
       }
-      return (value || []).map((v: Image) => (v && v.url ? v.url : '')).filter((v: string) => v);
+      return (value || []).map((v: File) => (v && v.url ? v.url : '')).filter((v: string) => v);
     });
   }
 }

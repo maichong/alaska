@@ -3,12 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const _ = require("lodash");
 const shallowEqualWithout = require("shallow-equal-without");
-const alaska_admin_view_1 = require("alaska-admin-view");
 const tr = require("grackle");
-class ImageFieldView extends React.Component {
+const prettyBytes = require("pretty-bytes");
+const alaska_admin_view_1 = require("alaska-admin-view");
+class FileFieldView extends React.Component {
     constructor(props) {
         super(props);
-        this.handleAddImage = () => {
+        this.handleAddFile = () => {
             let { field, value } = this.props;
             let { multi } = field;
             if (value) {
@@ -25,22 +26,19 @@ class ImageFieldView extends React.Component {
             let nextState = {
                 error: ''
             };
-            _.forEach(this.imageInput.files, (file) => {
+            _.forEach(this.fileInput.files, (file) => {
                 if (value.length >= this.state.max || !file)
                     return;
-                let matchs = file.name.match(/\.(\w+)$/);
-                if (!matchs) {
-                    nextState.error = 'Invalid image format';
-                    return;
-                }
-                let ext = matchs[1].replace('jpeg', 'jpg').toLowerCase();
-                if ((field.allowed || ['jpg', 'png']).indexOf(ext) < 0) {
-                    nextState.error = 'Invalid image format';
-                    return;
-                }
                 if (file.size && file.size > field.maxSize) {
-                    nextState.error = 'Image exceeds the allowed size';
+                    nextState.error = 'File exceeds the allowed size';
                     return;
+                }
+                if (field.allowed && field.allowed.length) {
+                    let filename = file.name.toLocaleLowerCase();
+                    if (!_.find(field.allowed, (ext) => filename.endsWith(`.${ext}`))) {
+                        nextState.error = 'Invalid file format';
+                        return;
+                    }
                 }
                 this.uploadQueue.push(file);
             });
@@ -65,9 +63,9 @@ class ImageFieldView extends React.Component {
             return;
         this.currentTask = file;
         try {
-            let image = await alaska_admin_view_1.api.post('/action', {
+            let record = await alaska_admin_view_1.api.post('/action', {
                 query: {
-                    _model: 'alaska-image.Image',
+                    _model: 'alaska-file.File',
                     _action: 'create'
                 },
                 body: {
@@ -75,7 +73,7 @@ class ImageFieldView extends React.Component {
                     file
                 }
             });
-            let item = field.plainName === 'mixed' ? image : image.url;
+            let item = field.plainName === 'mixed' ? record : record.url;
             let { value, onChange } = this.props;
             if (field.multi) {
                 value = (value || []).concat(item);
@@ -116,33 +114,34 @@ class ImageFieldView extends React.Component {
         let items = [];
         let readonly = disabled || field.fixed;
         _.forEach(value, (item, index) => {
-            let url = '';
+            let file = item;
             if (typeof item === 'string') {
-                let matchs = item.match(/\.(\w+)$/i);
-                url = item + ((field.thumbSuffix || '').replace('{EXT}', matchs ? matchs[1] : '') || '');
+                file = { url: item };
             }
-            else {
-                url = item.thumbUrl || item.url + ((field.thumbSuffix || '').replace('{EXT}', item.ext || '') || '');
-            }
-            items.push((React.createElement("div", { key: index, className: "image-field-item" },
-                React.createElement("img", { alt: "", src: url }),
-                readonly ? null : (React.createElement("button", { className: "btn btn-link btn-block", disabled: disabled, onClick: () => this.handleRemoveItem(item) }, tr('Remove'))))));
+            items.push((React.createElement("div", { key: index, className: "file-field-item" },
+                file.name && React.createElement("b", null, file.name),
+                file.size && React.createElement("span", null, prettyBytes(file.size)),
+                React.createElement("a", { target: "_blank", href: file.url }, tr('Download')),
+                readonly ? null : React.createElement("a", { href: "javascript:void(0)", onClick: () => this.handleRemoveItem(item) }, tr('Remove')))));
         });
         if (items.length < max) {
             if (!readonly) {
-                items.push((React.createElement("div", { className: "image-field-item image-field-add", key: "add" },
-                    React.createElement("i", { className: "fa fa-plus-square-o" }),
+                items.push((React.createElement("div", { className: "file-field-add", key: "add" },
+                    React.createElement("div", { className: "btn btn-success" },
+                        React.createElement("i", { className: "fa fa-cloud-upload" }),
+                        " ",
+                        tr('Upload')),
                     React.createElement("input", { ref: (r) => {
-                            this.imageInput = r;
-                        }, multiple: field.multi, accept: "image/png;image/jpg;", type: "file", onChange: this.handleAddImage }))));
+                            this.fileInput = r;
+                        }, multiple: field.multi, type: "file", onChange: this.handleAddFile }))));
             }
         }
         if (!items.length && readonly) {
-            items.push((React.createElement("div", { className: "image-field-item image-field-add", key: "add" },
-                React.createElement("i", { className: "fa fa-picture-o" }))));
+            items.push((React.createElement("div", { className: "file-field-add", key: "add" },
+                React.createElement("i", { className: "fa fa-cloud-upload" }))));
         }
         let { help } = field;
-        className += ' image-field';
+        className += ' file-field';
         error = error || errorText;
         if (error) {
             className += ' is-invalid';
@@ -163,4 +162,4 @@ class ImageFieldView extends React.Component {
             helpElement));
     }
 }
-exports.default = ImageFieldView;
+exports.default = FileFieldView;

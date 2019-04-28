@@ -1,7 +1,7 @@
 {
-  "name": "alaska-field-image",
+  "name": "alaska-field-file",
   "version": "0.13.2",
-  "description": "Alaska image field",
+  "description": "Alaska file field",
   "keywords": [
     "alaska",
     "alaska-field"
@@ -9,8 +9,10 @@
   "alaska": "field",
   "main": "index.js",
   "types": "index.d.ts",
-  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-image",
+  "repository": "https://github.com/maichong/alaska/tree/master/packages/alaska-field-file",
   "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "pretty-bytes": "^5.2.0"
+  }
 }

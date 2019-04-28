@@ -3,27 +3,24 @@ import * as FSD from 'fsd';
 import * as mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';
 
-export interface Image {
+export interface File {
   _id: ObjectId;
   user: ObjectId;
   ext?: string;
   path?: string;
   url: string;
-  thumbUrl?: string;
   name?: string;
   size?: number;
-  width?: number;
-  height?: number;
 }
 
-export interface ImageFieldOptions {
+export interface FileFieldOptions {
   max: number;
   driver?: string;
 }
 
-declare class ImageField extends Field {
+declare class FileField extends Field {
 }
 
-interface ImageField extends ImageFieldOptions { }
+interface FileField extends FileFieldOptions { }
 
-export default ImageField;
+export default FileField;

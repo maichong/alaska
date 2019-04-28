@@ -7,4 +7,6 @@ export class HelpService extends Service {
   }
 }
 
-export default HelpService;
+declare const helpService: HelpService;
+
+export default helpService;
