@@ -31,6 +31,7 @@ export default class MenuItem extends React.Component<MenuItemProps> {
         }}>
           <i className={`fa fa-${menu.icon}`} />
           <span>{tr(menu.label)}</span>
+          {menu.badge && <span className={`badge badge-${menu.badgeColor}`}>{menu.badge}</span>}
           {
             (menu.subs && menu.subs.length > 0) && <i
               className={`has-subs-icon fa fa-angle-${openId === menu.id ? 'up' : 'down'}`}

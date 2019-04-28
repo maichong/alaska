@@ -454,11 +454,12 @@ export interface MenuItem {
   id: string;
   label: string;
   icon: string;
-  type: string;
+  type: 'link' | 'group';
   nav?: string;
   parent: string;
   link: string;
-  service: string;
+  badge: string;
+  badgeColor: Colors;
   sort: number;
   ability: string;
   super: boolean;

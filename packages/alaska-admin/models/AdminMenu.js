@@ -18,7 +18,7 @@ class AdminMenu extends alaska_model_1.Model {
 AdminMenu.label = 'Admin Menu';
 AdminMenu.icon = 'bars';
 AdminMenu.titleField = 'label';
-AdminMenu.defaultColumns = 'icon label type nav parent sort service link ability super activated';
+AdminMenu.defaultColumns = 'icon label type nav parent sort link ability super activated';
 AdminMenu.filterFields = 'type?switch&nolabel @parent @search';
 AdminMenu.defaultSort = '-sort';
 AdminMenu.searchFields = '_id label link parent';
@@ -80,9 +80,14 @@ AdminMenu.fields = {
         hidden: 'parent',
         default: 'default'
     },
-    service: {
-        label: 'Service',
+    badge: {
+        label: 'Badge',
         type: String
+    },
+    badgeColor: {
+        label: 'Badge Color',
+        type: String,
+        default: 'danger'
     },
     sort: {
         label: 'Sort',

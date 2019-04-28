@@ -18,6 +18,8 @@ export default {
   Service: '服务',
   Type: '类型',
   Activated: '激活',
+  Badge: '徽章',
+  'Badge Color': '徽章颜色',
   Content: '内容',
   Default: '默认',
   'Super Mode': '超级模式',

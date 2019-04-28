@@ -97,6 +97,17 @@
         width: 0.875rem; // 14px;
         text-align: center;
       }
+      .badge {
+        margin-left: .5rem;
+        line-height: 1.2rem;
+        height: 1.2rem;
+        font-size: 0.6rem;
+        border-radius: 0.6rem;
+        padding: 0 0.2rem;
+        vertical-align: middle;
+        text-align: center;
+        min-width: 1.2rem;
+      }
     }
     .has-subs-icon {
       position: absolute;

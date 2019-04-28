@@ -23,6 +23,7 @@ class MenuItem extends React.Component {
                 } },
                 React.createElement("i", { className: `fa fa-${menu.icon}` }),
                 React.createElement("span", null, tr(menu.label)),
+                menu.badge && React.createElement("span", { className: `badge badge-${menu.badgeColor}` }, menu.badge),
                 (menu.subs && menu.subs.length > 0) && React.createElement("i", { className: `has-subs-icon fa fa-angle-${openId === menu.id ? 'up' : 'down'}` })),
             (menu.subs && menu.subs.length > 0 && openId === menu.id && opened)
                 && React.createElement(Menu_1.default, { opened: opened, onChange: onChange, layout: layout, menus: menu.subs, level: level })));

@@ -1,6 +1,7 @@
 
 import { Model } from 'alaska-model';
 import { Context } from 'alaska-http';
+import { Colors } from '@samoyed/types';
 
 function defaultFilters(ctx: Context) {
   if (ctx.state.superMode) return null;
@@ -13,7 +14,7 @@ export default class AdminMenu extends Model {
   static label = 'Admin Menu';
   static icon = 'bars';
   static titleField = 'label';
-  static defaultColumns = 'icon label type nav parent sort service link ability super activated';
+  static defaultColumns = 'icon label type nav parent sort link ability super activated';
   static filterFields = 'type?switch&nolabel @parent @search';
   static defaultSort = '-sort';
   static searchFields = '_id label link parent';
@@ -76,9 +77,14 @@ export default class AdminMenu extends Model {
       hidden: 'parent',
       default: 'default'
     },
-    service: {
-      label: 'Service',
+    badge: {
+      label: 'Badge',
       type: String
+    },
+    badgeColor: {
+      label: 'Badge Color',
+      type: String,
+      default: 'danger'
     },
     sort: {
       label: 'Sort',
@@ -101,10 +107,11 @@ export default class AdminMenu extends Model {
   id: string;
   label: string;
   icon: string;
-  type: string;
+  type: 'link' | 'group';
   parent: string;
   nav: string;
-  service: string;
+  badge: string;
+  badgeColor: Colors;
   sort: number;
   ability: string;
   super: boolean;

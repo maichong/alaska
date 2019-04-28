@@ -1,4 +1,5 @@
 import { Model } from 'alaska-model';
+import { Colors } from '@samoyed/types';
 
 declare class AdminMenu extends Model { }
 interface AdminMenu extends AdminMenuFields { }
@@ -6,11 +7,12 @@ interface AdminMenu extends AdminMenuFields { }
 export interface AdminMenuFields {
   label: string;
   icon: string;
-  type: string;
+  type: 'link' | 'group';
   parent: string;
   nav?: string;
-  service: string;
   link: string;
+  badge: string;
+  badgeColor: Colors;
   sort: number;
   ability: string;
   super: boolean;
