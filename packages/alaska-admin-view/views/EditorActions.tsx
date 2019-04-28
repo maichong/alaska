@@ -12,6 +12,7 @@ import { ObjectMap } from 'alaska';
 import { EditorActionsProps, StoreState, ActionState, ActionRequestPayload } from '..';
 import ActionGroup from './ActionGroup';
 import * as ActionRedux from '../redux/action';
+import * as refreshRedux from '../redux/refresh';
 import checkAbility, { hasAbility } from '../utils/check-ability';
 
 interface ActionMap {
@@ -34,6 +35,7 @@ interface Props extends EditorActionsProps {
   staticContext?: any;
   superMode: boolean;
   actionRequest: (req: ActionRequestPayload) => any;
+  refresh: () => any;
   action: ActionState;
 }
 
@@ -75,7 +77,7 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
   };
 
   handleAction = async (action: string) => {
-    const { model, actionRequest, record } = this.props;
+    const { model, actionRequest, record, refresh } = this.props;
     const config: ModelAction = model.actions[action];
 
     if (config && config.confirm) {
@@ -105,7 +107,9 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
         this.setState({ request });
       }
 
-      if (config.post && config.post.substr(0, 3) === 'js:') {
+      if (config.post === 'refresh') {
+        refresh();
+      } else if (config.post && config.post.substr(0, 3) === 'js:') {
         // eslint-disable-next-line
         eval(config.post.substr(3));
       }
@@ -240,5 +244,8 @@ class EditorActions extends React.Component<Props, EditorActionsState> {
 
 export default connect(
   ({ settings, action }: StoreState) => ({ superMode: settings.superMode, action }),
-  (dispatch) => bindActionCreators({ actionRequest: ActionRedux.actionRequest }, dispatch)
+  (dispatch) => bindActionCreators({
+    actionRequest: ActionRedux.actionRequest,
+    refresh: refreshRedux.refresh,
+  }, dispatch)
 )(withRouter(EditorActions));

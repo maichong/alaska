@@ -10,6 +10,7 @@ const modal_1 = require("@samoyed/modal");
 const toast_1 = require("@samoyed/toast");
 const ActionGroup_1 = require("./ActionGroup");
 const ActionRedux = require("../redux/action");
+const refreshRedux = require("../redux/refresh");
 const check_ability_1 = require("../utils/check-ability");
 class EditorActions extends React.Component {
     constructor(props) {
@@ -20,7 +21,7 @@ class EditorActions extends React.Component {
             this.props.history.replace(url);
         };
         this.handleAction = async (action) => {
-            const { model, actionRequest, record } = this.props;
+            const { model, actionRequest, record, refresh } = this.props;
             const config = model.actions[action];
             if (config && config.confirm) {
                 let res = await modal_1.confirm(tr('Confirm'), tr(config.confirm, model.serviceId));
@@ -47,7 +48,10 @@ class EditorActions extends React.Component {
                     });
                     this.setState({ request });
                 }
-                if (config.post && config.post.substr(0, 3) === 'js:') {
+                if (config.post === 'refresh') {
+                    refresh();
+                }
+                else if (config.post && config.post.substr(0, 3) === 'js:') {
                     eval(config.post.substr(3));
                 }
             }
@@ -191,4 +195,7 @@ class EditorActions extends React.Component {
             React.createElement(ActionGroup_1.default, { editor: true, history: history, items: actionList, model: model, record: record })));
     }
 }
-exports.default = react_redux_1.connect(({ settings, action }) => ({ superMode: settings.superMode, action }), (dispatch) => redux_1.bindActionCreators({ actionRequest: ActionRedux.actionRequest }, dispatch))(react_router_1.withRouter(EditorActions));
+exports.default = react_redux_1.connect(({ settings, action }) => ({ superMode: settings.superMode, action }), (dispatch) => redux_1.bindActionCreators({
+    actionRequest: ActionRedux.actionRequest,
+    refresh: refreshRedux.refresh,
+}, dispatch))(react_router_1.withRouter(EditorActions));

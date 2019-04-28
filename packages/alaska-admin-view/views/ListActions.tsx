@@ -13,6 +13,7 @@ import { confirm } from '@samoyed/modal';
 import { ListActionsProps, StoreState, Settings, ActionState, ActionRequestPayload, Record } from '..';
 import ActionGroup from './ActionGroup';
 import * as ActionRedux from '../redux/action';
+import * as refreshRedux from '../redux/refresh';
 import checkAbility, { hasAbility } from '../utils/check-ability';
 
 interface ListActionsState {
@@ -36,6 +37,7 @@ interface Props extends ListActionsProps {
   superMode: boolean;
   locale: string;
   actionRequest: (req: ActionRequestPayload) => any;
+  refresh: () => any;
   action: ActionState;
 }
 
@@ -60,7 +62,7 @@ class ListActions extends React.Component<Props, ListActionsState> {
   }
 
   handleAction = async (action: string) => {
-    const { model, selected, sort, filters, actionRequest } = this.props;
+    const { model, selected, sort, filters, actionRequest, refresh } = this.props;
 
     const config: ModelAction = model.actions[action];
     if (!config) return;
@@ -93,7 +95,10 @@ class ListActions extends React.Component<Props, ListActionsState> {
         });
         this.setState({ request });
       }
-      if (config.post && config.post.substr(0, 3) === 'js:') {
+
+      if (config.post === 'refresh') {
+        refresh();
+      } else if (config.post && config.post.substr(0, 3) === 'js:') {
         // eslint-disable-next-line
         eval(config.post.substr(3));
       }
@@ -250,5 +255,8 @@ class ListActions extends React.Component<Props, ListActionsState> {
 export default connect(
   ({ settings, action }: StoreState) =>
     ({ superMode: settings.superMode, locale: settings.locale, action, settings }),
-  (dispatch) => bindActionCreators({ actionRequest: ActionRedux.actionRequest }, dispatch)
+  (dispatch) => bindActionCreators({
+    actionRequest: ActionRedux.actionRequest,
+    refresh: refreshRedux.refresh,
+  }, dispatch)
 )(withRouter(ListActions));

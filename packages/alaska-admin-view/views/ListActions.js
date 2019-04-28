@@ -11,12 +11,13 @@ const toast_1 = require("@samoyed/toast");
 const modal_1 = require("@samoyed/modal");
 const ActionGroup_1 = require("./ActionGroup");
 const ActionRedux = require("../redux/action");
+const refreshRedux = require("../redux/refresh");
 const check_ability_1 = require("../utils/check-ability");
 class ListActions extends React.Component {
     constructor(props) {
         super(props);
         this.handleAction = async (action) => {
-            const { model, selected, sort, filters, actionRequest } = this.props;
+            const { model, selected, sort, filters, actionRequest, refresh } = this.props;
             const config = model.actions[action];
             if (!config)
                 return;
@@ -49,7 +50,10 @@ class ListActions extends React.Component {
                     });
                     this.setState({ request });
                 }
-                if (config.post && config.post.substr(0, 3) === 'js:') {
+                if (config.post === 'refresh') {
+                    refresh();
+                }
+                else if (config.post && config.post.substr(0, 3) === 'js:') {
                     eval(config.post.substr(3));
                 }
             }
@@ -200,4 +204,7 @@ class ListActions extends React.Component {
             React.createElement(ActionGroup_1.default, { history: history, items: actionList, model: model, selected: selected, records: records })));
     }
 }
-exports.default = react_redux_1.connect(({ settings, action }) => ({ superMode: settings.superMode, locale: settings.locale, action, settings }), (dispatch) => redux_1.bindActionCreators({ actionRequest: ActionRedux.actionRequest }, dispatch))(react_router_1.withRouter(ListActions));
+exports.default = react_redux_1.connect(({ settings, action }) => ({ superMode: settings.superMode, locale: settings.locale, action, settings }), (dispatch) => redux_1.bindActionCreators({
+    actionRequest: ActionRedux.actionRequest,
+    refresh: refreshRedux.refresh,
+}, dispatch))(react_router_1.withRouter(ListActions));
