@@ -7,7 +7,7 @@ const toast_1 = require("@samoyed/toast");
 const modal_1 = require("@samoyed/modal");
 const ActionView_1 = require("./ActionView");
 const check_ability_1 = require("../utils/check-ability");
-class ListActions extends React.Component {
+class ListItemActions extends React.Component {
     constructor(props) {
         super(props);
         this.handleShow = () => {
@@ -87,9 +87,12 @@ class ListActions extends React.Component {
             else if (action.sled) {
                 onClick = () => this.handleAction(action);
             }
-            actions.push(React.createElement(ActionView_1.default, { key: key, icon: true, model: model, history: history, action: action, link: link, onClick: onClick }));
+            else {
+                link = action.link;
+            }
+            actions.push(React.createElement(ActionView_1.default, { key: key, icon: true, model: model, record: record, history: history, action: action, link: link, onClick: onClick }));
         });
         return actions;
     }
 }
-exports.default = ListActions;
+exports.default = ListItemActions;

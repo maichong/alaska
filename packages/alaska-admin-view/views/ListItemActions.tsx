@@ -12,7 +12,7 @@ interface State {
   request?: string;
 }
 
-export default class ListActions extends React.Component<ListItemActionsProps, State> {
+export default class ListItemActions extends React.Component<ListItemActionsProps, State> {
   constructor(props: ListItemActionsProps) {
     super(props);
     this.state = {};
@@ -91,12 +91,15 @@ export default class ListActions extends React.Component<ListItemActionsProps, S
         onClick = () => this.handleRemove(action);
       } else if (action.sled) {
         onClick = () => this.handleAction(action);
+      } else {
+        link = action.link;
       }
 
       actions.push(<ActionView
         key={key}
         icon
         model={model}
+        record={record}
         history={history}
         action={action}
         link={link}

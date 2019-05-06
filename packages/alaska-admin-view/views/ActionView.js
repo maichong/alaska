@@ -16,7 +16,7 @@ class ActionView extends React.Component {
                 onClick();
                 return;
             }
-            if (link) {
+            if (link && record) {
                 link = link.replace(/\{([a-z0-9_]+)\}/ig, (all, word) => {
                     if (record.hasOwnProperty(word)) {
                         return record[word];
