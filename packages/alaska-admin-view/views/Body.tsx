@@ -18,7 +18,7 @@ export default class Body extends React.Component<BodyProps> {
         <Switch>
           <Route component={HomePage} exact path="/" />
           <Route component={ListPage} exact path="/list/:service/:model" />
-          <Route component={EditorPage} exact path="/edit/:service/:model/:id" />
+          <Route component={EditorPage} path="/edit/:service/:model/:id/:tab?" />
           {
             (views.routes || []).map((item: RouteItem) => (
               <Route key={item.path} component={item.component} exact path={item.path} />))

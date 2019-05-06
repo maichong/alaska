@@ -14,7 +14,7 @@ class Body extends React.Component {
             React.createElement(react_router_dom_1.Switch, null,
                 React.createElement(react_router_dom_1.Route, { component: HomePage_1.default, exact: true, path: "/" }),
                 React.createElement(react_router_dom_1.Route, { component: ListPage_1.default, exact: true, path: "/list/:service/:model" }),
-                React.createElement(react_router_dom_1.Route, { component: EditorPage_1.default, exact: true, path: "/edit/:service/:model/:id" }),
+                React.createElement(react_router_dom_1.Route, { component: EditorPage_1.default, path: "/edit/:service/:model/:id/:tab?" }),
                 (__1.views.routes || []).map((item) => (React.createElement(react_router_dom_1.Route, { key: item.path, component: item.component, exact: true, path: item.path }))),
                 React.createElement(react_router_dom_1.Route, { component: ErrorPage_1.default }))));
     }

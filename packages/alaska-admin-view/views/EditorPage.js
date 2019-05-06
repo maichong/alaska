@@ -22,8 +22,10 @@ class EditorPage extends React.Component {
         this.handleChange = (record, errors) => {
             this.setState({ record, errors });
         };
-        this.handleTab = (t) => {
-            this.setState({ tab: t });
+        this.handleTab = (tab) => {
+            let { model, id } = this.state;
+            tab = tab ? `/${tab}` : '';
+            this.props.history.replace(`/edit/${model.serviceId}/${model.modelName}/${id}${tab}`);
         };
         this.state = {
             _action: props.action,
@@ -41,7 +43,7 @@ class EditorPage extends React.Component {
         const model = nextProps.models[modelId] || prevState.model;
         if (!model)
             return null;
-        const { action } = nextProps;
+        const { action, location, user } = nextProps;
         const nextState = {
             _action: action,
             id: params.id,
@@ -50,6 +52,11 @@ class EditorPage extends React.Component {
         if (model && (!prevState.model || prevState.model !== model)) {
             nextState.model = model;
         }
+        let tab = params.tab || '';
+        if (tab && !model.relationships[tab]) {
+            tab = '';
+        }
+        nextState.tab = tab;
         if (nextState.isNew) {
             if (!prevState.record
                 || prevState.record.id ||
@@ -60,7 +67,6 @@ class EditorPage extends React.Component {
                         init[key] = field.default;
                     }
                 });
-                const { location, user } = nextProps;
                 let queryString = (location.search || '').substr(1);
                 let query = qs.parse(queryString) || {};
                 _.forEach(query, (v, k) => {

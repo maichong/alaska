@@ -783,6 +783,7 @@ export interface EditorPageProps extends RouterProps<{
   service: string;
   model: string;
   id: string;
+  tab?: string;
 }> {
 }
 

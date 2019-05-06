@@ -68,7 +68,7 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     const model = nextProps.models[modelId] || prevState.model;
     if (!model) return null;
 
-    const { action } = nextProps;
+    const { action, location, user } = nextProps;
 
     const nextState: Partial<EditorPageState> = {
       _action: action,
@@ -78,6 +78,12 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     if (model && (!prevState.model || prevState.model !== model)) {
       nextState.model = model;
     }
+
+    let tab = params.tab || ''
+    if (tab && !model.relationships[tab]) {
+      tab = '';
+    }
+    nextState.tab = tab;
 
     if (nextState.isNew) {
       // 新建
@@ -92,7 +98,6 @@ class EditorPage extends React.Component<Props, EditorPageState> {
           }
         });
 
-        const { location, user } = nextProps;
         let queryString = (location.search || '').substr(1);
         let query = qs.parse(queryString) || {};
         _.forEach(query, (v, k) => {
@@ -155,8 +160,10 @@ class EditorPage extends React.Component<Props, EditorPageState> {
     this.setState({ record, errors });
   }
 
-  handleTab = (t: string) => {
-    this.setState({ tab: t });
+  handleTab = (tab: string) => {
+    let { model, id } = this.state;
+    tab = tab ? `/${tab}` : '';
+    this.props.history.replace(`/edit/${model.serviceId}/${model.modelName}/${id}${tab}`);
   }
 
   renderLayout(content: React.ReactNode, hasActionBar: boolean) {
