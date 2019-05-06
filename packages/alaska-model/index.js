@@ -45,10 +45,11 @@ function setModelDefaults(model, service, name) {
     }
     _.defaults(model.actions.add, {
         title: 'Create',
+        icon: 'plus',
         color: 'success',
         link: '',
         ability: `${model.id}.create`,
-        pages: ['editor', 'list'],
+        placements: ['editor', 'list'],
         hidden: 'isNew'
     });
     if (!model.actions.create) {
@@ -56,6 +57,7 @@ function setModelDefaults(model, service, name) {
     }
     _.defaults(model.actions.create, {
         title: 'Create',
+        icon: 'save',
         color: 'primary',
         sled: 'alaska-admin.Create',
     });
@@ -64,15 +66,17 @@ function setModelDefaults(model, service, name) {
     }
     _.defaults(model.actions.export, {
         title: 'Export',
+        icon: 'download',
         color: 'primary',
         sled: 'alaska-admin.Export',
-        pages: ['list'],
+        placements: ['list'],
     });
     if (!model.actions.update) {
         model.actions.update = {};
     }
     _.defaults(model.actions.update, {
         title: 'Update',
+        icon: 'save',
         color: 'primary',
         sled: 'alaska-admin.Update',
         hidden: 'isNew'
@@ -82,9 +86,10 @@ function setModelDefaults(model, service, name) {
     }
     _.defaults(model.actions.remove, {
         title: 'Remove',
+        icon: 'close',
         color: 'danger',
         sled: 'alaska-admin.Remove',
-        pages: ['editor', 'list'],
+        placements: ['editor', 'list', 'listItem'],
         needRecords: 1,
         hidden: 'isNew'
     });

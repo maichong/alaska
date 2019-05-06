@@ -3,7 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const checkbox_1 = require("@samoyed/checkbox");
+const redux_1 = require("redux");
 const Node_1 = require("./Node");
+const ListItemActions_1 = require("./ListItemActions");
+const ActionRedux = require("../redux/action");
+const refreshRedux = require("../redux/refresh");
 const __1 = require("..");
 class DataTableRow extends React.Component {
     constructor() {
@@ -14,14 +18,20 @@ class DataTableRow extends React.Component {
                 onSelect(record, !selected);
             }
         };
-        this.handleDoubleClick = () => {
+        this.handleShow = () => {
             let { model, record, history } = this.props;
             history.push(`/edit/${model.serviceId}/${model.modelName}/${record._id}`);
         };
+        this.handleActive = () => {
+            const { onActive, record } = this.props;
+            if (onActive) {
+                onActive(record);
+            }
+        };
     }
     render() {
-        let { model, columns, record, selected, active, onActive, onSelect, superMode } = this.props;
-        let el = React.createElement("tr", { key: `${record._id}-data-table-row`, className: "data-table-row", onClick: () => (onActive ? onActive(record) : ''), onDoubleClick: () => this.handleDoubleClick() },
+        let { model, columns, record, selected, active, onSelect, superMode, history, actionRequest, refresh } = this.props;
+        let el = React.createElement("tr", { key: `${record._id}-data-table-row`, className: "data-table-row", onClick: this.handleActive, onDoubleClick: this.handleShow },
             React.createElement(Node_1.default, { tag: false, wrapper: "DataTableRow", props: this.props, className: "data-table-row" },
                 onSelect ?
                     React.createElement("td", { onClick: (e) => e.stopPropagation() },
@@ -38,10 +48,8 @@ class DataTableRow extends React.Component {
                         React.createElement(Cell, { model: model, field: field, value: record[key] })
                         : (record[key] || '').toString());
                 }),
-                onSelect ?
-                    React.createElement("td", { className: "actions" },
-                        React.createElement("i", { className: "fa fa-eye text-primary" }))
-                    : null));
+                React.createElement("td", { className: "actions" },
+                    React.createElement(ListItemActions_1.default, { model: model, record: record, history: history, superMode: superMode, refresh: refresh, actionRequest: actionRequest }))));
         if (active && model.preView) {
             let View = __1.views.components[model.preView];
             if (View) {
@@ -55,4 +63,7 @@ class DataTableRow extends React.Component {
         return el;
     }
 }
-exports.default = react_redux_1.connect(({ settings }) => ({ superMode: settings.superMode }))(DataTableRow);
+exports.default = react_redux_1.connect(({ settings }) => ({ superMode: settings.superMode }), (dispatch) => redux_1.bindActionCreators({
+    actionRequest: ActionRedux.actionRequest,
+    refresh: refreshRedux.refresh,
+}, dispatch))(DataTableRow);

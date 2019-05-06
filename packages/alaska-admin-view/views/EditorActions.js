@@ -124,7 +124,7 @@ class EditorActions extends React.Component {
         let actionList = [];
         keys.forEach((key) => {
             let action = actions[key];
-            if (!(action.pages || ['editor']).includes('editor'))
+            if (!(action.placements || ['editor']).includes('editor'))
                 return;
             if (!superMode && check_ability_1.default(action.super, record))
                 return;

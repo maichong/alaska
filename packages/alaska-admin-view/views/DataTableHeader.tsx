@@ -61,9 +61,7 @@ class DataTableHeader extends React.Component<Props> {
               </th>);
             })
           }
-          {
-            onSelect ? <th /> : null
-          }
+          <th />
         </tr>
       </Node>
     );

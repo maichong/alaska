@@ -144,7 +144,7 @@ class ListActions extends React.Component {
         let actionList = [];
         keys.forEach((key) => {
             let action = actions[key];
-            if (!(action.pages || []).includes('list'))
+            if (!(action.placements || []).includes('list'))
                 return;
             if (!superMode && check_ability_1.default(action.super, record))
                 return;

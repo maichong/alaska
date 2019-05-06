@@ -34,6 +34,7 @@
       .actions {
         .fa {
           cursor: pointer;
+          margin-right: 0.4rem;
           &.text-primary {
             color: $blue !important;
           }

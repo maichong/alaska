@@ -190,7 +190,7 @@ class ListActions extends React.Component<Props, ListActionsState> {
     // eslint-disable-next-line complexity
     keys.forEach((key) => {
       let action = actions[key];
-      if (!(action.pages || []).includes('list')) return;
+      if (!(action.placements || []).includes('list')) return;
       if (!superMode && checkAbility(action.super, record)) return;
       if (checkAbility(action.hidden, record)) return;
       let ability = action.ability || `${model.id}.${key}`;

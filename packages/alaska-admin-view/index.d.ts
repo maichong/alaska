@@ -703,7 +703,8 @@ export interface ActionViewProps {
   editor?: boolean;
   record?: immutable.Immutable<Record>;
   records?: immutable.Immutable<Record[]>;
-  selected: immutable.Immutable<Record[]>;
+  selected?: immutable.Immutable<Record[]>;
+  icon?: boolean;
 }
 
 export interface BodyProps {
@@ -868,6 +869,15 @@ export interface ListToolbarProps {
   onChangeColumns: Function;
   onFilters: Function;
   onSplit: Function;
+}
+
+export interface ListItemActionsProps {
+  model: Model;
+  record: immutable.Immutable<Record>;
+  history: H.History;
+  superMode: boolean;
+  actionRequest: (req: ActionRequestPayload) => any;
+  refresh: () => any;
 }
 
 export interface LoadingPageProps {

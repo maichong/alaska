@@ -6,7 +6,8 @@ import checkAbility from '../utils/check-ability';
 import { ActionViewProps, views } from '..';
 
 export default class ActionView extends React.Component<ActionViewProps> {
-  handleClick = () => {
+  handleClick = (e: any) => {
+    e.stopPropagation();
     let { onClick, link, record } = this.props;
     if (onClick) {
       onClick();
@@ -25,7 +26,7 @@ export default class ActionView extends React.Component<ActionViewProps> {
 
   render() {
     let {
-      editor, model, action, record, records, selected
+      editor, model, action, record, records, selected, icon
     } = this.props;
 
     let disabled = action.disabled && checkAbility(action.disabled, record);
@@ -39,7 +40,7 @@ export default class ActionView extends React.Component<ActionViewProps> {
 
       return React.createElement(View, {
         // @ts-ignore 自定义Props
-        editor, model, action, records, selected, record, disabled
+        editor, model, action, records, selected, record, disabled, icon
       });
     }
 
@@ -50,19 +51,27 @@ export default class ActionView extends React.Component<ActionViewProps> {
     if (title) {
       title = <span className="action-title">{title}</span>;
     }
-    let el = (
-      <button
-        onClick={this.handleClick}
-        className={classnames('btn', `btn-${action.color || 'light'}`, {
-          'with-icon': !!action.icon,
-          'with-title': !!title
-        })}
-        disabled={disabled}
-        key={action.key}
-      >
-        {action.icon ? <i className={`action-icon fa fa-${action.icon}`} /> : null} {title}
-      </button >
-    );
+    let el = null;
+    if (icon && action.icon) {
+      el = <i
+        className={`fa fa-${action.icon} text-${action.color || 'primary'}`}
+        onClick={disabled ? null : this.handleClick}
+      />;
+    } else {
+      el = (
+        <button
+          onClick={this.handleClick}
+          className={classnames('btn', `btn-${action.color || 'light'}`, {
+            'with-icon': !!action.icon,
+            'with-title': !!title
+          })}
+          disabled={disabled}
+          key={action.key}
+        >
+          {action.icon ? <i className={`action-icon fa fa-${action.icon}`} /> : null} {title}
+        </button >
+      );
+    }
     if (action.tooltip) {
       return (
         <TooltipWrapper

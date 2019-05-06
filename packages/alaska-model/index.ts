@@ -50,11 +50,12 @@ function setModelDefaults(model: typeof ModelType, service: Service, name: strin
   }
   _.defaults(model.actions.add, {
     title: 'Create',
+    icon: 'plus',
     color: 'success',
     // TODO:
     link: '',
     ability: `${model.id}.create`,
-    pages: ['editor', 'list'],
+    placements: ['editor', 'list'],
     hidden: 'isNew'
   });
 
@@ -63,6 +64,7 @@ function setModelDefaults(model: typeof ModelType, service: Service, name: strin
   }
   _.defaults(model.actions.create, {
     title: 'Create',
+    icon: 'save',
     color: 'primary',
     sled: 'alaska-admin.Create',
     // hidden: '_id'  //TODO: 暂时注释，为了方便添加数据进行测试
@@ -73,9 +75,10 @@ function setModelDefaults(model: typeof ModelType, service: Service, name: strin
   }
   _.defaults(model.actions.export, {
     title: 'Export',
+    icon: 'download',
     color: 'primary',
     sled: 'alaska-admin.Export',
-    pages: ['list'],
+    placements: ['list'],
   });
 
   if (!model.actions.update) {
@@ -83,6 +86,7 @@ function setModelDefaults(model: typeof ModelType, service: Service, name: strin
   }
   _.defaults(model.actions.update, {
     title: 'Update',
+    icon: 'save',
     color: 'primary',
     sled: 'alaska-admin.Update',
     hidden: 'isNew'
@@ -93,9 +97,10 @@ function setModelDefaults(model: typeof ModelType, service: Service, name: strin
   }
   _.defaults(model.actions.remove, {
     title: 'Remove',
+    icon: 'close',
     color: 'danger',
     sled: 'alaska-admin.Remove',
-    pages: ['editor', 'list'],
+    placements: ['editor', 'list', 'listItem'],
     needRecords: 1,
     hidden: 'isNew'
   });

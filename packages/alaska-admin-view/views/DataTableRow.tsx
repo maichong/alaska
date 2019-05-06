@@ -1,11 +1,18 @@
 import * as React from 'react';
+import * as _ from 'lodash';
 import { connect } from 'react-redux';
 import Checkbox from '@samoyed/checkbox';
+import { bindActionCreators } from 'redux';
 import Node from './Node';
-import { DataTableRowProps, Field, StoreState, views } from '..';
+import ListItemActions from './ListItemActions';
+import * as ActionRedux from '../redux/action';
+import * as refreshRedux from '../redux/refresh';
+import { DataTableRowProps, Field, StoreState, views, ActionRequestPayload } from '..';
 
 interface Props extends DataTableRowProps {
   superMode: boolean;
+  actionRequest: (req: ActionRequestPayload) => any;
+  refresh: () => any;
 }
 
 class DataTableRow extends React.Component<Props> {
@@ -16,22 +23,29 @@ class DataTableRow extends React.Component<Props> {
     }
   }
 
-  handleDoubleClick = () => {
+  handleShow = () => {
     let { model, record, history } = this.props;
     history.push(`/edit/${model.serviceId}/${model.modelName}/${record._id}`);
-  }
+  };
+
+  handleActive = () => {
+    const { onActive, record } = this.props;
+    if (onActive) {
+      onActive(record);
+    }
+  };
 
   render() {
     let {
       model, columns, record, selected, active,
-      onActive, onSelect, superMode
+      onSelect, superMode, history, actionRequest, refresh
     } = this.props;
 
     let el = <tr
       key={`${record._id}-data-table-row`}
       className="data-table-row"
-      onClick={() => (onActive ? onActive(record) : '')}
-      onDoubleClick={() => this.handleDoubleClick()}
+      onClick={this.handleActive}
+      onDoubleClick={this.handleShow}
     >
       <Node
         tag={false}
@@ -61,13 +75,16 @@ class DataTableRow extends React.Component<Props> {
             </td>;
           })
         }
-        {
-          onSelect ?
-            <td className="actions">
-              <i className="fa fa-eye text-primary" />
-            </td>
-            : null
-        }
+        <td className="actions">
+          <ListItemActions
+            model={model}
+            record={record}
+            history={history}
+            superMode={superMode}
+            refresh={refresh}
+            actionRequest={actionRequest}
+          />
+        </td>
       </Node>
 
     </tr>;
@@ -93,5 +110,9 @@ class DataTableRow extends React.Component<Props> {
   }
 }
 export default connect(
-  ({ settings }: StoreState) => ({ superMode: settings.superMode })
+  ({ settings }: StoreState) => ({ superMode: settings.superMode }),
+  (dispatch) => bindActionCreators({
+    actionRequest: ActionRedux.actionRequest,
+    refresh: refreshRedux.refresh,
+  }, dispatch)
 )(DataTableRow);

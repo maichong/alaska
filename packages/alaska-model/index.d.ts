@@ -588,6 +588,8 @@ export interface ModelApi {
   removeMulti?: number;
 }
 
+export type ModelActionPlacement = 'list' | 'listItem' | 'editor';
+
 export interface ModelAction {
   key?: string;
   icon?: string;
@@ -602,7 +604,7 @@ export interface ModelAction {
   /**
    * 动作出现的页面列表，默认为 ['editor']
    */
-  pages?: string[];
+  placements?: ModelActionPlacement[];
   /**
    * 列表页面显示动作时，需要用户选择记录的数量，如果数量不足，动作为禁用状态
    */

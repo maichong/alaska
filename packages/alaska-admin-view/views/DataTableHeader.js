@@ -47,7 +47,7 @@ class DataTableHeader extends React.Component {
                         tr(field ? field.label : key, model.serviceId),
                         sortIcon));
                 }),
-                onSelect ? React.createElement("th", null) : null)));
+                React.createElement("th", null))));
     }
 }
 exports.default = react_redux_1.connect(({ settings }) => ({ superMode: settings.superMode, locale: settings.locale }))(DataTableHeader);
