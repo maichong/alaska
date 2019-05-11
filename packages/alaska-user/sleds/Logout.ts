@@ -15,5 +15,6 @@ export default class Logout extends Sled<LogoutParams, void> {
       params.ctx.cookies.set(autoLogin.key, '', autoLogin);
     }
     delete params.ctx.session.userId;
+    delete params.ctx.session.password;
   }
 }

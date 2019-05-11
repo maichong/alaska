@@ -17,10 +17,17 @@ function default_1(config, main) {
             return;
         }
         let userId = ctx.session.userId;
+        let password = ctx.session.password;
         ctx.user = null;
         if (userId) {
             try {
-                ctx.user = await User_1.default.findById(userId);
+                let user = await User_1.default.findById(userId);
+                if (user && user.password !== password) {
+                    user = null;
+                    delete ctx.session.userId;
+                    delete ctx.session.password;
+                }
+                ctx.user = user;
             }
             catch (e) {
                 console.error(e.stack);
@@ -41,6 +48,7 @@ function default_1(config, main) {
                             if (arr[1] === encryption.hash(user.password)) {
                                 ctx.user = user;
                                 ctx.session.userId = user._id.toString();
+                                ctx.session.password = user.password;
                             }
                             else {
                                 ctx.cookies.set(key);

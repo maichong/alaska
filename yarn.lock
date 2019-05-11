@@ -1158,6 +1158,11 @@
   resolved "https://registry.yarnpkg.com/@types/nunjucks/-/nunjucks-3.1.1.tgz#1f910f43c1aa41d99328cf28b6f1b82630ec6763"
   integrity sha512-8Isd49iSR8TfqrfmcaimQZG9/uwqkZw7uJGSn4Do3JD6QMlNwzDUtXoW1bM9INUaR7Eld2LYcJrKVECF7YOd1w==
 
+"@types/pretty-bytes@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@types/pretty-bytes/-/pretty-bytes-5.1.0.tgz#1df59db5c7def05dbbb0df2ad80b46863d9fafda"
+  integrity sha512-rc7x/HkZyguytBsCUVvcdARplUf0DsrRXqv3yO0v0CIgXuuwNlgYZRfYGCFHxr1CTnKHjCIJ13tB9t49ZixOIw==
+
 "@types/prop-types@*":
   version "15.7.0"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.0.tgz#4c48fed958d6dcf9487195a0ef6456d5f6e0163a"

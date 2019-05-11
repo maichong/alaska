@@ -42,6 +42,7 @@ class Register extends alaska_sled_1.Sled {
         await user.save({ session: this.dbSession });
         if (params.ctx && params.ctx.session) {
             params.ctx.session.userId = user.id;
+            params.ctx.session.password = user.password;
         }
         return user;
     }

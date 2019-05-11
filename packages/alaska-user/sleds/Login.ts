@@ -45,6 +45,7 @@ export default class Login extends Sled<LoginParams, User> {
 
     if (params.ctx && params.ctx.session) {
       params.ctx.session.userId = user.id;
+      params.ctx.session.password = user.password;
     }
 
     if (params.remember !== false) {

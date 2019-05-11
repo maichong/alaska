@@ -8,6 +8,7 @@ class Logout extends alaska_sled_1.Sled {
             params.ctx.cookies.set(autoLogin.key, '', autoLogin);
         }
         delete params.ctx.session.userId;
+        delete params.ctx.session.password;
     }
 }
 exports.default = Logout;

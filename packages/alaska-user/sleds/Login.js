@@ -25,6 +25,7 @@ class Login extends alaska_sled_1.Sled {
         }
         if (params.ctx && params.ctx.session) {
             params.ctx.session.userId = user.id;
+            params.ctx.session.password = user.password;
         }
         if (params.remember !== false) {
             const autoLogin = __1.default.main.config.get('autoLogin');

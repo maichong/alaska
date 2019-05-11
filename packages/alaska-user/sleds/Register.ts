@@ -54,6 +54,7 @@ export default class Register extends Sled<RegisterParams, User> {
 
     if (params.ctx && params.ctx.session) {
       params.ctx.session.userId = user.id;
+      params.ctx.session.password = user.password;
     }
     return user;
   }
