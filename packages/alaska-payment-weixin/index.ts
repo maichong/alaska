@@ -100,8 +100,8 @@ export default class WeixinPaymentPlugin extends PaymentPlugin<WeixinPaymentPlug
       sign_type: config.sign_type || 'MD5',
       out_trade_no: payment.id,
       out_refund_no: refund.id,
-      total_fee: payment.amount * 100 | 0,
-      refund_fee: refund.amount * 100 | 0,
+      total_fee: _.round(payment.amount * 100),
+      refund_fee: _.round(refund.amount * 100),
       op_user_id: config.mch_id,
       // notify_url: config.notify_url
     };
