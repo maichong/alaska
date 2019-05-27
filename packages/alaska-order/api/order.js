@@ -18,7 +18,7 @@ exports['pre-create'] = async function (ctx) {
     if (!ctx.state.ignoreAuthorization) {
         if (!ctx.user)
             __1.default.error(401);
-        if (!alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.create'))
+        if (!await alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.create'))
             __1.default.error(403);
         body.user = ctx.user;
     }
@@ -64,7 +64,7 @@ async function create(ctx) {
     if (!ctx.state.ignoreAuthorization) {
         if (!ctx.user)
             __1.default.error(401);
-        if (!alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.create'))
+        if (!await alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.create'))
             __1.default.error(403);
         body.user = ctx.user;
     }
@@ -99,7 +99,7 @@ async function _cancel(ctx) {
     if (!ctx.state.ignoreAuthorization) {
         if (!ctx.user)
             __1.default.error(401);
-        if (!alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.cancel', order))
+        if (!await alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.cancel', order))
             __1.default.error(403);
     }
     await Cancel_1.default.run({ record: order }, { dbSession: ctx.dbSession });
@@ -113,7 +113,7 @@ async function _receive(ctx) {
     if (!ctx.state.ignoreAuthorization) {
         if (!ctx.user)
             __1.default.error(401);
-        if (!alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.receive', order))
+        if (!await alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.receive', order))
             __1.default.error(403);
     }
     await Receive_1.default.run({ record: order }, { dbSession: ctx.dbSession });
@@ -128,7 +128,7 @@ async function _refund(ctx) {
     if (!ctx.state.ignoreAuthorization) {
         if (!ctx.user)
             __1.default.error(401);
-        if (!alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.refund', order))
+        if (!await alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.refund', order))
             __1.default.error(403);
     }
     else {
@@ -165,7 +165,7 @@ async function remove(ctx) {
     let order = ctx.state.order || await Order_1.default.findById(ctx.state.id || ctx.params.id).where('user', ctx.user._id).session(ctx.dbSession);
     if (order) {
         if (!ctx.state.ignoreAuthorization) {
-            if (!alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.delete', order))
+            if (!await alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.delete', order))
                 __1.default.error(403);
         }
         await Delete_1.default.run({ record: order }, { dbSession: ctx.dbSession });
@@ -178,7 +178,7 @@ async function _confirm(ctx) {
     if (!ctx.state.ignoreAuthorization) {
         if (!ctx.user)
             __1.default.error(401);
-        if (!alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.confirm', order))
+        if (!await alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.confirm', order))
             __1.default.error(403);
     }
     await Confirm_1.default.run({ record: order }, { dbSession: ctx.dbSession });
@@ -192,7 +192,7 @@ async function _reject(ctx) {
     if (!ctx.state.ignoreAuthorization) {
         if (!ctx.user)
             __1.default.error(401);
-        if (!alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.reject', order))
+        if (!await alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.reject', order))
             __1.default.error(403);
     }
     await Reject_1.default.run({ record: order }, { dbSession: ctx.dbSession });
@@ -207,7 +207,7 @@ async function _ship(ctx) {
     if (!ctx.state.ignoreAuthorization) {
         if (!ctx.user)
             __1.default.error(401);
-        if (!alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.ship', order))
+        if (!await alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.ship', order))
             __1.default.error(403);
     }
     else {
@@ -226,7 +226,7 @@ exports['_accept-refund'] = async function (ctx) {
     if (!ctx.state.ignoreAuthorization) {
         if (!ctx.user)
             __1.default.error(401);
-        if (!alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.acceptRefund', order))
+        if (!await alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.acceptRefund', order))
             __1.default.error(403);
     }
     await AcceptRefund_1.default.run({ record: order }, { dbSession: ctx.dbSession });
@@ -239,7 +239,7 @@ exports['_reject-refund'] = async function (ctx) {
     if (!ctx.state.ignoreAuthorization) {
         if (!ctx.user)
             __1.default.error(401);
-        if (!alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.rejectRefund', order))
+        if (!await alaska_user_1.default.hasAbility(ctx.user, 'alaska-order.Order.rejectRefund', order))
             __1.default.error(403);
     }
     await RejectRefund_1.default.run({ record: order }, { dbSession: ctx.dbSession });

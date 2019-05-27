@@ -8,7 +8,7 @@ function default_1(router) {
         if (!ctx.state.ignoreAuthorization) {
             if (!ctx.user)
                 ctx.throw(401);
-            if (!alaska_user_1.default.hasAbility(ctx.user, 'admin'))
+            if (!await alaska_user_1.default.hasAbility(ctx.user, 'admin'))
                 ctx.throw(403);
         }
         let place = ctx.query._place;
@@ -28,7 +28,7 @@ function default_1(router) {
         if (!ctx.state.ignoreAuthorization) {
             if (!ctx.user)
                 ctx.throw(401);
-            if (!alaska_user_1.default.hasAbility(ctx.user, 'admin'))
+            if (!await alaska_user_1.default.hasAbility(ctx.user, 'admin'))
                 ctx.throw(403);
         }
         let chart = await Chart_1.default.findById(ctx.params.id);

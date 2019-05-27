@@ -9,7 +9,7 @@ async function create(ctx) {
     let body = ctx.state.body || ctx.request.body;
     if (!ctx.state.ignoreAuthorization) {
         let user = ctx.user || __1.default.error(401);
-        if (!alaska_user_1.default.hasAbility(ctx.user, 'alaska-payment.Payment.create'))
+        if (!await alaska_user_1.default.hasAbility(ctx.user, 'alaska-payment.Payment.create'))
             __1.default.error(403);
         body.user = user;
         body.ip = ctx.ip;
