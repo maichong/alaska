@@ -21,7 +21,7 @@ exports['pre-create'] = async function (ctx: Context) {
   let body = ctx.state.body || ctx.request.body;
   if (!ctx.state.ignoreAuthorization) {
     if (!ctx.user) service.error(401);
-    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.create')) service.error(403);
+    if (!await userService.hasAbility(ctx.user, 'alaska-order.Order.create')) service.error(403);
     body.user = ctx.user;
   } else {
     body = ctx.state.body || ctx.throw('Missing state.body when ignore authorization');
@@ -71,7 +71,7 @@ export async function create(ctx: Context) {
 
   if (!ctx.state.ignoreAuthorization) {
     if (!ctx.user) service.error(401);
-    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.create')) service.error(403);
+    if (!await userService.hasAbility(ctx.user, 'alaska-order.Order.create')) service.error(403);
     body.user = ctx.user;
   } else {
     body = ctx.state.body || ctx.throw('Missing state.body when ignore authorization');
@@ -110,7 +110,7 @@ export async function _cancel(ctx: Context) {
 
   if (!ctx.state.ignoreAuthorization) {
     if (!ctx.user) service.error(401);
-    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.cancel', order)) service.error(403);
+    if (!await userService.hasAbility(ctx.user, 'alaska-order.Order.cancel', order)) service.error(403);
   }
 
   await Cancel.run({ record: order }, { dbSession: ctx.dbSession });
@@ -129,7 +129,7 @@ export async function _receive(ctx: Context) {
 
   if (!ctx.state.ignoreAuthorization) {
     if (!ctx.user) service.error(401);
-    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.receive', order)) service.error(403);
+    if (!await userService.hasAbility(ctx.user, 'alaska-order.Order.receive', order)) service.error(403);
   }
 
   await Receive.run({ record: order }, { dbSession: ctx.dbSession });
@@ -152,7 +152,7 @@ export async function _refund(ctx: Context) {
 
   if (!ctx.state.ignoreAuthorization) {
     if (!ctx.user) service.error(401);
-    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.refund', order)) service.error(403);
+    if (!await userService.hasAbility(ctx.user, 'alaska-order.Order.refund', order)) service.error(403);
   } else {
     body = ctx.state.body || ctx.throw('Missing state.body when ignore authorization');
   }
@@ -194,7 +194,7 @@ export async function remove(ctx: Context) {
   let order = ctx.state.order || await Order.findById(ctx.state.id || ctx.params.id).where('user', ctx.user._id).session(ctx.dbSession);
   if (order) {
     if (!ctx.state.ignoreAuthorization) {
-      if (!userService.hasAbility(ctx.user, 'alaska-order.Order.delete', order)) service.error(403);
+      if (!await userService.hasAbility(ctx.user, 'alaska-order.Order.delete', order)) service.error(403);
     }
     await Delete.run({ record: order }, { dbSession: ctx.dbSession });
   }
@@ -209,7 +209,7 @@ export async function _confirm(ctx: Context) {
 
   if (!ctx.state.ignoreAuthorization) {
     if (!ctx.user) service.error(401);
-    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.confirm', order)) service.error(403);
+    if (!await userService.hasAbility(ctx.user, 'alaska-order.Order.confirm', order)) service.error(403);
   }
 
   await Confirm.run({ record: order }, { dbSession: ctx.dbSession });
@@ -227,7 +227,7 @@ export async function _reject(ctx: Context) {
 
   if (!ctx.state.ignoreAuthorization) {
     if (!ctx.user) service.error(401);
-    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.reject', order)) service.error(403);
+    if (!await userService.hasAbility(ctx.user, 'alaska-order.Order.reject', order)) service.error(403);
   }
 
   await Reject.run({ record: order }, { dbSession: ctx.dbSession });
@@ -247,7 +247,7 @@ export async function _ship(ctx: Context) {
 
   if (!ctx.state.ignoreAuthorization) {
     if (!ctx.user) service.error(401);
-    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.ship', order)) service.error(403);
+    if (!await userService.hasAbility(ctx.user, 'alaska-order.Order.ship', order)) service.error(403);
   } else {
     body = ctx.state.body || ctx.throw('Missing state.body when ignore authorization');
   }
@@ -270,7 +270,7 @@ exports['_accept-refund'] = async function (ctx: Context) {
 
   if (!ctx.state.ignoreAuthorization) {
     if (!ctx.user) service.error(401);
-    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.acceptRefund', order)) service.error(403);
+    if (!await userService.hasAbility(ctx.user, 'alaska-order.Order.acceptRefund', order)) service.error(403);
   }
 
   await AcceptRefund.run({ record: order }, { dbSession: ctx.dbSession });
@@ -288,7 +288,7 @@ exports['_reject-refund'] = async function (ctx: Context) {
 
   if (!ctx.state.ignoreAuthorization) {
     if (!ctx.user) service.error(401);
-    if (!userService.hasAbility(ctx.user, 'alaska-order.Order.rejectRefund', order)) service.error(403);
+    if (!await userService.hasAbility(ctx.user, 'alaska-order.Order.rejectRefund', order)) service.error(403);
   }
 
   await RejectRefund.run({ record: order }, { dbSession: ctx.dbSession });

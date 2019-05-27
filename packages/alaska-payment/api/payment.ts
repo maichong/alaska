@@ -10,7 +10,7 @@ export async function create(ctx: Context) {
 
   if (!ctx.state.ignoreAuthorization) {
     let user = ctx.user || service.error(401);
-    if (!userService.hasAbility(ctx.user, 'alaska-payment.Payment.create')) service.error(403);
+    if (!await userService.hasAbility(ctx.user, 'alaska-payment.Payment.create')) service.error(403);
     body.user = user;
     body.ip = ctx.ip;
   } else {

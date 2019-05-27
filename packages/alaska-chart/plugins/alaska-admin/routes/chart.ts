@@ -9,7 +9,7 @@ export default function (router: Router) {
   router.get('/chart', async (ctx: Context) => {
     if (!ctx.state.ignoreAuthorization) {
       if (!ctx.user) ctx.throw(401);
-      if (!userService.hasAbility(ctx.user, 'admin')) ctx.throw(403);
+      if (!await userService.hasAbility(ctx.user, 'admin')) ctx.throw(403);
     }
     let place = ctx.query._place;
     let chart: ChartOptions = ctx.query._chart;
@@ -33,7 +33,7 @@ export default function (router: Router) {
   router.get('/chart/:id', async (ctx: Context) => {
     if (!ctx.state.ignoreAuthorization) {
       if (!ctx.user) ctx.throw(401);
-      if (!userService.hasAbility(ctx.user, 'admin')) ctx.throw(403);
+      if (!await userService.hasAbility(ctx.user, 'admin')) ctx.throw(403);
     }
     let chart = await Chart.findById(ctx.params.id);
     if (!chart) ctx.throw(404);
